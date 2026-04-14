@@ -48,8 +48,12 @@ class GroupSeeder extends Seeder
             '玄窕宮',
             '玄瑤宮',
             '玄義宮',
-        ];
+            '黑曜軍',
+            '虎甲軍',
+            '虎賁軍',
+            '耀紫軍',
 
+        ];
 
         foreach ($groups as $name) {
             Group::updateOrCreate(['name' => $name]);
