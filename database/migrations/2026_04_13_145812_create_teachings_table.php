@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,13 +12,13 @@ return new class extends Migration
     {
         Schema::create('teachings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('master_id')->constrained();
-            $table->string('treasure_name');
-            $table->text('description')->nullable();
-            $table->date('record_date');
-            $table->string('status')->default('active');
-            $table->json('excel_rows')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('master_id')->constrained();//哪位仙師
+            $table->foreignId('group_id')->nullable()->constrained();//哪個團體
+            $table->foreignId('dharma_name_id')->nullable()->constrained();//哪位法號
+            $table->text('title');
+            $table->longText('content')->nullable();
+            $table->json('supplement')->nullable();
+            $table->foreignId('user_id')->constrained();//誰存的
             $table->timestamps();
         });
     }

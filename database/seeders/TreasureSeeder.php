@@ -1,0 +1,118 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Treasure;
+use Illuminate\Database\Seeder;
+
+class TreasureSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $defaultDays = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        $categories = [
+            '清煞法寶' => [
+                'items' => [
+                    '清煞法寶', '清重煞法寶', '脫體寶', '清靈識法寶', '七素', '昊光', '清身後一大劫', 
+                    '清身後最近一波重煞', '金線', '轉亮天地陰陽八卦陣', '轉亮體內光線', '調出深層煞氣然後把它清掉', '清業根'
+                ]
+            ],
+            '玄能提升' => [
+                'items' => ['提升玄能', '轉亮體內法寶', '轉亮光線']
+            ],
+            '靈體調整' => [
+                'items' => ['調靈體', '靜坐調靈體']
+            ],
+            '隨身法寶' => [
+                'items' => ['森羅戒', '靈光寶戒', '龍戒', '隨身寶', '乾靈線']
+            ],
+            '修補調整' => [
+                'items' => [
+                    '修補五臟六腑', '通血路', '舒筋活血', '調整骨骼', '活絡筋骨', '處理患處', '調解體內溫度之法寶', 
+                    '讓新陳代謝較好之皇恩', '補精氣神', '補身體不足之元素', '極爐之元素', '泡澡法寶', 
+                    '法運血脈', '無形法運血脈', '排廢水法陣', '賜降防蚊蟲叮咬之皇恩', '專司靈療令'
+                ]
+            ],
+            '磁場' => [
+                'items' => ['清磁場', '調宮中磁場', '殿氣', '引殿氣', '清地靈']
+            ],
+            '腦部相關' => [
+                'items' => [
+                    '安魂定魄', '腦清目明', '清除腦中煞氣', '安定腦波', '調腦波', 
+                    '請玉筆清七竅來提升玄能', '恭請仙師法寶蓋七竅', '清七竅'
+                ]
+            ],
+            '父皇仙師法陣' => [
+                'items' => [
+                    '老祖仙師:請極爐照患處', '老祖仙師:將靈形引至極源玄尊洞',
+                    '元始仙師: 加強版幻元陣',
+                    '靈寶仙師:極靈九星陣', '靈寶仙師:靈光清煞陣', '靈寶仙師:極靈玄鐘 (加強版)', '靈寶仙師:加強版運血葫',
+                    '太宰仙師: 金環鎖扣陣 (加強版)',
+                    '金龍太子:靈形引至金龍太子殿', '金龍太子:龍源鎮邪陣',
+                    '閻王仙師: 現惡鏡', '閻王仙師:森羅七煞陣', '閻王仙師:加強版森羅業鐘', '閻王仙師:加強版森羅集煞陣', '閻王仙師:森羅集煞', '閻王仙師:急催業風', '閻王仙師:敕王令清煞陣', '閻王仙師:法斬重煞', '閻王仙師:撤除重煞',
+                    '眾仙師:至高頂級眾法陣'
+                ]
+            ],
+            '補氣' => [
+                'items' => ['王氣', '皇氣', '龍氣', '靈氣']
+            ],
+            '事業善緣' => [
+                'items' => ['業績法寶', '招財引善緣']
+            ],
+            '金丹' => [
+                'config' => ['units' => ['1包']],
+                'items' => [
+                    '金丹', '元丹', '靈丹', '極丹', '太玄靈丹', '道源極丹', '三光金丹', '回春金丹', '龍罡焰丹', '腦清目明金丹', 
+                    '禦寒金丹', '代謝金丹', '正中午吃金丹', '正中午清靈識金丹', '森羅金丹', '開文金丹', '降血壓金丹', 
+                    '通血路金丹', '救命金丹', '止血金丹'
+                ]
+            ],
+            '符令' => [
+                'items' => [
+                    '符令' => ['options' => ['size_dropdown' => ['一般符令', 'A4', '1/2', '1/4', '1/8', '1/16']]],
+                    '睡覺符令' => ['options' => ['units' => ['1包']]],
+                    '增值睡覺符令', '吸煞符令', '替身符令', '龍令', '靈令', '太令', '貼紙符令', '清怨煞符令',
+                    '疏文符令' => ['options' => [
+                        'size_dropdown' => ['A4', '1/2', '1/4', '1/8', '1/16'],
+                        'days_label' => '1-9天份',
+                        'type_label' => '每天'
+                    ]]
+                ]
+            ],
+            '其他' => [
+                'items' => [
+                    '塩寶', '香灰', '高梁法酒', '法酒', '龍涎',
+                    '香環' => ['options' => ['count_dropdown' => [1, 2, 3, 4, 5, 6, 7, 8, 9], 'units' => ['1盒']]],
+                    '福祿香環' => ['options' => ['count_dropdown' => [1, 2, 3, 4, 5, 6, 7, 8, 9], 'units' => ['1盒']]]
+                ]
+            ],
+        ];
+
+        foreach ($categories as $categoryName => $data) {
+            $items = isset($data['items']) ? $data['items'] : $data;
+            $categoryConfig = isset($data['config']) ? $data['config'] : [];
+
+            foreach ($items as $key => $value) {
+                $name = is_string($key) ? $key : $value;
+                $itemOptions = ['days_dropdown' => $defaultDays];
+
+                // Merge with category-wide config
+                $itemOptions = array_merge($itemOptions, $categoryConfig);
+
+                // Merge with item-specific options
+                if (is_string($key) && isset($value['options'])) {
+                    $itemOptions = array_merge($itemOptions, $value['options']);
+                }
+
+                Treasure::updateOrCreate(
+                    ['name' => $name, 'category' => $categoryName],
+                    ['options' => $itemOptions]
+                );
+            }
+        }
+    }
+}

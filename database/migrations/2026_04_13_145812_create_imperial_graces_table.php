@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,15 +13,13 @@ return new class extends Migration
         Schema::create('imperial_graces', function (Blueprint $table) {
             $table->id();
             $table->foreignId('master_id')->constrained();
-            $table->string('treasure_name');
+            $table->string('grace_name');
             $table->text('description')->nullable();
             $table->date('record_date');
             $table->date('know_date')->nullable();
             $table->date('report_date')->nullable();
-            $table->string('display_status');
-            $table->string('status')->default('active');
+            $table->string('status')->default('未求得'); // 未求得、已求得、已登記
             $table->integer('order')->default(0);
-            $table->json('excel_rows')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
