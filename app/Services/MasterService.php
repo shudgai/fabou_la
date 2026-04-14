@@ -65,4 +65,32 @@ class MasterService
         if (!$master) return false;
         return $master->delete();
     }
+    /**
+     * Resolve a master's name to its main Master ID based on the grouping rules.
+     *
+     * @param string $name
+     * @return int|null
+     */
+    public function resolveMasterId(string $name): ?int
+    {
+        $mapping = [
+            '龍王仙師' => 7,  // 太子
+            '父義' => 8,    // 閻王仙師
+            '閻父' => 8,    // 閻王仙師
+            '閻王父親' => 8, // 閻王仙師
+            '老祖父親' => 1, // 老祖仙師
+            '靈寶父親' => 4, // 靈寶仙師
+            '元始父親' => 2, // 元始仙師
+            '道祖父親' => 3, // 道祖仙師
+            '太宰父親' => 6, // 太宰仙師
+        ];
+
+        if (isset($mapping[$name])) {
+            return $mapping[$name];
+        }
+
+        // Default: find by exact name
+        $master = Master::where('name', $name)->first();
+        return $master ? $master->id : null;
+    }
 }

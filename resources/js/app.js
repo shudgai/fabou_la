@@ -18,6 +18,24 @@ const app = createApp({});
 import ExampleComponent from './components/ExampleComponent.vue';
 app.component('example-component', ExampleComponent);
 
+import TeachingManager from './components/TeachingManager.vue';
+app.component('teaching-manager', TeachingManager);
+
+import GrudgeManager from './components/GrudgeManager.vue';
+app.component('grudge-manager', GrudgeManager);
+
+import ImperialGraceManager from './components/ImperialGraceManager.vue';
+app.component('imperial-grace-manager', ImperialGraceManager);
+
+import MobileDashboard from './components/MobileDashboard.vue';
+app.component('mobile-dashboard', MobileDashboard);
+
+import AdminDashboard from './components/AdminDashboard.vue';
+app.component('admin-dashboard', AdminDashboard);
+
+import AdminRootSelector from './components/AdminRootSelector.vue';
+app.component('admin-root-selector', AdminRootSelector);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

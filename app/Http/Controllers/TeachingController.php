@@ -3,63 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\TeachingService;
 use Illuminate\Http\Request;
 
 class TeachingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $teachingService;
+
+    public function __construct(TeachingService $teachingService)
+    {
+        $this->teachingService = $teachingService;
+    }
+
     public function index()
     {
-        //
+        $teachings = $this->teachingService->getAll();
+        return response()->json($teachings);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $teaching = $this->teachingService->create($request->all());
+        return response()->json($teaching, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $teaching = $this->teachingService->findById((int)$id);
+        return $teaching ? response()->json($teaching) : response()->json(['message' => 'Not found'], 404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $success = $this->teachingService->update((int)$id, $request->all());
+        return $success ? response()->json(['message' => 'Updated']) : response()->json(['message' => 'Error'], 400);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $success = $this->teachingService->delete((int)$id);
+        return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
     }
 }

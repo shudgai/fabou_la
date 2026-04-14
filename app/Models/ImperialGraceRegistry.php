@@ -15,6 +15,9 @@ class ImperialGraceRegistry extends Model
         'purpose',
         'acquisition_method',
         'record_date',
+        'obtained_date',
+        'status',
+        'remarks',
     ];
 
     public function master()

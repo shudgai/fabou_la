@@ -10,12 +10,17 @@ class Treasure extends Model
     use HasFactory;
 
     protected $fillable = [
+        'master_id',
         'name',
-        'category',
-        'options',
+        'purpose',
+        'acquisition_method',
+        'remarks',
+        'record_date',
+        'obtained_date',
     ];
 
-    protected $casts = [
-        'options' => 'array',
-    ];
+    public function master()
+    {
+        return $this->belongsTo(Master::class);
+    }
 }
