@@ -153,7 +153,8 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <!-- Mobile Header -->
+                <!-- Mobile Header (Hidden on Note pages as they provide their own optimized headers) -->
+                @if(!request()->routeIs('note.index'))
                 <header class="lg:hidden h-14 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0">
                     <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,6 +164,7 @@
                     <span class="font-outfit font-bold text-slate-800">{{ config('app.name', '法寶專區') }}</span>
                     <div class="w-10"></div> <!-- Spacer -->
                 </header>
+                @endif
 
                 <main id="app" class="flex-1 overflow-y-auto relative bg-slate-50">
                     @yield('content')

@@ -1,9 +1,10 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
-        <!-- Header -->
-        <div class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <h2 class="text-xl font-bold font-outfit tracking-tight text-slate-800">
-                {{ currentFolder ? currentFolder.name : '法寶登記' }}
+        <!-- Header (Only show in Folder-view or Item-view) -->
+        <div v-if="currentFolder" class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-xl font-medium font-outfit tracking-tight text-slate-800">
+                <span v-if="focusedId && displayTitle !== currentFolder?.name" class="text-indigo-600 truncate max-w-[200px] block">{{ displayTitle }}</span>
+                <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記專區' }}</span>
             </h2>
         </div>
 
@@ -12,7 +13,7 @@
             <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200"
                 style="padding: 8px 15px; min-width: 140px; max-width: 85vw;">
                 <div class="flex items-start justify-between space-x-3">
-                    <span class="text-[12px] font-bold leading-normal text-red-600 break-words uppercase tracking-wide">
+                    <span class="text-[12px] font-medium leading-normal text-red-600 break-words uppercase tracking-wide">
                         {{ persistentToast.msg }}
                     </span>
                     <button v-if="['confirm'].includes(persistentToast.type)" 
@@ -23,7 +24,7 @@
                     <button v-for="action in persistentToast.actions" :key="action.label"
                         @click="action.handler"
                         :class="[action.primary ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-600 border-slate-200']"
-                        class="w-full px-2 py-2 rounded border text-[11px] font-bold whitespace-nowrap active:scale-[0.98] transition-all">
+                        class="w-full p-[5px] rounded border text-[11px] font-medium whitespace-nowrap active:scale-[0.98] transition-all">
                         {{ action.label }}
                     </button>
                     <button @click="persistentToast = null" class="w-full bg-white text-slate-400 px-2 py-1.5 rounded text-[11px] font-normal">取消</button>
@@ -32,31 +33,34 @@
         </div>
 
         <!-- Main Scrollable Area -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 60px;">
+        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 40px;">
         <!-- Level 1: Folder Selection -->
-        <div v-if="!currentFolder && !addMode" class="grid grid-cols-2 gap-3 p-3" style="margin-top: 5px;">
-            <button v-for="(folder, idx) in folders" :key="folder.id" 
-                @click="currentFolder = folder"
-                class="flex flex-col items-center justify-center aspect-square rounded-3xl transition-all active:scale-95 shadow-sm border border-slate-100 group"
-                :class="[
-                    idx % 4 === 0 ? 'bg-indigo-50/50 hover:bg-indigo-50' : 
-                    idx % 4 === 1 ? 'bg-rose-50/50 hover:bg-rose-50' : 
-                    idx % 4 === 2 ? 'bg-emerald-50/50 hover:bg-emerald-50' : 'bg-amber-50/50 hover:bg-amber-50'
-                ]"
-                style="padding: 15px;">
-                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow">
-                    <svg class="w-6 h-6" :class="[
-                        idx % 4 === 0 ? 'text-indigo-500' : 
-                        idx % 4 === 1 ? 'text-rose-500' : 
-                        idx % 4 === 2 ? 'text-emerald-500' : 'text-amber-500'
-                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <span class="text-sm font-bold text-slate-700">
-                    {{ folder.name }}
-                </span>
-            </button>
+        <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white">
+            <!-- Large Static Title -->
+            <div class="px-6 py-6 text-center">
+                <h1 class="text-2xl font-medium text-black tracking-tight">法寶登記專區</h1>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-4 p-4">
+                <button v-for="(folder, idx) in folders" :key="folder.id" 
+                    @click="currentFolder = folder"
+                    class="flex flex-row md:flex-col items-center md:justify-between bg-white transition-all active:scale-95 border-0 md:border-[2px] md:border-[#E6D5B8] md:aspect-square md:rounded-[28px] md:shadow-sm group p-2 w-full md:w-[70%] md:mx-auto border-b border-gray-50 last:border-b-0 md:border-b-[2px]">
+                    <div class="flex items-center justify-center">
+                        <svg class="w-8 h-8 md:w-14 md:h-14 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z" />
+                        </svg>
+                    </div>
+                    <span class="text-[16px] md:text-[15px] font-medium text-black whitespace-nowrap ml-2 md:ml-0 md:mb-1">{{ folder.name }}</span>
+                </button>
+            </div>
+
+            <!-- Minimalist Back to Dashboard -->
+            <div class="mt-12 flex justify-center pb-32">
+                <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <span class="text-xs font-medium tracking-widest uppercase">返回專區列表</span>
+                </button>
+            </div>
         </div>
 
         <!-- Level 2: Folder Contents -->
@@ -66,7 +70,7 @@
             <div v-if="!addMode" style="padding: 3px;">
                 <div v-if="!loading && allTreasures.length > 0 && !addMode" class="mb-3 px-1">
                     <div v-if="searchQuery" class="bg-indigo-50 rounded-2xl p-3 flex justify-between items-center animate-fade-in shadow-sm border border-indigo-100/50">
-                        <span class="text-xs font-bold text-indigo-600">搜尋結果：{{ searchQuery }}</span>
+                        <span class="text-xs font-medium text-indigo-600">搜尋結果：{{ searchQuery }}</span>
                         <button @click="searchQuery = ''" class="text-indigo-400 hover:text-indigo-600">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/></svg>
                         </button>
@@ -84,8 +88,8 @@
                         <div class="flex items-center justify-between py-1 transition-all duration-300" 
                              :style="editingIds.has(item.id) ? 'transform: translateY(-25px)' : ''">
                             <div v-show="!editingIds.has(item.id)" class="flex flex-col">
-                                <div class="text-[10px] uppercase font-bold text-slate-400 mb-0 tracking-tight">法寶名稱</div>
-                                <div class="text-[17px] font-bold text-slate-800 leading-tight tracking-wide uppercase">{{ item.name }}</div>
+                                <div class="text-[10px] uppercase font-medium text-slate-400 mb-0 tracking-tight">法寶名稱</div>
+                                <div class="text-[17px] font-medium text-slate-800 leading-tight tracking-wide uppercase">{{ item.name }}</div>
                             </div>
                             
                             <div class="relative ml-auto" :class="[deleteConfirmId === item.id ? 'text-red-500' : 'text-slate-700']">
@@ -95,40 +99,40 @@
                                 <!-- DROP-DOWN MENU -->
                                 <div v-if="openMenuId === item.id" @click.stop
                                     class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click="toggleExpand(item.id)" class="w-full px-2 py-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
+                                    <button @click="toggleExpand(item.id)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedIds.has(item.id) ? '縮起清單' : '展開清單' }}
                                     </button>
-                                    <button @click="openAndEdit(item.id)" class="w-full px-2 py-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(item)" class="w-full px-2 py-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-bold whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(item, 'excel')" class="w-full px-2 py-2 text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 font-bold whitespace-nowrap">下載 Excel</button>
-                                    <button @click.stop="confirmDelete(item.id)" class="w-full px-2 py-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                                    <button @click="openAndEdit(item.id)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(item)" class="w-full p-[5px] text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(item, 'excel')" class="w-full p-[5px] text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 font-medium whitespace-nowrap">下載 Excel</button>
+                                    <button @click.stop="confirmDelete(item.id)" class="w-full p-[5px] text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Collapsible Rows -->
                         <div v-if="expandedIds.has(item.id)" @click.stop 
-                            class="animate-fade-in bg-slate-50 rounded p-2 transition-all duration-300"
+                            class="animate-fade-in bg-slate-50 rounded p-[5px] transition-all duration-300"
                             :class="[editingIds.has(item.id) ? 'mt-[-40px]' : 'mt-1']">
                             <!-- EDIT MODE -->
-                            <div v-if="editingIds.has(item.id)" class="grid grid-cols-1 gap-2 mb-3">
+                            <div v-if="editingIds.has(item.id)" class="grid grid-cols-1 gap-[5px] mb-3">
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-bold text-slate-500 shrink-0 w-16">法寶名稱：</span>
+                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">法寶名稱：</span>
                                     <input v-model="item.name" type="text" 
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-bold text-slate-500 shrink-0 w-16">法寶用意：</span>
+                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">法寶用意：</span>
                                     <input v-model="item.purpose" type="text" placeholder="用意"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-bold text-slate-500 shrink-0 w-16">求寶方式：</span>
+                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">求寶方式：</span>
                                     <input v-model="item.acquisition_method" type="text" placeholder="求寶方式"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-bold text-slate-500 shrink-0 w-16">備註：</span>
+                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">備註：</span>
                                     <input v-model="item.remarks" type="text" placeholder="備註"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
@@ -136,15 +140,15 @@
 
                             <div v-else class="space-y-2 mb-2">
                                 <div v-if="item.purpose">
-                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">法寶用意</div>
+                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">法寶用意</div>
                                     <div class="text-[15px] text-slate-700 leading-snug">{{ item.purpose }}</div>
                                 </div>
                                 <div v-if="item.acquisition_method">
-                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">求寶方式</div>
+                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">求寶方式</div>
                                     <div class="text-[15px] text-slate-700 leading-snug">{{ item.acquisition_method }}</div>
                                 </div>
                                 <div v-if="item.remarks">
-                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">備註</div>
+                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">備註</div>
                                     <div class="text-[14px] text-slate-600 leading-snug italic">{{ item.remarks }}</div>
                                 </div>
                             </div>
@@ -154,9 +158,9 @@
                                 <table class="w-full text-[12px] border-collapse">
                                     <thead class="bg-slate-50">
                                         <tr>
-                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-bold text-slate-700 w-16">法號</th>
-                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-bold text-slate-700 w-20">日期</th>
-                                            <th class="border-b border-slate-200 py-1 px-2 text-left font-bold text-slate-700">備註</th>
+                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-16">法號</th>
+                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-20">日期</th>
+                                            <th class="border-b border-slate-200 py-1 px-2 text-left font-medium text-slate-700">備註</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -198,7 +202,7 @@
                             </div>
                             <div v-if="editingIds.has(item.id)" class="sticky bottom-10 flex justify-end pointer-events-none z-[80]">
                                 <button @click.stop="saveDharmaDetails(item)" 
-                                    class="pointer-events-auto bg-white text-indigo-600 p-[5px] rounded-full text-[13px] font-bold shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:bg-slate-50 transition-all active:scale-95 border border-indigo-200">
+                                    class="pointer-events-auto bg-white text-indigo-600 p-[5px] rounded-full text-[13px] font-medium shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:bg-slate-50 transition-all active:scale-95 border border-indigo-200">
                                     儲存所有修改內容
                                 </button>
                             </div>
@@ -210,51 +214,49 @@
 
         </div> <!-- End Scrollable Area -->
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 30px;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">
                     <button @click="handleBack" 
-                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
 
                 <!-- HOME BUTTON -->
                 <div class="flex justify-center">
-                    <button @click="$emit('goHome')" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="$emit('goHome')" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
 
                 <!-- ADD BUTTON (Center) -->
-                <div class="flex justify-center relative">
-                    <div v-if="currentFolder?.id !== 'unobtained'" class="absolute -top-6">
-                        <button @click="showAddMenu = !showAddMenu" 
-                            :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 active:scale-95']"
-                            class="w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-500 border-4 border-white">
-                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
+                <div class="flex justify-center items-center">
+                    <button v-if="currentFolder?.id !== 'unobtained'" @click="showAddMenu = !showAddMenu" 
+                        :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95']"
+                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500">
+                        <svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
 
                 <!-- SEARCH BUTTON -->
                 <div class="flex justify-center">
                     <button @click="showSearch = !showSearch" 
                         :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
-                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
 
                 <!-- EXPORT BUTTON -->
                 <div class="flex justify-center">
                     <div class="relative">
-                        <button @click="showExportMenu = !showExportMenu" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <button @click="showExportMenu = !showExportMenu" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <div v-if="showExportMenu" class="absolute bottom-16 right-0 w-36 bg-white rounded-3xl shadow-[0_15px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden animate-slide-up z-[60] p-1.5">
-                            <button @click="downloadList('excel'); showExportMenu = false" class="w-full py-3 px-4 text-xs font-bold text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-colors">下載 Excel</button>
+                            <button @click="downloadList('excel'); showExportMenu = false" class="w-full py-3 px-4 text-xs font-medium text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-colors">下載 Excel</button>
                         </div>
                     </div>
                 </div>
@@ -353,6 +355,14 @@ const addActions = computed(() => [
         handler: () => prepareAdd('batch') 
     }
 ]);
+
+const displayTitle = computed(() => {
+    if (focusedId.value) {
+        const item = allTreasures.value.find(t => t.id === focusedId.value);
+        return item ? item.name : (currentFolder.value?.name || '法寶登記');
+    }
+    return currentFolder.value?.name || '法寶登記';
+});
 
 const triggerBatchSave = (data) => {
     batchInput.value = data.input;
@@ -511,6 +521,9 @@ const saveBatch = async (forceParam = false, resolvedMasterId = null) => {
     const records = [];
 
     rawLines.slice(dataStartIndex).forEach(line => {
+        // 排除標題列 (Skip common header labels)
+        if (line.includes('法寶名稱') || line.includes('日期') || line.includes('法寶用意')) return;
+        
         const parts = line.split(/[,\t]/).map(p => p.trim()).filter(p => p);
         if (parts.length === 0) return;
 
@@ -686,9 +699,16 @@ const executeDelete = async () => {
     deleteConfirmId.value = null;
 };
 
-const saveSingle = async (forceParam = false) => {
+const saveSingle = async (forceOrData = false) => {
     if (isSaving.value) return;
-    const force = forceParam === true; // Strictly ignore MouseEvent
+    
+    let force = false;
+    if (forceOrData === true) {
+        force = true;
+    } else if (forceOrData && typeof forceOrData === 'object' && !forceOrData.target) {
+        // Sync local form with data from child component
+        form.value = { ...forceOrData };
+    }
 
     // Duplicate Check
     const isDuplicate = allTreasures.value.find(t => 

@@ -1,50 +1,67 @@
 <template>
     <div class="bg-white min-h-screen relative">
-        <!-- Header -->
-        <div class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <h2 class="text-xl font-bold font-outfit tracking-tight text-slate-800">
-                {{ currentFolder ? '仙師開示 - ' + currentFolder.name : '仙師開示專區' }}
+        <!-- Header (Only show in Folder-view or Item-view) -->
+        <div v-if="currentFolder" class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-xl font-medium font-outfit tracking-tight text-black">
+                <span>{{ currentFolder ? '仙師開示 - ' + currentFolder.name : '仙師開示專區' }}</span>
             </h2>
         </div>
 
         <!-- Level 1: Folder Selection -->
-        <div v-if="!currentFolder" class="grid grid-cols-2 gap-3 p-3" style="margin-top: 5px;">
-            <button v-for="(folder, idx) in folders" :key="folder.id" 
-                @click="currentFolder = folder"
-                class="flex flex-col items-center justify-center aspect-square rounded-3xl transition-all active:scale-95 shadow-sm border border-slate-100 group px-4"
-                :class="[
-                    idx % 4 === 0 ? 'bg-indigo-50/50 hover:bg-indigo-50' : 
-                    idx % 4 === 1 ? 'bg-rose-50/50 hover:bg-rose-50' : 
-                    idx % 4 === 2 ? 'bg-emerald-50/50 hover:bg-emerald-50' : 'bg-amber-50/50 hover:bg-amber-50'
-                ]">
-                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow">
-                    <svg class="w-6 h-6" :class="[
-                        idx % 4 === 0 ? 'text-indigo-500' : 
-                        idx % 4 === 1 ? 'text-rose-500' : 
-                        idx % 4 === 2 ? 'text-emerald-500' : 'text-amber-500'
-                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <span class="text-sm font-bold text-slate-700">{{ folder.name }}</span>
-            </button>
+        <div v-if="!currentFolder" class="min-h-screen bg-white">
+            <!-- Large Static Title -->
+            <div class="p-[5px] text-center">
+                <h1 class="text-2xl font-medium text-black tracking-tight">仙師開示專區</h1>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-4 p-[5px]">
+                <button v-for="(folder, idx) in folders" :key="folder.id" 
+                    @click="currentFolder = folder"
+                    class="flex flex-row md:flex-col items-center md:justify-between bg-white transition-all active:scale-95 border-0 md:border-[1.5px] md:border-[#E6D5B8] md:aspect-square md:rounded-[28px] md:shadow-sm group p-2 w-full md:w-[70%] md:mx-auto border-b border-gray-50 last:border-b-0 md:border-b-[1.5px]">
+                    <div class="flex items-center justify-center">
+                        <svg class="w-8 h-8 md:w-14 md:h-14 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z" />
+                        </svg>
+                    </div>
+                    <span class="text-[16px] md:text-[15px] font-medium text-black whitespace-nowrap ml-2 md:ml-0 md:mb-1">{{ folder.name }}</span>
+                </button>
+            </div>
+
+            <!-- Minimalist Back to Dashboard -->
+            <div class="mt-12 flex justify-center pb-32">
+                <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <span class="text-xs font-medium tracking-widest uppercase">返回專區列表</span>
+                </button>
+            </div>
         </div>
 
         <!-- Level 2: List -->
         <div v-else class="pb-32">
             <!-- Add Modal (Same style) -->
-            <div v-if="addMode" class="mb-6 bg-white border-b border-gray-100 shadow-sm p-3">
-                <input v-model="form.title" type="text" placeholder="輸入標題" class="w-full rounded-xl border-none shadow-sm text-sm mb-2" style="padding: 5px 8px;">
-                <textarea v-model="form.content" rows="4" placeholder="輸入開示內容..." class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;"></textarea>
-                <div class="flex justify-center mt-2">
-                    <button @click="saveItem" class="bg-indigo-600 text-white font-normal rounded-lg px-4 py-1.5 shadow-md">{{ editingId ? '修改完成' : '確認新增' }}</button>
+            <!-- Add Overlay (Full Screen Mobile) -->
+            <div v-if="addMode" class="fixed inset-0 z-[100] bg-white md:relative md:inset-auto md:z-0 md:mb-6 md:bg-white md:border-b md:border-gray-100 md:shadow-sm p-0 md:p-3 overflow-y-auto">
+                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 md:hidden">
+                    <h3 class="text-lg font-medium text-black">新增開示</h3>
+                    <button @click="addMode = false" class="p-2 text-slate-400">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+                <div class="p-3 space-y-1 md:p-0 md:space-y-1">
+                    <input v-model="form.title" type="text" placeholder="輸入標題" class="w-full h-[20px] rounded-xl border-none bg-slate-50 px-2 text-[13px] leading-none focus:ring-0 outline-none md:rounded-xl md:border-none md:shadow-sm">
+                    <textarea v-model="form.content" rows="12" placeholder="輸入開示內容..." class="w-full rounded-xl border-none bg-slate-50 px-2 text-sm focus:ring-0 outline-none md:rounded-xl md:border-none md:shadow-sm"></textarea>
+                    <div class="flex justify-center mt-3 md:mt-1">
+                        <button @click="saveItem" class="w-full md:w-auto bg-indigo-600 text-white font-normal rounded-xl md:rounded-lg p-[5px] shadow-lg md:shadow-md">{{ editingId ? '修改完成' : '確認新增' }}</button>
+                    </div>
                 </div>
             </div>
 
             <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
             <div v-else-if="filteredItems.length === 0" class="text-center py-12 text-slate-400">尚無開示紀錄。</div>
-            <div v-else class="p-2">
-                <div v-for="item in filteredItems" :key="item.id" class="border-b border-dashed border-slate-200 py-3 relative">
+            <div v-else class="p-[5px]">
+                <div v-for="item in (focusedId ? filteredItems.filter(i => i.id === focusedId) : filteredItems) " :key="item.id" 
+                    @click="toggleExpand(item.id)"
+                    class="border-b border-dashed border-slate-200 py-3 relative active:bg-slate-50 transition-colors cursor-pointer">
                     <div class="flex justify-between items-start">
                         <span class="text-[11px] text-slate-400">{{ formatDate(item.created_at) }}</span>
                         <div class="flex space-x-3">
@@ -52,52 +69,54 @@
                             <button @click="deleteItem(item.id)" class="text-red-400 text-xs">刪除</button>
                         </div>
                     </div>
-                    <div class="text-lg font-bold text-slate-800 mt-1">{{ item.title }}</div>
-                    <div class="text-sm text-slate-600 mt-1 line-clamp-3">{{ item.content }}</div>
+                    <div class="text-lg font-medium text-black mt-1">{{ item.title }}</div>
+                    <div class="text-sm text-slate-600 mt-1" :class="focusedId === item.id ? '' : 'line-clamp-3'">{{ item.content }}</div>
+                    <div v-if="focusedId === item.id" class="mt-4 pt-4 border-t border-slate-100 flex justify-end space-x-4">
+                        <button @click.stop="editItem(item)" class="text-indigo-600 text-xs font-medium px-3 py-1 bg-indigo-50 rounded-lg">修改內容</button>
+                        <button @click.stop="deleteItem(item.id)" class="text-red-500 text-xs font-medium px-3 py-1 bg-red-50 rounded-lg">刪除紀錄</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 30px;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">
-                    <button @click="handleBack" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <button @click="handleBack" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
 
                 <!-- HOME BUTTON -->
                 <div class="flex justify-center">
-                    <button @click="$emit('goHome')" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="$emit('goHome')" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
 
                 <!-- ADD BUTTON (Center) -->
-                <div class="flex justify-center relative">
-                    <div v-if="currentFolder" class="absolute -top-6">
-                        <button @click="addMode = !addMode" 
-                            :class="[addMode ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 active:scale-95']"
-                            class="w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-500 border-4 border-white">
-                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
+                <div class="flex justify-center items-center">
+                    <button v-if="currentFolder" @click="addMode = !addMode" 
+                        :class="[addMode ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95']"
+                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500">
+                        <svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
 
                 <!-- SEARCH BUTTON -->
                 <div class="flex justify-center">
                     <button @click="showSearch = !showSearch" 
                         :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
-                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
 
                 <!-- DOWNLOAD BUTTON -->
                 <div class="flex justify-center">
                     <button @click="downloadList" :disabled="!currentFolder"
-                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50 disabled:opacity-30">
+                        class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50 disabled:opacity-30">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
@@ -125,6 +144,15 @@ const teachings = ref([]);
 const masters = ref([]);
 const loading = ref(true);
 const editingId = ref(null);
+const focusedId = ref(null);
+
+const toggleExpand = (id) => {
+    focusedId.value = focusedId.value === id ? null : id;
+};
+
+const displayTitle = computed(() => {
+    return currentFolder.value?.name || '仙師開示專區';
+});
 
 const form = ref({
     title: '',
@@ -175,6 +203,8 @@ const handleBack = () => {
     if (addMode.value) {
         addMode.value = false;
         editingId.value = null;
+    } else if (focusedId.value) {
+        focusedId.value = null;
     } else if (currentFolder.value) {
         currentFolder.value = null;
     } else {

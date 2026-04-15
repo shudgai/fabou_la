@@ -1,7 +1,20 @@
 <template>
-    <div class="flex min-h-screen bg-gray-50 font-sans">
-        <!-- Sidebar (Matching the list style of Image 2) -->
-        <div class="w-72 bg-white border-r border-gray-100 flex-shrink-0 flex flex-col shadow-[2px_0_8px_rgba(0,0,0,0.02)]">
+    <div class="flex flex-col md:flex-row min-h-screen bg-white md:bg-gray-50 font-sans">
+        <!-- Mobile Top Nav -->
+        <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm overflow-x-auto custom-scrollbar no-scrollbar py-2">
+            <div class="flex items-center space-x-4 px-4 min-w-max">
+                <button v-for="item in menuItems" :key="'mob-' + item.id"
+                    @click="currentTab = item.id"
+                    class="relative py-1 px-1 transition-all duration-300"
+                    :class="[currentTab === item.id ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium']">
+                    <span class="text-[14px] whitespace-nowrap">{{ item.label }}</span>
+                    <div v-if="currentTab === item.id" class="absolute -bottom-1 left-0 right-0 h-0.5 bg-indigo-600 rounded-full animate-fade-in"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar (Desktop Only) -->
+        <div class="hidden md:flex w-72 bg-white border-r border-gray-100 flex-shrink-0 flex-col shadow-[2px_0_8px_rgba(0,0,0,0.02)]">
             <!-- Header -->
             <div class="p-5">
                 <h1 class="text-[26px] font-[900] text-[#1a202c]">皇恩筆記本</h1>
@@ -40,7 +53,7 @@
 
         <!-- Content Area -->
         <div class="flex-1 overflow-auto bg-white">
-            <div class="p-8 max-w-7xl mx-auto h-full">
+            <div class="p-0 md:p-8 max-w-7xl mx-auto h-full">
                 <transition name="fade" mode="out-in">
                     <div :key="currentTab">
                         <div v-if="currentTab === 'grace'">
@@ -105,9 +118,22 @@ watch(() => props.initialTab, (newTab) => {
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

@@ -55,6 +55,9 @@ app.component('treasure-add-form', TreasureAddForm);
 import GrudgeAddForm from './components/GrudgeAddForm.vue';
 app.component('grudge-add-form', GrudgeAddForm);
 
+import ImperialGraceAddForm from './components/ImperialGraceAddForm.vue';
+app.component('imperial-grace-add-form', ImperialGraceAddForm);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

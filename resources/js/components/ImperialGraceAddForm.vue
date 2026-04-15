@@ -1,57 +1,69 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end justify-center px-0">
+    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full max-w-2xl bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+        <div class="relative w-full h-full md:h-[90vh] md:max-w-4xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-lg font-bold text-slate-800">
-                    {{ mode === 'single' ? (initialData.id ? '修改重大皇恩' : '新增重大皇恩') : '多筆次新增' }}
+                <h3 class="text-xl font-medium text-black">
+                    重大皇恩載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
                 </h3>
-                <button @click="$emit('cancel')" class="p-2 text-slate-400 hover:text-slate-600 active:scale-95">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
+            <!-- Tabs -->
+            <div class="px-4 py-2 bg-slate-50 flex space-x-1 border-b border-slate-100">
+                <button @click="localMode = 'single'" 
+                    :class="localMode === 'single' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
+                    class="flex-1 py-2 text-sm font-bold rounded-xl transition-all">逐筆登錄</button>
+                <button @click="localMode = 'batch'" 
+                    :class="localMode === 'batch' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
+                    class="flex-1 py-2 text-sm font-bold rounded-xl transition-all">文字/EXCEL 記載</button>
+            </div>
+
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                
+                <!-- COMMON FIELDS (Master & Date) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50/30 p-4 rounded-2xl border border-indigo-100/50">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
+                        <select v-model="form.master_id" class="w-full h-[32px] rounded-xl border-none bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">得知日期</label>
+                        <input v-model="form.record_date" type="date" class="w-full h-[32px] rounded-xl border-none bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                    </div>
+                </div>
+
                 <!-- SINGLE MODE -->
-                <div v-if="mode === 'single'" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase ml-1">得知日期</label>
-                            <input v-model="form.record_date" type="date" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase ml-1">所屬仙師</label>
-                            <select v-model="form.master_id" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20">
-                                <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                            </select>
-                        </div>
+                <div v-if="localMode === 'single'" class="space-y-4 animate-fade-in">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
+                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶用意</label>
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase ml-1" :class="{ 'opacity-30': form.status === '未求得' }">求得日期</label>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
                             <input v-model="form.obtained_date" type="date" :disabled="form.status === '未求得'"
-                                class="w-full rounded-2xl border-slate-100 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20"
-                                :class="form.status === '未求得' ? 'bg-slate-100 opacity-50' : 'bg-slate-50'">
+                                class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                                :class="form.status === '未求得' ? 'opacity-30' : ''">
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase ml-1">狀態</label>
-                            <select v-model="form.status" @change="handleStatusChange" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 font-bold"
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
+                            <select v-model="form.status" @change="handleStatusChange" class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none"
                                 :class="form.status === '未求得' ? 'text-slate-400' : 'text-emerald-600'">
                                 <option value="未求得">未求得</option>
                                 <option value="已求得">已求得</option>
@@ -60,46 +72,92 @@
                         </div>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">備註</label>
-                        <textarea v-model="form.remarks" rows="3" placeholder="其他補充說明..." class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20"></textarea>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
+                        <textarea v-model="form.remarks" rows="4" placeholder="輸入更多說明內容..." class="w-full rounded-2xl border-none bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"></textarea>
                     </div>
                 </div>
 
                 <!-- BATCH MODE -->
-                <div v-if="mode === 'batch'" class="space-y-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">歸屬仙師</label>
-                        <select v-model="batchMasterId" class="w-full rounded-2xl border-slate-100 bg-slate-50 p-3 text-sm font-bold text-indigo-600">
-                            <option :value="null">請先選擇仙師</option>
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                        </select>
-                    </div>
-
-                    <div class="p-4 bg-indigo-50 rounded-2xl space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-indigo-500 uppercase">貼入清單內容</span>
-                            <button @click="$refs.fileInput.click()" class="text-xs text-indigo-600 font-bold flex items-center hover:underline">
-                                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0l-4 4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                匯入檔案
+                <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
+                    <div class="bg-slate-50 rounded-2xl p-4 space-y-3 shadow-inner relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">貼入清單內容</label>
+                            <div class="flex items-center space-x-3">
+                                <button v-if="batchInput" @click="batchInput = ''" class="text-[10px] text-red-400 font-bold hover:underline">清除內容</button>
+                                <button @click="$refs.fileInput.click()" class="text-[11px] text-indigo-600 font-bold flex items-center hover:bg-white px-2 py-1 rounded-lg border border-indigo-100 transition-all">
+                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0l-4-4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    匯入檔案 (Excel/Word)
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="relative group">
+                            <textarea v-model="batchInput" rows="8" 
+                                @paste="handleBatchPaste"
+                                class="w-full rounded-xl border-none shadow-sm text-xs bg-white focus:ring-2 focus:ring-indigo-500/20 p-4 font-mono leading-relaxed pr-10" 
+                                placeholder="支援直接貼上 Excel 或 LINE 內容..."></textarea>
+                            <button v-if="batchInput" @click="batchInput = ''" 
+                                class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
-                        <textarea v-model="batchInput" rows="10" 
-                            class="w-full rounded-xl border-none shadow-inner text-xs bg-white focus:ring-2 focus:ring-indigo-500/20 p-3" 
-                            placeholder="支援複製 LINE 內容快速解析匯入..."></textarea>
-                        <input type="file" ref="fileInput" class="hidden" @change="handleFileUpload" accept=".txt">
+                        <input type="file" ref="fileInput" class="hidden" @change="handleFileUpload" accept=".txt,.xlsx,.xls,.docx">
+                    </div>
+
+                    <!-- Batch Preview Table -->
+                    <div v-if="excelRows.length > 0" class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
+                        <div class="bg-indigo-50 px-4 py-2 border-b border-indigo-100 flex justify-between items-center">
+                            <span class="text-[11px] font-bold text-indigo-600">偵測到 {{ excelRows.length }} 筆資料</span>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" v-model="showTotal" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                    <span class="text-[10px] font-bold text-indigo-600">統計加總</span>
+                                </label>
+                                <select v-if="showTotal" v-model="sumKey" class="text-[10px] bg-white border-none rounded px-2 py-0.5 outline-none focus:ring-0">
+                                    <option value="">選擇統計欄</option>
+                                    <option v-for="(col, i) in excelCols" :key="i" :value="col.key">第 {{ i + 1 }} 欄 ({{ col.label }})</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
+                            <table class="w-full text-[11px] text-left">
+                                <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tighter">
+                                    <tr>
+                                        <th v-for="col in excelCols" :key="col.key" class="p-2 border-b border-slate-100">{{ col.label }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                        <td v-for="col in excelCols" :key="col.key" class="p-2 text-slate-600 truncate max-w-[120px]">{{ row[col.key] }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-if="showTotal && sumKey" class="bg-emerald-50 px-4 py-3 border-t border-emerald-100 flex justify-between items-center animate-fade-in">
+                            <span class="text-xs font-bold text-emerald-600">本次批次總額預估</span>
+                            <span class="text-xl font-black text-emerald-700 tracking-tighter">{{ batchTotalValue.toLocaleString('zh-TW') }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="p-6 border-t border-slate-100 bg-slate-50/50">
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
                 <button 
                     @click="handleSubmit" 
-                    :disabled="isSaving"
-                    class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:bg-slate-300 disabled:shadow-none"
+                    :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
+                    class="w-full bg-indigo-600 text-white font-bold h-[44px] rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:bg-slate-300 disabled:shadow-none"
                 >
-                    {{ isSaving ? '儲存中...' : (mode === 'single' ? '確認儲存' : '開始解析並新增') }}
+                    <template v-if="isSaving">
+                        <span class="flex items-center justify-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            處理入庫中...
+                        </span>
+                    </template>
+                    <template v-else>
+                        {{ localMode === 'single' ? (form.id ? '儲存修改' : '確認入庫歸檔') : `開始歸檔這 ${excelRows.length} 筆資料` }}
+                    </template>
                 </button>
             </div>
         </div>
@@ -107,10 +165,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 
 const props = defineProps({
-    mode: String,
+    mode: String, // 'single' or 'batch'
     initialData: Object,
     masters: Array,
     isSaving: Boolean
@@ -118,38 +176,143 @@ const props = defineProps({
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'fileUpload']);
 
+const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
-const batchMasterId = ref(props.initialData?.master_id || null);
+const excelRows = ref([]);
+const excelCols = ref([]);
+const showTotal = ref(false);
+const sumKey = ref('');
+
+const selectedMasterName = computed(() => {
+    const m = props.masters?.find(m => String(m.id) === String(form.value.master_id));
+    return m ? m.name : '';
+});
+
+const batchTotalValue = computed(() => {
+    if (!sumKey.value) return 0;
+    return excelRows.value.reduce((sum, row) => {
+        const val = parseFloat(String(row[sumKey.value] || '0').replace(/[^\d.-]/g, ''));
+        return sum + (isNaN(val) ? 0 : val);
+    }, 0);
+});
 
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal };
-    if (props.mode === 'batch') batchMasterId.value = newVal.master_id;
 }, { deep: true });
+
+watch(() => props.mode, (newVal) => {
+    if (newVal) localMode.value = newVal;
+});
 
 const handleStatusChange = () => {
     if (form.value.status === '未求得') form.value.obtained_date = '';
 };
 
-const handleSubmit = () => {
-    if (props.mode === 'single') {
-        emit('saveSingle', form.value);
-    } else {
-        emit('saveBatch', { input: batchInput.value, masterId: batchMasterId.value });
+const handleBatchPaste = (e) => {
+    const pasteData = e.clipboardData.getData('text');
+    if (pasteData && pasteData.trim()) {
+        const lines = pasteData.trim().split(/\r?\n/).map(line => line.split('\t').map(c => c.trim()));
+        processBatchLines(lines);
+    }
+};
+
+const processBatchLines = (rawLines) => {
+    if (!rawLines || rawLines.length === 0) return;
+    
+    // Auto-detect columns
+    const maxCols = Math.max(...rawLines.map(r => r.length));
+    excelCols.value = Array.from({ length: maxCols }).map((_, i) => ({
+        key: `c${i}`,
+        label: i === 0 ? '法門/法號' : (i === 1 ? '用意/數量' : `欄位 ${i + 1}`)
+    }));
+
+    excelRows.value = rawLines.map(row => {
+        const rowData = {};
+        for (let i = 0; i < maxCols; i++) {
+            rowData[`c${i}`] = row[i] || '';
+        }
+        return rowData;
+    }).filter(r => Object.values(r).some(v => v));
+
+    // Guess Sum Key
+    if (excelRows.value.length > 0 && !sumKey.value) {
+        for (let i = maxCols - 1; i >= 0; i--) {
+            const val = parseFloat(String(excelRows.value[0][`c${i}`]).replace(/[^\d.-]/g, ''));
+            if (!isNaN(val)) {
+                sumKey.value = `c${i}`;
+                showTotal.value = true;
+                break;
+            }
+        }
     }
 };
 
 const handleFileUpload = (e) => {
-    emit('fileUpload', e);
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const ext = file.name.split('.').pop().toLowerCase();
+    const reader = new FileReader();
+
+    if (['xlsx', 'xls', 'csv'].includes(ext)) {
+        reader.onload = (event) => {
+            try {
+                const data = new Uint8Array(event.target.result);
+                const workbook = window.XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const csv = window.XLSX.utils.sheet_to_csv(firstSheet);
+                batchInput.value = csv;
+                const lines = csv.split('\n').map(l => l.split(','));
+                processBatchLines(lines);
+            } catch (err) { alert('Excel 讀取失敗'); }
+        };
+        reader.readAsArrayBuffer(file);
+    } else if (['docx', 'doc'].includes(ext)) {
+        reader.onload = (event) => {
+            if (ext === 'doc') { alert('不支援舊版 .doc，請另存為 .docx'); return; }
+            window.mammoth.extractRawText({ arrayBuffer: event.target.result })
+                .then(result => { 
+                    batchInput.value = result.value; 
+                    const lines = result.value.split('\n').filter(l => l.trim()).map(line => line.trim().split(/\s+/));
+                    processBatchLines(lines);
+                })
+                .catch(err => { alert('Word 讀取失敗'); });
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        reader.onload = (event) => {
+            batchInput.value = event.target.result;
+            const lines = event.target.result.split('\n').map(l => [l]);
+            processBatchLines(lines);
+        };
+        reader.readAsText(file);
+    }
+};
+
+const handleSubmit = () => {
+    if (localMode.value === 'single') {
+        emit('saveSingle', form.value);
+    } else {
+        // Send the raw input or the processed list to parent
+        emit('saveBatch', { 
+            input: batchInput.value, 
+            masterId: form.value.master_id,
+            rows: excelRows.value,
+            total: batchTotalValue.value
+        });
+    }
 };
 </script>
 
 <style scoped>
-.animate-slide-up {
-    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-}
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 </style>
