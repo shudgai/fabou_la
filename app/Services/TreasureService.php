@@ -9,12 +9,16 @@ class TreasureService
 {
     public function getAllTreasures(): Collection
     {
-        return Treasure::with('master')->latest()->get();
+        return Treasure::with(['master', 'dharmaNameTreasures'])->latest()->get();
     }
 
     public function createTreasure(array $data): Treasure
     {
-        return Treasure::create($data);
+        $treasure = Treasure::create($data);
+        if (isset($data['dharma_name_treasures'])) {
+            $treasure->dharmaNameTreasures()->createMany($data['dharma_name_treasures']);
+        }
+        return $treasure;
     }
 
     public function updateTreasure(int $id, array $data): ?Treasure
@@ -22,6 +26,11 @@ class TreasureService
         $treasure = Treasure::find($id);
         if (!$treasure) return null;
         $treasure->update($data);
+        
+        if (isset($data['dharma_name_treasures'])) {
+            $treasure->dharmaNameTreasures()->delete();
+            $treasure->dharmaNameTreasures()->createMany($data['dharma_name_treasures']);
+        }
         return $treasure;
     }
 
@@ -30,5 +39,12 @@ class TreasureService
         $treasure = Treasure::find($id);
         if (!$treasure) return false;
         return $treasure->delete();
+    }
+
+    public function createBatchTreasures(array $items): void
+    {
+        foreach ($items as $item) {
+            Treasure::create($item);
+        }
     }
 }

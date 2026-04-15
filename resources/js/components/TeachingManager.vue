@@ -1,23 +1,32 @@
 <template>
     <div class="bg-white min-h-screen relative">
         <!-- Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <button @click="handleBack" class="mr-3 text-indigo-600 font-normal">
-                &lt; 返回
-            </button>
-            <h2 class="text-xl font-normal text-slate-800">
-                {{ currentFolder ? '父皇仙師 - ' + currentFolder.name : '父皇仙師開示' }}
+        <div class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-xl font-bold font-outfit tracking-tight text-slate-800">
+                {{ currentFolder ? '仙師開示 - ' + currentFolder.name : '仙師開示專區' }}
             </h2>
         </div>
 
         <!-- Level 1: Folder Selection -->
-        <div v-if="!currentFolder" class="flex flex-col">
-            <button v-for="folder in folders" :key="folder.id" 
+        <div v-if="!currentFolder" class="grid grid-cols-2 gap-3 p-3" style="margin-top: 5px;">
+            <button v-for="(folder, idx) in folders" :key="folder.id" 
                 @click="currentFolder = folder"
-                class="flex items-center justify-between w-full border-b border-gray-50 active:bg-gray-50 transition-colors"
-                style="padding: 10px 15px;">
-                <span class="text-lg font-normal text-slate-800">{{ folder.name }}</span>
-                <span class="text-slate-300">&gt;</span>
+                class="flex flex-col items-center justify-center aspect-square rounded-3xl transition-all active:scale-95 shadow-sm border border-slate-100 group px-4"
+                :class="[
+                    idx % 4 === 0 ? 'bg-indigo-50/50 hover:bg-indigo-50' : 
+                    idx % 4 === 1 ? 'bg-rose-50/50 hover:bg-rose-50' : 
+                    idx % 4 === 2 ? 'bg-emerald-50/50 hover:bg-emerald-50' : 'bg-amber-50/50 hover:bg-amber-50'
+                ]">
+                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow">
+                    <svg class="w-6 h-6" :class="[
+                        idx % 4 === 0 ? 'text-indigo-500' : 
+                        idx % 4 === 1 ? 'text-rose-500' : 
+                        idx % 4 === 2 ? 'text-emerald-500' : 'text-amber-500'
+                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="text-sm font-bold text-slate-700">{{ folder.name }}</span>
             </button>
         </div>
 
@@ -49,22 +58,58 @@
             </div>
         </div>
 
-        <!-- STICKY BOTTOM NAV BAR -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex justify-around items-center z-50 shadow-sm" style="height: 44px; padding: 0 20px;">
-            <button @click="$emit('goHome')" class="text-slate-400 p-2">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="relative">
-                <button 
-                    @click="addMode = true"
-                    :disabled="!currentFolder"
-                    :class="[!currentFolder ? 'bg-gray-100 text-gray-300 opacity-50' : 'bg-indigo-600 text-white shadow-lg active:scale-95']"
-                    class="w-7 h-7 rounded-lg flex items-center justify-center transition-all">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+            <div class="grid grid-cols-5 h-full items-center px-2">
+                <!-- BACK BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="handleBack" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
+                <!-- HOME BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="$emit('goHome')" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+
+                <!-- ADD BUTTON (Center) -->
+                <div class="flex justify-center relative">
+                    <div v-if="currentFolder" class="absolute -top-6">
+                        <button @click="addMode = !addMode" 
+                            :class="[addMode ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 active:scale-95']"
+                            class="w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-500 border-4 border-white">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEARCH BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="showSearch = !showSearch" 
+                        :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
+                <!-- DOWNLOAD BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="downloadList" :disabled="!currentFolder"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50 disabled:opacity-30">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="w-10"></div>
         </div>
+        
+        <search-component 
+            v-if="showSearch"
+            v-model="searchQuery" 
+            :show="showSearch" 
+            @close="showSearch = false" 
+        />
     </div>
 </template>
 
@@ -72,7 +117,7 @@
 import { ref, computed, onMounted, defineEmits } from 'vue';
 import axios from 'axios';
 
-defineEmits(['goHome']);
+const emit = defineEmits(['goHome']);
 
 const currentFolder = ref(null);
 const addMode = ref(false);
@@ -123,13 +168,32 @@ const saveItem = async () => {
     } catch (e) { alert('儲存失敗'); }
 };
 
+const searchQuery = ref('');
+const showSearch = ref(false);
+
 const handleBack = () => {
     if (addMode.value) {
         addMode.value = false;
         editingId.value = null;
-    } else {
+    } else if (currentFolder.value) {
         currentFolder.value = null;
+    } else {
+        emit('goHome');
     }
+};
+
+const downloadList = () => {
+    if (!currentFolder.value) return;
+    const contents = `【仙師開示清單 - ${currentFolder.value.name}】\r\n\r\n` + 
+        filteredItems.value.map(i => `${formatDate(i.created_at)} - ${i.title}\r\n${i.content}`).join('\r\n\r\n');
+    
+    const blob = new Blob([contents], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `仙師開示_${currentFolder.value.name}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
 };
 
 const editItem = (item) => {

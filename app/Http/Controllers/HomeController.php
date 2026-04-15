@@ -23,6 +23,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $stats = [
+            'treasures' => \App\Models\Treasure::count(),
+            'grace' => \App\Models\ImperialGrace::count(),
+            'grudges' => \App\Models\Grudge::count(),
+            'teachings' => \App\Models\Teaching::count(),
+        ];
+        
+        return view('home', compact('stats'));
     }
 }

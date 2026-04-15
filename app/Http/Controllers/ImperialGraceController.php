@@ -55,31 +55,162 @@ class ImperialGraceController extends Controller
 
     public function batchStoreRegistry(Request $request)
     {
-        $lines = $request->input('lines', []);
+        $input = $request->input('lines', []); // This could be lines or a full string
         $masterId = $request->input('master_id');
         $created = [];
 
-        foreach ($lines as $line) {
-            $parts = explode('|', $line);
-            if (count($parts) >= 2) {
-                $rawDate = trim($parts[0]);
-                $name = trim($parts[1]);
-                $purpose = isset($parts[2]) ? trim($parts[2]) : '';
-                
-                // Parse Date robustly
-                $parsedDate = $this->parseFlexibleDate($rawDate);
+        // If it's a single string with newlines, split it
+        if (is_string($input)) {
+            $rawLines = explode("\n", $input);
+        } else {
+            $rawLines = $input;
+        }
 
-                $created[] = $this->imperialGraceService->createRegistry([
-                    'master_id' => $masterId,
-                    'name' => $name,
-                    'purpose' => $purpose,
-                    'record_date' => $parsedDate ?: now(),
-                    'status' => '已登記'
-                ]);
+        $currentMasterId = $masterId;
+        $currentData = [];
+
+        foreach ($rawLines as $line) {
+            $line = trim($line);
+            if (!$line || strpos($line, '【重大皇恩') !== false) continue;
+
+            // 1. Check if the entire line is JUST a Master Name (Hierarchical Switch)
+            $resolvedForWholeLine = app(\App\Services\MasterService::class)->resolveMasterId($line);
+            // We verify if the line text exactly matches a master's canonical name or known mapping
+            if ($resolvedForWholeLine) {
+                // If we were building a block, save it first before switching
+                if (!empty($currentData['name'])) {
+                    $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+                    $currentData = [];
+                }
+                $currentMasterId = $resolvedForWholeLine;
+                continue; 
+            }
+
+            // 2. Handle Multi-line structured format (e.g. 法寶：名稱)
+            if (preg_match('/^(法寶|用意|狀態|求得日期|由來與備註|仙師)[：:](.*)$/u', $line, $matches)) {
+                $key = $matches[1];
+                $val = trim($matches[2]);
+                
+                if ($key === '法寶') {
+                    // Start of a new record block
+                    if (!empty($currentData['name'])) {
+                        $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+                    }
+                    $currentData = ['name' => $val, 'status' => '已登記'];
+                } elseif ($key === '仙師') {
+                    $resolved = app(\App\Services\MasterService::class)->resolveMasterId($val);
+                    if ($resolved) $currentMasterId = $resolved;
+                } elseif ($key === '用意') {
+                    $currentData['purpose'] = $val;
+                } elseif ($key === '狀態') {
+                    $currentData['status'] = $val;
+                } elseif ($key === '求得日期') {
+                    $currentData['obtained_date'] = $this->parseFlexibleDate($val);
+                    if ($currentData['obtained_date']) $currentData['record_date'] = $currentData['obtained_date'];
+                } elseif ($key === '由來與備註') {
+                    $currentData['remarks'] = $val;
+                }
+                continue;
+            }
+
+            // 3. Handle Single-line formats (Delimited or Space-separated)
+            $parts = [];
+            if (strpos($line, '|') !== false) {
+                $parts = explode('|', $line);
+            } elseif (preg_match('/^(\d{3,8})\s+(.+)$/', $line, $matches)) {
+                // ... (existing space detection logic)
+                $parts = [$matches[1]];
+                $rest = trim($matches[2]);
+                $restParts = preg_split('/\s+/', $rest, 2);
+                $parts[] = $restParts[0];
+                if (isset($restParts[1])) $parts[] = $restParts[1];
+            }
+
+            if (count($parts) >= 2) {
+                if (!empty($currentData['name'])) {
+                    $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+                    $currentData = [];
+                }
+
+                $p0 = trim($parts[0]);
+                $p1 = trim($parts[1]);
+                $p2 = isset($parts[2]) ? trim($parts[2]) : '';
+                $p3 = isset($parts[3]) ? trim($parts[3]) : '';
+                
+                $parsedDate = $this->parseFlexibleDate($p0);
+
+                if ($parsedDate) {
+                    $resolvedMasterIdForLine = app(\App\Services\MasterService::class)->resolveMasterId($p1);
+                    if ($resolvedMasterIdForLine && !empty($p2)) {
+                        $created[] = $this->saveBatchItem([
+                            'name' => $p2, 'purpose' => $p3, 'record_date' => $parsedDate, 'master_name' => $p1
+                        ], $currentMasterId);
+                    } else {
+                        $created[] = $this->saveBatchItem([
+                            'name' => $p1, 'purpose' => $p2, 'record_date' => $parsedDate
+                        ], $currentMasterId);
+                    }
+                } else {
+                    $resolvedMasterIdForLine = app(\App\Services\MasterService::class)->resolveMasterId($p0);
+                    if ($resolvedMasterIdForLine && !empty($p1)) {
+                        $created[] = $this->saveBatchItem([
+                            'name' => $p1, 'purpose' => $p2, 'master_name' => $p0
+                        ], $currentMasterId);
+                    } else {
+                        $created[] = $this->saveBatchItem([
+                            'name' => $p0, 'purpose' => $p1
+                        ], $currentMasterId);
+                    }
+                }
+            } else {
+                // 4. Fallback: Entire line is a name for the current master
+                if (!empty($currentData['name'])) {
+                    $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+                    $currentData = [];
+                }
+                $created[] = $this->saveBatchItem(['name' => $line], $currentMasterId);
             }
         }
 
+        // Save last block if exists
+        if (!empty($currentData['name'])) {
+            $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+        }
+
         return response()->json($created, 201);
+    }
+
+    private function saveBatchItem($data, $masterId)
+    {
+        $finalMasterId = $masterId;
+        
+        // Try to auto-resolve master_id if a master_name was provided in the block or line
+        if (isset($data['master_name'])) {
+            $resolved = app(\App\Services\MasterService::class)->resolveMasterId($data['master_name']);
+            if ($resolved) $finalMasterId = $resolved;
+            unset($data['master_name']);
+        }
+
+        // Detect Status in other fields if not explicitly set
+        $statusKeywords = ['已求得', '已登記', '未求得'];
+        foreach (['name', 'purpose', 'remarks'] as $field) {
+            if (isset($data[$field])) {
+                foreach ($statusKeywords as $kw) {
+                    if (strpos($data[$field], $kw) !== false) {
+                        $data['status'] = $kw;
+                        // Remove keyword from the field to keep it clean
+                        $data[$field] = trim(str_replace(['|', $kw], '', $data[$field]));
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        return $this->imperialGraceService->createRegistry(array_merge([
+            'master_id' => $finalMasterId,
+            'status' => '已登記',
+            'record_date' => now(),
+        ], $data));
     }
 
     /**
@@ -102,9 +233,9 @@ class ImperialGraceController extends Controller
             return sprintf('%s-%02d-%02d', $currentYear, $m[1], $m[2]);
         }
 
-        // Pattern 3: MMDD (e.g., 0305)
-        if (preg_match('/^(\d{2})(\d{2})$/', $str, $m)) {
-            return sprintf('%s-%s-%s', $currentYear, $m[1], $m[2]);
+        // Pattern 3: MMDD or MDD (e.g., 0305, 305)
+        if (preg_match('/^(\d{1,2})(\d{2})$/', $str, $m)) {
+            return sprintf('%s-%02d-%02d', $currentYear, $m[1], $m[2]);
         }
 
         // Pattern 4: Full YYYYMMDD

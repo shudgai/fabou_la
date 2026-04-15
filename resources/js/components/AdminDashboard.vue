@@ -56,9 +56,8 @@
                             <h2 class="text-3xl font-black mb-2">軍隊專區</h2>
                             <p class="text-lg">系統建置中心，即將上線</p>
                         </div>
-                        <div v-else-if="currentTab === 'treasure'" class="flex flex-col items-center justify-center p-20 text-gray-300 bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-100 min-h-[600px]">
-                            <h2 class="text-3xl font-black mb-2">法寶登記專區</h2>
-                            <p class="text-lg">系統建置中心，即將上線</p>
+                        <div v-else-if="currentTab === 'treasure'">
+                            <treasure-manager></treasure-manager>
                         </div>
                         <div v-else-if="currentTab === 'trash'" class="flex flex-col items-center justify-center p-20 text-gray-300 bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-100 min-h-[600px]">
                             <h2 class="text-3xl font-black mb-2">回收桶</h2>
@@ -72,7 +71,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import TreasureManager from './TreasureManager.vue';
+import TeachingManager from './TeachingManager.vue';
+import GrudgeManager from './GrudgeManager.vue';
+import ImperialGraceManager from './ImperialGraceManager.vue';
+
+const props = defineProps({
+    initialTab: {
+        type: String,
+        default: 'grace'
+    }
+});
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區' },
@@ -83,7 +93,11 @@ const menuItems = [
     { id: 'trash', label: '回收桶' },
 ];
 
-const currentTab = ref('grace');
+const currentTab = ref(props.initialTab);
+
+watch(() => props.initialTab, (newTab) => {
+    currentTab.value = newTab;
+});
 </script>
 
 <style scoped>

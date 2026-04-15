@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OtherRecord::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->roles()->where('name', '管理員')->exists();
+    }
 }

@@ -6,6 +6,10 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+Alpine.start();
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -30,11 +34,26 @@ app.component('imperial-grace-manager', ImperialGraceManager);
 import MobileDashboard from './components/MobileDashboard.vue';
 app.component('mobile-dashboard', MobileDashboard);
 
+import TreasureManager from './components/TreasureManager.vue';
+app.component('treasure-manager', TreasureManager);
+
 import AdminDashboard from './components/AdminDashboard.vue';
 app.component('admin-dashboard', AdminDashboard);
 
 import AdminRootSelector from './components/AdminRootSelector.vue';
 app.component('admin-root-selector', AdminRootSelector);
+
+import SearchComponent from './components/SearchComponent.vue';
+app.component('search-component', SearchComponent);
+
+import AddActionMenu from './components/AddActionMenu.vue';
+app.component('add-action-menu', AddActionMenu);
+
+import TreasureAddForm from './components/TreasureAddForm.vue';
+app.component('treasure-add-form', TreasureAddForm);
+
+import GrudgeAddForm from './components/GrudgeAddForm.vue';
+app.component('grudge-add-form', GrudgeAddForm);
 
 /**
  * The following block of code may be used to automatically register your

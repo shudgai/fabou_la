@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['PUT', 'PATCH'], 'imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'updateRegistry']);
     Route::delete('imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'destroyRegistry']);
     Route::post('imperial-graces/registry/batch', [App\Http\Controllers\ImperialGraceController::class, 'batchStoreRegistry']);
+    Route::post('treasures/batch', [App\Http\Controllers\TreasureController::class, 'batchStore']);
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
@@ -37,10 +38,18 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('roles', App\Http\Controllers\RoleController::class);
     Route::resource('grudges', App\Http\Controllers\GrudgeController::class);
 
-    // Admin Dashboard
+    // Notebook Archive System (Main Dashboard)
+    Route::get('/note', function () {
+        return view('note.index');
+    })->name('note.index');
+
+    // System Administration (Roles, Dharma Names, etc.)
     Route::get('/admin', function () {
-        return view('admin.index');
-    })->name('admin.index');
+        if (!auth()->user()->isAdmin()) {
+            return redirect('/home')->with('error', '您沒有管理員權限');
+        }
+        return view('admin.management');
+    })->name('admin.management');
 
     // API Helpers for Vue Search/Select
     Route::get('/api/masters-list', function () {
@@ -51,6 +60,9 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/api/users-list', function () {
         return \App\Models\User::select('id', 'name')->get();
+    });
+    Route::get('/api/dharma-names-list', function () {
+        return \App\Models\DharmaName::select('id', 'name')->orderBy('order')->get();
     });
     // 強制下載 Helper
 });

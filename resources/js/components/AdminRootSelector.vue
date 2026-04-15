@@ -16,21 +16,62 @@
 
         <!-- DESKTOP VIEW -->
         <div class="hidden md:block">
-            <admin-dashboard></admin-dashboard>
+            <admin-dashboard :initial-tab="currentView === 'menu' ? 'grace' : currentView"></admin-dashboard>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import TeachingManager from './TeachingManager.vue';
 import GrudgeManager from './GrudgeManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import TreasureManager from './TreasureManager.vue';
+import AdminDashboard from './AdminDashboard.vue';
 
-const currentView = ref('menu'); // 'menu', 'teaching', 'grudge', 'grace', etc.
+const getInitialView = () => {
+    const hash = window.location.hash.replace('#', '');
+    const viewMap = {
+        'treasure': 'treasure',
+        'imperial': 'grace',
+        'grace': 'grace',
+        'grudge': 'grudge',
+        'teaching': 'teaching',
+        'military': 'military'
+    };
+    return viewMap[hash] || 'menu';
+};
+
+const currentView = ref(getInitialView()); // Initialize immediately
 
 const handleNavigate = (view) => {
     currentView.value = view;
 };
+
+const syncHash = () => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash && currentView.value !== 'menu') {
+        // If hash cleared but we are in a view, don't necessarily go back to menu unless intended
+        return;
+    }
+    
+    const viewMap = {
+        'treasure': 'treasure',
+        'imperial': 'grace',
+        'grace': 'grace',
+        'grudge': 'grudge',
+        'teaching': 'teaching',
+        'military': 'military'
+    };
+    
+    if (viewMap[hash]) {
+        currentView.value = viewMap[hash];
+    } else if (!hash) {
+        currentView.value = 'menu';
+    }
+};
+
+onMounted(() => {
+    window.addEventListener('hashchange', syncHash);
+});
 </script>

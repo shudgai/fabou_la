@@ -1,210 +1,223 @@
 <template>
-    <div class="bg-white min-h-screen relative">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <button @click="handleBack" class="mr-3 text-indigo-600 font-normal">
-                &lt; 返回
-            </button>
-            <h2 class="text-xl font-normal text-slate-800" style="padding-left: 10px;">
-                {{ currentFolder ? '重大皇恩 - ' + currentFolder.name : '重大皇恩專區' }}
+        <div class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-xl font-bold font-outfit tracking-tight text-slate-800">
+                <template v-if="currentFolder">
+                    <span v-if="currentFolder.id === 'unobtained'" class="text-red-500">未求得重大皇恩</span>
+                    <span v-else>{{ currentFolder.name }}</span>
+                </template>
+                <span v-else>重大皇恩專區</span>
             </h2>
         </div>
         <!-- Perfectly Centered Ultra-Compact Warning Banner -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] animate-toast-in pointer-events-auto">
             <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200"
-                style="padding: 5px; min-width: 120px;">
-                <div class="flex items-center justify-between space-x-3">
-                    <span class="text-[13px] font-normal leading-tight text-blue-600 whitespace-nowrap">
+                style="padding: 10px 15px; min-width: 140px; max-width: 85vw;">
+                <div class="flex items-start justify-between space-x-3">
+                    <span class="text-[12px] font-bold leading-normal text-red-600 break-words uppercase tracking-wide">
                         {{ persistentToast.msg }}
                     </span>
-                    <button @click="persistentToast = null" class="text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center font-normal text-sm">✕</button>
+                    <button v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" 
+                        @click="persistentToast = null" 
+                        class="text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center font-normal text-sm">✕</button>
                 </div>
-                <!-- Action Buttons (Only when needed) -->
-                <div v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-2 pb-1">
+                <!-- Action Buttons (Horizontal Layout) -->
+                <div v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-3 pb-1">
                     <template v-if="persistentToast.type === 'confirm'">
-                        <button @click="saveSingle('correct')" class="flex-1 bg-slate-50 hover:bg-slate-100 text-blue-600 px-3 py-1 rounded border border-slate-100 text-[11px] active:scale-95 transition-all">
-                            改回原本
-                        </button>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-slate-50 hover:bg-slate-100 text-blue-600 px-3 py-1 rounded border border-slate-100 text-[11px] active:scale-95 transition-all">
-                            直接分流
-                        </button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">確定</button>
                     </template>
                     <template v-if="persistentToast.type === 'deleteConfirm'">
-                        <button @click="executeDelete" class="w-full bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded border border-red-100 text-[11px] active:scale-95 transition-all">
-                            確定刪除
-                        </button>
+                        <button @click="persistentToast = null" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2 py-1.5 rounded border border-slate-200 text-[11px] font-bold whitespace-nowrap">取消</button>
+                        <button @click="executeDelete" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1.5 rounded border border-red-100 text-[11px] font-bold whitespace-nowrap">確定刪除</button>
                     </template>
                 </div>
             </div>
         </div>
+        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 60px;">
         <!-- Level 1: Folder Selection -->
-        <div v-if="!currentFolder" class="flex flex-col">
-            <button v-for="folder in folders" :key="folder.id" 
+        <div v-if="!currentFolder" class="grid grid-cols-2 gap-3 p-3" style="margin-top: 5px;">
+            <button v-for="(folder, idx) in folders" :key="folder.id" 
                 @click="currentFolder = folder"
-                class="flex items-center justify-between w-full border-b border-gray-50 active:bg-gray-50 transition-colors"
-                style="padding: 10px 15px;">
-                <span class="text-lg font-normal text-slate-800">
+                class="flex flex-col items-center justify-center rounded-3xl transition-all active:scale-95 shadow-sm border border-slate-100 group relative overflow-hidden"
+                :class="[
+                    folder.id === 'unobtained' ? 'col-span-2 bg-red-50/50 hover:bg-red-50 py-6' : 
+                    idx % 4 === 0 ? 'bg-indigo-50/50 hover:bg-indigo-50 aspect-square' : 
+                    idx % 4 === 1 ? 'bg-rose-50/50 hover:bg-rose-50 aspect-square' : 
+                    idx % 4 === 2 ? 'bg-emerald-50/50 hover:bg-emerald-50 aspect-square' : 'bg-amber-50/50 hover:bg-amber-50 aspect-square'
+                ]"
+                style="padding: 15px;">
+                <div class="rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow"
+                    :class="folder.id === 'unobtained' ? 'w-14 h-14' : 'w-12 h-12'">
+                    <svg class="w-6 h-6" :class="[
+                        folder.id === 'unobtained' ? 'text-red-500' :
+                        idx % 4 === 0 ? 'text-indigo-500' : 
+                        idx % 4 === 1 ? 'text-rose-500' : 
+                        idx % 4 === 2 ? 'text-emerald-500' : 'text-amber-500'
+                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path v-if="folder.id === 'unobtained'" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path v-else d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="text-sm font-bold text-slate-700">
                     {{ folder.name }}
                 </span>
-                <span class="text-slate-300">&gt;</span>
             </button>
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else class="pb-32">
-            <!-- ADD SINGLE FORM -->
-            <div v-if="addMode === 'single'" class="mb-6 bg-white border-b border-gray-100 shadow-sm animate-fade-in" style="padding: 10px;">
-                <div class="grid grid-cols-2 gap-1.5 mb-1.5">
-                    <div>
-                        <label class="text-xs text-slate-500 font-normal mb-1 block">得知日期</label>
-                        <input v-model="form.record_date" type="date" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-500 font-normal mb-1 block">仙師</label>
-                        <select v-model="form.master_id" class="w-full rounded-xl border-none shadow-sm text-sm bg-white" style="padding: 5px 8px;">
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="mb-1.5">
-                    <label class="text-xs text-slate-500 font-normal mb-1 block">法寶名稱</label>
-                    <input v-model="form.name" type="text" placeholder="輸入法寶名稱" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                </div>
-                <div class="mb-1.5">
-                    <label class="text-xs text-slate-500 font-normal mb-1 block">法寶用意</label>
-                    <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                </div>
-                <div class="mb-1.5">
-                    <label class="text-xs text-slate-500 font-normal mb-1 block">備註</label>
-                    <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                </div>
-                <div class="grid grid-cols-2 gap-1.5 mb-1">
-                    <div>
-                        <label class="text-xs text-slate-500 font-normal mb-1 block" :class="{ 'opacity-30': form.status === '未求得' }">求得日期 (選填)</label>
-                        <input v-model="form.obtained_date" type="date" 
-                            :disabled="form.status === '未求得'"
-                            :class="{ 'bg-gray-50 opacity-50': form.status === '未求得' }"
-                            class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-500 font-normal mb-1 block">狀態</label>
-                        <select v-model="form.status" @change="handleStatusChange" class="w-full rounded-xl border-none shadow-sm text-sm bg-white" style="padding: 5px 8px;">
-                            <option value="未求得">未求得</option>
-                            <option value="已求得">已求得</option>
-                            <option value="已登記">已登記</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-2">
-                    <button @click="saveSingle" :disabled="isSaving"
-                        :class="isSaving ? 'bg-slate-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'"
-                        class="text-white font-bold rounded-lg shadow-md transition-all uppercase" style="padding: 8px 20px; font-size: 14px; min-width: 120px;">
-                        {{ isSaving ? '儲存中...' : (form.id ? '修改完成' : '確認新增') }}
-                    </button>
-                </div>
-            </div>
-
-            <!-- BATCH ADD FORM -->
-            <div v-if="addMode === 'batch'" class="mb-4 bg-white border-b border-gray-100 shadow-sm" style="padding: 10px;">
-                <div class="mb-3">
-                    <label class="text-xs text-slate-500 font-normal mb-1 block">選擇仙師 (多筆資料將歸屬此仙師)</label>
-                    <select v-model="batchMasterId" class="w-full rounded-xl border-none shadow-sm text-sm bg-gray-50/50" style="padding: 6px 10px;">
-                        <option :value="null">請選擇仙師</option>
-                        <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                    </select>
-                </div>
-                <label class="text-xs text-slate-500 font-normal mb-1 block">貼上多筆資料 (格式: 日期 | 重大皇恩 | 用意)</label>
-                <textarea v-model="batchInput" rows="6" class="w-full rounded-xl border-none shadow-sm text-sm mb-4" style="padding: 5px 8px;" placeholder="例如:
-3/5 | 金線 | 轉亮光線
-3月5日 | 法輪 | 能量提升"></textarea>
-                <div class="flex justify-center mt-2">
-                    <button @click="saveBatch" :disabled="!batchMasterId || !batchInput"
-                        :class="(!batchMasterId || !batchInput) ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-indigo-600 text-white shadow-lg'"
-                        class="font-normal rounded-lg transition-all uppercase px-8 py-2 text-sm">
-                        確認一次新增
-                    </button>
-                </div>
-            </div>
+        <div v-else class="px-[5px] md:px-0">
 
             <!-- List Display -->
-            <div v-if="!addMode" style="padding: 8px;">
+            <div style="padding: 3px;">
+                <div v-if="!loading && allRegistries.length > 0 && !addMode" class="mb-3 px-1">
+                    <div v-if="searchQuery" class="bg-indigo-50 rounded-2xl p-3 flex justify-between items-center animate-fade-in shadow-sm border border-indigo-100/50">
+                        <span class="text-xs font-bold text-indigo-600">搜尋結果：{{ searchQuery }}</span>
+                        <button @click="searchQuery = ''" class="text-indigo-400 hover:text-indigo-600">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
                 <div v-if="loading" class="text-center py-4">載入中...</div>
                 <div v-else-if="filteredRegistries.length === 0" class="text-center py-12 text-slate-400">
                     目前該仙師尚無登記資料。
                 </div>
                 <div v-else class="flex flex-col">
-                    <div v-for="reg in filteredRegistries" :key="reg.id" class="border-b border-dashed border-slate-200 py-[6px] last:border-b-0 relative group">
+                    <div v-for="reg in (focusedId ? filteredRegistries.filter(r => r.id === focusedId) : filteredRegistries)" :key="reg.id" 
+                        @click="toggleExpand(reg.id)"
+                        class="border-b border-dashed border-slate-200 py-[6px] last:border-b-0 relative group active:bg-slate-50 transition-colors cursor-pointer">
                         <!-- Row 1 -->
                         <div class="flex items-start justify-between mb-0">
-                            <div class="flex items-center space-x-3 pt-1">
-                                <span class="text-[11px] text-slate-400">得知: {{ formatDate(reg.record_date) }}</span>
-                                <span class="text-[11px] text-slate-800 bg-slate-50 px-1 rounded">
+                            <div class="flex items-center space-x-2 pt-1 text-[11px] text-slate-400 w-fit">
+                                <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-indigo-600">
+                                    {{ getMasterName(reg.master_id) }}
+                                </span>
+                                <span class="px-[2.5px]">得知: {{ formatDate(reg.record_date) }}</span>
+                                <span class="bg-slate-50 px-[2.5px] rounded text-slate-800">
                                     求得: {{ reg.obtained_date ? formatDate(reg.obtained_date) : '----' }}
                                 </span>
                             </div>
-                    <div :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-900']" class="relative">
-                        <button @click.stop="toggleMenu(reg.id)" class="p-1">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                        </button>
-                        <!-- MENU -->
-                        <div v-if="openMenuId === reg.id" class="absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                            <button @click.stop="toggleExpand(reg.id)" class="w-full px-4 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 border-b border-slate-50">{{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}</button>
-                            <button @click.stop="editItem(reg)" class="w-full px-4 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改</button>
-                            <button @click.stop="copyOnly(reg)" class="w-full px-4 py-2.5 text-left text-xs text-emerald-600 hover:bg-emerald-50 border-b border-slate-50">單筆貼 LINE</button>
-                            <button @click.stop="downloadOnly(reg)" class="w-full px-4 py-2.5 text-left text-xs text-blue-600 hover:bg-blue-50 border-b border-slate-50">單筆檔案下載</button>
-                            <button @click.stop="copyListOnly" class="w-full px-4 py-2.5 text-left text-xs text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">全部貼 LINE</button>
-                            <button @click.stop="downloadListOnly" class="w-full px-4 py-2.5 text-left text-xs text-cyan-600 hover:bg-cyan-50 border-b border-slate-50">全部檔案下載</button>
-                            <button @click.stop="confirmDelete(reg.id)" class="w-full px-4 py-2.5 text-left text-xs text-red-600 hover:bg-red-50">刪除</button>
+                            <!-- Action Menu Button -->
+                            <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
+                                <button @click.stop="toggleMenu(reg.id)" class="p-1 -mr-1">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <!-- MENU DROPDOWN -->
+                                <div v-if="openMenuId === reg.id" @click.stop 
+                                    class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                    <button @click="toggleExpand(reg.id)" class="w-full px-2 py-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">{{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}</button>
+                                    <button @click.stop="editItem(reg)" class="w-full px-2 py-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改</button>
+                                    <button @click.stop="copyOnly(reg)" class="w-full px-2 py-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-bold whitespace-nowrap">單筆貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" class="w-full px-2 py-2 text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-bold whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="copyListOnly" class="w-full px-2 py-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-bold whitespace-nowrap">全部貼 LINE</button>
+                                    <button @click.stop="downloadListOnly" class="w-full px-2 py-2 text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-bold whitespace-nowrap">全部檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" class="w-full px-2 py-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
                         </div>
+                <div class="mt-0 flex items-center justify-between">
+                    <div class="text-[17px] font-normal text-slate-900 leading-tight">
+                        {{ reg.name }}
                     </div>
+                    <span :class="{
+                        'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已求得',
+                        'bg-blue-50 text-blue-600 border-blue-100': reg.status === '已登記',
+                        'bg-slate-50 text-slate-400 border-slate-100': reg.status === '未求得'
+                    }" class="text-[10px] px-[2.5px] py-0.5 rounded border font-normal">
+                        {{ reg.status }}
+                    </span>
                 </div>
-                <!-- Row 2 -->
-                <div class="text-[17px] text-slate-900 mb-1 mt-[-10px]">{{ reg.name }}</div>
                 <!-- Extra Rows -->
-                <div v-if="expandedIds.has(reg.id)" class="animate-fade-in text-sm text-slate-600">
-                    <div>用意：{{ reg.purpose || '無' }}</div>
-                    <div v-if="reg.remarks">備註：{{ reg.remarks }}</div>
+                <div v-if="expandedIds.has(reg.id)" class="animate-fade-in text-sm text-slate-900">
+                    <div><span class="text-base text-slate-500">用意：</span>{{ reg.purpose || '無' }}</div>
+                    <div v-if="reg.remarks"><span class="text-base text-slate-500">備註：</span>{{ reg.remarks }}</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- STICKY BOTTOM NAV BAR -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex justify-around items-center z-50 shadow-sm" style="height: 44px; padding: 0 20px;">
-        <button @click="$emit('goHome')" class="text-slate-400 p-2">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="relative">
-            <!-- Add Menu -->
-            <div v-if="showAddMenu" class="absolute bottom-14 left-1/2 -translate-x-1/2 w-36 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 overflow-hidden animate-slide-up z-[60]">
-                <button @click="prepareAdd('single'); showAddMenu = false" class="w-full py-3 px-4 text-sm text-slate-700 active:bg-slate-50 border-b border-slate-50 flex items-center justify-center">
-                    <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2"/></svg>
-                    逐筆新增
-                </button>
-                <button @click="prepareAdd('batch'); showAddMenu = false" class="w-full py-3 px-4 text-sm text-slate-700 active:bg-slate-50 flex items-center justify-center">
-                    <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2"/></svg>
-                    多筆新增
-                </button>
+    </div> <!-- End Scrollable Area -->
+    
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+            <div class="grid grid-cols-5 h-full items-center px-2">
+                <!-- BACK BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="handleBack" 
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
+                <!-- HOME BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="$emit('goHome')" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+
+                <!-- ADD BUTTON (Center) -->
+                <div class="flex justify-center relative">
+                    <div v-if="currentFolder?.id !== 'unobtained'" class="absolute -top-6">
+                        <button @click="showAddMenu = !showAddMenu" 
+                            :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 active:scale-95']"
+                            class="w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-500 border-4 border-white">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEARCH BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="showSearch = !showSearch" 
+                        :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
+                <!-- DOWNLOAD BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="downloadListOnly" :disabled="!currentFolder"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50 disabled:opacity-30">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
-            
-            <button @click="showAddMenu = !showAddMenu" 
-                :class="showAddMenu ? 'bg-slate-800 rotate-45' : 'bg-indigo-600'"
-                class="text-white shadow-lg w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-300">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
         </div>
-        <div class="w-10"></div> <!-- Spacer for symmetry -->
     </div>
-</div>
+
+    <!-- MODAL COMPONENTS -->
+    <search-component 
+        v-model="searchQuery" 
+        :show="showSearch" 
+        @close="showSearch = false" 
+    />
+
+    <add-action-menu 
+        :show="showAddMenu" 
+        @close="showAddMenu = false"
+        :actions="addActions"
+    />
+
+    <imperial-grace-add-form 
+        :mode="addMode"
+        :initialData="form"
+        :masters="masters"
+        :isSaving="isSaving"
+        @saveSingle="saveSingle"
+        @saveBatch="triggerBatchSave"
+        @cancel="addMode = null"
+        @fileUpload="handleFileUpload"
+    />
 </template>
 
 <script setup>
 import { ref, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 
-defineEmits(['goHome']);
+const emit = defineEmits(['goHome']);
 
 const currentFolder = ref(null);
 const addMode = ref(null);
@@ -214,18 +227,52 @@ const loading = ref(false);
 const isSaving = ref(false);
 const persistentToast = ref(null); 
 const openMenuId = ref(null);
+const fileInput = ref(null);
 const showAddMenu = ref(false); // 控制底部新增選單
+const showSearch = ref(false);
 const deleteConfirmId = ref(null); // 追蹤正在準備刪除的物件
 const expandedIds = ref(new Set());
+const focusedId = ref(null); // 追蹤正在「聚焦」的單筆紀錄
 const batchInput = ref('');
 const batchMasterId = ref(null);
+const searchQuery = ref('');
 const form = ref({
     id: null, master_id: null, name: '', purpose: '', remarks: '', record_date: '', obtained_date: '', status: '未求得'
 });
 
-// 當關閉提示框時，重設紅點狀態
+const addActions = computed(() => [
+    { 
+        label: '逐筆新增', 
+        description: '手動輸入每一項重大皇恩詳細資料',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => prepareAdd('single') 
+    },
+    { 
+        label: '多筆一次新增', 
+        description: '快速解析 LINE 聊天內容紀錄',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => prepareAdd('batch') 
+    }
+]);
+
+const triggerBatchSave = (data) => {
+    batchInput.value = data.input;
+    batchMasterId.value = data.masterId;
+    saveBatch();
+};
+
+// 當關閉提示框時，重設紅點狀態；加入自動消失邏輯
 watch(persistentToast, (newVal) => {
-    if (!newVal) deleteConfirmId.value = null;
+    if (!newVal) {
+        deleteConfirmId.value = null;
+        return;
+    }
+    // 如果不是確認框（confirm），則 1 秒後自動消失
+    if (!['confirm', 'deleteConfirm'].includes(newVal.type)) {
+        setTimeout(() => {
+            if (persistentToast.value === newVal) persistentToast.value = null;
+        }, 1000);
+    }
 });
 
 const folders = ref([
@@ -246,17 +293,55 @@ const loadData = async () => {
 
 const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW').replace(/\//g, '/') : '-';
 
+const getMasterName = (id) => {
+    const m = masters.value.find(m => m.id === id);
+    return m ? m.name : '未知仙師';
+};
+
 const toggleMenu = (id) => { 
-    openMenuId.value = openMenuId.value === id ? null : id; 
-    deleteConfirmId.value = null; // 切換選單時重設紅點
+    if (openMenuId.value === id) {
+        openMenuId.value = null;
+    } else {
+        openMenuId.value = id;
+        focusedId.value = id;
+        expandedIds.value.clear();
+        expandedIds.value.add(id);
+    }
+    deleteConfirmId.value = null;
 };
 const toggleExpand = (id) => {
-    if (expandedIds.value.has(id)) expandedIds.value.delete(id);
-    else expandedIds.value.add(id);
+    if (expandedIds.value.has(id)) {
+        expandedIds.value.delete(id);
+        if (focusedId.value === id) focusedId.value = null;
+    } else {
+        // 進入聚焦模式：展開該筆並隱藏其他
+        expandedIds.value.clear(); // 清除其他展開
+        expandedIds.value.add(id);
+        focusedId.value = id;
+    }
     openMenuId.value = null;
 };
 
-const handleBack = () => { if (addMode.value) addMode.value = null; else currentFolder.value = null; };
+const handleBack = () => { 
+    if (addMode.value) {
+        addMode.value = null; 
+    } else if (currentFolder.value) {
+        currentFolder.value = null; 
+        focusedId.value = null;
+        expandedIds.value.clear();
+        searchQuery.value = '';
+    } else {
+        emit('goHome');
+    }
+};
+
+watch(currentFolder, () => {
+    focusedId.value = null;
+    expandedIds.value.clear();
+    openMenuId.value = null;
+    searchQuery.value = '';
+});
+
 const handleStatusChange = () => { if (form.value.status === '未求得') form.value.obtained_date = ''; };
 
 const editItem = (reg) => { form.value = { ...reg }; addMode.value = 'single'; openMenuId.value = null; };
@@ -353,12 +438,9 @@ const saveSingle = async (resolution = null) => {
     const isActuallyMismatched = folderId !== '' && formMid !== folderId;
 
     // 攔截詢問 (排除點擊事件物件)
-    if (isActuallyMismatched && resolution !== 'correct' && resolution !== 'shunt') {
-        const targetM = masters.value.find(m => String(m.id) === formMid);
-        const targetName = targetM ? targetM.name : '新仙師';
-        const currentName = currentFolder.value ? currentFolder.value.name : '此區';
+    if (isActuallyMismatched && resolution !== 'shunt') {
         persistentToast.value = { 
-            msg: `您選了 [${targetName}]，要改回 [${currentName}] 嗎？`, 
+            msg: `您已求到此重大皇恩，此重大皇恩將分流至該位仙師之資料夾。`, 
             type: 'confirm' 
         };
         return; 
@@ -416,18 +498,50 @@ const saveSingle = async (resolution = null) => {
     finally { isSaving.value = false; }
 };
 
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        batchInput.value = e.target.result;
+        persistentToast.value = { msg: '✓ 檔案內容已載入', type: 'success' };
+    };
+    reader.readAsText(file);
+    // 重設 input 以便下次選擇同一個檔案也能觸發
+    event.target.value = '';
+};
+
 const saveBatch = async () => {
-    if (!batchInput.value || !batchMasterId.value) return;
+    if (!batchInput.value || !batchMasterId.value || isSaving.value) return;
+    
+    isSaving.value = true;
     try {
+        const lines = batchInput.value.split('\n')
+            .map(l => l.trim())
+            .filter(l => l && !l.startsWith('【')); // 排除標題行就好，其餘交給後端解析
+            
+        if (lines.length === 0) {
+            persistentToast.value = { msg: '✖ 內容格式不正確', type: 'error' };
+            isSaving.value = false;
+            return;
+        }
+
+        const finalMasterId = batchMasterId.value === 'unobtained' ? null : batchMasterId.value;
+
         await axios.post('/imperial-graces/registry/batch', { 
-            lines: batchInput.value.split('\n').filter(l => l.trim()), 
-            master_id: batchMasterId.value 
+            lines: lines, 
+            master_id: finalMasterId 
         });
+        
+        persistentToast.value = { msg: '✓ 多筆新增成功', type: 'success' };
         addMode.value = null;
         loadData();
-        persistentToast.value = { msg: '✓ 多筆新增成功', type: 'success' };
     } catch (e) { 
-        alert('批次失敗'); 
+        console.error('批次失敗:', e);
+        persistentToast.value = { msg: '✖ 批次新增失敗', type: 'error' };
+    } finally {
+        isSaving.value = false;
     }
 };
 
@@ -440,8 +554,49 @@ onMounted(() => {
 });
 
 const filteredRegistries = computed(() => {
-    if (!currentFolder.value || currentFolder.value.id === 'unobtained') return [];
-    return allRegistries.value.filter(r => r.master_id === currentFolder.value.id);
+    if (!currentFolder.value) return [];
+    
+    let filtered = [];
+    if (currentFolder.value.id === 'unobtained') {
+        filtered = allRegistries.value.filter(r => !r.master_id || r.status === '未求得');
+    } else {
+        filtered = allRegistries.value.filter(r => r.master_id === currentFolder.value.id);
+    }
+
+    // Sort: Master order (1-8) then Record Date (DESC)
+    const masterOrder = [1, 2, 3, 4, 5, 6, 7, 8];
+    filtered.sort((a, b) => {
+        // Master order
+        const aIdx = a.master_id ? masterOrder.indexOf(Number(a.master_id)) : 999;
+        const bIdx = b.master_id ? masterOrder.indexOf(Number(b.master_id)) : 999;
+        
+        if (aIdx !== bIdx) return aIdx - bIdx;
+        
+        // Date order (Desc: latest first)
+        const aDate = a.record_date || '0000-00-00';
+        const bDate = b.record_date || '0000-00-00';
+        return bDate.localeCompare(aDate);
+    });
+
+    if (searchQuery.value.trim()) {
+        const query = searchQuery.value.trim().toLowerCase();
+        filtered = filtered.filter(r => {
+            const mName = getMasterName(r.master_id).toLowerCase();
+            return r.name.toLowerCase().includes(query) ||
+                   (r.purpose || '').toLowerCase().includes(query) ||
+                   (r.remarks || '').toLowerCase().includes(query) ||
+                   mName.includes(query);
+        });
+        
+        // Results move to top
+        filtered.sort((a, b) => {
+            const am = a.name.toLowerCase().includes(query) ? 1 : 0;
+            const bm = b.name.toLowerCase().includes(query) ? 1 : 0;
+            return bm - am;
+        });
+    }
+
+    return filtered;
 });
 </script>
 
@@ -450,5 +605,17 @@ const filteredRegistries = computed(() => {
 .animate-slide-up { animation: slideUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Custom Scrollbar for a cleaner mobile look */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
 </style>
 <!-- v-refresh-download-fix-2026041422 -->

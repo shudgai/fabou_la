@@ -30,6 +30,18 @@ class TreasureController extends Controller
         return response()->json($treasure, 201);
     }
 
+    public function batchStore(Request $request)
+    {
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.name' => 'required|string',
+            'items.*.master_id' => 'required|exists:masters,id',
+        ]);
+
+        $this->treasureService->createBatchTreasures($request->items);
+        return response()->json(['message' => 'Success'], 201);
+    }
+
     public function update(Request $request, string $id)
     {
         $treasure = $this->treasureService->updateTreasure((int)$id, $request->all());

@@ -1,46 +1,35 @@
 <template>
     <div class="bg-white min-h-screen relative">
         <!-- Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <button @click="handleBack" class="mr-3 text-indigo-600 font-normal">
-                &lt; 返回
-            </button>
-            <h2 class="text-xl font-normal text-slate-800">
+        <div class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-xl font-bold font-outfit tracking-tight text-slate-800">
                 {{ currentFolder ? currentFolder.name : '怨靈專區' }}
             </h2>
         </div>
 
         <!-- Level 1: Folder Selection (By Status) -->
-        <div v-if="!currentFolder" class="flex flex-col">
-            <button v-for="folder in folders" :key="folder.id" 
+        <div v-if="!currentFolder" class="grid grid-cols-2 gap-3 p-3" style="margin-top: 5px;">
+            <button v-for="(folder, idx) in folders" :key="folder.id" 
                 @click="currentFolder = folder"
-                class="flex items-center justify-between w-full border-b border-gray-50 active:bg-gray-50 transition-colors"
-                style="padding: 10px 15px;">
-                <span class="text-lg font-normal text-slate-800">{{ folder.name }}</span>
-                <span class="text-slate-300">&gt;</span>
+                class="flex flex-col items-center justify-center aspect-square rounded-3xl transition-all active:scale-95 shadow-sm border border-slate-100 group"
+                :class="[
+                    idx % 2 === 0 ? 'bg-indigo-50/50 hover:bg-indigo-50' : 'bg-emerald-50/50 hover:bg-emerald-50'
+                ]"
+                style="padding: 15px;">
+                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow">
+                    <svg class="w-6 h-6" :class="[
+                        idx % 2 === 0 ? 'text-indigo-500' : 'text-emerald-500'
+                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path v-if="idx % 2 === 0" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path v-else d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="text-sm font-bold text-slate-700">{{ folder.name }}</span>
             </button>
         </div>
 
         <!-- Level 2: List -->
         <div v-else class="pb-32">
-            <!-- Add Form (Same style) -->
-            <div v-if="addMode" class="mb-6 bg-white border-b border-gray-100 shadow-sm p-3">
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <select v-model="form.user_id" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                        <option :value="null">選擇使用者</option>
-                        <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
-                    </select>
-                    <input v-model="form.quantity" type="number" placeholder="數量" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                </div>
-                <input v-model="form.destination" type="text" placeholder="去處" class="w-full rounded-xl border-none shadow-sm text-sm mb-2" style="padding: 5px 8px;">
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <input v-model="form.know_date" type="date" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                    <input v-model="form.process_date" type="date" class="w-full rounded-xl border-none shadow-sm text-sm" style="padding: 5px 8px;">
-                </div>
-                <div class="flex justify-center mt-2">
-                    <button @click="saveItem" class="bg-indigo-600 text-white font-normal rounded-lg px-4 py-1.5 shadow-md">{{ editingId ? '修改完成' : '確認新增' }}</button>
-                </div>
-            </div>
 
             <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
             <div v-else-if="filteredItems.length === 0" class="text-center py-12 text-slate-400">暫無相關紀錄。</div>
@@ -65,38 +54,101 @@
                 </div>
             </div>
         </div>
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+            <div class="grid grid-cols-5 h-full items-center px-2">
+                <!-- BACK BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="handleBack" 
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
 
-        <!-- STICKY BOTTOM NAV BAR -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex justify-around items-center z-50 shadow-sm" style="height: 44px; padding: 0 20px;">
-            <button @click="$emit('goHome')" class="text-slate-400 p-2">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="relative">
-                <button 
-                    @click="addMode = true"
-                    :disabled="!currentFolder"
-                    :class="[!currentFolder ? 'bg-gray-100 text-gray-300 opacity-50' : 'bg-indigo-600 text-white shadow-lg active:scale-95']"
-                    class="w-7 h-7 rounded-lg flex items-center justify-center transition-all">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <!-- HOME BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="$emit('goHome')" class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+
+                <!-- ADD BUTTON (Center) -->
+                <div class="flex justify-center relative">
+                    <div v-if="currentFolder" class="absolute -top-6">
+                        <button @click="showAddMenu = !showAddMenu" 
+                            :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 active:scale-95']"
+                            class="w-14 h-14 rounded-3xl flex items-center justify-center transition-all duration-500 border-4 border-white">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEARCH BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="showSearch = !showSearch" 
+                        :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
+                <!-- DOWNLOAD BUTTON -->
+                <div class="flex justify-center">
+                    <button @click="downloadList" :disabled="!currentFolder"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50 disabled:opacity-30">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="w-10"></div>
         </div>
     </div>
+
+    <!-- MODAL COMPONENTS -->
+    <search-component 
+        v-model="searchQuery" 
+        :show="showSearch" 
+        @close="showSearch = false" 
+    />
+
+        <add-action-menu 
+            :show="showAddMenu" 
+            @close="showAddMenu = false"
+            :actions="addActions"
+        />
+
+        <grudge-add-form 
+            :show="addMode"
+            :initialData="form"
+            :editingId="editingId"
+            :users="users"
+            @save="saveItem"
+            @cancel="addMode = false; editingId = null"
+        />
 </template>
 
 <script setup>
 import { ref, computed, onMounted, defineEmits } from 'vue';
 import axios from 'axios';
 
-defineEmits(['goHome']);
+const emit = defineEmits(['goHome']);
 
 const currentFolder = ref(null);
 const addMode = ref(false);
+const showAddMenu = ref(false);
+const showSearch = ref(false);
+const searchQuery = ref('');
 const items = ref([]);
 const users = ref([]);
 const loading = ref(true);
 const editingId = ref(null);
+
+const addActions = computed(() => [
+    { 
+        label: '新增紀錄', 
+        description: '新增一筆怨靈處理資料',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => { addMode.value = true; } 
+    }
+]);
 
 const form = ref({
     user_id: null,
@@ -124,12 +176,12 @@ const loadData = async () => {
     } catch (e) { console.error(e); } finally { loading.value = false; }
 };
 
-const saveItem = async () => {
+const saveItem = async (formData) => {
     try {
         if (editingId.value) {
-            await axios.put(`/grudges/${editingId.value}`, form.value);
+            await axios.put(`/grudges/${editingId.value}`, formData);
         } else {
-            await axios.post('/grudges', { ...form.value, status: currentFolder.value?.status });
+            await axios.post('/grudges', { ...formData, status: currentFolder.value?.status });
         }
         addMode.value = false;
         editingId.value = null;
@@ -141,8 +193,10 @@ const handleBack = () => {
     if (addMode.value) {
         addMode.value = false;
         editingId.value = null;
-    } else {
+    } else if (currentFolder.value) {
         currentFolder.value = null;
+    } else {
+        emit('goHome');
     }
 };
 
@@ -160,8 +214,30 @@ const deleteItem = async (id) => {
 
 const filteredItems = computed(() => {
     if (!currentFolder.value) return [];
-    return items.value.filter(i => i.status === currentFolder.value.status);
+    let filtered = items.value.filter(i => i.status === currentFolder.value.status);
+    if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase();
+        filtered = filtered.filter(i => 
+            (i.destination?.toLowerCase().includes(q)) || 
+            (i.user?.name?.toLowerCase().includes(q))
+        );
+    }
+    return filtered;
 });
+
+const downloadList = () => {
+    if (!currentFolder.value) return;
+    const contents = `【怨靈紀錄清單 - ${currentFolder.value.name}】\r\n\r\n` + 
+        filteredItems.value.map(i => `${i.user?.name || '未知'}: ${i.destination} (x${i.quantity})`).join('\r\n');
+    
+    const blob = new Blob([contents], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `怨靈紀錄_${currentFolder.value.name}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+};
 
 const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';
 

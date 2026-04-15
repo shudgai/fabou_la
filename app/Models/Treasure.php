@@ -23,4 +23,9 @@ class Treasure extends Model
     {
         return $this->belongsTo(Master::class);
     }
+
+    public function dharmaNameTreasures()
+    {
+        return $this->hasMany(DharmaNameTreasure::class);
+    }
 }
