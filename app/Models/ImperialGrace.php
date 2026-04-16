@@ -9,17 +9,17 @@ class ImperialGrace extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'master_id', 'treasure_name', 'description', 'record_date', 
-        'know_date', 'report_date', 'display_status', 'status', 
-        'order', 'excel_rows', 'user_id'
-    ];
+    protected $table = 'imperial_graces';
 
-    protected $casts = [
-        'excel_rows' => 'array',
-        'record_date' => 'date',
-        'know_date' => 'date',
-        'report_date' => 'date',
+    protected $fillable = [
+        'master_id',
+        'name',
+        'count',
+        'purpose',
+        'record_date',
+        'obtained_date',
+        'status',
+        'remarks',
     ];
 
     public function master()
@@ -27,8 +27,8 @@ class ImperialGrace extends Model
         return $this->belongsTo(Master::class);
     }
 
-    public function user()
+    public function userGraces()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(UserImperialGrace::class);
     }
 }

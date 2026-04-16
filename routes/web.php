@@ -24,6 +24,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Archival System Routes
 Route::middleware(['auth'])->group(function () {
     Route::resource('masters', App\Http\Controllers\MasterController::class);
+    Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::resource('imperial-graces', App\Http\Controllers\ImperialGraceController::class);
     Route::post('imperial-graces/registry', [App\Http\Controllers\ImperialGraceController::class, 'storeRegistry']);
     Route::match(['PUT', 'PATCH'], 'imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'updateRegistry']);

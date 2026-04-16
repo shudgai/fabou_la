@@ -9,14 +9,11 @@ class UserImperialGrace extends Model
 {
     use HasFactory;
 
-    protected $table = 'user_registries';
+    protected $table = 'user_imperial_graces';
 
     protected $fillable = [
         'user_id',
-        'registry_id',
-        'obtained_date',
-        'remarks',
-        'record_date',
+        'imperial_grace_id',
     ];
 
     public function user()
@@ -24,8 +21,8 @@ class UserImperialGrace extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function registry()
+    public function imperialGrace()
     {
-        return $this->belongsTo(ImperialGraceRegistry::class, 'registry_id');
+        return $this->belongsTo(ImperialGrace::class);
     }
 }

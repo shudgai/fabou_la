@@ -8,7 +8,7 @@
             <!-- Header -->
             <div class="p-[10px] border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
                 <h3 class="text-xl font-medium text-black">
-                    重大皇恩載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
+                    資料歸檔載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
                 </h3>
                 <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -155,7 +155,7 @@
                         </span>
                     </template>
                     <template v-else>
-                        {{ localMode === 'single' ? (form.id ? '儲存修改' : '確認入庫歸檔') : `開始歸檔這 ${excelRows.length} 筆資料` }}
+                        {{ localMode === 'single' ? (form.id ? '儲存修改' : '確認資料歸檔') : `開始歸檔這 ${excelRows.length} 筆資料` }}
                     </template>
                 </button>
             </div>

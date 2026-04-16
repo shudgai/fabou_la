@@ -4,7 +4,7 @@
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
             <h2 class="text-[21px] font-normal font-outfit tracking-tight text-black flex items-center">
                 <span v-if="currentFolder">重大皇恩 - {{ currentFolder.name }}</span>
-                <span v-else>重大皇恩專區</span>
+                <span v-else>重大皇恩</span>
                 <button @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
                     ({{ sortDesc ? '新→舊' : '舊→新' }})
                 </button>
@@ -39,7 +39,7 @@
         <div v-if="!currentFolder" class="bg-white">
             <!-- Header Title -->
             <div class="px-6 pt-[20px] pb-2 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">重大皇恩專區</h1>
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">重大皇恩</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4">

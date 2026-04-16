@@ -28,14 +28,14 @@ app.component('teaching-manager', TeachingManager);
 import GrudgeManager from './components/GrudgeManager.vue';
 app.component('grudge-manager', GrudgeManager);
 
-import ImperialGraceManager from './components/ImperialGraceManager.vue';
-app.component('imperial-grace-manager', ImperialGraceManager);
+import RegistryManager from './components/RegistryManager.vue';
+app.component('registry-manager', RegistryManager);
 
 import MobileDashboard from './components/MobileDashboard.vue';
 app.component('mobile-dashboard', MobileDashboard);
 
-import TreasureManager from './components/TreasureManager.vue';
-app.component('treasure-manager', TreasureManager);
+import ImperialGraceManager from './components/ImperialGraceManager.vue';
+app.component('imperial-grace-manager', ImperialGraceManager);
 
 import AdminDashboard from './components/AdminDashboard.vue';
 app.component('admin-dashboard', AdminDashboard);
@@ -49,14 +49,14 @@ app.component('search-component', SearchComponent);
 import AddActionMenu from './components/AddActionMenu.vue';
 app.component('add-action-menu', AddActionMenu);
 
-import TreasureAddForm from './components/TreasureAddForm.vue';
-app.component('treasure-add-form', TreasureAddForm);
+import ImperialGraceAddForm from './components/ImperialGraceAddForm.vue';
+app.component('imperial-grace-add-form', ImperialGraceAddForm);
 
 import GrudgeAddForm from './components/GrudgeAddForm.vue';
 app.component('grudge-add-form', GrudgeAddForm);
 
-import ImperialGraceAddForm from './components/ImperialGraceAddForm.vue';
-app.component('imperial-grace-add-form', ImperialGraceAddForm);
+import RegistryAddForm from './components/RegistryAddForm.vue';
+app.component('registry-add-form', RegistryAddForm);
 
 /**
  * The following block of code may be used to automatically register your

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Treasure;
+use App\Models\Registry;
 use Illuminate\Database\Seeder;
 
 class TreasureSeeder extends Seeder
@@ -98,9 +98,9 @@ class TreasureSeeder extends Seeder
             foreach ($items as $key => $value) {
                 $name = is_string($key) ? $key : $value;
 
-                Treasure::updateOrCreate(
+                Registry::updateOrCreate(
                     ['name' => $name],
-                    ['remarks' => "類別: $categoryName"]
+                    ['remarks' => "類別: $categoryName", 'master_id' => 5]
                 );
             }
         }

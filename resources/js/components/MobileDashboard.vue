@@ -60,11 +60,11 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const menuItems = [
-    { id: 'grace', label: '重大皇恩專區' },
+    { id: 'grace', label: '重大皇恩' },
     { id: 'teaching', label: '父皇仙師開示專區' },
     { id: 'grudge', label: '怨靈專區' },
     { id: 'military', label: '軍隊專區' },
-    { id: 'treasure', label: '法寶登記專區' },
+    { id: 'treasure', label: '法寶登記' },
     { id: 'trash', label: '回收桶' },
 ];
 
@@ -84,7 +84,7 @@ const loadStats = async () => {
     try {
         const [gre, tre, teach, grud] = await Promise.all([
             axios.get('/imperial-graces'),
-            axios.get('/treasures'),
+            axios.get('/registries'),
             axios.get('/teachings'),
             axios.get('/grudges')
         ]);

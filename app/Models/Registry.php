@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Treasure extends Model
+class Registry extends Model
 {
     use HasFactory;
+
+    protected $table = 'registries';
 
     protected $fillable = [
         'master_id',
@@ -24,8 +26,8 @@ class Treasure extends Model
         return $this->belongsTo(Master::class);
     }
 
-    public function dharmaNameTreasures()
+    public function dharmaNameRegistries()
     {
-        return $this->hasMany(DharmaNameTreasure::class);
+        return $this->hasMany(DharmaNameRegistry::class);
     }
 }

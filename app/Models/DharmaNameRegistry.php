@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DharmaNameTreasure extends Model
+class DharmaNameRegistry extends Model
 {
     use HasFactory;
 
+    protected $table = 'dharma_name_registries';
+
     protected $fillable = [
-        'treasure_id',
+        'registry_id',
         'dharma_name_id',
         'obtained_date',
-        'remarks'
+        'remarks',
     ];
 
-    public function treasure()
+    public function registry()
     {
-        return $this->belongsTo(Treasure::class);
+        return $this->belongsTo(Registry::class);
     }
 
     public function dharmaName()

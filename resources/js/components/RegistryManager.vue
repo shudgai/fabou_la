@@ -4,8 +4,7 @@
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
             <h2 class="text-[21px] font-normal font-outfit tracking-tight text-slate-800 flex items-center">
                 <span v-if="focusedId && displayTitle !== currentFolder?.name" class="text-indigo-600 truncate max-w-[200px] block">{{ displayTitle }}</span>
-                <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記專區' }}</span>
-                <button v-if="currentFolder" @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
+                <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記' }}</span>                <button v-if="currentFolder" @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
                     ({{ sortDesc ? '新→舊' : '舊→新' }})
                 </button>
             </h2>
@@ -41,7 +40,7 @@
         <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white">
             <!-- Large Static Title -->
             <div class="px-6 py-4 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記專區</h1>
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記</h1>
                 <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">完整記載每份法寶與獲得進度</p>
             </div>
 
@@ -306,7 +305,7 @@
             :actions="addActions"
         />
 
-        <treasure-add-form 
+        <registry-add-form 
             ref="addForm"
             :mode="addMode" 
             :initialData="form"
@@ -430,7 +429,7 @@ const loadData = async () => {
     loading.value = true;
     try {
         const [res, mres, dres] = await Promise.all([
-            axios.get('/treasures'),
+            axios.get('/registries'),
             axios.get('/api/masters-list'),
             axios.get('/api/dharma-names-list')
         ]);
@@ -622,7 +621,7 @@ const saveBatch = async (forceParam = false, resolvedMasterId = null) => {
 
     isSaving.value = true;
     try {
-        await axios.post('/treasures', {
+        await axios.post('/registries', {
             master_id: batchMasterId.value,
             record_date: batchDate.value,
             name: tName || "未命名法寶",
@@ -729,7 +728,7 @@ const confirmDelete = (id) => {
 const executeDelete = async () => {
     if (!deleteConfirmId.value) return;
     try {
-        await axios.delete(`/treasures/${deleteConfirmId.value}`);
+        await axios.delete(`/registries/${deleteConfirmId.value}`);
         showToast('✓ 已成功刪除');
         loadData();
     } catch (e) { showToast('刪除失敗', 'error'); }
