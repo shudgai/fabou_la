@@ -157,17 +157,17 @@
                             </div>
                         </div>
 
-                        <!-- Expanded Detail (Pure White Mode) -->
-                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in mt-2 p-3 bg-white rounded-2xl space-y-2 relative">
+                        <!-- Expanded Detail (Pure White Frameless Wide Style) -->
+                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in py-3 bg-white space-y-3.5 relative px-1.5">
                             <!-- Action Menu in Expanded Mode -->
-                            <div class="absolute right-2 top-2 z-[101]">
+                            <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors">
-                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
                                     <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">
-                                        {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
+                                        {{ expandedIds.has(reg.id) ? '收合清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                     <button @click.stop="copyOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
@@ -177,60 +177,60 @@
                             </div>
                             
                             <!-- Detail Content Grid -->
-                            <div class="grid grid-cols-2 gap-3 pb-2">
+                            <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
                                     <div class="flex items-center space-x-1 ml-1">
-                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-[#9fa6b2] active:scale-90 transition-all">
+                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-[#aeb4be] active:scale-90 transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-widest block">得知日期</label>
+                                        <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block">得知日期</label>
                                     </div>
-                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal text-slate-700">
+                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">載錄目標仙師</label>
-                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal text-slate-700">
+                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">載錄目標仙師</label>
+                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">法寶名稱</label>
-                                <div class="w-full min-h-[40px] rounded-xl bg-white px-3 py-1 flex items-center shadow-sm text-[16px] font-normal text-slate-800 leading-tight">
+                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">法寶名稱</label>
+                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 leading-tight">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">法寶用意</label>
-                                <div class="w-full min-h-[40px] rounded-xl bg-white px-3 py-1 flex items-center shadow-sm text-[16px] text-slate-700 leading-tight">
+                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">法寶用意</label>
+                                <div class="w-full px-3 py-0.5 flex items-center text-[16px] text-slate-700 leading-tight">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">求得日期</label>
-                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] text-slate-700">
+                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">求得日期</label>
+                                    <div class="w-full px-3 flex items-center text-[16px] text-slate-700">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">目前狀態</label>
-                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal"
+                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">目前狀態</label>
+                                    <div class="w-full px-3 flex items-center text-[16px] font-normal"
                                         :class="reg.status === '未求得' ? 'text-red-600' : 'text-emerald-600'">
                                         {{ reg.status }}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="space-y-1">
-                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full min-h-[60px] rounded-xl bg-white p-3 shadow-sm text-[16px] text-slate-600 leading-normal">
-                                    {{ reg.remarks || '無備註內容' }}
+                            <div v-if="reg.remarks" class="space-y-1">
+                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 text-[16px] text-slate-600 leading-normal whitespace-pre-wrap">
+                                    {{ reg.remarks }}
                                 </div>
                             </div>
                         </div>
