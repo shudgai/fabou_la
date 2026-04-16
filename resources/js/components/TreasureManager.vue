@@ -1,8 +1,8 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Only show in Folder-view or Item-view) -->
-        <div v-if="currentFolder" class="border-b border-gray-100 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <h2 class="text-xl font-medium font-outfit tracking-tight text-slate-800">
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
+            <h2 class="text-[21px] font-normal font-outfit tracking-tight text-slate-800">
                 <span v-if="focusedId && displayTitle !== currentFolder?.name" class="text-indigo-600 truncate max-w-[200px] block">{{ displayTitle }}</span>
                 <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記專區' }}</span>
             </h2>
@@ -37,22 +37,43 @@
         <!-- Level 1: Folder Selection -->
         <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white">
             <!-- Large Static Title -->
-            <div class="px-6 py-6 text-center">
-                <h1 class="text-2xl font-medium text-black tracking-tight">法寶登記專區</h1>
+            <div class="px-6 py-4 text-center">
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記專區</h1>
+                <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">完整記載每份法寶與獲得進度</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-4 p-4">
+
+
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-3 p-4">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-row md:flex-col items-center md:justify-between bg-white transition-all active:scale-95 border-0 md:border-[2px] md:border-[#E6D5B8] md:aspect-square md:rounded-[28px] md:shadow-sm group p-2 w-full md:w-[70%] md:mx-auto border-b border-gray-50 last:border-b-0 md:border-b-[2px]">
-                    <div class="flex items-center justify-center">
-                        <svg class="w-8 h-8 md:w-14 md:h-14 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z" />
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-[28px] border border-[#EF4444] group p-2 aspect-square relative w-[72%] mx-auto"
+                   >
+                    <div class="relative">
+                        <svg class="w-14 h-14 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FFF9C4;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#FDE047;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FBC02D;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Folder Body Back -->
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#folderGrad)" opacity="0.8"/>
+                            <!-- Folder Front Cover (3D Offset) -->
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#folderGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            <!-- Shine effect -->
+                            <path d="M10 21H54" stroke="white" stroke-opacity="0.3" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <span class="text-[16px] md:text-[15px] font-medium text-black whitespace-nowrap ml-2 md:ml-0 md:mb-1">{{ folder.name }}</span>
+                    <div class="text-center px-1 mt-1">
+                        <div class="text-[14px] leading-tight text-slate-700 break-words font-normal">
+                            {{ folder.name }}
+                        </div>
+                    </div>
                 </button>
             </div>
+
 
             <!-- Minimalist Back to Dashboard -->
             <div class="mt-12 flex justify-center pb-32">
@@ -67,14 +88,8 @@
         <div v-else class="pb-32 px-[5px] md:px-0">
 
             <!-- List Display -->
-            <div v-if="!addMode" style="padding: 3px;">
+            <div v-if="!addMode" style="padding: 0px 10px 10px 10px;" class="mt-[-23px]">
                 <div v-if="!loading && allTreasures.length > 0 && !addMode" class="mb-3 px-1">
-                    <div v-if="searchQuery" class="bg-indigo-50 rounded-2xl p-3 flex justify-between items-center animate-fade-in shadow-sm border border-indigo-100/50">
-                        <span class="text-xs font-medium text-indigo-600">搜尋結果：{{ searchQuery }}</span>
-                        <button @click="searchQuery = ''" class="text-indigo-400 hover:text-indigo-600">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/></svg>
-                        </button>
-                    </div>
                 </div>
 
                 <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
@@ -82,8 +97,9 @@
                     {{ searchQuery ? '找不到符合的法寶' : '目前該專區尚無法寶資料。' }}
                 </div>
                 <div v-else class="flex flex-col">
-                    <div v-for="item in (expandedIds.size > 0 ? filteredTreasures.filter(t => expandedIds.has(t.id)) : filteredTreasures)" :key="item.id" 
-                        class="border-b border-dashed border-slate-200 py-[6px] last:border-b-0 relative bg-white cursor-default group shadow-sm">
+                    <div v-for="(item, index) in (expandedIds.size > 0 ? filteredTreasures.filter(t => expandedIds.has(t.id)) : filteredTreasures)" :key="item.id" 
+                        class="border-b border-solid border-slate-300 py-[4px] last:border-b-0 relative bg-white cursor-default group"
+                        :class="{ 'border-t border-slate-300': index === 0 }">
                         <!-- Row 1: Dates & Actions -->
                         <div class="flex items-center justify-between py-1 transition-all duration-300" 
                              :style="editingIds.has(item.id) ? 'transform: translateY(-25px)' : ''">
@@ -98,8 +114,8 @@
                                 </button>
                                 <!-- DROP-DOWN MENU -->
                                 <div v-if="openMenuId === item.id" @click.stop
-                                    class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click="toggleExpand(item.id)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
+                                    class="absolute right-0 top-full mt-1 w-24 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                    <button @click="toggleExpand(item.id); openMenuId = null;" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedIds.has(item.id) ? '縮起清單' : '展開清單' }}
                                     </button>
                                     <button @click="openAndEdit(item.id)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
@@ -141,15 +157,15 @@
                             <div v-else class="space-y-2 mb-2">
                                 <div v-if="item.purpose">
                                     <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">法寶用意</div>
-                                    <div class="text-[15px] text-slate-700 leading-snug">{{ item.purpose }}</div>
+                                    <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.purpose }}</div>
                                 </div>
                                 <div v-if="item.acquisition_method">
                                     <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">求寶方式</div>
-                                    <div class="text-[15px] text-slate-700 leading-snug">{{ item.acquisition_method }}</div>
+                                    <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.acquisition_method }}</div>
                                 </div>
                                 <div v-if="item.remarks">
                                     <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">備註</div>
-                                    <div class="text-[14px] text-slate-600 leading-snug italic">{{ item.remarks }}</div>
+                                    <div class="text-[14.5px] text-slate-600 leading-snug italic">{{ item.remarks }}</div>
                                 </div>
                             </div>
                             
@@ -661,6 +677,7 @@ const toggleExpand = (id) => {
         expandedIds.value.delete(id);
         editingIds.value.delete(id);
         searchQuery.value = ''; // 縮起清單時清除搜尋
+        showSearch.value = false; // 縮起清單時收起搜尋框
     } else {
         expandedIds.value.add(id);
     }
@@ -912,6 +929,14 @@ const filteredTreasures = computed(() => {
     return filtered;
 });
 
+const totalDharmaConnections = computed(() => {
+    return allTreasures.value.reduce((sum, t) => sum + (t.dharma_name_treasures?.length || 0), 0);
+});
+
+const getItemCount = (id) => {
+    return allTreasures.value.filter(t => t.master_id === id).length;
+};
+
 const copyOnly = (item) => {
     let text = `[${formatDate(item.record_date)}] ${item.name}\n`;
     if (item.purpose) text += `用意：${item.purpose}\n`;
@@ -1053,11 +1078,12 @@ const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';
 
 onMounted(() => {
     window.addEventListener('click', (e) => {
-        if (openMenuId.value && !e.target.closest('.relative')) {
-            openMenuId.value = null;
-        }
-        if (showAddMenu.value && !e.target.closest('.relative')) {
-            showAddMenu.value = false;
+        const isOutside = !e.target.closest('.relative');
+        if (isOutside) {
+            if (openMenuId.value) openMenuId.value = null;
+            if (showAddMenu.value) showAddMenu.value = false;
+            // Collapse details but STAY in focused mode
+            if (expandedIds.value.size > 0) expandedIds.value.clear();
         }
     });
 });

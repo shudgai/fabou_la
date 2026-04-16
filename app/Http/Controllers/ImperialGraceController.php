@@ -55,11 +55,19 @@ class ImperialGraceController extends Controller
 
     public function batchStoreRegistry(Request $request)
     {
-        $input = $request->input('lines', []); // This could be lines or a full string
+        $input = $request->input('lines', []); 
+        $items = $request->input('items', []);
         $masterId = $request->input('master_id');
         $created = [];
 
-        // If it's a single string with newlines, split it
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                $created[] = $this->saveBatchItem($item, $masterId);
+            }
+            return response()->json($created, 201);
+        }
+
+        // Fallback to line parsing logic...
         if (is_string($input)) {
             $rawLines = explode("\n", $input);
         } else {
@@ -71,13 +79,34 @@ class ImperialGraceController extends Controller
 
         foreach ($rawLines as $line) {
             $line = trim($line);
-            if (!$line || strpos($line, '【重大皇恩') !== false) continue;
+            if (!$line) continue;
 
-            // 1. Check if the entire line is JUST a Master Name (Hierarchical Switch)
+            // 1. Check for Master header lines (e.g. 【重大皇恩 - 老祖仙師】)
+            if (strpos($line, '【') !== false) {
+                // Try to extract master name from within common headers
+                $extractedMaster = null;
+                if (preg_match('/(?:皇恩|仙師)[-\s：]+(.*?)[】\s]/u', $line, $m)) {
+                    $extractedMaster = trim($m[1]);
+                } elseif (preg_match('/[【](.*?)[】]/u', $line, $m)) {
+                    $extractedMaster = trim($m[1]);
+                }
+
+                if ($extractedMaster) {
+                    $resolved = app(\App\Services\MasterService::class)->resolveMasterId($extractedMaster);
+                    if ($resolved) {
+                        if (!empty($currentData['name'])) {
+                            $created[] = $this->saveBatchItem($currentData, $currentMasterId);
+                            $currentData = [];
+                        }
+                        $currentMasterId = $resolved;
+                        continue;
+                    }
+                }
+            }
+
+            // 2. Check if the entire line is JUST a Master Name (Hierarchical Switch)
             $resolvedForWholeLine = app(\App\Services\MasterService::class)->resolveMasterId($line);
-            // We verify if the line text exactly matches a master's canonical name or known mapping
             if ($resolvedForWholeLine) {
-                // If we were building a block, save it first before switching
                 if (!empty($currentData['name'])) {
                     $created[] = $this->saveBatchItem($currentData, $currentMasterId);
                     $currentData = [];

@@ -85,6 +85,8 @@
     </div>
 </div>
 
+@endsection
+@push('styles')
 <style>
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -94,4 +96,4 @@
     animation: fadeInUp 0.6s ease-out forwards;
 }
 </style>
-@endsection
+@endpush

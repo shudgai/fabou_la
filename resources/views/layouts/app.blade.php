@@ -8,13 +8,13 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', '法寶管理系統') }}</title>
+    <title>皇恩筆記本</title>
 
     <!-- Fonts: Inter & Outfit for a premium feel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Scripts -->
@@ -34,7 +34,9 @@
         .font-outfit {
             font-family: 'Outfit', sans-serif;
         }
+        /* Diagnostic: Force a red line at the very top */
     </style>
+    @stack('styles')
 </head>
 
 <body class="antialiased text-slate-900 bg-slate-50">
@@ -66,13 +68,20 @@
                 <!-- Sidebar Header -->
                 <div class="h-16 flex items-center justify-between px-4 border-b border-slate-100 shrink-0 overflow-hidden">
                     <a href="{{ url('/') }}" class="flex items-center space-x-3 transition-transform active:scale-95">
-                        <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 shrink-0">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
+                            <!-- Taiji SVG (Scaled) -->
+                            <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="50" fill="white"/>
+                                <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
+                                <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
+                                <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
+                                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                                <circle cx="50" cy="75" r="8" fill="white"/>
+                                <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
                         <span x-show="!sidebarCollapsed" class="text-xl font-bold font-outfit tracking-tight text-slate-800 whitespace-nowrap" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                            {{ config('app.name', '法寶專區') }}
+                            皇恩筆記本
                         </span>
                     </a>
 
@@ -133,7 +142,8 @@
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
                             <div x-show="!sidebarCollapsed" class="min-w-0 flex-1 overflow-hidden" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                                <p class="text-xs font-bold text-slate-800 truncate">{{ Auth::user()->name }}</p>
+                                <span class="font-outfit font-bold text-slate-800">皇恩筆記本</span>
+                                <p class="text-xs text-slate-500 truncate">{{ Auth::user()->name }}</p>
                                 <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-[10px] text-red-500 font-medium hover:underline">登出</button>
                             </div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
@@ -161,8 +171,17 @@
                             <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <span class="font-outfit font-bold text-slate-800">{{ config('app.name', '法寶專區') }}</span>
-                    <div class="w-10"></div> <!-- Spacer -->
+                    <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
+                        <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="white"/>
+                            <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
+                            <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
+                            <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
+                            <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                            <circle cx="50" cy="75" r="8" fill="white"/>
+                            <circle cx="50" cy="25" r="8" fill="black"/>
+                        </svg>
+                    </div>
                 </header>
                 @endif
 

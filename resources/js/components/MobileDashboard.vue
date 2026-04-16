@@ -1,21 +1,31 @@
 <template>
     <div class="min-h-screen bg-white">
         <!-- 標題區域: 統一為 24px padding-top -->
-        <div style="padding: 24px 15px 12px 15px;">
-            <h1 style="font-size: 28px; font-weight: 800; color: #1a202c; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
+        <div style="padding: 16px 15px 8px 15px;" class="flex items-center justify-between bg-white">
+            <h1 style="font-size: 22px; font-weight: 400; color: #1a202c; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
         </div>
 
+
+
+
+        <!-- 條列式專區 -->
+        <div class="flex flex-col pb-20">
         <!-- 條列式專區 -->
         <div class="flex flex-col pb-20">
             <button v-for="item in menuItems" :key="item.id" 
                 @click="navigate(item.id)"
-                class="flex items-center justify-between w-full border-b border-gray-100 active:bg-slate-50 transition-colors"
-                style="padding: 20px 15px;">
-                <span style="font-size: 19px; font-weight: 500; color: #334155; white-space: nowrap;">{{ item.label }}</span>
-                <svg class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
+                class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[56px]"
+                style="padding: 0 15px;">
+                <div class="flex items-center">
+                    <span style="font-size: 16px; font-weight: 400; color: #334155; white-space: nowrap;">{{ item.label }}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
             </button>
+        </div>
         </div>
 
         <!-- Dashboard Bottom Navbar -->
@@ -46,6 +56,9 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區' },
     { id: 'teaching', label: '父皇仙師開示專區' },
@@ -59,4 +72,32 @@ const emit = defineEmits(['navigate']);
 const navigate = (id) => {
     emit('navigate', id);
 };
+
+const stats = ref({
+    totalItems: 0,
+    todoGrudges: 0
+});
+
+const counts = ref({});
+
+const loadStats = async () => {
+    try {
+        const [gre, tre, teach, grud] = await Promise.all([
+            axios.get('/imperial-graces'),
+            axios.get('/treasures'),
+            axios.get('/teachings'),
+            axios.get('/grudges')
+        ]);
+        
+        counts.value['grace'] = gre.data.registries?.length || 0;
+        counts.value['treasure'] = tre.data?.length || 0;
+        counts.value['teaching'] = teach.data?.length || 0;
+        counts.value['grudge'] = grud.data?.length || 0;
+        
+        stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
+        stats.value.todoGrudges = grud.data?.filter(i => i.status === '代處理').length || 0;
+    } catch (e) { console.error(e); }
+};
+
+onMounted(loadStats);
 </script>

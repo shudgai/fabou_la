@@ -16,6 +16,10 @@ class ImperialGraceService
 
     public function createRegistry(array $data): ImperialGraceRegistry
     {
+        $name = trim($data['name'] ?? '');
+        if (ImperialGraceRegistry::where('name', $name)->exists()) {
+            throw new \Exception("法寶名稱「{$name}」在重大皇恩中已存在，請勿重複存檔。");
+        }
         return ImperialGraceRegistry::create($data);
     }
 
@@ -41,6 +45,14 @@ class ImperialGraceService
     {
         $registry = ImperialGraceRegistry::find($id);
         if (!$registry) return null;
+
+        $newName = trim($data['name'] ?? '');
+        if ($newName && $newName !== $registry->name) {
+            if (ImperialGraceRegistry::where('name', $newName)->where('id', '!=', $id)->exists()) {
+                throw new \Exception("法寶名稱「{$newName}」在重大皇恩中已存在，請勿重複存檔。");
+            }
+        }
+
         $registry->update($data);
         return $registry;
     }

@@ -10,22 +10,45 @@
         <!-- Level 1: Folder Selection (By Status) -->
         <div v-if="!currentFolder" class="min-h-screen bg-white" style="padding-bottom: 40px;">
             <!-- Large Static Title -->
-            <div class="p-[5px] text-center">
-                <h1 class="text-2xl font-medium text-black tracking-tight">怨靈專區</h1>
+            <div class="px-6 py-4 text-center">
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">怨靈專區</h1>
+                <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">追蹤每筆處理進度與去處</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-4 p-4">
+            <!-- Global Stats Banner -->
+            <div class="mx-4 mb-6 p-5 bg-emerald-900 rounded-[32px] text-white shadow-xl flex items-center justify-between relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest block">累積處理總量</span>
+                    <span class="text-3xl font-black tracking-tighter">{{ totalGrudgeQuantity.toLocaleString('zh-TW') }}</span>
+                </div>
+                <!-- Glassmorphism decorative circles -->
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="flex flex-col items-end relative z-10">
+                    <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest block">待處理項</span>
+                    <span class="text-lg font-bold">{{ todoCount }} 筆</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-3 p-4">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-row md:flex-col items-center md:justify-between bg-white transition-all active:scale-95 border-0 md:border-[1.5px] md:border-[#E6D5B8] md:aspect-square md:rounded-[28px] md:shadow-sm group p-2 w-full md:w-[70%] md:mx-auto border-b border-gray-50 last:border-b-0 md:border-b-[1.5px]">
-                    <div class="flex items-center justify-center">
-                        <svg class="w-8 h-8 md:w-14 md:h-14 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                    class="flex flex-col items-center justify-center bg-white transition-all active:scale-95 border border-slate-100 rounded-[32px] shadow-sm hover:shadow-md group p-5 aspect-square relative"
+                   >
+                    <div class="relative mb-3">
+                        <svg class="w-12 h-12 text-yellow-500 drop-shadow-sm transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z" />
                         </svg>
+                        <!-- Folder Badge -->
+                        <div v-if="getItemCount(folder.status) > 0" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg border-2 border-white">
+                            {{ getItemCount(folder.status) }}
+                        </div>
                     </div>
-                    <span class="text-[16px] md:text-[15px] font-medium text-black whitespace-nowrap ml-2 md:ml-0 md:mb-1">{{ folder.name }}</span>
+                    <span class="text-[15px] font-bold text-slate-700 whitespace-nowrap">
+                        {{ folder.name }}
+                    </span>
                 </button>
             </div>
+
 
             <!-- Minimalist Back to Dashboard -->
             <div class="mt-12 flex justify-center pb-32">
@@ -248,6 +271,18 @@ const filteredItems = computed(() => {
     }
     return filtered;
 });
+
+const totalGrudgeQuantity = computed(() => {
+    return items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0);
+});
+
+const todoCount = computed(() => {
+    return items.value.filter(i => i.status === '代處理').length;
+});
+
+const getItemCount = (status) => {
+    return items.value.filter(i => i.status === status).length;
+};
 
 const downloadList = () => {
     if (!currentFolder.value) return;

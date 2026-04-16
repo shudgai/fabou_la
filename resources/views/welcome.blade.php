@@ -10,19 +10,19 @@
         <!-- Badge -->
         <div class="inline-flex items-center space-x-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full mb-8 animate-fade-in shadow-sm">
             <span class="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-            <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-widest leading-none">法寶與重大皇恩管理系統 v2.0</span>
+            <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-widest leading-none">皇恩筆記本</span>
         </div>
 
         <!-- Hero Title -->
-        <h1 class="text-5xl md:text-7xl font-bold font-outfit text-slate-900 leading-[1.1] mb-6 tracking-tight">
-            以數據承載<br/>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">每一份法寶願力</span>
+        <h1 class="font-bold font-outfit text-slate-900 leading-[1.1] mb-6 tracking-tight">
+            <span class="text-3xl md:text-4xl block opacity-80 mb-2">以數據記載</span>
+            <span class="text-4xl md:text-6xl drop-shadow-sm" style="color: rgb(255, 215, 0);">每一份皇恩</span>
         </h1>
 
         <!-- Subtext -->
         <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            高效管理法寶、重大皇恩、怨靈及虎甲軍紀錄。<br/>
-            專為行動裝置優化，支援快速複製 LINE 格式與 Excel 匯出。
+            支援法寶、重大皇恩、怨靈記錄，<br/>
+            提供快速複製 LINE 格式與 Excel 匯出功能。
         </p>
 
         <!-- CTA Buttons -->
@@ -65,6 +65,7 @@
     </div>
 </div>
 
+@push('styles')
 <style>
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
@@ -77,4 +78,5 @@
         height: calc(100vh - 64px);
     }
 </style>
+@endpush
 @endsection

@@ -4,9 +4,9 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-[90vh] md:max-w-4xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-[100vh] md:max-w-4xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+            <div class="p-[10px] border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
                 <h3 class="text-xl font-medium text-black">
                     重大皇恩載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
                 </h3>
@@ -16,7 +16,7 @@
             </div>
 
             <!-- Tabs -->
-            <div class="px-4 py-2 bg-slate-50 flex space-x-1 border-b border-slate-100">
+            <div class="px-4 py-[2.5px] bg-white flex space-x-1 border-b border-slate-100 mt-[-5px]">
                 <button @click="localMode = 'single'" 
                     :class="localMode === 'single' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
                     class="flex-1 py-2 text-sm font-bold rounded-xl transition-all">逐筆登錄</button>
@@ -26,44 +26,44 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
                 
-                <!-- COMMON FIELDS (Master & Date) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-indigo-50/30 p-4 rounded-2xl border border-indigo-100/50">
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
-                        <select v-model="form.master_id" class="w-full h-[32px] rounded-xl border-none bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                        </select>
-                    </div>
+                <!-- COMMON FIELDS (Date & Master) -->
+                <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px]">
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">得知日期</label>
-                        <input v-model="form.record_date" type="date" class="w-full h-[32px] rounded-xl border-none bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <input v-model="form.record_date" type="date" class="w-full h-[32px] rounded-xl bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
+                        <select v-model="form.master_id" class="w-full h-[32px] rounded-xl bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
+                        </select>
                     </div>
                 </div>
 
                 <!-- SINGLE MODE -->
-                <div v-if="localMode === 'single'" class="space-y-4 animate-fade-in">
+                <div v-if="localMode === 'single'" class="space-y-1 mt-[-8px] animate-fade-in">
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." class="w-full h-[34px] rounded-xl bg-white px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." class="w-full h-[34px] rounded-xl bg-white px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-[2.5px]">
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
                             <input v-model="form.obtained_date" type="date" :disabled="form.status === '未求得'"
-                                class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                                class="w-full h-[34px] rounded-xl bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
                                 :class="form.status === '未求得' ? 'opacity-30' : ''">
                         </div>
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
-                            <select v-model="form.status" @change="handleStatusChange" class="w-full h-[34px] rounded-xl border-none bg-slate-50 px-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                            <select v-model="form.status" @change="handleStatusChange" class="w-full h-[34px] rounded-xl bg-white px-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none"
                                 :class="form.status === '未求得' ? 'text-slate-400' : 'text-emerald-600'">
                                 <option value="未求得">未求得</option>
                                 <option value="已求得">已求得</option>
@@ -74,19 +74,18 @@
 
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
-                        <textarea v-model="form.remarks" rows="4" placeholder="輸入更多說明內容..." class="w-full rounded-2xl border-none bg-slate-50 p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"></textarea>
+                        <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." class="w-full h-[38px] rounded-xl bg-white p-2 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none leading-normal"></textarea>
                     </div>
                 </div>
 
                 <!-- BATCH MODE -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
-                    <div class="bg-slate-50 rounded-2xl p-4 space-y-3 shadow-inner relative">
+                    <div class="bg-white rounded-2xl p-4 space-y-3 shadow-inner relative border border-slate-100">
                         <div class="flex items-center justify-between mb-1">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">貼入清單內容</label>
                             <div class="flex items-center space-x-3">
                                 <button v-if="batchInput" @click="batchInput = ''" class="text-[10px] text-red-400 font-bold hover:underline">清除內容</button>
-                                <button @click="$refs.fileInput.click()" class="text-[11px] text-indigo-600 font-bold flex items-center hover:bg-white px-2 py-1 rounded-lg border border-indigo-100 transition-all">
-                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0l-4-4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <button @click="$refs.fileInput.click()" class="text-[11px] text-indigo-600 font-bold flex items-center hover:bg-white px-2 py-1 rounded-lg transition-all">
                                     匯入檔案 (Excel/Word)
                                 </button>
                             </div>
@@ -107,7 +106,7 @@
 
                     <!-- Batch Preview Table -->
                     <div v-if="excelRows.length > 0" class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
-                        <div class="bg-indigo-50 px-4 py-2 border-b border-indigo-100 flex justify-between items-center">
+                        <div class="bg-white px-4 py-2 border-b border-slate-100 flex justify-between items-center">
                             <span class="text-[11px] font-bold text-indigo-600">偵測到 {{ excelRows.length }} 筆資料</span>
                             <div class="flex items-center space-x-4">
                                 <label class="flex items-center space-x-2 cursor-pointer">
@@ -122,28 +121,28 @@
                         </div>
                         <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
                             <table class="w-full text-[11px] text-left">
-                                <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tighter">
+                                <thead class="bg-white text-slate-500 sticky top-0 uppercase tracking-tighter border-b border-slate-100">
                                     <tr>
                                         <th v-for="col in excelCols" :key="col.key" class="p-2 border-b border-slate-100">{{ col.label }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-white transition-colors">
                                         <td v-for="col in excelCols" :key="col.key" class="p-2 text-slate-600 truncate max-w-[120px]">{{ row[col.key] }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div v-if="showTotal && sumKey" class="bg-emerald-50 px-4 py-3 border-t border-emerald-100 flex justify-between items-center animate-fade-in">
-                            <span class="text-xs font-bold text-emerald-600">本次批次總額預估</span>
-                            <span class="text-xl font-black text-emerald-700 tracking-tighter">{{ batchTotalValue.toLocaleString('zh-TW') }}</span>
+                        <div v-if="showTotal && sumKey" class="bg-white px-4 py-3 border-t border-slate-100 flex justify-between items-center animate-fade-in">
+                            <span class="text-xs font-bold text-slate-600">本次批次總額預估</span>
+                            <span class="text-xl font-black text-slate-700 tracking-tighter">{{ batchTotalValue.toLocaleString('zh-TW') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+            <div class="p-4 bg-white">
                 <button 
                     @click="handleSubmit" 
                     :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
@@ -198,7 +197,7 @@ const batchTotalValue = computed(() => {
 });
 
 watch(() => props.initialData, (newVal) => {
-    form.value = { ...newVal };
+    form.value = { count: 1, ...newVal };
 }, { deep: true });
 
 watch(() => props.mode, (newVal) => {
@@ -294,11 +293,16 @@ const handleSubmit = () => {
     if (localMode.value === 'single') {
         emit('saveSingle', form.value);
     } else {
-        // Send the raw input or the processed list to parent
+        // Send the processed list to parent
         emit('saveBatch', { 
             input: batchInput.value, 
             masterId: form.value.master_id,
-            rows: excelRows.value,
+            rows: excelRows.value.map(row => ({
+                name: row.c0,
+                purpose: row.c1,
+                count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
+                remarks: Object.keys(row).filter(k => !['c0', 'c1', sumKey.value].includes(k)).map(k => row[k]).join(' ')
+            })),
             total: batchTotalValue.value
         });
     }

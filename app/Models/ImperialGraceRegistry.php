@@ -13,6 +13,7 @@ class ImperialGraceRegistry extends Model
         'master_id',
         'name',
         'purpose',
+        'count',
         'acquisition_method',
         'record_date',
         'obtained_date',

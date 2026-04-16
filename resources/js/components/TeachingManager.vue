@@ -10,22 +10,45 @@
         <!-- Level 1: Folder Selection -->
         <div v-if="!currentFolder" class="min-h-screen bg-white">
             <!-- Large Static Title -->
-            <div class="p-[5px] text-center">
-                <h1 class="text-2xl font-medium text-black tracking-tight">仙師開示專區</h1>
+            <div class="px-6 py-4 text-center">
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">仙師開示專區</h1>
+                <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">高效管理每一份神聖教誨</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-2 md:gap-4 p-[5px]">
+            <!-- Global Stats Banner -->
+            <div class="mx-4 mb-6 p-5 bg-indigo-900 rounded-[32px] text-white shadow-xl flex items-center justify-between relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest block">總計開示篇數</span>
+                    <span class="text-3xl font-black tracking-tighter">{{ teachings.length.toLocaleString('zh-TW') }}</span>
+                </div>
+                <!-- Glassmorphism decorative circles -->
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="flex flex-col items-end relative z-10">
+                    <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest block">本月新增</span>
+                    <span class="text-lg font-bold">{{ monthlyTeachingsCount }} 篇</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 p-4">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-row md:flex-col items-center md:justify-between bg-white transition-all active:scale-95 border-0 md:border-[1.5px] md:border-[#E6D5B8] md:aspect-square md:rounded-[28px] md:shadow-sm group p-2 w-full md:w-[70%] md:mx-auto border-b border-gray-50 last:border-b-0 md:border-b-[1.5px]">
-                    <div class="flex items-center justify-center">
-                        <svg class="w-8 h-8 md:w-14 md:h-14 text-yellow-400 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                    class="flex flex-col items-center justify-center bg-white transition-all active:scale-95 border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md group p-5 aspect-square relative"
+                   >
+                    <div class="relative mb-3">
+                        <svg class="w-12 h-12 text-yellow-500 drop-shadow-sm transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z" />
                         </svg>
+                        <!-- Folder Badge -->
+                        <div v-if="getItemCount(folder.id) > 0" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg border-2 border-white">
+                            {{ getItemCount(folder.id) }}
+                        </div>
                     </div>
-                    <span class="text-[16px] md:text-[15px] font-medium text-black whitespace-nowrap ml-2 md:ml-0 md:mb-1">{{ folder.name }}</span>
+                    <span class="text-[15px] font-bold text-slate-700 whitespace-nowrap">
+                        {{ folder.name }}
+                    </span>
                 </button>
             </div>
+
 
             <!-- Minimalist Back to Dashboard -->
             <div class="mt-12 flex justify-center pb-32">
@@ -57,8 +80,21 @@
             </div>
 
             <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
-            <div v-else-if="filteredItems.length === 0" class="text-center py-12 text-slate-400">尚無開示紀錄。</div>
             <div v-else class="p-[5px]">
+                <!-- Statistics Banner -->
+                <div v-if="filteredItems.length > 0" class="px-3 py-4 mb-4 bg-gradient-to-br from-indigo-50 to-white rounded-[24px] border border-indigo-100/50 shadow-sm flex items-center justify-between">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">當前區域開示總計</span>
+                        <span class="text-2xl font-black text-indigo-900 tracking-tighter">{{ filteredItems.length }} 篇</span>
+                    </div>
+                    <div class="h-10 w-10 bg-indigo-100/50 rounded-2xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.082.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div v-if="filteredItems.length === 0" class="text-center py-12 text-slate-400">尚無開示紀錄。</div>
                 <div v-for="item in (focusedId ? filteredItems.filter(i => i.id === focusedId) : filteredItems) " :key="item.id" 
                     @click="toggleExpand(item.id)"
                     class="border-b border-dashed border-slate-200 py-3 relative active:bg-slate-50 transition-colors cursor-pointer">
@@ -242,8 +278,28 @@ const deleteItem = async (id) => {
 
 const filteredItems = computed(() => {
     if (!currentFolder.value) return [];
-    return teachings.value.filter(t => t.master_id === currentFolder.value.id);
+    let filtered = teachings.value.filter(t => t.master_id === currentFolder.value.id);
+    if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase();
+        filtered = filtered.filter(i => 
+            i.title.toLowerCase().includes(q) || 
+            i.content.toLowerCase().includes(q)
+        );
+    }
+    return filtered;
 });
+
+const monthlyTeachingsCount = computed(() => {
+    const now = new Date();
+    return teachings.value.filter(t => {
+        const d = new Date(t.created_at);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+});
+
+const getItemCount = (id) => {
+    return teachings.value.filter(t => t.master_id === id).length;
+};
 
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('zh-TW');
 
