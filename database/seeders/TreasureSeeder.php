@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Registry;
+use App\Models\Treasure;
 use Illuminate\Database\Seeder;
 
 class TreasureSeeder extends Seeder
@@ -12,8 +12,6 @@ class TreasureSeeder extends Seeder
      */
     public function run(): void
     {
-        $defaultDays = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
         $categories = [
             '清煞法寶' => [
                 'items' => [
@@ -64,7 +62,6 @@ class TreasureSeeder extends Seeder
                 'items' => ['業績法寶', '招財引善緣']
             ],
             '金丹' => [
-                'config' => ['units' => ['1包']],
                 'items' => [
                     '金丹', '元丹', '靈丹', '極丹', '太玄靈丹', '道源極丹', '三光金丹', '回春金丹', '龍罡焰丹', '腦清目明金丹', 
                     '禦寒金丹', '代謝金丹', '正中午吃金丹', '正中午清靈識金丹', '森羅金丹', '開文金丹', '降血壓金丹', 
@@ -73,34 +70,22 @@ class TreasureSeeder extends Seeder
             ],
             '符令' => [
                 'items' => [
-                    '符令' => ['options' => ['size_dropdown' => ['一般符令', 'A4', '1/2', '1/4', '1/8', '1/16']]],
-                    '睡覺符令' => ['options' => ['units' => ['1包']]],
-                    '增值睡覺符令', '吸煞符令', '替身符令', '龍令', '靈令', '太令', '貼紙符令', '清怨煞符令',
-                    '疏文符令' => ['options' => [
-                        'size_dropdown' => ['A4', '1/2', '1/4', '1/8', '1/16'],
-                        'days_label' => '1-9天份',
-                        'type_label' => '每天'
-                    ]]
+                    '符令', '睡覺符令', '增值睡覺符令', '吸煞符令', '替身符令', '龍令', '靈令', '太令', '貼紙符令', '清怨煞符令', '疏文符令'
                 ]
             ],
             '其他' => [
                 'items' => [
-                    '塩寶', '香灰', '高梁法酒', '法酒', '龍涎',
-                    '香環' => ['options' => ['count_dropdown' => [1, 2, 3, 4, 5, 6, 7, 8, 9], 'units' => ['1盒']]],
-                    '福祿香環' => ['options' => ['count_dropdown' => [1, 2, 3, 4, 5, 6, 7, 8, 9], 'units' => ['1盒']]]
+                    '塩寶', '香灰', '高梁法酒', '法酒', '龍涎', '香環', '福祿香環'
                 ]
             ],
         ];
 
         foreach ($categories as $categoryName => $data) {
-            $items = isset($data['items']) ? $data['items'] : $data;
-
-            foreach ($items as $key => $value) {
-                $name = is_string($key) ? $key : $value;
-
-                Registry::updateOrCreate(
+            $items = $data['items'];
+            foreach ($items as $name) {
+                Treasure::updateOrCreate(
                     ['name' => $name],
-                    ['remarks' => "類別: $categoryName", 'master_id' => 5]
+                    ['category' => $categoryName]
                 );
             }
         }

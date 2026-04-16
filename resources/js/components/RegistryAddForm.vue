@@ -42,8 +42,10 @@
                 <div class="space-y-4">
                     <div v-if="localMode === 'single'" class="space-y-1.5 animate-fade-in">
                         <label class="text-xs font-bold text-slate-700 block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
-                    </div>
+                        <input v-model="form.name" type="text" list="treasure-list" placeholder="輸入或選擇法寶名稱" @input="onNameInput" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <datalist id="treasure-list">
+                            <option v-for="t in treasureLibrary" :key="t.id" :value="t.name">{{ t.category }}</option>
+                        </datalist>                    </div>
 
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-slate-700 block ml-1">法寶用意</label>
@@ -106,7 +108,8 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     mode: String, // 'single' | 'batch' | null
@@ -120,6 +123,24 @@ const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'fileUpload']);
 const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
+const treasureLibrary = ref([]);
+
+onMounted(async () => {
+    try {
+        const res = await axios.get('/treasures');
+        treasureLibrary.value = res.data;
+    } catch (e) {
+        console.error('Failed to load library', e);
+    }
+});
+
+const onNameInput = () => {
+    // If the name matches a library item, auto-fill the purpose if it's empty
+    const match = treasureLibrary.value.find(t => t.name === form.value.name);
+    if (match && !form.value.purpose) {
+        form.value.purpose = match.category;
+    }
+};
 
 const selectedMasterName = computed(() => {
     const m = props.masters?.find(m => String(m.id) === String(form.value.master_id));
