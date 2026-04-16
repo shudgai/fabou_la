@@ -1,14 +1,15 @@
 <template>
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Only show in Folder-view or Item-view) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <h2 class="text-[21px] font-normal font-outfit tracking-tight text-black flex items-center">
-                <span v-if="currentFolder">重大皇恩專區 - {{ currentFolder.name }}</span>
-                <span v-else>重大皇恩專區</span>
-                <button @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
-                    ({{ sortDesc ? '新→舊' : '舊→新' }})
-                </button>
-            </h2>
+        <div v-if="currentFolder" class="border-b border-slate-300 bg-white sticky top-0 z-10" style="padding: 10px 10px 8px 10px;">
+            <div class="flex items-center justify-center relative mb-1">
+                <h2 class="text-[19px] font-normal font-outfit tracking-tight text-black flex items-center">
+                    <span>重大皇恩 - {{ currentFolder.name }}</span>
+                    <button @click="toggleSort" class="ml-2 px-1.5 py-0.5 text-[12px] text-indigo-500 font-bold bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all opacity-80">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                </h2>
+            </div>
         </div>
         <!-- Perfectly Centered Ultra-Compact Warning Banner -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] animate-toast-in pointer-events-auto">
@@ -34,12 +35,12 @@
                 </div>
             </div>
         </div>
-        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 5px;">
+        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
         <!-- Level 1: Folder Selection -->
         <div v-if="!currentFolder" class="bg-white">
             <!-- Header Title -->
-            <div class="px-6 pt-[20px] pb-2 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">重大皇恩專區</h1>
+            <div class="px-6 pt-[5px] pb-2 text-center">
+                <h1 class="text-[28px] font-black text-slate-800 tracking-tight">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4">
@@ -47,8 +48,8 @@
                     @click="currentFolder = folder"
                     class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-[28px] border border-[rgb(255,215,0)] group px-[5px] pt-[10px] pb-0 aspect-square relative w-[72%] mx-auto"
                    >
-                    <div class="relative mb-3">
-                        <svg class="w-14 h-14 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div class="relative mb-4">
+                        <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop offset="0%" style="stop-color:rgb(255, 235, 120);stop-opacity:1" />
@@ -64,11 +65,10 @@
                             <path d="M10 21H54" stroke="white" stroke-opacity="0.3" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <div class="mt-[-10px] text-center px-1">
-                        <div class="text-[14px] leading-tight text-slate-700 break-words font-normal">
+                    <div class="mt-[-6px] text-center px-1">
+                        <div class="text-[17px] leading-tight text-slate-700 break-words font-bold">
                             <template v-if="folder.id === 'unobtained'">
-                                <div class="whitespace-nowrap text-[14.5px]">未求得重大皇恩專區</div>
-                                <div><br></div>
+                                <div class="text-[17.5px] leading-tight">未求得<br>重大皇恩</div>
                             </template>
                             <template v-else>
                                 <div class="whitespace-nowrap">{{ folder.name }}</div>
@@ -89,84 +89,155 @@
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else class="px-[5px] md:px-0 bg-white">
-
-            <!-- List Display -->
-            <div style="padding: 0px 10px 10px 10px;" class="mt-[-15px]">
-                <div v-if="!loading && allRegistries.length > 0 && !addMode" class="mb-3 px-1">
-                </div>
-
+        <div v-else class="px-0 bg-white">
+            <!-- List Display Area -->
+            <div style="padding: 0px 8px 10px 8px;" class="mt-0">
                 <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
                 <div v-else class="flex flex-col">
-
-                    <div v-for="(reg, index) in (focusedId ? filteredRegistries.filter(r => r.id === focusedId) : filteredRegistries)" :key="reg.id" 
+                    <!-- Data Rows -->
+                    <div v-for="(reg, index) in filteredRegistries" :key="reg.id" 
+                        v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'py-[5px] border-b border-slate-300 last:border-b-0 relative group transition-colors cursor-pointer bg-white',
-                            { 'border-t border-slate-300': index === 0 }
+                            'py-[10px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 z-10'
                         ]">
-                        <div class="mt-0 flex flex-col">
-                            <!-- Master Name Row (Only in Unobtained Folder) -->
-                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1">
+                        
+                        <!-- List Item Display (Header when collapsed) -->
+                        <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col pointer-events-none">
+                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[13px] font-bold text-[#9fa6b2] leading-none mb-1">
                                 {{ getMasterName(reg.master_id) }}
                             </div>
 
-                            <!-- Row 1: Label & Dates & Menu -->
-                            <div class="flex items-center justify-between mb-0.5">
+                            <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[11.5px] font-normal text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
-                                    <div class="text-[11.5px] text-slate-400 font-normal">
-                                        得知: <span class="text-slate-500">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
-                                        <span class="ml-2 font-normal">
-                                            求得: <span class="text-slate-500">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
+                                    <div class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[13px] text-[#9fa6b2] font-normal">
+                                        得知: <span class="text-[16px] text-slate-500 font-normal ml-0.5">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
+                                        <span class="ml-2">
+                                            求得: <span class="text-[16px] text-slate-500 font-normal ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
                                         </span>
                                     </div>
                                 </div>
-
-                                <!-- Action Menu Button (Moved to Row 1) -->
-                                <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
-                                    <button @click.stop="toggleMenu(reg.id)" class="p-1 -mr-1">
-                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    </button>
-                                    <!-- MENU DROPDOWN -->
-                                    <div v-if="openMenuId === reg.id" @click.stop 
-                                         class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                        <button @click.stop="openAndEdit(reg)" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                        <button @click.stop="copyOnly(reg)" class="w-full p-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                        <button @click.stop="downloadOnly(reg)" class="w-full p-2 text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                        <button @click.stop="confirmDelete(reg.id)" class="w-full p-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
-                                    </div>
-                                </div>
+                                <div class="w-8"></div>
                             </div>
 
-                            <!-- Row 2: Name and Status (Unified Height) -->
                             <div class="flex items-center justify-between">
-                                <div class="text-[15.5px] font-normal text-slate-900 leading-tight">
+                                <div class="text-[16px] font-normal text-slate-900 leading-tight">
                                     {{ reg.name }}
                                 </div>
-
-                                <div class="flex items-center">
-                                    <!-- Quick Status Toggle -->
+                                <div class="flex items-center pointer-events-auto">
                                     <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
                                         'bg-blue-50 text-blue-600 border-blue-100': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已登記',
-                                        'bg-rose-50 text-rose-500 border-rose-100': reg.status === '未求得',
+                                        'bg-red-50 text-red-600 border-red-100': reg.status === '未求得',
                                         'cursor-pointer': currentFolder.id === 'unobtained'
-                                    }" class="text-[12px] px-1 py-0.5 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
+                                    }" class="text-[13px] px-1.5 py-1 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
                                         {{ reg.status }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <!-- Extra Rows -->
-                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in text-[14.5px] text-slate-900 mt-2">
-                            <div v-if="reg.purpose"><span class="text-slate-500">用意：</span>{{ reg.purpose }}</div>
-                            <div v-if="reg.remarks"><span class="text-slate-500">備註：</span>{{ reg.remarks }}</div>
+
+                        <!-- Independent Menu Button (Three Dots) -->
+                        <div v-if="!expandedIds.has(reg.id)" class="absolute right-1 top-0.5 z-20">
+                            <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
+                                <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <div v-if="openMenuId === reg.id" @click.stop 
+                                     class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">
+                                        {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
+                                    </button>
+                                    <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expanded Detail (Pure White Mode) -->
+                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in mt-2 p-3 bg-white rounded-2xl space-y-2 relative">
+                            <!-- Action Menu in Expanded Mode -->
+                            <div class="absolute right-2 top-2 z-[101]">
+                                <button @click.stop="toggleMenu(reg.id)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <div v-if="openMenuId === reg.id" @click.stop 
+                                     class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">
+                                        {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
+                                    </button>
+                                    <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Detail Content Grid -->
+                            <div class="grid grid-cols-2 gap-3 pb-2">
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-1 ml-1">
+                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-[#9fa6b2] active:scale-90 transition-all">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        </button>
+                                        <label class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-widest block">得知日期</label>
+                                    </div>
+                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal text-slate-700">
+                                        {{ reg.record_date?.replace(/-/g, '/') || '-' }}
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">載錄目標仙師</label>
+                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal text-slate-700">
+                                        {{ getMasterName(reg.master_id) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">法寶名稱</label>
+                                <div class="w-full min-h-[40px] rounded-xl bg-white px-3 py-1 flex items-center shadow-sm text-[16px] font-normal text-slate-800 leading-tight">
+                                    {{ reg.name }}
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">法寶用意</label>
+                                <div class="w-full min-h-[40px] rounded-xl bg-white px-3 py-1 flex items-center shadow-sm text-[16px] text-slate-700 leading-tight">
+                                    {{ reg.purpose || '-' }}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">求得日期</label>
+                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] text-slate-700">
+                                        {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">目前狀態</label>
+                                    <div class="w-full h-[40px] rounded-xl bg-white px-3 flex items-center shadow-sm text-[16px] font-normal"
+                                        :class="reg.status === '未求得' ? 'text-red-600' : 'text-emerald-600'">
+                                        {{ reg.status }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-bold text-[#9fa6b2] uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full min-h-[60px] rounded-xl bg-white p-3 shadow-sm text-[16px] text-slate-600 leading-normal">
+                                    {{ reg.remarks || '無備註內容' }}
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
     </div> <!-- End Scrollable Area -->
     
@@ -275,14 +346,26 @@ const addActions = computed(() => [
     { 
         label: '逐筆新增', 
         description: '手動輸入每一項重大皇恩詳細資料',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         handler: () => prepareAdd('single') 
     },
     { 
         label: '多筆一次新增', 
         description: '快速解析 LINE 聊天內容紀錄',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         handler: () => prepareAdd('batch') 
+    },
+    { 
+        label: '複製隨貼 LINE (全部)', 
+        description: '將此分類完整清單複製至剪貼簿',
+        icon: '<svg class="text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => { copyListOnly(); showAddMenu.value = false; }
+    },
+    { 
+        label: '下載匯出 EXCEL (全部)', 
+        description: '將此分類匯出為標準試算表檔案',
+        icon: '<svg class="text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => { exportListExcel(); showAddMenu.value = false; }
     }
 ]);
 
@@ -343,21 +426,23 @@ const toggleMenu = (id) => {
     } else {
         openMenuId.value = id;
         focusedId.value = id;
-        expandedIds.value.clear();
-        expandedIds.value.add(id);
+        const newSet = new Set();
+        newSet.add(id);
+        expandedIds.value = new Set([id]);
     }
     deleteConfirmId.value = null;
 };
 const toggleExpand = (id) => {
-    if (expandedIds.value.has(id)) {
-        expandedIds.value.delete(id);
+    const s = new Set(expandedIds.value);
+    if (s.has(id)) {
+        s.delete(id);
+        expandedIds.value = s;
         if (focusedId.value === id) focusedId.value = null;
-        searchQuery.value = '';
-        showSearch.value = false;
     } else {
         // 進入聚焦模式：展開該筆並隱藏其他
-        expandedIds.value.clear(); // 清除其他展開
-        expandedIds.value.add(id);
+        const newSet = new Set();
+        newSet.add(id);
+        expandedIds.value = newSet;
         focusedId.value = id;
     }
     openMenuId.value = null;
@@ -458,9 +543,47 @@ const downloadListOnly = () => {
     if (!currentFolder.value) return;
     const contents = `【重大皇恩清單 - ${currentFolder.value.name}】\r\n\r\n` + 
         filteredRegistries.value.map(r => `${r.name}\n  數據：${r.count || 1}\n  用意：${r.purpose || '無'}\n  狀態：${r.status}`).join('\r\n\r\n');
-    triggerSimpleDownload(contents, `重大皇恩全部清單_${currentFolder.value.name}.txt`);
-    persistentToast.value = { msg: '已啟動全部清單下載.', type: 'success' };
+    triggerSimpleDownload(contents, `重大皇恩清單_${currentFolder.value.name}.txt`);
+    persistentToast.value = { msg: '已啟動清單下載.', type: 'success' };
     openMenuId.value = null;
+};
+
+// 5. Excel 匯出 (全部清單)
+const exportListExcel = () => {
+    if (!currentFolder.value || !filteredRegistries.value.length) return;
+    
+    // Prepare Data
+    const data = filteredRegistries.value.map(r => ({
+        '法寶名稱': r.name,
+        '數據': r.count || 1,
+        '用意': r.purpose || '',
+        '狀態': r.status,
+        '得知日期': r.record_date || '',
+        '求得日期': r.obtained_date || '',
+        '備註/來源': r.remarks || ''
+    }));
+
+    try {
+        const ws = window.XLSX.utils.json_to_sheet(data);
+        const wb = window.XLSX.utils.book_new();
+        window.XLSX.utils.book_append_sheet(wb, ws, "重大皇恩清單");
+        
+        // Generate File
+        const wbout = window.XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `重大皇恩_${currentFolder.value.name}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        persistentToast.value = { msg: '✓ Excel 匯出成功', type: 'success' };
+    } catch (e) {
+        console.error(e);
+        persistentToast.value = { msg: '✖ 匯出失敗', type: 'error' };
+    }
 };
 
 const prepareAdd = (mode) => {

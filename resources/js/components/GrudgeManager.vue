@@ -2,24 +2,17 @@
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-4 h-[50px]">
-            <!-- Left: Sort Toggle -->
             <div class="w-[70px] flex items-center shrink-0">
                 <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-bold bg-indigo-50 px-1.5 py-0.5 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
-
-            <!-- Center: Title -->
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h2 class="text-[19px] font-bold font-outfit tracking-tight text-slate-800 truncate">
-                    {{ displayTitle }}
-                </h2>
+                <h2 class="text-[19px] font-bold font-outfit tracking-tight text-[#9fa6b2] truncate">{{ displayTitle }}</h2>
             </div>
-
-            <!-- Right: Total Info -->
             <div class="w-[70px] flex items-center justify-end shrink-0">
                 <button @click="toggleShowTotal" class="text-[15px] text-slate-900 font-bold active:scale-95 transition-all">
-                    {{ showTotal ? '總量: ' + totalGrudgeQuantity : '總量' }}
+                    總量<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[16px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
                 </button>
             </div>
         </div>
@@ -27,113 +20,112 @@
         <!-- Search Component -->
         <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in">
             <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
-                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl px-4 text-sm focus:ring-0 outline-none">
+                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl px-4 text-[15px] focus:ring-0 outline-none">
         </div>
 
-        <!-- Table Layout List -->
-        <div class="flex-1 overflow-x-auto overflow-y-auto pl-[5px] bg-white flex flex-col" :class="[focusedId ? 'h-full pb-0' : 'pb-24']">
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
-            <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">
-                目前尚無怨靈載錄資料。
-            </div>
-            <div v-else class="flex flex-col flex-1">
-                <!-- Table Header -->
-                <div class="flex bg-white border-y-2 border-slate-200 text-[16px] text-slate-600 sticky top-0 z-10 mt-[-24px] h-[24px]">
-                    <div class="flex-1 text-center shrink-0 flex items-center justify-center relative -left-[20px]">法號</div>
-                    <div class="w-[70px] relative -left-[5px] px-1 text-center whitespace-nowrap shrink-0 flex items-center justify-center tracking-tighter text-[16px]">得知日期</div>
-                    <div class="w-[80px] relative left-[10px] px-1 text-center whitespace-nowrap shrink-0 flex items-center justify-center text-[16px]">數量</div>
-                    <div class="w-[90px] relative left-[19px] px-[5px] text-center flex items-center justify-center tracking-tighter text-[16px]">處理狀況</div>
-                    <div class="w-[30px] shrink-0"></div>
-                </div>
-
-                <!-- Table Body -->
-                <div class="pt-[24px]">
-                    <div v-for="(item, index) in (focusedId ? sortedItems.filter(i => i.id === focusedId) : sortedItems)" :key="item.id" 
-                        @click="focusedId === item.id ? null : toggleExpand(item.id)"
-                        class="flex flex-col border-b border-slate-200 last:border-b-0 bg-white overflow-visible transition-all duration-300"
-                        :class="[focusedId ? 'flex-1' : '']"
+            <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
+            <div v-else class="flex flex-col flex-1 px-2 pt-0">
+                <div class="flex flex-col">
+                    <div v-for="(item, index) in sortedItems" :key="item.id" 
+                        v-show="focusedId === null || focusedId === item.id"
+                        @click="toggleExpand(item.id)"
+                        :class="[
+                            'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 z-10',
+                            { 'border-t border-slate-900': index === 0 && !focusedId, 'border-b-0': focusedId === item.id }
+                        ]"
                     >
-                        <div class="flex items-stretch h-[32px] w-full" :class="[focusedId === item.id ? 'bg-indigo-50/30' : '']">
-                    
-                        <!-- 法號 -->
-                        <div class="flex-1 pl-[5px] border-r border-slate-100 flex items-center shrink-0 overflow-hidden">
-                            <div class="truncate text-[16px] text-slate-900 leading-none">
-                                {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="font-normal text-slate-400 text-[16px]">{{ item.user_remarks }}</span>
-                            </div>
-                        </div>
-
-                        <!-- 得知日期 -->
-                        <div class="w-[70px] relative -left-[5px] px-1 border-r border-slate-100 text-center whitespace-nowrap shrink-0 flex items-center justify-center font-mono text-slate-400 tracking-tighter text-[16px]" style="padding-top: 5px; padding-bottom: 5px;">
-                            {{ item.know_date ? formatDate(item.know_date) : 'yyyy/mm/dd' }}
-                        </div>
-
-                        <!-- 數量 -->
-                        <div class="w-[80px] relative left-[10px] px-1 border-r border-slate-100 text-center text-slate-900 shrink-0 flex items-center justify-center font-mono text-[16px]" style="padding-top: 5px; padding-bottom: 5px;">
-                            {{ item.quantity }}
-                        </div>
-
-                        <!-- 處理狀況 -->
-                        <div class="w-[90px] relative left-[19px] px-[5px] text-center relative group/status">
-                            <div @click.stop="openStatusId = openStatusId === item.id ? null : item.id" 
-                                class="absolute inset-0 flex items-center justify-center cursor-pointer active:bg-slate-100/50 transition-all z-10 space-x-0.5">
-                                <div class="leading-none font-mono tracking-tighter text-[16px]" :class="[item.destination === '未處理' ? 'text-slate-300' : 'text-slate-400']">
-                                    {{ item.process_date ? formatDate(item.process_date) : (item.destination === '未處理' ? '未處理' : formatDate(item.know_date)) }}
-                                </div>
-                                <svg class="w-2.5 h-2.5 opacity-20" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-                            </div>
-
-                            <!-- Dropdown -->
-                            <div v-if="openStatusId === item.id" 
-                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[120px] bg-white rounded-lg border border-slate-200 z-[110] p-[5px] space-y-1 animate-slide-up text-left overflow-visible">
-                                <button @click.stop="openStatusId = null" class="absolute top-1 right-1 text-slate-300 hover:text-slate-400 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                                <div class="space-y-1 pt-1">
-                                    <label class="text-[14px] font-bold text-slate-400 uppercase tracking-wider block">處理結果</label>
-                                    <div class="space-y-1">
-                                        <div v-for="destPart in (item.destination || '未處理').split(/[、，,]/)" :key="destPart" class="text-[14px] font-bold leading-none border-l-2 pl-1.5 whitespace-nowrap overflow-hidden" :class="[destPart.includes('九天') ? 'text-red-600 border-red-200' : destPart.includes('耀紫軍') ? 'text-purple-600 border-purple-200' : 'text-slate-900 border-slate-200']">
-                                            {{ destPart.replace(/\(|\)/g, ' ') }}
-                                        </div>
-                                    </div>
-                                    <div v-if="item.remarks && (item.remarks.yan_zun || item.remarks.yan_an || item.remarks.long_sheng || item.remarks.long_zhan)" class="space-y-0.5 mt-2">
-                                        <div v-if="item.remarks.yan_zun || item.remarks.yan_an" class="text-[14px] text-slate-500 font-bold bg-slate-50 px-1.5 py-1 rounded flex justify-between">
-                                            <span>閻尊 {{ item.remarks.yan_zun || 0 }}</span><span>閻闇 {{ item.remarks.yan_an || 0 }}</span>
-                                        </div>
-                                        <div v-if="item.remarks.long_sheng || item.remarks.long_zhan" class="text-[14px] text-purple-600 font-bold bg-purple-50 px-1.5 py-1 rounded flex justify-between">
-                                            <span>龍勝 {{ item.remarks.long_sheng || 0 }}</span><span>龍戰 {{ item.remarks.long_zhan || 0 }}</span>
-                                        </div>
-                                    </div>
+                        <!-- List Item Display (Collapsed) -->
+                        <div v-if="focusedId !== item.id" class="mt-0 flex flex-col pointer-events-none">
+                            <!-- Row 1: Date only -->
+                            <div class="flex items-center mb-0.5">
+                                <div class="flex items-baseline space-x-2">
+                                    <div class="text-[13px] font-bold text-slate-400 uppercase tracking-wider">得知日期</div>
+                                    <div class="text-[13px] text-[#aeb4be] font-normal ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
+
+                            <!-- Row 2: Name & Quantity & Status -->
+                            <div class="flex items-center justify-between">
+                                <div class="grid grid-cols-2 flex-1 items-center">
+                                    <!-- Dharma Name -->
+                                    <div class="text-[16px] font-normal text-slate-900 leading-tight truncate pr-2">
+                                        {{ item.user_name || '-' }}
+                                        <span v-if="item.user_remarks" class="text-slate-500 ml-1">{{ item.user_remarks }}</span>
+                                    </div>
+                                    <!-- Quantity -->
+                                    <div class="text-[14px] text-slate-400 font-normal">
+                                        <span class="text-[13px] font-bold text-slate-400 uppercase mr-1">數量:</span> 
+                                        <span class="text-[16px] text-slate-600 font-normal ml-0.5">{{ item.quantity }}</span>
+                                    </div>
+                                </div>
+                                <!-- Status (Slate-350 for unprocessed) -->
+                                <span :class="item.destination === '未處理' ? 'text-[#9fa6b2]' : 'text-emerald-600'" class="text-[13px] font-normal shrink-0">
+                                    {{ item.destination === '未處理' ? '未處理' : '已處理' }}
+                                </span>
+                            </div>
                         </div>
 
-                            <!-- Menu (Layer 1 end) -->
-                            <div class="w-[30px] shrink-0 flex items-center justify-center z-[30] relative overflow-visible">
-                                <button @click.stop="toggleMenu(item.id)" :class="[deleteConfirmId === item.id ? 'text-red-500' : 'text-slate-400']" class="p-1 active:text-indigo-600 rounded-full transition-all">
-                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-[100px] bg-white bg-opacity-100 rounded-lg border border-slate-200 z-[100] overflow-hidden animate-slide-up p-1 flex flex-col" style="gap: 2px;">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-2 text-left text-indigo-600 active:bg-indigo-50 font-bold rounded py-1 text-[14px] whitespace-nowrap">
-                                        {{ focusedId === item.id ? '展開清單' : '縮起清單' }}
+                        <!-- Menu Button Layer -->
+                        <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
+                            <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">展開詳情</button>
+                                <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                <button @click.stop="copyItem(item)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium">複製貼 LINE</button>
+                                <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                            </div>
+                        </div>
+
+                        <!-- Expanded Detail (Pure White Frameless Style) -->
+                        <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative">
+                            <div class="absolute right-0 top-0 z-[101]">
+                                <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">收合清單</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex items-center space-x-1 ml-1">
+                                    <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300 active:scale-90 transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
-                                    <button @click.stop="editItem(item)" class="w-full px-2 text-left text-slate-700 active:bg-slate-50 rounded py-1 text-[14px] whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyItem(item)" class="w-full px-2 text-left text-green-600 active:bg-green-50 font-bold rounded py-1 text-[14px] whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full px-2 text-left text-blue-600 active:bg-blue-50 rounded py-1 text-[14px] whitespace-nowrap">檔案下載</button>
-                                    <button @click.stop="downloadList('txt'); openMenuId = null" class="w-full px-2 text-left text-emerald-600 active:bg-emerald-50 font-bold rounded py-1 text-[14px] whitespace-nowrap">下載清單</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full px-2 text-left text-red-600 active:bg-red-50 rounded py-1 text-[14px] whitespace-nowrap">刪除</button>
+                                    <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block">得知日期</label>
+                                </div>
+                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
+                            </div>
+
+                            <!-- Detail Row 2: user_name & user_remarks (Merged) -->
+                            <div class="space-y-1">
+                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
+                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">
+                                    {{ item.user_name || '-' }}
+                                    <span v-if="item.user_remarks" class="text-slate-500 ml-1.5">{{ item.user_remarks }}</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Layer 2: Focus Detail Area (Fills space) -->
-                        <div v-if="focusedId === item.id" 
-                            @click.self="focusedId = null"
-                            class="flex-1 p-3 pt-4 border-t border-slate-100 space-y-4 bg-white animate-fade-in cursor-default">
-                            <div v-if="item.process_date" class="space-y-1 pointer-events-none">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">處理日期</label>
-                                <p class="text-[13px] font-mono text-slate-700 mt-0.5">{{ formatDate(item.process_date) }}</p>
+                            <div class="space-y-1">
+                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">數量</label>
+                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-800">{{ item.quantity }}</div>
                             </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">處理結果</label>
+                                <div class="w-full px-3 flex items-center text-[16px] font-normal" :class="item.destination === '未處理' ? 'text-[#aeb4be]' : 'text-slate-700'">
+                                    {{ item.destination || '未處理' }}
+                                    <span v-if="item.process_date" class="ml-2 text-[13px] text-[#aeb4be]">({{ formatDate(item.process_date) }})</span>
+                                </div>
+                            </div>
+
                             <div v-if="item.remarks_text" class="space-y-1">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">備註</label>
-                                <p class="text-[13px] text-slate-500 leading-relaxed">{{ item.remarks_text }}</p>
+                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 text-[16px] font-normal text-slate-600 leading-normal">{{ item.remarks_text }}</div>
                             </div>
                         </div>
                     </div>
@@ -144,41 +136,17 @@
         <!-- FAB Bottom Navigation -->
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
-                <div class="flex justify-center">
-                    <button @click="handleBack" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <button @click="$emit('goHome')" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center items-center">
-                    <button @click="showAddMenu = !showAddMenu" 
-                        :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95']"
-                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500">
-                        <svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <button @click="showSearch = !showSearch" :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <button @click="downloadList" class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
+                <div class="flex justify-center items-center h-full"><button @click="handleBack" class="text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg></button></div>
+                <div class="flex justify-center items-center h-full"><button @click="$emit('goHome')" class="text-slate-400"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+                <div class="flex justify-center items-center h-full"><button @click="showAddMenu = !showAddMenu" :class="[showAddMenu ? 'bg-slate-800 rotate-45' : 'bg-indigo-600 text-white']" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500"><svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+                <div class="flex justify-center items-center h-full"><button @click="showSearch = !showSearch" :class="showSearch ? 'text-indigo-600' : 'text-slate-400'"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg></button></div>
+                <div class="flex justify-center items-center h-full"><button @click="downloadList" class="text-slate-400"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
             </div>
         </div>
 
-    <!-- MODAL COMPONENTS -->
-    <search-component v-model="searchQuery" :show="showSearch" @close="showSearch = false" />
-    <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
-    <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="loadData" />
-    <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
+        <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+        <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="loadData" />
+        <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
     </div>
 </template>
 
@@ -282,21 +250,133 @@ const addActions = computed(() => [
     { 
         label: '逐筆新增', 
         description: '手動輸入單筆怨靈紀錄',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        bgColor: 'bg-indigo-50',
+        textColor: 'text-indigo-600',
         handler: () => { 
             editingId.value = null;
-            form.value = { user_id: null, user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: new Date().toISOString().split('T')[0], process_date: '', remarks_text: '' };
+            form.value = { user_name: '', user_remarks: '', destination: '未處理', quantity: 0, know_date: new Date().toISOString().split('T')[0], process_date: '', remarks_text: '' };
             addMode.value = true; 
         } 
     },
     { 
         label: '多筆新增', 
         description: '直接貼上法號清單批量載錄',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        colorClass: 'bg-emerald-100 text-emerald-600',
-        handler: () => { showBatchImport.value = true; } 
+        icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        bgColor: 'bg-emerald-50',
+        textColor: 'text-emerald-600',
+        handler: () => { 
+            showBatchImport.value = true;
+        } 
+    },
+    { 
+        label: '匯出 EXCEL', 
+        description: '下載當前篩選名單報表',
+        icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
+        bgColor: 'bg-green-50',
+        textColor: 'text-green-600',
+        handler: () => { 
+            exportToExcel();
+        } 
+    },
+    { 
+        label: '複製貼 LINE', 
+        description: '將清單轉為文字複製到 LINE',
+        icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>',
+        bgColor: 'bg-amber-50',
+        textColor: 'text-amber-600',
+        handler: () => { 
+            copyAllToLine();
+        } 
     }
 ]);
+
+const getVisualWidth = (str) => {
+    let width = 0;
+    for (let i = 0; i < str.length; i++) {
+        const charCode = str.charCodeAt(i);
+        if (charCode >= 0 && charCode <= 128) width += 1;
+        else width += 2;
+    }
+    return width;
+};
+
+const padToWidthPrecise = (str, width, isNumeric = false) => {
+    const currentWidth = getVisualWidth(str);
+    if (currentWidth >= width) return str;
+    if (isNumeric) {
+        const padding = '\u2007'.repeat(width - currentWidth);
+        return padding + str;
+    } else {
+        let remaining = width - currentWidth;
+        let padded = str;
+        while (remaining >= 2) { padded += '\u3000'; remaining -= 2; }
+        while (remaining >= 1) { padded += ' '; remaining -= 1; }
+        return padded;
+    }
+};
+
+const copyAllToLine = () => {
+    if (!sortedItems.value.length) return alert('目前沒有資料可供複製');
+    let text = `【怨靈載錄報表】\n\n`;
+    const hDate = padToWidthPrecise('日期', 10);
+    const hName = padToWidthPrecise('法號', 18);
+    text += `${hDate} | ${hName} | 數量\n`;
+    text += `----------------------------------------\n`;
+    let total = 0;
+    sortedItems.value.forEach(item => {
+        const dateStr = formatDate(item.know_date);
+        const fullName = item.user_name + (item.user_remarks || '');
+        const qtyNum = Number(item.quantity) || 0;
+        total += qtyNum;
+        const cDate = padToWidthPrecise(dateStr, 10);
+        const cName = padToWidthPrecise(fullName, 18);
+        const cQty  = padToWidthPrecise(qtyNum.toString(), 4, true);
+        text += `${cDate} | ${cName} | ${cQty}\n`;
+    });
+    text += `----------------------------------------\n`;
+    const footerLabel = padToWidthPrecise('總結：', 30);
+    const footerQty   = padToWidthPrecise(total.toString(), 4, true);
+    text += `${footerLabel} | ${footerQty}\n`;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('已複製到剪貼簿，快去 LINE 貼上吧！');
+    });
+};
+
+const exportToExcel = () => {
+    if (!filteredItems.value.length) return alert('目前沒有資料可供匯出');
+    if (typeof XLSX === 'undefined') {
+        const script = document.createElement('script');
+        script.src = "https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js";
+        script.onload = () => performExcelExport();
+        document.head.appendChild(script);
+    } else {
+        performExcelExport();
+    }
+};
+
+const performExcelExport = () => {
+    let total = 0;
+    const data = sortedItems.value.map(item => {
+        const qty = Number(item.quantity) || 0;
+        total += qty;
+        return {
+            '得知日期': formatDate(item.know_date),
+            '法號': item.user_name,
+            '備註': item.user_remarks || '',
+            '數量': qty,
+            '處理結果': item.destination || '未處理',
+            '處理日期': item.process_date ? formatDate(item.process_date) : '-',
+            '詳細備註': item.remarks_text || ''
+        };
+    });
+    data.push({ '得知日期': '', '法號': '總結', '備註': '', '數量': total, '處理結果': '', '處理日期': '', '詳細備註': '' });
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, '怨靈資料');
+    const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    XLSX.writeFile(workbook, `怨靈報表_${dateStr}.xlsx`);
+};
 
 const form = ref({ user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: new Date().toISOString().split('T')[0], process_date: '', remarks_text: '' });
 
@@ -418,6 +498,7 @@ const downloadList = (format = 'txt') => {
 };
 
 const totalGrudgeQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const filteredTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
 const displayTitle = computed(() => currentFolder.value?.name || '怨靈專區');
 const formatDate = (d) => {
     if (!d) return '-';
@@ -427,7 +508,9 @@ const formatDate = (d) => {
 
 onMounted(() => {
     loadData();
-    window.addEventListener('click', (e) => { if (!e.target.closest('.relative')) openMenuId.value = null; });
+    window.addEventListener('click', (e) => { 
+        if (!e.target.closest('.relative')) openMenuId.value = null; 
+    });
 });
 </script>
 
@@ -436,4 +519,7 @@ onMounted(() => {
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.3s ease-in; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); border-radius: 10px; }
 </style>

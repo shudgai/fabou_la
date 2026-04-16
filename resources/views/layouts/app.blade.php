@@ -165,7 +165,7 @@
             <div class="flex-1 flex flex-col min-w-0 relative">
                 <!-- Mobile Header (Hidden on Note pages as they provide their own optimized headers) -->
                 @if(!request()->routeIs('note.index'))
-                <header class="lg:hidden h-14 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0">
+                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0">
                     <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

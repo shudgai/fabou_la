@@ -4,7 +4,7 @@
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-4 h-[50px]">
             <!-- Left: Sort Button -->
             <div class="w-[70px] flex items-center shrink-0">
-                <button v-if="currentFolder" @click="sortDesc = !sortDesc" class="text-[13px] text-indigo-500 font-bold bg-indigo-50 px-1.5 py-0.5 rounded-lg active:scale-95 transition-all tracking-tighter">
+                <button v-if="currentFolder" @click="sortDesc = !sortDesc" class="text-[13px] text-indigo-500 font-bold bg-indigo-50 px-2 py-0.5 rounded-lg active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -23,7 +23,7 @@
                     class="text-black font-bold whitespace-nowrap active:opacity-60 transition-all pr-1"
                     style="font-size: 15px;"
                 >
-                    總量<span v-if="showFullTotal" class="ml-0.5 font-mono text-[16px]">:{{ currentFolderTotal }}</span>
+                    總量<span v-if="showFullTotal || searchQuery" class="ml-0.5 font-mono text-[16px]" :class="{'text-indigo-600': searchQuery}">:{{ currentFolderTotal }}</span>
                 </button>
             </div>
         </div>
@@ -60,7 +60,7 @@
         <template v-else>
             <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in">
                 <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
-                    class="w-full h-[36px] bg-white border border-slate-200 rounded-xl px-4 text-sm focus:ring-0 outline-none">
+                    class="w-full h-[36px] bg-white border border-slate-200 rounded-xl px-4 text-[15px] focus:ring-0 outline-none">
             </div>
 
             <div class="flex-1 overflow-x-auto overflow-y-auto pl-[10px] bg-white flex flex-col" :class="[focusedId ? 'h-full pb-0' : 'pb-24']">
@@ -70,138 +70,124 @@
                 </div>
                 <div v-else class="flex flex-col flex-1">
                     <!-- Table Header -->
-                    <div class="flex bg-white border-y-2 border-slate-200 text-slate-600 sticky top-0 z-10 h-[24px]">
-                        <div class="w-[60px] px-1 text-center whitespace-nowrap shrink-0 flex items-center justify-center tracking-tighter text-[13px]">日期</div>
-                        <div class="w-[68px] border-l border-slate-100 text-left whitespace-nowrap shrink-0 flex items-center justify-start pl-2 text-[15px]">法號</div>
-                        
-                        <!-- Dynamic Columns based on Army Type -->
-                        <template v-if="currentFolder?.id === 'obsidian' || currentFolder?.id === 'purple'">
-                            <div class="w-[90px] px-0.5 text-left whitespace-nowrap shrink-0 flex items-center justify-start pl-3 text-[15px] border-l border-slate-100">數量</div>
-                            <div class="w-[90px] px-0.5 text-left whitespace-nowrap shrink-0 flex items-center justify-start pl-3 text-[15px] border-l border-slate-100 relative left-[30px]">小計</div>
-                        </template>
-                        <template v-else>
-                            <div class="w-[90px] px-1 text-center whitespace-nowrap shrink-0 flex items-center justify-center text-[15px]">數量</div>
-                        </template>
-
-                        <div class="w-[30px] px-1 text-left whitespace-nowrap shrink-0 flex items-center justify-start pl-1 text-[15px]">備註</div>
-                        <div class="w-[30px] shrink-0"></div>
-                    </div>
-
-                    <!-- Table Body -->
-                    <div>
-                        <div v-for="item in (focusedId ? sortedItems.filter(i => i.id === focusedId) : sortedItems)" :key="item.id" 
-                            @click="focusedId === item.id ? null : toggleExpand(item.id)"
-                            class="flex flex-col border-b border-slate-200 bg-white transition-all duration-300"
-                            :class="[focusedId ? 'flex-1' : '']"
+                    <div class="flex flex-col flex-1">
+                        <!-- List Body -->
+                        <div v-for="(item, index) in sortedItems" :key="item.id" 
+                            v-show="focusedId === null || focusedId === item.id"
+                            @click="toggleExpand(item.id)"
+                            :class="[
+                                'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer z-10',
+                                item.groupParity === 1 ? 'bg-slate-50/50' : 'bg-white',
+                                { 'border-t border-slate-900': index === 0 && !focusedId, 'border-b-0': focusedId === item.id }
+                            ]"
                         >
-                            <div class="flex items-stretch min-h-[32px] h-auto w-full py-1" :class="[focusedId === item.id ? 'bg-indigo-50/30' : '']">
-                                <!-- Date Column -->
-                                <div class="w-[60px] px-1 border-r border-slate-100 text-center font-mono text-slate-400 tracking-tighter shrink-0 flex items-center justify-center leading-tight text-[13px]">
-                                    {{ formatDate(item.know_date) }}
-                                </div>
-                                <!-- Dharma Name Column (Fixed 68px) -->
-                                <div class="w-[68px] border-r border-slate-100 flex items-center justify-start shrink-0 px-2">
-                                    <div class="text-left text-[15px] text-slate-900 leading-tight whitespace-nowrap font-medium py-1"
-                                        :style="(item.user_name + (item.user_remarks || '')).length >= 5 ? 'font-size: 85%' : ''">
-                                        {{ item.user_name }}<span class="text-slate-400">{{ item.user_remarks }}</span>
+                            <!-- List Item Display (Collapsed - Grudge Style) -->
+                            <div v-if="focusedId !== item.id" class="mt-0 flex flex-col pointer-events-none">
+                                <!-- Row 1: Date only -->
+                                <div class="flex items-center mb-0.5">
+                                    <div class="flex items-baseline space-x-2">
+                                        <div class="text-[13px] font-bold text-slate-400 uppercase tracking-wider">日期</div>
+                                        <div class="text-[13px] text-[#aeb4be] font-normal ml-0.5">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
-                                <!-- Quantity Split Columns (Stacked for Multi-type) -->
-                                <template v-if="currentFolder?.id === 'obsidian'">
-                                    <div class="w-[90px] border-l border-slate-100 border-r border-slate-100 flex flex-col items-stretch justify-center shrink-0 py-0.5 leading-[1.1] px-0"
-                                        :class="(item.user_name + (item.user_remarks || '')).length >= 5 ? 'relative left-[14px]' : 'relative left-[12px]'">
-                                        <div class="flex items-center w-full leading-none h-[14px] mb-1.5">
-                                            <span class="w-[24px] text-left shrink-0 font-bold text-[12px] text-slate-300">閻尊</span>
-                                            <div class="w-[66px] flex justify-end font-mono tabular-nums text-slate-400 text-[14px] font-bold">
-                                                {{ item.yan_zun || 0 }}
-                                            </div>
+
+                                <!-- Row 2: Name & Subtotal -->
+                                <div class="flex items-center justify-between">
+                                    <div class="grid grid-cols-2 flex-1 items-center">
+                                        <!-- Dharma Name -->
+                                        <div class="text-[16px] font-normal text-slate-900 leading-tight truncate pr-2">
+                                            {{ item.user_name || '-' }}
+                                            <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
                                         </div>
-                                        <div class="flex items-center w-full leading-none h-[14px]">
-                                            <span class="w-[24px] text-left shrink-0 font-bold text-[12px] text-slate-300">閻闇</span>
-                                            <div class="w-[66px] flex justify-end font-mono tabular-nums text-slate-400 text-[14px] font-bold">
-                                                {{ item.yan_an || 0 }}
-                                            </div>
+                                        <!-- Subtotal -->
+                                        <div class="text-[14px] text-slate-400 font-normal">
+                                            <span class="text-[13px] font-bold text-slate-400 uppercase mr-1">小計:</span> 
+                                            <span class="text-[16px] text-slate-600 font-normal ml-0.5">{{ item.quantity || 0 }}</span>
                                         </div>
-                                    </div>
-                                    <div class="w-[90px] border-r border-slate-100 flex items-center justify-end font-mono text-black font-bold shrink-0 text-[14px] pr-2"
-                                        :class="(item.user_name + (item.user_remarks || '')).length >= 5 ? 'relative left-[14px]' : 'relative left-[12px]'">
-                                        {{ item.quantity || 0 }}
-                                    </div>
-                                </template>
-                                <template v-else-if="currentFolder?.id === 'purple'">
-                                    <div class="w-[90px] border-l border-slate-100 border-r border-slate-100 flex flex-col items-stretch justify-center shrink-0 py-0.5 leading-[1.1] px-0"
-                                        :class="(item.user_name + (item.user_remarks || '')).length >= 5 ? 'relative left-[14px]' : 'relative left-[12px]'">
-                                        <div class="flex items-center w-full leading-none h-[14px] mb-1.5">
-                                            <span class="w-[24px] text-left shrink-0 font-bold text-[12px] text-slate-300">龍勝</span>
-                                            <div class="w-[66px] flex justify-end font-mono tabular-nums text-slate-400 text-[14px] font-bold">
-                                                {{ item.long_sheng || 0 }}
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center w-full leading-none h-[14px]">
-                                            <span class="w-[24px] text-left shrink-0 font-bold text-[12px] text-slate-300">龍戰</span>
-                                            <div class="w-[66px] flex justify-end font-mono tabular-nums text-slate-400 text-[14px] font-bold">
-                                                {{ item.long_zhan || 0 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-[90px] border-r border-slate-100 flex items-center justify-end font-mono text-black font-bold shrink-0 text-[14px] pr-2"
-                                        :class="(item.user_name + (item.user_remarks || '')).length >= 5 ? 'relative left-[14px]' : 'relative left-[12px]'">
-                                        {{ item.quantity || 0 }}
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <div class="w-[90px] border-r border-slate-100 flex items-center justify-end font-mono text-slate-900 shrink-0 text-[14px] pr-2">
-                                        {{ item.quantity }}
-                                    </div>
-                                </template>
-                                <!-- Remarks Column -->
-                                <div class="w-[30px] border-r border-slate-100 flex items-center justify-center shrink-0 px-1">
-                                    <div class="text-[15px] text-slate-400 text-center leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {{ item.remarks_text || '-' }}
-                                    </div>
-                                </div>
-                                <!-- Menu Button -->
-                                <div class="w-[30px] shrink-0 flex items-center justify-center relative">
-                                    <button @click.stop="toggleMenu(item.id)" class="p-1 active:text-indigo-600 rounded-full transition-all text-slate-400">
-                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    </button>
-                                    <div v-if="openMenuId === item.id" class="absolute right-0 top-full mt-1 w-[110px] bg-white rounded-lg border border-slate-200 z-[100] p-1 flex flex-col shadow-lg animate-slide-up">
-                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-2 text-left text-indigo-600 font-bold py-2 text-[14px]">{{ focusedId === item.id ? '展開清單' : '縮起清單' }}</button>
-                                        <button @click.stop="editItem(item)" class="w-full px-2 text-left text-slate-700 py-2 text-[14px]">修改內容</button>
-                                        <button @click.stop="deleteItem(item.id)" class="w-full px-2 text-left text-red-600 py-2 text-[14px]">刪除</button>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Layer 2: Detail Area (Sub-quantities) -->
-                            <div v-if="focusedId === item.id" @click.self="focusedId = null" class="flex-1 p-3 pt-4 border-t border-slate-100 space-y-4 bg-white animate-fade-in">
-                                <div v-if="item.army_type === '黑曜軍' || item.army_type === '耀紫軍'" class="bg-indigo-50/20 p-3 rounded-2xl border border-indigo-100/50 flex justify-around">
+                            <!-- Menu Button Layer -->
+                            <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
+                                <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400 active:text-indigo-600 transition-colors"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">展開詳情</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+
+                            <!-- Expanded Detail (Minimalist Style - Wide) -->
+                            <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative px-1.5">
+                                <!-- Menu Button for Expanded State -->
+                                <div class="absolute right-0 top-0 z-[101]">
+                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
+                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">收合清單</button>
+                                        <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                        <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50 font-medium">刪除</button>
+                                    </div>
+                                </div>
+
+                                <!-- Date Row -->
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-1 ml-1">
+                                        <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        </button>
+                                        <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider">日期</label>
+                                    </div>
+                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900">
+                                        {{ formatDate(item.know_date) }}
+                                    </div>
+                                </div>
+
+                                <!-- Name Row (Combined) -->
+                                <div class="space-y-1">
+                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">法號 (親友/信眾)</label>
+                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 leading-tight">
+                                        {{ item.user_name }}
+                                        <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Quantities Row (Grid) -->
+                                <div v-if="item.army_type === '黑曜軍' || item.army_type === '耀紫軍'" class="grid grid-cols-2 gap-3">
                                     <template v-if="item.army_type === '黑曜軍'">
-                                        <div class="text-center">
-                                            <span class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">閻尊量</span>
-                                            <span class="text-[18px] font-black text-slate-800 font-mono">{{ item.yan_zun || 0 }}</span>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻尊數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_zun || 0 }}</div>
                                         </div>
-                                        <div class="w-px h-8 bg-indigo-100 self-center"></div>
-                                        <div class="text-center">
-                                            <span class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">閻闇量</span>
-                                            <span class="text-[18px] font-black text-slate-800 font-mono">{{ item.yan_an || 0 }}</span>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻闇數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_an || 0 }}</div>
                                         </div>
                                     </template>
                                     <template v-if="item.army_type === '耀紫軍'">
-                                        <div class="text-center">
-                                            <span class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">龍勝量</span>
-                                            <span class="text-[18px] font-black text-slate-800 font-mono">{{ item.long_sheng || 0 }}</span>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">龍勝數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.long_sheng || 0 }}</div>
                                         </div>
-                                        <div class="w-px h-8 bg-indigo-100 self-center"></div>
-                                        <div class="text-center">
-                                            <span class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">龍戰量</span>
-                                            <span class="text-[18px] font-black text-slate-800 font-mono">{{ item.long_zhan || 0 }}</span>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">龍戰數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.long_zhan || 0 }}</div>
                                         </div>
                                     </template>
                                 </div>
+
+                                <!-- Subtotal Special Row (Minimalist Style) -->
+                                <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
+                                    <span class="text-[13px] font-normal text-[#aeb4be] tracking-wider">小計</span>
+                                    <span class="text-[16px] font-normal text-indigo-600 font-mono">{{ item.quantity || 0 }}</span>
+                                </div>
+
+                                <!-- Remarks Row -->
                                 <div v-if="item.remarks_text" class="space-y-1">
-                                    <label class="text-[11px] font-bold text-slate-400 uppercase block tracking-wider">備註</label>
-                                    <p class="text-[14px] text-slate-500 leading-relaxed">{{ item.remarks_text }}</p>
+                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">備註文字</label>
+                                    <div class="w-full px-3 py-1 text-[15px] font-normal text-slate-600 leading-relaxed whitespace-pre-wrap">
+                                        {{ item.remarks_text }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -314,14 +300,30 @@ const filteredItems = computed(() => {
 
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
+    
     result.sort((a, b) => {
+        // Dynamic Pinning
         if (focusedId.value === a.id) return -1;
         if (focusedId.value === b.id) return 1;
+
         const dateA = new Date(a.know_date);
         const dateB = new Date(b.know_date);
-        return sortDesc.value ? dateB - dateA : dateA - dateB;
+        if (dateA - dateB !== 0) {
+            return sortDesc.value ? dateB - dateA : dateA - dateB;
+        }
+        return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
-    return result;
+
+    let groupIndex = 0;
+    return result.map((item, idx) => {
+        if (idx > 0) {
+            const prev = result[idx - 1];
+            if (item.user_name !== prev.user_name || item.know_date !== prev.know_date) {
+                groupIndex++;
+            }
+        }
+        return { ...item, groupParity: groupIndex % 2 };
+    });
 });
 
 const totalQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
