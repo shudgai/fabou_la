@@ -63,7 +63,21 @@
 
                 <!-- BATCH SECTION (Only if in batch mode) -->
                 <div v-if="localMode === 'batch'" class="space-y-3 animate-fade-in">
-                    <label class="text-xs font-bold text-slate-700 block ml-1">貼上內容</label>
+                    <div class="flex items-center justify-between ml-1">
+                        <label class="text-xs font-bold text-slate-700 block">貼上內容</label>
+                        <div class="flex items-center space-x-3">
+                            <button @click="$refs.fileInput.click()" class="text-indigo-500 font-bold text-[11px] hover:opacity-70">
+                                下載他檔
+                            </button>
+                            <button 
+                                @click="handleSubmit" 
+                                :disabled="isSaving"
+                                class="bg-indigo-50 text-indigo-600 font-bold text-[11px] py-1 px-3 rounded-xl shadow-sm hover:bg-indigo-100 active:scale-95 transition-all disabled:opacity-50"
+                            >
+                                {{ isSaving ? '稍候' : '確認一次新增' }}
+                            </button>
+                        </div>
+                    </div>
                     <div class="relative group">
                         <textarea v-model="batchInput" rows="6" 
                             class="w-full rounded-2xl border-none shadow-sm text-sm bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
@@ -77,18 +91,14 @@
                 </div>
             </div>
 
-            <!-- Footer Action -->
-            <div class="p-6 bg-[#f8faff] flex items-center justify-between border-t border-slate-100">
+            <!-- Footer Action (Restored for Single mode, but Hidden in Batch) -->
+            <div v-if="localMode === 'single'" class="p-6 bg-[#f8faff] flex items-center justify-center border-t border-slate-100">
                 <button 
                     @click="handleSubmit" 
                     :disabled="isSaving"
-                    class="bg-indigo-50 text-indigo-600 font-bold h-[40px] px-8 rounded-2xl shadow-sm hover:bg-indigo-100 active:scale-95 transition-all disabled:opacity-50"
+                    class="w-full bg-indigo-50 text-indigo-600 font-bold h-[45px] rounded-2xl shadow-sm hover:bg-indigo-100 active:scale-95 transition-all disabled:opacity-50"
                 >
-                    {{ isSaving ? '請稍候...' : '確認一次新增' }}
-                </button>
-                <button @click="$refs.fileInput.click()" class="flex items-center text-indigo-500 font-bold hover:opacity-70">
-                    下載他檔
-                    <svg class="h-5 w-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0l-4-4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    {{ isSaving ? '請稍候...' : '確認新增' }}
                 </button>
             </div>
         </div>

@@ -42,6 +42,12 @@
                     {{ d.day }}
                 </div>
             </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="flex items-center justify-between mt-1 pt-1.5 border-t border-slate-50 px-1 pb-1">
+                <button @click="clear" class="text-slate-400 text-[11px] hover:text-slate-600">清除</button>
+                <button @click="setToday" class="text-indigo-600 text-[11px] font-bold hover:bg-indigo-50 px-1 rounded transition-colors">今天</button>
+            </div>
         </div>
     </div>
 </template>

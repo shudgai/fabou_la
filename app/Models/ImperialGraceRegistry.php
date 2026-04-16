@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ImperialGraceRegistry extends Model
 {
     use HasFactory;
+    
+    protected $table = 'registries';
 
     protected $fillable = [
         'master_id',

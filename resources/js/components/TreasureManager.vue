@@ -2,9 +2,12 @@
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
-            <h2 class="text-[21px] font-normal font-outfit tracking-tight text-slate-800">
+            <h2 class="text-[21px] font-normal font-outfit tracking-tight text-slate-800 flex items-center">
                 <span v-if="focusedId && displayTitle !== currentFolder?.name" class="text-indigo-600 truncate max-w-[200px] block">{{ displayTitle }}</span>
                 <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記專區' }}</span>
+                <button v-if="currentFolder" @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
+                    ({{ sortDesc ? '新→舊' : '舊→新' }})
+                </button>
             </h2>
         </div>
 
@@ -88,7 +91,7 @@
         <div v-else class="pb-32 px-[5px] md:px-0">
 
             <!-- List Display -->
-            <div v-if="!addMode" style="padding: 0px 10px 10px 10px;" class="mt-[-23px]">
+            <div v-if="!addMode" style="padding: 0px 10px 10px 10px;" class="mt-[-18px]">
                 <div v-if="!loading && allTreasures.length > 0 && !addMode" class="mb-3 px-1">
                 </div>
 
@@ -100,28 +103,40 @@
                     <div v-for="(item, index) in (expandedIds.size > 0 ? filteredTreasures.filter(t => expandedIds.has(t.id)) : filteredTreasures)" :key="item.id" 
                         class="border-b border-solid border-slate-300 py-[4px] last:border-b-0 relative bg-white cursor-default group"
                         :class="{ 'border-t border-slate-300': index === 0 }">
-                        <!-- Row 1: Dates & Actions -->
-                        <div class="flex items-center justify-between py-1 transition-all duration-300" 
-                             :style="editingIds.has(item.id) ? 'transform: translateY(-25px)' : ''">
-                            <div v-show="!editingIds.has(item.id)" class="flex flex-col">
-                                <div class="text-[10px] uppercase font-medium text-slate-400 mb-0 tracking-tight">法寶名稱</div>
-                                <div class="text-[17px] font-medium text-slate-800 leading-tight tracking-wide uppercase">{{ item.name }}</div>
-                            </div>
-                            
-                            <div class="relative ml-auto" :class="[deleteConfirmId === item.id ? 'text-red-500' : 'text-slate-700']">
-                                <button @click.stop="toggleMenu(item.id)" class="p-1 -mr-1">
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <!-- DROP-DOWN MENU -->
-                                <div v-if="openMenuId === item.id" @click.stop
-                                    class="absolute right-0 top-full mt-1 w-24 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click="toggleExpand(item.id); openMenuId = null;" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
-                                        {{ expandedIds.has(item.id) ? '縮起清單' : '展開清單' }}
+                        
+                        <div v-show="!editingIds.has(item.id)" class="mt-0 flex flex-col">
+                            <!-- Row 1: Label & Dates & Menu -->
+                            <div class="flex items-center justify-between mb-0.5">
+                                <div class="flex items-baseline space-x-2">
+                                    <div class="text-[11.5px] font-normal text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[11.5px] text-slate-400 font-normal">
+                                        <span class="text-slate-500">{{ item.record_date?.replace(/-/g, '/') || '-' }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Menu Button -->
+                                <div class="relative" :class="[deleteConfirmId === item.id ? 'text-red-500' : 'text-slate-400']">
+                                    <button @click.stop="toggleMenu(item.id)" class="p-1 -mr-1">
+                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                     </button>
-                                    <button @click="openAndEdit(item.id)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(item)" class="w-full p-[5px] text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(item, 'excel')" class="w-full p-[5px] text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 font-medium whitespace-nowrap">下載 Excel</button>
-                                    <button @click.stop="confirmDelete(item.id)" class="w-full p-[5px] text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                                    <!-- DROP-DOWN MENU -->
+                                    <div v-if="openMenuId === item.id" @click.stop
+                                        class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                        <button @click="toggleExpand(item.id); openMenuId = null;" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
+                                            {{ expandedIds.has(item.id) ? '縮起清單' : '展開清單' }}
+                                        </button>
+                                        <button @click="openAndEdit(item.id)" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                        <button @click.stop="copyOnly(item)" class="w-full p-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                        <button @click.stop="downloadOnly(item, 'excel')" class="w-full p-2 text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 font-medium whitespace-nowrap">下載 Excel</button>
+                                        <button @click.stop="confirmDelete(item.id)" class="w-full p-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Name -->
+                            <div class="flex items-center">
+                                <div class="text-[14.5px] font-normal text-slate-800 leading-tight tracking-wide uppercase">
+                                    {{ item.name }}
                                 </div>
                             </div>
                         </div>
@@ -341,6 +356,9 @@ const showToast = (msg, type = 'success') => {
     persistentToast.value = { msg, type };
 };
 
+const sortDesc = ref(true);
+const toggleSort = () => { sortDesc.value = !sortDesc.value; };
+
 const openMenuId = ref(null);
 const expandedIds = ref(new Set());
 const editingIds = ref(new Set());
@@ -482,53 +500,55 @@ const saveBatch = async (forceParam = false, resolvedMasterId = null) => {
     let tPurpose = form.value.purpose;
     let dataStartIndex = 0;
 
-    // Detect Vertical Header Pattern (Row1: Master Name present anywhere in line 1)
+    // Advanced Multi-Format Parser
+    rawLines.forEach((line, idx) => {
+        const parts = line.split(/[,\t]/).map(p => p.trim()).filter(p => p);
+        if (parts.length < 2) return;
+        
+        const key = parts[0];
+        const val = parts[1];
+        
+        if (key.includes('仙師')) {
+            const m = masters.value.find(m => val.includes(m.name) || m.name.includes(val));
+            if (m) batchMasterId.value = m.id;
+        } else if (key === '法寶名稱' || (idx === 1 && !key.includes('法寶名稱') && parts.length === 1)) {
+            tName = val || parts[0];
+        } else if (key.includes('日期')) {
+            const dateMatch = val.match(/(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+            if (dateMatch) {
+                batchDate.value = `${dateMatch[1]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[3].padStart(2, '0')}`;
+            }
+        } else if (key.includes('用意')) {
+            tPurpose = val;
+        } else if (key.includes('方式')) {
+            form.value.acquisition_method = val;
+        }
+    });
+
+    // Vertical Header Detection (Fallback for older list types)
     const line1 = (rawLines[0] || '').trim();
     const extractedMaster = masters.value.find(m => line1.includes(m.name));
     
-    if (extractedMaster) {
-        // Compare with CURRENT dropdown selection or folder
-        const dropdownId = Number(batchMasterId.value);
-        const folderId = currentFolder.value ? Number(currentFolder.value.id) : dropdownId;
-        const targetId = Number(extractedMaster.id);
-        
-        // If the detected master from text is different from what's currently active
-        if (!force && targetId !== folderId) {
-            const targetName = extractedMaster.name;
-            const currentName = masters.value.find(m => Number(m.id) === folderId)?.name || '目前專區';
-            
-            persistentToast.value = { 
-                msg: `注意！偵測到名單內仙師為「${targetName}」。`, 
-                type: 'confirm',
-                actions: [
-                    { 
-                        label: `分流存入「${targetName}」`, 
-                        primary: true,
-                        handler: () => { 
-                            persistentToast.value = null;
-                            saveBatch(true, targetId);
-                        } 
-                    },
-                    { 
-                        label: `改成存入「${currentName}」`, 
-                        handler: () => { 
-                            persistentToast.value = null;
-                            saveBatch(true, folderId);
-                        } 
-                    }
-                ]
-            };
-            return; // STOP EXECUTION
-        }
-        
+    if (extractedMaster && !rawLines[0].includes(',')) {
         batchMasterId.value = extractedMaster.id;
-        tName = (rawLines[1] || '').split(/[,\t]/)[0]?.trim() || tName;
-        tPurpose = (rawLines[2] || '').split(/[,\t]/)[0]?.trim() || tPurpose;
+        // Only use fixed indices if NOT using key-value format
         dataStartIndex = 3;
-        // Skip empty separator rows if any
+    }
+
+    // Determine when data (Dharma Name List) starts
+    // If we have key-value rows, the data usually starts after the last known label
+    rawLines.forEach((line, idx) => {
+        if (line.includes('法號') || line.includes('法寶清單')) {
+            dataStartIndex = idx + 1;
+        }
+    });
+    
+    // If no explicit divider, skip lines that were identified as headers
+    if (dataStartIndex === 0) {
         while (dataStartIndex < rawLines.length) {
-            const parts = rawLines[dataStartIndex].split(/[,\t]/).map(p => p.trim()).filter(p => p);
-            if (parts.length > 0) break;
+            const line = rawLines[dataStartIndex];
+            const isHeader = line.includes('法寶名稱') || line.includes('仙師') || line.includes('日期') || line.includes('用意') || !line.trim();
+            if (!isHeader) break;
             dataStartIndex++;
         }
     }
@@ -894,11 +914,15 @@ const filteredTreasures = computed(() => {
     
     const filtered = allTreasures.value.filter(t => t.master_id === currentFolder.value.id);
     
-    // Sort by Date Descending
+    // Sort by Date
     filtered.sort((a, b) => {
-        const aDate = a.record_date || '0000-00-00';
-        const bDate = b.record_date || '0000-00-00';
-        return bDate.localeCompare(aDate);
+        const aDate = a.record_date || '';
+        const bDate = b.record_date || '';
+        if (aDate !== bDate) {
+            return sortDesc.value ? bDate.localeCompare(aDate) : aDate.localeCompare(bDate);
+        }
+        // ID Fallback
+        return sortDesc.value ? ((b.id || 0) - (a.id || 0)) : ((a.id || 0) - (b.id || 0));
     });
 
     if (searchQuery.value.trim()) {

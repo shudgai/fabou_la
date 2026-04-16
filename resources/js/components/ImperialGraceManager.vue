@@ -105,62 +105,65 @@
                             'py-[5px] border-b border-slate-300 last:border-b-0 relative group transition-colors cursor-pointer bg-white',
                             { 'border-t border-slate-300': index === 0 }
                         ]">
-                <div class="mt-0 flex items-center justify-between">
-                    <div class="flex flex-col">
-                        <!-- Master Name Row (Only in Unobtained Folder) -->
-                        <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1">
-                            {{ getMasterName(reg.master_id) }}
-                        </div>
-                        <!-- New Per-item Label -->
-                        <div class="text-[10.5px] font-normal text-slate-400 uppercase tracking-wider mb-0.5">法寶名稱</div>
-                        <div class="flex items-center flex-wrap gap-x-2">
-                            <div class="text-[15.5px] font-normal text-slate-900 leading-tight">
-                                {{ reg.name }}
+                        <div class="mt-0 flex flex-col">
+                            <!-- Master Name Row (Only in Unobtained Folder) -->
+                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1">
+                                {{ getMasterName(reg.master_id) }}
                             </div>
-                            <div class="flex items-center space-x-1 text-[10px] text-slate-400">
-                                <span>得知: {{ formatDate(reg.record_date) }}</span>
-                                <span class="text-slate-500">
-                                    求得: {{ reg.obtained_date ? formatDate(reg.obtained_date) : '----' }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <!-- Quick Status Toggle (Only in Unobtained Folder, no dropdown) -->
-                        <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
-                            'bg-blue-50 text-blue-600 border-blue-100': reg.status === '已求得',
-                            'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已登記',
-                            'bg-rose-50 text-rose-500 border-rose-100': reg.status === '未求得',
-                            'cursor-pointer': currentFolder.id === 'unobtained'
-                        }" class="text-[11px] px-[2.5px] py-0.5 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
-                            {{ reg.status }}
-                        </span>
 
-                        <!-- Action Menu Button (Moved here) -->
-                        <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
-                            <button @click.stop="toggleMenu(reg.id)" class="p-1 -mr-1">
-                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                            </button>
-                            <!-- MENU DROPDOWN -->
-                            <div v-if="openMenuId === reg.id" @click.stop 
-                                class="absolute right-0 top-full mt-1 w-24 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                <button @click="toggleExpand(reg.id); openMenuId = null;" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">{{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}</button>
-                                <button @click.stop="editItem(reg)" class="w-full p-[5px] text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改</button>
-                                <button @click.stop="copyOnly(reg)" class="w-full p-[5px] text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆貼 LINE</button>
-                                <button @click.stop="downloadOnly(reg)" class="w-full p-[5px] text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                <button @click.stop="copyListOnly" class="w-full p-[5px] text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-normal whitespace-nowrap">全部貼 LINE</button>
-                                <button @click.stop="downloadListOnly" class="w-full p-[5px] text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">全部檔案下載</button>
-                                <button @click.stop="confirmDelete(reg.id)" class="w-full p-[5px] text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                            <!-- Row 1: Label & Dates & Menu -->
+                            <div class="flex items-center justify-between mb-0.5">
+                                <div class="flex items-baseline space-x-2">
+                                    <div class="text-[11.5px] font-normal text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[11.5px] text-slate-400 font-normal">
+                                        得知: <span class="text-slate-500">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
+                                        <span class="ml-2 font-normal">
+                                            求得: <span class="text-slate-500">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Menu Button (Moved to Row 1) -->
+                                <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
+                                    <button @click.stop="toggleMenu(reg.id)" class="p-1 -mr-1">
+                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                    </button>
+                                    <!-- MENU DROPDOWN -->
+                                    <div v-if="openMenuId === reg.id" @click.stop 
+                                         class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
+                                        <button @click.stop="openAndEdit(reg)" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                        <button @click.stop="copyOnly(reg)" class="w-full p-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                        <button @click.stop="downloadOnly(reg)" class="w-full p-2 text-left text-[11px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
+                                        <button @click.stop="confirmDelete(reg.id)" class="w-full p-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Name and Status (Unified Height) -->
+                            <div class="flex items-center justify-between">
+                                <div class="text-[15.5px] font-normal text-slate-900 leading-tight">
+                                    {{ reg.name }}
+                                </div>
+
+                                <div class="flex items-center">
+                                    <!-- Quick Status Toggle -->
+                                    <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
+                                        'bg-blue-50 text-blue-600 border-blue-100': reg.status === '已求得',
+                                        'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已登記',
+                                        'bg-rose-50 text-rose-500 border-rose-100': reg.status === '未求得',
+                                        'cursor-pointer': currentFolder.id === 'unobtained'
+                                    }" class="text-[12px] px-1 py-0.5 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
+                                        {{ reg.status }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
+                        <!-- Extra Rows -->
+                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in text-[14.5px] text-slate-900 mt-2">
+                            <div v-if="reg.purpose"><span class="text-slate-500">用意：</span>{{ reg.purpose }}</div>
+                            <div v-if="reg.remarks"><span class="text-slate-500">備註：</span>{{ reg.remarks }}</div>
+                        </div>
                     </div>
-                </div>
-                <!-- Extra Rows -->
-                <div v-if="expandedIds.has(reg.id)" class="animate-fade-in text-[15.5px] text-slate-900">
-                    <div><span class="text-slate-500">用意：</span>{{ reg.purpose || '無' }}</div>
-                    <div v-if="reg.remarks"><span class="text-slate-500">備註：</span>{{ reg.remarks }}</div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

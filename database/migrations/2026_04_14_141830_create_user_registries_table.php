@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_imperial_graces', function (Blueprint $table) {
+        Schema::create('user_registries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained(); // 誰求得
-            $table->foreignId('registry_id')->constrained('imperial_grace_registries'); // 重大皇恩總登記表ID
+            $table->foreignId('registry_id')->constrained('registries')->onDelete('cascade'); // 總登記表ID
             $table->date('obtained_date')->nullable(); // 求得日期
             $table->text('remarks')->nullable(); // 備註
             $table->timestamp('record_date')->useCurrent();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_imperial_graces');
+        Schema::dropIfExists('user_registries');
     }
 };

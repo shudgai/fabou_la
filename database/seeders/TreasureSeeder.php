@@ -94,23 +94,13 @@ class TreasureSeeder extends Seeder
 
         foreach ($categories as $categoryName => $data) {
             $items = isset($data['items']) ? $data['items'] : $data;
-            $categoryConfig = isset($data['config']) ? $data['config'] : [];
 
             foreach ($items as $key => $value) {
                 $name = is_string($key) ? $key : $value;
-                $itemOptions = ['days_dropdown' => $defaultDays];
-
-                // Merge with category-wide config
-                $itemOptions = array_merge($itemOptions, $categoryConfig);
-
-                // Merge with item-specific options
-                if (is_string($key) && isset($value['options'])) {
-                    $itemOptions = array_merge($itemOptions, $value['options']);
-                }
 
                 Treasure::updateOrCreate(
-                    ['name' => $name, 'category' => $categoryName],
-                    ['options' => $itemOptions]
+                    ['name' => $name],
+                    ['remarks' => "類別: $categoryName"]
                 );
             }
         }

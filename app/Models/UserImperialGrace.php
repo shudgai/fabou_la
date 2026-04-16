@@ -9,6 +9,8 @@ class UserImperialGrace extends Model
 {
     use HasFactory;
 
+    protected $table = 'user_registries';
+
     protected $fillable = [
         'user_id',
         'registry_id',

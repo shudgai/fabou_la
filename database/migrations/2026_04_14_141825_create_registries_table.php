@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('imperial_grace_registries', function (Blueprint $table) {
+        Schema::create('registries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('master_id')->constrained(); // 仙師
             $table->string('name'); // 法寶名稱
+            $table->string('count')->nullable(); // 次數
             $table->text('purpose')->nullable(); // 法寶用意
             $table->text('acquisition_method')->nullable(); // 求寶方式
-            $table->date('record_date')->nullable(); // 日期
+            $table->date('record_date')->nullable(); // 得知日期
+            $table->date('obtained_date')->nullable(); // 求得日期
+            $table->string('status')->default('未求得'); // 狀態
+            $table->text('remarks')->nullable(); // 備註
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('imperial_grace_registries');
+        Schema::dropIfExists('registries');
     }
 };
