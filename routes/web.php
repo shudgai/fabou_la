@@ -37,7 +37,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('other-records', App\Http\Controllers\OtherRecordController::class);
     Route::resource('dharma-names', App\Http\Controllers\DharmaNameController::class);
     Route::resource('roles', App\Http\Controllers\RoleController::class);
+    Route::post('grudges/batch', [App\Http\Controllers\GrudgeController::class, 'batchStore']);
     Route::resource('grudges', App\Http\Controllers\GrudgeController::class);
+    Route::resource('military-records', App\Http\Controllers\MilitaryRecordController::class);
 
     // Notebook Archive System (Main Dashboard)
     Route::get('/note', function () {

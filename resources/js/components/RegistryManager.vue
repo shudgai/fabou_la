@@ -4,7 +4,7 @@
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white/80 backdrop-blur-md sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
             <h2 class="text-[21px] font-normal font-outfit tracking-tight text-slate-800 flex items-center">
                 <span v-if="focusedId && displayTitle !== currentFolder?.name" class="text-indigo-600 truncate max-w-[200px] block">{{ displayTitle }}</span>
-                <span v-else>{{ currentFolder ? '法寶登記 - ' + currentFolder.name : '法寶登記' }}</span>                <button v-if="currentFolder" @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
+                <span v-else>{{ currentFolder ? '法寶登記專區 - ' + currentFolder.name : '法寶登記專區' }}</span>                <button v-if="currentFolder" @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
                     ({{ sortDesc ? '新→舊' : '舊→新' }})
                 </button>
             </h2>
@@ -40,7 +40,7 @@
         <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white">
             <!-- Large Static Title -->
             <div class="px-6 py-4 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記</h1>
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記專區</h1>
                 <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">完整記載每份法寶與獲得進度</p>
             </div>
 
@@ -142,7 +142,7 @@
 
                         <!-- Collapsible Rows -->
                         <div v-if="expandedIds.has(item.id)" @click.stop 
-                            class="animate-fade-in bg-slate-50 rounded p-[5px] transition-all duration-300"
+                            class="animate-fade-in bg-white border border-slate-100 rounded p-[5px] transition-all duration-300"
                             :class="[editingIds.has(item.id) ? 'mt-[-40px]' : 'mt-1']">
                             <!-- EDIT MODE -->
                             <div v-if="editingIds.has(item.id)" class="grid grid-cols-1 gap-[5px] mb-3">
@@ -186,7 +186,7 @@
                             <!-- Dharma Names Table -->
                             <div class="mt-3 border border-slate-200 rounded-lg overflow-hidden bg-white">
                                 <table class="w-full text-[12px] border-collapse">
-                                    <thead class="bg-slate-50">
+                                    <thead class="bg-white border-b border-slate-200">
                                         <tr>
                                             <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-16">法號</th>
                                             <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-20">日期</th>
@@ -244,7 +244,7 @@
 
         </div> <!-- End Scrollable Area -->
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 30px;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">
@@ -392,9 +392,9 @@ const addActions = computed(() => [
 const displayTitle = computed(() => {
     if (focusedId.value) {
         const item = allTreasures.value.find(t => t.id === focusedId.value);
-        return item ? item.name : (currentFolder.value?.name || '法寶登記');
+        return item ? item.name : (currentFolder.value?.name || '法寶登記專區');
     }
-    return currentFolder.value?.name || '法寶登記';
+    return currentFolder.value?.name || '法寶登記專區';
 });
 
 const triggerBatchSave = (data) => {

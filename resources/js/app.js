@@ -28,6 +28,9 @@ app.component('teaching-manager', TeachingManager);
 import GrudgeManager from './components/GrudgeManager.vue';
 app.component('grudge-manager', GrudgeManager);
 
+import MilitaryManager from './components/MilitaryManager.vue';
+app.component('military-manager', MilitaryManager);
+
 import RegistryManager from './components/RegistryManager.vue';
 app.component('registry-manager', RegistryManager);
 
@@ -54,6 +57,9 @@ app.component('imperial-grace-add-form', ImperialGraceAddForm);
 
 import GrudgeAddForm from './components/GrudgeAddForm.vue';
 app.component('grudge-add-form', GrudgeAddForm);
+
+import MilitaryAddForm from './components/MilitaryAddForm.vue';
+app.component('military-add-form', MilitaryAddForm);
 
 import RegistryAddForm from './components/RegistryAddForm.vue';
 app.component('registry-add-form', RegistryAddForm);

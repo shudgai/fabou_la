@@ -1,35 +1,29 @@
 <template>
     <div class="min-h-screen bg-white">
-        <!-- 標題區域: 統一為 24px padding-top -->
-        <div style="padding: 16px 15px 8px 15px;" class="flex items-center justify-between bg-white">
-            <h1 style="font-size: 22px; font-weight: 400; color: #1a202c; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
+        <!-- 標題區域 -->
+        <div style="padding: 12px 20px 4px 20px;" class="flex items-center justify-between bg-white">
+            <h1 style="font-size: 26px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
         </div>
 
-
-
-
         <!-- 條列式專區 -->
-        <div class="flex flex-col pb-20">
-        <!-- 條列式專區 -->
-        <div class="flex flex-col pb-20">
+        <div class="flex flex-col pb-20 mt-[30px]">
             <button v-for="item in menuItems" :key="item.id" 
                 @click="navigate(item.id)"
-                class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[56px]"
+                class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[52px] border-b border-slate-50 last:border-b-0"
                 style="padding: 0 15px;">
                 <div class="flex items-center">
-                    <span style="font-size: 16px; font-weight: 400; color: #334155; white-space: nowrap;">{{ item.label }}</span>
+                    <span style="font-size: 20px; font-weight: 500; color: #1e293b; white-space: nowrap;">{{ item.label }}</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <svg class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <svg class="h-5 w-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
             </button>
         </div>
-        </div>
 
         <!-- Dashboard Bottom Navbar -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 60px;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <div class="flex justify-center flex-col items-center">
                     <div class="w-1 h-1 bg-transparent mb-1"></div>
@@ -60,11 +54,11 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const menuItems = [
-    { id: 'grace', label: '重大皇恩' },
+    { id: 'grace', label: '重大皇恩專區' },
     { id: 'teaching', label: '父皇仙師開示專區' },
     { id: 'grudge', label: '怨靈專區' },
     { id: 'military', label: '軍隊專區' },
-    { id: 'treasure', label: '法寶登記' },
+    { id: 'treasure', label: '法寶登記專區' },
     { id: 'trash', label: '回收桶' },
 ];
 
@@ -95,7 +89,7 @@ const loadStats = async () => {
         counts.value['grudge'] = grud.data?.length || 0;
         
         stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
-        stats.value.todoGrudges = grud.data?.filter(i => i.status === '代處理').length || 0;
+        stats.value.todoGrudges = grud.data?.filter(i => i.status === '待處理').length || 0;
     } catch (e) { console.error(e); }
 };
 

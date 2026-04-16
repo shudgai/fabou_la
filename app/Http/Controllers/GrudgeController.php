@@ -27,6 +27,13 @@ class GrudgeController extends Controller
         return response()->json($grudge, 201);
     }
 
+    public function batchStore(Request $request)
+    {
+        $items = $request->input('items', []);
+        $results = $this->grudgeService->batchCreate($items);
+        return response()->json($results, 201);
+    }
+
     public function update(Request $request, string $id)
     {
         $success = $this->grudgeService->update((int)$id, $request->all());

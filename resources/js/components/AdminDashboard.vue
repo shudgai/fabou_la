@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row min-h-screen bg-white md:bg-gray-50 font-sans">
+    <div class="flex flex-col md:flex-row min-h-screen bg-white md:bg-white font-sans">
         <!-- Mobile Top Nav -->
         <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm overflow-x-auto custom-scrollbar no-scrollbar py-2">
             <div class="flex items-center space-x-4 px-4 min-w-max">
@@ -47,7 +47,7 @@
 
             <!-- Version or Footer (Optional) -->
             <div class="p-4 border-t border-gray-50 text-[10px] text-gray-300 text-center">
-                FABOU ADMIN v2.0
+                皇恩筆記本 管理系統
             </div>
         </div>
 
@@ -65,9 +65,8 @@
                         <div v-else-if="currentTab === 'grudge'">
                             <grudge-manager></grudge-manager>
                         </div>
-                        <div v-else-if="currentTab === 'military'" class="flex flex-col items-center justify-center p-20 text-gray-300 bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-100 min-h-[600px]">
-                            <h2 class="text-3xl font-black mb-2">軍隊專區</h2>
-                            <p class="text-lg">系統建置中心，即將上線</p>
+                        <div v-else-if="currentTab === 'military'">
+                            <military-manager></military-manager>
                         </div>
                         <div v-else-if="currentTab === 'treasure'">
                             <registry-manager></registry-manager>
@@ -89,6 +88,7 @@ import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import TeachingManager from './TeachingManager.vue';
 import GrudgeManager from './GrudgeManager.vue';
+import MilitaryManager from './MilitaryManager.vue';
 
 const props = defineProps({
     initialTab: {
@@ -98,11 +98,11 @@ const props = defineProps({
 });
 
 const menuItems = [
-    { id: 'grace', label: '重大皇恩' },
+    { id: 'grace', label: '重大皇恩專區' },
     { id: 'teaching', label: '父皇仙師開示專區' },
     { id: 'grudge', label: '怨靈專區' },
     { id: 'military', label: '軍隊專區' },
-    { id: 'treasure', label: '法寶登記' },
+    { id: 'treasure', label: '法寶登記專區' },
     { id: 'trash', label: '回收桶' },
 ];
 

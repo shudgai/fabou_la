@@ -17,6 +17,15 @@ class GrudgeService
         return Grudge::create($data);
     }
 
+    public function batchCreate(array $items): Collection
+    {
+        $results = collect();
+        foreach ($items as $item) {
+            $results->push(Grudge::create($item));
+        }
+        return $results;
+    }
+
     public function findById(int $id): ?Grudge
     {
         return Grudge::find($id);

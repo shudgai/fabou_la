@@ -3,8 +3,8 @@
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center justify-center bg-white sticky top-0 z-10" style="padding: 12px 10px 10px 10px;">
             <h2 class="text-[21px] font-normal font-outfit tracking-tight text-black flex items-center">
-                <span v-if="currentFolder">重大皇恩 - {{ currentFolder.name }}</span>
-                <span v-else>重大皇恩</span>
+                <span v-if="currentFolder">重大皇恩專區 - {{ currentFolder.name }}</span>
+                <span v-else>重大皇恩專區</span>
                 <button @click="toggleSort" class="ml-2 px-1 text-[10px] text-indigo-500 font-normal bg-indigo-50 border border-indigo-100 rounded active:scale-95 transition-all opacity-80 tracking-tighter self-end mb-1">
                     ({{ sortDesc ? '新→舊' : '舊→新' }})
                 </button>
@@ -39,7 +39,7 @@
         <div v-if="!currentFolder" class="bg-white">
             <!-- Header Title -->
             <div class="px-6 pt-[20px] pb-2 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">重大皇恩</h1>
+                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4">
@@ -67,11 +67,11 @@
                     <div class="mt-[-10px] text-center px-1">
                         <div class="text-[14px] leading-tight text-slate-700 break-words font-normal">
                             <template v-if="folder.id === 'unobtained'">
-                                <div>未求得</div>
-                                <div>重大皇恩</div>
+                                <div class="whitespace-nowrap text-[14.5px]">未求得重大皇恩專區</div>
+                                <div><br></div>
                             </template>
                             <template v-else>
-                                {{ folder.name }}
+                                <div class="whitespace-nowrap">{{ folder.name }}</div>
                             </template>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
 
     </div> <!-- End Scrollable Area -->
     
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 30px;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">
@@ -317,7 +317,7 @@ watch(persistentToast, (newVal) => {
 const folders = ref([
     { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
     { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 'unobtained', name: '未求得重大皇恩' }
+    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 'unobtained', name: '未求得重大皇恩專區' }
 ]);
 
 const loadData = async () => {

@@ -9,7 +9,7 @@
                 <grudge-manager v-if="currentView === 'grudge'" @go-home="handleNavigate('menu')"></grudge-manager>
                 <imperial-grace-manager v-if="currentView === 'grace'" @go-home="handleNavigate('menu')"></imperial-grace-manager>
                 <registry-manager v-if="currentView === 'treasure'" @go-home="handleNavigate('menu')"></registry-manager>
-                <div v-if="currentView === 'military'" class="p-8 text-center">軍隊專區建置中...</div>
+                <military-manager v-if="currentView === 'military'" @go-home="handleNavigate('menu')"></military-manager>
                 <div v-if="currentView === 'trash'" class="p-8 text-center">回收桶建置中...</div>
             </div>
         </div>
@@ -25,6 +25,7 @@
 import { ref, onMounted } from 'vue';
 import TeachingManager from './TeachingManager.vue';
 import GrudgeManager from './GrudgeManager.vue';
+import MilitaryManager from './MilitaryManager.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import AdminDashboard from './AdminDashboard.vue';

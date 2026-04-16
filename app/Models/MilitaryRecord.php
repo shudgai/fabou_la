@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Grudge extends Model
+class MilitaryRecord extends Model
 {
     use HasFactory;
 
@@ -14,24 +14,25 @@ class Grudge extends Model
         'user_name',
         'user_remarks',
         'status',
+        'army_type',
         'destination',
         'quantity',
-        'remarks',
-        'remarks_text',
+        'yan_zun',
+        'yan_an',
+        'long_sheng',
+        'long_zhan',
         'know_date',
         'process_date',
-        'record_date',
+        'remarks_text'
     ];
 
     protected $casts = [
-        'remarks' => 'array',
         'know_date' => 'date',
         'process_date' => 'date',
-        'record_date' => 'datetime',
+        'quantity' => 'integer',
+        'yan_zun' => 'integer',
+        'yan_an' => 'integer',
+        'long_sheng' => 'integer',
+        'long_zhan' => 'integer',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

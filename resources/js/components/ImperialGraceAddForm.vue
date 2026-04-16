@@ -8,7 +8,7 @@
             <!-- Header -->
             <div class="p-[10px] border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
                 <h3 class="text-xl font-medium text-black">
-                    資料歸檔載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
+                    重大皇恩載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
                 </h3>
                 <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -32,11 +32,17 @@
                 <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px]">
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">得知日期</label>
-                        <input v-model="form.record_date" type="date" class="w-full h-[32px] rounded-xl bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <div @click="activeDate = 'record_date'" 
+                            class="w-full h-[32px] rounded-xl bg-white px-3 flex items-center justify-between cursor-pointer shadow-sm">
+                            <span :class="form.record_date ? 'text-slate-700' : 'text-slate-400'" style="font-size: 14.5px; font-weight: 700;">
+                                {{ form.record_date || '選擇日期' }}
+                            </span>
+                            <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
-                        <select v-model="form.master_id" class="w-full h-[32px] rounded-xl bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <select v-model="form.master_id" style="font-size: 14.5px;" class="w-full h-[32px] rounded-xl bg-white px-3 font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
@@ -46,24 +52,29 @@
                 <div v-if="localMode === 'single'" class="space-y-1 mt-[-8px] animate-fade-in">
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." class="w-full h-[34px] rounded-xl bg-white px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." style="font-size: 14.5px;" class="w-full h-[34px] rounded-xl bg-white px-3 focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." class="w-full h-[34px] rounded-xl bg-white px-3 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." style="font-size: 14.5px;" class="w-full h-[34px] rounded-xl bg-white px-3 focus:ring-2 focus:ring-indigo-500/20 outline-none">
                     </div>
 
                     <div class="grid grid-cols-2 gap-[2.5px]">
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
-                            <input v-model="form.obtained_date" type="date" :disabled="form.status === '未求得'"
-                                class="w-full h-[34px] rounded-xl bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
-                                :class="form.status === '未求得' ? 'opacity-30' : ''">
+                            <div @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
+                                :class="form.status === '未求得' ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'"
+                                class="w-full h-[34px] rounded-xl bg-white px-3 flex items-center justify-between shadow-sm border-none">
+                                <span :class="form.obtained_date ? 'text-slate-700' : 'text-slate-400'" style="font-size: 14.5px;">
+                                    {{ form.obtained_date || (form.status === '未求得' ? '-' : '選擇日期') }}
+                                </span>
+                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
                         </div>
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
-                            <select v-model="form.status" @change="handleStatusChange" class="w-full h-[34px] rounded-xl bg-white px-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                            <select v-model="form.status" @change="handleStatusChange" style="font-size: 14.5px;" class="w-full h-[34px] rounded-xl bg-white px-3 font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none"
                                 :class="form.status === '未求得' ? 'text-slate-400' : 'text-emerald-600'">
                                 <option value="未求得">未求得</option>
                                 <option value="已求得">已求得</option>
@@ -74,7 +85,7 @@
 
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
-                        <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." class="w-full h-[38px] rounded-xl bg-white p-2 text-base focus:ring-2 focus:ring-indigo-500/20 outline-none leading-normal"></textarea>
+                        <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." style="font-size: 14.5px;" class="w-full h-[38px] rounded-xl bg-white p-2 focus:ring-2 focus:ring-indigo-500/20 outline-none leading-normal"></textarea>
                     </div>
                 </div>
 
@@ -155,16 +166,25 @@
                         </span>
                     </template>
                     <template v-else>
-                        {{ localMode === 'single' ? (form.id ? '儲存修改' : '確認資料歸檔') : `開始歸檔這 ${excelRows.length} 筆資料` }}
+                        {{ localMode === 'single' ? (form.id ? '儲存修改' : '確認資料載錄') : `開始載錄這 ${excelRows.length} 筆資料` }}
                     </template>
                 </button>
             </div>
         </div>
+
+        <!-- Custom Date Picker -->
+        <compact-date-picker 
+            v-if="activeDate"
+            v-model="form[activeDate]"
+            :title="activeDate === 'record_date' ? '得知日期' : '求得日期'"
+            @close="activeDate = null"
+        />
     </div>
 </template>
 
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
+import CompactDatePicker from './CompactDatePicker.vue';
 
 const props = defineProps({
     mode: String, // 'single' or 'batch'
@@ -174,6 +194,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'fileUpload']);
+const activeDate = ref(null);
 
 const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });

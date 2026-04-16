@@ -5,23 +5,24 @@
         
         <!-- Menu -->
         <div class="relative w-full max-w-sm bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.2)] border border-slate-100 overflow-hidden animate-menu-up p-2">
-            <div class="grid grid-cols-1 gap-1">
+            <div class="flex flex-col" style="gap: 5px;">
                 <button v-for="action in actions" 
                     :key="action.label"
                     @click="handleAction(action)"
-                    class="w-full py-4 px-6 text-sm font-bold text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-2xl flex items-center transition-all group"
+                    class="w-full px-6 hover:bg-slate-50 active:bg-slate-100 rounded-2xl flex items-center transition-all group"
+                    style="padding-top: 3px; padding-bottom: 3px;"
                 >
-                    <div :class="action.colorClass || 'bg-indigo-100 text-indigo-600'" class="w-10 h-10 rounded-xl flex items-center justify-center mr-4 group-active:scale-90 transition-transform">
-                        <div v-if="action.icon" v-html="action.icon" class="w-5 h-5 flex items-center justify-center"></div>
+                    <div :class="action.colorClass || 'bg-indigo-100 text-indigo-600'" class="w-8 h-8 rounded-xl flex items-center justify-center mr-3 group-active:scale-90 transition-transform">
+                        <div v-if="action.icon" v-html="action.icon" class="w-4 h-4 flex items-center justify-center"></div>
                     </div>
-                    <div class="text-left">
-                        <p class="text-slate-800 font-bold">{{ action.label }}</p>
-                        <p v-if="action.description" class="text-[10px] text-slate-400 font-normal leading-tight">{{ action.description }}</p>
+                    <div class="text-left font-bold" style="font-size: 15px;">
+                        <p class="text-slate-800 leading-none">{{ action.label }}</p>
+                        <p v-if="action.description" class="text-slate-400 font-normal leading-tight mt-1" style="font-size: 13px;">{{ action.description }}</p>
                     </div>
                 </button>
             </div>
             
-            <button @click="$emit('close')" class="w-full mt-2 py-3 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest">
+            <button @click="$emit('close')" class="w-full mt-1 py-2 font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest text-center" style="font-size: 13px;">
                 取消
             </button>
         </div>

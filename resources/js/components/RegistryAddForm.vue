@@ -20,7 +20,7 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-6 py-4 space-y-5 custom-scrollbar bg-[#f8faff]">
+            <div class="flex-1 overflow-y-auto px-6 py-4 space-y-5 custom-scrollbar bg-white">
                 
                 <!-- TOP GRID: Date & Master -->
                 <div class="grid grid-cols-2 gap-4">
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Footer Action (Restored for Single mode, but Hidden in Batch) -->
-            <div v-if="localMode === 'single'" class="p-6 bg-[#f8faff] flex items-center justify-center border-t border-slate-100">
+            <div v-if="localMode === 'single'" class="p-6 bg-white flex items-center justify-center border-t border-slate-100">
                 <button 
                     @click="handleSubmit" 
                     :disabled="isSaving"

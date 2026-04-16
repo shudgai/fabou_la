@@ -25,7 +25,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #ffffff;
         }
 
         h1,
@@ -39,7 +39,7 @@
     @stack('styles')
 </head>
 
-<body class="antialiased text-slate-900 bg-slate-50">
+<body class="antialiased text-slate-900 bg-white">
     <div class="min-h-screen flex flex-col">
         <!-- Retractable Sidebar -->
         <div x-data="{ sidebarOpen: false, sidebarCollapsed: false }" class="flex-1 flex overflow-hidden">
@@ -185,7 +185,7 @@
                 </header>
                 @endif
 
-                <main id="app" class="flex-1 overflow-y-auto relative bg-slate-50">
+                <main id="app" class="flex-1 overflow-y-auto relative bg-white">
                     @yield('content')
                 </main>
             </div> <!-- End Main Content Area -->
