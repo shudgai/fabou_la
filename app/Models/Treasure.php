@@ -13,6 +13,7 @@ class Treasure extends Model
         'name',
         'category',
         'options',
+        'master_id',
     ];
 
     protected $casts = [

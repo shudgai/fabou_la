@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->roles()->where('name', '管理員')->exists();
     }
+
+    public function isChijue()
+    {
+        return $this->dharmaName && $this->dharmaName->name === '赤覺';
+    }
 }

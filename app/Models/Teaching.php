@@ -26,7 +26,7 @@ class Teaching extends Model
 
     public function dharmaNames()
     {
-        return $this->belongsToMany(DharmaName::class);
+        return $this->belongsToMany(DharmaName::class, 'teaching_dharma_name');
     }
 
     public function user()

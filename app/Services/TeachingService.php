@@ -14,7 +14,7 @@ class TeachingService
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
             // Show all records for the daily/master dashboard
         } elseif ($masterId) {
-            $query->where('master_id', $masterId);
+            $this->applyMasterGroupFilter($query, $masterId);
         }
         
         return $query->latest()->get();
@@ -27,7 +27,7 @@ class TeachingService
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
             // Show all dates for the daily/master dashboard
         } elseif ($masterId) {
-            $query->where('master_id', $masterId);
+            $this->applyMasterGroupFilter($query, $masterId);
         }
         
         return $query->selectRaw('date, count(*) as count')
@@ -44,7 +44,7 @@ class TeachingService
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
             // No extra master filter for daily
         } elseif ($masterId) {
-            $query->where('master_id', $masterId);
+            $this->applyMasterGroupFilter($query, $masterId);
         }
         
         return $query->latest()->get();
@@ -107,5 +107,31 @@ class TeachingService
         }
 
         return $data;
+    }
+
+    protected function applyMasterGroupFilter($query, $masterId)
+    {
+        $keywords = [
+            1 => ['老', '祖'],
+            2 => ['元'],
+            3 => ['道'],
+            4 => ['靈'],
+            6 => ['宰'],
+            7 => ['龍'],
+        ];
+
+        if (isset($keywords[$masterId])) {
+            $k = $keywords[$masterId];
+            $query->whereHas('master', function ($q) use ($k, $masterId) {
+                $q->where(function($sq) use ($k, $masterId) {
+                    $sq->where('masters.id', $masterId);
+                    foreach ($k as $word) {
+                        $sq->orWhere('masters.name', 'like', '%' . $word . '%');
+                    }
+                });
+            });
+        } else {
+            $query->where('master_id', $masterId);
+        }
     }
 }

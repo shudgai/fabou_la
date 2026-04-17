@@ -11,11 +11,17 @@ class RegistryController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => '您沒有權限查看法寶登記專區'], 403);
+        }
         return Registry::with('dharmaNameRegistries')->get();
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => '您沒有權限登記法寶'], 403);
+        }
         $validated = $request->validate([
             'master_id' => 'required',
             'name' => 'required',
@@ -42,6 +48,9 @@ class RegistryController extends Controller
 
     public function update(Request $request, Registry $registry)
     {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => '您沒有權限修改法寶登記專區'], 403);
+        }
         return DB::transaction(function () use ($request, $registry) {
             $registry->update($request->all());
 
@@ -64,6 +73,9 @@ class RegistryController extends Controller
 
     public function destroy(Registry $registry)
     {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => '您沒有權限刪除法寶登記專區'], 403);
+        }
         $registry->delete();
         return response()->json(['message' => 'Deleted']);
     }

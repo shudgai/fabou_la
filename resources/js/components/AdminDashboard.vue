@@ -3,7 +3,7 @@
         <!-- Mobile Top Nav -->
         <div class="md:hidden sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm overflow-x-auto custom-scrollbar no-scrollbar py-2">
             <div class="flex items-center space-x-4 px-4 min-w-max">
-                <button v-for="item in menuItems" :key="'mob-' + item.id"
+                <button v-for="item in filteredMenuItems" :key="'mob-' + item.id"
                     @click="currentTab = item.id"
                     class="relative py-1 px-1 transition-all duration-300"
                     :class="[currentTab === item.id ? 'text-indigo-600 font-normal' : 'text-slate-400 font-normal']">
@@ -22,7 +22,7 @@
 
             <!-- Menu items -->
             <div class="flex-1 overflow-y-auto">
-                <button v-for="item in menuItems" :key="item.id" 
+                <button v-for="item in filteredMenuItems" :key="item.id" 
                     @click="currentTab = item.id"
                     :class="[
                         'flex items-center justify-between w-full border-b border-gray-50 transition-all duration-200 group relative',
@@ -83,7 +83,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
+import axios from 'axios';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import TeachingManager from './TeachingManager.vue';
@@ -106,10 +107,29 @@ const menuItems = [
     { id: 'trash', label: '回收桶' },
 ];
 
+const user = ref(null);
+const filteredMenuItems = computed(() => {
+    return menuItems.filter(item => {
+        if (item.id === 'treasure') {
+            return user.value?.dharma_name?.name === '赤覺';
+        }
+        return true;
+    });
+});
+
 const currentTab = ref(props.initialTab);
 
 watch(() => props.initialTab, (newTab) => {
     currentTab.value = newTab;
+});
+
+onMounted(async () => {
+    try {
+        const res = await axios.get('/api/user-profile');
+        user.value = res.data;
+    } catch (e) {
+        console.error('Failed to load user profile', e);
+    }
 });
 </script>
 

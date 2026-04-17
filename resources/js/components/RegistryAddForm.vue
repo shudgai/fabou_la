@@ -125,13 +125,20 @@ const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const treasureLibrary = ref([]);
 
-onMounted(async () => {
+const fetchTreasureLibrary = async () => {
     try {
-        const res = await axios.get('/treasures');
+        const params = { master_id: form.value.master_id, type: 'registry' };
+        const res = await axios.get('/api/treasures-list', { params });
         treasureLibrary.value = res.data;
     } catch (e) {
         console.error('Failed to load library', e);
     }
+};
+
+onMounted(fetchTreasureLibrary);
+
+watch(() => form.value.master_id, () => {
+    fetchTreasureLibrary();
 });
 
 const onNameInput = () => {

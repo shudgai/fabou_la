@@ -2,7 +2,7 @@
     <div>
         <!-- MOBILE VIEW -->
         <div class="block md:hidden">
-            <mobile-dashboard v-if="currentView === 'menu'" @navigate="handleNavigate"></mobile-dashboard>
+            <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate"></mobile-dashboard>
             
             <div v-else>
                 <teaching-manager v-if="currentView === 'teaching'" @go-home="handleNavigate('menu')"></teaching-manager>
@@ -22,40 +22,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
 import TeachingManager from './TeachingManager.vue';
 import GrudgeManager from './GrudgeManager.vue';
 import MilitaryManager from './MilitaryManager.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import AdminDashboard from './AdminDashboard.vue';
+import MobileDashboard from './MobileDashboard.vue';
 
-const getInitialView = () => {
-    const hash = window.location.hash.replace('#', '');
-    const viewMap = {
-        'treasure': 'treasure',
-        'imperial': 'grace',
-        'grace': 'grace',
-        'grudge': 'grudge',
-        'teaching': 'teaching',
-        'military': 'military'
-    };
-    return viewMap[hash] || 'menu';
-};
+const user = ref(null);
+const currentView = ref('menu');
 
-const currentView = ref(getInitialView()); // Initialize immediately
-
-const handleNavigate = (view) => {
-    currentView.value = view;
-};
+const isChijue = computed(() => user.value?.dharma_name?.name === '赤覺');
+const isAdmin = computed(() => user.value?.is_admin || user.value?.role === 'admin');
 
 const syncHash = () => {
-    const hash = window.location.hash.replace('#', '');
-    if (!hash && currentView.value !== 'menu') {
-        // If hash cleared but we are in a view, don't necessarily go back to menu unless intended
-        return;
-    }
+    if (!user.value) return; 
     
+    const hash = window.location.hash.replace('#', '');
     const viewMap = {
         'treasure': 'treasure',
         'imperial': 'grace',
@@ -65,14 +51,35 @@ const syncHash = () => {
         'military': 'military'
     };
     
-    if (viewMap[hash]) {
-        currentView.value = viewMap[hash];
-    } else if (!hash) {
-        currentView.value = 'menu';
+    let targetView = viewMap[hash] || 'menu';
+    
+    // Security Check: Unauthorized hash access
+    if (targetView === 'treasure' && !isChijue.value && !isAdmin.value) {
+        targetView = 'menu';
+        window.location.hash = '';
     }
+    
+    currentView.value = targetView;
 };
 
-onMounted(() => {
+const handleNavigate = (view) => {
+    if (view === 'treasure' && !isChijue.value && !isAdmin.value) {
+        return;
+    }
+    currentView.value = view;
+    // Optionally update hash as well
+    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'menu': '' };
+    window.location.hash = reverseMap[view] || '';
+};
+
+onMounted(async () => {
+    try {
+        const res = await axios.get('/api/user-profile');
+        user.value = res.data;
+        syncHash(); 
+    } catch (e) {
+        console.error('Failed to load user profile', e);
+    }
     window.addEventListener('hashchange', syncHash);
 });
 </script>

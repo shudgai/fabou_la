@@ -189,7 +189,7 @@ class TreasureSeeder extends Seeder
             $items = $data['items'];
             foreach ($items as $name) {
                 Treasure::updateOrCreate(
-                    ['name' => $name],
+                    ['name' => $name, 'master_id' => 0],
                     ['category' => $categoryName]
                 );
             }

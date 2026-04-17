@@ -67,8 +67,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/dharma-names-list', function () {
         return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name')->orderBy('order')->get();
     });
-    Route::get('/api/treasures-list', function () {
-        return \App\Models\Treasure::select('id', 'name')->get();
+    Route::get('/api/user-profile', function () {
+        $user = auth()->user()->load('dharmaName');
+        $user->is_admin = $user->isAdmin();
+        return $user;
+    });
+    Route::get('/api/treasures-list', function (\Illuminate\Http\Request $request) {
+        $masterId = $request->query('master_id');
+        $type = $request->query('type', 'teaching');
+        
+        if ($type === 'registry' && !auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $query = \App\Models\Treasure::select('id', 'name');
+        if ($masterId !== null) {
+            $query->where('master_id', $masterId);
+        }
+        if ($type !== null) {
+            $query->where('type', $type);
+        }
+        return $query->get();
     });
     // 強制下載 Helper
 });

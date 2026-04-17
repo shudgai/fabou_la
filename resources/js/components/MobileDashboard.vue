@@ -7,7 +7,7 @@
 
         <!-- 條列式專區 -->
         <div class="flex flex-col pb-20 mt-[30px]">
-            <button v-for="item in menuItems" :key="item.id" 
+            <button v-for="item in filteredMenuItems" :key="item.id" 
                 @click="navigate(item.id)"
                 class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[52px] border-b border-slate-50 last:border-b-0"
                 style="padding: 0 15px;">
@@ -23,35 +23,21 @@
         </div>
 
         <!-- Dashboard Bottom Navbar -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
-            <div class="grid grid-cols-5 h-full items-center px-2">
-                <div class="flex justify-center flex-col items-center">
-                    <div class="w-1 h-1 bg-transparent mb-1"></div>
-                    <svg class="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </div>
-                <div class="flex justify-center flex-col items-center">
-                    <div class="w-1.5 h-1.5 bg-indigo-600 rounded-full mb-1"></div>
-                    <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div class="flex justify-center -mt-6">
-                    <div class="w-14 h-14 rounded-3xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-sm">
-                        <svg class="h-7 w-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                </div>
-                <div class="flex justify-center pt-2">
-                    <svg class="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </div>
-                <div class="flex justify-center pt-2 text-slate-200">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-            </div>
-        </div>
+        <mobile-navbar 
+            active-tab="home"
+            :can-back="false"
+            :show-action="false"
+            :can-search="false"
+            :can-more="false"
+            @home="navigate('menu')"
+        />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import MobileNavbar from './MobileNavbar.vue';
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區' },
@@ -67,6 +53,18 @@ const navigate = (id) => {
     emit('navigate', id);
 };
 
+const props = defineProps(['user']);
+const user = computed(() => props.user);
+const filteredMenuItems = computed(() => {
+    return menuItems.filter(item => {
+        if (item.id === 'treasure') {
+            // Allow both Chijue and Admins/Managers
+            return user.value?.dharma_name?.name === '赤覺' || user.value?.is_admin || user.value?.role === 'admin';
+        }
+        return true;
+    });
+});
+
 const stats = ref({
     totalItems: 0,
     todoGrudges: 0
@@ -76,21 +74,23 @@ const counts = ref({});
 
 const loadStats = async () => {
     try {
-        const [gre, tre, teach, grud] = await Promise.all([
+        const [gre, tre, teach, grud] = await Promise.allSettled([
             axios.get('/imperial-graces'),
             axios.get('/registries'),
             axios.get('/teachings'),
             axios.get('/grudges')
         ]);
         
-        counts.value['grace'] = gre.data.registries?.length || 0;
-        counts.value['treasure'] = tre.data?.length || 0;
-        counts.value['teaching'] = teach.data?.length || 0;
-        counts.value['grudge'] = grud.data?.length || 0;
+        if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.length || 0;
+        if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.length || 0;
+        if (teach.status === 'fulfilled') counts.value['teaching'] = teach.value.data?.length || 0;
+        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.length || 0;
         
         stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
-        stats.value.todoGrudges = grud.data?.filter(i => i.status === '待處理').length || 0;
-    } catch (e) { console.error(e); }
+        if (grud.status === 'fulfilled') stats.value.todoGrudges = grud.value.data?.filter(i => i.status === '待處理').length || 0;
+    } catch (e) { 
+        if (e.response?.status !== 403) console.error(e); 
+    }
 };
 
 onMounted(loadStats);

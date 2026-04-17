@@ -197,27 +197,18 @@
         </template>
 
         <!-- FAB Bottom Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
-            <div class="grid grid-cols-5 h-full items-center px-2">
-                <div class="flex justify-center"><button @click="handleBack" class="w-7 h-7 text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg></button></div>
-                <div class="flex justify-center"><button @click="$emit('goHome')" class="w-7 h-7 text-slate-400"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
-                <div class="flex justify-center items-center">
-                    <button v-if="currentFolder" @click="showAddMenu = !showAddMenu" 
-                        :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95']"
-                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500">
-                        <svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <button v-if="currentFolder" @click="showSearch = !showSearch" :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <button v-if="currentFolder" @click="loadData" class="w-8 h-8 text-slate-400"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                </div>
-            </div>
-        </div>
+        <mobile-navbar 
+            :can-back="true"
+            :show-action="!!currentFolder"
+            :action-active="showAddMenu"
+            :search-active="showSearch"
+            :can-more="!!currentFolder"
+            @back="handleBack"
+            @home="$emit('goHome')"
+            @action="showAddMenu = !showAddMenu"
+            @search="showSearch = !showSearch"
+            @more="exportToExcel"
+        />
 
         <!-- MODALS -->
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
@@ -232,6 +223,7 @@ import axios from 'axios';
 import MilitaryAddForm from './MilitaryAddForm.vue';
 import MilitaryBatchAdd from './MilitaryBatchAdd.vue';
 import AddActionMenu from './AddActionMenu.vue';
+import MobileNavbar from './MobileNavbar.vue';
 
 const emit = defineEmits(['goHome']);
 

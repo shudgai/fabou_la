@@ -23,6 +23,6 @@ class DharmaName extends Model
 
     public function teachings()
     {
-        return $this->belongsToMany(Teaching::class);
+        return $this->belongsToMany(Teaching::class, 'teaching_dharma_name');
     }
 }

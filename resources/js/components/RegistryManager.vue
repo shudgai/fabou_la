@@ -39,8 +39,8 @@
         <!-- Level 1: Folder Selection -->
         <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white">
             <!-- Large Static Title -->
-            <div class="px-6 py-4 text-center">
-                <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記專區</h1>
+            <div class="px-6 pt-[5px] pb-2 text-center">
+                <h1 class="text-[28px] font-bold text-slate-800 tracking-tight">法寶登記專區</h1>
             </div>
 
 
@@ -48,15 +48,15 @@
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[120px] relative"
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[125px] relative"
                    >
-                    <div class="relative">
-                        <svg class="w-14 h-14 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div class="relative mb-4">
+                        <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#FFF9C4;stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:#FDE047;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#FBC02D;stop-opacity:1" />
+                                    <stop offset="0%" style="stop-color:rgb(255, 235, 120);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 215, 0);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(218, 165, 32);stop-opacity:1" />
                                 </linearGradient>
                             </defs>
                             <!-- Folder Body Back -->
@@ -67,8 +67,8 @@
                             <path d="M10 21H54" stroke="white" stroke-opacity="0.3" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <div class="text-center px-1 mt-1">
-                        <div class="text-[14px] leading-tight text-slate-700 break-words font-normal">
+                    <div class="text-center px-1 mt-[-6px]">
+                        <div class="text-[17px] font-bold leading-tight text-slate-700 break-words">
                             {{ folder.name }}
                         </div>
                     </div>
@@ -106,9 +106,9 @@
                             <!-- Row 1: Label & Dates & Menu -->
                             <div class="flex items-center justify-between mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[11.5px] font-normal text-[#aeb4be] uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
-                                    <div class="text-[11.5px] text-slate-400 font-normal">
-                                        <span class="text-slate-500">{{ item.record_date?.replace(/-/g, '/') || '-' }}</span>
+                                    <div class="text-[14px] font-bold text-[#9ba7b9] uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[14px] text-[#9ba7b9] font-bold">
+                                        <span class="text-[17px] text-black font-bold ml-1">{{ item.record_date?.replace(/-/g, '/') || '-' }}</span>
                                     </div>
                                 </div>
 
@@ -132,7 +132,7 @@
 
                             <!-- Row 2: Name -->
                             <div class="flex items-center">
-                                <div class="text-[14.5px] font-normal text-slate-800 leading-tight tracking-wide uppercase">
+                                <div class="text-[19px] font-bold text-black leading-tight tracking-wide uppercase">
                                     {{ item.name }}
                                 </div>
                             </div>
@@ -145,64 +145,64 @@
                             <!-- EDIT MODE -->
                             <div v-if="editingIds.has(item.id)" class="grid grid-cols-1 gap-[5px] mb-3">
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">法寶名稱：</span>
+                                    <span class="text-[14px] font-bold text-[#9ba7b9] shrink-0 w-20">法寶名稱：</span>
                                     <input v-model="item.name" type="text" 
-                                        class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
+                                        class="flex-1 text-[17px] font-bold p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">法寶用意：</span>
+                                    <span class="text-[14px] font-bold text-[#9ba7b9] shrink-0 w-20">法寶用意：</span>
                                     <input v-model="item.purpose" type="text" placeholder="用意"
-                                        class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
+                                        class="flex-1 text-[17px] font-bold p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">求寶方式：</span>
+                                    <span class="text-[14px] font-bold text-[#9ba7b9] shrink-0 w-20">求寶方式：</span>
                                     <input v-model="item.acquisition_method" type="text" placeholder="求寶方式"
-                                        class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
+                                        class="flex-1 text-[17px] font-bold p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">備註：</span>
+                                    <span class="text-[14px] font-bold text-[#9ba7b9] shrink-0 w-20">備註：</span>
                                     <input v-model="item.remarks" type="text" placeholder="備註"
-                                        class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
+                                        class="flex-1 text-[17px] font-bold p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                             </div>
 
-                            <div v-else class="space-y-2 mb-2">
+                            <div v-else class="space-y-2 mb-2 p-1">
                                 <div v-if="item.purpose">
-                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">法寶用意</div>
-                                    <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.purpose }}</div>
+                                    <div class="text-[14px] font-bold text-[#9ba7b9] uppercase tracking-tight">法寶用意</div>
+                                    <div class="text-[17px] text-black font-bold leading-snug">{{ item.purpose }}</div>
                                 </div>
                                 <div v-if="item.acquisition_method">
-                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">求寶方式</div>
-                                    <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.acquisition_method }}</div>
+                                    <div class="text-[14px] font-bold text-[#9ba7b9] uppercase tracking-tight">求寶方式</div>
+                                    <div class="text-[17px] text-black font-bold leading-snug">{{ item.acquisition_method }}</div>
                                 </div>
                                 <div v-if="item.remarks">
-                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">備註</div>
-                                    <div class="text-[14.5px] text-slate-600 leading-snug italic">{{ item.remarks }}</div>
+                                    <div class="text-[14px] font-bold text-[#9ba7b9] uppercase tracking-tight">備註</div>
+                                    <div class="text-[17px] text-black font-bold leading-snug italic">{{ item.remarks }}</div>
                                 </div>
                             </div>
                             
                             <!-- Dharma Names Table -->
                             <div class="mt-3 border border-slate-200 rounded-lg overflow-hidden bg-white">
                                 <table class="w-full text-[12px] border-collapse">
-                                    <thead class="bg-white border-b border-slate-200">
+                                    <thead class="bg-slate-50/30 border-b border-slate-200">
                                         <tr>
-                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-16">法號</th>
-                                            <th class="border-b border-r border-slate-200 py-1 px-2 text-left font-medium text-slate-700 w-20">日期</th>
-                                            <th class="border-b border-slate-200 py-1 px-2 text-left font-medium text-slate-700">備註</th>
+                                            <th class="border-b border-r border-slate-200 py-1.5 px-3 text-left font-bold text-[#9ba7b9] text-[14px] w-20">法號</th>
+                                            <th class="border-b border-r border-slate-200 py-1.5 px-3 text-left font-bold text-[#9ba7b9] text-[14px] w-24">日期</th>
+                                            <th class="border-b border-slate-200 py-1.5 px-3 text-left font-bold text-[#9ba7b9] text-[14px]">備註</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="dn in getSortedDharmaNames()" :key="dn.id" class="border-b last:border-b-0 border-slate-100">
-                                            <td class="border-r border-slate-100 py-1 px-2 text-slate-800 font-medium">{{ dn.name }}</td>
+                                            <td class="border-r border-slate-100 py-1.5 px-3 text-black font-bold text-[17px]">{{ dn.name }}</td>
                                             
-                                            <td class="border-r border-slate-100 py-1 px-1">
-                                                <div class="flex items-center space-x-0.5">
-                                                    <div class="bg-transparent rounded px-1 flex-1 max-w-[80px] min-w-[70px]">
+                                            <td class="border-r border-slate-100 py-1.5 px-2">
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="bg-transparent rounded flex-1">
                                                         <input type="text" 
                                                             :value="getDharmaNameRecord(item, dn.id).obtained_date ? getDharmaNameRecord(item, dn.id).obtained_date.replace(/-/g, '/') : ''"
                                                             @input="handleDharmaDateInput(item, dn.id, $event.target.value)"
                                                             placeholder="年/月/日"
-                                                            class="w-full p-0 border-none text-[11px] bg-transparent focus:ring-0 text-slate-600">
+                                                            class="w-full p-0 border-none text-[17px] font-bold bg-transparent focus:ring-0 text-black">
                                                     </div>
                                                     <button @click.stop="openPickerForDharma(item, dn.id, dn.name)" 
                                                         class="p-0.5 text-slate-400 hover:text-indigo-500 transition-colors shrink-0">
@@ -212,16 +212,16 @@
                                             </td>
 
                                             <!-- Remarks Column -->
-                                            <td class="py-1 px-2">
+                                            <td class="py-1.5 px-3">
                                                 <template v-if="editingIds.has(item.id)">
                                                     <input type="text" 
                                                         :value="getDharmaNameRecord(item, dn.id).remarks"
                                                         @input="updateDharmaNameRecord(item, dn.id, 'remarks', $event.target.value)"
                                                         placeholder="備註"
-                                                        class="w-full p-0 border-none text-[11px] bg-transparent focus:ring-0">
+                                                        class="w-full p-0 border-none text-[17px] font-bold bg-transparent focus:ring-0 text-black">
                                                 </template>
                                                 <template v-else>
-                                                    <span v-if="getDharmaNameRecord(item, dn.id).remarks" class="text-slate-500 italic">{{ getDharmaNameRecord(item, dn.id).remarks }}</span>
+                                                    <span v-if="getDharmaNameRecord(item, dn.id).remarks" class="text-black font-bold italic text-[17px]">{{ getDharmaNameRecord(item, dn.id).remarks }}</span>
                                                 </template>
                                             </td>
                                         </tr>
@@ -242,54 +242,18 @@
 
         </div> <!-- End Scrollable Area -->
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
-            <div class="grid grid-cols-5 h-full items-center px-2">
-                <!-- BACK BUTTON -->
-                <div class="flex justify-center">
-                    <button @click="handleBack" 
-                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400 hover:bg-slate-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                </div>
-
-                <!-- HOME BUTTON -->
-                <div class="flex justify-center">
-                    <button @click="$emit('goHome')" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-
-                <!-- ADD BUTTON (Center) -->
-                <div class="flex justify-center items-center">
-                    <button v-if="currentFolder?.id !== 'unobtained'" @click="showAddMenu = !showAddMenu" 
-                        :class="[showAddMenu ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95']"
-                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500">
-                        <svg class="h-[10px] w-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-
-                <!-- SEARCH BUTTON -->
-                <div class="flex justify-center">
-                    <button @click="showSearch = !showSearch" 
-                        :class="showSearch ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'"
-                        class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-slate-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                </div>
-
-                <!-- EXPORT BUTTON -->
-                <div class="flex justify-center">
-                    <div class="relative">
-                        <button @click="showExportMenu = !showExportMenu" class="w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 text-slate-400 hover:bg-slate-50">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <div v-if="showExportMenu" class="absolute bottom-16 right-0 w-36 bg-white rounded-3xl shadow-[0_15px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden animate-slide-up z-[60] p-1.5">
-                            <button @click="downloadList('excel'); showExportMenu = false" class="w-full py-3 px-4 text-xs font-medium text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-colors">下載 Excel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <mobile-navbar 
+            :can-back="true"
+            :show-action="currentFolder?.id !== 'unobtained'"
+            :action-active="showAddMenu"
+            :search-active="showSearch"
+            :more-active="showExportMenu"
+            @back="handleBack"
+            @home="$emit('goHome')"
+            @action="showAddMenu = !showAddMenu"
+            @search="showSearch = !showSearch"
+            @more="showExportMenu = !showExportMenu"
+        />
         <!-- MODAL COMPONENTS -->
         <search-component 
             v-model="searchQuery" 
@@ -329,6 +293,7 @@
 import { ref, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
+import MobileNavbar from './MobileNavbar.vue';
 
 const emit = defineEmits(['goHome']);
 
