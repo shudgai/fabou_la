@@ -759,7 +759,7 @@ const saveSingle = async (forceOrData = false) => {
     isSaving.value = true;
     try {
         if (form.value.id) {
-            await axios.post(`/treasures/${form.value.id}`, { ...form.value, _method: 'PATCH' });
+            await axios.post(`/registries/${form.value.id}`, { ...form.value, _method: 'PATCH' });
             showToast('✓ 修改成功');
         } else {
             const data = { 
@@ -769,7 +769,7 @@ const saveSingle = async (forceOrData = false) => {
             if (!data.master_id && currentFolder.value) {
                 data.master_id = currentFolder.value.id;
             }
-            await axios.post('/treasures', data);
+            await axios.post('/registries', data);
             showToast('✓ 新增成功');
         }
         addMode.value = null;

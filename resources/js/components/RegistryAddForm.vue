@@ -12,7 +12,7 @@
                     <button @click="$emit('cancel')" class="text-indigo-500 font-medium flex items-center hover:opacity-70">
                         <span class="mr-1">&lt;</span>返回
                     </button>
-                    <h3 class="text-xl font-medium text-slate-800">
+                    <h3 class="text-[19px] font-bold text-black">
                         法寶登記 - {{ selectedMasterName || '請選擇仙師' }}
                     </h3>
                 </div>
@@ -25,14 +25,14 @@
                 <!-- TOP GRID: Date & Master -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">日期</label>
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">日期</label>
                         <div class="relative">
-                            <input v-model="form.record_date" type="date" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                            <input v-model="form.record_date" type="date" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                         </div>
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">仙師</label>
-                        <select v-model="form.master_id" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-indigo-100 outline-none">
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">仙師</label>
+                        <select v-model="form.master_id" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black shadow-sm focus:ring-2 focus:ring-indigo-100 outline-none">
                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
@@ -41,32 +41,32 @@
                 <!-- SINGLE FIELDS (Acting as defaults for Batch or for Single) -->
                 <div class="space-y-4">
                     <div v-if="localMode === 'single'" class="space-y-1.5 animate-fade-in">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" list="treasure-list" placeholder="輸入或選擇法寶名稱" @input="onNameInput" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">法寶名稱</label>
+                        <input v-model="form.name" type="text" list="treasure-list" placeholder="輸入或選擇法寶名稱" @input="onNameInput" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                         <datalist id="treasure-list">
                             <option v-for="t in treasureLibrary" :key="t.id" :value="t.name">{{ t.category }}</option>
                         </datalist>                    </div>
-
+ 
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">法寶用意</label>
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
-
+ 
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">求寶方式</label>
-                        <input v-model="form.acquisition_method" type="text" placeholder="輸入求寶方式" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">求寶方式</label>
+                        <input v-model="form.acquisition_method" type="text" placeholder="輸入求寶方式" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
-
+ 
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700 block ml-1">備註</label>
-                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full h-[36px] rounded-2xl border-none bg-white px-3 text-sm focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block ml-1">備註</label>
+                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[17px] font-bold text-black focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
                 </div>
 
                 <!-- BATCH SECTION (Only if in batch mode) -->
                 <div v-if="localMode === 'batch'" class="space-y-3 animate-fade-in">
                     <div class="flex items-center justify-between ml-1">
-                        <label class="text-xs font-bold text-slate-700 block">貼上內容</label>
+                        <label class="text-[14px] font-bold text-[#9ba7b9] block">貼上內容</label>
                         <div class="flex items-center space-x-3">
                             <button @click="$refs.fileInput.click()" class="text-indigo-500 font-bold text-[11px] hover:opacity-70">
                                 下載他檔
@@ -82,7 +82,7 @@
                     </div>
                     <div class="relative group">
                         <textarea v-model="batchInput" rows="6" 
-                            class="w-full rounded-2xl border-none shadow-sm text-sm bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
+                            class="w-full rounded-2xl border border-slate-100 shadow-sm text-[17px] font-bold text-black bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
                             placeholder="請加入清單內容..."></textarea>
                         <button v-if="batchInput" @click="batchInput = ''" 
                             class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:text-red-500 transition-all shadow-sm">
