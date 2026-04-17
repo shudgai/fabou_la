@@ -49,7 +49,7 @@
 
             <!-- Level 2: List & Add View -->
             <template v-else>
-                <!-- Add View (Modal-like) -->
+                <!-- Add View -->
                 <div v-if="addMode" class="fixed inset-0 z-[200] bg-white flex justify-center">
                     <div class="bg-white w-full h-full relative flex flex-col overflow-y-auto">
                         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-[210]">
@@ -79,7 +79,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Dharma Name Selection Trigger Area -->
                                 <button @click="showDharmaPicker = true" 
                                         class="w-full bg-slate-50 rounded-2xl border border-dashed border-slate-200 p-4 text-left transition-all active:scale-[0.98]">
                                     <div class="flex justify-between items-center mb-2">
@@ -127,7 +126,6 @@
                                 <button @click="saveItem" :disabled="saving" class="bg-yellow-400 text-yellow-950 rounded-[28px] px-16 py-3.5 shadow-lg active:scale-95 disabled:opacity-50">
                                     {{ saving ? '正在儲存中...' : '確認存檔' }}
                                 </button>
-                                <div v-if="saving" class="mt-4 text-[13px] text-slate-400 animate-pulse">正在寫入雲端紀錄...</div>
                             </div>
                         </div>
                     </div>
@@ -143,52 +141,38 @@
                         <div>
                             <label class="text-[12px] text-slate-400 block mb-2 px-1 font-bold">法寶名稱</label>
                             <div class="flex items-center space-x-2 mb-4">
-                                <input v-model="tempItem.treasure_name" type="text" list="t-list" placeholder="選擇法寶..." class="flex-1 py-3 px-4 bg-white rounded-2xl text-[15px] border border-slate-100 outline-none">
-                                <datalist id="t-list"><option v-for="t in treasures" :key="t.id" :value="t.name"/></datalist>
+                                <input v-model="tempItem.treasure_name" type="text" list="item-name-list" placeholder="選擇法寶..." class="flex-1 py-3 px-4 bg-white rounded-2xl text-[15px] border border-slate-100 outline-none">
+                                <datalist id="item-name-list"><option v-for="t in treasures" :key="t.id" :value="t.name"/></datalist>
                                 <button @click="pushTempItem" class="text-red-500 text-3xl font-bold px-2">+</button>
                             </div>
                             <label class="text-[12px] text-slate-400 block mb-2 px-1">內容物名稱</label>
                             <div class="flex items-center space-x-2">
                                 <input v-model="tempItem.name" type="text" list="item-name-list" placeholder="輸入內容物..." class="flex-1 py-3 px-4 bg-white rounded-2xl text-[15px] border border-slate-100 outline-none">
-                                <datalist id="item-name-list">
-                                    <option v-for="t in treasures" :key="t.id" :value="t.name" />
-                                </datalist>
                                 <button @click="addToStaging" class="text-red-500 text-3xl font-bold px-2">+</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-1">
-                                <label class="text-[11px] block mb-1 text-slate-400">作法</label>
-                                <input v-model="tempItem.method" type="text" list="method-list" class="w-full h-11 bg-white rounded-2xl px-3 text-[14px] border border-slate-100">
-                                <datalist id="method-list">
-                                                                        <option v-for="t in treasures" :key="t.id" :value="t.name" />
-
-                                </datalist>
-                            </div>
-                            <div class="col-span-1">
-                                <label class="text-[11px] block mb-1 text-slate-400">數量/尺寸</label>
-                                <input v-model="tempItem.quantity" type="text" class="w-full h-11 bg-white rounded-2xl px-3 text-[14px] border border-slate-100">
-                            </div>
-                            <div class="col-span-1">
-                                <label class="text-[11px] block mb-1 text-slate-400">天數</label>
-                                <input v-model="tempItem.duration" type="text" class="w-full h-11 bg-white rounded-2xl px-3 text-[14px] border border-slate-100">
-                            </div>
+                        
+                        <div>
+                            <label class="text-[12px] text-slate-400 block mb-2 px-1 font-bold">詳情 (作法/數量/時間)</label>
+                            <textarea v-model="tempItem.details" rows="3" placeholder="輸入作法、數量或天數等詳細內容..." class="w-full py-3 px-4 bg-slate-50 border border-slate-100 rounded-2xl text-[15px] outline-none focus:ring-2 focus:ring-indigo-100 transition-all resize-none"></textarea>
                         </div>
-                        <div v-if="stagingItems.length > 0" class="bg-slate-50 rounded-2xl p-4 space-y-2 border border-dashed border-slate-200">
+
+                        <div v-if="stagingItems.length > 0" class="bg-indigo-50/30 rounded-2xl p-4 space-y-2 border border-dashed border-indigo-200">
                             <div v-for="(sItem, sIdx) in stagingItems" :key="sIdx" class="flex items-center justify-between text-sm">
-                                <span>{{ sItem.name }} / {{ sItem.method }}</span>
+                                <span>{{ sItem.name }} {{ sItem.details }}</span>
                                 <button @click="stagingItems.splice(sIdx, 1)" class="text-red-300">✕</button>
                             </div>
                         </div>
-                        <button @click="commitStaging" class="w-full bg-blue-50 text-blue-600 py-3 rounded-2xl font-bold">確認添加至清單</button>
+                        
+                        <button @click="commitStaging" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-blue-100 active:scale-95 transition-all">確認添加至清單</button>
                         
                         <div class="pt-4 border-t border-slate-100">
-                            <div class="text-sm font-bold text-slate-400 mb-3">已加入明細 ({{ form.items.length }})</div>
+                            <div class="text-sm font-bold text-slate-400 mb-3 uppercase tracking-widest">已加入明細 ({{ form.items.length }})</div>
                             <div v-for="(group, gName) in groupedPendingItems" :key="gName" class="mb-4">
                                 <div class="font-bold text-slate-900 border-l-4 border-indigo-400 pl-2 mb-2">{{ formatTreasureName(gName) }}</div>
-                                <div v-for="(m, midx) in group" :key="midx" class="pl-4 text-sm text-slate-600 flex justify-between items-center py-1">
-                                    <span>{{ m.name || '核心' }} - {{ m.method }} {{ m.quantity }}</span>
-                                    <button @click="removeMagicItem(m.originalIdx)" class="text-red-200">✕</button>
+                                <div v-for="(m, midx) in group" :key="midx" class="pl-4 text-sm text-slate-600 flex justify-between items-center py-2 bg-slate-50/50 rounded-lg mb-1">
+                                    <span>{{ m.name || '核心' }} - <span class="text-slate-400">{{ m.details }}</span></span>
+                                    <button @click="removeMagicItem(m.originalIdx)" class="text-red-200 px-2">✕</button>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +208,6 @@
                         </div>
 
                         <div class="flex-1 overflow-y-auto px-6 py-2 custom-scrollbar">
-                            <!-- Group Results (Priority) -->
                             <div v-if="filteredGroups.length > 0" class="mb-6 mt-2">
                                 <div class="text-[12px] text-indigo-500 font-bold px-1 mb-3 tracking-widest uppercase flex items-center">
                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
@@ -232,7 +215,7 @@
                                 </div>
                                 <div class="space-y-2">
                                     <div v-for="group in filteredGroups" :key="group.id" 
-                                         class="border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm ring-1 ring-slate-50">
+                                         class="border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm">
                                         <div @click="toggleGroupAccordion(group.id)" 
                                              class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-slate-50">
                                             <div class="flex items-center space-x-3">
@@ -259,92 +242,93 @@
                                 </div>
                             </div>
 
-                            <!-- Individual Results -->
                             <div class="mb-4">
                                 <div class="text-[12px] text-slate-400 font-bold px-1 mb-3 tracking-widest uppercase flex items-center">
                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2"/></svg>
-                                    {{ pickerSearch ? '法號搜尋結果' : '所有法號 (個別篩選)' }}
+                                    {{ pickerSearch ? '法號搜尋結果' : '所有法號' }}
                                 </div>
                                 <div class="grid grid-cols-2 gap-2">
                                     <button v-for="dn in filteredPickerResults" :key="dn.id" 
                                             @click="toggleDharmaName(dn.id)"
                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm' : 'bg-slate-50 border-slate-50 text-slate-600'"
                                             class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[15px] font-medium active:scale-[0.98]">
-                                        <div class="w-5 h-5 rounded-md border flex items-center justify-center mr-3 shrink-0 transition-all font-bold"
+                                        <div class="w-5 h-5 rounded-md border flex items-center justify-center mr-3 shrink-0"
                                              :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200 shadow-sm'">
                                             <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </div>
                                         <span class="truncate">{{ dn.name }}</span>
                                     </button>
                                 </div>
-                                <div v-if="filteredPickerResults.length === 0 && filteredGroups.length === 0" class="py-12 text-center text-slate-300 italic">查無符合條件的法號或群組</div>
                             </div>
                         </div>
 
-                        <div class="p-6 border-t border-slate-100 flex items-center space-x-3 shrink-0 bg-white shadow-2xl">
+                        <div class="p-6 border-t border-slate-100 flex items-center space-x-3 shrink-0 bg-white">
                             <button @click="form.dharma_name_ids = []" class="flex-1 py-4 bg-slate-50 text-slate-500 rounded-2xl font-bold active:scale-95 transition-all">全部清除</button>
                             <button @click="showDharmaPicker = false" class="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 active:scale-95 transition-all">確認選擇</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main List View (Accordion by Date) -->
+                <!-- Main List View -->
                 <div v-show="!addMode" class="pb-32 flex-1 overflow-y-auto" @scroll="handleScroll">
-                    <div v-if="loading && visibleDates.length === 0" class="text-center py-12 text-slate-400 text-xs tracking-widest">正在同步資料紀錄...</div>
+                    <div v-if="loading && visibleDates.length === 0" class="text-center py-12 text-slate-400 text-xs tracking-widest uppercase">Syncing Records...</div>
                     <div v-else class="space-y-px">
                         <div v-for="dateRow in visibleDates" :key="dateRow.date" class="bg-white border-b border-slate-50">
-                            <!-- Date Accordion Header -->
-                            <div @click="toggleDate(dateRow.date)" class="px-6 py-4 flex items-center justify-between cursor-pointer active:bg-slate-50">
+                            <!-- Date Accordion -->
+                            <div @click="toggleDate(dateRow.date)" class="px-6 py-5 flex items-center justify-between cursor-pointer active:bg-slate-50">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-2 h-2 rounded-full" :class="expandedDates.has(dateRow.date) ? 'bg-indigo-500' : 'bg-slate-200'"></div>
-                                    <span class="text-[17px] font-medium" :class="expandedDates.has(dateRow.date) ? 'text-indigo-600' : 'text-slate-800'">{{ dateRow.date }}</span>
-                                    <span class="bg-slate-100 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-bold">{{ dateRow.count }} 筆</span>
+                                    <div class="w-2.5 h-2.5 rounded-full" :class="expandedDates.has(dateRow.date) ? 'bg-indigo-500' : 'bg-slate-200'"></div>
+                                    <span class="text-[17px] font-bold" :class="expandedDates.has(dateRow.date) ? 'text-indigo-600' : 'text-slate-800'">{{ dateRow.date }}</span>
+                                    <span class="bg-slate-100 text-slate-400 text-[10px] px-2.5 py-0.5 rounded-full font-bold">{{ dateRow.count }} 筆</span>
                                 </div>
-                                <svg :class="expandedDates.has(dateRow.date) ? 'rotate-180' : ''" class="w-5 h-5 text-slate-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg :class="expandedDates.has(dateRow.date) ? 'rotate-180' : ''" class="w-5 h-5 text-slate-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" /></svg>
                             </div>
 
                             <div v-if="expandedDates.has(dateRow.date)" class="bg-slate-50/30">
                                 <div v-if="dateLoading[dateRow.date]" class="p-8 text-center text-xs text-slate-300">載入中...</div>
                                 <div v-else-if="dateItems[dateRow.date]?.length">
                                     <div v-for="item in (searchQuery ? filteredDateItems(dateRow.date) : dateItems[dateRow.date])" :key="item.id" 
-                                         @click="toggleExpand(item.id)" class="px-6 py-5 border-b border-slate-50 last:border-0 cursor-pointer hover:bg-white transition-colors">
-                                        <div class="flex justify-between items-start text-[11px] text-slate-400 uppercase mb-2">
-                                            <div class="flex flex-wrap gap-1">
-                                                <span v-for="dn in item.dharma_names" :key="dn.id" class="bg-indigo-50 text-indigo-400 px-1.5 py-0.5 rounded text-[9px]">{{ dn.name }}</span>
-                                                <span v-if="(!item.dharma_names || item.dharma_names.length === 0)" class="bg-slate-50 text-slate-400 px-1.5 py-0.5 rounded text-[9px]">所有人</span>
+                                         @click="toggleExpand(item.id)" class="px-6 py-6 border-b border-slate-50 last:border-0 cursor-pointer hover:bg-white transition-colors">
+                                        <div class="flex justify-between items-start text-[11px] text-slate-400 uppercase mb-3">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span v-for="dn in item.dharma_names" :key="dn.id" class="bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-md text-[10px] font-bold border border-indigo-100">{{ dn.name }}</span>
+                                                <span v-if="(!item.dharma_names || item.dharma_names.length === 0)" class="bg-slate-100 text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">全員開示</span>
                                             </div>
                                             <div class="flex space-x-4">
-                                                <span class="text-[9px] text-slate-300 mr-2">{{ getMasterName(item.master_id) }}</span>
-                                                <button @click.stop="duplicateItem(item)" class="text-blue-400">複製</button>
-                                                <button @click.stop="editItem(item)" class="text-indigo-400">編輯</button>
-                                                <button @click.stop="deleteItem(item.id)" class="text-red-300">刪除</button>
+                                                <button @click.stop="duplicateItem(item)" class="text-blue-400 font-bold hover:text-blue-600 transition-colors">複製</button>
+                                                <button @click.stop="editItem(item)" class="text-indigo-400 font-bold hover:text-indigo-600 transition-colors">編輯</button>
+                                                <button @click.stop="deleteItem(item.id)" class="text-red-300 font-bold hover:text-red-500 transition-colors">刪除</button>
                                             </div>
                                         </div>
-                                        <div class="text-[17px] font-medium text-slate-900 line-clamp-1" v-if="item.content">{{ item.content.split('\n')[0] }}</div>
-                                        <div class="text-[15px] text-slate-600 mt-2 whitespace-pre-wrap leading-relaxed" :class="focusedId == item.id ? '' : 'line-clamp-2'">{{ item.content }}</div>
+                                        <div class="text-[15px] text-slate-600 whitespace-pre-wrap leading-relaxed" :class="focusedId == item.id ? '' : 'line-clamp-2'">{{ item.content }}</div>
                                         
-                                        <div v-if="focusedId == item.id" class="mt-4 pt-4 border-t border-slate-100 animate-fade-in">
-                                            <div v-if="(!item.items || item.items.length === 0) && !item.items_footer_remarks && !item.remarks" class="text-xs text-slate-300 italic py-2">無明細內容</div>
+                                        <!-- Item Details Expanded -->
+                                        <div v-if="focusedId == item.id" class="mt-5 pt-5 border-t border-slate-100 animate-fade-in">
+                                            <div v-if="(!item.items || item.items.length === 0) && !item.items_footer_remarks" class="text-xs text-slate-300 italic">無降寶內容</div>
                                             <div v-else class="space-y-4">
-                                                <div v-if="generateSummary(item)" class="p-3 bg-white border border-slate-100 rounded-xl text-sm text-slate-700 shadow-sm">{{ generateSummary(item) }}</div>
-                                                <div v-for="(group, gName) in groupItems(item.items)" :key="gName" class="space-y-1">
-                                                    <div class="text-sm font-bold text-slate-900 border-l-2 border-indigo-400 pl-2">{{ formatTreasureName(gName) }}</div>
-                                                    <div v-for="(m, midx) in group" :key="midx" class="pl-4 text-sm text-slate-600">
-                                                        <span>{{ m.name || '核心' }} - {{ m.method }} {{ m.quantity }} {{ m.duration }}</span>
+                                                <div v-for="(group, gName) in groupItems(item.items)" :key="gName" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                                                    <div class="text-[13px] font-bold text-slate-900 mb-2 border-b border-indigo-50 pb-2 flex items-center">
+                                                        <div class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></div>
+                                                        {{ formatTreasureName(gName) }}
+                                                    </div>
+                                                    <div v-for="(m, midx) in group" :key="midx" class="pl-3 py-1.5 text-sm text-slate-600 flex items-start">
+                                                        <span class="mr-2 text-indigo-200">▪</span>
+                                                        <span>{{ m.name || '核心' }}: <span class="text-slate-400 italic">{{ m.details }}</span></span>
                                                     </div>
                                                 </div>
-                                                <div v-if="item.items_footer_remarks" class="p-3 bg-indigo-50/30 rounded-xl text-sm text-slate-500 italic">{{ item.items_footer_remarks }}</div>
+                                                <div v-if="item.items_footer_remarks" class="p-4 bg-indigo-50/50 rounded-2xl text-[13px] text-indigo-700/70 border border-indigo-100/50 leading-relaxed italic">
+                                                    備註: {{ item.items_footer_remarks }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div v-else class="p-8 text-center text-xs text-slate-300">查無紀錄</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- (Bottom Nav remains same ...) -->
+                <!-- Bottom Navigation -->
                 <div class="fixed bottom-0 left-0 right-0 z-[100] h-[7vh] bg-white border-t border-slate-100 grid grid-cols-5 items-center px-4">
                     <div class="flex justify-center"><button @click="handleBack" class="text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2" /></svg></button></div>
                     <div class="flex justify-center"><button @click="$emit('goHome')" class="text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10" stroke-width="2" /></svg></button></div>
@@ -366,21 +350,20 @@ import SearchComponent from './SearchComponent.vue';
 const emit = defineEmits(['goHome']);
 const currentFolder = ref(null);
 const addMode = ref(false);
-const teachings = ref([]);
-const masters = ref([]);
+const teachings = ref([]); 
 const dharmaNames = ref([]);
 const groups = ref([]);
 const treasures = ref([]);
+const masters = ref([]);
 const loading = ref(false);
 const entryTab = ref('single');
 const saving = ref(false);
 const editingId = ref(null);
 const focusedId = ref(null);
 const itemsDetailMode = ref(false);
-const tempItem = ref({ treasure_name: '', name: '', method: '', duration: '', quantity: '', sub_name: '' });
+const tempItem = ref({ treasure_name: '', name: '', details: '', sub_name: '' });
 const stagingItems = ref([]);
 
-// Modal & Picker Logic
 const showDharmaPicker = ref(false);
 const pickerSearch = ref('');
 const expandedGroupPicker = ref(null);
@@ -411,26 +394,24 @@ const resolveMasterId = () => {
     if (m) { form.value.master_id = m.id; return; }
     const f = folders.value.find(x => x.name === name);
     if (f) { form.value.master_id = f.id; return; }
-    form.value.master_id = name;
+    form.value.master_id = null;
 };
 
-// Dharma Picker Functions
 const getDharmaNameText = (id) => {
     const dn = dharmaNames.value.find(x => x.id === id);
     return dn ? dn.name : '';
 };
 
-// New Unified Search Logic
 const filteredPickerResults = computed(() => {
     if (!pickerSearch.value) return dharmaNames.value;
     const q = pickerSearch.value.toLowerCase();
-    return dharmaNames.value.filter(dn => dn.name.toLowerCase().includes(q));
+    return dharmaNames.value.filter(dn => (dn.name || '').toLowerCase().includes(q));
 });
 
 const filteredGroups = computed(() => {
-    if (!pickerSearch.value) return groups;
+    if (!pickerSearch.value) return groups.value || [];
     const q = pickerSearch.value.toLowerCase();
-    return groups.value.filter(g => g.name.toLowerCase().includes(q));
+    return (groups.value || []).filter(g => (g.name || '').toLowerCase().includes(q));
 });
 
 const toggleDharmaName = (id) => {
@@ -452,12 +433,10 @@ const toggleGroupSelection = (group) => {
 };
 
 const isGroupFullySelected = (group) => {
-    const memberIds = (group.dharma_names || []).map(dn => dn.id);
-    if (memberIds.length === 0) return false;
-    return memberIds.every(id => form.value.dharma_name_ids.includes(id));
+    if (!group.dharma_names || group.dharma_names.length === 0) return false;
+    return group.dharma_names.every(dn => form.value.dharma_name_ids.includes(dn.id));
 };
 
-// Data Fetching
 const syncRecords = async () => {
     try {
         const [dnRes, groupRes, masterRes, treasureRes] = await Promise.allSettled([
@@ -521,12 +500,12 @@ watch(currentFolder, (val) => {
 
 const saveItem = async () => {
     if (entryTab.value === 'batch' && batchInput.value) form.value.content = batchInput.value;
-    if (!form.value.content) return alert('請填寫完整內容');
+    if (!form.value.content) return alert('請填寫開示內容');
     saving.value = true;
     try {
         const mid = form.value.master_id || currentFolder.value?.id;
         const finalMasterId = (mid == 0) ? null : mid;
-        const payload = { ...form.value, master_id: finalMasterId, master_name: masterNameInput.value, user_id: 1 };
+        const payload = { ...form.value, master_id: finalMasterId, user_id: 1 };
         if (editingId.value) await axios.put(`/teachings/${editingId.value}`, payload);
         else await axios.post('/teachings', payload);
         alert('存檔成功！');
@@ -556,11 +535,11 @@ const duplicateItem = (item) => {
     form.value = { ...item, id: null, date: new Date().toISOString().split('T')[0], dharma_name_ids: item.dharma_names.map(dn => dn.id) }; 
     editingId.value = null; addMode.value = true; 
 };
-const addToStaging = () => { if (!tempItem.value.name) return alert('請輸入名稱'); stagingItems.value.push({ ...tempItem.value }); tempItem.value = { ...tempItem.value, name: '', method: '', quantity: '', duration: '' }; };
+const addToStaging = () => { if (!tempItem.value.name) return alert('請輸入名稱'); stagingItems.value.push({ ...tempItem.value }); tempItem.value = { ...tempItem.value, name: '', details: '' }; };
 const commitStaging = () => {
-    if (stagingItems.value.length === 0) { if (!tempItem.value.name && !tempItem.value.treasure_name) return alert('請輸入名稱'); form.value.items.push({ ...tempItem.value, category: '清煞' }); }
-    else { if (tempItem.value.name) stagingItems.value.push({ ...tempItem.value }); form.value.items.push(...stagingItems.value.map(i => ({ ...i, category: '清煞' }))); stagingItems.value = []; }
-    tempItem.value = { treasure_name: '', name: '', method: '', duration: '', quantity: '', sub_name: '' };
+    if (stagingItems.value.length === 0) { if (!tempItem.value.treasure_name && !tempItem.value.name) return alert('請輸入名稱'); form.value.items.push({ ...tempItem.value }); }
+    else { if (tempItem.value.name) stagingItems.value.push({ ...tempItem.value }); form.value.items.push(...stagingItems.value); stagingItems.value = []; }
+    tempItem.value = { treasure_name: '', name: '', details: '', sub_name: '' };
 };
 const pushTempItem = commitStaging;
 const removeMagicItem = (idx) => { form.value.items.splice(idx, 1); };
@@ -575,7 +554,7 @@ const generateSummary = (item) => { if (!item?.items || item.items.length === 0)
 const formatTreasureName = (name) => name ? name.split(':').pop() : '';
 const searchQuery = ref('');
 const showSearch = ref(false);
-const handleBack = () => { if (addMode.value) { addMode.value = false; itemsDetailMode.value = false; editingId.value = null; } else if (currentFolder.value) { currentFolder.value = null; } else { emit('goHome'); } };
+const handleBack = () => { if (addMode.value) { addMode.value = false; editingId.value = null; } else if (currentFolder.value) { currentFolder.value = null; } else { emit('goHome'); } };
 onMounted(syncRecords);
 </script>
 
@@ -584,15 +563,12 @@ onMounted(syncRecords);
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
-@keyframes slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-}
-.animate-slide-up { animation: slide-up 0.3s ease-out; }
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.animate-slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-@keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
+
+.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 </style>
