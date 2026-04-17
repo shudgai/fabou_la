@@ -12,13 +12,18 @@ return new class extends Migration {
     {
         Schema::create('teachings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('master_id')->constrained();//哪位仙師
-            $table->foreignId('group_id')->nullable()->constrained();//哪個團體
-            $table->foreignId('dharma_name_id')->nullable()->constrained();//哪位法號
+            $table->date('date')->nullable();
+            $table->foreignId('master_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('group_id')->nullable()->constrained();
+            $table->foreignId('dharma_name_id')->nullable()->constrained();
             $table->text('title');
             $table->longText('content')->nullable();
-            $table->json('supplement')->nullable();
-            $table->foreignId('user_id')->constrained();//誰存的
+            $table->string('supplement')->nullable(); // 親友/信眾
+            $table->string('target_remarks')->nullable(); // 團體/對象備註
+            $table->text('remarks')->nullable(); // 系統/內部備註
+            $table->json('items')->nullable(); // 所有法寶、金丹、符令、手作內容
+            $table->text('items_footer_remarks')->nullable(); // 降寶清單結尾備註
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

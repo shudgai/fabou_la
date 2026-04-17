@@ -7,7 +7,7 @@
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-[19px] font-bold text-slate-900">
+                <h3 class="text-[19px] font-normal text-slate-900">
                     怨靈多筆載錄
                 </h3>
                 <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
@@ -18,8 +18,8 @@
             <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar bg-white">
                 <div class="space-y-1">
                     <div class="flex items-center justify-between mb-2 ml-1">
-                        <label class="text-[14px] font-bold text-black uppercase">貼上資料</label>
-                        <button @click="triggerFileUpload" class="text-[13px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
+                        <label class="text-[13px] font-normal text-[#aeb4be] uppercase">貼上資料</label>
+                        <button @click="triggerFileUpload" class="text-[13px] font-normal text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             <span>載入他檔 (Excel/Word)</span>
                         </button>
@@ -106,6 +106,10 @@ const handleBatchSave = async () => {
         // 2. Clear item numbers
         let cleanLine = normLine.replace(/^(\d+[\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)/, '').trim();
         if (!cleanLine) return;
+
+        // Header & Summary Filter: Skip if line contains title/summary keywords
+        const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計', '閻尊', '閻闇', '龍勝', '龍戰'];
+        if (skipKeywords.some(key => cleanLine.includes(key))) return;
 
         // Skip lines that are just remarks in parentheses (continuation lines)
         if (/^[（\(].*[）\)]$/.test(cleanLine)) return;

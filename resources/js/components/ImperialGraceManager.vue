@@ -5,7 +5,7 @@
             <div class="flex items-center justify-center relative mb-1">
                 <h2 class="text-[19px] font-normal font-outfit tracking-tight text-black flex items-center">
                     <span>重大皇恩 - {{ currentFolder.name }}</span>
-                    <button @click="toggleSort" class="ml-2 px-1.5 py-0.5 text-[12px] text-indigo-500 font-bold bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all opacity-80">
+                    <button @click="toggleSort" class="ml-2 px-1.5 py-0.5 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all opacity-80">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </h2>
@@ -16,7 +16,7 @@
             <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200"
                 style="padding: 10px 15px; min-width: 140px; max-width: 85vw;">
                 <div class="flex items-start justify-between space-x-3">
-                    <span class="text-[12px] font-bold leading-normal text-red-600 break-words uppercase tracking-wide">
+                    <span class="text-[12px] font-normal leading-normal text-red-600 break-words uppercase tracking-wide">
                         {{ persistentToast.msg }}
                     </span>
                     <button v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" 
@@ -26,11 +26,11 @@
                 <!-- Action Buttons (Horizontal Layout) -->
                 <div v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-3 pb-1">
                     <template v-if="persistentToast.type === 'confirm'">
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">確定</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-normal whitespace-nowrap">確定</button>
                     </template>
                     <template v-if="persistentToast.type === 'deleteConfirm'">
-                        <button @click="persistentToast = null" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2 py-1.5 rounded border border-slate-200 text-[11px] font-bold whitespace-nowrap">取消</button>
-                        <button @click="executeDelete" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1.5 rounded border border-red-100 text-[11px] font-bold whitespace-nowrap">確定刪除</button>
+                        <button @click="persistentToast = null" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2 py-1.5 rounded border border-slate-200 text-[11px] font-normal whitespace-nowrap">取消</button>
+                        <button @click="executeDelete" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1.5 rounded border border-red-100 text-[11px] font-normal whitespace-nowrap">確定刪除</button>
                     </template>
                 </div>
             </div>
@@ -40,13 +40,13 @@
         <div v-if="!currentFolder" class="bg-white">
             <!-- Header Title -->
             <div class="px-6 pt-[5px] pb-2 text-center">
-                <h1 class="text-[28px] font-black text-slate-800 tracking-tight">重大皇恩專區</h1>
+                <h1 class="text-[28px] font-normal text-slate-800 tracking-tight">重大皇恩專區</h1>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4">
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-[28px] border border-[rgb(255,215,0)] group px-[5px] pt-[10px] pb-0 aspect-square relative w-[72%] mx-auto"
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[120px] relative"
                    >
                     <div class="relative mb-4">
                         <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,9 +66,9 @@
                         </svg>
                     </div>
                     <div class="mt-[-6px] text-center px-1">
-                        <div class="text-[17px] leading-tight text-slate-700 break-words font-bold">
+                        <div class="text-[17px] leading-tight text-slate-700 break-words">
                             <template v-if="folder.id === 'unobtained'">
-                                <div class="text-[17.5px] leading-tight">未求得<br>重大皇恩</div>
+                                <div class="text-[17.5px] leading-tight text-red-600">未求得<br>重大皇恩</div>
                             </template>
                             <template v-else>
                                 <div class="whitespace-nowrap">{{ folder.name }}</div>
@@ -83,7 +83,7 @@
             <div class="mt-12 flex justify-center pb-[5px]">
                 <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    <span class="text-xs font-bold tracking-widest uppercase">返回筆記本列表</span>
+                    <span class="text-xs tracking-widest uppercase">返回筆記本列表</span>
                 </button>
             </div>
         </div>
@@ -104,13 +104,13 @@
                         
                         <!-- List Item Display (Header when collapsed) -->
                         <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col pointer-events-none">
-                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[13px] font-bold text-[#9fa6b2] leading-none mb-1">
+                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[13px] text-slate-400 leading-none mb-1">
                                 {{ getMasterName(reg.master_id) }}
                             </div>
 
                             <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[13px] font-bold text-[#9fa6b2] uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[13px] text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
                                     <div class="text-[13px] text-[#9fa6b2] font-normal">
                                         得知: <span class="text-[16px] text-slate-500 font-normal ml-0.5">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
                                         <span class="ml-2">
@@ -146,7 +146,7 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">
+                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">
                                         {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
@@ -166,7 +166,7 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">
+                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">
                                         {{ expandedIds.has(reg.id) ? '收合清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
@@ -241,7 +241,7 @@
 
     </div> <!-- End Scrollable Area -->
     
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">

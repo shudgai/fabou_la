@@ -15,7 +15,7 @@
             <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200"
                 style="padding: 8px 15px; min-width: 140px; max-width: 85vw;">
                 <div class="flex items-start justify-between space-x-3">
-                    <span class="text-[12px] font-medium leading-normal text-red-600 break-words uppercase tracking-wide">
+                    <span class="text-[12px] font-normal leading-normal text-red-600 break-words uppercase tracking-wide">
                         {{ persistentToast.msg }}
                     </span>
                     <button v-if="['confirm'].includes(persistentToast.type)" 
@@ -26,7 +26,7 @@
                     <button v-for="action in persistentToast.actions" :key="action.label"
                         @click="action.handler"
                         :class="[action.primary ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-600 border-slate-200']"
-                        class="w-full p-[5px] rounded border text-[11px] font-medium whitespace-nowrap active:scale-[0.98] transition-all">
+                        class="w-full p-[5px] rounded border text-[11px] font-normal whitespace-nowrap active:scale-[0.98] transition-all">
                         {{ action.label }}
                     </button>
                     <button @click="persistentToast = null" class="w-full bg-white text-slate-400 px-2 py-1.5 rounded text-[11px] font-normal">取消</button>
@@ -41,15 +41,14 @@
             <!-- Large Static Title -->
             <div class="px-6 py-4 text-center">
                 <h1 class="text-2xl font-normal text-slate-800 tracking-tight">法寶登記專區</h1>
-                <p class="text-[10px] text-slate-400 font-normal uppercase tracking-widest mt-1">完整記載每份法寶與獲得進度</p>
             </div>
 
 
 
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-3 p-4">
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-[28px] border border-[#EF4444] group p-2 aspect-square relative w-[72%] mx-auto"
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[120px] relative"
                    >
                     <div class="relative">
                         <svg class="w-14 h-14 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,7 +106,7 @@
                             <!-- Row 1: Label & Dates & Menu -->
                             <div class="flex items-center justify-between mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[11.5px] font-normal text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[11.5px] font-normal text-[#aeb4be] uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
                                     <div class="text-[11.5px] text-slate-400 font-normal">
                                         <span class="text-slate-500">{{ item.record_date?.replace(/-/g, '/') || '-' }}</span>
                                     </div>
@@ -118,15 +117,14 @@
                                     <button @click.stop="toggleMenu(item.id)" class="p-1 -mr-1">
                                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                     </button>
-                                    <!-- DROP-DOWN MENU -->
                                     <div v-if="openMenuId === item.id" @click.stop
                                         class="absolute right-0 top-full mt-1 w-28 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
                                         <button @click="toggleExpand(item.id); openMenuId = null;" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">
                                             {{ expandedIds.has(item.id) ? '縮起清單' : '展開清單' }}
                                         </button>
                                         <button @click="openAndEdit(item.id)" class="w-full p-2 text-left text-[11px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                        <button @click.stop="copyOnly(item)" class="w-full p-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                        <button @click.stop="downloadOnly(item, 'excel')" class="w-full p-2 text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 font-medium whitespace-nowrap">下載 Excel</button>
+                                        <button @click.stop="copyOnly(item)" class="w-full p-2 text-left text-[11px] text-green-600 hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                        <button @click.stop="downloadOnly(item, 'excel')" class="w-full p-2 text-left text-[11px] text-emerald-600 hover:bg-emerald-50 border-b border-slate-50 whitespace-nowrap">下載 Excel</button>
                                         <button @click.stop="confirmDelete(item.id)" class="w-full p-2 text-left text-[11px] text-red-600 hover:bg-red-50">刪除</button>
                                     </div>
                                 </div>
@@ -147,22 +145,22 @@
                             <!-- EDIT MODE -->
                             <div v-if="editingIds.has(item.id)" class="grid grid-cols-1 gap-[5px] mb-3">
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">法寶名稱：</span>
+                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">法寶名稱：</span>
                                     <input v-model="item.name" type="text" 
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">法寶用意：</span>
+                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">法寶用意：</span>
                                     <input v-model="item.purpose" type="text" placeholder="用意"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">求寶方式：</span>
+                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">求寶方式：</span>
                                     <input v-model="item.acquisition_method" type="text" placeholder="求寶方式"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-medium text-slate-500 shrink-0 w-16">備註：</span>
+                                    <span class="text-[11px] font-normal text-slate-500 shrink-0 w-16">備註：</span>
                                     <input v-model="item.remarks" type="text" placeholder="備註"
                                         class="flex-1 text-[13px] p-1 border border-slate-200 rounded focus:border-indigo-500 focus:ring-0">
                                 </div>
@@ -170,15 +168,15 @@
 
                             <div v-else class="space-y-2 mb-2">
                                 <div v-if="item.purpose">
-                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">法寶用意</div>
+                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">法寶用意</div>
                                     <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.purpose }}</div>
                                 </div>
                                 <div v-if="item.acquisition_method">
-                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">求寶方式</div>
+                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">求寶方式</div>
                                     <div class="text-[14.5px] text-slate-700 leading-snug">{{ item.acquisition_method }}</div>
                                 </div>
                                 <div v-if="item.remarks">
-                                    <div class="text-[10px] font-medium text-slate-400 uppercase tracking-tight">備註</div>
+                                    <div class="text-[10px] font-normal text-[#aeb4be] uppercase tracking-tight">備註</div>
                                     <div class="text-[14.5px] text-slate-600 leading-snug italic">{{ item.remarks }}</div>
                                 </div>
                             </div>
@@ -244,7 +242,7 @@
 
         </div> <!-- End Scrollable Area -->
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <!-- BACK BUTTON -->
                 <div class="flex justify-center">
@@ -328,7 +326,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits } from 'vue';
+import { ref, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 
@@ -341,7 +339,6 @@ const masters = ref([]);
 const dharmaNames = ref([]);
 const loading = ref(false);
 const persistentToast = ref(null);
-import { watch } from 'vue';
 watch(persistentToast, (newVal) => {
     if (newVal && newVal.type !== 'confirm') {
         setTimeout(() => { persistentToast.value = null; }, 1000);

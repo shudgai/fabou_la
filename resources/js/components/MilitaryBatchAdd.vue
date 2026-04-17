@@ -2,10 +2,10 @@
     <div v-if="show" class="fixed inset-0 z-[100] flex flex-col bg-white animate-fade-in">
         <!-- Header -->
         <div class="h-[50px] border-b border-slate-100 flex items-center justify-between px-4 shrink-0 bg-white">
-            <button @click="$emit('cancel', false)" class="text-slate-500 text-[14px] font-bold">取消</button>
-            <h3 class="text-[19px] font-bold text-slate-800">多筆新增：{{ armyType }}</h3>
+            <button @click="$emit('cancel', false)" class="text-slate-500 text-[14px] font-normal">取消</button>
+            <h3 class="text-[19px] font-normal text-slate-800">多筆新增：{{ armyType }}</h3>
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
-                class="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[14px] font-bold disabled:opacity-30 active:scale-95 transition-all">
+                class="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[14px] font-normal disabled:opacity-30 active:scale-95 transition-all">
                 {{ processing ? '存取中...' : `儲存 (${parsedItems.length})` }}
             </button>
         </div>
@@ -20,8 +20,8 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div>
-                            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">錄入日期</p>
-                            <p class="text-[14px] font-bold text-slate-700">{{ batchDate }}</p>
+                            <p class="text-[13px] text-[#aeb4be] font-normal uppercase tracking-wider">錄入日期</p>
+                            <p class="text-[16px] font-normal text-slate-700">{{ batchDate }}</p>
                         </div>
                     </div>
                     <input type="date" v-model="batchDate" class="opacity-0 absolute w-8 h-8 pointer-events-none" ref="dateInput">
@@ -45,7 +45,7 @@
 
             <!-- Preview Counter -->
             <div v-if="parsedItems.length > 0" class="mt-4 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50">
-                <p class="text-[13px] text-indigo-600 font-bold">預計匯入：{{ parsedItems.length }} 筆資料</p>
+                <p class="text-[13px] text-[#aeb4be] font-normal">預計匯入：{{ parsedItems.length }} 筆資料</p>
                 <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[60px]">
                     <span v-for="(item, idx) in parsedItems.slice(0, 10)" :key="idx" class="text-[11px] bg-white px-2 py-0.5 rounded-full border border-indigo-100 text-slate-600">
                         {{ item.user_name }} ({{ item.quantity }})
@@ -130,9 +130,9 @@ const parsedItems = computed(() => {
             const name = parts[0].trim();
             if (!name) return;
 
-            // Header Filter: Skip if name contains title keywords
-            const headerKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果'];
-            if (headerKeywords.some(key => name.includes(key))) return;
+            // Header & Summary Filter: Skip if name contains title or summary keywords
+            const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計', '閻尊', '閻闇', '龍勝', '龍戰'];
+            if (skipKeywords.some(key => name.includes(key))) return;
 
             let qty = parts.length > 1 ? parseInt(parts[1].replace(/[^0-9]/g, '')) : 1;
             if (isNaN(qty)) qty = 1;

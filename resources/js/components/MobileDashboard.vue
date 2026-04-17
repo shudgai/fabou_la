@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-white">
         <!-- 標題區域 -->
         <div style="padding: 12px 20px 4px 20px;" class="flex items-center justify-between bg-white">
-            <h1 style="font-size: 26px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
+            <h1 style="font-size: 26px; font-weight: 400; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
         </div>
 
         <!-- 條列式專區 -->
@@ -12,7 +12,7 @@
                 class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[52px] border-b border-slate-50 last:border-b-0"
                 style="padding: 0 15px;">
                 <div class="flex items-center">
-                    <span style="font-size: 20px; font-weight: 500; color: #1e293b; white-space: nowrap;">{{ item.label }}</span>
+                    <span style="font-size: 20px; font-weight: 400; color: #1e293b; white-space: nowrap;">{{ item.label }}</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <svg class="h-5 w-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Dashboard Bottom Navbar -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <div class="flex justify-center flex-col items-center">
                     <div class="w-1 h-1 bg-transparent mb-1"></div>

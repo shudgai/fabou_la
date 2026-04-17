@@ -15,10 +15,21 @@ class TeachingController extends Controller
         $this->teachingService = $teachingService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $teachings = $this->teachingService->getAll();
-        return response()->json($teachings);
+        $masterId = $request->query('master_id');
+        $date = $request->query('date');
+        $mode = $request->query('mode'); // 'dates' or 'items'
+
+        if ($mode === 'dates') {
+            return response()->json($this->teachingService->getPaginatedDates($masterId));
+        }
+
+        if ($date) {
+            return response()->json($this->teachingService->getByDate($date, $masterId));
+        }
+
+        return response()->json($this->teachingService->getAll($masterId));
     }
 
     public function store(Request $request)

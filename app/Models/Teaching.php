@@ -10,18 +10,28 @@ class Teaching extends Model
     use HasFactory;
 
     protected $fillable = [
-        'master_id', 'treasure_name', 'description', 
-        'record_date', 'status', 'excel_rows', 'user_id'
+        'date', 'master_id', 'group_id', 'dharma_name_id', 
+        'title', 'content', 'supplement', 'target_remarks', 
+        'remarks', 'items', 'items_footer_remarks', 'user_id'
     ];
 
     protected $casts = [
-        'excel_rows' => 'array',
-        'record_date' => 'date',
+        'items' => 'array',
     ];
 
     public function master()
     {
         return $this->belongsTo(Master::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function dharmaName()
+    {
+        return $this->belongsTo(DharmaName::class);
     }
 
     public function user()

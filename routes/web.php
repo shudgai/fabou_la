@@ -67,6 +67,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/dharma-names-list', function () {
         return \App\Models\DharmaName::select('id', 'name')->orderBy('order')->get();
     });
+    Route::get('/api/treasures-list', function () {
+        return \App\Models\Treasure::select('id', 'name')->get();
+    });
     // 強制下載 Helper
 });
 

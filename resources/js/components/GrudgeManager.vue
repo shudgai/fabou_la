@@ -3,15 +3,15 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-4 h-[50px]">
             <div class="w-[70px] flex items-center shrink-0">
-                <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-bold bg-indigo-50 px-1.5 py-0.5 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter">
+                <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-normal bg-indigo-50 px-1.5 py-0.5 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h2 class="text-[19px] font-bold font-outfit tracking-tight text-[#9fa6b2] truncate">{{ displayTitle }}</h2>
+                <h2 class="text-[19px] font-normal font-outfit tracking-tight text-[#9fa6b2] truncate">{{ displayTitle }}</h2>
             </div>
             <div class="w-[70px] flex items-center justify-end shrink-0">
-                <button @click="toggleShowTotal" class="text-[15px] text-slate-900 font-bold active:scale-95 transition-all">
+                <button @click="toggleShowTotal" class="text-[15px] text-slate-900 font-normal active:scale-95 transition-all">
                     總量<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[16px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
                 </button>
             </div>
@@ -42,7 +42,7 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[13px] font-bold text-slate-400 uppercase tracking-wider">得知日期</div>
+                                    <div class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider">得知日期</div>
                                     <div class="text-[13px] text-[#aeb4be] font-normal ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                                     </div>
                                     <!-- Quantity -->
                                     <div class="text-[14px] text-slate-400 font-normal">
-                                        <span class="text-[13px] font-bold text-slate-400 uppercase mr-1">數量:</span> 
+                                        <span class="text-[13px] font-normal text-[#aeb4be] uppercase mr-1">數量:</span> 
                                         <span class="text-[16px] text-slate-600 font-normal ml-0.5">{{ item.quantity }}</span>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                         <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
                             <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
                             <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">展開詳情</button>
+                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">展開詳情</button>
                                 <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                 <button @click.stop="copyItem(item)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium">複製貼 LINE</button>
                                 <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
@@ -84,7 +84,7 @@
                             <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
                                 <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-bold">收合清單</button>
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">收合詳情</button>
                                     <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                     <button @click.stop="downloadItem(item, 'txt')" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
                                     <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
@@ -134,7 +134,7 @@
         </div>
 
         <!-- FAB Bottom Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 6.5vh;">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]" style="height: 7vh;">
             <div class="grid grid-cols-5 h-full items-center px-2">
                 <div class="flex justify-center items-center h-full"><button @click="handleBack" class="text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg></button></div>
                 <div class="flex justify-center items-center h-full"><button @click="$emit('goHome')" class="text-slate-400"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>

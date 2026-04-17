@@ -6,7 +6,7 @@
                 <button v-for="item in menuItems" :key="'mob-' + item.id"
                     @click="currentTab = item.id"
                     class="relative py-1 px-1 transition-all duration-300"
-                    :class="[currentTab === item.id ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium']">
+                    :class="[currentTab === item.id ? 'text-indigo-600 font-normal' : 'text-slate-400 font-normal']">
                     <span class="text-[14px] whitespace-nowrap">{{ item.label }}</span>
                     <div v-if="currentTab === item.id" class="absolute -bottom-1 left-0 right-0 h-0.5 bg-indigo-600 rounded-full animate-fade-in"></div>
                 </button>
@@ -17,7 +17,7 @@
         <div class="hidden md:flex w-72 bg-white border-r border-gray-100 flex-shrink-0 flex-col shadow-[2px_0_8px_rgba(0,0,0,0.02)]">
             <!-- Header -->
             <div class="p-5">
-                <h1 class="text-[26px] font-[900] text-[#1a202c]">皇恩筆記本</h1>
+                <h1 class="text-[26px] font-normal text-[#1a202c]">皇恩筆記本</h1>
             </div>
 
             <!-- Menu items -->
@@ -34,7 +34,7 @@
                     <div v-if="currentTab === item.id" class="absolute left-0 top-0 bottom-0 w-1.5 bg-indigo-600 rounded-r-md"></div>
 
                     <span :class="[
-                        'text-[18px] font-[500] whitespace-nowrap transition-colors',
+                        'text-[18px] font-normal whitespace-nowrap transition-colors',
                         currentTab === item.id ? 'text-indigo-600' : 'text-[#4a5568]'
                     ]">{{ item.label }}</span>
                     
