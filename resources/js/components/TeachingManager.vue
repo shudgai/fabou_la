@@ -75,20 +75,48 @@
                                         <input v-model="masterNameInput" list="master-list" @change="resolveMasterId" placeholder="選擇或輸入..." class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-1 pl-2 pr-1 flex items-center h-12">
-                                        <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 font-normal">法號</label>
-                                        <input v-model="form.title" type="text" list="dn-list" class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
+                                
+                                <!-- Dharma Name Picker (New Multi-select) -->
+                                <div class="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                                    <div class="flex items-center justify-between px-1">
+                                        <label class="text-[13px] text-slate-500 font-bold tracking-wider uppercase">對象/法號選擇</label>
+                                        <span class="text-[11px] text-indigo-400 bg-indigo-50 px-2 py-0.5 rounded-full font-bold">已選 {{ form.dharma_name_ids.length }} 人</span>
                                     </div>
-                                    <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-1 pl-2 pr-1 flex items-center h-12">
-                                        <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 font-normal">備註</label>
-                                        <input v-model="form.supplement" type="text" placeholder="親友 / 信眾" class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
+                                    
+                                    <!-- Group Quick Select -->
+                                    <div class="flex flex-wrap gap-2">
+                                        <button v-for="group in groups" :key="group.id" 
+                                                @click="toggleGroupSelection(group)"
+                                                :class="isGroupFullySelected(group) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-200'"
+                                                class="px-3 py-1.5 rounded-xl border text-[13px] transition-all active:scale-95 font-medium shadow-sm">
+                                            {{ group.name }}
+                                        </button>
+                                    </div>
+
+                                    <!-- Individual Checkbox List (Scrollable) -->
+                                    <div class="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                                        <button v-for="dn in dharmaNames" :key="dn.id" 
+                                                @click="toggleDharmaName(dn.id)"
+                                                :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-indigo-400 text-indigo-600 shadow-sm ring-1 ring-indigo-100' : 'bg-white/50 border-slate-100 text-slate-400'"
+                                                class="flex items-center px-3 py-2.5 rounded-xl border text-[14px] transition-all">
+                                            <div class="w-4 h-4 rounded-full border flex items-center justify-center mr-2 shrink-0 transition-colors"
+                                                 :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200'">
+                                                <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            </div>
+                                            <span class="truncate">{{ dn.name }}</span>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-1 pl-2 pr-1 flex items-center h-12">
-                                    <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 font-normal">團體</label>
-                                    <input v-model="form.target_remarks" type="text" list="g-list" class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
-                                    <datalist id="g-list"><option v-for="g in groups.filter(x => x.name !== '信眾')" :key="g.id" :value="g.name"/></datalist>
+
+                                <div class="grid grid-cols-1 gap-3">
+                                    <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-1 pl-2 pr-1 flex items-center h-12">
+                                        <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 font-normal">主題</label>
+                                        <input v-model="form.title" type="text" placeholder="輸入紀錄主題 (如：指示、開示摘要)" class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
+                                    </div>
+                                    <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-1 pl-2 pr-1 flex items-center h-12">
+                                        <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 font-normal">詳情</label>
+                                        <input v-model="form.supplement" type="text" placeholder="親友 / 信眾 / 特定事件" class="flex-1 bg-transparent border-none text-[16px] focus:ring-0 outline-none p-0 ml-1 min-w-0 font-normal">
+                                    </div>
                                 </div>
                                 <div class="bg-blue-50/50 rounded-2xl border border-blue-100/30 py-2 pl-2 pr-3 flex items-start">
                                     <label class="text-[14px] text-[#94a3b8] w-10 text-left shrink-0 mt-0.5 font-normal">開示</label>
@@ -113,6 +141,7 @@
                                         <button @click="itemsDetailMode = false" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-2xl text-[13px] font-bold">完成</button>
                                     </div>
                                     <div class="space-y-6">
+                                        <!-- Items logic remains same ... -->
                                         <div>
                                             <label class="text-[12px] text-slate-400 block mb-2 px-1 font-bold">法寶名稱</label>
                                             <div class="flex items-center space-x-2 mb-4">
@@ -146,7 +175,7 @@
                                             </div>
                                         </div>
                                         <button @click="commitStaging" class="w-full bg-blue-50 text-blue-600 py-3 rounded-2xl font-bold">確認添加至清單</button>
-                                        
+                                        <!-- Pending list ... -->
                                         <div class="pt-4 border-t border-slate-100">
                                             <div class="text-sm font-bold text-slate-400 mb-3">已加入明細 ({{ form.items.length }})</div>
                                             <div v-for="(group, gName) in groupedPendingItems" :key="gName" class="mb-4">
@@ -157,7 +186,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="pt-6">
                                             <label class="text-[12px] text-slate-400 block mb-2 px-1 font-bold">結尾備註</label>
                                             <textarea v-model="form.items_footer_remarks" rows="2" class="w-full py-3 px-4 bg-slate-50 rounded-2xl text-[14px] border-none outline-none resize-none"></textarea>
@@ -201,18 +229,21 @@
                                     <div v-for="item in (searchQuery ? filteredDateItems(dateRow.date) : dateItems[dateRow.date])" :key="item.id" 
                                          @click="toggleExpand(item.id)" class="px-6 py-5 border-b border-slate-50 last:border-0 cursor-pointer hover:bg-white">
                                         <div class="flex justify-between items-start text-[11px] text-slate-400 uppercase mb-2">
-                                            <span class="bg-indigo-50 text-indigo-400 p-1 rounded">{{ getMasterName(item.master_id) }}</span>
+                                            <div class="flex flex-wrap gap-1">
+                                                <span v-for="dn in item.dharma_names" :key="dn.id" class="bg-indigo-50 text-indigo-400 px-1.5 py-0.5 rounded text-[9px]">{{ dn.name }}</span>
+                                                <span v-if="(!item.dharma_names || item.dharma_names.length === 0)" class="bg-slate-50 text-slate-400 px-1.5 py-0.5 rounded text-[9px]">所有人</span>
+                                            </div>
                                             <div class="flex space-x-4">
+                                                <span class="text-[9px] text-slate-300 mr-2">{{ getMasterName(item.master_id) }}</span>
                                                 <button @click.stop="duplicateItem(item)" class="text-blue-400">複製</button>
                                                 <button @click.stop="editItem(item)" class="text-indigo-400">編輯</button>
                                                 <button @click.stop="deleteItem(item.id)" class="text-red-300">刪除</button>
                                             </div>
                                         </div>
                                         <div class="text-[17px] font-medium text-slate-900">{{ item.title }} <span v-if="item.supplement" class="text-slate-400 text-sm">({{ item.supplement }})</span></div>
-                                        <div v-if="item.target_remarks" class="text-xs text-indigo-500 mt-1">{{ item.target_remarks }}</div>
                                         <div class="text-[15px] text-slate-600 mt-3 whitespace-pre-wrap leading-relaxed" :class="focusedId == item.id ? '' : 'line-clamp-2'">{{ item.content }}</div>
                                         
-                                        <!-- Item Details -->
+                                        <!-- Item Details ... -->
                                         <div v-if="focusedId == item.id" class="mt-4 pt-4 border-t border-slate-100">
                                             <div v-if="(!item.items || item.items.length === 0) && !item.items_footer_remarks && !item.remarks" class="text-xs text-slate-300 italic py-2">無明細內容</div>
                                             <div v-else class="space-y-4">
@@ -237,7 +268,7 @@
                     <div v-if="loading && visibleDates.length > 0" class="p-6 text-center text-xs text-slate-300 animate-pulse">載入更多歷史紀錄...</div>
                 </div>
 
-                <!-- Bottom Nav -->
+                <!-- Bottom Nav ... -->
                 <div class="fixed bottom-0 left-0 right-0 z-[100] h-[7vh] bg-white border-t border-slate-100 grid grid-cols-5 items-center px-4">
                     <div class="flex justify-center"><button @click="handleBack" class="text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2" /></svg></button></div>
                     <div class="flex justify-center"><button @click="$emit('goHome')" class="text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10" stroke-width="2" /></svg></button></div>
@@ -282,7 +313,7 @@ const batchInput = ref('');
 const form = ref({
     title: '', supplement: '', target_remarks: '', content: '',
     date: new Date().toISOString().split('T')[0], master_id: null, items: [], 
-    remarks: '', items_footer_remarks: '', user_id: 1
+    remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
 });
 
 const folders = ref([
@@ -299,6 +330,34 @@ const resolveMasterId = () => {
     const f = folders.value.find(x => x.name === name);
     if (f) { form.value.master_id = f.id; return; }
     form.value.master_id = name;
+};
+
+// New Multi-select Logic
+const toggleDharmaName = (id) => {
+    const idx = form.value.dharma_name_ids.indexOf(id);
+    if (idx > -1) form.value.dharma_name_ids.splice(idx, 1);
+    else form.value.dharma_name_ids.push(id);
+};
+
+const toggleGroupSelection = (group) => {
+    const memberIds = (group.dharma_names || []).map(dn => dn.id);
+    const allSelected = memberIds.every(id => form.value.dharma_name_ids.includes(id));
+    
+    if (allSelected) {
+        // Deselect all members of this group
+        form.value.dharma_name_ids = form.value.dharma_name_ids.filter(id => !memberIds.includes(id));
+    } else {
+        // Select all members of this group (avoiding duplicates)
+        memberIds.forEach(id => {
+            if (!form.value.dharma_name_ids.includes(id)) form.value.dharma_name_ids.push(id);
+        });
+    }
+};
+
+const isGroupFullySelected = (group) => {
+    const memberIds = (group.dharma_names || []).map(dn => dn.id);
+    if (memberIds.length === 0) return false;
+    return memberIds.every(id => form.value.dharma_name_ids.includes(id));
 };
 
 const syncRecords = async () => {
@@ -375,7 +434,7 @@ const saveItem = async () => {
         else await axios.post('/teachings', payload);
         alert('存檔成功！');
         addMode.value = false; itemsDetailMode.value = false; editingId.value = null;
-        form.value = { title: '', supplement: '', target_remarks: '', content: '', date: new Date().toISOString().split('T')[0], master_id: null, items: [], remarks: '', items_footer_remarks: '', user_id: 1 };
+        form.value = { title: '', supplement: '', target_remarks: '', content: '', date: new Date().toISOString().split('T')[0], master_id: null, items: [], remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: [] };
         batchInput.value = '';
         dateItems.value[form.value.date] = null;
         if (expandedDates.value.has(form.value.date)) await toggleDate(form.value.date);
@@ -390,9 +449,17 @@ const getMasterName = (id) => {
     const m = masters.value.find(x => x.id == id);
     return m ? m.name : '未指定';
 };
-const editItem = (item) => { editingId.value = item.id; form.value = { ...item }; masterNameInput.value = getMasterName(item.master_id); addMode.value = true; };
+const editItem = (item) => { 
+    editingId.value = item.id; 
+    form.value = { ...item, dharma_name_ids: item.dharma_names.map(dn => dn.id) }; 
+    masterNameInput.value = getMasterName(item.master_id); 
+    addMode.value = true; 
+};
 const deleteItem = async (id) => { if (!confirm('確定刪除？')) return; try { await axios.delete(`/teachings/${id}`); await syncRecords(); dateItems.value = {}; } catch (e) { alert('刪除失敗'); } };
-const duplicateItem = (item) => { form.value = { ...item, id: null, title: item.title + ' (副本)', date: new Date().toISOString().split('T')[0] }; editingId.value = null; addMode.value = true; };
+const duplicateItem = (item) => { 
+    form.value = { ...item, id: null, title: item.title + ' (副本)', date: new Date().toISOString().split('T')[0], dharma_name_ids: item.dharma_names.map(dn => dn.id) }; 
+    editingId.value = null; addMode.value = true; 
+};
 const addToStaging = () => { if (!tempItem.value.name) return alert('請輸入名稱'); stagingItems.value.push({ ...tempItem.value }); tempItem.value = { ...tempItem.value, name: '', method: '', quantity: '', duration: '' }; };
 const commitStaging = () => {
     if (stagingItems.value.length === 0) { if (!tempItem.value.name && !tempItem.value.treasure_name) return alert('請輸入名稱'); form.value.items.push({ ...tempItem.value, category: '清煞' }); }
@@ -416,3 +483,9 @@ const showSearch = ref(false);
 const handleBack = () => { if (addMode.value) { addMode.value = false; editingId.value = null; } else if (currentFolder.value) { currentFolder.value = null; } else { emit('goHome'); } };
 onMounted(syncRecords);
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+</style>

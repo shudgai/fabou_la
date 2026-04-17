@@ -17,4 +17,9 @@ class Group extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function dharmaNames()
+    {
+        return $this->belongsToMany(DharmaName::class, 'group_dharma_name');
+    }
 }

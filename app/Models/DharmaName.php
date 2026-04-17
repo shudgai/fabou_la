@@ -15,4 +15,14 @@ class DharmaName extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_dharma_name');
+    }
+
+    public function teachings()
+    {
+        return $this->belongsToMany(Teaching::class);
+    }
 }

@@ -59,13 +59,13 @@ Route::middleware(['auth'])->group(function () {
         return \App\Models\Master::select('id', 'name')->get();
     });
     Route::get('/api/groups-list', function () {
-        return \App\Models\Group::select('id', 'name')->get();
+        return \App\Models\Group::with('dharmaNames:id,name')->select('id', 'name')->get();
     });
     Route::get('/api/users-list', function () {
         return \App\Models\User::select('id', 'name')->get();
     });
     Route::get('/api/dharma-names-list', function () {
-        return \App\Models\DharmaName::select('id', 'name')->orderBy('order')->get();
+        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name')->orderBy('order')->get();
     });
     Route::get('/api/treasures-list', function () {
         return \App\Models\Treasure::select('id', 'name')->get();

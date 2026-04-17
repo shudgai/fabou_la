@@ -10,7 +10,7 @@ class Teaching extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date', 'master_id', 'group_id', 'dharma_name_id', 
+        'date', 'master_id', 
         'title', 'content', 'supplement', 'target_remarks', 
         'remarks', 'items', 'items_footer_remarks', 'user_id'
     ];
@@ -24,14 +24,9 @@ class Teaching extends Model
         return $this->belongsTo(Master::class);
     }
 
-    public function group()
+    public function dharmaNames()
     {
-        return $this->belongsTo(Group::class);
-    }
-
-    public function dharmaName()
-    {
-        return $this->belongsTo(DharmaName::class);
+        return $this->belongsToMany(DharmaName::class);
     }
 
     public function user()
