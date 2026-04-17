@@ -149,14 +149,21 @@
                             </div>
                             <label class="text-[12px] text-slate-400 block mb-2 px-1">內容物名稱</label>
                             <div class="flex items-center space-x-2">
-                                <input v-model="tempItem.name" type="text" placeholder="輸入內容物..." class="flex-1 py-3 px-4 bg-white rounded-2xl text-[15px] border border-slate-100 outline-none">
+                                <input v-model="tempItem.name" type="text" list="item-name-list" placeholder="輸入內容物..." class="flex-1 py-3 px-4 bg-white rounded-2xl text-[15px] border border-slate-100 outline-none">
+                                <datalist id="item-name-list">
+                                    <option v-for="t in treasures" :key="t.id" :value="t.name" />
+                                </datalist>
                                 <button @click="addToStaging" class="text-red-500 text-3xl font-bold px-2">+</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
                             <div class="col-span-1">
                                 <label class="text-[11px] block mb-1 text-slate-400">作法</label>
-                                <input v-model="tempItem.method" type="text" class="w-full h-11 bg-white rounded-2xl px-3 text-[14px] border border-slate-100">
+                                <input v-model="tempItem.method" type="text" list="method-list" class="w-full h-11 bg-white rounded-2xl px-3 text-[14px] border border-slate-100">
+                                <datalist id="method-list">
+                                                                        <option v-for="t in treasures" :key="t.id" :value="t.name" />
+
+                                </datalist>
                             </div>
                             <div class="col-span-1">
                                 <label class="text-[11px] block mb-1 text-slate-400">數量/尺寸</label>
