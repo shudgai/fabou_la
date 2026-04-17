@@ -25,10 +25,10 @@ class DharmaNameSeeder extends Seeder
         ];
 
         foreach ($dharmaNames as $order => $name) {
-            \App\Models\DharmaName::create([
-                'name' => $name,
-                'order' => $order,
-            ]);
+            \App\Models\DharmaName::firstOrCreate(
+                ['name' => $name],
+                ['order' => $order]
+            );
         }
     }
 }

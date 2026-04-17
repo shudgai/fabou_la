@@ -83,28 +83,52 @@
                                         <span class="text-[11px] text-indigo-400 bg-indigo-50 px-2 py-0.5 rounded-full font-bold">已選 {{ form.dharma_name_ids.length }} 人</span>
                                     </div>
                                     
-                                    <!-- Group Quick Select -->
-                                    <div class="flex flex-wrap gap-2">
-                                        <button v-for="group in groups" :key="group.id" 
-                                                @click="toggleGroupSelection(group)"
-                                                :class="isGroupFullySelected(group) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-200'"
-                                                class="px-3 py-1.5 rounded-xl border text-[13px] transition-all active:scale-95 font-medium shadow-sm">
-                                            {{ group.name }}
-                                        </button>
+                                    <!-- Group Picker Accordion -->
+                                    <div class="space-y-2">
+                                        <div v-for="group in groups.filter(g => g.dharma_names?.length > 0)" :key="group.id" class="border border-slate-100 rounded-xl overflow-hidden bg-white">
+                                            <!-- Group Header -->
+                                            <div @click="toggleGroupAccordion(group.id)" 
+                                                 class="flex items-center justify-between px-3 py-3 cursor-pointer active:bg-slate-50 transition-colors">
+                                                <div class="flex items-center space-x-3">
+                                                    <div @click.stop="toggleGroupSelection(group)" 
+                                                         class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors shadow-sm"
+                                                         :class="isGroupFullySelected(group) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200'">
+                                                        <svg v-if="isGroupFullySelected(group)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                    </div>
+                                                    <span class="text-[14px] font-medium" :class="isGroupFullySelected(group) ? 'text-indigo-600' : 'text-slate-700'">{{ group.name }}</span>
+                                                    <span class="text-[10px] bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded-full">{{ group.dharma_names.length }}人</span>
+                                                </div>
+                                                <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-slate-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            </div>
+                                            
+                                            <!-- Group Members (Accordion Content) -->
+                                            <div v-if="expandedGroupPicker === group.id" class="bg-slate-50/50 px-3 py-2 border-t border-slate-50 grid grid-cols-2 gap-2">
+                                                <button v-for="member in group.dharma_names" :key="member.id" 
+                                                        @click="toggleDharmaName(member.id)"
+                                                        class="flex items-center p-2 rounded-lg text-[13px] transition-all"
+                                                        :class="form.dharma_name_ids.includes(member.id) ? 'text-indigo-600 font-bold' : 'text-slate-500'">
+                                                    <div class="w-2 h-2 rounded-full mr-2" :class="form.dharma_name_ids.includes(member.id) ? 'bg-indigo-500' : 'bg-slate-200'"></div>
+                                                    {{ member.name }}
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <!-- Individual Checkbox List (Scrollable) -->
-                                    <div class="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
-                                        <button v-for="dn in dharmaNames" :key="dn.id" 
-                                                @click="toggleDharmaName(dn.id)"
-                                                :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-indigo-400 text-indigo-600 shadow-sm ring-1 ring-indigo-100' : 'bg-white/50 border-slate-100 text-slate-400'"
-                                                class="flex items-center px-3 py-2.5 rounded-xl border text-[14px] transition-all">
-                                            <div class="w-4 h-4 rounded-full border flex items-center justify-center mr-2 shrink-0 transition-colors"
-                                                 :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200'">
-                                                <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                            </div>
-                                            <span class="truncate">{{ dn.name }}</span>
-                                        </button>
+                                    <!-- Individual Checkbox List (Scrollable - for individuals not necessarily in groups) -->
+                                    <div class="mt-4 border-t border-slate-100 pt-3">
+                                        <div class="text-[11px] text-slate-400 mb-2 px-1 font-bold">所有法號 (個別微調)</div>
+                                        <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                                            <button v-for="dn in dharmaNames" :key="dn.id" 
+                                                    @click="toggleDharmaName(dn.id)"
+                                                    :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-indigo-400 text-indigo-600 shadow-sm ring-1 ring-indigo-100' : 'bg-white/50 border-slate-100 text-slate-400'"
+                                                    class="flex items-center px-3 py-2.5 rounded-xl border text-[13px] transition-all">
+                                                <div class="w-4 h-4 rounded-full border flex items-center justify-center mr-2 shrink-0 transition-colors"
+                                                     :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200'">
+                                                    <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                </div>
+                                                <span class="truncate">{{ dn.name }}</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -303,6 +327,10 @@ const focusedId = ref(null);
 const itemsDetailMode = ref(false);
 const tempItem = ref({ treasure_name: '', name: '', method: '', duration: '', quantity: '', sub_name: '' });
 const stagingItems = ref([]);
+const expandedGroupPicker = ref(null);
+const toggleGroupAccordion = (id) => {
+    expandedGroupPicker.value = expandedGroupPicker.value === id ? null : id;
+};
 
 const visibleDates = ref([]);
 const datePagination = ref({ current_page: 1, last_page: 1 });
