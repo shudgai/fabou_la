@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DharmaNameSeeder::class,
             GroupSeeder::class,
+            DharmaGroupSeeder::class,
             TreasureSeeder::class,
         ]);
     }

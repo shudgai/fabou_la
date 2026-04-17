@@ -11,7 +11,7 @@ class Teaching extends Model
 
     protected $fillable = [
         'date', 'master_id', 
-        'title', 'content', 'supplement', 'target_remarks', 
+        'content', 'supplement', 'target_remarks', 
         'remarks', 'items', 'items_footer_remarks', 'user_id'
     ];
 
