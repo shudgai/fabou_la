@@ -38,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
+    Route::resource('groups', App\Http\Controllers\GroupController::class);
+    Route::resource('users', App\Http\Controllers\UserController::class);
     Route::post('other-folders/{id}/records', [App\Http\Controllers\OtherFolderController::class, 'storeRecord']);
     Route::put('other-records/{id}', [App\Http\Controllers\OtherFolderController::class, 'updateRecord']);
     Route::delete('other-records/{id}', [App\Http\Controllers\OtherFolderController::class, 'destroyRecord']);

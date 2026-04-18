@@ -21,9 +21,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'dharma_name_id',
         'group_id',
         'google_id',
     ];
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin' || $this->roles()->where('name', '管理員')->exists();
+    }
 
     public function group()
     {
@@ -56,7 +63,7 @@ class User extends Authenticatable
 
     public function dharmaName()
     {
-        return $this->hasOne(DharmaName::class);
+        return $this->belongsTo(DharmaName::class);
     }
 
     public function imperialGraces()
@@ -72,11 +79,6 @@ class User extends Authenticatable
     public function otherRecords()
     {
         return $this->hasMany(OtherRecord::class);
-    }
-
-    public function isAdmin()
-    {
-        return $this->roles()->where('name', '管理員')->exists();
     }
 
     public function isChijue()

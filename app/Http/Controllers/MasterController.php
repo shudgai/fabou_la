@@ -17,8 +17,11 @@ class MasterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->expectsJson()) {
+            return \App\Models\Master::orderBy('name')->get();
+        }
         $categorizedMasters = $this->masterService->getAllCategorized();
         return view('masters.index', compact('categorizedMasters'));
     }
@@ -41,7 +44,11 @@ class MasterController extends Controller
             'category' => 'required|string|in:imperial,others,teaching',
         ]);
 
-        $this->masterService->createMaster($validated);
+        $master = $this->masterService->createMaster($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json($master, 201);
+        }
 
         return redirect()->route('masters.index')->with('success', '仙師建立成功');
     }
@@ -76,10 +83,14 @@ class MasterController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|in:imperial,others,teaching',
-            'status' => 'required|string',
+            'status' => 'nullable|string',
         ]);
 
-        $this->masterService->updateMaster($id, $validated);
+        $master = $this->masterService->updateMaster($id, $validated);
+
+        if ($request->expectsJson()) {
+            return response()->json($master);
+        }
 
         return redirect()->back()->with('success', '更新成功');
     }
@@ -87,9 +98,14 @@ class MasterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $this->masterService->deleteMaster($id);
+        
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()->route('masters.index')->with('success', '刪除成功');
     }
 }

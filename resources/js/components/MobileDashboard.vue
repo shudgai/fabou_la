@@ -5,16 +5,24 @@
             <h1 style="font-size: 26px; font-weight: 400; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
         </div>
 
-        <!-- 條列式專區 -->
-        <div class="flex flex-col pb-20 mt-[30px]">
+        <!-- 現代化條列式專區 -->
+        <div class="flex flex-col pb-20 mt-6 px-4 space-y-3">
             <button v-for="item in filteredMenuItems" :key="item.id" 
                 @click="navigate(item.id)"
-                class="flex items-center justify-between w-full bg-white active:bg-slate-50 transition-colors relative h-[52px] border-b border-slate-50 last:border-b-0"
-                style="padding: 0 15px;">
-                <div class="flex items-center">
-                    <span style="font-size: 20px; font-weight: 400; color: #1e293b; white-space: nowrap;">{{ item.label }}</span>
+                class="flex items-center justify-between w-full bg-slate-50/50 active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100/50 h-[72px]"
+                style="padding: 0 20px;">
+                <div class="flex items-center space-x-4">
+                    <div :class="['w-11 h-11 rounded-xl flex items-center justify-center shadow-sm', item.color || 'bg-white']">
+                        <span class="text-xl">{{ item.icon || '📔' }}</span>
+                    </div>
+                    <div class="flex flex-col items-start">
+                        <span class="text-[17px] font-bold text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
+                        <span v-if="counts[item.id] !== undefined" class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                            {{ counts[item.id] }} 筆紀錄
+                        </span>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center">
                     <svg class="h-5 w-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
@@ -40,16 +48,21 @@ import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 
 const menuItems = [
-    { id: 'grace', label: '重大皇恩專區' },
-    { id: 'teaching', label: '父皇仙師開示專區' },
-    { id: 'grudge', label: '怨靈專區' },
-    { id: 'military', label: '軍隊專區' },
-    { id: 'treasure', label: '法寶登記專區' },
-    { id: 'trash', label: '回收桶' },
+    { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
+    { id: 'teaching', label: '父皇仙師開示專區', icon: '🙏', color: 'bg-indigo-50' },
+    { id: 'grudge', label: '怨靈專區', icon: '👻', color: 'bg-rose-50' },
+    { id: 'military', label: '軍隊專區', icon: '🛡️', color: 'bg-emerald-50' },
+    { id: 'treasure', label: '法寶登記專區', icon: '💎', color: 'bg-sky-50' },
+    { id: 'trash', label: '回收桶', icon: '🗑️', color: 'bg-slate-100' },
+    { id: 'admin', label: '系統資料管理', icon: '⚙️', color: 'bg-slate-800 text-white' },
 ];
 
 const emit = defineEmits(['navigate']);
 const navigate = (id) => {
+    if (id === 'admin') {
+        window.location.href = '/admin';
+        return;
+    }
     emit('navigate', id);
 };
 
