@@ -9,7 +9,7 @@ class OtherFolder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'folder_code'];
+    protected $fillable = ['name', 'color'];
 
     public function otherRecords()
     {

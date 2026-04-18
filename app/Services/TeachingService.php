@@ -7,17 +7,17 @@ use Illuminate\Support\Collection;
 
 class TeachingService
 {
-    public function getAll($masterId = null): Collection
+    public function getAll($masterId = null, $perPage = 15)
     {
         $query = Teaching::with(['master', 'dharmaNames', 'user']);
         
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
-            // Show all records for the daily/master dashboard
+            // Show all records
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
         }
         
-        return $query->latest()->get();
+        return $query->latest('date')->latest('id')->paginate($perPage);
     }
 
     public function getPaginatedDates($masterId = null, $perPage = 15)
@@ -30,9 +30,10 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
         
-        return $query->selectRaw('date, count(*) as count')
-            ->groupBy('date')
-            ->orderBy('date', 'desc')
+        return $query->leftJoin('teaching_dharma_name', 'teachings.id', '=', 'teaching_dharma_name.teaching_id')
+            ->selectRaw('teachings.date, count(*) as count')
+            ->groupBy('teachings.date')
+            ->orderBy('teachings.date', 'desc')
             ->paginate($perPage);
     }
 
@@ -109,6 +110,72 @@ class TeachingService
         return $data;
     }
 
+    /**
+     * Get specialized rules for magic items in Father Emperor's teaching.
+     * Centralized backend rule for item types and their display fields.
+     */
+    public function getSpecializedRules()
+    {
+        return [
+            [
+                'match' => '丹',
+                'fields' => ['eat' => '吃', 'wash' => '洗', 'days' => '天份'],
+                'color' => 'indigo'
+            ],
+            [
+                'match' => '令',
+                'exclude' => '專司靈療',
+                'fields' => ['size' => '尺寸', 'days' => '天份'],
+                'color' => 'amber'
+            ],
+            [
+                'match' => '香環',
+                'fields' => ['qty' => '個', 'box' => '盒'],
+                'color' => 'rose'
+            ],
+            [
+                'match' => '疏文',
+                'fields' => ['person' => '開立'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '執法',
+                'fields' => ['person' => '執法'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '清煞',
+                'fields' => ['person' => '執法'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '專司靈療',
+                'fields' => ['days' => '天份'],
+                'color' => 'emerald'
+            ],
+            [
+                'match' => '*', // Default for various treasures
+                'fields' => ['days' => '天份'],
+                'color' => 'slate'
+            ]
+        ];
+    }
+
+    /**
+     * Helper to check if an item name matches any specialized rule.
+     */
+    public function isSpecializedItem(string $name): bool
+    {
+        foreach ($this->getSpecializedRules() as $rule) {
+            if ($rule['match'] === '*') continue;
+            if (mb_strpos($name, $rule['match']) !== false) {
+                if (isset($rule['exclude']) && mb_strpos($name, $rule['exclude']) !== false) continue;
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected function applyMasterGroupFilter($query, $masterId)
     {
         $keywords = [
@@ -131,7 +198,7 @@ class TeachingService
                 });
             });
         } else {
-            $query->where('master_id', $masterId);
+            $query->where('teachings.master_id', $masterId);
         }
     }
 }

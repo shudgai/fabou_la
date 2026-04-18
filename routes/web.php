@@ -19,6 +19,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// Google Authentication Routes
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Archival System Routes
@@ -34,7 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
-    Route::resource('other-records', App\Http\Controllers\OtherRecordController::class);
+    Route::post('other-folders/{id}/records', [App\Http\Controllers\OtherFolderController::class, 'storeRecord']);
+    Route::put('other-records/{id}', [App\Http\Controllers\OtherFolderController::class, 'updateRecord']);
+    Route::delete('other-records/{id}', [App\Http\Controllers\OtherFolderController::class, 'destroyRecord']);
     Route::resource('dharma-names', App\Http\Controllers\DharmaNameController::class);
     Route::resource('roles', App\Http\Controllers\RoleController::class);
     Route::post('grudges/batch', [App\Http\Controllers\GrudgeController::class, 'batchStore']);
@@ -65,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
         return \App\Models\User::select('id', 'name')->get();
     });
     Route::get('/api/dharma-names-list', function () {
-        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name')->orderBy('order')->get();
+        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name', 'alias')->orderBy('order')->get();
     });
     Route::get('/api/user-profile', function () {
         $user = auth()->user()->load('dharmaName');
@@ -85,10 +91,11 @@ Route::middleware(['auth'])->group(function () {
             $query->where('master_id', $masterId);
         }
         if ($type !== null) {
-            $query->where('type', $type);
+            $query->whereIn('type', (array)$type);
         }
         return $query->get();
     });
+    Route::get('/api/teaching-rules', [App\Http\Controllers\TeachingController::class, 'rules']);
     // 強制下載 Helper
 });
 

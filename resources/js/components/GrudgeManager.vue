@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h2 class="text-[19px] font-normal font-outfit tracking-tight text-[#9fa6b2] truncate">{{ displayTitle }}</h2>
+                <h2 class="text-[20px] font-bold font-outfit tracking-tight text-slate-900 truncate">{{ displayTitle }}</h2>
             </div>
             <div class="w-[70px] flex items-center justify-end shrink-0">
                 <button @click="toggleShowTotal" class="text-[15px] text-slate-900 font-normal active:scale-95 transition-all">
@@ -42,8 +42,8 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider">得知日期</div>
-                                    <div class="text-[13px] text-[#aeb4be] font-normal ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="text-[14px] font-normal text-slate-400 uppercase tracking-wider">得知日期</div>
+                                    <div class="text-[18px] text-slate-900 font-normal ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
@@ -51,18 +51,18 @@
                             <div class="flex items-center justify-between">
                                 <div class="grid grid-cols-2 flex-1 items-center">
                                     <!-- Dharma Name -->
-                                    <div class="text-[16px] font-normal text-slate-900 leading-tight truncate pr-2">
+                                    <div class="text-[18px] font-normal text-slate-900 leading-tight truncate pr-2">
                                         {{ item.user_name || '-' }}
-                                        <span v-if="item.user_remarks" class="text-slate-500 ml-1">{{ item.user_remarks }}</span>
+                                        <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
                                     </div>
                                     <!-- Quantity -->
-                                    <div class="text-[14px] text-slate-400 font-normal">
-                                        <span class="text-[13px] font-normal text-[#aeb4be] uppercase mr-1">數量:</span> 
-                                        <span class="text-[16px] text-slate-600 font-normal ml-0.5">{{ item.quantity }}</span>
+                                    <div class="text-[18px] text-slate-900 font-normal">
+                                        <span class="text-[14px] font-normal text-slate-400 uppercase mr-1">數量:</span> 
+                                        <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ item.quantity }}</span>
                                     </div>
                                 </div>
-                                <!-- Status (Slate-350 for unprocessed) -->
-                                <span :class="item.destination === '未處理' ? 'text-[#9fa6b2]' : 'text-emerald-600'" class="text-[13px] font-normal shrink-0">
+                                <!-- Status (Slate-400 for unprocessed) -->
+                                <span :class="item.destination === '未處理' ? 'text-slate-400' : 'text-emerald-600'" class="text-[14px] font-normal shrink-0">
                                     {{ item.destination === '未處理' ? '未處理' : '已處理' }}
                                 </span>
                             </div>
@@ -96,36 +96,36 @@
                                     <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300 active:scale-90 transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
-                                    <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block">得知日期</label>
+                                    <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block">得知日期</label>
                                 </div>
-                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
+                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
                             </div>
 
                             <!-- Detail Row 2: user_name & user_remarks (Merged) -->
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
-                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
+                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
                                     {{ item.user_name || '-' }}
-                                    <span v-if="item.user_remarks" class="text-slate-500 ml-1.5">{{ item.user_remarks }}</span>
+                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">數量</label>
-                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-800">{{ item.quantity }}</div>
+                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">數量</label>
+                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">{{ item.quantity }}</div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">處理結果</label>
-                                <div class="w-full px-3 flex items-center text-[16px] font-normal" :class="item.destination === '未處理' ? 'text-[#aeb4be]' : 'text-slate-700'">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">處理結果</label>
+                                <div class="w-full px-3 flex items-center text-[18px] font-normal" :class="item.destination === '未處理' ? 'text-slate-400' : 'text-slate-900'">
                                     {{ item.destination || '未處理' }}
-                                    <span v-if="item.process_date" class="ml-2 text-[13px] text-[#aeb4be]">({{ formatDate(item.process_date) }})</span>
+                                    <span v-if="item.process_date" class="ml-2 text-[14px] text-slate-400">({{ formatDate(item.process_date) }})</span>
                                 </div>
                             </div>
 
                             <div v-if="item.remarks_text" class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[16px] font-normal text-slate-600 leading-normal">{{ item.remarks_text }}</div>
+                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 text-[18px] font-normal text-slate-900 leading-normal">{{ item.remarks_text }}</div>
                             </div>
                         </div>
                     </div>

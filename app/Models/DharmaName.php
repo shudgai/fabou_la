@@ -9,7 +9,7 @@ class DharmaName extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'order'];
+    protected $fillable = ['user_id', 'name', 'alias', 'order'];
 
     public function user()
     {

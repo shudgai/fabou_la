@@ -11,7 +11,7 @@
 
             <!-- Center: Title -->
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h2 class="text-[19px] font-normal text-slate-800 tracking-tight flex items-center truncate">
+                <h2 class="text-[20px] font-bold text-slate-900 tracking-tight flex items-center truncate">
                     {{ currentFolder ? currentFolder.name : '軍隊專區' }}
                 </h2>
             </div>
@@ -33,14 +33,14 @@
             <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                 <div v-for="folder in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 border border-[rgb(255,215,0)] rounded-xl group p-2 w-[120px] h-[120px] relative cursor-pointer"
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 border border-[rgb(255,215,0)] rounded-xl group p-2 w-[120px] h-[130px] relative cursor-pointer"
                    >
                     <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-1" :class="folder.color">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                         </svg>
                     </div>
-                    <span class="text-[18px] font-normal text-slate-800">{{ folder.name }}</span>
+                    <span class="text-[18px] font-bold text-slate-900">{{ folder.name }}</span>
                 </div>
             </div>
             
@@ -86,8 +86,8 @@
                                 <!-- Row 1: Date only -->
                                 <div class="flex items-center mb-0.5">
                                     <div class="flex items-baseline space-x-2">
-                                        <div class="text-[13px] font-normal text-[#aeb4be] uppercase tracking-wider">日期</div>
-                                        <div class="text-[16px] text-slate-500 font-normal ml-0.5">{{ formatDate(item.know_date) }}</div>
+                                        <div class="text-[14px] font-normal text-slate-400 uppercase tracking-wider">日期</div>
+                                        <div class="text-[18px] text-slate-900 font-normal ml-0.5">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
 
@@ -95,14 +95,14 @@
                                 <div class="flex items-center justify-between">
                                     <div class="grid grid-cols-2 flex-1 items-center">
                                         <!-- Dharma Name -->
-                                        <div class="text-[16px] font-normal text-slate-900 leading-tight truncate pr-2">
+                                        <div class="text-[18px] font-normal text-slate-900 leading-tight truncate pr-2">
                                             {{ item.user_name || '-' }}
                                             <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
                                         </div>
                                         <!-- Subtotal -->
-                                        <div class="text-[16px] text-slate-400 font-normal">
-                                            <span class="text-[13px] font-normal text-[#aeb4be] uppercase mr-1">小計:</span> 
-                                            <span class="text-[16px] text-slate-600 font-normal ml-0.5">{{ item.quantity || 0 }}</span>
+                                        <div class="text-[18px] text-slate-900 font-normal">
+                                            <span class="text-[14px] font-normal text-slate-400 uppercase mr-1">小計:</span> 
+                                            <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ item.quantity || 0 }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -136,17 +136,17 @@
                                         <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider">日期</label>
+                                        <label class="text-[14px] font-normal text-slate-400 tracking-wider">日期</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900">
+                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
                                         {{ formatDate(item.know_date) }}
                                     </div>
                                 </div>
 
                                 <!-- Name Row (Combined) -->
                                 <div class="space-y-1">
-                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">法號 (親友/信眾)</label>
-                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 leading-tight">
+                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider ml-1">法號 (親友/信眾)</label>
+                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900 leading-tight">
                                         {{ item.user_name }}
                                         <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
                                     </div>
@@ -178,8 +178,8 @@
 
                                 <!-- Subtotal Special Row (Minimalist Style) -->
                                 <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
-                                    <span class="text-[13px] font-normal text-[#aeb4be] tracking-wider">小計</span>
-                                    <span class="text-[16px] font-normal text-slate-900">{{ item.quantity || 0 }}</span>
+                                    <span class="text-[14px] font-normal text-slate-400 tracking-wider">小計</span>
+                                    <span class="text-[18px] font-normal text-slate-900">{{ item.quantity || 0 }}</span>
                                 </div>
 
                                 <!-- Remarks Row -->

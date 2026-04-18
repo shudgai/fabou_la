@@ -7,7 +7,7 @@
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="flex items-center justify-between p-4 border-b border-slate-50">
-                <h3 class="text-[19px] font-normal text-slate-900">
+                <h3 class="text-[20px] font-bold text-slate-900">
                     {{ editingId ? '修改軍隊載錄' : armyType + '-逐筆新增' }}
                 </h3>
                 <button @click="$emit('cancel')" class="text-slate-400 hover:text-slate-600 p-1 active:scale-95">
@@ -20,10 +20,10 @@
                 <div class="space-y-[5px]">
                     <!-- Row 1: 日期 -->
                     <div class="space-y-1">
-                        <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">日期</label>
+                        <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">日期</label>
                         <div @click="activeDate = 'know_date'" 
                             class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 flex items-center justify-between cursor-pointer shadow-sm overflow-hidden">
-                            <span :class="form.know_date ? 'text-slate-900 font-normal' : 'text-slate-400'" class="text-[16px] leading-tight">
+                            <span :class="form.know_date ? 'text-slate-900 font-normal' : 'text-slate-400'" class="text-[18px] leading-tight">
                                 {{ form.know_date ? (new Date(form.know_date).getFullYear() + '/' + (new Date(form.know_date).getMonth() + 1) + '/' + new Date(form.know_date).getDate()) : '點選日期' }}
                             </span>
                             <svg class="h-3 w-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -33,40 +33,40 @@
                     <!-- Row 2: 法號 & 備註 -->
                     <div class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
-                            <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">法號</label>
-                            <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                            <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">法號</label>
+                            <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                             <datalist id="user-list-mil">
                                 <option v-for="u in users" :key="u.id" :value="u.name"></option>
                             </datalist>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                            <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">備註</label>
+                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                         </div>
                     </div>
 
                     <!-- Conditional Quantity Row -->
                     <!-- Case 1: 虎甲/虎賁 or Default -->
                     <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
-                        <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">數量</label>
-                        <input v-model="form.quantity" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                        <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">數量</label>
+                        <input v-model="form.quantity" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
                     <div v-if="armyType === '黑曜軍'" class="space-y-[5px]">
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻尊數量</label>
+                                <input v-model="form.yan_zun" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻闇數量</label>
+                                <input v-model="form.yan_an" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
-                            <span class="text-[13px] font-normal text-[#aeb4be]">小計</span>
-                            <span class="text-[16px] font-normal text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }}</span>
+                            <span class="text-[14px] font-normal text-slate-400">小計</span>
+                            <span class="text-[18px] font-normal text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }}</span>
                         </div>
                     </div>
 
@@ -74,24 +74,24 @@
                     <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">龍勝數量</label>
+                                <input v-model="form.long_sheng" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[16px] leading-tight text-slate-900 font-normal">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">龍戰數量</label>
+                                <input v-model="form.long_zhan" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
-                            <span class="text-[13px] font-normal text-[#aeb4be]">小計</span>
-                            <span class="text-[16px] font-normal text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }}</span>
+                            <span class="text-[14px] font-normal text-slate-400">小計</span>
+                            <span class="text-[18px] font-normal text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }}</span>
                         </div>
                     </div>
 
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
-                        <label class="text-[13px] font-normal text-[#aeb4be] uppercase ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full h-[36px] rounded-lg border border-slate-100 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm text-[16px] text-slate-600 font-normal">
+                        <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">備註文字</label>
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full h-[36px] rounded-lg border border-slate-100 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm text-[18px] text-slate-900 font-normal">
                     </div>
                 </div>
             </div>

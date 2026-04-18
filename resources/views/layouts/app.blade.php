@@ -131,6 +131,35 @@
                                 <span x-show="!sidebarCollapsed" class="ml-3 font-semibold text-sm" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">系統管理</span>
                             </a>
                         @endif
+                    @else
+                        <!-- Guest Links -->
+                        <a href="{{ url('/') }}"
+                            class="flex items-center px-3 py-2.5 rounded-xl transition-all group {{ request()->is('/') ? 'bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                            <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <span x-show="!sidebarCollapsed" class="ml-3 font-semibold text-sm" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">首頁</span>
+                        </a>
+                        <a href="{{ route('login') }}"
+                            class="flex items-center px-3 py-2.5 rounded-xl transition-all group {{ request()->routeIs('login') ? 'bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                            <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <span x-show="!sidebarCollapsed" class="ml-3 font-semibold text-sm" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">立即登錄</span>
+                        </a>
+                        <a href="{{ route('register') }}"
+                            class="flex items-center px-3 py-2.5 rounded-xl transition-all group {{ request()->routeIs('register') ? 'bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                            <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <span x-show="!sidebarCollapsed" class="ml-3 font-semibold text-sm" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">註冊帳戶</span>
+                        </a>
                     @endauth
                 </div>
 
@@ -163,24 +192,47 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <!-- Mobile Header (Hidden on Note pages as they provide their own optimized headers) -->
+                <!-- Guest Desktop Login Button (Top Right) -->
+                @guest
+                    <div class="hidden lg:block absolute top-6 right-6 z-50">
+                        <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl shadow-sm hover:shadow-md hover:bg-slate-50 transition-all active:scale-95 space-x-2">
+                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>立即登錄</span>
+                        </a>
+                    </div>
+                @endguest
+
+                <!-- Mobile Header -->
                 @if(!request()->routeIs('note.index'))
-                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0">
+                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0 shrink-0">
                     <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
-                        <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="50" fill="white"/>
-                            <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                            <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                            <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                            <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                            <circle cx="50" cy="75" r="8" fill="white"/>
-                            <circle cx="50" cy="25" r="8" fill="black"/>
-                        </svg>
+                    
+                    <div class="absolute left-1/2 -translate-x-1/2">
+                        <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
+                            <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="50" fill="white"/>
+                                <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
+                                <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
+                                <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
+                                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                                <circle cx="50" cy="75" r="8" fill="white"/>
+                                <circle cx="50" cy="25" r="8" fill="black"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div>
+                        @guest
+                            <a href="{{ route('login') }}" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">登入</a>
+                        @else
+                            <div class="w-8 h-8 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[10px]">
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            </div>
+                        @endguest
                     </div>
                 </header>
                 @endif
@@ -191,6 +243,8 @@
             </div> <!-- End Main Content Area -->
         </div> <!-- End x-data flex wrapper -->
     </div> <!-- End #app -->
+
+    @stack('scripts')
 </body>
 
 </html>

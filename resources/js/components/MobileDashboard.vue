@@ -59,7 +59,7 @@ const filteredMenuItems = computed(() => {
     return menuItems.filter(item => {
         if (item.id === 'treasure') {
             // Allow both Chijue and Admins/Managers
-            return user.value?.dharma_name?.name === '赤覺' || user.value?.is_admin || user.value?.role === 'admin';
+            return user.value?.dharma_name?.name === '赤覺' || user.value?.is_admin || user.value?.role === 'admin' || user.value?.role === '管理員';
         }
         return true;
     });

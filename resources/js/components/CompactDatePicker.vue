@@ -7,7 +7,7 @@
             </div>
             <div class="flex items-center justify-between mb-2 px-1 pt-1">
                 <div class="flex items-center space-x-2">
-                    <button @click="clear" class="text-slate-400 text-[11px] hover:text-slate-600">清除</button>
+                    <button @click="clear" class="text-slate-400 text-[14px] font-bold hover:text-slate-600 px-1 py-0.5">清除</button>
                     <div class="flex items-center space-x-1 ml-1">
                         <button @click="changeMonth(-1)" class="p-0.5 text-slate-400 hover:bg-slate-100 rounded">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button @click="setToday" class="text-indigo-600 text-[11px] hover:bg-indigo-50 px-1.5 py-0.5 rounded transition-colors">今天</button>
+                    <button @click="setToday" class="text-indigo-600 text-[14px] font-bold hover:bg-indigo-50 px-2 py-0.5 rounded transition-colors">今天</button>
                 </div>
             </div>
 
@@ -46,9 +46,9 @@
             </div>
 
             <!-- Footer Action Buttons -->
-            <div class="flex items-center justify-between mt-1 pt-1.5 border-t border-slate-50 px-1 pb-1">
-                <button @click="clear" class="text-slate-400 text-[11px] hover:text-slate-600">清除</button>
-                <button @click="setToday" class="text-indigo-600 text-[11px] hover:bg-indigo-50 px-1 rounded transition-colors">今天</button>
+            <div class="flex items-center justify-between mt-1 pt-0.5 border-t border-slate-50 px-1 pb-1">
+                <button @click="clear" class="text-slate-400 text-[14px] font-bold hover:text-slate-600 px-1 py-1">清除</button>
+                <button @click="setToday" class="text-indigo-600 text-[14px] font-bold hover:bg-indigo-50 px-1.5 py-1 rounded transition-colors">今天</button>
             </div>
         </div>
     </div>

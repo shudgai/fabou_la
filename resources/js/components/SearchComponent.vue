@@ -12,12 +12,17 @@
                     v-model="query" 
                     type="text" 
                     :placeholder="placeholder"
-                    class="w-full bg-white border-none rounded-full pl-9 pr-9 py-[2.5px] text-[15.5px] leading-tight focus:ring-0 text-slate-700 placeholder:text-slate-300"
+                    class="w-full bg-white border-none rounded-full pl-9 pr-20 py-[2.5px] text-[15.5px] leading-tight focus:ring-0 text-slate-700 placeholder:text-slate-300"
                     @input="$emit('update:modelValue', query)"
                 >
-                <button v-if="query" @click="clearSearch" class="absolute right-3 text-slate-400 hover:text-slate-600">
+                <button v-if="query" @click="clearSearch" class="absolute right-10 text-slate-300 hover:text-slate-400 transition-colors">
                     <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/>
+                    </svg>
+                </button>
+                <button @click="close" class="absolute right-3 text-slate-500 hover:text-slate-800 transition-colors bg-slate-100 rounded-full p-1 active:scale-95">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
             </div>

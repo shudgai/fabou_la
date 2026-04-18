@@ -14,8 +14,14 @@ class DharmaNameRegistry extends Model
     protected $fillable = [
         'registry_id',
         'dharma_name_id',
+        'custom_name',
         'obtained_date',
         'remarks',
+        'related_personnel',
+    ];
+
+    protected $casts = [
+        'related_personnel' => 'array',
     ];
 
     public function registry()

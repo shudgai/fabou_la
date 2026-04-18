@@ -29,6 +29,7 @@ import GrudgeManager from './GrudgeManager.vue';
 import MilitaryManager from './MilitaryManager.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
+import OtherManager from './OtherManager.vue';
 import AdminDashboard from './AdminDashboard.vue';
 import MobileDashboard from './MobileDashboard.vue';
 
@@ -36,7 +37,7 @@ const user = ref(null);
 const currentView = ref('menu');
 
 const isChijue = computed(() => user.value?.dharma_name?.name === '赤覺');
-const isAdmin = computed(() => user.value?.is_admin || user.value?.role === 'admin');
+const isAdmin = computed(() => user.value?.is_admin || user.value?.role === 'admin' || user.value?.role === '管理員');
 
 const syncHash = () => {
     if (!user.value) return; 

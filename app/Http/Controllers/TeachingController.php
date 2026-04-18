@@ -55,4 +55,9 @@ class TeachingController extends Controller
         $success = $this->teachingService->delete((int)$id);
         return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
     }
+
+    public function rules()
+    {
+        return response()->json($this->teachingService->getSpecializedRules());
+    }
 }

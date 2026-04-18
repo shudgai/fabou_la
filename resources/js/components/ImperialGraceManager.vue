@@ -3,7 +3,7 @@
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 bg-white sticky top-0 z-10" style="padding: 10px 10px 8px 10px;">
             <div class="flex items-center justify-center relative mb-1">
-                <h2 class="text-[19px] font-normal font-outfit tracking-tight text-black flex items-center">
+                <h2 class="text-[20px] font-normal font-outfit tracking-tight flex items-center" style="color: black !important;">
                     <span>重大皇恩 - {{ currentFolder.name }}</span>
                     <button @click="toggleSort" class="ml-2 px-1.5 py-0.5 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all opacity-80">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
@@ -40,38 +40,38 @@
         <div v-if="!currentFolder" class="bg-white">
             <!-- Header Title -->
             <div class="px-6 pt-[5px] pb-2 text-center">
-                <h1 class="text-[28px] font-normal text-slate-800 tracking-tight">重大皇恩專區</h1>
+                <h1 class="text-[20px] font-bold tracking-tight" style="color: black !important;">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
                 <button v-for="(folder, idx) in folders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[120px] relative"
+                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[135px] relative"
                    >
                     <div class="relative mb-4">
                         <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <linearGradient id="folderGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop offset="0%" style="stop-color:rgb(255, 235, 120);stop-opacity:1" />
                                     <stop offset="50%" style="stop-color:rgb(255, 215, 0);stop-opacity:1" />
                                     <stop offset="100%" style="stop-color:rgb(218, 165, 32);stop-opacity:1" />
                                 </linearGradient>
                             </defs>
                             <!-- Folder Body Back -->
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#folderGrad)" opacity="0.8"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#folderGradReset)" opacity="0.8"/>
                             <!-- Folder Front Cover (3D Offset) -->
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#folderGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#folderGradReset)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             <!-- Shine effect -->
                             <path d="M10 21H54" stroke="white" stroke-opacity="0.3" stroke-linecap="round"/>
                         </svg>
                     </div>
                     <div class="mt-[-6px] text-center px-1">
-                        <div class="text-[17px] leading-tight text-slate-700 break-words">
+                        <div class="text-[17px] font-bold leading-tight break-words" style="color: black !important;">
                             <template v-if="folder.id === 'unobtained'">
-                                <div class="text-[17.5px] leading-tight text-red-600">未求得<br>重大皇恩</div>
+                                <div class="text-[17.5px] leading-tight font-extrabold" style="color: black !important;">未求得<br>重大皇恩</div>
                             </template>
                             <template v-else>
-                                <div class="whitespace-nowrap">{{ folder.name }}</div>
+                                <div class="whitespace-nowrap" style="color: black !important;">{{ folder.name }}</div>
                             </template>
                         </div>
                     </div>
@@ -104,17 +104,17 @@
                         
                         <!-- List Item Display (Header when collapsed) -->
                         <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col pointer-events-none">
-                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[13px] text-slate-400 leading-none mb-1">
+                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[14px] text-slate-400 leading-none mb-1">
                                 {{ getMasterName(reg.master_id) }}
                             </div>
 
                             <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[13px] text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
-                                    <div class="text-[13px] text-[#9fa6b2] font-normal">
-                                        得知: <span class="text-[16px] text-slate-500 font-normal ml-0.5">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
+                                    <div class="text-[14px] text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
+                                    <div class="text-[14px] text-slate-400 font-normal">
+                                        得知: <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
                                         <span class="ml-2">
-                                            求得: <span class="text-[16px] text-slate-500 font-normal ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
+                                            求得: <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
                                         </span>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <div class="text-[16px] font-normal text-slate-900 leading-tight">
+                                <div class="text-[18px] font-normal text-slate-900 leading-tight">
                                     {{ reg.name }}
                                 </div>
                                 <div class="flex items-center pointer-events-auto">
@@ -131,7 +131,7 @@
                                         'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已登記',
                                         'bg-red-50 text-red-600 border-red-100': reg.status === '未求得',
                                         'cursor-pointer': currentFolder.id === 'unobtained'
-                                    }" class="text-[13px] px-1.5 py-1 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
+                                    }" class="text-[14px] px-1.5 py-1 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -180,47 +180,47 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
                                     <div class="flex items-center space-x-1 ml-1">
-                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-[#aeb4be] active:scale-90 transition-all">
+                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-slate-400 active:scale-90 transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block">得知日期</label>
+                                        <label class="text-[14px] font-normal text-slate-400 tracking-wider block">得知日期</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900">
+                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">載錄目標仙師</label>
-                                    <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-700">
+                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">載錄目標仙師</label>
+                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">法寶名稱</label>
-                                <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 leading-tight">
+                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">法寶名稱</label>
+                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900 leading-tight">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">法寶用意</label>
-                                <div class="w-full px-3 py-0.5 flex items-center text-[16px] text-slate-700 leading-tight">
+                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">法寶用意</label>
+                                <div class="w-full px-3 py-0.5 flex items-center text-[18px] text-slate-900 leading-tight">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">求得日期</label>
-                                    <div class="w-full px-3 flex items-center text-[16px] text-slate-700">
+                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">求得日期</label>
+                                    <div class="w-full px-3 flex items-center text-[18px] text-slate-900">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center text-[16px] font-normal"
+                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">目前狀態</label>
+                                    <div class="w-full px-3 flex items-center text-[18px] font-normal"
                                         :class="reg.status === '未求得' ? 'text-red-600' : 'text-emerald-600'">
                                         {{ reg.status }}
                                     </div>
@@ -228,8 +228,8 @@
                             </div>
 
                             <div v-if="reg.remarks" class="space-y-1">
-                                <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[16px] text-slate-600 leading-normal whitespace-pre-wrap">
+                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 text-[18px] text-slate-900 leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
                                 </div>
                             </div>

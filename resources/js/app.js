@@ -64,6 +64,9 @@ app.component('military-add-form', MilitaryAddForm);
 import RegistryAddForm from './components/RegistryAddForm.vue';
 app.component('registry-add-form', RegistryAddForm);
 
+import OtherManager from './components/OtherManager.vue';
+app.component('other-manager', OtherManager);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

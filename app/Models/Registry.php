@@ -17,6 +17,7 @@ class Registry extends Model
         'purpose',
         'acquisition_method',
         'remarks',
+        'category',
         'record_date',
         'obtained_date',
     ];
