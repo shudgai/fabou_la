@@ -3,7 +3,7 @@
         <!-- Sidebar: Folder List -->
         <div class="w-full md:w-64 border-r border-slate-100 flex flex-col pt-4">
             <div class="px-4 mb-6 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-slate-800">其他皇恩登記簿</h2>
+                <h2 class="text-xl font-bold text-slate-800">其他專區</h2>
                 <button @click="showAddFolder = true" class="text-indigo-600 hover:text-indigo-800">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
@@ -24,36 +24,42 @@
         </div>
 
         <!-- Main Content: Record List -->
-        <div class="flex-grow flex flex-col bg-slate-50/50 p-6 overflow-y-auto">
-            <div v-if="activeFolder" class="max-w-4xl mx-auto w-full">
-                <div class="flex items-center justify-between mb-8">
-                    <h1 class="text-2xl font-black text-slate-900">{{ activeFolder.name }}</h1>
-                    <button @click="showAddRecord = true" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center text-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        新增紀錄
-                    </button>
-                </div>
-
-                <div class="space-y-4">
-                    <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
-                        <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto">
+            <div v-if="activeFolder" class="h-full">
+                <!-- Special View: 開文核定表 -->
+                <kaiwen-approval v-if="activeFolder.name === '開文核定表'" />
+                
+                <!-- Default View: Standard Records -->
+                <div v-else class="max-w-4xl mx-auto w-full p-6">
+                    <div class="flex items-center justify-between mb-8">
+                        <h1 class="text-2xl font-black text-slate-900">{{ activeFolder.name }}</h1>
+                        <button @click="showAddRecord = true" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            新增紀錄
                         </button>
-                        
-                        <div class="flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            {{ formatDate(record.record_date) || formatDate(record.created_at) }}
-                        </div>
-
-                        <h3 v-if="record.title" class="text-lg font-bold text-slate-800 mb-2">{{ record.title }}</h3>
-                        <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">{{ record.content }}</p>
                     </div>
 
-                    <div v-if="!activeFolder.other_records?.length" class="text-center py-20 bg-white rounded-[32px] border border-dashed border-slate-200">
-                        <div class="text-slate-300 mb-4 flex justify-center">
-                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="space-y-4">
+                        <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
+                            <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            
+                            <div class="flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                {{ formatDate(record.record_date) || formatDate(record.created_at) }}
+                            </div>
+
+                            <h3 v-if="record.title" class="text-lg font-bold text-slate-800 mb-2">{{ record.title }}</h3>
+                            <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">{{ record.content }}</p>
                         </div>
-                        <p class="text-slate-400 font-medium">尚無任何記事内容</p>
+
+                        <div v-if="!activeFolder.other_records?.length" class="text-center py-20 bg-white rounded-[32px] border border-dashed border-slate-200">
+                            <div class="text-slate-300 mb-4 flex justify-center">
+                                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <p class="text-slate-400 font-medium">尚無任何記事内容</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -99,6 +105,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import KaiwenApproval from './KaiwenApproval.vue';
 
 const folders = ref([]);
 const activeFolderId = ref(null);
@@ -114,8 +121,17 @@ const activeFolder = computed(() => folders.value.find(f => f.id === activeFolde
 const loadData = async () => {
     const res = await axios.get('/other-folders');
     folders.value = res.data;
+    
+    // Auto-initialize if empty (User request: 2 folders)
+    if (folders.value.length === 0) {
+        await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
+        await axios.post('/other-folders', { name: '自訂記事', color: '#f59e0b' });
+        return loadData();
+    }
+
     if (folders.value.length > 0 && !activeFolderId.value) {
-        activeFolderId.value = folders.value[0].id;
+        const kaiwen = folders.value.find(f => f.name === '開文核定表');
+        activeFolderId.value = kaiwen ? kaiwen.id : folders.value[0].id;
     }
 };
 

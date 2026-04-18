@@ -20,6 +20,11 @@ class TeachingController extends Controller
         $masterId = $request->query('master_id');
         $date = $request->query('date');
         $mode = $request->query('mode'); // 'dates' or 'items'
+        
+        $permissions = auth()->user()->getPermissions();
+        if ($masterId == 0 && !$permissions['can_see_daily_teachings']) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         if ($mode === 'dates') {
             return response()->json($this->teachingService->getPaginatedDates($masterId));

@@ -63,7 +63,7 @@
             ]">
                 <transition name="fade-slide" mode="out-in">
                     <div :key="currentTab">
-                        <component :is="currentComponent" @go-home="currentTab = 'grace'" />
+                        <component :is="currentComponent" :user="user" @go-home="currentTab = 'grace'" />
                     </div>
                 </transition>
             </div>
@@ -100,26 +100,46 @@ const dashboardTitle = computed(() => {
     return isNotebookView.value ? '皇恩筆記' : '系統管理';
 });
 
-const isNotebookView = computed(() => {
-    return notebookItems.some(item => item.id === currentTab.value);
+const user = ref(null);
+
+const notebookItems = computed(() => {
+    if (!window.location.pathname.includes('/note')) return [];
+    
+    const items = [
+        { id: 'grace', label: '重大皇恩' },
+        { id: 'teaching', label: '仙師開示' },
+        { id: 'grudge', label: '怨靈處理' },
+        { id: 'military', label: '軍隊紀錄' },
+        { id: 'treasure', label: '法寶登記' },
+        { id: 'other', label: '其他項目' },
+    ];
+
+    if (!user.value) return items;
+
+    return items.filter(item => {
+        if (item.id === 'treasure') return user.value.permissions?.can_see_treasures;
+        if (item.id === 'military') return user.value.permissions?.can_see_military;
+        if (item.id === 'other') return user.value.permissions?.can_see_other_folders;
+        return true;
+    });
 });
 
-const notebookItems = [
-    { id: 'grace', label: '重大皇恩' },
-    { id: 'teaching', label: '仙師開示' },
-    { id: 'grudge', label: '怨靈處理' },
-    { id: 'military', label: '軍隊紀錄' },
-    { id: 'treasure', label: '法寶登記' },
-    { id: 'other', label: '其他項目' },
-].filter(() => window.location.pathname.includes('/note'));
+const adminItems = computed(() => {
+    if (!window.location.pathname.includes('/admin')) return [];
+    
+    const items = [
+        { id: 'dharma', label: '法號與人員' },
+        { id: 'user', label: '帳號與權限' },
+        { id: 'group', label: '群組與職務' },
+        { id: 'master', label: '仙師管理' },
+        { id: 'treasure_master', label: '法寶主檔' },
+    ];
 
-const adminItems = [
-    { id: 'dharma', label: '法號與人員' },
-    { id: 'user', label: '帳號與權限' },
-    { id: 'group', label: '群組與職務' },
-    { id: 'master', label: '仙師管理' },
-    { id: 'treasure_master', label: '法寶主檔' },
-].filter(() => window.location.pathname.includes('/admin'));
+    if (!user.value) return items;
+    if (!user.value.is_admin) return [];
+
+    return items;
+});
 
 const components = {
     // Notebook
@@ -137,13 +157,17 @@ const components = {
     treasure_master: markRaw(TreasureCrud),
 };
 
+const isNotebookView = computed(() => {
+    return notebookItems.value.some(item => item.id === currentTab.value);
+});
+
 const currentComponent = computed(() => components[currentTab.value]);
 
 // Watch for tab changes to update URL hash if applicable
 watch(currentTab, (newTab) => {
     // Only update hash if we are on the /note page (checking path)
     if (window.location.pathname.includes('/note')) {
-        const hash = notebookItems.find(i => i.id === newTab) ? newTab : '';
+        const hash = notebookItems.value.find(i => i.id === newTab) ? newTab : '';
         if (hash) {
             window.location.hash = hash === 'grace' ? 'imperial' : hash;
         } else {
@@ -152,7 +176,14 @@ watch(currentTab, (newTab) => {
     }
 });
 
-onMounted(() => {
+onMounted(async () => {
+    try {
+        const res = await axios.get('/api/user-profile');
+        user.value = res.data;
+    } catch (e) {
+        console.error('Failed to load user profile in AdminDashboard', e);
+    }
+
     if (props.initialTab && components[props.initialTab]) {
         currentTab.value = props.initialTab;
     }

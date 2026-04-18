@@ -5,11 +5,12 @@
             <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate"></mobile-dashboard>
             
             <div v-else>
-                <teaching-manager v-if="currentView === 'teaching'" @go-home="handleNavigate('menu')"></teaching-manager>
-                <grudge-manager v-if="currentView === 'grudge'" @go-home="handleNavigate('menu')"></grudge-manager>
-                <imperial-grace-manager v-if="currentView === 'grace'" @go-home="handleNavigate('menu')"></imperial-grace-manager>
-                <registry-manager v-if="currentView === 'treasure'" @go-home="handleNavigate('menu')"></registry-manager>
-                <military-manager v-if="currentView === 'military'" @go-home="handleNavigate('menu')"></military-manager>
+                <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')"></teaching-manager>
+                <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')"></grudge-manager>
+                <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')"></imperial-grace-manager>
+                <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
+                <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
+                <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
                 <div v-if="currentView === 'trash'" class="p-8 text-center">回收桶建置中...</div>
             </div>
         </div>
@@ -49,7 +50,8 @@ const syncHash = () => {
         'grace': 'grace',
         'grudge': 'grudge',
         'teaching': 'teaching',
-        'military': 'military'
+        'military': 'military',
+        'other': 'other'
     };
     
     let targetView = viewMap[hash] || 'menu';
@@ -59,17 +61,28 @@ const syncHash = () => {
         targetView = 'menu';
         window.location.hash = '';
     }
+
+    if (targetView === 'military' && !user.value?.permissions?.can_see_military) {
+        targetView = 'menu';
+        window.location.hash = '';
+    }
+
+    if (targetView === 'other' && !user.value?.permissions?.can_see_other_folders) {
+        targetView = 'menu';
+        window.location.hash = '';
+    }
     
     currentView.value = targetView;
 };
 
 const handleNavigate = (view) => {
-    if (view === 'treasure' && !isChijue.value && !isAdmin.value) {
-        return;
-    }
+    if (view === 'treasure' && !isChijue.value && !isAdmin.value) return;
+    if (view === 'military' && !user.value?.permissions?.can_see_military) return;
+    if (view === 'other' && !user.value?.permissions?.can_see_other_folders) return;
+
     currentView.value = view;
     // Optionally update hash as well
-    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'menu': '' };
+    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'other': '#other', 'menu': '' };
     window.location.hash = reverseMap[view] || '';
 };
 

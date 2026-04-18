@@ -21,6 +21,10 @@ class MilitaryRecord extends Model
         'yan_an',
         'long_sheng',
         'long_zhan',
+        'yan_jue',
+        'yan_ze',
+        'yan_di',
+        'yan_yuan',
         'know_date',
         'process_date',
         'remarks_text'
@@ -34,5 +38,9 @@ class MilitaryRecord extends Model
         'yan_an' => 'integer',
         'long_sheng' => 'integer',
         'long_zhan' => 'integer',
+        'yan_jue' => 'integer',
+        'yan_ze' => 'integer',
+        'yan_di' => 'integer',
+        'yan_yuan' => 'integer',
     ];
 }

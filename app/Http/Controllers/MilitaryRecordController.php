@@ -9,11 +9,20 @@ class MilitaryRecordController extends Controller
 {
     public function index()
     {
-        return MilitaryRecord::orderBy('know_date', 'desc')->get();
+        $permissions = auth()->user()->getPermissions();
+        $query = MilitaryRecord::orderBy('know_date', 'desc');
+        
+        if (!auth()->user()->isAdmin()) {
+            $query->whereIn('army_type', $permissions['allowed_armies']);
+        }
+        
+        return $query->get();
     }
 
     public function store(Request $request)
     {
+        $permissions = auth()->user()->getPermissions();
+        
         $validated = $request->validate([
             'user_name' => 'required|string',
             'army_type' => 'required|string',
@@ -27,7 +36,15 @@ class MilitaryRecordController extends Controller
             'yan_an' => 'nullable|integer',
             'long_sheng' => 'nullable|integer',
             'long_zhan' => 'nullable|integer',
+            'yan_jue' => 'nullable|integer',
+            'yan_ze' => 'nullable|integer',
+            'yan_di' => 'nullable|integer',
+            'yan_yuan' => 'nullable|integer',
         ]);
+
+        if (!auth()->user()->isAdmin() && !in_array($validated['army_type'], $permissions['allowed_armies'])) {
+            return response()->json(['error' => 'Unauthorized army type'], 403);
+        }
 
         return MilitaryRecord::create($validated);
     }
@@ -35,6 +52,16 @@ class MilitaryRecordController extends Controller
     public function update(Request $request, $id)
     {
         $record = MilitaryRecord::findOrFail($id);
+        $permissions = auth()->user()->getPermissions();
+
+        if (!auth()->user()->isAdmin() && !in_array($record->army_type, $permissions['allowed_armies'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($request->has('army_type') && !auth()->user()->isAdmin() && !in_array($request->army_type, $permissions['allowed_armies'])) {
+            return response()->json(['error' => 'Unauthorized army type change'], 403);
+        }
+
         $record->update($request->all());
         return $record;
     }
@@ -42,6 +69,12 @@ class MilitaryRecordController extends Controller
     public function destroy($id)
     {
         $record = MilitaryRecord::findOrFail($id);
+        $permissions = auth()->user()->getPermissions();
+
+        if (!auth()->user()->isAdmin() && !in_array($record->army_type, $permissions['allowed_armies'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $record->delete();
         return response()->json(['message' => 'Deleted']);
     }

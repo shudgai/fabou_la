@@ -131,7 +131,7 @@ const parsedItems = computed(() => {
             if (!name) return;
 
             // Header & Summary Filter: Skip if name contains title or summary keywords
-            const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計', '閻尊', '閻闇', '龍勝', '龍戰'];
+            const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計', '閻尊', '閻闇', '龍勝', '龍戰', '閻爵', '閻澤', '閻帝', '閻願'];
             if (skipKeywords.some(key => name.includes(key))) return;
 
             let qty = parts.length > 1 ? parseInt(parts[1].replace(/[^0-9]/g, '')) : 1;
@@ -154,6 +154,12 @@ const parsedItems = computed(() => {
             } else if (props.armyType === '耀紫軍') {
                 item.long_sheng = Math.ceil(qty / 2);
                 item.long_zhan = Math.floor(qty / 2);
+            } else if (props.armyType === '虎甲軍') {
+                item.yan_jue = Math.ceil(qty / 2);
+                item.yan_ze = Math.floor(qty / 2);
+            } else if (props.armyType === '虎賁軍') {
+                item.yan_di = Math.ceil(qty / 2);
+                item.yan_yuan = Math.floor(qty / 2);
             }
             results.push(item);
         }

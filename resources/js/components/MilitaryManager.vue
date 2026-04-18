@@ -31,7 +31,7 @@
         <!-- FOLDER SELECTION VIEW -->
         <div v-if="!currentFolder" class="flex-1 overflow-y-auto bg-slate-50/50 p-4 animate-fade-in">
             <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
-                <div v-for="folder in folders" :key="folder.id" 
+                <div v-for="folder in filteredFolders" :key="folder.id" 
                     @click="currentFolder = folder"
                     class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 border border-[rgb(255,215,0)] rounded-xl group p-2 w-[120px] h-[130px] relative cursor-pointer"
                    >
@@ -153,7 +153,7 @@
                                 </div>
 
                                 <!-- Quantities Row (Grid) -->
-                                <div v-if="item.army_type === '黑曜軍' || item.army_type === '耀紫軍'" class="grid grid-cols-2 gap-3">
+                                <div v-if="['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'].includes(item.army_type)" class="grid grid-cols-2 gap-3">
                                     <template v-if="item.army_type === '黑曜軍'">
                                         <div class="space-y-1">
                                             <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻尊數量</label>
@@ -172,6 +172,26 @@
                                         <div class="space-y-1">
                                             <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">龍戰數量</label>
                                             <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.long_zhan || 0 }}</div>
+                                        </div>
+                                    </template>
+                                    <template v-if="item.army_type === '虎甲軍'">
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻爵數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_jue || 0 }}</div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻澤數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_ze || 0 }}</div>
+                                        </div>
+                                    </template>
+                                    <template v-if="item.army_type === '虎賁軍'">
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻帝數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_di || 0 }}</div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[13px] font-normal text-[#aeb4be] tracking-wider ml-1">閻願數量</label>
+                                            <div class="w-full px-3 flex items-center text-[16px] font-normal text-slate-900 font-mono">{{ item.yan_yuan || 0 }}</div>
                                         </div>
                                     </template>
                                 </div>
@@ -225,14 +245,20 @@ import MilitaryBatchAdd from './MilitaryBatchAdd.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 
+const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
 
-const folders = [
+const folders_list = [
     { id: 'armor', name: '虎甲軍', color: 'bg-indigo-600' },
     { id: 'brave', name: '虎賁軍', color: 'bg-blue-600' },
     { id: 'obsidian', name: '黑曜軍', color: 'bg-slate-800' },
     { id: 'purple', name: '耀紫軍', color: 'bg-purple-600' }
 ];
+
+const filteredFolders = computed(() => {
+    const allowed = props.user?.permissions?.allowed_armies || [];
+    return folders_list.filter(f => allowed.includes(f.name));
+});
 
 const currentFolder = ref(null);
 const addMode = ref(false);
@@ -472,6 +498,12 @@ const performExcelExport = () => {
         } else if (item.army_type === '耀紫軍') {
             row['龍勝量'] = item.long_sheng || 0;
             row['龍戰量'] = item.long_zhan || 0;
+        } else if (item.army_type === '虎甲軍') {
+            row['閻爵量'] = item.yan_jue || 0;
+            row['閻澤量'] = item.yan_ze || 0;
+        } else if (item.army_type === '虎賁軍') {
+            row['閻帝量'] = item.yan_di || 0;
+            row['閻願量'] = item.yan_yuan || 0;
         }
         
         row['備註'] = item.remarks_text || '';

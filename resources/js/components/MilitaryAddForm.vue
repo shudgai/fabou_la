@@ -70,7 +70,43 @@
                         </div>
                     </div>
 
-                    <!-- Case 3: 耀紫軍 (龍勝/龍戰) -->
+                    <!-- Case 3: 虎甲軍 (閻爵/閻澤) -->
+                    <div v-if="armyType === '虎甲軍'" class="space-y-[5px]">
+                        <div class="grid grid-cols-2 gap-[5px]">
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻爵數量</label>
+                                <input v-model="form.yan_jue" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻澤數量</label>
+                                <input v-model="form.yan_ze" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
+                            </div>
+                        </div>
+                        <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
+                            <span class="text-[14px] font-normal text-slate-400">小計</span>
+                            <span class="text-[18px] font-normal text-slate-900">{{ (Number(form.yan_jue || 0) + Number(form.yan_ze || 0)) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Case 4: 虎賁軍 (閻帝/閻願) -->
+                    <div v-if="armyType === '虎賁軍'" class="space-y-[5px]">
+                        <div class="grid grid-cols-2 gap-[5px]">
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻帝數量</label>
+                                <input v-model="form.yan_di" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[14px] font-normal text-slate-400 uppercase ml-1">閻願數量</label>
+                                <input v-model="form.yan_yuan" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-normal">
+                            </div>
+                        </div>
+                        <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
+                            <span class="text-[14px] font-normal text-slate-400">小計</span>
+                            <span class="text-[18px] font-normal text-slate-900">{{ (Number(form.yan_di || 0) + Number(form.yan_yuan || 0)) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Case 5: 耀紫軍 (龍勝/龍戰) -->
                     <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
@@ -174,6 +210,10 @@ const handleSave = () => {
         form.value.quantity = Number(form.value.yan_zun || 0) + Number(form.value.yan_an || 0);
     } else if (props.armyType === '耀紫軍') {
         form.value.quantity = Number(form.value.long_sheng || 0) + Number(form.value.long_zhan || 0);
+    } else if (props.armyType === '虎甲軍') {
+        form.value.quantity = Number(form.value.yan_jue || 0) + Number(form.value.yan_ze || 0);
+    } else if (props.armyType === '虎賁軍') {
+        form.value.quantity = Number(form.value.yan_di || 0) + Number(form.value.yan_yuan || 0);
     }
 
     if (form.value.destination !== '未處理' && !form.value.process_date) {

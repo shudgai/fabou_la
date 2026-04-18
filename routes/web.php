@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/user-profile', function () {
         $user = auth()->user()->load('dharmaName');
         $user->is_admin = $user->isAdmin();
+        $user->permissions = $user->getPermissions();
         return $user;
     });
     Route::get('/api/treasures-list', function (\Illuminate\Http\Request $request) {

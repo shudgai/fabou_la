@@ -12,9 +12,6 @@
                 class="flex items-center justify-between w-full bg-slate-50/50 active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100/50 h-[72px]"
                 style="padding: 0 20px;">
                 <div class="flex items-center space-x-4">
-                    <div :class="['w-11 h-11 rounded-xl flex items-center justify-center shadow-sm', item.color || 'bg-white']">
-                        <span class="text-xl">{{ item.icon || '📔' }}</span>
-                    </div>
                     <div class="flex flex-col items-start">
                         <span class="text-[17px] font-bold text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
                         <span v-if="counts[item.id] !== undefined" class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
@@ -50,6 +47,7 @@ import MobileNavbar from './MobileNavbar.vue';
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
     { id: 'teaching', label: '父皇仙師開示專區', icon: '🙏', color: 'bg-indigo-50' },
+    { id: 'other', label: '其他專區', icon: '📁', color: 'bg-orange-50' },
     { id: 'grudge', label: '怨靈專區', icon: '👻', color: 'bg-rose-50' },
     { id: 'military', label: '軍隊專區', icon: '🛡️', color: 'bg-emerald-50' },
     { id: 'treasure', label: '法寶登記專區', icon: '💎', color: 'bg-sky-50' },
@@ -68,12 +66,14 @@ const navigate = (id) => {
 
 const props = defineProps(['user']);
 const user = computed(() => props.user);
+const permissions = computed(() => user.value?.permissions || {});
+
 const filteredMenuItems = computed(() => {
     return menuItems.filter(item => {
-        if (item.id === 'treasure') {
-            // Allow both Chijue and Admins/Managers
-            return user.value?.dharma_name?.name === '赤覺' || user.value?.is_admin || user.value?.role === 'admin' || user.value?.role === '管理員';
-        }
+        if (item.id === 'treasure') return permissions.value.can_see_treasures;
+        if (item.id === 'military') return permissions.value.can_see_military;
+        if (item.id === 'other') return permissions.value.can_see_other_folders;
+        if (item.id === 'admin') return user.value?.is_admin;
         return true;
     });
 });

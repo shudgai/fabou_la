@@ -43,7 +43,7 @@
                     <h1 class="text-[20px] font-bold text-slate-900 tracking-tight">父皇仙師開示專區</h1>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
-                    <button v-for="(folder, idx) in folders" :key="folder.id" 
+                    <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 border border-[rgb(255,215,0)] rounded-xl group p-2 w-[120px] h-[135px] relative">
                         <div class="relative mb-3">
@@ -630,6 +630,7 @@ import MobileNavbar from './MobileNavbar.vue';
 import AddActionMenu from './AddActionMenu.vue';
 
 // Reactive State
+const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
 const currentFolder = ref(null);
 const addMode = ref(false);
@@ -751,11 +752,18 @@ const form = ref({
 
 const dharmaSearchQuery = ref('');
 
-const folders = ref([
+const folders_list = [
     { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
     { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
     { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇仙師每日開示' }
-]);
+];
+
+const filteredFolders = computed(() => {
+    return folders_list.filter(f => {
+        if (f.id === 0) return props.user?.permissions?.can_see_daily_teachings;
+        return true;
+    });
+});
 
 const masterNameInput = ref('');
 
