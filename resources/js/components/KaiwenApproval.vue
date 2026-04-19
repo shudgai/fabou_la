@@ -4,18 +4,18 @@
         <!-- Left Sidebar: Dharma Name Table (COL-5) -->
         <div class="w-[41.66%] border-r border-slate-100 flex flex-col h-full bg-white font-sans pl-[5px]">
             <div class="p-1 border-b border-slate-50">
-                <h3 class="text-[17px] font-black text-slate-900 flex items-center">
+                <h3 class="text-[15px] font-black text-slate-900 flex items-center">
                     法號表
                 </h3>
             </div>
 
             <!-- Tighter Grid (4px padding container) -->
             <div class="flex-1 overflow-y-auto px-[5px] py-1 custom-scrollbar">
-                <div class="grid grid-cols-4 gap-x-[3px] gap-y-[1px]">
+                <div class="grid grid-cols-3 gap-x-[3px] gap-y-[5px]">
                     <button v-for="user in filteredUsers" :key="user.id" 
                         @click="addParticipant(user.name)"
-                        class="h-[24px] flex items-center justify-center transition-all group active:scale-95">
-                        <span class="text-[15px] font-bold truncate px-0.5 text-slate-800 group-hover:text-indigo-600">
+                        class="h-[32px] flex items-center justify-center transition-all group active:scale-95">
+                        <span class="text-[15px] font-bold px-0.5 text-slate-800 group-hover:text-indigo-600">
                             {{ user.name }}
                         </span>
                     </button>
@@ -36,45 +36,45 @@
             </div>
 
             <!-- Table Content (Centered with 6px Right Offset) -->
-            <div class="flex-1 overflow-y-auto p-1 flex flex-col items-center pb-24">
+            <div class="flex-1 overflow-y-auto p-1 flex flex-col items-center">
                 <div class="w-full pl-[6px]">
-                    <div class="mt-1 mb-2 text-left space-y-1">
+                    <div class="mt-1 mb-2 text-left space-y-[5px]">
                         <p class="text-[15px] font-black text-black tracking-tight">√ 代表合格 × 代表不合格</p>
                         <p class="text-[15px] font-black text-black tracking-tight">開文結果請示如下：</p>
                     </div>
 
-                    <table class="w-auto text-left border-separate border-spacing-y-[3px] table-fixed">
+                    <table class="w-auto text-left border-separate border-spacing-y-[5px] table-fixed">
                         <thead>
                             <tr>
-                                <th class="px-0.5 py-0 text-[15px] font-bold text-black border border-slate-200 bg-white w-[45px] rounded-tl"></th>
-                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[13px] font-bold text-slate-300 bg-white uppercase w-[60px]"></th>
-                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[13px] font-bold text-slate-300 bg-white uppercase w-[60px]"></th>
-                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[13px] font-bold text-slate-300 bg-white uppercase rounded-tr w-[60px]"></th>
+                                <th class="px-0.5 py-0 text-[15px] font-bold text-black border border-slate-200 bg-white w-[60px] rounded-tl"></th>
+                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[15px] font-bold text-slate-300 bg-white uppercase w-[50px]"></th>
+                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[15px] font-bold text-slate-300 bg-white uppercase w-[50px]"></th>
+                                <th class="px-0.5 py-0 border border-slate-200 text-center text-[15px] font-bold text-slate-300 bg-white uppercase rounded-tr w-[50px]"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item, idx) in selectionList" :key="idx" class="group bg-white transition-shadow h-[18px]">
-                                <td class="px-0.5 py-0 relative border border-slate-200 w-[45px]">
+                            <tr v-for="(item, idx) in selectionList" :key="idx" class="group bg-white transition-shadow h-[25px]">
+                                <td class="px-1 py-0 relative border border-slate-200 w-[60px] whitespace-nowrap">
                                     <span class="text-[15px] font-bold text-slate-900 leading-none flex items-center h-full">{{ item.name }}</span>
                                     <button @click="removeItem(idx)" class="absolute -left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-100 hover:text-red-400 transition-opacity">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
                                     </button>
                                 </td>
                                 
-                                <td v-for="n in 3" :key="'slot'+n" class="text-center group/cell border border-slate-200 w-[60px] py-0 h-[18px]">
+                                <td v-for="n in 3" :key="'slot'+n" class="text-center group/cell border border-slate-200 w-[50px] py-0 h-[25px]">
                                     <!-- Selection Mode -->
-                                    <div v-if="item.slots[n-1] === null" class="flex items-center justify-center space-x-4 h-full w-[60px]">
+                                    <div v-if="item.slots[n-1] === null" class="flex items-center justify-center space-x-4 h-full w-[50px]">
                                         <button @click="setStatus(idx, n-1, 'v')" class="text-slate-200 hover:text-slate-400 transition-colors">
-                                            <span class="text-[13px] font-black leading-none">√</span>
+                                            <span class="text-[15px] font-black leading-none">√</span>
                                         </button>
                                         <button @click="setStatus(idx, n-1, 'x')" class="text-slate-200 hover:text-slate-400 transition-colors">
-                                            <span class="text-[13px] font-black leading-none">×</span>
+                                            <span class="text-[15px] font-black leading-none">×</span>
                                         </button>
                                     </div>
                                     <!-- Confirmed Mode -->
-                                    <div v-else class="flex items-center justify-center h-full w-[60px] relative group/conf">
-                                        <span v-if="item.slots[n-1] === 'v'" class="text-blue-900 text-[13px] font-black leading-none">√</span>
-                                        <span v-else class="text-red-600 text-[13px] font-black leading-none">×</span>
+                                    <div v-else class="flex items-center justify-center h-full w-[50px] relative group/conf">
+                                        <span v-if="item.slots[n-1] === 'v'" class="text-blue-900 text-[15px] font-black leading-none">√</span>
+                                        <span v-else class="text-red-600 text-[15px] font-black leading-none">×</span>
                                         
                                         <!-- Persistent Edit Button (Visible at low opacity) -->
                                         <button @click="setStatus(idx, n-1, null)" class="absolute right-0 bottom-0 p-0.5 opacity-30 hover:opacity-100 transition-opacity">
@@ -90,14 +90,13 @@
                             </tr>
                         </tbody>
                     </table>
+                    <!-- Copy Button: 30px below table, scrolls with content -->
+                    <div class="mt-[30px] flex justify-center w-full">
+                        <button @click="copyToLine" class="w-1/2 bg-emerald-600 text-white h-11 rounded-xl font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-700 transition-all active:scale-95 text-[15px]">
+                            複製貼 LINE
+                        </button>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Sticky Bottom Copy Button Area -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-slate-100 flex justify-center">
-                <button @click="copyToLine" class="w-1/2 bg-emerald-600 text-white h-11 rounded-xl font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-700 transition-all active:scale-95 text-[14px]">
-                    複製貼 LINE
-                </button>
             </div>
         </div>
     </div>
@@ -120,10 +119,13 @@ const loadUsers = async () => {
     }
 };
 
+const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情'];
+
 const filteredUsers = computed(() => {
-    if (!searchQuery.value) return users.value;
+    let list = users.value.filter(u => !excludedNames.includes(u.name));
+    if (!searchQuery.value) return list;
     const q = searchQuery.value.toLowerCase();
-    return users.value.filter(u => u.name.toLowerCase().includes(q));
+    return list.filter(u => u.name.toLowerCase().includes(q));
 });
 
 const addParticipant = (name) => {
@@ -162,30 +164,21 @@ const copyToLine = () => {
         return;
     }
 
-    let text = `✓ 代表合格，✕ 代表不合格\n`;
+    let text = `✓代表合格×代表不合格\n`;
     text += `開文結果請示如下：\n`;
     
     selectionList.value.forEach(item => {
+        // Always output all 3 slots with full-width chars for consistent alignment
         let slots = item.slots.map(s => {
             if (s === 'v') return '✓';
-            if (s === 'x') return '×';
-            return '  ';
+            if (s === 'x') return '× ';
+            return '　'; // full-width ideographic space (same width as Chinese char)
         });
-
-        // Remove trailing empty placeholders to avoid trailing semicolons
-        let lastRealIndex = -1;
-        for (let i = slots.length - 1; i >= 0; i--) {
-            if (slots[i] !== '  ') {
-                lastRealIndex = i;
-                break;
-            }
-        }
         
-        const results = (lastRealIndex === -1) 
-            ? '  ' 
-            : slots.slice(0, lastRealIndex + 1).join(' ;  ');
+        // Full-width semicolon as separator — same width as Chinese char in LINE
+        const results = slots.join('；');
         
-        text += `${item.name} ： ${results}\n`;
+        text += `${item.name}：${results}\n`;
     });
 
     navigator.clipboard.writeText(text).then(() => {

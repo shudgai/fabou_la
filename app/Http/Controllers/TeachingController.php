@@ -51,13 +51,21 @@ class TeachingController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $success = $this->teachingService->update((int)$id, $request->all());
+        $id = (int)$id;
+        if (!$this->teachingService->canModify($id, auth()->id())) {
+            return response()->json(['message' => '您無權修改此紀錄'], 403);
+        }
+        $success = $this->teachingService->update($id, $request->all());
         return $success ? response()->json(['message' => 'Updated']) : response()->json(['message' => 'Error'], 400);
     }
 
     public function destroy(string $id)
     {
-        $success = $this->teachingService->delete((int)$id);
+        $id = (int)$id;
+        if (!$this->teachingService->canModify($id, auth()->id())) {
+            return response()->json(['message' => '您無權刪除此紀錄'], 403);
+        }
+        $success = $this->teachingService->delete($id);
         return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
     }
 

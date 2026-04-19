@@ -99,6 +99,11 @@ Route::middleware(['auth'])->group(function () {
         return $query->get();
     });
     Route::get('/api/teaching-rules', [App\Http\Controllers\TeachingController::class, 'rules']);
-    // 強制下載 Helper
+    
+    // Trash / Recycle Bin System
+    Route::get('/api/trash', [App\Http\Controllers\TrashController::class, 'index']);
+    Route::post('/api/trash/restore', [App\Http\Controllers\TrashController::class, 'restore']);
+    Route::post('/api/trash/force-delete', [App\Http\Controllers\TrashController::class, 'forceDelete']);
+    Route::post('/api/trash/cleanup', [App\Http\Controllers\TrashController::class, 'cleanup']);
 });
 

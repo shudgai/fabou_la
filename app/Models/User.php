@@ -92,8 +92,8 @@ class User extends Authenticatable
         $isAdmin = $this->isAdmin();
 
         $permissions = [
-            'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情']),
-            'can_see_other_folders' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情']),
+            'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情', '靈平']),
+            'can_see_other_folders' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情', '靈平']),
             'can_see_treasures' => $isAdmin || $dharmaName === '赤覺',
             'can_see_military' => $isAdmin || in_array($dharmaName, ['閻尊', '閻闇', '龍勝', '龍戰', '閻爵', '閻澤', '閻帝', '閻願']),
             'allowed_armies' => [],

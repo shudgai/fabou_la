@@ -55,6 +55,10 @@ class TeachingService
     {
         $dnIds = $data['dharma_name_ids'] ?? [];
         $data = $this->resolveRelations($data);
+        
+        // Force set user_id to current authenticated user
+        $data['user_id'] = auth()->id();
+        
         $teaching = Teaching::create($data);
         
         if (!empty($dnIds)) {
@@ -102,12 +106,21 @@ class TeachingService
             }
         }
 
-        // Ensure user_id is set
-        if (!isset($data['user_id'])) {
-            $data['user_id'] = auth()->id() ?? 1;
-        }
-
         return $data;
+    }
+
+    public function canModify(int $id, int $userId): bool
+    {
+        $teaching = Teaching::find($id);
+        if (!$teaching) return false;
+        
+        // Admins can modify everything (optional but standard)
+        // If the user wants STRICT only-owner, I'll stick to that.
+        // Let's check user isAdmin() if exists. 
+        $user = \App\Models\User::find($userId);
+        if ($user && $user->isAdmin()) return true;
+
+        return $teaching->user_id === $userId;
     }
 
     /**
@@ -123,9 +136,8 @@ class TeachingService
                 'color' => 'indigo'
             ],
             [
-                'match' => '令',
-                'exclude' => '專司靈療',
-                'fields' => ['size' => '尺寸', 'days' => '天份'],
+                'match' => '太令',
+                'fields' => ['days' => '天數'],
                 'color' => 'amber'
             ],
             [
@@ -134,18 +146,24 @@ class TeachingService
                 'color' => 'rose'
             ],
             [
+                'match' => '福祿香',
+                'fields' => ['qty' => '根', 'box' => '包'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '令',
+                'exclude' => '專司靈療',
+                'fields' => ['size' => '尺寸', 'days' => '天數'],
+                'color' => 'amber'
+            ],
+            [
+                'match' => '符',
+                'fields' => ['size' => '尺寸', 'days' => '天數'],
+                'color' => 'amber'
+            ],
+            [
                 'match' => '疏文',
-                'fields' => ['person' => '開立'],
-                'color' => 'slate'
-            ],
-            [
-                'match' => '執法',
-                'fields' => ['person' => '執法'],
-                'color' => 'slate'
-            ],
-            [
-                'match' => '清煞',
-                'fields' => ['person' => '執法'],
+                'fields' => ['person' => '開立', 'days' => '天數'],
                 'color' => 'slate'
             ],
             [
@@ -154,7 +172,22 @@ class TeachingService
                 'color' => 'emerald'
             ],
             [
-                'match' => '*', // Default for various treasures
+                'match' => '香灰',
+                'fields' => ['days' => '天份'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '執法',
+                'fields' => ['person' => '執法', 'days' => '天份'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '清煞',
+                'fields' => ['person' => '執法', 'days' => '天份'],
+                'color' => 'slate'
+            ],
+            [
+                'match' => '*', // Default fallback
                 'fields' => ['days' => '天份'],
                 'color' => 'slate'
             ]

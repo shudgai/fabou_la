@@ -47,10 +47,10 @@ import MobileNavbar from './MobileNavbar.vue';
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
     { id: 'teaching', label: '父皇仙師開示專區', icon: '🙏', color: 'bg-indigo-50' },
-    { id: 'other', label: '其他專區', icon: '📁', color: 'bg-orange-50' },
     { id: 'grudge', label: '怨靈專區', icon: '👻', color: 'bg-rose-50' },
     { id: 'military', label: '軍隊專區', icon: '🛡️', color: 'bg-emerald-50' },
     { id: 'treasure', label: '法寶登記專區', icon: '💎', color: 'bg-sky-50' },
+    { id: 'other', label: '其他專區', icon: '📁', color: 'bg-orange-50' },
     { id: 'trash', label: '回收桶', icon: '🗑️', color: 'bg-slate-100' },
     { id: 'admin', label: '系統資料管理', icon: '⚙️', color: 'bg-slate-800 text-white' },
 ];
@@ -70,6 +70,7 @@ const permissions = computed(() => user.value?.permissions || {});
 
 const filteredMenuItems = computed(() => {
     return menuItems.filter(item => {
+        if (user.value?.is_admin) return true;
         if (item.id === 'treasure') return permissions.value.can_see_treasures;
         if (item.id === 'military') return permissions.value.can_see_military;
         if (item.id === 'other') return permissions.value.can_see_other_folders;

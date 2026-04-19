@@ -67,6 +67,9 @@ app.component('registry-add-form', RegistryAddForm);
 import OtherManager from './components/OtherManager.vue';
 app.component('other-manager', OtherManager);
 
+import TrashManager from './components/TrashManager.vue';
+app.component('trash-manager', TrashManager);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

@@ -4,9 +4,6 @@
         <div class="w-full md:w-64 border-r border-slate-100 flex flex-col pt-4">
             <div class="px-4 mb-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-slate-800">其他專區</h2>
-                <button @click="showAddFolder = true" class="text-indigo-600 hover:text-indigo-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
             </div>
 
             <div class="flex-grow overflow-y-auto space-y-1 px-2">
@@ -16,9 +13,6 @@
                             activeFolderId === folder.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']">
                     <div class="w-2 h-2 rounded-full mr-3" :style="{ backgroundColor: folder.color || '#6366f1' }"></div>
                     <span class="font-medium truncate flex-grow">{{ folder.name }}</span>
-                    <button v-if="activeFolderId === folder.id" @click.stop="deleteFolder(folder.id)" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
-                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
                 </button>
             </div>
         </div>
@@ -27,7 +21,9 @@
         <div class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto">
             <div v-if="activeFolder" class="h-full">
                 <!-- Special View: 開文核定表 -->
-                <kaiwen-approval v-if="activeFolder.name === '開文核定表'" />
+                <kaiwen-approval v-if="activeFolder.name.includes('開文核定')" />
+                <!-- Special View: 隨機分組 -->
+                <random-group v-else-if="activeFolder.name.includes('隨機分組')" />
                 
                 <!-- Default View: Standard Records -->
                 <div v-else class="max-w-4xl mx-auto w-full p-6">
@@ -106,6 +102,7 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import KaiwenApproval from './KaiwenApproval.vue';
+import RandomGroup from './RandomGroup.vue';
 
 const folders = ref([]);
 const activeFolderId = ref(null);
@@ -122,15 +119,18 @@ const loadData = async () => {
     const res = await axios.get('/other-folders');
     folders.value = res.data;
     
-    // Auto-initialize if empty (User request: 2 folders)
-    if (folders.value.length === 0) {
-        await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
-        await axios.post('/other-folders', { name: '自訂記事', color: '#f59e0b' });
+    // Auto-initialize if empty or missing required folders
+    const hasKaiwen = folders.value.some(f => f.name.includes('開文核定'));
+    const hasRandom = folders.value.some(f => f.name.includes('隨機分組'));
+
+    if (!hasKaiwen || !hasRandom) {
+        if (!hasKaiwen) await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
+        if (!hasRandom) await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
         return loadData();
     }
 
     if (folders.value.length > 0 && !activeFolderId.value) {
-        const kaiwen = folders.value.find(f => f.name === '開文核定表');
+        const kaiwen = folders.value.find(f => f.name.includes('開文核定'));
         activeFolderId.value = kaiwen ? kaiwen.id : folders.value[0].id;
     }
 };

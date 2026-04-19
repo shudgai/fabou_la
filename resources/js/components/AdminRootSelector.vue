@@ -11,7 +11,7 @@
                 <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
                 <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
                 <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
-                <div v-if="currentView === 'trash'" class="p-8 text-center">回收桶建置中...</div>
+                <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
             </div>
         </div>
 
@@ -33,11 +33,12 @@ import ImperialGraceManager from './ImperialGraceManager.vue';
 import OtherManager from './OtherManager.vue';
 import AdminDashboard from './AdminDashboard.vue';
 import MobileDashboard from './MobileDashboard.vue';
+import TrashManager from './TrashManager.vue';
 
 const user = ref(null);
 const currentView = ref('menu');
 
-const isChijue = computed(() => user.value?.dharma_name?.name === '赤覺');
+const isChijue = computed(() => user.value?.dharma_name?.name === '赤覺' || isAdmin.value);
 const isAdmin = computed(() => user.value?.is_admin || user.value?.role === 'admin' || user.value?.role === '管理員');
 
 const syncHash = () => {
@@ -56,8 +57,13 @@ const syncHash = () => {
     
     let targetView = viewMap[hash] || 'menu';
     
-    // Security Check: Unauthorized hash access
-    if (targetView === 'treasure' && !isChijue.value && !isAdmin.value) {
+    // Security Check: Unauthorized hash access (Relaxed for Admins)
+    if (isAdmin.value) {
+        currentView.value = targetView;
+        return;
+    }
+
+    if (targetView === 'treasure' && !isChijue.value) {
         targetView = 'menu';
         window.location.hash = '';
     }
