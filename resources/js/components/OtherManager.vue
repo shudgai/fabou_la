@@ -1,24 +1,56 @@
 <template>
-    <div class="h-full bg-white flex flex-col md:flex-row">
-        <!-- Sidebar: Folder List -->
-        <div class="w-full md:w-64 border-r border-slate-100 flex flex-col pt-4">
-            <div class="px-4 mb-6 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-slate-800">其他專區</h2>
+    <div class="h-full bg-white flex flex-col">
+        <!-- Level 1: Folder Grid View -->
+        <div v-if="!activeFolderId" class="min-h-screen bg-white">
+            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10">
+                <div class="flex items-center">
+                    <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <h2 class="text-[22px] font-black text-slate-900 tracking-tight">其他專區資料夾</h2>
+                </div>
+                <button @click="showAddFolder = true" class="w-10 h-10 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-indigo-500 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
 
-            <div class="flex-grow overflow-y-auto space-y-1 px-2">
-                <button v-for="folder in folders" :key="folder.id" 
+            <div class="grid grid-cols-2 gap-4 p-6 place-items-center">
+                <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
-                    :class="['w-full text-left px-4 py-3 rounded-xl transition-all flex items-center group', 
-                            activeFolderId === folder.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']">
-                    <div class="w-2 h-2 rounded-full mr-3" :style="{ backgroundColor: folder.color || '#6366f1' }"></div>
-                    <span class="font-medium truncate flex-grow">{{ folder.name }}</span>
+                    class="flex flex-col items-center justify-center bg-white transition-all active:scale-95 border border-slate-100 rounded-[28px] group p-4 w-full aspect-square shadow-sm hover:shadow-md relative overflow-hidden">
+                    <div class="relative mb-3">
+                        <svg class="w-24 h-24 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                            <defs>
+                                <linearGradient :id="'otherGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" :style="{ 'stop-color': folder.color || '#FCD34D', 'stop-opacity': 0.6 }" />
+                                    <stop offset="50%" :style="{ 'stop-color': folder.color || '#FBBF24', 'stop-opacity': 1 }" />
+                                    <stop offset="100%" :style="{ 'stop-color': folder.color || '#D97706', 'stop-opacity': 0.8 }" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#otherGrad' + idx + ')'" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#otherGrad' + idx + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                        </svg>
+                    </div>
+                    <span class="text-[17px] font-black text-slate-900 leading-tight text-center px-2">
+                        {{ folder.name }}
+                    </span>
+                    <button @click.stop="deleteFolder(folder.id)" class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </button>
             </div>
         </div>
 
-        <!-- Main Content: Record List -->
-        <div class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto">
+        <!-- Level 2: Record List / Content View -->
+        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto">
+            <!-- Content Header -->
+            <div class="px-6 py-4 flex items-center border-b border-white bg-white/80 backdrop-blur-md sticky top-0 z-30">
+                <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <h2 class="text-[19px] font-black text-slate-900 flex-1 truncate">{{ activeFolder?.name }}</h2>
+            </div>
+
             <div v-if="activeFolder" class="h-full">
                 <!-- Special View: 開文核定表 -->
                 <kaiwen-approval v-if="activeFolder.name.includes('開文核定')" />
@@ -27,14 +59,6 @@
                 
                 <!-- Default View: Standard Records -->
                 <div v-else class="max-w-4xl mx-auto w-full p-6">
-                    <div class="flex items-center justify-between mb-8">
-                        <h1 class="text-2xl font-black text-slate-900">{{ activeFolder.name }}</h1>
-                        <button @click="showAddRecord = true" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center text-sm">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            新增紀錄
-                        </button>
-                    </div>
-
                     <div class="space-y-4">
                         <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
                             <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
@@ -104,6 +128,10 @@ import axios from 'axios';
 import KaiwenApproval from './KaiwenApproval.vue';
 import RandomGroup from './RandomGroup.vue';
 
+const props = defineProps({
+    user: Object
+});
+
 const folders = ref([]);
 const activeFolderId = ref(null);
 const showAddFolder = ref(false);
@@ -112,6 +140,21 @@ const showAddRecord = ref(false);
 const newFolderName = ref('');
 const newFolderColor = ref('#6366f1');
 const newRecord = ref({ title: '', content: '', record_date: new Date().toISOString().split('T')[0] });
+
+const sortedFolders = computed(() => {
+    return [...folders.value].sort((a, b) => {
+        const isKaiwenA = a.name.includes('開文核定');
+        const isKaiwenB = b.name.includes('開文核定');
+        const isRandomA = a.name.includes('隨機分組');
+        const isRandomB = b.name.includes('隨機分組');
+
+        if (isKaiwenA && !isKaiwenB) return -1;
+        if (!isKaiwenA && isKaiwenB) return 1;
+        if (isRandomA && !isRandomB && !isKaiwenB) return -1;
+        if (!isRandomA && isRandomB && !isKaiwenA) return 1;
+        return 0;
+    });
+});
 
 const activeFolder = computed(() => folders.value.find(f => f.id === activeFolderId.value));
 
@@ -127,11 +170,6 @@ const loadData = async () => {
         if (!hasKaiwen) await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
         if (!hasRandom) await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
         return loadData();
-    }
-
-    if (folders.value.length > 0 && !activeFolderId.value) {
-        const kaiwen = folders.value.find(f => f.name.includes('開文核定'));
-        activeFolderId.value = kaiwen ? kaiwen.id : folders.value[0].id;
     }
 };
 
