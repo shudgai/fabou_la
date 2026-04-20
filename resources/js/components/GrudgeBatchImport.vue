@@ -7,7 +7,7 @@
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-[19px] font-normal text-slate-900">
+                <h3 class="text-[21px] font-black tracking-tight text-slate-900">
                     怨靈多筆載錄
                 </h3>
                 <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
@@ -18,9 +18,9 @@
             <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar bg-white">
                 <div class="space-y-1">
                     <div class="flex items-center justify-between mb-2 ml-1">
-                        <label class="text-[13px] font-normal text-[#aeb4be] uppercase">貼上資料</label>
-                        <button @click="triggerFileUpload" class="text-[13px] font-normal text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider">貼上資料</label>
+                        <button @click="triggerFileUpload" class="text-[13px] font-black text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
+                            <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             <span>載入他檔 (Excel/Word)</span>
                         </button>
                     </div>
@@ -38,10 +38,10 @@
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
-                    class="w-full bg-indigo-600 disabled:bg-slate-300 text-white font-normal p-3 rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
+                    class="w-full bg-indigo-600 disabled:bg-slate-300 text-white font-black p-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 >
                     <span v-if="loading" class="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full"></span>
-                    <span>{{ loading ? '正在處理中...' : '確認批量載錄' }}</span>
+                    <span class="text-[17px] tracking-widest">{{ loading ? '正在處理中...' : '確認批量載錄' }}</span>
                 </button>
             </div>
         </div>
@@ -159,14 +159,14 @@ const handleBatchSave = async () => {
                     subParts.forEach(sp => {
                         const nMatch = sp.match(/(\d+)/);
                         const n = nMatch ? parseInt(nMatch[1]) : 0;
-                        if (sp.includes('大姊') || sp.includes('閻尊')) mergedRemarks.yan_zun += n;
-                        if (sp.includes('四妹') || sp.includes('閻闇')) mergedRemarks.yan_an += n;
+                        if (sp.includes('大姐') || sp.includes('大姊') || sp.includes('閻尊')) mergedRemarks.yan_zun += n;
+                        if (sp.includes('四妹') || sp.includes('闇') || sp.includes('閻闇')) mergedRemarks.yan_an += n;
                         if (sp.includes('勝') || sp.includes('龍勝')) mergedRemarks.long_sheng += n;
                         if (sp.includes('戰') || sp.includes('龍戰')) mergedRemarks.long_zhan += n;
                     });
                 } else if (curDest === '黑曜軍' || curDest === '耀紫軍') {
-                    if (res.includes('大姊') || res.includes('閻尊')) mergedRemarks.yan_zun += q;
-                    if (res.includes('四妹') || res.includes('閻闇')) mergedRemarks.yan_an += q;
+                    if (res.includes('大姐') || res.includes('大姊') || res.includes('閻尊')) mergedRemarks.yan_zun += q;
+                    if (res.includes('四妹') || res.includes('闇') || res.includes('閻闇')) mergedRemarks.yan_an += q;
                     if (res.includes('勝') || res.includes('龍勝')) mergedRemarks.long_sheng += q;
                     if (res.includes('戰') || res.includes('龍戰')) mergedRemarks.long_zhan += q;
                 }

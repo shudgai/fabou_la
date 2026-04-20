@@ -12,8 +12,8 @@
                     <button @click="$emit('cancel')" class="text-indigo-500 font-medium flex items-center hover:opacity-70">
                         <span class="mr-1">&lt;</span>返回
                     </button>
-                    <h3 class="text-[20px] font-bold text-slate-900">
-                        {{ (form.category === 'major' ? '重大皇恩登記' : '其他皇恩登記') }} - {{ selectedMasterName || '請選擇仙師' }}
+                    <h3 class="text-[22px] font-black text-slate-900 tracking-tight">
+                        {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
                     </h3>
                 </div>
             </div>
@@ -24,12 +24,12 @@
                 <!-- Date & Master -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">日期</label>
-                        <input v-model="form.record_date" type="date" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">日期</label>
+                        <input v-model="form.record_date" type="date" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">仙師</label>
-                        <select v-model="form.master_id" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 shadow-sm focus:ring-2 focus:ring-indigo-100 outline-none">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">仙師</label>
+                        <select v-model="form.master_id" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-indigo-100 outline-none">
                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
@@ -38,29 +38,29 @@
                 <!-- Main Fields (Single Mode) -->
                 <div v-if="localMode === 'single'" class="space-y-4 animate-fade-in">
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">法寶 / 皇恩名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">法寶 / 皇恩名稱</label>
+                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
 
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">法寶用意</label>
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用意" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
 
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">求寶方式</label>
-                        <input v-model="form.acquisition_method" type="text" placeholder="輸入求寶方式" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">求寶方式</label>
+                        <input v-model="form.acquisition_method" type="text" placeholder="輸入求寶方式" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
 
                     <div class="space-y-1.5">
-                        <label class="text-[14px] font-normal text-slate-400 block ml-1">備註 (整體)</label>
-                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full h-[40px] rounded-2xl border border-slate-100 bg-white px-3 text-[18px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">備註 (整體)</label>
+                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
                     </div>
 
                     <!-- Personnel List -->
-                    <div class="pt-4 border-t border-slate-50 space-y-3">
+                    <div class="pt-4 border-t border-slate-100 space-y-3">
                         <div class="flex items-center justify-between ml-1">
-                            <label class="text-[14px] font-bold text-slate-500 uppercase tracking-tight">承接皇恩人員清單</label>
+                            <label class="text-[15px] font-black text-indigo-700 uppercase tracking-tight">承接人員</label>
                             <button @click="addPersonnelRow" class="text-[12px] font-bold text-indigo-500 hover:text-indigo-600 active:scale-95 transition-all">
                                 ＋ 新增人員
                             </button>
@@ -76,7 +76,7 @@
                                         class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-3 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-400 ml-1">登記日期</label>
+                                    <label class="text-[11px] text-slate-400 ml-1">日期</label>
                                     <input v-model="p.obtained_date" type="date"
                                         class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-2 text-[16px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                                 </div>
@@ -112,8 +112,8 @@
             </div>
 
             <!-- Footer Action -->
-            <div v-if="localMode === 'single'" class="p-6 bg-white border-t border-slate-100">
-                <button @click="handleSubmit" :disabled="isSaving" class="w-full bg-indigo-50 text-indigo-600 font-bold h-[45px] rounded-2xl shadow-sm hover:bg-indigo-100 active:scale-95 transition-all disabled:opacity-50">
+            <div v-if="localMode === 'single'" class="px-6 pt-5 pb-[calc(1.25rem+8vh)] bg-white border-t border-slate-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+                <button @click="handleSubmit" :disabled="isSaving" class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-md active:scale-95 transition-all disabled:bg-slate-200 disabled:text-slate-400">
                     {{ isSaving ? '儲存中...' : '確認新增' }}
                 </button>
             </div>
@@ -142,7 +142,7 @@ const dharmaNames = ref([]);
 
 const fetchDharmaNames = async () => {
     try {
-        const res = await axios.get('/api/dharma-names');
+        const res = await axios.get('/api/dharma-names-list');
         dharmaNames.value = res.data;
     } catch (e) {
         console.error('Failed to load dharma names', e);
@@ -152,7 +152,7 @@ const fetchDharmaNames = async () => {
 const addPersonnelRow = () => {
     personnel.value.push({
         custom_name: '',
-        obtained_date: form.value.record_date || new Date().toISOString().split('T')[0],
+        obtained_date: '',
         remarks: ''
     });
 };
@@ -180,8 +180,11 @@ watch(() => props.mode, (newVal) => {
 });
 
 const handleSubmit = () => {
+    // Clean up personnel: remove empty rows
+    const cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
+
     if (localMode.value === 'single') {
-        const payload = { ...form.value, dharma_name_registries: personnel.value };
+        const payload = { ...form.value, dharma_name_registries: cleanedPersonnel };
         emit('saveSingle', payload);
     } else {
         emit('saveBatch', { 

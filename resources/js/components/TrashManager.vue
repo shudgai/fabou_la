@@ -120,7 +120,7 @@ const cleanup = async () => {
 
 const getTitle = (item) => {
     if (item.type === 'registry' || item.type === 'grace') return item.name || '(無標題)';
-    if (item.type === 'teaching') return item.date + ' 開示紀錄';
+    if (item.type === 'teaching') return item.date + ' 開示記錄';
     if (item.type === 'other') return item.title || '(無標題記事)';
     if (item.type === 'grudge' || item.type === 'military') return item.user_name + ' 的紀錄';
     return '未命名紀錄';

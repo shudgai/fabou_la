@@ -112,30 +112,98 @@ class RegistryController extends Controller
             $registry->update($request->all());
 
             if ($request->has('dharma_name_registries')) {
-                // Simplified sync logic
-                DharmaNameRegistry::where('registry_id', $registry->id)->delete();
-                foreach ($request->input('dharma_name_registries') as $dn) {
-                    // AUTO-RESOLVE names in update
-                    if (empty($dn['dharma_name_id']) && !empty($dn['custom_name'])) {
+                $incoming = $request->input('dharma_name_registries');
+                $keepIds = [];
+                
+                foreach ($incoming as $dn) {
+                    // AUTO-RESOLVE names
+                    $dharma_name_id = $dn['dharma_name_id'] ?? null;
+                    if (empty($dharma_name_id) && !empty($dn['custom_name'])) {
                         $matched = DharmaName::where('name', trim($dn['custom_name']))->first();
                         if ($matched) {
-                            $dn['dharma_name_id'] = $matched->id;
+                            $dharma_name_id = $matched->id;
                             $dn['custom_name'] = null;
                         }
                     }
 
-                    DharmaNameRegistry::create([
-                        'registry_id' => $registry->id,
-                        'dharma_name_id' => $dn['dharma_name_id'] ?? null,
-                        'custom_name' => $dn['custom_name'] ?? null,
-                        'obtained_date' => $dn['obtained_date'] ?? null,
-                        'remarks' => $dn['remarks'] ?? null,
-                        'related_personnel' => $dn['related_personnel'] ?? null
-                    ]);
+                    $record = DharmaNameRegistry::updateOrCreate(
+                        [
+                            'registry_id' => $registry->id,
+                            'dharma_name_id' => $dharma_name_id,
+                            'custom_name' => $dn['custom_name'] ?? null,
+                        ],
+                        [
+                            'obtained_date' => $dn['obtained_date'] ?? null,
+                            'remarks' => $dn['remarks'] ?? null,
+                            // Do NOT overwrite related_personnel if not sent, to preserve existing parser data
+                        ]
+                    );
+
+                    // If they DO send related_personnel, update it
+                    if (array_key_exists('related_personnel', $dn)) {
+                        $record->update(['related_personnel' => $dn['related_personnel']]);
+                    }
+
+                    $keepIds[] = $record->id;
                 }
+
+                // Optional: Cleanup missing ones IF the user expects a full sync. 
+                // However, for in-place grid editing, we might just want to keep all.
+                // For now, let's keep all to be safe unless they explicitly delete.
             }
 
             return $registry->load('dharmaNameRegistries');
+        });
+    }
+
+    public function batchStore(Request $request)
+    {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => '您沒有權限在法寶登記專區新增紀錄'], 403);
+        }
+
+        $records = $request->all();
+        if (!is_array($records)) return response()->json(['error' => '無效的資料格式'], 400);
+
+        return DB::transaction(function () use ($records) {
+            $results = [];
+            foreach ($records as $recordData) {
+                if (empty($recordData['name']) || empty($recordData['master_id'])) continue;
+
+                $registry = Registry::where('name', $recordData['name'])
+                    ->where('master_id', $recordData['master_id'])
+                    ->where('category', $recordData['category'] ?? 'major')
+                    ->first();
+
+                if (!$registry) {
+                    $registry = Registry::create($recordData);
+                }
+
+                if (!empty($recordData['dharma_name_registries'])) {
+                    foreach ($recordData['dharma_name_registries'] as $dn) {
+                        if (empty($dn['custom_name']) && empty($dn['dharma_name_id'])) continue;
+
+                        if (empty($dn['dharma_name_id']) && !empty($dn['custom_name'])) {
+                            $matched = DharmaName::where('name', trim($dn['custom_name']))->first();
+                            if ($matched) {
+                                $dn['dharma_name_id'] = $matched->id;
+                                $dn['custom_name'] = null;
+                            }
+                        }
+
+                        DharmaNameRegistry::create([
+                            'registry_id' => $registry->id,
+                            'dharma_name_id' => $dn['dharma_name_id'] ?? null,
+                            'custom_name' => $dn['custom_name'] ?? null,
+                            'obtained_date' => $dn['obtained_date'] ?? null,
+                            'remarks' => $dn['remarks'] ?? null,
+                            'related_personnel' => $dn['related_personnel'] ?? null
+                        ]);
+                    }
+                }
+                $results[] = $registry->id;
+            }
+            return response()->json(['success' => true, 'count' => count($results)]);
         });
     }
 

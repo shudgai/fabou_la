@@ -2,21 +2,18 @@
     <div class="flex h-full bg-white overflow-hidden relative">
         
         <!-- Left Sidebar: Dharma Name Table (Toggleable) -->
-        <div :class="[isCollapsed ? 'w-[60px]' : 'w-[75%]']" class="border-r border-slate-100 flex flex-col h-full bg-white font-sans transition-all duration-300 relative overflow-hidden">
+        <div :class="[isCollapsed ? 'w-[15px]' : 'w-[75%]']" class="border-r border-slate-100 flex flex-col h-full bg-white font-sans transition-all duration-300 relative overflow-hidden">
             <div class="p-3 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
-                <h3 v-if="!isCollapsed" class="text-[17px] font-black text-slate-900 flex items-center">
+                <h3 v-if="!isCollapsed" class="text-[15px] font-black text-slate-900 flex items-center">
                     選擇法號
                 </h3>
-                <button @click="isCollapsed = !isCollapsed" class="p-2 -mr-2 text-slate-400 hover:text-indigo-600 transition-all active:scale-90">
-                    <svg :class="isCollapsed ? 'rotate-180' : ''" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
             </div>
 
             <!-- Quick Search / Add Input -->
             <div v-show="!isCollapsed" class="px-3 py-2 border-b border-slate-50 bg-slate-50/10">
                 <div class="relative">
                     <input v-model="searchQuery" @keyup.enter="handleQuickAdd" placeholder="搜尋或直接輸入姓名..." 
-                        class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-[15px] focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold">
+                        class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-[15px] focus:ring-2 focus:ring-indigo-500/20 transition-all font-black">
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/></svg>
                 </div>
             </div>
@@ -36,14 +33,35 @@
         </div>
 
         <!-- Right Content: Approval Table & Selection Queue -->
-        <div :class="[isCollapsed ? 'flex-1 border-l border-slate-50' : 'w-[25%] opacity-40']" class="overflow-hidden flex flex-col h-full bg-slate-50/10 relative font-sans transition-all duration-300">
+        <div :class="[isCollapsed ? 'flex-1 border-l border-slate-50' : 'w-[25%]']" class="overflow-hidden flex flex-col h-full bg-slate-50/10 relative font-sans transition-all duration-300">
             <!-- Header Area -->
-            <div class="bg-white border-b border-slate-50 px-2 pt-4 pb-1 flex items-center justify-between sticky top-0 z-10 shrink-0">
-                <div class="flex flex-col">
-                    <h2 v-if="isCollapsed" class="text-[17px] font-black text-blue-500 tracking-tight">核定結果</h2>
-                    <span v-else class="text-[17px] font-black text-blue-500 uppercase tracking-tight">核定名單</span>
+            <div class="bg-white border-b border-slate-50 px-4 pt-4 pb-2 flex items-center justify-between sticky top-0 z-10 shrink-0">
+                <div class="flex flex-col flex-1">
+                    <!-- Collapse mode: Back button + Title -->
+                    <div v-if="isCollapsed" class="flex items-center space-x-1">
+                        <button @click="isCollapsed = false" class="p-1 -ml-1 text-blue-500 hover:text-blue-700 active:scale-90 transition-all">
+                            <svg class="h-6 w-6 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <h2 class="text-[15px] font-black text-blue-500 tracking-tight">核定結果</h2>
+                    </div>
+
+                    <!-- Expand mode: Actions stacked on the right -->
+                    <div v-else class="flex flex-col items-end space-y-1 w-full">
+                        <button @click="clearAll" class="text-slate-400 hover:text-red-500 p-0.5 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button @click="isCollapsed = true" class="flex flex-col items-end justify-center space-y-0 text-blue-500 hover:text-indigo-700 active:scale-95 transition-all">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" />
+                            </svg>
+                            <span class="text-[15px] font-black tracking-tight whitespace-nowrap">核定名單</span>
+                        </button>
+                    </div>
                 </div>
-                <button v-if="isCollapsed" @click="clearAll" class="text-slate-100 hover:text-red-500 p-1 transition-colors">
+                <!-- Independent Clear Button (Only in collapsed mode) -->
+                <button v-if="isCollapsed" @click="clearAll" class="text-slate-400 hover:text-red-500 p-1 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -57,28 +75,13 @@
                         <p class="text-[15px] font-black text-slate-900 leading-tight">開文結果請示如下：</p>
                     </div>
 
-                    <!-- Right-side Selection Queue (Live Record Mode) -->
-                    <div v-if="!isCollapsed" class="flex flex-col p-1 animate-fade-in divide-y divide-slate-100">
+                    <!-- Right-side Selection Queue (Denser Mode) -->
+                    <div v-if="!isCollapsed" class="flex flex-col p-2 animate-fade-in space-y-1">
                         <div v-for="(item, idx) in selectionList" :key="'r'+idx" 
-                            class="flex items-center justify-between py-1.5 px-0.5 group transition-colors">
-                            <span class="text-[17px] font-black text-blue-500 truncate w-12">{{ item.name }}</span>
-                            <!-- High-Contrast Live Slots -->
-                            <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden divide-x divide-slate-200 shrink-0">
-                                <div v-for="n in 3" :key="'rslot'+n" class="flex items-center justify-center w-[46px] h-[28px] space-x-0 relative">
-                                    <button @click="setStatus(idx, n-1, 'v')" 
-                                        :class="[item.slots[n-1] === 'v' ? 'text-indigo-900 bg-indigo-100' : 'text-slate-300 hover:text-indigo-600']" 
-                                        class="w-1/2 h-full flex items-center justify-center transition-all">
-                                        <span class="text-[18px] font-black leading-none">√</span>
-                                    </button>
-                                    <button @click="setStatus(idx, n-1, 'x')" 
-                                        :class="[item.slots[n-1] === 'x' ? 'text-rose-600 bg-rose-100' : 'text-slate-300 hover:text-rose-600']" 
-                                        class="w-1/2 h-full flex items-center justify-center transition-all">
-                                        <span class="text-[18px] font-black leading-none">×</span>
-                                    </button>
-                                </div>
-                            </div>
+                            class="flex items-center">
+                            <span class="text-[15px] font-black text-blue-500 tracking-wide">{{ item.name }}</span>
                         </div>
-                        <div v-if="selectionList.length === 0" class="w-full text-slate-200 text-[13px] font-bold py-10 text-center uppercase tracking-widest">
+                        <div v-if="selectionList.length === 0" class="w-full text-slate-200 text-[13px] font-bold py-10 text-center uppercase tracking-widest leading-relaxed">
                             待選
                         </div>
                     </div>
@@ -88,7 +91,7 @@
                         <tbody>
                             <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[28px]">
                                 <td class="pl-0.5 pr-0.5 py-0 relative w-16 whitespace-nowrap align-middle">
-                                    <span class="text-[17px] font-black text-blue-500 leading-none">{{ item.name }}</span>
+                                    <span class="text-[15px] font-black text-blue-500 leading-none">{{ item.name }}</span>
                                     <button @click="removeItem(idx)" class="absolute -left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 text-rose-50 hover:text-rose-500 transition-opacity">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
                                     </button>
@@ -191,7 +194,7 @@ const loadUsers = async () => {
     }
 };
 
-const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情'];
+const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾'];
 
 const filteredUsers = computed(() => {
     let list = users.value.filter(u => !excludedNames.includes(u.name));

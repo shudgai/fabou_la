@@ -1,8 +1,11 @@
 <template>
-    <div class="bg-white min-h-screen flex justify-center text-slate-900">
-        <div class="bg-white min-h-screen relative w-full shadow-sm flex flex-col font-sans">
+    <div class="bg-white h-[100dvh] flex justify-center text-slate-900 overflow-hidden">
+        <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
-            <datalist id="item-name-list">
+            <datalist id="instrument-list">
+        <option v-for="t in instrumentTreasures" :key="t.id" :value="t.name" />
+    </datalist>
+    <datalist id="item-name-list">
                 <option v-for="name in uniqueTreasureNames" :key="name" :value="name">{{ name }}</option>
             </datalist>
             <datalist id="master-list-entry">
@@ -32,118 +35,127 @@
                 <button @click="handleBack" class="text-slate-400 p-2 mr-2 active:scale-90 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <div class="flex-1 flex flex-col items-center min-w-0">
-                    <h2 class="text-[20px] font-bold font-outfit tracking-tight text-slate-900 truncate w-full text-center">
-                        {{ addMode ? (editingId ? '修改紀錄' : ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示新增紀錄' : (currentFolder?.name || '仙師') + '開示新增紀錄')) : (currentFolder?.id === 0 || currentFolder?.id === '0' ? '每日開示紀錄' : currentFolder?.name + '開示紀錄') }}
+                <div class="flex-1 flex flex-col justify-start min-w-0">
+                    <h2 class="text-[23px] font-black font-outfit tracking-tight text-slate-900 truncate w-full text-left">
+                        {{ addMode ? (editingId ? '修改記錄' : ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示新增記錄' : (currentFolder?.name || '仙師') + '開示新增記錄')) : (currentFolder?.id === 0 || currentFolder?.id === '0' ? '每日開示記錄' : currentFolder?.name + '開示記錄') }}
                     </h2>
                 </div>
-                <div class="p-2 ml-2 w-10"></div> <!-- Placeholder for balance -->
+                <div v-if="!addMode" class="ml-2 pr-1">
+                    <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                </div>
             </div>
 
             <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
-            <div v-if="!currentCategory && !currentFolder" class="min-h-screen bg-slate-50/30">
-                <div class="px-6 py-10 text-center">
-                    <h1 class="text-[24px] font-black text-slate-900 tracking-tight">父皇仙師開示專區</h1>
+            <div v-if="!currentCategory && !currentFolder" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
+                <div class="px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
+                    <button @click="$emit('goHome')" class="text-slate-400 p-4 active:scale-90 transition-transform z-10 shrink-0">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <div class="flex-1 pr-12">
+                        <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">父皇仙師開示專區</h1>
+                    </div>
                 </div>
                 
-                <div class="px-6 flex flex-col items-center space-y-12">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-4 mt-[-30px]">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
-                        <div class="relative mb-4">
-                            <svg class="w-48 h-48 transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
+                        <div class="relative w-[260px] h-[260px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 150, 150);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(248, 113, 113);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(220, 38, 38);stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#dailyGrad)" opacity="0.8"/>
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#dailyGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#dailyGrad)" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#dailyGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <!-- Badge -->
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <svg class="w-12 h-12 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
+                                <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                    父皇仙師<br>每日開示
+                                </span>
                             </div>
                         </div>
-                        <span class="text-[20px] font-black text-slate-900 tracking-tight leading-tight text-center">
-                            父皇仙師<br>每日開示
-                        </span>
                     </button>
 
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button 
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
-                        <div class="relative mb-4">
-                            <svg class="w-48 h-48 transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
+                        <div class="relative w-[260px] h-[260px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 230, 100);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 215, 0);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(212, 175, 55);stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#mastersGrad)" opacity="0.8"/>
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#mastersGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#mastersGrad)" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#mastersGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <!-- Badge/Icon -->
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <svg class="w-12 h-12 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
+                                <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                    父皇仙師<br>開示記錄
+                                </span>
                             </div>
                         </div>
-                        <span class="text-[20px] font-black text-slate-900 tracking-tight leading-tight text-center">
-                            父皇仙師<br>開示紀錄
-                        </span>
                     </button>
                 </div>
 
-                <div class="mt-20 flex justify-center pb-32">
-                    <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 p-4">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="text-[14px] font-black tracking-widest uppercase">返回主選單</span>
-                    </button>
-                </div>
+
             </div>
 
             <!-- Level 1.5: Subfolders for Masters -->
-            <div v-else-if="currentCategory === 'masters' && !currentFolder" class="min-h-screen bg-white">
-                <div class="px-6 py-4 flex items-center border-b border-slate-50 sticky top-0 bg-white z-10">
-                    <button @click="currentCategory = null" class="p-2 text-slate-400 mr-2">
+            <div v-else-if="currentCategory === 'masters' && !currentFolder" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-10">
+                    <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[19px] font-black text-slate-900">父皇仙師開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">父皇仙師開示資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 border border-slate-100 rounded-xl group p-2 w-[120px] h-[135px] relative">
-                        <div class="relative mb-3">
-                            <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
+                        <div class="relative w-[148px] h-[148px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient :id="'fGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 230, 100);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 215, 0);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(212, 175, 55);stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#fGrad' + idx + ')'" opacity="0.8"/>
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#fGrad' + idx + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#fGrad' + idx + ')'" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#fGrad' + idx + ')'" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                                <span :class="[
+                                    'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                    folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                                ]" style="font-weight: 900 !important;">
+                                    {{ folder.name }}
+                                </span>
+                            </div>
                         </div>
-                        <span class="mt-[-2px] text-[17px] font-bold text-slate-900 leading-tight text-center">
-                            {{ folder.name }}
-                        </span>
                     </button>
                 </div>
+                <div class="h-24"></div>
             </div>
 
             <!-- Level 2: List & Add View -->
             <template v-else>
                 <!-- Add View -->
-                <div v-if="addMode" class="flex-1 flex flex-col bg-white">
+                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
                     <div class="bg-white w-full h-full relative flex flex-col">
 
                         
@@ -165,7 +177,7 @@
                                                    list="master-list-entry" 
                                                    @change="resolveMasterId" 
                                                    placeholder="選擇或輸入..." 
-                                                   class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none font-bold">
+                                                   class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none font-bold placeholder-sky-400">
                                         </div>
                                     </div>
                                 </div>
@@ -182,13 +194,13 @@
                                                    list="dharma-search-list"
                                                    v-model="dharmaSearchQuery"
                                                    placeholder="搜尋法號或群組..." 
-                                                   class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none font-black placeholder:text-slate-300">
+                                                   class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                         </div>
                                     </div>
                                     <div class="col-span-4 space-y-0.5">
                                         <label class="text-[13px] text-slate-400 font-bold px-1">親友 / 信眾</label>
                                         <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden h-[56px]">
-                                            <textarea v-model="form.supplement" placeholder="備註資訊..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none p-3.5 resize-none font-bold leading-tight h-full" rows="1"></textarea>
+                                            <textarea v-model="form.supplement" placeholder="備註資訊..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none p-3.5 resize-none font-bold leading-tight h-full placeholder-sky-400" rows="1"></textarea>
                                         </div>
                                     </div>
 
@@ -210,7 +222,7 @@
                                 <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 px-4 flex items-start">
                                     <label class="text-[13px] text-slate-400 w-10 text-left shrink-0 mt-2 font-bold uppercase tracking-wider">開示</label>
                                     <div class="flex-1 ml-1 border border-slate-100 rounded-2xl bg-white overflow-hidden min-h-[100px]">
-                                        <textarea v-model="form.content" rows="4" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入具體內容描述..." class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none p-4 resize-none overflow-hidden min-h-[90px] font-normal leading-relaxed"></textarea>
+                                        <textarea v-model="form.content" rows="4" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入具體內容描述..." class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none p-4 resize-none overflow-hidden min-h-[90px] font-normal leading-relaxed placeholder-sky-400"></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -230,7 +242,7 @@
                                                            @input="e => handleBlockDharmaInput(index, e.target.value)"
                                                            list="dharma-search-list"
                                                            placeholder="輸入對象或群組..." 
-                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none placeholder:text-slate-300">
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none placeholder-sky-400">
                                                 </div>
                                             </div>
                                             <button v-if="batchRecords.length > 1" @click.prevent="removeBatchBlock(index)" class="text-rose-400 hover:text-rose-600 transition-colors p-2">
@@ -251,7 +263,7 @@
                                             <div class="border border-slate-100 rounded-2xl bg-white overflow-hidden min-h-[140px] transition-all focus-within:ring-2 focus-within:ring-indigo-100">
                                                 <textarea v-model="record.content" rows="6" 
                                                           placeholder="在此貼上開示內容..." 
-                                                          class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none p-4 font-normal leading-relaxed"></textarea>
+                                                          class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none p-4 font-normal leading-relaxed placeholder-sky-400"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -306,19 +318,22 @@
                                     <button @click="addNewItemQuickly" class="text-red-500 text-[36px] font-light leading-none active:scale-95 transition-all"> + </button>
                                 </div>
                                 <div class="grid grid-cols-12 gap-2.5 items-end">
-                                    <div class="col-span-9 space-y-1">
+                                    <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('師兄姐') || newItemName.includes('師兄姊')) ? 'col-span-10' : 'col-span-9'" class="space-y-1">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
-                                            <div class="flex-1 border border-slate-100 rounded-xl bg-slate-50/20 overflow-hidden flex items-center transition-all h-[56px]">
+                                            <div class="flex-1 border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center transition-all h-[56px]">
                                                 <input v-model="newItemName" list="item-name-list" 
-                                                       class="w-full bg-transparent border-none px-4 text-[18px] font-bold text-slate-900 focus:ring-0 outline-none text-left" 
+                                                       class="w-full bg-transparent border-none px-4 text-[18px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" 
                                                        placeholder="法寶名稱...">
+                                                <button v-if="newItemName" @click="newItemName = ''" class="px-4 text-slate-300 hover:text-red-400 active:scale-95 transition-all">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div v-if="magicItemCategory === 'default'" class="col-span-3 space-y-1">
+                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('師兄姐') && !newItemName.includes('師兄姊') && !showAddDetails" class="col-span-3 space-y-1">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-center">天份</div>
-                                        <div class="border border-slate-100 rounded-xl bg-slate-50/20 overflow-hidden flex items-center px-2 transition-all h-[46px]">
+                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-2 transition-all h-[46px]">
                                             <input v-model="newItemDays" list="num-list"
                                                    class="w-full bg-transparent border-none text-[18px] font-bold text-slate-900 focus:ring-0 outline-none text-center" 
                                                    placeholder="0">
@@ -328,14 +343,14 @@
                                 </div>
 
                                 <!-- Main Item Remarks (Toggleable) - Hidden when adding details -->
-                                <div v-if="!showAddDetails && !(['清煞', '專司靈療', '香灰', '執法', '由'].some(k => newItemName.includes(k)))" class="mt-2 text-left">
+                                <div v-if="!showAddDetails" class="mt-2 text-left">
                                     <button @click="showMainRemarks = !showMainRemarks" class="text-[12px] font-bold text-slate-400 flex items-center px-1">
                                         {{ showMainRemarks ? '隱藏主備註' : '+ 加入主備註' }}
                                     </button>
-                                    <div v-if="showMainRemarks" class="mt-2 border border-slate-100 rounded-2xl bg-slate-50/10 px-3 h-[72px] flex items-center animate-fade-in overflow-hidden">
+                                    <div v-if="showMainRemarks" class="mt-2 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[72px] flex items-center animate-fade-in overflow-hidden">
                                         <textarea v-model="newItemMainRemarks" 
-                                               class="w-full bg-transparent border-none text-[15px] font-bold text-slate-500 focus:ring-0 text-left resize-none py-3" 
-                                               placeholder="主法寶備註..."></textarea>
+                                               class="w-full bg-transparent border-none text-[15px] font-bold text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400" 
+                                               placeholder="加入備註..."></textarea>
                                     </div>
                                 </div>
 
@@ -387,8 +402,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <!-- INCENSE COIL (Strict search) -->
                                     <div v-else-if="magicItemCategory === '香環'" class="grid grid-cols-2 gap-2">
                                         <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
@@ -414,6 +427,35 @@
                                     </div>
                                 </div>
 
+                                <!-- CLEARING & INSTRUMENT SPECIAL CASE (Visible even in default category) -->
+                                <div v-if="!showAddDetails && (isSpecialInstrument(newItemName) || (newItemName.includes('師兄姐') || newItemName.includes('師兄姊')))" class="mt-4 space-y-4 px-1 mb-4">
+                                    <!-- 1. Practitioner -->
+                                    <div class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
+                                        <div class="relative group">
+                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                <input v-model="newItemPractitioner" list="dharma-search-list" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="輸入法號...">
+                                                <svg class="w-5 h-5 text-slate-900 shrink-0 ml-1 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 2. Instrument Name -->
+                                    <div v-if="newItemName.includes('師兄姐') || newItemName.includes('師兄姊')" class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
+                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                            <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="使用的法器...">
+                                        </div>
+                                    </div>
+                                    <!-- 3. Body Part -->
+                                    <div class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
+                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                            <input v-model="newItemSubBodyPart" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="輸入部位...">
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="mt-4 border-t border-slate-50 pt-3">
                                     <div class="flex items-center justify-between mb-2">
                                         <div class="flex items-center space-x-1">
@@ -422,35 +464,38 @@
                                                 <span class="opacity-50">內容物/細項</span>
                                             </button>
                                         </div>
-                                        <button v-if="showAddDetails" @click="stageContent" class="text-red-500 text-[28px] font-light leading-none active:scale-95 transition-all"> + </button>
                                     </div>
                                     
                                     <!-- Staged Contents List (Plain display as requested) -->
                                     <div v-if="stagedContents.length > 0" class="px-2 mb-3 space-y-1">
                                         <div v-for="(sc, sci) in stagedContents" :key="sci" class="text-[15px] text-slate-700 font-bold flex items-center justify-between group">
-                                            <span>• {{ sc.name }}{{ sc.details ? ' : ' + sc.details : '' }}{{ sc.remarks?.trim() ? ' (' + sc.remarks.trim() + ')' : '' }}</span>
+                                            <span>+ {{ sc.name }}{{ sc.details ? ' : ' + sc.details : '' }}{{ sc.remarks?.trim() ? ' (' + sc.remarks.trim() + ')' : '' }}</span>
                                             <button @click="stagedContents.splice(sci, 1)" class="text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">×</button>
                                         </div>
                                     </div>
 
                                     <div v-if="showAddDetails" class="space-y-3 animate-fade-in mt-1">
                                         <div class="grid grid-cols-12 gap-2.5 items-end">
-                                            <div :class="(magicItemSubCategory === 'default') ? 'col-span-9' : 'col-span-12'" class="space-y-0.5">
-                                                <div class="text-[11px] text-slate-400 font-bold px-1 text-left">內容物名稱</div>
-                                                <div class="flex items-center">
-                                                    <div class="flex-1 border border-slate-100 rounded-xl bg-slate-50/20 px-4 h-[46px] flex items-center">
-                                                        <input v-model="newItemSubName" list="item-name-list" 
-                                                               class="w-full bg-transparent border-none outline-none shadow-none text-[16px] font-bold text-slate-900 focus:ring-0 text-left" 
-                                                               placeholder="錄入內容物...">
+                                            <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')) ? 'col-span-10' : 'col-span-9'" class="space-y-1.5">
+                                                <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">內容物名稱</div>
+                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                    <input v-model="newItemSubName" list="item-name-list" 
+                                                           class="w-full bg-transparent border-none outline-none shadow-none text-[17px] font-black text-slate-900 focus:ring-0 text-left placeholder-sky-400" 
+                                                           placeholder="輸入法寶名稱">
+                                                    <div class="flex items-center space-x-3 pr-1">
+                                                        <button v-if="newItemSubName" @click="newItemSubName = ''" class="text-slate-300 hover:text-red-400 active:scale-95 transition-all">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                        <button @click="stageContent" class="text-red-500 text-[32px] font-light leading-none active:scale-90 transition-all"> + </button>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div v-if="magicItemSubCategory === 'default'" class="col-span-3 space-y-0.5">
-                                                <div class="text-[11px] text-slate-400 font-bold px-1 text-center">天份</div>
-                                                <div class="border border-slate-100 rounded-xl bg-slate-50/20 overflow-hidden flex items-center px-1 transition-all h-[46px]">
+                                            <div v-if="magicItemSubCategory === 'default' && !(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊'))" class="col-span-3 space-y-1.5">
+                                                <div class="text-[13px] text-slate-400 font-bold px-1 text-center select-none">天份</div>
+                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-1 transition-all h-[52px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list"
-                                                           class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" 
+                                                           class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-center" 
                                                            placeholder="0">
                                                     <span class="text-slate-400 font-bold mr-0.5 shrink-0 text-[12px]">天</span>
                                                 </div>
@@ -521,18 +566,52 @@
                                             </div>
                                         </div>
 
+                                            
+                                            <!-- SUB-ITEM INSTRUMENT SPECIAL CASE (Always accessible if detected) -->
+                                            <div v-if="isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')" class="mt-4 space-y-4">
+                                                <!-- 1. Practitioner -->
+                                                <div class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
+                                                    <div class="relative group">
+                                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                            <input v-model="newItemSubPractitioner" list="dharma-search-list" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="輸入法號...">
+                                                            <svg class="w-5 h-5 text-slate-900 shrink-0 ml-1 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- 2. Instrument Name -->
+                                                <div v-if="newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')" class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
+                                                    <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                        <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="使用的法器...">
+                                                    </div>
+                                                </div>
+                                                <!-- 3. Body Part -->
+                                                <div class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
+                                                    <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                        <input v-model="newItemSubBodyPart" class="w-full bg-transparent border-none text-[17px] font-bold text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400" placeholder="輸入部位...">
+                                                    </div>
+                                                </div>
+                                            </div>
 
 
-                                        <div class="flex items-center">
-                                            <div class="flex-1 border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[64px] flex items-center overflow-hidden">
-                                                <textarea v-model="newItemRemarks" 
-                                                       class="w-full bg-transparent border-none text-[15px] font-bold text-slate-400 focus:ring-0 text-left resize-none py-3" 
-                                                       placeholder="內容物備註..."></textarea>
+
+                                        <div class="mt-2 text-left">
+                                            <button @click="showSubRemarks = !showSubRemarks" class="text-[11px] font-bold text-slate-400 flex items-center px-1">
+                                                {{ showSubRemarks ? '隱藏細項備註' : '+ 加入細項備註' }}
+                                            </button>
+                                            <div v-if="showSubRemarks" class="mt-2 flex items-center animate-fade-in overflow-hidden">
+                                                <div class="flex-1 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[64px] flex items-center overflow-hidden">
+                                                    <textarea v-model="newItemRemarks" 
+                                                           class="w-full bg-transparent border-none text-[15px] font-bold text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400" 
+                                                           placeholder="加入細項備註..."></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                        </div>
+                            </div>
 
                         <!-- Plain List Section (No Boxes) -->
                         <div v-if="Object.keys(groupedPendingItems).length > 0" class="pt-2 space-y-0.5 border-t border-slate-100">
@@ -549,13 +628,24 @@
                                                 <span v-if="group[0].details" class="text-black font-bold ml-1"> : {{ group[0].details }}</span>
                                             </template>
                                         </span>
-                                        <div class="mt-2 pl-4 space-y-1 animate-fade-in">
-                                            <div v-for="(m, midx) in group" :key="midx" class="text-[15px] text-slate-500 font-medium">
+                                        <div class="mt-2.5 pl-4 space-y-2 animate-fade-in">
+                                            <div v-for="(m, midx) in group" :key="midx" class="text-[15px]">
                                                 <template v-if="m.name || m.sub_name?.trim()">
-                                                    └ {{ m.name ? m.name : '項目' }}{{ m.details ? ':' + m.details : '' }}{{ m.sub_name?.trim() ? ' (' + m.sub_name.trim() + ')' : '' }}
-                                                    <button @click.stop="removeMagicItem(m.originalIdx)" class="ml-2 text-rose-300">✕</button>
+                                                    <div class="flex items-start group">
+                                                        <span class="text-slate-400 font-black mr-2 shrink-0">+</span>
+                                                        <div class="flex flex-col flex-1 min-w-0">
+                                                            <div class="flex items-center">
+                                                                <span class="font-bold text-slate-700 truncate">{{ m.name ? m.name : '項目' }}</span>
+                                                                <span v-if="m.details" class="ml-1.5 text-indigo-600 font-black">{{ m.details }}</span>
+                                                                <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                                            </div>
+                                                            <div v-if="m.sub_name?.trim()" class="mt-0.5 text-[13px] text-slate-400 font-medium leading-tight italic">
+                                                                {{ m.sub_name.trim() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </template>
-                                                <button v-else-if="group.length > 1" @click.stop="removeMagicItem(m.originalIdx)" class="ml-2 text-rose-300">✕ (空內容)</button>
+                                                <button v-else-if="group.length > 1" @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 text-[13px]">✕ (空內容)</button>
                                             </div>
                                         </div>
                                     </div>
@@ -574,14 +664,19 @@
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </div>
                             <p class="text-[17px] font-bold">目前無降寶明細</p>
-                            <p class="text-[14px] mt-1">請於上方「增加法寶項目」開始輸入</p>
+                            <p class="text-[14px] mt-1">請於上方「增加開示項目」開始輸入</p>
                         </div>
 
                         <!-- Save Component -->
-                        <div class="pt-8 border-t border-slate-100 flex flex-col items-center">
-                            <button @click.prevent="saveItem" :disabled="saving" class="w-full bg-[#4A3728] text-white rounded-[28px] py-4 active:scale-95 disabled:opacity-50 text-[18px] font-black shadow-xl shadow-slate-200/50">
-                                {{ saving ? '正在儲存中...' : '確認保存整筆開示' }}
+                        <div class="pt-8 border-t border-slate-100 grid grid-cols-2 gap-3">
+                            <button @click="addNewItemQuickly" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-4 active:scale-95 text-[17px] font-black">
+                                增加開示項目
                             </button>
+                            <button @click.prevent="saveItem" :disabled="saving" class="w-full bg-[#4A3728] text-white rounded-[24px] py-4 active:scale-95 disabled:opacity-50 text-[17px] font-black shadow-xl shadow-slate-200/50">
+                                {{ saving ? '正在儲存中...' : '確認保存開示' }}
+                            </button>
+                        </div>
+                        <div class="flex justify-center">
                             <p class="text-[14px] text-slate-400 mt-4 italic font-medium px-6 text-center leading-relaxed">※ 保存後將同時儲存對象、仙師及所有開示與降寶內容。</p>
                         </div>
                     </div>
@@ -690,8 +785,8 @@
                 <div v-show="!addMode" class="pb-32 flex-1 overflow-y-auto bg-white" @click="focusedId = null; activeDropdownId = null" @scroll="handleScroll">
                     <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
                     <div v-else class="space-y-0 mt-0">
-                        <template v-for="(item, idx) in (searchQuery ? filteredItems() : visibleItems)" :key="item.id">
-                            <div v-if="idx === 0 || item.date !== (idx > 0 ? (searchQuery ? filteredItems()[idx-1].date : visibleItems[idx-1].date) : null)" 
+                        <template v-for="(item, idx) in sortedRecords" :key="item.id">
+                            <div v-if="idx === 0 || item.date !== sortedRecords[idx-1].date" 
                                  v-show="!focusedDate || focusedDate === item.date"
                                  @click="toggleDateCollapse(item.date)"
                                  class="pl-[14px] pr-2 py-2 flex items-center justify-between border-b border-slate-300 cursor-pointer active:bg-slate-200 transition-colors z-[50]"
@@ -704,8 +799,8 @@
                                     <span class="text-[17px] font-black text-slate-900 tracking-tight truncate">{{ item.date.replace(/-/g, '/') }}</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span v-if="focusedDate === item.date" @click.stop="focusedDate = null; focusedId = null; collapsedDates.add(item.date)" class="text-[12px] font-bold text-white bg-[#4A3728] px-2 py-0.5 rounded-full uppercase tracking-tighter">返回清單</span>
-                                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter shrink-0 ml-1">{{ (collapsedDates.has(item.date) && focusedDate !== item.date) ? '點擊展開' : '關閉' }}</span>
+                                    <button v-if="focusedDate === item.date" @click.stop="focusedDate = null; focusedId = null; collapsedDates.add(item.date)" class="text-[12px] font-black text-white bg-[#4A3728] px-3 py-1 rounded-full uppercase tracking-tight active:scale-95 transition-all shadow-sm">返回清單</button>
+                                    <span v-else class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter shrink-0 ml-1">{{ collapsedDates.has(item.date) ? '點擊展開' : '關閉' }}</span>
                                 </div>
                             </div>
 
@@ -776,14 +871,7 @@
                                             <div v-if="!item.content?.match(/開示|仙師|Master|老祖|元始|道祖|靈寶|父皇|太宰|太子|閻王/)" class="text-[17px] text-black font-black">開示：</div>
                                             <div class="text-[17px] text-black whitespace-pre-wrap leading-tight font-black">
                                                 {{ item.content.replace(/^(.*仙師|Master.*?|老祖|元始|道祖|靈寶|父皇|太宰|太子|閻王).*?[：:]/, '').trim() }}
-                                                <div v-show="allExpanded || focusedId == item.id" class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                            <div class="text-[11px] text-slate-400 font-bold uppercase tracking-widest flex items-center">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2"/></svg>
-                                                登記：{{ item.user?.name || '管理員' }}
                                             </div>
-                                            <div class="text-[11px] text-slate-300 font-bold">#{{ item.id }}</div>
-                                        </div>
-                                    </div>
                                         </div>
 
                                         <!-- 2. Treasures (Items) Second -->
@@ -798,8 +886,11 @@
                                                         </template>
                                                     </div>
                                                     <div v-for="(m, midx) in group" :key="midx">
-                                                        <div v-if="m && m.name && (m.name || m.sub_name || m.details)" class="pl-5 text-[17px] text-black font-black">
-                                                            {{ stripMasterPrefix(m.name) }}{{ m.details ? ':' + m.details : '' }}{{ m.sub_name ? ' (' + m.sub_name + ')' : '' }}
+                                                        <div v-if="m && !m.is_main && (m.name || m.sub_name || m.details)" class="pl-5 text-[17px] text-black font-black flex items-start">
+                                                            <span class="mr-2 text-slate-400 shrink-0 select-none">+</span>
+                                                            <span class="flex-1">
+                                                                {{ stripMasterPrefix(m.name) }}{{ m.details ? ':' + m.details : '' }}{{ m.sub_name ? ' (' + m.sub_name + ')' : '' }}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </template>
@@ -812,6 +903,15 @@
 
                                         <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
                                             <span class="text-[17px] text-slate-900 font-bold tracking-widest">完畢！</span>
+                                        </div>
+
+                                        <!-- Metadata Footer: Moved to bottom per user request -->
+                                        <div v-show="allExpanded || focusedId == item.id" class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+                                            <div class="text-[11px] text-slate-400 font-bold uppercase tracking-widest flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2"/></svg>
+                                                登記：{{ item.user?.name || '管理員' }}
+                                            </div>
+                                            <div class="text-[11px] text-slate-300 font-bold">#{{ item.id }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -867,6 +967,19 @@
                 </div>
 
                 <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+
+                <mobile-navbar 
+                    :can-back="!!currentFolder || !!currentCategory || addMode"
+                    :show-action="!!currentFolder && !addMode"
+                    :action-active="showAddMenu"
+                    :search-active="showSearch"
+                    :can-more="!!currentFolder && !addMode"
+                    @back="handleBack"
+                    @home="$emit('goHome')"
+                    @action="showAddMenu = !showAddMenu"
+                    @search="showSearch = !showSearch"
+                    @more="itemPagination.last_page > 0 ? exportListExcel() : null"
+                />
             </template>
         </div>
     </div>
@@ -897,6 +1010,12 @@ const stripMasterPrefix = (name) => {
     return res.trim();
 };
 
+const getMainDetails = (items) => {
+    if (!items || items.length === 0) return '';
+    const main = items.find(i => i.is_main);
+    return main ? (main.details || '') : '';
+};
+
 const showAddMenu = ref(false);
 const teachings = ref([]); 
 const visibleItems = ref([]);
@@ -912,6 +1031,22 @@ const focusedId = ref(null);
 const focusedDate = ref(null);
 const activeDropdownId = ref(null);
 const allExpanded = ref(false);
+const sortDesc = ref(true);
+const toggleSort = () => { sortDesc.value = !sortDesc.value; };
+const sortedRecords = computed(() => {
+    let list = searchQuery.value ? filteredItems() : [...visibleItems.value];
+    return list.sort((a, b) => {
+        const dA = new Date(a.date).getTime();
+        const dB = new Date(b.date).getTime();
+        if (sortDesc.value) {
+            if (dB !== dA) return dB - dA;
+            return b.id - a.id;
+        } else {
+            if (dA !== dB) return dA - dB;
+            return a.id - b.id;
+        }
+    });
+});
 const itemsDetailMode = ref(false);
 const expandedDetails = ref({});
 const newItemName = ref('');
@@ -921,9 +1056,8 @@ const newItemSubDetails = ref('');
 const newItemRemarks = ref('');
 const stagedContents = ref([]);
 const showMainRemarks = ref(false);
+const showSubRemarks = ref(false);
 const showAddDetails = ref(false);
-
-// Specialized Sub-fields
 const newItemSubTimes = ref('');
 const newItemSubHours = ref('');
 const newItemMainTimes = ref('');
@@ -932,8 +1066,18 @@ const newItemMainDays = ref('');
 const newItemSubSize = ref('');
 const newItemSubSheets = ref('');
 const newItemSubPractitioner = ref('');
+const newItemPractitioner = ref('');
+const newItemSubBodyPart = ref('');
+const newItemSubInstrumentName = ref('');
 const newItemMainRemarks = ref('');
 const newItemDetailsExtraDays = ref('');
+
+
+const isSpecialInstrument = (name) => {
+    if (!name) return false;
+    const list = ['由師兄姐', '由師兄姊', '金印', '令牌', '令旗', '天筆', '法筆', '玉筆', '寶鏡', '現惡鏡', '寶劍', '八卦', '寶扇', '油燈', '淨塵', '法器', '清煞'];
+    return list.some(k => name.includes(k)) && !name.includes('專司靈療') && !name.includes('法陣');
+};
 
 
 const canCRUD = (item) => {
@@ -948,7 +1092,7 @@ const magicItemCategory = computed(() => {
     if (newItemName.value.includes('香環')) return '香環';
     if (newItemName.value.includes('福祿香')) return '福祿香';
     if (newItemName.value.includes('由') || newItemName.value.includes('執法') || newItemName.value.includes('清煞') || newItemName.value.includes('專司靈療') || newItemName.value.includes('香灰')) return 'default';
-    if (newItemName.value.includes('符') || newItemName.value.includes('令') || newItemName.value.includes('疏文')) return '符令';
+    if ((newItemName.value.includes('符') || newItemName.value.includes('令') || newItemName.value.includes('疏文')) && !newItemName.value.includes('令旗')) return '符令';
     return 'default';
 });
 
@@ -958,7 +1102,7 @@ const magicItemSubCategory = computed(() => {
     if (newItemSubName.value.includes('太令')) return '太令';
     if (newItemSubName.value.includes('香環')) return '香環';
     if (newItemSubName.value.includes('福祿香')) return '福祿香';
-    if (newItemSubName.value.includes('符') || newItemSubName.value.includes('令') || newItemSubName.value.includes('疏文')) return '符令';
+    if ((newItemSubName.value.includes('符') || newItemSubName.value.includes('令') || newItemSubName.value.includes('疏文')) && !newItemSubName.value.includes('令旗')) return '符令';
     return 'default';
 });
 
@@ -1061,6 +1205,10 @@ const filteredGroups = computed(() => {
     return (groups.value || []).filter(g => (g.name || '').toLowerCase().includes(q));
 });
 
+const instrumentTreasures = computed(() => {
+    return treasures.value.filter(t => isSpecialInstrument(t.name) || (t.category?.name === '法器'));
+});
+
 const groupedPendingItems = computed(() => groupItems(form.value.items));
 
 const addActions = computed(() => {
@@ -1096,37 +1244,12 @@ const addActions = computed(() => {
     });
 
     actions.push({ 
-        label: '匯出 EXCEL', 
-        description: '下載完整開示紀錄報表',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17v-4m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        label: '匯出文字檔', 
+        description: '下載完整開示記錄文字檔',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         colorClass: 'bg-emerald-50 text-emerald-600',
-        handler: exportListExcel 
+        handler: exportListTxt 
     });
-
-    if (isDaily) {
-        actions.push({ 
-            label: allExpanded.value ? '收起清單' : '展開清單', 
-            description: allExpanded.value ? '切換為精簡模式' : '展開所有詳細開示',
-            icon: allExpanded.value 
-                ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-                : '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-            colorClass: allExpanded.value ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600',
-            handler: () => { allExpanded.value = !allExpanded.value; showAddMenu.value = false; } 
-        });
-
-        actions.push({
-            label: '清空今日每日開示',
-            description: '刪除今日「每日開示」內的所有紀錄',
-            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-            colorClass: 'bg-rose-100 text-rose-700',
-            handler: () => {
-                if(confirm('確定要清空今天「每日開示」的所有紀錄嗎？\n(已分流至其他仙師或已儲存在各專區的內容不會被刪除)')) {
-                    clearTodayDaily();
-                    showAddMenu.value = false;
-                }
-            }
-        });
-    }
 
     return actions;
 });
@@ -1228,84 +1351,6 @@ const getDharmaNameText = (id) => {
     return dn ? dn.name : '';
 };
 
-const saveItem = async () => {
-    if (saving.value) return;
-    
-    saving.value = true;
-    try {
-        const mid = form.value.master_id || currentFolder.value?.id;
-        const finalMasterId = (mid == 0 || mid === '0') ? null : mid;
-        
-        if (entryTab.value === 'batch') {
-            if (!batchInput.value.trim()) {
-                alert('請輸入錄入內容');
-                saving.value = false;
-                return;
-            }
-            
-            const masterMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
-            const isDailyFolder = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
-            
-            // Extract Unique Master Names from content
-            const detectedNames = [];
-            for (const name of Object.keys(masterMap)) {
-                if (batchInput.value.includes(name)) {
-                    // One-Way Rule: Don't detect "Daily/Fuhuang" (5) if we are in a Master Folder (1-4, 6-8)
-                    if (!isDailyFolder && name === '父皇') continue;
-                    detectedNames.push(name);
-                }
-            }
-            
-            const currentName = currentFolder.value?.name || '';
-            const mismatches = detectedNames.filter(n => !currentName.includes(n));
-            
-            if (!isDailyFolder && mismatches.length > 0) {
-                // Show custom modal instead of generic confirm
-                distributionModal.value = {
-                    show: true,
-                    detectedNames: detectedNames,
-                    isDailyFolder: false,
-                    finalMasterId: finalMasterId // reference current folder
-                };
-                saving.value = false;
-                return; // Stop and wait for modal choice
-            }
-
-            // Normal path: Daily folder or no mismatches
-            await executeDistributionSave('distribute');
-        } else {
-            const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
-            const itemIsDaily = isDailyFolder && (finalMasterId === 5);
-            
-            // Check for group match
-            const matchedGroup = (groups.value || []).find(g => g.name === dharmaSearchQuery.value);
-            
-            const payload = { 
-                ...form.value, 
-                master_id: finalMasterId, 
-                group_id: matchedGroup ? matchedGroup.id : null,
-                user_id: 1,
-                is_daily: itemIsDaily ? 1 : 0
-            };
-            if (editingId.value) await axios.put(`/teachings/${editingId.value}`, payload);
-            else await axios.post('/teachings', payload);
-        }
-        
-        alert('存檔成功！');
-        addMode.value = false; 
-        itemsDetailMode.value = false; 
-        editingId.value = null;
-        batchInput.value = '';
-        form.value = { supplement: '', target_remarks: '', content: '', date: new Date().toISOString().split('T')[0], master_id: null, items: [], remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: [] };
-        dharmaSearchQuery.value = '';
-        fetchItems(1);
-    } catch (e) { 
-        console.error(e);
-        alert('儲存失敗'); 
-    } finally { 
-        saving.value = false; 
-    }
-};
 
 const editItem = (item) => { 
     editingId.value = item.id; 
@@ -1325,9 +1370,11 @@ const duplicateItem = (item) => {
     editingId.value = null; addMode.value = true; 
 };
 
-const removeMagicItem = (idx) => { form.value.items.splice(idx, 1); };
+const removeMagicItem = (uid) => { 
+    form.value.items = form.value.items.filter(item => item.uid !== uid); 
+};
 
-const buildTreasureDetails = (cat, t, h, d, sz, sh, pr) => {
+const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart = '', instrument = '') => {
     let parts = [];
     if (cat === '金丹') {
         if (t) parts.push(`${t}吃`);
@@ -1343,8 +1390,13 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr) => {
     } else if (cat === '福祿香') {
         if (d) parts.push(`${d}根`);
         if (sh) parts.push(`${sh}包`);
+    } else if (isSpecialInstrument(itemName) || itemName.includes('清煞') || itemName.includes('執法')) {
+        if (pr) parts.push(`由 ${pr} 清煞`);
+        if (instrument) parts.push(`使用${instrument}`);
+        if (bodyPart) parts.push(bodyPart);
     } else {
         if (d) parts.push(`${d}天份`);
+        if (pr) parts.push(`由 ${pr} 師兄姐開立`);
     }
     return parts.join(' ').trim();
 };
@@ -1359,10 +1411,14 @@ function stageContent() {
         newItemDetailsExtraDays.value,
         newItemSubSize.value,
         newItemSubSheets.value,
-        newItemSubPractitioner.value
+        newItemSubPractitioner.value,
+        newItemSubName.value,
+        newItemSubBodyPart.value,
+        newItemSubInstrumentName.value
     );
 
     stagedContents.value.push({
+        uid: Date.now() + Math.random(),
         name: newItemSubName.value,
         details: details,
         remarks: newItemRemarks.value
@@ -1377,7 +1433,11 @@ function stageContent() {
     newItemSubHours.value = '';
     newItemSubSheets.value = '';
     newItemSubPractitioner.value = '';
+    newItemPractitioner.value = '';
     newItemSubDetails.value = '';
+    newItemSubBodyPart.value = '';
+    newItemSubInstrumentName.value = '';
+    showAddDetails.value = false;
 }
 
 function addNewItemQuickly() {
@@ -1400,6 +1460,7 @@ function addNewItemQuickly() {
         // First, if the main item has details, ensure they are saved as the "header" details (item with empty name)
         if (mainItem.details) {
             form.value.items.push({
+                uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
                 details: mainItem.details,
                 name: '',
@@ -1409,6 +1470,7 @@ function addNewItemQuickly() {
         stagedContents.value.forEach((sc) => {
             const combinedRemarks = [sc.remarks, mainItem.main_remarks].filter(r => r).join(' ');
             form.value.items.push({
+                uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
                 details: sc.details,
                 name: sc.name,
@@ -1427,18 +1489,23 @@ function addNewItemQuickly() {
             newItemSubName.value ? newItemDetailsExtraDays.value : (newItemMainDays.value || newItemDays.value || newItemSubDetails.value),
             newItemSubSize.value,
             newItemSubSheets.value,
-            newItemSubPractitioner.value
+            newItemSubName.value ? newItemSubPractitioner.value : newItemPractitioner.value,
+            newItemSubName.value || newItemName.value,
+            newItemSubBodyPart.value,
+            newItemSubInstrumentName.value
         );
 
         // If both main name and sub name are present, and both have details, save them separately
         if (newItemSubName.value && mainItem.details && directDetails && mainItem.details !== directDetails) {
             form.value.items.push({
+                uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
                 details: mainItem.details,
                 name: '',
                 sub_name: mainItem.main_remarks
             });
             form.value.items.push({
+                uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
                 details: directDetails,
                 name: newItemSubName.value,
@@ -1446,6 +1513,7 @@ function addNewItemQuickly() {
             });
         } else {
             form.value.items.push({
+                uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
                 details: directDetails || mainItem.details,
                 name: newItemSubName.value || '',
@@ -1469,18 +1537,23 @@ function addNewItemQuickly() {
     newItemSubSize.value = '';
     newItemSubSheets.value = '';
     newItemSubPractitioner.value = '';
+    newItemPractitioner.value = '';
+    newItemSubDetails.value = '';
+    newItemSubBodyPart.value = '';
+    newItemSubInstrumentName.value = '';
     newItemRemarks.value = '';
+    showSubRemarks.value = false;
     stagedContents.value = [];
     showAddDetails.value = false;
 }
 
 const addNewCategory = () => {
-    form.value.items.push({ treasure_name: '', name: '', sub_name: '', details: '' });
+    form.value.items.push({ uid: Date.now() + Math.random(), treasure_name: '', name: '', sub_name: '', details: '' });
 };
 
 const addSubItemToGroup = (gName) => {
     // If gName is empty, we just add to the first empty or generic group
-    form.value.items.push({ treasure_name: gName, name: '', sub_name: '', details: '' });
+    form.value.items.push({ uid: Date.now() + Math.random(), treasure_name: gName, name: '', sub_name: '', details: '' });
     // Auto-expand to show the new sub-item
     expandedDetails.value[gName] = true;
 };
@@ -1501,7 +1574,7 @@ const groupItems = (items) => {
     items.forEach((item, index) => { 
         const key = item.treasure_name || '未命名法寶'; 
         if (!groups[key]) groups[key] = []; 
-        groups[key].push({ ...item, originalIdx: index }); 
+        groups[key].push({ ...item }); 
     });
     return groups;
 };
@@ -1622,7 +1695,7 @@ const downloadTeaching = (item) => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `開示紀錄_${item.date}.txt`;
+    a.download = `開示記錄_${item.date}.txt`;
     a.click();
     window.URL.revokeObjectURL(url);
 };
@@ -1739,7 +1812,9 @@ const toggleDateCollapse = (date) => {
         focusedDate.value = null;
         focusedId.value = null;
         // Make sure it returns to a collapsed state in the main list
-        collapsedDates.value.add(date);
+        const newSet = new Set(collapsedDates.value);
+        newSet.add(date);
+        collapsedDates.value = newSet;
     } else if (focusedDate.value !== null) {
         // Trying to switch focus -> show prompt
         const oldDate = focusedDate.value.replace(/-/g, '/');
@@ -1747,14 +1822,18 @@ const toggleDateCollapse = (date) => {
         if (confirm(`目前正在切閱「${oldDate}」的紀錄，是否關閉並改為查看「${newDate}」的開示內容？`)) {
             focusedDate.value = date;
             focusedId.value = null;
-            collapsedDates.value.delete(date); // Ensure it's expanded in focus mode
+            const newSet = new Set(collapsedDates.value);
+            newSet.delete(date); // Ensure it's expanded in focus mode
+            collapsedDates.value = newSet;
         }
     } else {
         // Fresh focus: Hide others (focusedDate handles this) and ensure this one is expanded
         focusedDate.value = date;
         focusedId.value = null;
         allExpanded.value = false; // RESET: Ensure we start with summaries only
-        collapsedDates.value.delete(date); 
+        const newSet = new Set(collapsedDates.value);
+        newSet.delete(date); 
+        collapsedDates.value = newSet;
     }
 };
 
@@ -1764,12 +1843,20 @@ const handleDateInit = (date) => {
 };
 
 watch(visibleItems, (newItems) => {
+    const newCollapsed = new Set(collapsedDates.value);
+    const newInit = new Set(initializedDates.value);
+    let changed = false;
     newItems.forEach(item => {
-        if (!initializedDates.value.has(item.date)) {
-            collapsedDates.value.add(item.date);
-            initializedDates.value.add(item.date);
+        if (!newInit.has(item.date)) {
+            newCollapsed.add(item.date);
+            newInit.add(item.date);
+            changed = true;
         }
     });
+    if (changed) {
+        collapsedDates.value = newCollapsed;
+        initializedDates.value = newInit;
+    }
 }, { immediate: true });
 
 const copyAllToLine = async () => {
@@ -1829,41 +1916,126 @@ const clearTodayDaily = async () => {
     }
 };
 
-const exportListExcel = async () => {
-    if (!window.XLSX) return alert('Excel 匯出元件未就緒');
+const triggerSimpleDownload = (text, filename) => {
+    const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+};
+
+const exportListTxt = async () => {
     loading.value = true;
     try {
         const res = await axios.get('/teachings', { params: { master_id: currentFolder.value?.id } });
-        const dataArr = res.data.data || res.data;
-        const data = dataArr.map(item => {
+        const allItems = res.data.data || res.data;
+        const text = allItems.map(item => {
+            const dnText = item.dharma_names?.map(d => d.name).join(', ') || '全員';
             const grouped = groupItems(item.items);
-            let treasStrings = [];
+            let treasLines = [];
             Object.keys(grouped).forEach((gName, gIdx) => {
                 const group = grouped[gName];
                 let line = `${gIdx + 1}. ${gName}`;
-                if (group.length === 1) {
+                if (group.length === 1 && !group[0].name && !group[0].sub_name) {
+                    if (group[0].details) line += `: ${group[0].details}`;
+                    treasLines.push(line);
+                } else if (group.length === 1) {
                     line += `: ${group[0].name || ''} ${group[0].sub_name || ''} ${group[0].details || ''}`.replace(/\s+/g, ' ').trim();
+                    treasLines.push(line);
                 } else {
-                    const subs = group.map(m => `[${m.name}${m.details ? ':' + m.details : ''}${m.sub_name ? ' (' + m.sub_name + ')' : ''}]`).join(' ');
-                    line += `: ${subs}`;
+                    treasLines.push(line);
+                    group.forEach(m => {
+                        if (m.name || m.sub_name || m.details) {
+                            treasLines.push(`      ${m.name || ''}${m.details ? ':' + m.details : ''}${m.sub_name ? ' (' + m.sub_name + ')' : ''}`.trimEnd());
+                        }
+                    });
                 }
-                treasStrings.push(line);
+            });
+            const treasuresStr = treasLines.join('\n');
+            const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
+            return `【日期：${item.date?.replace(/-/g, '/')}】\n${item.master?.name || '仙師'}開示給${dnText}：${safeContent}${treasuresStr ? '\n賜降：\n'+treasuresStr : ''}\n\n完畢！`;
+        }).join('\n\n' + '='.repeat(40) + '\n\n');
+        
+        const fileName = `開示記錄_${currentFolder.value?.name}_${new Date().toISOString().split('T')[0]}.txt`;
+        triggerSimpleDownload(text, fileName);
+    } catch (e) { 
+        console.error(e);
+        alert('匯出失敗'); 
+    } finally { 
+        loading.value = false; 
+    }
+};
+
+const saveItem = async () => {
+    if (saving.value) return;
+    
+    // Validation
+    if (form.value.items.length === 0 && !form.value.content.trim()) {
+        alert('請至少輸入開示內容或一個法寶項目');
+        return;
+    }
+
+    if (entryTab.value === 'batch') {
+        const blocksWithContent = batchRecords.value.filter(r => r.content.trim());
+        if (blocksWithContent.length > 0) {
+            // Check for potential distribution
+            const detectedMasters = [];
+            const masterMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
+            
+            blocksWithContent.forEach(r => {
+                for (const master of Object.keys(masterMap)) {
+                    if (r.content.includes(master) && !detectedMasters.includes(master)) {
+                        detectedMasters.push(master);
+                    }
+                }
             });
 
-            return {
-                '日期': item.date,
-                '功德主/對象': item.dharma_names.map(d => d.name).join(', ') || '全員',
-                '開示內容': item.content,
-                '賜降項目': treasStrings.join('; '),
-                '備註': item.items_footer_remarks || ''
-            };
-        });
+            if (detectedMasters.length > 0) {
+                const isDailyFolder = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
+                if (isDailyFolder && detectedMasters.length === 1 && detectedMasters[0] === '父皇') {
+                    await executeDistributionSave('keep');
+                    return;
+                }
+                
+                distributionModal.value.detectedNames = detectedMasters;
+                distributionModal.value.show = true;
+                return;
+            }
+            
+            await executeDistributionSave('keep');
+            return;
+        }
+    }
+
+    // Single item save logic
+    saving.value = true;
+    try {
+        const payload = {
+            ...form.value,
+            master_id: form.value.master_id || currentFolder.value?.id,
+            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0
+        };
+
+        if (editingId.value) {
+            await axios.put(`/teachings/${editingId.value}`, payload);
+        } else {
+            await axios.post('/teachings', payload);
+        }
         
-        const ws = window.XLSX.utils.json_to_sheet(data);
-        const wb = window.XLSX.utils.book_new();
-        window.XLSX.utils.book_append_sheet(wb, ws, "開示紀錄");
-        window.XLSX.writeFile(wb, `開示紀錄_${currentFolder.value?.name}_${new Date().toISOString().split('T')[0]}.xlsx`);
-    } catch (e) { alert('匯出失敗'); } finally { loading.value = false; }
+        addMode.value = false;
+        // Navigation: Ensure we go back to the Daily Teachings list (Master ID 5)
+        currentFolder.value = masters.value.find(m => m.id == 5) || masters.value[4]; 
+        fetchItems(1);
+        alert('儲存成功');
+    } catch (e) {
+        alert('儲存失敗');
+    } finally {
+        saving.value = false;
+    }
 };
 
 const distributionModal = ref({
@@ -1967,6 +2139,41 @@ watch(() => form.value.dharma_name_ids, (newIds) => {
         }
     }
 }, { deep: true });
+
+watch(newItemName, (val) => {
+    if (val) {
+        showAddDetails.value = false;
+        showMainRemarks.value = false;
+    } else {
+        // Requirement: If Main Name is cleared, clear everything associated with this entry
+        newItemSubName.value = '';
+        stagedContents.value = [];
+        newItemSubInstrumentName.value = '';
+        newItemSubPractitioner.value = '';
+        newItemPractitioner.value = '';
+        newItemSubBodyPart.value = '';
+        newItemSubSize.value = '';
+        newItemSubSheets.value = '';
+        newItemSubDetails.value = '';
+        newItemSubTimes.value = '';
+        newItemSubHours.value = '';
+        newItemMainTimes.value = '';
+        newItemMainHours.value = '';
+        newItemMainDays.value = '';
+        newItemDetailsExtraDays.value = '';
+        newItemMainRemarks.value = '';
+        newItemRemarks.value = '';
+        showMainRemarks.value = false;
+        showSubRemarks.value = false;
+        showAddDetails.value = false;
+    }
+});
+
+watch(newItemSubName, (val) => {
+    if (val) {
+        showSubRemarks.value = false;
+    }
+});
 
 watch(currentFolder, (val) => { if (val) { visibleItems.value = []; fetchItems(1); syncRecords(); } });
 

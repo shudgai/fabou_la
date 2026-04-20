@@ -106,12 +106,12 @@ const notebookItems = computed(() => {
     if (!window.location.pathname.includes('/note')) return [];
     
     const items = [
-        { id: 'grace', label: '重大皇恩' },
-        { id: 'teaching', label: '仙師開示' },
-        { id: 'grudge', label: '怨靈處理' },
-        { id: 'military', label: '軍隊紀錄' },
-        { id: 'treasure', label: '法寶登記' },
-        { id: 'other', label: '其他項目' },
+        { id: 'grace', label: '重大皇恩專區' },
+        { id: 'teaching', label: '父皇仙師開示記錄' },
+        { id: 'grudge', label: '怨靈記錄專區' },
+        { id: 'military', label: '軍隊記錄專區' },
+        { id: 'treasure', label: '法寶登記專區' },
+        { id: 'other', label: '其他專區' },
     ];
 
     if (!user.value) return items;

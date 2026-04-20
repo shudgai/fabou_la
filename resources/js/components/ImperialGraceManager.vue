@@ -1,14 +1,16 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 bg-white sticky top-0 z-10" style="padding: 10px 10px 8px 10px;">
-            <div class="flex items-center justify-center relative mb-1">
-                <h2 class="text-[20px] font-normal font-outfit tracking-tight flex items-center" style="color: black !important;">
-                    <span>重大皇恩 - {{ currentFolder.name }}</span>
-                    <button @click="toggleSort" class="ml-2 px-1.5 py-0.5 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all opacity-80">
+            <div class="flex items-center justify-start relative py-2 ml-1">
+                <h2 class="text-[23px] font-black font-outfit tracking-tight text-left" style="color: black !important;">
+                    重大皇恩 - {{ currentFolder.name }}
+                </h2>
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 mr-1">
+                    <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
-                </h2>
+                </div>
             </div>
         </div>
         <!-- Perfectly Centered Ultra-Compact Warning Banner -->
@@ -16,10 +18,10 @@
             <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200"
                 style="padding: 10px 15px; min-width: 140px; max-width: 85vw;">
                 <div class="flex items-start justify-between space-x-3">
-                    <span class="text-[12px] font-normal leading-normal text-red-600 break-words uppercase tracking-wide">
+                    <span class="text-[15px] font-black leading-normal text-red-600 break-words uppercase tracking-wide">
                         {{ persistentToast.msg }}
                     </span>
-                    <button v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" 
+                    <button v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" 
                         @click="persistentToast = null" 
                         class="text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center font-normal text-sm">✕</button>
                 </div>
@@ -27,6 +29,11 @@
                 <div v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-3 pb-1">
                     <template v-if="persistentToast.type === 'confirm'">
                         <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-normal whitespace-nowrap">確定</button>
+                    </template>
+                    <template v-if="persistentToast.type === 'mismatchConfirm'">
+                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">存入{{ currentFolder?.name }}</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 px-2 py-1.5 rounded text-[11px] font-normal">取消</button>
                     </template>
                     <template v-if="persistentToast.type === 'deleteConfirm'">
                         <button @click="persistentToast = null" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2 py-1.5 rounded border border-slate-200 text-[11px] font-normal whitespace-nowrap">取消</button>
@@ -36,54 +43,127 @@
             </div>
         </div>
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
-        <!-- Level 1: Folder Selection -->
-        <div v-if="!currentFolder" class="bg-white">
+        <!-- Level 0: Main Category Selection -->
+        <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
+            <div class="px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
+                <button @click="$emit('goHome')" class="text-slate-400 p-4 active:scale-90 transition-transform z-10 shrink-0">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 pr-12">
+                    <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
+                </div>
+            </div>
+            
+            <div class="px-6 pb-24 flex flex-col items-center space-y-3">
+                <!-- Category 1: Masters (Large Folder Style) -->
+                <button 
+                    @click="currentCategory = 'masters'"
+                    class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
+                    <div class="relative w-[220px] h-[220px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                            <defs>
+                                <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#mastersGrad)" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#mastersGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                            <span class="text-[28px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                重大皇恩<br>專區
+                            </span>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Category 2: Unobtained (Large Folder Style) -->
+                <button 
+                    @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'unobtained'"
+                    class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
+                    <div class="relative w-[220px] h-[220px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                            <defs>
+                                <linearGradient id="unobtainedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#unobtainedGrad)" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#unobtainedGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                            <span class="text-[28px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                未求得<br>重大皇恩
+                            </span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="mt-5 flex justify-center pb-32">
+                <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 p-4 active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <span class="text-[14px] font-black tracking-widest uppercase">返回主選單</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Level 1: Folder Selection (Masters Grid) -->
+        <div v-if="currentCategory === 'masters' && !currentFolder" class="bg-white group-fade-in">
             <!-- Header Title -->
-            <div class="px-6 pt-[5px] pb-2 text-center">
-                <h1 class="text-[20px] font-bold tracking-tight" style="color: black !important;">重大皇恩專區</h1>
+            <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px]">
+                <button @click="currentCategory = null" class="text-slate-400 p-4 active:scale-90 transition-transform z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center" style="color: black !important;">重大皇恩 - 子資料夾</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
-                <button v-for="(folder, idx) in folders" :key="folder.id" 
+                <button v-for="(folder, idx) in mastersFolders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center bg-transparent transition-all active:scale-95 rounded-xl border border-[rgb(255,215,0)] group p-2 w-[120px] h-[135px] relative"
-                   >
-                    <div class="relative mb-4">
-                        <svg class="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
+                    <div class="relative w-[148px] h-[148px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
                             <defs>
                                 <linearGradient id="folderGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:rgb(255, 235, 120);stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:rgb(255, 215, 0);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:rgb(218, 165, 32);stop-opacity:1" />
+                                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
                                 </linearGradient>
                             </defs>
-                            <!-- Folder Body Back -->
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#folderGradReset)" opacity="0.8"/>
-                            <!-- Folder Front Cover (3D Offset) -->
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#folderGradReset)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                            <!-- Shine effect -->
-                            <path d="M10 21H54" stroke="white" stroke-opacity="0.3" stroke-linecap="round"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#folderGradReset)" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#folderGradReset)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
-                    </div>
-                    <div class="mt-[-6px] text-center px-1">
-                        <div class="text-[17px] font-bold leading-tight break-words" style="color: black !important;">
-                            <template v-if="folder.id === 'unobtained'">
-                                <div class="text-[17.5px] leading-tight font-extrabold" style="color: black !important;">未求得<br>重大皇恩</div>
-                            </template>
-                            <template v-else>
-                                <div class="whitespace-nowrap" style="color: black !important;">{{ folder.name }}</div>
-                            </template>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                            <span :class="[
+                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                            ]" style="font-weight: 900 !important;">
+                                <template v-if="folder.id === 'unobtained'">
+                                    未求得<br>重大皇恩
+                                </template>
+                                <template v-else>
+                                    {{ folder.name }}
+                                </template>
+                            </span>
                         </div>
                     </div>
                 </button>
             </div>
 
 
-            <!-- Minimalist Back to Dashboard -->
+            <!-- Minimalist Back to Category -->
             <div class="mt-12 flex justify-center pb-[5px]">
-                <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
+                <button @click="currentCategory = null" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    <span class="text-xs tracking-widest uppercase">返回筆記本列表</span>
+                    <span class="text-xs tracking-widest uppercase">返回大專區列表</span>
                 </button>
             </div>
         </div>
@@ -104,17 +184,19 @@
                         
                         <!-- List Item Display (Header when collapsed) -->
                         <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col pointer-events-none">
-                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[14px] text-slate-400 leading-none mb-1">
+                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1 font-black">
                                 {{ getMasterName(reg.master_id) }}
                             </div>
 
                             <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[14px] text-slate-400 uppercase tracking-wider whitespace-nowrap">法寶名稱</div>
-                                    <div class="text-[14px] text-slate-400 font-normal">
-                                        得知: <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</span>
-                                        <span class="ml-2">
-                                            求得: <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
+                                    <div class="text-[15px] text-slate-400 uppercase tracking-wider whitespace-nowrap font-black">法寶名稱</div>
+                                    <div class="text-[14px] text-slate-400 font-black">
+                                        <template v-if="reg.record_date">
+                                            得知: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                        </template>
+                                        <span :class="{'ml-2': reg.record_date}">
+                                            求得: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
                                         </span>
                                     </div>
                                 </div>
@@ -122,16 +204,16 @@
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <div class="text-[18px] font-normal text-slate-900 leading-tight">
+                                <div class="text-[17px] font-black text-slate-900 leading-tight flex-1">
                                     {{ reg.name }}
                                 </div>
-                                <div class="flex items-center pointer-events-auto">
+                                <div class="flex items-center space-x-2 mr-6">
                                     <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
-                                        'bg-blue-50 text-blue-600 border-blue-100': reg.status === '已求得',
-                                        'bg-emerald-50 text-emerald-600 border-emerald-100': reg.status === '已登記',
-                                        'bg-red-50 text-red-600 border-red-100': reg.status === '未求得',
+                                        'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
+                                        'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
+                                        'bg-red-50 text-red-700 border-red-200': reg.status === '未求得',
                                         'cursor-pointer': currentFolder.id === 'unobtained'
-                                    }" class="text-[14px] px-1.5 py-1 rounded border font-normal select-none whitespace-nowrap active:scale-90 transition-all">
+                                    }" class="text-[14px] px-2 py-0.5 rounded border font-black select-none whitespace-nowrap active:scale-90 transition-all">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -183,44 +265,44 @@
                                         <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-slate-400 active:scale-90 transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[14px] font-normal text-slate-400 tracking-wider block">得知日期</label>
+                                        <label class="text-[14px] font-black text-slate-400 tracking-wider block">得知日期</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
+                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">載錄目標仙師</label>
-                                    <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
+                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">載錄目標仙師</label>
+                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">法寶名稱</label>
-                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900 leading-tight">
+                                <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">法寶名稱</label>
+                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 leading-tight">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">法寶用意</label>
-                                <div class="w-full px-3 py-0.5 flex items-center text-[18px] text-slate-900 leading-tight">
+                                <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">法寶用意</label>
+                                <div class="w-full px-3 py-0.5 flex items-center text-[17px] font-black text-slate-900 leading-tight">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">求得日期</label>
-                                    <div class="w-full px-3 flex items-center text-[18px] text-slate-900">
+                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">求得日期</label>
+                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center text-[18px] font-normal"
+                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">目前狀態</label>
+                                    <div class="w-full px-3 flex items-center text-[17px] font-black"
                                         :class="reg.status === '未求得' ? 'text-red-600' : 'text-emerald-600'">
                                         {{ reg.status }}
                                     </div>
@@ -229,7 +311,7 @@
 
                             <div v-if="reg.remarks" class="space-y-1">
                                 <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[18px] text-slate-900 leading-normal whitespace-pre-wrap">
+                                <div class="w-full px-3 py-1 text-[17px] text-slate-900 leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
                                 </div>
                             </div>
@@ -243,10 +325,10 @@
     
     <mobile-navbar 
         :can-back="true"
-        :show-action="currentFolder && currentFolder.id !== 'unobtained'"
+        :show-action="!!currentFolder && currentFolder.id !== 'unobtained'"
         :action-active="showAddMenu"
         :search-active="showSearch"
-        :can-more="!!currentFolder"
+        :can-more="!!currentFolder && currentFolder.id !== 'unobtained'"
         @back="handleBack"
         @home="$emit('goHome')"
         @action="showAddMenu = !showAddMenu"
@@ -288,6 +370,7 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const emit = defineEmits(['goHome']);
 
+const currentCategory = ref(null); 
 const currentFolder = ref(null);
 const addMode = ref(null);
 const allRegistries = ref([]);
@@ -331,10 +414,10 @@ const addActions = computed(() => [
         handler: () => { copyListOnly(); showAddMenu.value = false; }
     },
     { 
-        label: '下載匯出 EXCEL (全部)', 
-        description: '將此分類匯出為標準試算表檔案',
-        icon: '<svg class="text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        handler: () => { exportListExcel(); showAddMenu.value = false; }
+        label: '下載匯出 文字檔 (全部)', 
+        description: '將此分類匯出為標準純文字檔案',
+        icon: '<svg class="text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => { exportListTxt(); showAddMenu.value = false; }
     }
 ]);
 
@@ -347,9 +430,7 @@ const displayTitle = computed(() => {
 });
 
 const triggerBatchSave = (data) => {
-    batchInput.value = data.input;
-    batchMasterId.value = data.masterId;
-    saveBatch();
+    saveBatch(data);
 };
 
 // 當關閉提示框時，重設紅點狀態；加入自動消失邏輯
@@ -358,19 +439,24 @@ watch(persistentToast, (newVal) => {
         deleteConfirmId.value = null;
         return;
     }
-    // 如果不是確認框（confirm），則 1 秒後自動消失
-    if (!['confirm', 'deleteConfirm'].includes(newVal.type)) {
+    // 如果不是需要等待使用者決策的類型，則 3 秒後自動消失
+    if (!['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(newVal.type)) {
         setTimeout(() => {
             if (persistentToast.value === newVal) persistentToast.value = null;
-        }, 1000);
+        }, 3000);
     }
 });
 
-const folders = ref([
-    { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
-    { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 'unobtained', name: '未求得重大皇恩專區' }
-]);
+const folders = computed(() => {
+    const list = masters.value.map(m => ({
+        id: m.id,
+        name: m.name
+    }));
+    list.push({ id: 'unobtained', name: '未求得重大皇恩' });
+    return list;
+});
+
+const mastersFolders = computed(() => folders.value.filter(f => f.id !== 'unobtained'));
 
 const loadData = async () => {
     loading.value = true;
@@ -417,14 +503,22 @@ const toggleExpand = (id) => {
     openMenuId.value = null;
 };
 
-const handleBack = () => { 
+const handleBack = () => {
     if (addMode.value) {
-        addMode.value = null; 
-    } else if (currentFolder.value) {
-        currentFolder.value = null; 
+        addMode.value = null;
+    } else if (focusedId.value) {
         focusedId.value = null;
         expandedIds.value.clear();
+    } else if (currentFolder.value) {
+        currentFolder.value = null;
         searchQuery.value = '';
+        expandedIds.value.clear();
+        // If we came directly from unobtained to level 0
+        if (currentCategory.value === 'unobtained') {
+            currentCategory.value = null;
+        }
+    } else if (currentCategory.value) {
+        currentCategory.value = null;
     } else {
         emit('goHome');
     }
@@ -517,38 +611,24 @@ const downloadListOnly = () => {
     openMenuId.value = null;
 };
 
-// 5. Excel 匯出 (全部清單)
-const exportListExcel = () => {
+// 5. 文字檔匯出 (全部清單 - 一筆一筆格式)
+const exportListTxt = () => {
     if (!currentFolder.value || !filteredRegistries.value.length) return;
     
-    // Prepare Data
-    const data = filteredRegistries.value.map(r => ({
-        '法寶名稱': r.name,
-        '數據': r.count || 1,
-        '用意': r.purpose || '',
-        '狀態': r.status,
-        '得知日期': r.record_date || '',
-        '求得日期': r.obtained_date || '',
-        '備註/來源': r.remarks || ''
-    }));
+    const contents = filteredRegistries.value.map(r => {
+        return `【重大皇恩】\r\n` +
+               `法寶：${r.name}\r\n` +
+               `數據：${r.count || 1}\r\n` +
+               `用意：${r.purpose || '無'}\r\n` +
+               `狀態：${r.status}\r\n` +
+               `求得日期：${r.obtained_date?.replace(/-/g, '/') || '-'}\r\n` +
+               `由來與備註：${(r.remarks || '無')}`;
+    }).join('\r\n\r\n--------------------------------\r\n\r\n');
 
     try {
-        const ws = window.XLSX.utils.json_to_sheet(data);
-        const wb = window.XLSX.utils.book_new();
-        window.XLSX.utils.book_append_sheet(wb, ws, "重大皇恩清單");
-        
-        // Generate File
-        const wbout = window.XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([wbout], { type: 'application/octet-stream' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `重大皇恩_${currentFolder.value.name}_${new Date().toISOString().split('T')[0]}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        persistentToast.value = { msg: '✓ Excel 匯出成功', type: 'success' };
+        const finalHeader = `【重大皇恩清單 - ${currentFolder.value.name} 完整清單】\r\n\r\n`;
+        triggerSimpleDownload(finalHeader + contents, `重大皇恩清單_${currentFolder.value.name}_一筆一筆資料.txt`);
+        persistentToast.value = { msg: '✓ 文字檔匯出成功', type: 'success' };
     } catch (e) {
         console.error(e);
         persistentToast.value = { msg: '✖ 匯出失敗', type: 'error' };
@@ -563,7 +643,7 @@ const prepareAdd = (mode) => {
         name: '', 
         purpose: '', 
         remarks: '', 
-        record_date: new Date().toISOString().split('T')[0], 
+        record_date: mode === 'batch' ? '' : new Date().toISOString().split('T')[0], 
         obtained_date: '', 
         status: '未求得' 
     };
@@ -582,23 +662,26 @@ const saveSingle = async (resolutionOrData = null) => {
     if (typeof resolutionOrData === 'string') {
         resolution = resolutionOrData;
     } else if (resolutionOrData && typeof resolutionOrData === 'object' && !resolutionOrData.target) {
-        // Sync local form with data from child component
         form.value = { ...resolutionOrData };
     }
+    
     let formMid = form.value.master_id ? String(form.value.master_id) : '';
     const folderId = currentFolder.value ? String(currentFolder.value.id) : '';
-    const isActuallyMismatched = folderId !== '' && formMid !== folderId;
 
-    // Auto-shunt without prompt
-    if (isActuallyMismatched) {
-        resolution = 'shunt';
+    // 核心判定：是否發生預期外的資料夾分流 (未求得區改為已求得時，改為自動分流不再提示)
+    const isActuallyMismatched = folderId !== 'unobtained' && folderId !== '' && formMid !== folderId;
+
+    if (isActuallyMismatched && !resolution) {
+        persistentToast.value = { 
+            msg: `偵測到法寶將存入【${getMasterName(form.value.master_id)}】，但目前位於【${currentFolder.value.name}】，請問要存入哪一邊？`, 
+            type: 'mismatchConfirm' 
+        };
+        return;
     }
 
-    // 處理「改回原本仙師」的邏輯
     if (resolution === 'correct') {
         const fid = currentFolder.value?.id;
-        form.value.master_id = (fid === 'unobtained') ? null : fid;
-        formMid = form.value.master_id ? String(form.value.master_id) : '';
+        form.value.master_id = (fid === 'unobtained') ? form.value.master_id : fid;
     }
 
     if (!form.value.name) {
@@ -606,70 +689,62 @@ const saveSingle = async (resolutionOrData = null) => {
         return;
     }
 
-    // 重複檢查 (全模組下法寶名稱不可重複)
-    const targetName = form.value.name.trim().toLowerCase();
-    const isDuplicate = allRegistries.value.some(r => {
-        const match = r.id !== form.value.id && r.name.trim().toLowerCase() === targetName;
-        return match;
-    });
-
-    if (isDuplicate) {
-        console.warn(`Duplicate detected: ${targetName}`);
-        persistentToast.value = { msg: `✖ 法寶名稱「${form.value.name}」在重大皇恩中已存在，請勿重複存檔。`, type: 'error' };
-        // Scroll list to the duplicate item if possible (UX enrichment)
-        const dupItem = allRegistries.value.find(r => r.name.trim().toLowerCase() === targetName);
-        if (dupItem) {
-            focusedId.value = dupItem.id;
-            expandedIds.value.clear();
-            expandedIds.value.add(dupItem.id);
-        }
+    if (!form.value.master_id) {
+        persistentToast.value = { msg: '錯誤：請選擇目標仙師', type: 'error' };
         return;
     }
+
+    const targetName = form.value.name.trim().toLowerCase();
+    const isDuplicate = allRegistries.value.some(r => r.id !== form.value.id && r.name.trim().toLowerCase() === targetName);
+
+    if (isDuplicate) {
+        persistentToast.value = { msg: `✖ 法寶名稱「${form.value.name}」已存在，請勿重複存檔。`, type: 'error' };
+        return;
+    }
+    
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
-        persistentToast.value = { msg: '錯誤：選取已登記/已求得時，請輸入求得日期', type: 'error' };
+        persistentToast.value = { msg: '錯誤：請輸入求得日期', type: 'error' };
         return;
     }
     
     isSaving.value = true;
-    persistentToast.value = null; // 點擊按鈕後立即清除警告框
+    persistentToast.value = null;
 
     try {
-        // 先抓到目標仙師的名字，為了後續精準導向
         const finalMid = form.value.master_id;
         const targetMaster = masters.value.find(m => String(m.id) === String(finalMid));
         const targetMasterName = targetMaster ? targetMaster.name : '';
 
+        let res;
         if (form.value.id) {
-            await axios.post(`/imperial-graces/registry/${form.value.id}`, { ...form.value, _method: 'PATCH' });
+            res = await axios.post(`/imperial-graces/registry/${form.value.id}`, { ...form.value, _method: 'PATCH' });
             persistentToast.value = { msg: '✓ 修改成功', type: 'success' };
         } else {
-            await axios.post('/imperial-graces/registry', { ...form.value, master_id: finalMid });
+            res = await axios.post('/imperial-graces/registry', { ...form.value, master_id: finalMid });
             persistentToast.value = { msg: '✓ 新增成功', type: 'success' };
         }
         
-        loadData();
-
-        // 智慧導向：如果選擇分流，依照「名字」匹配資料夾，解決 ID 不一致的問題
-        if (resolution === 'shunt' && targetMasterName) {
-            const matchedFolder = folders.value.find(f => f.name === targetMasterName);
+        // 智慧導向：如果選擇分流，或是在「未求得」區改為已求得，依照「ID」匹配資料夾
+        const isFromUnobtained = String(currentFolder.value?.id) === 'unobtained' && ['已求得', '已登記'].includes(form.value.status);
+        if ((resolution === 'shunt' || isFromUnobtained) && targetMaster) {
+            // 先找對應的仙師資料夾 (改用 ID 匹配更精準)
+            const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
             if (matchedFolder) {
+                currentCategory.value = 'masters';
                 currentFolder.value = matchedFolder;
-                persistentToast.value = { msg: `✓ 已分流轉跳至 ${matchedFolder.name}`, type: 'success' };
+                focusedId.value = res?.data?.id || form.value.id;
+                persistentToast.value = { msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, type: 'success' };
             }
         }
         addMode.value = null; 
-
-    } catch (e) { 
-        console.error('儲存失誤:', e);
-        if (e.response && e.response.status === 422) {
-            const errors = e.response.data.errors;
-            const messages = Object.values(errors).flat().join('\n');
-            alert('驗證失敗：\n' + messages);
-        } else {
-            alert('儲存失敗：' + (e.response?.data?.message || '資料格式錯誤')); 
-        }
+        await loadData();
+    } catch (e) {
+        console.error('儲存失敗:', e);
+        const serverMsg = e.response?.data?.message || e.message || '資料驗證失敗';
+        persistentToast.value = { msg: `✖ 儲存失敗：${serverMsg}`, type: 'error' };
+    } finally {
+        isSaving.value = false;
     }
-    finally { isSaving.value = false; }
 };
 
 const handleFileUpload = (event) => {
@@ -715,8 +790,24 @@ const changeStatus = async (reg, nextStatus) => {
         if (['已求得', '已登記'].includes(nextStatus) && !payload.obtained_date) {
             payload.obtained_date = new Date().toISOString().split('T')[0];
         }
-        await axios.put(`/imperial-graces/registry/${reg.id}`, payload);
-        loadData();
+        const res = await axios.put(`/imperial-graces/registry/${reg.id}`, payload);
+        await loadData();
+
+        // 🌟 分流邏輯：如果在「未求得」專區改為其他狀態，自動跳轉回該仙師位子
+        if (String(currentFolder.value?.id) === 'unobtained' && nextStatus !== '未求得') {
+            const targetMaster = masters.value.find(m => String(m.id) === String(reg.master_id));
+            if (targetMaster) {
+                // 優先從資料夾清單中找到完整的 folder 物件以確保導航狀態同步
+                const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
+                if (matchedFolder) {
+                    currentCategory.value = 'masters';
+                    currentFolder.value = matchedFolder;
+                    focusedId.value = reg.id;
+                    expandedIds.value.add(reg.id);
+                    persistentToast.value = { msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, type: 'success' };
+                }
+            }
+        }
     } catch (e) {
         console.error('狀態變更失敗:', e);
         const serverMsg = e.response?.data?.message || '資料驗證失敗';

@@ -9,46 +9,60 @@
                     </button>
                     <h2 class="text-[22px] font-black text-slate-900 tracking-tight">其他專區資料夾</h2>
                 </div>
-                <button @click="showAddFolder = true" class="w-10 h-10 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-indigo-500 transition-all">
+                <button v-if="!activeFolderId" class="w-10 h-10 bg-slate-100 border border-slate-200 rounded-full flex items-center justify-center text-slate-300 cursor-not-allowed">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 p-6 place-items-center">
+            <div class="grid grid-cols-2 gap-4 p-6 place-items-center pb-24">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
-                    class="flex flex-col items-center justify-center bg-white transition-all active:scale-95 border border-slate-100 rounded-[28px] group p-4 w-full aspect-square shadow-sm hover:shadow-md relative overflow-hidden">
-                    <div class="relative mb-3">
-                        <svg class="w-24 h-24 transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
+                    <div class="relative w-[148px] h-[148px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-md" viewBox="0 0 64 64" fill="none">
                             <defs>
                                 <linearGradient :id="'otherGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" :style="{ 'stop-color': folder.color || '#FCD34D', 'stop-opacity': 0.6 }" />
-                                    <stop offset="50%" :style="{ 'stop-color': folder.color || '#FBBF24', 'stop-opacity': 1 }" />
-                                    <stop offset="100%" :style="{ 'stop-color': folder.color || '#D97706', 'stop-opacity': 0.8 }" />
+                                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
                                 </linearGradient>
                             </defs>
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#otherGrad' + idx + ')'" opacity="0.8"/>
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#otherGrad' + idx + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                            <span :class="[
+                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                            ]" style="font-weight: 900 !important;">
+                                {{ folder.name }}
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-[17px] font-black text-slate-900 leading-tight text-center px-2">
-                        {{ folder.name }}
-                    </span>
-                    <button @click.stop="deleteFolder(folder.id)" class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
                 </button>
             </div>
+
+            <!-- Dashboard Bottom Navbar -->
+            <mobile-navbar 
+                :can-back="true"
+                :show-action="true"
+                :action-disabled="true"
+                :can-search="false"
+                :can-more="false"
+                @back="$emit('goHome')"
+                @home="$emit('goHome')"
+            />
         </div>
 
         <!-- Level 2: Record List / Content View -->
-        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto">
+        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto pb-24">
             <!-- Content Header -->
             <div class="px-6 py-4 flex items-center border-b border-white bg-white/80 backdrop-blur-md sticky top-0 z-30">
                 <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h2 class="text-[19px] font-black text-slate-900 flex-1 truncate">{{ activeFolder?.name }}</h2>
+                <h2 class="text-[15px] font-black text-slate-900 flex-1 truncate">{{ activeFolder?.name }}</h2>
             </div>
 
             <div v-if="activeFolder" class="h-full">
@@ -86,6 +100,18 @@
             <div v-else class="flex-grow flex items-center justify-center text-slate-400 font-medium">
                 請選擇一個資料夾開始
             </div>
+
+            <!-- Folder Contents Bottom Navbar -->
+            <mobile-navbar 
+                :can-back="true"
+                :show-action="!activeFolder?.name.includes('開文核定') && !activeFolder?.name.includes('隨機分組')"
+                :action-disabled="true"
+                :can-search="false"
+                :can-more="!!activeFolder"
+                @back="activeFolderId = null"
+                @home="$emit('goHome')"
+                @more="handleMore"
+            />
         </div>
 
         <!-- Add Folder Modal -->
@@ -123,10 +149,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, defineEmits } from 'vue';
 import axios from 'axios';
 import KaiwenApproval from './KaiwenApproval.vue';
 import RandomGroup from './RandomGroup.vue';
+import MobileNavbar from './MobileNavbar.vue';
+
+const emit = defineEmits(['goHome']);
 
 const props = defineProps({
     user: Object
@@ -205,6 +234,19 @@ const deleteRecord = async (id) => {
 const formatDate = (dateString) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+};
+
+const prepareAddFolder = () => {
+    showAddFolder.value = true;
+};
+
+const prepareAddRecord = () => {
+    showAddRecord.value = true;
+};
+
+const handleMore = () => {
+    // Current placeholder for export or more actions
+    alert('此資料夾暫不支援匯出功能');
 };
 
 onMounted(loadData);

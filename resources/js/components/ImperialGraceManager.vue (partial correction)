@@ -1,0 +1,126 @@
+<<<<
+        a.click();
+        document.body.removeChild(a);
+        
+        persistentToast.value = { msg: '✓ Excel 匯出成功', type: 'success' };
+    } catch (e) {
+        console.error(e);
+        persistentToast.value = { msg: '✖ 匯出失敗', type: 'error' };
+    }
+};
+
+const prepareAdd = (mode) => {
+    const defaultMasterId = currentFolder.value && currentFolder.value.id !== 'unobtained' ? currentFolder.value.id : null;
+    form.value = { 
+        id: null, 
+        master_id: defaultMasterId, 
+        name: '', 
+        purpose: '', 
+        remarks: '', 
+        record_date: new Date().toISOString().split('T')[0], 
+        obtained_date: '', 
+        status: '未求得' 
+    };
+    if (mode === 'batch') {
+        batchInput.value = '';
+        batchMasterId.value = defaultMasterId;
+    }
+    addMode.value = mode;
+    showAddMenu.value = false;
+};
+
+const saveSingle = async (resolutionOrData = null) => {
+    if (isSaving.value) return;
+
+    let resolution = null;
+    if (typeof resolutionOrData === 'string') {
+        resolution = resolutionOrData;
+    } else if (resolutionOrData && typeof resolutionOrData === 'object' && !resolutionOrData.target) {
+        // Sync local form with data from child component
+        form.value = { ...resolutionOrData };
+    }
+    
+    let formMid = form.value.master_id ? String(form.value.master_id) : '';
+    const folderId = currentFolder.value ? String(currentFolder.value.id) : '';
+
+    // 核心判定：是否發生預期外的資料夾分流
+    const isActuallyMismatched = folderId !== 'unobtained'
+        ? (formMid !== folderId && folderId !== '')
+        : (['已求得', '已登記'].includes(form.value.status));
+
+    if (isActuallyMismatched && !resolution) {
+        const mismatchMsg = currentFolder.value?.id === 'unobtained'
+            ? `偵測到狀態已改為【${form.value.status}】，是否要將資料移回原屬仙師【${getMasterName(form.value.master_id)}】？`
+            : `偵測到法寶將存入【${getMasterName(form.value.master_id)}】，但目前位於【${currentFolder.value.name}】，請問要存入哪一邊？`;
+        
+        persistentToast.value = { msg: mismatchMsg, type: 'mismatchConfirm' };
+        return;
+    }
+
+    // 處理「改回原本資料夾」的邏輯 (存入目前所在位置)
+    if (resolution === 'correct') {
+        const fid = currentFolder.value?.id;
+        form.value.master_id = (fid === 'unobtained') ? form.value.master_id : fid;
+        // 注意：如果是從未求得點「存入未求得」，我們保持原 master_id 不動，只存檔內容
+    }
+
+    if (!form.value.name) {
+        persistentToast.value = { msg: '錯誤：請輸入法寶名稱', type: 'error' };
+        return;
+    }
+
+    // 重複檢查 (全模組下法寶名稱不可重複)
+    const targetName = form.value.name.trim().toLowerCase();
+    const isDuplicate = allRegistries.value.some(r => {
+        const match = r.id !== form.value.id && r.name.trim().toLowerCase() === targetName;
+        return match;
+    });
+
+    if (isDuplicate) {
+        persistentToast.value = { msg: `✖ 法寶名稱「${form.value.name}」在重大皇恩中已存在，請勿重複存檔。`, type: 'error' };
+        return;
+    }
+    
+    if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
+        persistentToast.value = { msg: '錯誤：選取已登記/已求得時，請輸入求得日期', type: 'error' };
+        return;
+    }
+    
+    isSaving.value = true;
+    persistentToast.value = null; // 立即清除警告框
+
+    try {
+        const finalMid = form.value.master_id;
+        const targetMaster = masters.value.find(m => String(m.id) === String(finalMid));
+        const targetMasterName = targetMaster ? targetMaster.name : '';
+
+        let res;
+        if (form.value.id) {
+            res = await axios.post(`/imperial-graces/registry/${form.value.id}`, { ...form.value, _method: 'PATCH' });
+            persistentToast.value = { msg: '✓ 修改成功', type: 'success' };
+        } else {
+            res = await axios.post('/imperial-graces/registry', { ...form.value, master_id: finalMid });
+            persistentToast.value = { msg: '✓ 新增成功', type: 'success' };
+        }
+        
+        await loadData();
+
+        // 智慧導向：如果選擇分流，依照「名字」匹配資料夾
+        if (resolution === 'shunt' && targetMasterName) {
+            const matchedFolder = mastersFolders.value.find(f => f.name === targetMasterName);
+            if (matchedFolder) {
+                currentCategory.value = 'masters';
+                currentFolder.value = matchedFolder;
+                focusedId.value = res?.data?.id || form.value.id;
+                persistentToast.value = { msg: `✓ 已轉跳至【${matchedFolder.name}】`, type: 'success' };
+            }
+        }
+        addMode.value = null; 
+    } catch (e) {
+        console.error(e);
+        alert('儲存失敗');
+    } finally {
+        isSaving.value = false;
+    }
+};
+>>>>

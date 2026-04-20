@@ -3,7 +3,7 @@
         <div class="bg-white rounded-lg shadow-2xl p-[3px] w-fit animate-fade-in" @click.stop>
             <!-- Header -->
             <div v-if="title" class="px-2 pt-1 pb-0.5 border-b border-slate-50">
-                <div class="text-[13px] text-indigo-600 truncate text-center">{{ title }}</div>
+                <div class="text-[16px] text-indigo-600 truncate text-center font-black font-outfit">{{ title }}</div>
             </div>
             <div class="flex items-center justify-between mb-2 px-1 pt-1">
                 <div class="flex items-center space-x-2">

@@ -29,7 +29,10 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->role === 'admin' || $this->roles()->where('name', '管理員')->exists();
+        $dharmaName = $this->dharmaName ? $this->dharmaName->name : null;
+        return $this->role === 'admin' || 
+               ($dharmaName === '元續') ||
+               $this->roles()->where('name', '管理員')->exists();
     }
 
     public function group()
@@ -92,10 +95,20 @@ class User extends Authenticatable
         $isAdmin = $this->isAdmin();
 
         $permissions = [
-            'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情', '靈平']),
-            'can_see_other_folders' => $isAdmin || in_array($dharmaName, ['金巧', '赤覺', '紫元', '鳳尊', '鳳媓', '靈情', '靈平']),
-            'can_see_treasures' => $isAdmin || $dharmaName === '赤覺',
-            'can_see_military' => $isAdmin || in_array($dharmaName, ['閻尊', '閻闇', '龍勝', '龍戰', '閻爵', '閻澤', '閻帝', '閻願']),
+            'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, [
+                '閻帝', '閻爵', '閻澤', '閻願', '靈果', '靈妙', '元續', '金頤', '靈心', '金振', 
+                '金了', '金曉', '道妙', '金悟', '金淑', '金源', '靈智', '靈慧', '金雲', '金戒', 
+                '閻珍', '金知', '金忠', '金孝', '金諦', '金彩', '金茹', '金齋', '金德', '靈平', 
+                '金惜', '金護', '靈奇', '靈傾'
+            ]),
+            'can_see_other_folders' => $isAdmin || in_array($dharmaName, [
+                '鳳尊', '金巧', '赤覺', '紫元', '靈情', '鳳媓', '靈昡', '龍勝', '龍戰', '閻尊', 
+                '閻闇', '元續', '赤峰'
+            ]),
+            'can_see_treasures' => $isAdmin || in_array($dharmaName, ['赤覺', '元續']),
+            'can_see_military' => $isAdmin || in_array($dharmaName, [
+                '閻帝', '龍勝', '龍戰', '閻尊', '閻爵', '閻澤', '閻闇', '閻願', '元續'
+            ]),
             'allowed_armies' => [],
         ];
 

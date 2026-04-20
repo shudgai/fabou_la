@@ -1,26 +1,50 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-4 h-[50px]">
-            <div class="w-[70px] flex items-center shrink-0">
-                <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-normal bg-indigo-50 px-1.5 py-0.5 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
+        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-2 h-[60px]">
+            <div class="w-[60px] flex items-center shrink-0">
+                <button @click="$emit('goHome')" class="text-slate-400 p-3 active:scale-90 transition-transform">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h2 class="text-[20px] font-bold font-outfit tracking-tight text-slate-900 truncate">{{ displayTitle }}</h2>
+                <h1 class="text-[23px] font-black font-outfit tracking-tight text-slate-900 truncate">{{ displayTitle }}</h1>
             </div>
-            <div class="w-[70px] flex items-center justify-end shrink-0">
-                <button @click="toggleShowTotal" class="text-[15px] text-slate-900 font-normal active:scale-95 transition-all">
-                    總量<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[16px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
+            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
+                <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-black bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100">
+                    {{ sortDesc ? '新→舊' : '舊→新' }}
+                </button>
+                <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
+                    總量<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[18px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
                 </button>
             </div>
         </div>
         
-        <!-- Search Component -->
-        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in">
+        <!-- Search Component (Enhanced with persistent X) -->
+        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group">
+            <div class="absolute left-[22px] text-slate-400 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
             <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
-                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl px-4 text-[15px] focus:ring-0 outline-none">
+                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl pl-9 pr-10 text-[15px] focus:ring-1 focus:ring-slate-300 outline-none transition-all shadow-sm">
+            
+            <!-- Persistent X: Clear or Close -->
+            <button @click="searchQuery ? searchQuery = '' : showSearch = false" 
+                class="absolute right-[18px] w-8 h-8 flex items-center justify-center text-slate-500 active:text-slate-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Total Simple Overlay -->
+        <div v-if="showTotal" class="fixed inset-x-0 top-[60px] z-[60] px-4 animate-fade-in pointer-events-none">
+            <div class="bg-white text-slate-900 px-6 py-4 rounded-[24px] shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100">
+                <span class="text-[17px] font-black uppercase tracking-widest text-slate-400">怨靈紀錄總量</span>
+                <span class="text-[18px] font-black font-outfit">{{ totalGrudgeQuantity }}</span>
+            </div>
         </div>
 
         <!-- Scrollable Content -->
@@ -42,29 +66,26 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[14px] font-normal text-slate-400 uppercase tracking-wider">得知日期</div>
-                                    <div class="text-[18px] text-slate-900 font-normal ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="text-[12px] font-black text-slate-400 uppercase tracking-wider">得知日期</div>
+                                    <div class="text-[17px] text-slate-900 font-black ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
                             <!-- Row 2: Name & Quantity & Status -->
-                            <div class="flex items-center justify-between">
-                                <div class="grid grid-cols-2 flex-1 items-center">
-                                    <!-- Dharma Name -->
-                                    <div class="text-[18px] font-normal text-slate-900 leading-tight truncate pr-2">
-                                        {{ item.user_name || '-' }}
-                                        <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
-                                    </div>
-                                    <!-- Quantity -->
-                                    <div class="text-[18px] text-slate-900 font-normal">
-                                        <span class="text-[14px] font-normal text-slate-400 uppercase mr-1">數量:</span> 
-                                        <span class="text-[18px] text-slate-900 font-normal ml-0.5">{{ item.quantity }}</span>
-                                    </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="text-[17px] font-black text-slate-900 truncate flex-1">
+                                    {{ item.user_name || '-' }}
+                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">({{ item.user_remarks }})</span>
                                 </div>
-                                <!-- Status (Slate-400 for unprocessed) -->
-                                <span :class="item.destination === '未處理' ? 'text-slate-400' : 'text-emerald-600'" class="text-[14px] font-normal shrink-0">
-                                    {{ item.destination === '未處理' ? '未處理' : '已處理' }}
-                                </span>
+                                <div class="flex items-center space-x-2 shrink-0 ml-4">
+                                    <div class="text-[14px] font-black text-slate-400">數量:</div>
+                                    <div class="text-[17px] font-black text-slate-900">{{ item.quantity }}</div>
+                                </div>
+                                <div class="ml-4">
+                                    <span :class="item.destination === '未處理' ? 'text-slate-300' : 'text-emerald-500'" class="text-[17px] font-black shrink-0">
+                                        {{ item.destination === '未處理' ? '未處理' : '已處理' }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -96,36 +117,51 @@
                                     <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300 active:scale-90 transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
-                                    <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block">得知日期</label>
+                                    <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block">得知日期</label>
                                 </div>
-                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
+                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
                             </div>
 
                             <!-- Detail Row 2: user_name & user_remarks (Merged) -->
                             <div class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
-                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">
+                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
+                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                     {{ item.user_name || '-' }}
-                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-normal">{{ item.user_remarks }}</span>
+                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">{{ item.user_remarks }}</span>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">數量</label>
-                                <div class="w-full px-3 flex items-center text-[18px] font-normal text-slate-900">{{ item.quantity }}</div>
+                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">數量</label>
+                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">{{ item.quantity }}</div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">處理結果</label>
-                                <div class="w-full px-3 flex items-center text-[18px] font-normal" :class="item.destination === '未處理' ? 'text-slate-400' : 'text-slate-900'">
-                                    {{ item.destination || '未處理' }}
-                                    <span v-if="item.process_date" class="ml-2 text-[14px] text-slate-400">({{ formatDate(item.process_date) }})</span>
+                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">處理結果</label>
+                                <div class="w-full px-3 flex flex-col text-[17px] font-black" :class="item.destination === '未處理' ? 'text-slate-300' : 'text-slate-900'">
+                                    <div v-for="(line, idx) in formatDestinations(item.destination)" :key="idx" class="flex items-center space-x-2">
+                                        <span>{{ line }}</span>
+                                        <span v-if="idx === 0 && item.process_date" class="text-[14px] text-slate-400 font-normal">({{ formatDate(item.process_date) }})</span>
+                                    </div>
+                                </div>
+                                <!-- Military Breakdown (Moved Here) -->
+                                <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="w-full px-3 mt-1 text-[17px] font-black text-slate-900">
+                                    <span v-if="item.destination === '黑曜軍'">
+                                        閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }} 
+                                        &nbsp;&nbsp; 
+                                        閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}
+                                    </span>
+                                    <span v-if="item.destination === '耀紫軍'">
+                                        龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }} 
+                                        &nbsp;&nbsp; 
+                                        龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}
+                                    </span>
                                 </div>
                             </div>
 
                             <div v-if="item.remarks_text" class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[18px] font-normal text-slate-900 leading-normal">{{ item.remarks_text }}</div>
+                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 text-[17px] font-black text-slate-900 leading-normal">{{ item.remarks_text }}</div>
                             </div>
                         </div>
                     </div>
@@ -161,13 +197,51 @@ import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 
 const emit = defineEmits(['goHome']);
-
-const folders = ref([{ id: 'all', name: '怨靈清單', status: '全部' }]);
-const currentFolder = ref(folders.value[0]);
-const addMode = ref(false);
-const showAddMenu = ref(false);
-const showSearch = ref(false);
+const currentFolder = ref({ id: 'all', name: '怨靈記錄專區', status: '全部' });
 const searchQuery = ref('');
+const showSearch = ref(false);
+const addMode = ref(false);
+
+const parseRemarks = (remarks) => {
+    // Force empty arrays (often returned by Laravel for empty JSON) to be objects
+    if (!remarks || (Array.isArray(remarks) && remarks.length === 0)) return {};
+    if (typeof remarks === 'string') {
+        try { return JSON.parse(remarks); } catch (e) { return {}; }
+    }
+    return remarks;
+};
+
+const formatDestinations = (destStr) => {
+    if (!destStr || destStr === '未處理') return ['未處理'];
+    
+    // Split by comma separator
+    const parts = destStr.split(/[、,，]/);
+    const results = parts.map(p => {
+        const match = p.match(/^(.*?)(?:\((\d+)\))?$/);
+        if (!match) return { name: p.trim(), qty: null };
+        return { name: match[1].trim(), qty: match[2] };
+    });
+
+    const order = ['耀紫軍', '虎賁軍', '虎甲軍', '黑曜軍', '九天', '殲滅', '暫驅離', '未處理'];
+    results.sort((a, b) => {
+        const idxA = order.indexOf(a.name);
+        const idxB = order.indexOf(b.name);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return 0;
+    });
+
+    return results.map(r => r.qty ? `${r.name} ${r.qty}` : r.name);
+};
+
+const formatDate = (date) => {
+    if (!date) return '';
+    return new Date(date).toISOString().split('T')[0].replace(/-/g, '/');
+};
+
+const folders = ref([{ id: 'all', name: '怨靈記錄專區', status: '全部' }]);
+const showAddMenu = ref(false);
 const openMenuId = ref(null);
 const items = ref([]);
 const users = ref([]);
@@ -381,7 +455,7 @@ const performExcelExport = () => {
     XLSX.writeFile(workbook, `怨靈報表_${dateStr}.xlsx`);
 };
 
-const form = ref({ user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: new Date().toISOString().split('T')[0], process_date: '', remarks_text: '' });
+const form = ref({ user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: new Date().toISOString().split('T')[0], process_date: '', remarks_text: '', remarks: {} });
 
 const loadData = async () => {
     loading.value = true;
@@ -416,7 +490,9 @@ const handleBack = () => {
 const editItem = (item) => {
     focusedId.value = item.id;
     editingId.value = item.id;
-    form.value = { ...item };
+    // Ensure remarks are parsed and deep-cloned for independent editing
+    const parsed = parseRemarks(item.remarks);
+    form.value = { ...item, remarks: JSON.parse(JSON.stringify(parsed)) };
     addMode.value = true;
     openMenuId.value = null;
 };
@@ -502,12 +578,19 @@ const downloadList = (format = 'txt') => {
 
 const totalGrudgeQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
 const filteredTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
-const displayTitle = computed(() => currentFolder.value?.name || '怨靈專區');
-const formatDate = (d) => {
-    if (!d) return '-';
-    const date = new Date(d);
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-};
+
+// Military Detailed Totals
+const obsidianItems = computed(() => items.value.filter(i => i.destination === '黑曜軍'));
+const obsidianTotal = computed(() => obsidianItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const yanZunTotal = computed(() => obsidianItems.value.reduce((sum, s) => sum + (Number(parseRemarks(s.remarks).yan_zun) || 0), 0));
+const yanAnTotal = computed(() => obsidianItems.value.reduce((sum, s) => sum + (Number(parseRemarks(s.remarks).yan_an) || 0), 0));
+
+const purpleItems = computed(() => items.value.filter(i => i.destination === '耀紫軍'));
+const purpleTotal = computed(() => purpleItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const longShengTotal = computed(() => purpleItems.value.reduce((sum, s) => sum + (Number(parseRemarks(s.remarks).long_sheng) || 0), 0));
+const longZhanTotal = computed(() => purpleItems.value.reduce((sum, s) => sum + (Number(parseRemarks(s.remarks).long_zhan) || 0), 0));
+
+const displayTitle = computed(() => currentFolder.value?.name || '怨靈記錄專區');
 
 onMounted(() => {
     loadData();

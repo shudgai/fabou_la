@@ -6,7 +6,7 @@
             <!-- Left Sidebar: Master Dharma Name List -->
             <div class="w-[58.33%] border-r border-slate-100 flex flex-col h-full bg-white pl-1.5">
                 <div class="p-2 border-b border-slate-50 flex items-center justify-between">
-                    <h3 class="text-[17px] font-black text-slate-900">法號全表</h3>
+                    <h3 class="text-[20px] font-black text-slate-900">法號全表</h3>
                     <div class="flex items-center space-x-2">
                         <span class="text-[14px] font-bold text-slate-400">已選 {{ selectedNames.length }}</span>
                         <button @click="resetAll" class="text-slate-300 hover:text-red-500 transition-colors">
@@ -31,7 +31,7 @@
             <!-- Right Area: On-site Personnel Pool -->
             <div class="w-[41.67%] flex flex-col h-full bg-slate-50/10">
                 <div class="p-3 border-b border-slate-100 bg-white flex items-center justify-between">
-                    <h2 class="text-[17px] font-black text-slate-900 whitespace-nowrap">在場名冊</h2>
+                    <h2 class="text-[20px] font-black text-slate-900 whitespace-nowrap">在場名冊</h2>
                     <button v-if="selectedNames.length > 0" @click="currentStep = 2" 
                         class="text-indigo-600 hover:text-indigo-800 transition-all p-1 active:scale-90 transform -mr-2">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -61,7 +61,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <div class="flex items-center space-x-2">
-                    <h2 class="text-[17px] font-black text-slate-900">隨機分組設定</h2>
+                    <h2 class="text-[20px] font-black text-slate-900">隨機分組設定</h2>
                     <div class="flex items-center space-x-1 text-slate-400">
                         <span class="text-[13px] font-bold">總計</span>
                         <span class="text-[16px] font-black text-indigo-600">{{ selectedNames.length }}</span>
@@ -73,10 +73,10 @@
             <div class="p-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full">
                 
                 <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
-                <div class="bg-amber-50/10 border border-amber-200 p-3 rounded-2xl space-y-2">
+                <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
                     <div class="flex items-center justify-between px-0.5">
-                        <label class="text-[14px] font-black uppercase tracking-wider text-amber-600">🌟 指定關主</label>
-                        <span class="text-[11px] font-black text-amber-400 uppercase tracking-widest">⚠️ 全場抽選</span>
+                        <label class="text-[17px] font-black uppercase tracking-wider text-amber-600">🌟 指定關主</label>
+                        <span class="text-[13px] font-black text-amber-400 uppercase tracking-widest">⚠️ 全場抽選</span>
                     </div>
                     
                     <div class="flex items-start space-x-2">
@@ -88,10 +88,19 @@
                                         class="w-full bg-transparent outline-none text-[16px] font-black text-amber-700 placeholder:text-amber-200">
                                     <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
-                                <div v-show="isGDropdownOpen && filteredGDropdown.length > 0" class="absolute top-[42px] left-0 right-0 bg-white border border-amber-100 rounded-xl shadow-2xl z-[50] max-h-[160px] overflow-y-auto custom-scrollbar">
+                                <div v-show="isGDropdownOpen && filteredGDropdown.length > 0 && !isDrawing" class="absolute top-[42px] left-0 right-0 bg-white border border-amber-100 rounded-xl shadow-2xl z-[50] max-h-[160px] overflow-y-auto custom-scrollbar">
                                     <button v-for="name in filteredGDropdown" :key="'gopt'+name" @click="addManualGuardian(name)" 
                                         class="w-full text-left px-4 py-2 text-[15px] font-black text-slate-700 hover:bg-amber-50 hover:text-amber-700 border-b border-slate-50 last:border-0">{{ name }}</button>
                                 </div>
+                                
+                                <!-- Dedicated Guardian Animation Overlay -->
+                                <div v-if="isDrawing && currentType === 'guardian'" class="absolute inset-0 bg-amber-50/90 rounded-xl flex items-center justify-center space-x-3 z-[60] border border-amber-200 animate-pulse">
+                                    <span class="dot bg-amber-400 w-2.5 h-2.5"></span>
+                                    <span class="dot bg-amber-500 w-2.5 h-2.5"></span>
+                                    <span class="dot bg-amber-600 w-2.5 h-2.5"></span>
+                                    <span class="text-[12px] font-black text-amber-600 uppercase tracking-widest">抽選中...</span>
+                                </div>
+
                                 <div v-if="isGDropdownOpen" @click="isGDropdownOpen = false" class="fixed inset-0 z-[40]"></div>
                             </div>
                             <!-- Tags are now smaller and closer to the 'search' area -->
@@ -104,27 +113,31 @@
                             </div>
                         </div>
 
-                        <!-- Right: Reduced Random Draw (Half Heightish) -->
-                        <div class="flex-1 flex items-center space-x-1 pt-0.5">
-                            <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-sm flex-1">
-                                <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-7 h-full font-black text-[18px] text-amber-400">−</button>
-                                <span class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none">{{ pickSize }}</span>
-                                <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-7 h-full font-black text-[18px] text-amber-400">＋</button>
+                        <div class="flex-1 flex flex-col space-y-1 pt-0.5">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-sm flex-1">
+                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-7 h-full font-black text-[18px] text-amber-400">−</button>
+                                    <span class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none">{{ pickSize }}</span>
+                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-7 h-full font-black text-[18px] text-amber-400">＋</button>
+                                </div>
+                                <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
+                                    class="h-9 px-3 font-black text-[13px] rounded-lg bg-amber-500 text-white shadow-md active:scale-95 disabled:opacity-30 whitespace-nowrap">
+                                    {{ guardianResults.length > 0 ? '加抽人員' : '隨機抽' }}
+                                </button>
                             </div>
-                            <button @click="pickGuardians" :disabled="selectedNames.length < pickSize" 
-                                class="h-9 px-3 font-black text-[13px] rounded-lg bg-amber-500 text-white shadow-md active:scale-95 disabled:opacity-30 whitespace-nowrap">
-                                隨機抽
-                            </button>
+                            <div v-if="guardianResults.length > 0" class="text-right px-1">
+                                <span class="text-[14px] font-black text-amber-500/80 uppercase tracking-tighter italic">* 已抽 {{ guardianResults.length }} 位</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- AREA 2: PERSONNEL ROLES & CALCULATION -->
-                <div class="bg-white p-3 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                <div class="bg-white p-3 rounded-2xl border border-slate-100 space-y-3 shadow-sm">
                     
                     <!-- 2A. SEED SELECTION (ROLE ASSIGNMENT) -->
-                    <div class="space-y-2 pb-1">
-                        <label class="text-[13px] font-black text-slate-400 uppercase tracking-wider px-1">🌟 指定種子組 (行政優先扣除)</label>
+                    <div class="space-y-1.5 pb-1">
+                        <label class="text-[17px] font-bold text-slate-400 uppercase tracking-wider px-1">🌟 指定種子組 (優先扣除)</label>
                         <div class="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-slate-100 rounded-xl min-h-[44px]">
                             <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-amber-50 text-amber-900 text-[16px] font-black px-3 py-1 rounded-lg border border-amber-100">
                                 <span>{{ name }}</span>
@@ -152,24 +165,24 @@
                         </div>
 
                         <div :class="['p-3 rounded-xl border transition-all duration-300', includeGuardians ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'bg-slate-50 border-slate-200']">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-[14px] font-black text-slate-500">📋 分派人數試算 (系統去重已套用)</span>
-                                <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '混合分派模式' : '排除關主模式' }}</span>
+                            <div class="flex items-center justify-between mb-2 flex-nowrap overflow-hidden">
+                                <span class="text-[14px] font-black text-slate-500 whitespace-nowrap truncate mr-2">📋 分派人數試算</span>
+                                <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full shrink-0', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '包含關主模式' : '排除關主模式' }}</span>
                             </div>
                             <div class="space-y-1 px-0.5">
                                 <div class="flex items-center justify-between text-[16px] font-black"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
                                 
                                 <!-- Detailed Deduction Rows -->
                                 <div class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
-                                    <span>− 種子組名單</span>
+                                    <span>− 種子組名單 <span v-if="guardianSeedsCount > 0" class="text-[11px] opacity-60 font-black ml-1">(含 {{ guardianSeedsCount }} 位關主)</span></span>
                                     <span>{{ seedNames.length }} 人</span>
                                 </div>
-                                <div v-if="!includeGuardians" class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
-                                    <span>− 指定關主名單</span>
-                                    <span>{{ guardianResults.length }} 人</span>
+                                <div v-if="!includeGuardians && nonSeedGuardiansCount > 0" class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
+                                    <span>− 指定關主名單 <span class="text-[10px] opacity-40 ml-1">(扣除重複種子)</span></span>
+                                    <span>{{ nonSeedGuardiansCount }} 人</span>
                                 </div>
                                 
-                                <div class="flex items-center justify-between text-[16px] font-black pt-1 border-t border-dashed border-slate-100 mt-1">
+                                <div class="flex items-center justify-between text-[14px] font-black pt-1 border-t border-dashed border-slate-100 mt-1">
                                     <span class="text-rose-400/80 italic">❷ 總計排除</span>
                                     <span class="text-rose-500">{{ totalExclusionCount }} 人</span>
                                 </div>
@@ -180,7 +193,7 @@
                                             <span class="text-slate-900 font-black text-[17px]">❸ 實際隨機分派</span>
                                             <span class="text-[10px] font-bold text-slate-400">❶ 在場總計 − ❷ 總計排除</span>
                                         </div>
-                                        <span :class="['text-[26px] font-black leading-none drop-shadow-sm', includeGuardians ? 'text-indigo-600' : 'text-amber-600']">{{ activePoolCount }} 人</span>
+                                        <span :class="['text-[20px] font-black leading-none drop-shadow-sm', includeGuardians ? 'text-indigo-600' : 'text-amber-600']">{{ activePoolCount }} 人</span>
                                     </div>
                                 </div>
                             </div>
@@ -188,9 +201,9 @@
                     </div>
 
                     <!-- 2C. GROUP SIZE & ACTION -->
-                    <div class="space-y-4 pt-1 border-t border-slate-50 mt-1">
-                        <div class="space-y-2">
-                            <label class="text-[13px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
+                    <div class="space-y-2 pt-1 border-t border-slate-50 mt-1">
+                        <div class="space-y-1.5">
+                            <label class="text-[17px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
                             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-14 bg-slate-50/50">
                                 <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-slate-400 hover:bg-white text-[20px] font-black transition-colors">−</button>
                                 <div class="flex-1 flex flex-col items-center justify-center"><span class="text-[20px] font-black text-slate-800 leading-none">{{ groupSize }}</span></div>
@@ -201,22 +214,23 @@
                     </div>
                 </div>
 
-                <!-- Drawing Animation -->
-                <div v-if="isDrawing" class="flex flex-col items-center justify-center py-12 space-y-4">
-                    <div class="flex gap-3">
-                        <span class="dot bg-indigo-400 w-4 h-4"></span>
-                        <span class="dot bg-indigo-500 w-4 h-4"></span>
-                        <span class="dot bg-indigo-600 w-4 h-4"></span>
-                    </div>
-                    <p class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">隨機演算中...</p>
-                </div>
-
-                <!-- Results Display -->
-                <div v-if="(guardianResults.length > 0 || groups.length > 0) && !isDrawing" class="animate-fade-in space-y-3 pb-20 px-1 -mt-4">
+                <!-- Results Display Area (Including Suspense Animation) -->
+                <div class="animate-fade-in space-y-3 pb-20 px-1 -mt-4 min-h-[100px]">
                     <div class="border-t border-slate-100 w-16 mx-auto mb-1"></div>
-                    <div v-if="guardianResults.length > 0" class="bg-amber-50 p-1.5 rounded-2xl border border-amber-200/50">
+                    
+                    <!-- Suspense Animation (Relocated here for visibility) -->
+                    <div v-if="isDrawing" class="flex flex-col items-center justify-center py-8 space-y-4 animate-pulse">
+                        <div class="flex gap-3">
+                            <span class="dot bg-indigo-400 w-4 h-4 shadow-lg shadow-indigo-200"></span>
+                            <span class="dot bg-indigo-500 w-4 h-4 shadow-lg shadow-indigo-200"></span>
+                            <span class="dot bg-indigo-600 w-4 h-4 shadow-lg shadow-indigo-200"></span>
+                        </div>
+                        <p class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">{{ currentType === 'guardian' ? '關主抽選中...' : '隨機演算中...' }}</p>
+                    </div>
+
+                    <div v-if="guardianResults.length > 0 && !isDrawing" class="bg-amber-50 p-1.5 rounded-2xl border border-amber-200/50">
                         <div class="flex items-center justify-between mb-1">
-                            <h4 class="text-[13px] font-black text-amber-600 tracking-wider uppercase">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
+                            <h4 class="text-[15px] font-black text-amber-600 tracking-wider uppercase">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
                             <button @click="clearGuardians" class="text-[11px] font-black text-amber-400 hover:text-amber-600">重抽</button>
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-0.5">
@@ -234,7 +248,7 @@
                         </div>
                         <div class="grid gap-1">
                             <div v-for="(group, idx) in groups" :key="idx" :class="['p-1.5 px-3 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-50 border-amber-100 ring-2 ring-amber-50' : 'bg-white border-slate-100 shadow-none']">
-                                <div class="flex items-center justify-between mb-0.5"><span :class="['text-[12px] font-black uppercase tracking-tight', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.name }}</span><span class="text-[11px] font-bold text-slate-300">{{ group.members.length }} 人</span></div>
+                                <div class="flex items-center justify-between mb-0.5"><span :class="['text-[15px] font-black uppercase tracking-tight', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.name }}</span><span class="text-[11px] font-bold text-slate-300">{{ group.members.length }} 人</span></div>
                                 <div class="flex flex-wrap gap-x-4 gap-y-0.5"><span v-for="member in group.members" :key="member" :class="['text-[17px] font-black', group.isSeed ? 'text-amber-900' : 'text-slate-900']">{{ member }}</span></div>
                             </div>
                         </div>
@@ -287,7 +301,12 @@ const availableSeeds = computed(() => {
 });
 
 const availableGuardians = computed(() => {
-    return selectedNames.value.filter(n => !guardianResults.value.includes(n));
+    const list = selectedNames.value.filter(n => !guardianResults.value.includes(n));
+    return list.sort((a, b) => {
+        const idxA = users.value.findIndex(u => u.name === a);
+        const idxB = users.value.findIndex(u => u.name === b);
+        return idxA - idxB;
+    });
 });
 
 const filteredGDropdown = computed(() => {
@@ -368,6 +387,8 @@ const toggleSelect = (name) => {
     } else {
         selectedNames.value.splice(idx, 1);
         removeSeed(name);
+        removeGuardian(name);
+        groups.value = []; // Clear grouping results if personnel changes to avoid stale data
     }
 };
 
@@ -382,6 +403,14 @@ const addSeedFromSelect = (event) => {
 const removeSeed = (name) => {
     seedNames.value = seedNames.value.filter(n => n !== name);
 };
+
+const guardianSeedsCount = computed(() => {
+    return guardianResults.value.filter(g => seedNames.value.includes(g)).length;
+});
+
+const nonSeedGuardiansCount = computed(() => {
+    return guardianResults.value.filter(g => !seedNames.value.includes(g)).length;
+});
 
 const totalExclusionCount = computed(() => {
     const combined = new Set(seedNames.value);
@@ -450,7 +479,7 @@ const doGrouping = () => {
         groups.value = distributePlayers([...selectedNames.value], groupSize.value);
         isDrawing.value = false;
         saveToLocalStorage();
-    }, 800);
+    }, 3000);
 };
 
 const pickGuardians = () => {
@@ -473,7 +502,7 @@ const pickGuardians = () => {
         toastMsg.value = '關主已抽出';
         showSavedToast.value = true;
         setTimeout(() => { showSavedToast.value = false; }, 2000);
-    }, 800);
+    }, 3000);
 };
 
 const clearGuardians = () => {
