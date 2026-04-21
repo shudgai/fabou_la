@@ -13,7 +13,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </span>
                 <span class="truncate flex-1">
-                    {{ '法寶登記專區' + (currentFolder ? '-' + currentFolder.name : '') }}
+                    {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') + (currentFolder ? ' - ' + currentFolder.name : '') }}
                 </span>
                 <button v-if="currentFolder && !focusedId" @click="toggleSort" class="ml-2 px-2 py-1 text-[11px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shrink-0">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
@@ -31,17 +31,17 @@
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <div class="flex-1 pr-12">
-                        <h1 class="text-[30px] font-black text-red-600 tracking-tight text-center">
-                            {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩專區') : '法寶登記專區' }}
-                        </h1>
+                    <h1 class="text-[24px] font-black text-red-600 tracking-tight text-center">
+                        {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
+                    </h1>
                     </div>
                 </div>
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[32px] border-2 border-[rgb(240,20,40)] p-4 w-[253px] h-[276px] relative transition-all shadow-sm">
-                        <div class="mb-4">
-                            <svg class="w-[147px] h-[147px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[24px] border-2 border-[rgb(240,20,40)] p-3 w-[180px] h-[200px] relative transition-all shadow-sm">
+                        <div class="mb-2">
+                            <svg class="w-[100px] h-[100px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="goldGradL1" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
@@ -53,12 +53,12 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#goldGradL1)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[28px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[20px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[32px] border-2 border-[rgb(240,20,40)] p-4 w-[253px] h-[276px] relative transition-all shadow-sm">
-                        <div class="mb-4">
-                            <svg class="w-[147px] h-[147px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[24px] border-2 border-[rgb(240,20,40)] p-3 w-[180px] h-[200px] relative transition-all shadow-sm">
+                        <div class="mb-2">
+                            <svg class="w-[100px] h-[100px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="redGradL2" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
@@ -70,7 +70,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[28px] font-black text-yellow-400 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
+                        <div class="text-[20px] font-black text-yellow-400 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
                     </button>
                 </div>
 
@@ -78,10 +78,10 @@
                 <div v-else class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border border-red-50 group p-2 w-[216px] h-[216px] relative">
+                        class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border border-red-50 group p-2 w-[160px] h-[160px] relative">
                         
-                        <div class="relative mb-2">
-                             <svg class="w-[129px] h-[129px] transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                        <div class="relative mb-1">
+                             <svg class="w-[90px] h-[90px] transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                 <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <template v-if="currentCategory === 'major'">
@@ -180,7 +180,7 @@
                                 </div>
                                 <div class="flex items-center justify-between group/title pr-12">
                                     <div class="flex flex-col">
-                                        <div class="text-[24px] font-black text-black leading-tight truncate font-outfit flex items-center">
+                                        <div class="text-[18px] font-black text-black leading-tight truncate font-outfit flex items-center">
                                             {{ item.name }}
                                             <button v-if="expandedIds.has(item.id) && (item.purpose || item.acquisition_method || item.remarks)" 
                                                     @click.stop="showItemDetails = !showItemDetails" 
@@ -198,9 +198,8 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Personnel Tags (Visible when collapsed) -->
-                                <div v-if="!expandedIds.has(item.id) && item.dharma_name_registries?.length" class="mt-2 flex flex-wrap gap-1">
-                                    <span v-for="dnr in item.dharma_name_registries" :key="dnr.id" class="text-[15px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 font-outfit font-black">
+                                <div v-if="!expandedIds.has(item.id) && item.dharma_name_registries?.length" class="mt-1 flex flex-wrap gap-1">
+                                    <span v-for="dnr in item.dharma_name_registries" :key="dnr.id" class="text-[13px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded-md border border-indigo-100 font-outfit font-black">
                                         {{ dnr.dharma_name ? dnr.dharma_name.name : dnr.custom_name }}
                                     </span>
                                 </div>
@@ -347,50 +346,50 @@
 
         <!-- Add Action Menu Overlay -->
         <div v-if="showAddMenu" class="fixed inset-0 z-[150] flex items-end justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-fade-in" @click="showAddMenu = false">
-            <div class="bg-white w-full max-w-sm rounded-[32px] overflow-hidden shadow-2xl animate-pop-in mb-20" @click.stop>
-                <div class="p-2 space-y-1">
-                    <button @click="addMode = 'single'; showAddMenu = false" class="w-full p-4 flex items-center space-x-4 hover:bg-slate-50 transition-colors rounded-2xl group">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="bg-white w-full max-w-[320px] rounded-[24px] overflow-hidden shadow-2xl animate-pop-in mb-20" @click.stop>
+                <div class="p-1 space-y-0.5">
+                    <button @click="addMode = 'single'; showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[18px] font-black font-outfit text-slate-800">逐筆新增</span>
-                            <span class="text-[13px] text-slate-400 font-medium font-outfit">手動輸入每一項重大皇恩詳細資...</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">逐筆新增</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">手動輸入每一項重大皇恩詳細資...</span>
                         </div>
                     </button>
 
-                    <button @click="addMode = 'batch'; showAddMenu = false" class="w-full p-4 flex items-center space-x-4 hover:bg-slate-50 transition-colors rounded-2xl group border-t border-slate-50">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="addMode = 'batch'; showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[18px] font-black font-outfit text-slate-800">多筆一次新增</span>
-                            <span class="text-[13px] text-slate-400 font-medium font-outfit">快速解析 LINE 聊天內容紀錄</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">多筆一次新增</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">快速解析 LINE 聊天內容紀錄</span>
                         </div>
                     </button>
 
-                    <button @click="copyAllToLine(); showAddMenu = false" class="w-full p-4 flex items-center space-x-4 hover:bg-slate-50 transition-colors rounded-2xl group border-t border-slate-50">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="copyAllToLine(); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[18px] font-black font-outfit text-slate-800">複製隨貼 LINE (全部)</span>
-                            <span class="text-[13px] text-slate-400 font-medium font-outfit">將此分類完整清單複製至剪貼簿</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">複製隨貼 LINE (全部)</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">將此分類完整清單複製至剪貼簿</span>
                         </div>
                     </button>
 
-                    <button @click="downloadAllData(); showAddMenu = false" class="w-full p-4 flex items-center space-x-4 hover:bg-slate-50 transition-colors rounded-2xl group border-t border-slate-50">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="downloadAllData(); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
+                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[18px] font-black font-outfit text-slate-800">下載匯出 EXCEL (全部)</span>
-                            <span class="text-[13px] text-slate-400 font-medium font-outfit">將此分類匯出為標準試算表檔案</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">下載匯出 EXCEL (全部)</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">將此分類匯出為標準試算表檔案</span>
                         </div>
                     </button>
                     
-                    <div class="p-4 border-t border-slate-50">
-                        <button @click="showAddMenu = false" class="w-full py-3 text-slate-400 font-black text-[16px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
+                    <div class="p-2 border-t border-slate-50">
+                        <button @click="showAddMenu = false" class="w-full py-2 text-slate-400 font-black text-[14px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
                     </div>
                 </div>
             </div>

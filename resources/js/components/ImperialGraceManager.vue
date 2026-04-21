@@ -439,11 +439,11 @@ watch(persistentToast, (newVal) => {
         deleteConfirmId.value = null;
         return;
     }
-    // 如果不是需要等待使用者決策的類型，則 3 秒後自動消失
+    // 如果不是需要等待使用者決策的類型，則預設 3 秒後自動消失 (支援自訂 duration)
     if (!['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(newVal.type)) {
         setTimeout(() => {
             if (persistentToast.value === newVal) persistentToast.value = null;
-        }, 3000);
+        }, newVal.duration || 3000);
     }
 });
 
@@ -733,7 +733,11 @@ const saveSingle = async (resolutionOrData = null) => {
                 currentCategory.value = 'masters';
                 currentFolder.value = matchedFolder;
                 focusedId.value = res?.data?.id || form.value.id;
-                persistentToast.value = { msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, type: 'success' };
+                persistentToast.value = { 
+                    msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
+                    type: 'success',
+                    duration: 1500 
+                };
             }
         }
         addMode.value = null; 
@@ -804,7 +808,11 @@ const changeStatus = async (reg, nextStatus) => {
                     currentFolder.value = matchedFolder;
                     focusedId.value = reg.id;
                     expandedIds.value.add(reg.id);
-                    persistentToast.value = { msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, type: 'success' };
+                    persistentToast.value = { 
+                        msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, 
+                        type: 'success',
+                        duration: 1500
+                    };
                 }
             }
         }

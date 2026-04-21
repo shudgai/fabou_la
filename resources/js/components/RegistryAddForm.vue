@@ -25,7 +25,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">日期</label>
-                        <input v-model="form.record_date" type="date" class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm">
+                        <div @click="activePicker = { idx: 'main', field: 'record_date', title: '設定主要日期' }" 
+                            class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 flex items-center justify-between cursor-pointer shadow-sm active:scale-[0.98] transition-all">
+                            <span :class="form.record_date ? 'text-slate-900' : 'text-slate-300'" class="text-[18px] font-bold font-outfit uppercase">
+                                {{ form.record_date ? form.record_date.replace(/-/g, '/') : '年 / 月 / 日' }}
+                            </span>
+                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">仙師</label>
@@ -71,14 +77,19 @@
                             
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-400 ml-1">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="輸入或選擇法號" list="dharma-names"
-                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-3 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                                    <label class="text-[11px] text-slate-400 ml-1 font-black">法號</label>
+                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-3 text-[18px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1">日期</label>
-                                    <input v-model="p.obtained_date" type="date"
-                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-2 text-[16px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                                    <div @click="activePicker = { idx, field: 'obtained_date', title: p.custom_name || '設定取得日期' }" 
+                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-2 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors">
+                                        <span :class="p.obtained_date ? 'text-slate-900' : 'text-slate-300'" class="text-[14px] font-bold font-outfit uppercase">
+                                            {{ p.obtained_date ? p.obtained_date.replace(/-/g, '/') : '年/月/日' }}
+                                        </span>
+                                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-1">
@@ -118,6 +129,19 @@
                 </button>
             </div>
         </div>
+
+        <compact-date-picker 
+            v-if="activePicker && activePicker.idx === 'main'"
+            v-model="form[activePicker.field]"
+            :title="activePicker.title"
+            @close="activePicker = null"
+        />
+        <compact-date-picker 
+            v-if="activePicker && activePicker.idx !== 'main'"
+            v-model="personnel[activePicker.idx][activePicker.field]"
+            :title="activePicker.title"
+            @close="activePicker = null"
+        />
     </div>
 </template>
 
@@ -134,11 +158,14 @@ const props = defineProps({
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel']);
 
+import CompactDatePicker from './CompactDatePicker.vue';
+
 const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const personnel = ref([]);
 const dharmaNames = ref([]);
+const activePicker = ref(null); // { idx: number | 'main', field: string, title: string }
 
 const fetchDharmaNames = async () => {
     try {

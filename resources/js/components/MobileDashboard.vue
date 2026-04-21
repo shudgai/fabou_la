@@ -118,7 +118,10 @@ const loadStats = async () => {
         
         if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.length || 0;
         if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.length || 0;
-        if (teach.status === 'fulfilled') counts.value['teaching'] = teach.value.data?.length || 0;
+        if (teach.status === 'fulfilled') {
+            const res = teach.value.data;
+            counts.value['teaching'] = res.data ? (res.total || res.data.length || 0) : (res.length || 0);
+        }
         if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.length || 0;
         
         stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
