@@ -283,15 +283,15 @@
                                         <div v-if="showItemDetails" class="space-y-5 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50 animate-fade-in">
                                             <div v-if="item.purpose" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                <div class="text-[17px] font-black text-slate-700 leading-relaxed font-outfit">{{ formatArmyCount(item.purpose, item.name) }}</div>
+                                                <div class="text-[17px] font-black text-slate-700 leading-relaxed font-outfit">{{ item.purpose }}</div>
                                             </div>
                                             <div v-if="item.acquisition_method" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                <div class="text-[17px] font-black text-slate-700 font-outfit">{{ formatArmyCount(item.acquisition_method, item.name) }}</div>
+                                                <div class="text-[17px] font-black text-slate-700 font-outfit">{{ item.acquisition_method }}</div>
                                             </div>
                                             <div v-if="item.remarks" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                <div @click.stop="openRemarks(formatArmyCount(item.remarks, item.name))" class="text-[17px] font-black text-slate-700 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ formatArmyCount(item.remarks, item.name) }}</div>
+                                                <div @click.stop="openRemarks(item.remarks)" class="text-[17px] font-black text-slate-700 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -333,15 +333,20 @@
                                                             </div>
                                                         </td>
                                                         <td class="border-b border-slate-50 p-0 text-black">
-                                                            <div @click="editingIds.has(item.id) ? (currentRemarksKey = item.id + '-' + dn.id, showRemarksModal = true) : null" 
+                                                            <div @click="editingIds.has(item.id) ? (currentRemarksKey = item.id + '-' + dn.id, showRemarksModal = true) : (dn.remarks ? openRemarks(dn.remarks) : null)" 
                                                                  class="w-full h-[42px] px-3 flex items-center transition-colors group/edit-cell"
-                                                                 :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''">
-                                                                <span :class="editMap[item.id + '-' + dn.id].remarks ? 'text-black' : 'text-slate-300'" class="text-[15px] font-black font-outfit truncate not-italic">
+                                                                 :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : (dn.remarks ? 'cursor-pointer hover:text-indigo-600' : '')">
+                                                                <span v-if="editingIds.has(item.id)" :class="editMap[item.id + '-' + dn.id].remarks ? 'text-black' : 'text-slate-300'" class="text-[15px] font-black font-outfit truncate not-italic">
                                                                     {{ editMap[item.id + '-' + dn.id].remarks ? (editMap[item.id + '-' + dn.id].remarks.length > 4 ? editMap[item.id + '-' + dn.id].remarks.substring(0, 4) + '...' : editMap[item.id + '-' + dn.id].remarks) : '...' }}
                                                                 </span>
+                                                                <span v-else :class="dn.remarks ? 'text-slate-600' : 'text-slate-200'" class="text-[15px] font-black font-outfit truncate not-italic">
+                                                                    {{ dn.remarks ? (dn.remarks.length > 5 ? dn.remarks.substring(0, 5) + '...' : dn.remarks) : '-' }}
+                                                                </span>
                                                                 <svg v-if="editingIds.has(item.id)" class="w-3 h-3 ml-auto text-slate-200 group-hover/edit-cell:text-indigo-400 opacity-0 group-hover/edit-cell:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                <svg v-else-if="dn.remarks" class="w-3 h-3 ml-auto text-slate-200 group-hover/edit-cell:text-indigo-400 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="3" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                             </div>
-                                                        </td>                                                    </tr>
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -1037,33 +1042,6 @@ const openCombinedRemarks = (item) => {
         .map(r => `【${r.dharma_name ? r.dharma_name.name : r.custom_name}】：${r.remarks}`)
         .join('\n\n');
     openRemarks(combined);
-};
-
-const formatArmyCount = (text, name = '') => {
-    if (!text || typeof text !== 'string') return text;
-    if (!name || !name.includes('軍')) return text;
-    
-    // Support numbers with optional commas and optional '位' unit
-    return text.replace(/([\d,]+)(位)?/g, (match, numStr) => {
-        let cleanNum = numStr.replace(/,/g, '');
-        let num = parseInt(cleanNum);
-        if (isNaN(num) || num < 1000000) return match; 
-
-        const troops = Math.floor(num / 1000000);
-        const remaining = num % 1000000;
-        
-        let res = `${troops}隊`;
-        if (remaining === 0) return res;
-
-        const wan = Math.floor(remaining / 10000);
-        const rest = remaining % 10000;
-        
-        if (wan > 0) res += `${wan}萬`;
-        if (rest > 0) res += `${rest}位`;
-        else if (wan === 0) res += `0位`; // Optional: decide if 0 bits should show
-        
-        return res;
-    });
 };
 
 const deleteItem = async (id) => {

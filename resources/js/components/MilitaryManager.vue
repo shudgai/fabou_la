@@ -127,7 +127,7 @@
                                         <!-- Subtotal -->
                                         <div class="text-[17px] text-slate-900 font-black flex items-center space-x-2">
                                             <span class="text-[15px] font-black text-slate-400 uppercase tracking-wider">小計:</span> 
-                                            <span class="text-[17px] text-slate-900 font-black">{{ item.quantity || 0 }}</span>
+                                            <span class="text-[17px] text-slate-900 font-black">{{ formatArmyTotal(item.quantity) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@
                                 <!-- Subtotal Special Row (Minimalist Style) -->
                                 <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
                                     <span class="text-[15px] font-black text-slate-400 uppercase tracking-wider">小計</span>
-                                    <span class="text-[17px] font-black text-slate-900">{{ item.quantity || 0 }}</span>
+                                    <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(item.quantity) }}</span>
                                 </div>
 
                                 <!-- Remarks Row -->
@@ -231,7 +231,7 @@
 
                 <div class="flex items-center justify-between pr-10">
                     <span class="text-[19px] font-black uppercase tracking-widest text-slate-400">{{ currentFolder?.name }}總量</span>
-                    <span class="text-[17px] font-black font-outfit">{{ currentFolderTotal }}</span>
+                    <span class="text-[17px] font-black font-outfit">{{ formatArmyTotal(currentFolderTotal) }}</span>
                 </div>
                 
                 <!-- Breakdown Grid (Specific to current army) -->
@@ -239,21 +239,21 @@
                     <template v-if="currentFolder?.name === '黑曜軍'">
                         <div class="flex flex-col">
                             <span class="text-[17px] font-black text-slate-400">總閻尊</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ breakdownTotals.yan_zun }}</span>
+                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.yan_zun) }}</span>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[17px] font-black text-slate-400">總閻闇</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ breakdownTotals.yan_an }}</span>
+                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.yan_an) }}</span>
                         </div>
                     </template>
                     <template v-if="currentFolder?.name === '耀紫軍'">
                         <div class="flex flex-col">
                             <span class="text-[17px] font-black text-slate-400">總龍勝</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ breakdownTotals.long_sheng }}</span>
+                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.long_sheng) }}</span>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[17px] font-black text-slate-400">總龍戰</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ breakdownTotals.long_zhan }}</span>
+                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.long_zhan) }}</span>
                         </div>
                     </template>
                 </div>
@@ -323,6 +323,21 @@ const sortDesc = ref(true);
 const openStatusId = ref(null);
 const showFullTotal = ref(false);
 let fullTotalTimer = null;
+
+const formatArmyTotal = (num) => {
+    num = Number(num) || 0;
+    if (num < 1000000) return num.toLocaleString();
+    const troops = Math.floor(num / 1000000);
+    const remaining = num % 1000000;
+    if (remaining === 0) return `${troops}隊`;
+    const wan = Math.floor(remaining / 10000);
+    const rest = remaining % 10000;
+    let res = `${troops}隊`;
+    if (wan > 0) res += `${wan}萬`;
+    if (rest > 0) res += `${rest}位`;
+    else if (wan === 0) res += `0位`;
+    return res;
+};
 
 const toggleFullTotal = () => {
     showFullTotal.value = true;

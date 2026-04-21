@@ -48,7 +48,10 @@
                     <!-- Conditional Quantity Row -->
                     <!-- Case 1: 虎甲/虎賁 or Default -->
                     <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
-                        <label class="text-[14px] font-black text-slate-400 uppercase ml-1">數量</label>
+                        <div class="flex items-center justify-between ml-1">
+                            <label class="text-[14px] font-black text-slate-400 uppercase">數量</label>
+                            <span v-if="form.quantity >= 1000000" class="text-[13px] font-black text-indigo-500 bg-indigo-50 px-2 rounded-lg">{{ formatArmyTotal(form.quantity) }}</span>
+                        </div>
                         <input v-model="form.quantity" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm text-[18px] leading-tight text-slate-900 font-black">
                     </div>
 
@@ -66,7 +69,8 @@
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
                             <span class="text-[16px] font-black text-slate-400">小計</span>
-                            <span class="text-[18px] font-black text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }}</span>
+                            <span class="text-[18px] font-black text-indigo-600 mr-2" v-if="(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) >= 1000000">({{ formatArmyTotal(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }})</span>
+                            <span class="text-[18px] font-black text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)).toLocaleString() }}</span>
                         </div>
                     </div>
 
@@ -86,7 +90,8 @@
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
                             <span class="text-[16px] font-black text-slate-400">小計</span>
-                            <span class="text-[18px] font-black text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }}</span>
+                            <span class="text-[18px] font-black text-indigo-600 mr-2" v-if="(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) >= 1000000">({{ formatArmyTotal(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }})</span>
+                            <span class="text-[18px] font-black text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)).toLocaleString() }}</span>
                         </div>
                     </div>
 
@@ -164,6 +169,21 @@ const form = ref({
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal, army_type: props.armyType || newVal.army_type };
 }, { deep: true });
+
+const formatArmyTotal = (num) => {
+    num = Number(num) || 0;
+    if (num < 1000000) return num.toLocaleString();
+    const troops = Math.floor(num / 1000000);
+    const remaining = num % 1000000;
+    if (remaining === 0) return `${troops}隊`;
+    const wan = Math.floor(remaining / 10000);
+    const rest = remaining % 10000;
+    let res = `${troops}隊`;
+    if (wan > 0) res += `${wan}萬`;
+    if (rest > 0) res += `${rest}位`;
+    else if (wan === 0) res += `0位`;
+    return res;
+};
 
 const handleSave = () => {
     if (!form.value.user_name) {
