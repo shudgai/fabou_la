@@ -66,7 +66,7 @@
                     <!-- Personnel List -->
                     <div class="pt-4 border-t border-slate-100 space-y-3">
                         <div class="flex items-center justify-between ml-1">
-                            <label class="text-[15px] font-black text-indigo-700 uppercase tracking-tight">承接人員</label>
+                            <label class="text-[15px] font-black text-indigo-700 uppercase tracking-tight">承接皇恩的師兄姐</label>
                             <button @click="addPersonnelRow" class="text-[12px] font-bold text-indigo-500 hover:text-indigo-600 active:scale-95 transition-all">
                                 ＋ 新增人員
                             </button>
@@ -217,7 +217,15 @@ const selectedMasterName = computed(() => {
 
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal };
-}, { deep: true });
+    if (newVal.dharma_name_registries) {
+        personnel.value = newVal.dharma_name_registries.map(r => ({
+            dharma_name_id: r.dharma_name_id,
+            custom_name: r.dharma_name?.name || r.custom_name || '',
+            obtained_date: r.obtained_date || '',
+            remarks: r.remarks || ''
+        }));
+    }
+}, { deep: true, immediate: true });
 
 watch(() => props.mode, (newVal) => {
     if (newVal) localMode.value = newVal;

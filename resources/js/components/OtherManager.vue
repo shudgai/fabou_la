@@ -41,6 +41,14 @@
                         </div>
                     </div>
                 </button>
+
+                <!-- Lucky Draw Tool Button -->
+                <button @click="showLuckyDraw = true"
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
+                    <div class="relative w-[148px] h-[148px] bg-slate-50 border-2 border-dashed border-indigo-200 rounded-[32px] flex flex-col items-center justify-center shadow-inner">
+                        <span class="text-[25px] font-black text-indigo-600 font-outfit uppercase tracking-tighter text-center px-2">抽籤筒<br>(工具)</span>
+                    </div>
+                </button>
             </div>
 
             <!-- Dashboard Bottom Navbar -->
@@ -145,6 +153,7 @@
                 </div>
             </div>
         </div>
+        <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
     </div>
 </template>
 
@@ -154,6 +163,7 @@ import axios from 'axios';
 import KaiwenApproval from './KaiwenApproval.vue';
 import RandomGroup from './RandomGroup.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import LuckyDraw from './LuckyDraw.vue';
 
 const emit = defineEmits(['goHome']);
 
@@ -163,6 +173,7 @@ const props = defineProps({
 
 const folders = ref([]);
 const activeFolderId = ref(null);
+const showLuckyDraw = ref(false);
 const showAddFolder = ref(false);
 const showAddRecord = ref(false);
 
