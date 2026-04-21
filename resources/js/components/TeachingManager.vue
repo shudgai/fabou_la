@@ -162,7 +162,21 @@
                         </div>
                     </button>
                 </div>
-                <div class="h-24"></div>
+                
+                <!-- Added Global Multi-Add Button -->
+                <div class="px-6 pb-20">
+                    <button @click="showMultiMasterAdd" 
+                            class="w-full py-5 bg-gradient-to-r from-red-500 to-rose-600 rounded-[28px] text-white font-black text-[19px] shadow-[0_10px_25px_rgba(244,63,94,0.3)] active:scale-95 transition-all flex items-center justify-center group mb-4">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3 group-hover:rotate-90 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </div>
+                        整筆多位仙師智慧錄入
+                    </button>
+                    <p class="text-center text-slate-400 text-[13px] font-bold px-4 leading-relaxed">
+                        💡 貼入包含多位仙師的對話文字，系統將自動分流。
+                    </p>
+                </div>
+                <div class="h-10"></div>
             </div>
 
             <!-- Level 2: List & Add View -->
@@ -175,7 +189,7 @@
 
 
                         <div class="space-y-4 pb-32 flex-1 p-4">
-                            <template v-if="entryTab === 'single'">
+                            <template v-if="activeEntryTab === 'single'">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <label class="text-[13px] text-slate-400 font-bold px-1 select-none">日期</label>
@@ -249,103 +263,65 @@
                                 </div>
                             </template>
                             <template v-else>
-                                <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em] mb-4">文字區塊錄入</div>
-                                <div class="space-y-6">
-                                    <div v-for="(record, index) in batchRecords" :key="index" 
-                                         class="bg-slate-50/50 border border-slate-200 rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
+                                    <div class="flex space-x-2">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
+                                            匯入檔案
+                                            <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
+                                        </label>
+                                        <button @click="processBatchText" class="bg-black text-white px-4 py-1.5 rounded-xl text-[12px] font-black active:scale-95 transition-all">
+                                            智慧解析
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col">
+                                    <div class="p-5 flex-1 flex flex-col">
+                                        <textarea v-model="batchImportContent" 
+                                                  @paste="handleBatchPaste"
+                                                  placeholder="在此貼上多筆開示資料...&#10;格式例：&#10;父皇仙師開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情&#10;&#10;--下一筆--" 
+                                                  class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-medium leading-relaxed placeholder-slate-300"></textarea>
                                         
-                                        <!-- Header: Identification -->
-                                            <div class="bg-slate-50/50 px-5 pt-3 pb-2 border-b border-slate-100">
-                                                <div class="flex items-start">
-                                                    <span class="w-7 h-7 bg-slate-300 text-white rounded-full flex items-center justify-center font-black text-[13px] shrink-0 mt-1 mr-3">{{ index + 1 }}</span>
-                                                    <div class="flex-1 space-y-2">
-                                                        <!-- Row 1: Master -->
-                                                        <div class="relative w-full">
-                                                            <div class="text-[10px] text-slate-400 font-bold px-1 mb-0.5">仙師</div>
-                                                            <div @click.stop="activeMasterDropdownId = activeMasterDropdownId === ('batch-'+index) ? null : ('batch-'+index)" 
-                                                                 class="w-full bg-white border border-slate-100 rounded-xl h-[42px] px-4 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all">
-                                                                <span class="text-[16px] font-black" :class="record.master_name ? 'text-slate-900' : 'text-slate-300'">
-                                                                    {{ record.master_name || '選擇仙師...' }}
-                                                                </span>
-                                                                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                            </div>
-                                                            
-                                                            <!-- Custom Mini Dropdown Menu -->
-                                                            <div v-if="activeMasterDropdownId === ('batch-'+index)" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-xl border border-slate-100 z-[60] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
-                                                                <div v-for="m in allMastersList" :key="'bm'+m" @click.stop="pickMaster(m, index)" 
-                                                                     class="px-4 py-1.2 rounded-xl hover:bg-slate-50 font-bold text-[15px] text-slate-800 active:bg-slate-100 transition-all flex items-center h-[32px]">
-                                                                    {{ m }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Row 2: Recipient + Remarks -->
-                                                        <div class="grid grid-cols-12 gap-2">
-                                                            <div class="col-span-8 relative">
-                                                                <div class="text-[10px] text-slate-400 font-bold px-1 mb-0.5">對象 (輸入法號搜尋)</div>
-                                                                <input type="text" 
-                                                                    v-model="record.dharmaSearchQuery"
-                                                                    @input="e => handleBlockDharmaInput(index, e.target.value)"
-                                                                    list="dharma-search-list"
-                                                                    placeholder="搜尋法號 / 群組..." 
-                                                                    class="w-full bg-white border border-slate-100 rounded-xl h-[42px] px-4 text-[16px] font-black text-slate-900 focus:ring-0 outline-none placeholder-blue-200">
-                                                            </div>
-                                                            <div class="col-span-4 relative">
-                                                                <div class="text-[10px] text-slate-400 font-bold px-1 mb-0.5">備註</div>
-                                                                <input type="text" 
-                                                                    v-model="record.target_remarks"
-                                                                    placeholder="關係..." 
-                                                                    class="w-full bg-white border border-slate-100 rounded-xl h-[42px] px-3 text-[14px] font-bold text-slate-700 focus:ring-0 outline-none placeholder-blue-200">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button v-if="batchRecords.length > 1" @click.prevent="removeBatchBlock(index)" class="text-rose-300 hover:text-rose-500 transition-colors p-2 mt-0.5 ml-1">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <!-- Instructions -->
+                                        <div class="mt-4 p-4 bg-white/60 rounded-2xl border border-blue-50 text-[13px] text-slate-400 leading-normal">
+                                            <p class="font-bold text-slate-500 mb-1">💡 智慧貼上說明：</p>
+                                            <ul class="space-y-1 list-disc pl-4">
+                                                <li>支援從 Excel 貼上多行紀錄</li>
+                                                <li>自動識別「仙師」與「對象」</li>
+                                                <li>偵測到「賜降：」會自動解析清單</li>
+                                                <li>多筆紀錄請保持基本段落區隔</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Preview of parsed blocks if any -->
+                                <div v-if="batchRecords.length > 0 && batchRecords[0].content" class="mt-8 space-y-4">
+                                    <div class="text-[14px] text-slate-400 font-bold px-2 flex items-center">
+                                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                                        已解析紀錄 ({{ batchRecords.length }} 筆)
+                                    </div>
+                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-[12px] font-black text-indigo-500 bg-indigo-50 px-2.5 py-1 rounded-lg">#{{ index + 1 }} {{ record.master_name }}</span>
+                                                <!-- Reorder Buttons -->
+                                                <div class="flex items-center space-x-1 ml-2">
+                                                    <button @click="moveBatchRecord(index, -1)" :disabled="index === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                    <button @click="moveBatchRecord(index, 1)" :disabled="index === batchRecords.length - 1" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
                                                 </div>
                                             </div>
-
-                                        <!-- Content Body -->
-                                        <div class="p-4 space-y-4">
-                                            <!-- Tag Display -->
-                                            <div v-if="record.dharma_name_ids.length > 0" class="flex flex-wrap gap-2 px-1">
-                                                <div v-for="id in record.dharma_name_ids" :key="'block'+index+id" 
-                                                     class="bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-[13px] font-bold flex items-center">
-                                                    {{ getDharmaNameText(id) }}
-                                                </div>
-                                            </div>
-
-                                            <div class="border border-slate-100 rounded-2xl bg-white overflow-hidden transition-all focus-within:ring-2 focus-within:ring-indigo-100 shadow-inner">
-                                                <textarea v-model="record.content" rows="1" @paste="e => handleSmartPaste(e, record, index)" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
-                                                          placeholder="在此貼上開示內容 (支援格式解析)..." 
-                                                          class="w-full bg-transparent border-none text-[18px] text-slate-900 focus:ring-0 outline-none p-4 font-normal leading-relaxed placeholder-sky-400 min-h-[46px]"></textarea>
-                                            </div>
-
-                                            <!-- In-Block Treasure Action & Display -->
-                                            <div class="pt-2">
-                                                <div v-if="record.items?.length > 0" class="mb-3 space-y-1.5 px-1 pb-2 border-b border-slate-50">
-                                                    <div v-for="(group, gName, gIdx) in groupItems(record.items)" :key="gName" class="text-[15px] text-slate-700 font-black flex flex-col">
-                                                        <div class="flex items-center">
-                                                            {{ stripMasterPrefix(gName) }}{{ getMainDetails(group) ? ' : ' + getMainDetails(group) : '' }}
-                                                        </div>
-                                                        <div v-if="group.some(m => m.name || m.sub_name)" class="pl-7 space-y-0.5">
-                                                            <div v-for="m in group.filter(sm => sm.name || sm.sub_name)" :key="m.uid" class="text-[13px] text-slate-400 font-bold">
-                                                                + {{ m.name }}{{ m.details ? ' : ' + m.details : '' }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Manual Action Footer Removed per user request to simplify batch UI -->
-                                            </div>
+                                            <button @click="batchRecords.splice(index, 1)" class="text-slate-200 hover:text-red-400 p-1">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
+                                            </button>
                                         </div>
+                                        <div class="font-bold text-slate-900 text-[16px]">{{ getRecipientName(record) }}</div>
+                                        <div class="text-slate-500 text-[15px] line-clamp-2">{{ record.content }}</div>
                                     </div>
-
-                                    <!-- Add Button -->
-                                    <button @click.prevent="addBatchBlock" 
-                                            class="w-full py-5 border-2 border-dashed border-slate-200 rounded-[28px] text-slate-400 font-bold hover:bg-slate-50 hover:border-indigo-300 hover:text-indigo-400 transition-all flex items-center justify-center group">
-                                        <svg class="w-6 h-6 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        新增開示區塊
-                                    </button>
                                 </div>
                             </template>
 
@@ -416,7 +392,7 @@
 
                             <!-- Floating Action Bar (Side-by-Side) -->
                             <div class="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[300] flex items-center space-x-4 px-6">
-                                <button v-if="currentFolder?.id === 0 || entryTab === 'single'"
+                                <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-3.5 shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
                                     <span>降寶內容</span>
@@ -1380,6 +1356,9 @@ import AddActionMenu from './AddActionMenu.vue';
 // Reactive State
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
+const activeEntryTab = ref('single');
+const batchImportContent = ref('');
+const isAddingFlash = ref(false);
 const currentFolder = ref(null);
 const currentCategory = ref(null);
 const addMode = ref(false);
@@ -1448,8 +1427,6 @@ const saveConfirmModal = ref({
 });
 const masters = ref([]);
 const loading = ref(false);
-const entryTab = ref('single');
-const isAddingFlash = ref(false);
 const saving = ref(false);
 const editingId = ref(null);
 const focusedId = ref(null);
@@ -1730,7 +1707,7 @@ const stashAndContinue = () => {
     dharmaSearchQuery.value = '';
     
     // Requirement: Keep user in 'single' entry mode for the next persona per request
-    entryTab.value = 'single';
+    activeEntryTab.value = 'single';
     itemsDetailMode.value = false;
 };
 
@@ -1905,7 +1882,7 @@ const addActions = computed(() => {
             description: '錄入單筆開示及賜降紀錄',
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-indigo-50 text-indigo-600',
-            handler: () => { showAdd(); entryTab.value = 'single'; showAddMenu.value = false; } 
+            handler: () => { showAdd(); activeEntryTab.value = 'single'; showAddMenu.value = false; } 
         });
     }
 
@@ -1915,7 +1892,7 @@ const addActions = computed(() => {
             description: '批次貼上文字清單匯入',
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-blue-50 text-blue-600',
-            handler: () => { showAdd(); entryTab.value = 'batch'; showAddMenu.value = false; } 
+            handler: () => { showAdd(); activeEntryTab.value = 'batch'; showAddMenu.value = false; } 
         });
     }
 
@@ -2100,7 +2077,7 @@ const fetchItems = async (page = 1) => {
         };
         const isDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         if (isDaily) params.is_daily = 1;
-        else params.is_daily = 0;
+        // In Master folders, we don't pass is_daily so it fetches all records for that master
 
         const res = await axios.get('/teachings', { params });
         if (page === 1) { 
@@ -2634,6 +2611,144 @@ const copyToLine = (item, index = null, allRecords = []) => {
     }
 };
 
+const processBatchText = () => {
+    if (!batchImportContent.value.trim()) return;
+    
+    // Split by common delimiters (e.g., "完畢", horizontal lines, or multiple newlines)
+    const rawBlocks = batchImportContent.value.split(/完畢[！!]?|--+|==+/);
+    const newRecords = [];
+    
+    const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
+    const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇仙師', '太宰仙師', '太子', '閻王仙師'];
+    
+    rawBlocks.forEach(block => {
+        let text = block.trim();
+        if (!text || text.length < 5) return;
+        
+        const record = { 
+            dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
+            target_remarks: '', items: [], master_name: '', date: null
+        };
+        
+        // 0. Date Detection (Look for pattern like 4/11 or 2024/04/11 at start)
+        const dateMatch = text.match(/^(\d{1,4}[\/\s.-]\d{1,2}([\/\s.-]\d{1,4})?)/);
+        if (dateMatch) {
+            let dStr = dateMatch[1].trim();
+            // Basic normalization: if it's M/D, prepend current year
+            if (dStr.split(/[\/\s.-]/).length === 2) {
+                dStr = new Date().getFullYear() + '/' + dStr;
+            }
+            try {
+                const dObj = new Date(dStr);
+                if (!isNaN(dObj.getTime())) {
+                    record.date = dObj.toISOString().split('T')[0];
+                    // Strip the date from text
+                    text = text.substring(dateMatch[0].length).trim();
+                }
+            } catch(e) {}
+        }
+        
+        // 1. Master Detection
+        let foundMaster = false;
+        let matchedKeywordInText = '';
+        masterNames.forEach((m, idx) => {
+            const keyword = (m === '太子' ? '太子' : m + '仙師');
+            if (text.includes(keyword)) {
+                record.master_name = masterOptions[idx];
+                matchedKeywordInText = keyword;
+                foundMaster = true;
+            }
+        });
+        // We do NOT fallback to currentFolder name here to avoid locking records to the current view during shunting
+        
+        // 2. Recipient Detection
+        const recMatch = text.match(/開示給(.*?)[：:]/);
+        let contentToParse = text;
+
+        if (recMatch) {
+            const nameField = recMatch[1].trim();
+            record.dharmaSearchQuery = nameField;
+            const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
+            if (foundDN) record.dharma_name_ids = [foundDN.id];
+            else {
+                const foundGroup = (groups.value || []).find(g => g.name === nameField);
+                if (foundGroup) record.dharma_name_ids = (foundGroup.dharma_names || []).map(dn => dn.id);
+            }
+            contentToParse = text.substring(text.indexOf(recMatch[0]) + recMatch[0].length).trim();
+        }
+
+        // Clean up any remaining instances of the master name (headers/repetitions) 
+        // to avoid duplication with the UI's fixed master header.
+        if (matchedKeywordInText) {
+            // Apply a global case-insensitive replacement for the specific keyword 
+            // when it appears as a standalone line or header
+            const headerRegex = new RegExp('^' + matchedKeywordInText + '[：:\\s]*$', 'gm');
+            contentToParse = contentToParse.replace(headerRegex, '').trim();
+            
+            // Also catch "Master：" at the beginning of remaining contents
+            const leadingRegex = new RegExp('^' + matchedKeywordInText + '[：:\\s]*', 'm');
+            contentToParse = contentToParse.replace(leadingRegex, '').trim();
+        }
+        
+        // 3. Treasure Splitting
+        if (contentToParse.includes('賜降：')) {
+            const parts = contentToParse.split('賜降：');
+            record.content = parts[0].trim();
+            const treasurePart = parts[1].trim();
+            
+            const lines = treasurePart.split('\n').filter(l => l.trim());
+            lines.forEach(line => {
+                const cleanLine = line.trim();
+                if (!cleanLine) return;
+                
+                const tMatch = cleanLine.match(/^(\d+\.|[+*])\s*(.*?)([:：]\s*(.*))?$/);
+                if (tMatch) {
+                    record.items.push({
+                        uid: Date.now() + Math.random(),
+                        treasure_name: tMatch[2].trim(),
+                        details: tMatch[4] || '',
+                        name: '', sub_name: ''
+                    });
+                } else if (cleanLine.length > 0) {
+                    // Handle un-prefixed treasures
+                    const parts = cleanLine.split(/[:：]/);
+                    record.items.push({
+                        uid: Date.now() + Math.random(),
+                        treasure_name: parts[0].trim(),
+                        details: parts[1] || '',
+                        name: '', sub_name: ''
+                    });
+                }
+            });
+        } else {
+            record.content = contentToParse.trim();
+        }
+        
+        newRecords.push(record);
+    });
+    
+    if (newRecords.length > 0) {
+        batchRecords.value = newRecords;
+    }
+};
+
+const handleBatchPaste = (e) => {
+    const text = e.clipboardData.getData('text');
+    if (!text) return;
+    // Allow default paste, then trigger smart parse after a tick
+    setTimeout(processBatchText, 200);
+};
+
+const moveBatchRecord = (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= batchRecords.value.length) return;
+    
+    // Swap elements in the reactive array
+    const record = batchRecords.value[index];
+    batchRecords.value.splice(index, 1);
+    batchRecords.value.splice(targetIndex, 0, record);
+};
+
 const handleBatchFileImport = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2643,7 +2758,8 @@ const handleBatchFileImport = async (e) => {
 
     if (ext === 'txt' || ext === 'csv') {
         reader.onload = (res) => {
-            batchInput.value = res.target.result;
+            batchImportContent.value = res.target.result;
+            processBatchText();
         };
         reader.readAsText(file);
     } else if (ext === 'xlsx' || ext === 'xls') {
@@ -2652,47 +2768,32 @@ const handleBatchFileImport = async (e) => {
             const workbook = window.XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const rows = window.XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-            batchInput.value = rows.map(r => r.join(' ')).join('\n');
+            batchImportContent.value = rows.map(r => r.join(' ')).join('\n');
+            processBatchText();
         };
         reader.readAsArrayBuffer(file);
     } else if (ext === 'docx') {
         loading.value = true;
         try {
-            // Dynamically load Mammoth.js if not present
             if (!window.mammoth) {
                 await new Promise((resolve, reject) => {
                     const script = document.createElement('script');
                     script.src = "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js";
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
+                    script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
                 });
             }
-            
             reader.onload = async (res) => {
                 const arrayBuffer = res.target.result;
                 const result = await window.mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                const docText = result.value || '';
-                
-                // Only prepend header if the text doesn't already mention a Master (仙師)
-                if (docText.includes('仙師')) {
-                    batchInput.value = docText;
-                } else {
-                    const master = form.value.master_name || '仙師';
-                    const targetDisplay = dharmaSearchQuery.value || '全體';
-                    const header = `${master}開示給${targetDisplay}：\n\n`;
-                    batchInput.value = header + docText;
-                }
+                batchImportContent.value = result.value || '';
+                processBatchText();
                 loading.value = false;
             };
             reader.readAsArrayBuffer(file);
         } catch (err) {
             console.error(err);
-            alert('Word 檔案解析失敗，請確認檔案格式正確。');
             loading.value = false;
         }
-    } else {
-        alert('不支援的檔案格式');
     }
 };
 
@@ -2879,7 +2980,7 @@ const saveItem = async () => {
     if (itemsDetailMode.value && activeBatchIndex.value !== null) {
         batchRecords.value[activeBatchIndex.value].items = JSON.parse(JSON.stringify(form.value.items));
         // Also sync basic fields from form back to batchRecord if in batch mode
-        if (entryTab.value === 'batch') {
+        if (activeEntryTab.value === 'batch') {
             const br = batchRecords.value[activeBatchIndex.value];
             br.content = form.value.content;
             br.date = form.value.date;
@@ -2907,7 +3008,7 @@ const saveItem = async () => {
     // Validation: Allow all saves as per user request to "not show" the alert
     // The previous block checked for empty content/items and alerted.
 
-    if (entryTab.value === 'batch' || batchRecords.value.length > 1 || (batchRecords.value.length === 1 && (batchRecords.value[0].content || batchRecords.value[0].items.length > 0))) {
+    if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1 || (batchRecords.value.length === 1 && (batchRecords.value[0].content || batchRecords.value[0].items.length > 0))) {
         // If current form has content/items/persona not yet stashed, add it as a final block now
         if (form.value.content.trim() || form.value.items.length > 0 || form.value.dharma_name_ids.length > 0) {
             const currentBlock = {
@@ -2959,8 +3060,8 @@ const performActualSave = async () => {
     if (saving.value) return;
     
     // Always distribution 'keep' mode as per user request to skip intermediate modals
-    if (entryTab.value === 'batch' || batchRecords.value.length > 1) {
-        await executeDistributionSave('keep');
+    if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1) {
+        await executeDistributionSave('distribute');
         saveConfirmModal.value.show = false;
         return;
     }
@@ -3021,28 +3122,42 @@ const executeDistributionSave = async (mode) => {
             
             // Auto-detect Master/Folder if in distribute mode
             if (mode === 'distribute') {
-                for (const [key, id] of Object.entries(masterMap)) {
-                    if (content.includes(key)) {
-                        const isDailyFolder = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
-                        if (!isDailyFolder && id === 5) continue; 
-                        blockMasterId = id;
-                        break;
+                // Priority 1: Check specifically detected master_name from parsing
+                let detectedId = null;
+                if (record.master_name) {
+                    const mClean = record.master_name.replace('仙師', '').trim();
+                    if (masterMap[mClean]) detectedId = masterMap[mClean];
+                }
+                
+                // Priority 2: Scan content if priority 1 failed or to confirm
+                if (!detectedId) {
+                    for (const [key, id] of Object.entries(masterMap)) {
+                        if (content.includes(key)) {
+                            detectedId = id;
+                            break;
+                        }
                     }
+                }
+
+                if (detectedId) {
+                    blockMasterId = detectedId;
+                } else {
+                    // Fallback to current folder if no master was mentioned at all
+                    blockMasterId = currentMasterId || 5; 
                 }
             }
 
             const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
-            const itemIsDaily = isDailyFolder && (blockMasterId === currentMasterId);
             
             const payload = {
-                date: form.value.date,
+                date: record.date || form.value.date,
                 master_id: blockMasterId,
                 content: content,
                 dharma_name_ids: record.dharma_name_ids.length > 0 ? record.dharma_name_ids : form.value.dharma_name_ids,
                 target_remarks: record.target_remarks || form.value.target_remarks,
                 items: record.items || [],
                 user_id: 1,
-                is_daily: itemIsDaily ? 1 : 0
+                is_daily: isDailyFolder ? 1 : 0
             };
             
             await axios.post('/teachings', payload);
@@ -3074,6 +3189,7 @@ const showAdd = () => {
 
     dharmaSearchQuery.value = '';
     masterNameInput.value = '';
+    batchImportContent.value = ''; // Reset the collective paste area
 
     if (currentFolder.value) {
         const isDaily = currentFolder.value.id === 0 || currentFolder.value.id === '0';
@@ -3089,9 +3205,29 @@ const showAdd = () => {
             target_remarks: '', relatives: '', items: [], master_name: mName 
         }];
         
-        if (isDaily) entryTab.value = 'single';
-        else entryTab.value = 'batch';
+        if (isDaily) activeEntryTab.value = 'single';
+        else activeEntryTab.value = 'batch';
     }
+    addMode.value = true;
+};
+
+const showMultiMasterAdd = () => {
+    editingId.value = null;
+    form.value = {
+        supplement: '', target_remarks: '', content: '',
+        date: new Date().toLocaleDateString('en-CA'), master_id: 5, items: [], 
+        remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
+    };
+
+    dharmaSearchQuery.value = '';
+    masterNameInput.value = '多位仙師'; 
+    batchImportContent.value = ''; 
+    batchRecords.value = [{ 
+        dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
+        target_remarks: '', relatives: '', items: [], master_name: '' 
+    }];
+    
+    activeEntryTab.value = 'batch';
     addMode.value = true;
 };
 

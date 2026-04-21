@@ -24,6 +24,26 @@
         <!-- Main Scrollable Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
             
+            <!-- Remarks Modal -->
+            <div v-if="showRemarksModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showRemarksModal = false"></div>
+                <div class="relative w-full max-w-lg bg-white rounded-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col">
+                    <div class="px-6 py-4 border-b border-slate-50 flex items-center justify-between">
+                        <h3 class="text-[18px] font-black text-slate-900 font-outfit uppercase tracking-widest">詳細備註</h3>
+                        <button @click="showRemarksModal = false" class="text-slate-400 hover:text-slate-600 transition-colors p-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                    </div>
+                    <div class="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar">
+                        <div class="text-[18px] text-slate-700 leading-relaxed whitespace-pre-wrap font-outfit font-black not-italic">
+                            {{ activeRemarks }}
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button @click="showRemarksModal = false" class="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[16px] active:scale-95 transition-all">關閉</button>
+                    </div>
+                </div>
+            </div>
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
@@ -31,8 +51,8 @@
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <div class="flex-1 pr-12">
-                    <h1 class="text-[24px] font-black text-red-600 tracking-tight text-center">
-                        {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
+                    <h1 class="text-[24px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest">
+                        法寶登記專區
                     </h1>
                     </div>
                 </div>
@@ -126,9 +146,20 @@
                     </div>
 
                     <template v-else>
-                        <div v-for="item in filteredTreasures" :key="item.id" 
-                             class="bg-white p-4 mb-4 border border-slate-100 rounded-[28px] shadow-sm relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50">
+                        <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
+                             class="bg-white p-4 mb-4 border border-slate-100 rounded-[28px] shadow-sm relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start">
                             
+                            <!-- Reorder Handle/Buttons -->
+                            <div class="flex flex-col items-center justify-center mr-3 pt-1 space-y-2 opacity-30 hover:opacity-100 transition-opacity">
+                                <button @click.stop="moveRegistryItem(item, -1)" :disabled="idx === 0" class="p-1 text-slate-400 hover:text-indigo-600 disabled:opacity-10 active:scale-75 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <button @click.stop="moveRegistryItem(item, 1)" :disabled="idx === filteredTreasures.length - 1" class="p-1 text-slate-400 hover:text-indigo-600 disabled:opacity-10 active:scale-75 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+
+                            <div class="flex-1 min-w-0 pr-10">
                             <!-- Action Dropdown Trigger -->
                             <div class="absolute top-4 right-4 z-30">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
@@ -201,6 +232,7 @@
                                 <div v-if="!expandedIds.has(item.id) && item.dharma_name_registries?.length" class="mt-1 flex flex-wrap gap-1">
                                     <span v-for="dnr in item.dharma_name_registries" :key="dnr.id" class="text-[13px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded-md border border-indigo-100 font-outfit font-black">
                                         {{ dnr.dharma_name ? dnr.dharma_name.name : dnr.custom_name }}
+                                        <span v-if="dnr.remarks" class="ml-1 text-amber-500">●</span>
                                     </span>
                                 </div>
                             </div>
@@ -251,25 +283,32 @@
                                         <div v-if="showItemDetails" class="space-y-5 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50 animate-fade-in">
                                             <div v-if="item.purpose" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                <div class="text-[17px] font-black text-slate-700 leading-relaxed font-outfit">{{ item.purpose }}</div>
+                                                <div class="text-[17px] font-black text-slate-700 leading-relaxed font-outfit">{{ formatArmyCount(item.purpose, item.name) }}</div>
                                             </div>
                                             <div v-if="item.acquisition_method" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                <div class="text-[17px] font-black text-slate-700 font-outfit">{{ item.acquisition_method }}</div>
+                                                <div class="text-[17px] font-black text-slate-700 font-outfit">{{ formatArmyCount(item.acquisition_method, item.name) }}</div>
                                             </div>
                                             <div v-if="item.remarks" class="space-y-1">
                                                 <label class="text-[11px] text-slate-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                <div class="text-[17px] font-black text-slate-700 font-outfit">{{ item.remarks }}</div>
+                                                <div @click.stop="openRemarks(formatArmyCount(item.remarks, item.name))" class="text-[17px] font-black text-slate-700 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ formatArmyCount(item.remarks, item.name) }}</div>
                                             </div>
                                         </div>
                                     </div>
 
                                 <!-- Personnel Section -->
                                 <div class="space-y-3 pt-2">
-                                    <label class="text-[13px] text-indigo-700 uppercase tracking-widest font-black font-outfit block border-b border-indigo-50 pb-1">承接人員</label>
+                                    <div class="flex items-center justify-between border-b border-indigo-50 pb-1">
+                                        <label class="text-[13px] text-indigo-700 uppercase tracking-widest font-black font-outfit">承接人員</label>
+                                        <button v-if="item.dharma_name_registries?.filter(r => r.remarks).length > 1" 
+                                                @click.stop="openCombinedRemarks(item)"
+                                                class="text-[12px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full hover:bg-indigo-100 transition-colors">
+                                            查看多位備註
+                                        </button>
+                                    </div>
                                     
                                     <template v-if="currentCategory === 'major'">
-                                        <div class="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm mb-20">
+                                        <div class="overflow-x-auto rounded-xl border-y border-slate-100 shadow-sm mb-20 -mx-4 md:-mx-4 bg-white">
                                             <table class="w-full border-collapse bg-white text-[16px]">
                                                 <thead>
                                                     <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
@@ -284,19 +323,20 @@
                                                             {{ dn.name }}
                                                         </td>
                                                         <td class="border-b border-slate-50 p-0 text-black">
-                                                            <div class="flex items-center px-2 py-1 h-[42px]" 
+                                                            <div class="flex items-center px-3 py-1 h-[42px] justify-between group/date-cell" 
                                                                  :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
                                                                  @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
                                                                 <span :class="editMap[item.id + '-' + dn.id].obtained_date ? 'text-black' : 'text-slate-200'" class="text-[15px] font-black font-outfit">
                                                                     {{ editMap[item.id + '-' + dn.id].obtained_date || (editingIds.has(item.id) ? '----/--/--' : '-') }}
                                                                 </span>
+                                                                <svg v-if="editingIds.has(item.id)" class="w-4 h-4 text-slate-200 group-hover/date-cell:text-indigo-400 transition-all ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                             </div>
                                                         </td>
                                                         <td class="border-b border-slate-50 p-0 text-black">
                                                             <div @click="editingIds.has(item.id) ? (currentRemarksKey = item.id + '-' + dn.id, showRemarksModal = true) : null" 
                                                                  class="w-full h-[42px] px-3 flex items-center transition-colors group/edit-cell"
                                                                  :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''">
-                                                                <span :class="editMap[item.id + '-' + dn.id].remarks ? 'text-black' : 'text-slate-300'" class="text-[15px] font-black font-outfit truncate">
+                                                                <span :class="editMap[item.id + '-' + dn.id].remarks ? 'text-black' : 'text-slate-300'" class="text-[15px] font-black font-outfit truncate not-italic">
                                                                     {{ editMap[item.id + '-' + dn.id].remarks ? (editMap[item.id + '-' + dn.id].remarks.length > 4 ? editMap[item.id + '-' + dn.id].remarks.substring(0, 4) + '...' : editMap[item.id + '-' + dn.id].remarks) : '...' }}
                                                                 </span>
                                                                 <svg v-if="editingIds.has(item.id)" class="w-3 h-3 ml-auto text-slate-200 group-hover/edit-cell:text-indigo-400 opacity-0 group-hover/edit-cell:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -329,7 +369,8 @@
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
+                </template>
                 </div>
             </div>
         </div>
@@ -339,7 +380,7 @@
             :can-back="true"
             @back="handleBack"
             @home="$emit('goHome')"
-            @action="currentFolder ? (showAddMenu = true) : openAdd()"
+            @action="showAddMenu = true"
             @search="showSearch = !showSearch"
             @more="showExportMenu = !showExportMenu"
         />
@@ -354,7 +395,7 @@
                         </div>
                         <div class="flex flex-col text-left">
                             <span class="text-[15px] font-black font-outfit text-slate-800">逐筆新增</span>
-                            <span class="text-[11px] text-slate-400 font-medium font-outfit">手動輸入每一項重大皇恩詳細資...</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">輸入單筆法寶登記紀錄</span>
                         </div>
                     </button>
 
@@ -363,8 +404,8 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[15px] font-black font-outfit text-slate-800">多筆一次新增</span>
-                            <span class="text-[11px] text-slate-400 font-medium font-outfit">快速解析 LINE 聊天內容紀錄</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">多筆新增</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">貼上文字清單批次匯入</span>
                         </div>
                     </button>
 
@@ -383,8 +424,8 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[15px] font-black font-outfit text-slate-800">下載匯出 EXCEL (全部)</span>
-                            <span class="text-[11px] text-slate-400 font-medium font-outfit">將此分類匯出為標準試算表檔案</span>
+                            <span class="text-[15px] font-black font-outfit text-slate-800">匯出 Excel</span>
+                            <span class="text-[11px] text-slate-400 font-medium font-outfit">下載法寶登記報表檔案</span>
                         </div>
                     </button>
                     
@@ -450,15 +491,17 @@
         <div v-if="showRemarksModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
             <div class="bg-white w-full max-w-lg rounded-[32px] p-6 shadow-2xl animate-pop-in flex flex-col max-h-[80vh]">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-[20px] font-black font-outfit text-slate-800">編輯詳細備註</h3>
+                    <h3 class="text-[20px] font-black font-outfit text-slate-800">詳細備註內容</h3>
                     <button @click="showRemarksModal = false" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
-                <textarea v-model="editMap[currentRemarksKey].remarks" class="flex-1 w-full bg-slate-50 border-none rounded-2xl p-4 text-[18px] font-black font-outfit text-slate-800 focus:ring-2 focus:ring-indigo-100 outline-none leading-relaxed min-h-[300px]" placeholder="在此輸入更多詳細內容..."></textarea>
+                <div class="flex-1 overflow-y-auto p-4 bg-slate-50 rounded-2xl text-[17px] font-black font-outfit text-slate-800 leading-relaxed whitespace-pre-wrap">
+                    {{ activeRemarks }}
+                </div>
                 <div class="mt-6">
                     <button @click="showRemarksModal = false" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit shadow-xl shadow-indigo-100">
-                        完成編輯
+                        關閉
                     </button>
                 </div>
             </div>
@@ -620,7 +663,10 @@ const filteredTreasures = computed(() => {
         t.master_id === currentFolder.value?.id && 
         (t.category === currentCategory.value || (!t.category && currentCategory.value === 'major'))
     );
-    filtered.sort((a,b) => sortDesc.value ? (b.record_date||'').localeCompare(a.record_date||'') : (a.record_date||'').localeCompare(b.record_date||''));
+    filtered.sort((a,b) => {
+        if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+        return sortDesc.value ? (b.record_date||'').localeCompare(a.record_date||'') : (a.record_date||'').localeCompare(b.record_date||'');
+    });
     return filtered;
 });
 
@@ -737,10 +783,228 @@ const saveSingle = async (data) => {
 const triggerBatchSave = async (batchData) => {
     isSaving.value = true;
     try {
-        await axios.post('/registries/batch', batchData);
+        const text = batchData.input || '';
+        const records = [];
+        
+        // 1. Split into blocks to handle Master/Date headers for multiple sessions
+        const blocks = text.split(/\n\s*\n|\r\n\s*\r\n/).filter(b => b.trim());
+        const masterNames = masters.value.map(m => m.name);
+        const masterMap = {};
+        masters.value.forEach(m => masterMap[m.name] = m.id);
+
+        // Name Alisas Mapping: Translation rules for dharma names
+        const nameAliasMap = {
+            '金容': '靈果',
+            '金涓': '靈慧',
+            '金梅': '靈妙',
+            '金蘭': '靈智',
+            '金平': '靈平',
+            '金瑞': '龍戰',
+            '金耀': '龍勝',
+            '金旭': '靈心',
+            '金熙': '靈情',
+            '金吉': '靈奇',
+            '金祥': '靈傾',
+            '金恩': '靈昡',
+            '金鈺': '元續',
+            '金穎': '赤峰'
+        };
+
+        const translateName = (raw) => nameAliasMap[raw] || raw;
+
+        blocks.forEach(block => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) return;
+
+            let blockMasterId = batchData.masterId || (currentFolder.value?.id);
+            let blockRecipient = '';
+            let blockDate = batchData.date || new Date().toISOString().split('T')[0];
+            let listDetected = false;
+
+            // Heuristic A: Look for block-level metadata (仙師, 開示給, 日期)
+            lines.forEach(line => {
+                masterNames.forEach(mName => {
+                    if (line.includes(mName)) {
+                        blockMasterId = masterMap[mName];
+                        const m = line.match(/開示給(.*?)[：:]/);
+                        if (m) blockRecipient = m[1].trim();
+                    }
+                });
+
+                // Date detection (Supporting ROC year like 113年 or 113/11/24)
+                const rocFullMatch = line.match(/(\d{2,3})\/(\d{1,2})\/(\d{1,2})/);
+                if (rocFullMatch) {
+                    const year = parseInt(rocFullMatch[1]) + 1911;
+                    blockDate = `${year}-${rocFullMatch[2].padStart(2,'0')}-${rocFullMatch[3].padStart(2,'0')}`;
+                } else {
+                    const rocMatch = line.match(/(\d{2,3})年/);
+                    if (rocMatch) {
+                        const year = parseInt(rocMatch[1]) + 1911;
+                        blockDate = `${year}-${blockDate.split('-')[1] || '01'}-${blockDate.split('-')[2] || '01'}`;
+                    }
+                    const dMatch = line.match(/(\d{1,2})\/(\d{1,2})/);
+                    if (dMatch) {
+                        const yearPart = blockDate.split('-')[0];
+                        blockDate = `${yearPart}-${dMatch[1].padStart(2,'0')}-${dMatch[2].padStart(2,'0')}`;
+                    }
+                }
+            });
+
+            // Heuristic B: Parse each line for items
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+
+                // Skip headers and terminators
+                if (line.includes('開示給') || line.includes('完畢') || masterNames.some(m => line === m || line === m + '仙師') || /^\d{2,3}[\/年]/.test(line)) continue;
+                
+                // 1. Keyword Based parsing: "允求/賜降 森羅戒：[Recipients]"
+                const keywordMatch = line.match(/(允求|賜降|得知|賜予)\s*(.*?)[：:](.*)/);
+                if (keywordMatch) {
+                    const treasureName = keywordMatch[2].trim();
+                    const sameLineContent = keywordMatch[3].trim();
+                    
+                    let recipientSource = '';
+                    let hasNextLineConsumed = false;
+
+                    if (sameLineContent) {
+                        recipientSource = sameLineContent;
+                    } else {
+                        // Check if the next line exists and doesn't contain a keyword/colon
+                        let nextLine = lines[i+1] || '';
+                        if (nextLine && !nextLine.match(/(允求|賜降|得知|賜予|完畢|：)/)) {
+                            recipientSource = nextLine;
+                            hasNextLineConsumed = true;
+                        }
+                    }
+
+                    if (recipientSource) {
+                        const names = recipientSource.split(/[，、, \s]+/).filter(n => n.trim());
+                        const registries = names.map(rawName => {
+                             const translated = translateName(rawName);
+                             const relMatch = translated.match(/^(.*?)(之[夫妻子女左右大小父母兄弟姊姐]|的[夫妻子女左右大小父母兄弟姊姐].*)$/);
+                             if (relMatch) {
+                                 const parts = blockDate.split('-');
+                                 const rocYear = parseInt(parts[0]) - 1911;
+                                 const displayDate = `${rocYear}/${parts[1].padStart(2,'0')}/${parts[2].padStart(2,'0')}`;
+                                 const finalRemark = `${displayDate}${translated}`;
+                                 return { custom_name: relMatch[1], remarks: finalRemark, obtained_date: blockDate };
+                             }
+                             return { custom_name: translated, obtained_date: blockDate };
+                        });
+
+                        records.push({
+                            name: treasureName, master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: blockDate, dharma_name_registries: registries
+                        });
+                        listDetected = true;
+                        if (hasNextLineConsumed) i++; 
+                    } else {
+                         records.push({
+                            name: treasureName, master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: blockDate, dharma_name_registries: blockRecipient ? [{ custom_name: translateName(blockRecipient), obtained_date: blockDate }] : []
+                        });
+                        listDetected = true;
+                    }
+                    continue;
+                }
+
+                // 2. Explicit Pipe/Tab Format: "Treasure | Recipient | Date | Remarks"
+                if (line.includes('|') || line.includes('│') || line.includes('\t')) {
+                    const parts = line.split(/[|│\t]/).map(p => p.trim());
+                    if (parts.length >= 1 && parts[0]) {
+                        records.push({
+                            name: parts[0],
+                            master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: parts[2] ? parts[2].replace(/\//g,'-') : blockDate,
+                            purpose: batchData.defaults?.purpose || '',
+                            acquisition_method: batchData.defaults?.acquisition_method || '',
+                            remarks: parts[3] || batchData.defaults?.remarks || '',
+                            dharma_name_registries: (parts[1] || blockRecipient) ? [{ 
+                                custom_name: translateName(parts[1] || blockRecipient), 
+                                obtained_date: parts[2]?.replace(/\//g,'-') || blockDate 
+                            }] : []
+                        });
+                        listDetected = true;
+                    }
+                    continue;
+                }
+
+                // 3. Key-Value Style: "法寶名稱：天筆" or "法號：紫元"
+                if (line.includes('法寶名稱') || line.includes('法寶內容')) {
+                    const val = line.split(/[:：]/)[1]?.trim();
+                    if (val) {
+                        records.push({
+                            name: val,
+                            master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: blockDate,
+                            purpose: batchData.defaults?.purpose || '',
+                            acquisition_method: batchData.defaults?.acquisition_method || '',
+                            remarks: batchData.defaults?.remarks || '',
+                            dharma_name_registries: blockRecipient ? [{ custom_name: translateName(blockRecipient), obtained_date: blockDate }] : []
+                        });
+                        listDetected = true;
+                    }
+                    continue;
+                }
+                
+                if (line.includes('法號') || line.includes('對象')) {
+                    const val = line.split(/[:：]/)[1]?.trim();
+                    if (val) blockRecipient = val;
+                    continue;
+                }
+
+                // 4. Bullet Point or Explicit List ("賜降：")
+                if (line.includes('賜降：')) { listDetected = true; continue; }
+                const bMatch = line.match(/^(\d+[\.、\s]+|[+*•])\s*(.*)/);
+                if (bMatch) {
+                    const tName = bMatch[2].trim();
+                    if (tName) {
+                        records.push({
+                            name: tName,
+                            master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: blockDate,
+                            purpose: batchData.defaults?.purpose || '',
+                            acquisition_method: batchData.defaults?.acquisition_method || '',
+                            remarks: batchData.defaults?.remarks || '',
+                            dharma_name_registries: blockRecipient ? [{ custom_name: translateName(blockRecipient), obtained_date: blockDate }] : []
+                        });
+                        listDetected = true;
+                    }
+                    continue;
+                }
+
+                // 5. Fallback: If it's a short line
+                if (!line.includes('：') && line.length > 0 && line.length < 15) {
+                    if (listDetected || line.match(/^[\u4e00-\u9fa5]{2,10}$/)) {
+                        records.push({
+                            name: line,
+                            master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: blockDate,
+                            purpose: batchData.defaults?.purpose || '',
+                            acquisition_method: batchData.defaults?.acquisition_method || '',
+                            remarks: batchData.defaults?.remarks || '',
+                            dharma_name_registries: blockRecipient ? [{ custom_name: translateName(blockRecipient), obtained_date: blockDate }] : []
+                        });
+                    }
+                }
+            }
+        });
+
+        if (records.length === 0) {
+            persistentToast.value = { msg: '✖ 無法解析出任何法寶資料', type: 'error' };
+            return;
+        }
+
+        await axios.post('/registries/batch', records);
         addMode.value = null;
         loadData();
-        persistentToast.value = { msg: '✓ 批量新增成功', type: 'success' };
+        persistentToast.value = { msg: `✓ 批量新增成功 (${records.length} 筆)`, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     } catch (e) {
         console.error(e);
@@ -759,6 +1023,47 @@ const openAndEdit = (id) => {
         if (!expandedIds.value.has(id)) expandedIds.value.add(id);
     }
     openMenuId.value = null;
+};
+
+const openRemarks = (text) => {
+    if (!text) return;
+    activeRemarks.value = text;
+    showRemarksModal.value = true;
+};
+
+const openCombinedRemarks = (item) => {
+    const combined = item.dharma_name_registries
+        .filter(r => r.remarks)
+        .map(r => `【${r.dharma_name ? r.dharma_name.name : r.custom_name}】：${r.remarks}`)
+        .join('\n\n');
+    openRemarks(combined);
+};
+
+const formatArmyCount = (text, name = '') => {
+    if (!text || typeof text !== 'string') return text;
+    if (!name || !name.includes('軍')) return text;
+    
+    // Support numbers with optional commas and optional '位' unit
+    return text.replace(/([\d,]+)(位)?/g, (match, numStr) => {
+        let cleanNum = numStr.replace(/,/g, '');
+        let num = parseInt(cleanNum);
+        if (isNaN(num) || num < 1000000) return match; 
+
+        const troops = Math.floor(num / 1000000);
+        const remaining = num % 1000000;
+        
+        let res = `${troops}隊`;
+        if (remaining === 0) return res;
+
+        const wan = Math.floor(remaining / 10000);
+        const rest = remaining % 10000;
+        
+        if (wan > 0) res += `${wan}萬`;
+        if (rest > 0) res += `${rest}位`;
+        else if (wan === 0) res += `0位`; // Optional: decide if 0 bits should show
+        
+        return res;
+    });
 };
 
 const deleteItem = async (id) => {
@@ -784,6 +1089,29 @@ const deleteItem = async (id) => {
 
 const toggleMenu = (id) => openMenuId.value = openMenuId.value === id ? null : id;
 const toggleSort = () => sortDesc.value = !sortDesc.value;
+
+const moveRegistryItem = async (item, direction) => {
+    const list = filteredTreasures.value;
+    const index = list.findIndex(t => t.id === item.id);
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= list.length) return;
+
+    const targetItem = list[targetIdx];
+    
+    // To ensure they actually swap, we might need to distribute orders if many are 0
+    // But for a simple approach, we'll increment/decrement from the target's order
+    let newOrder = (targetItem.sort_order || 0) + (direction > 0 ? 1 : -1);
+    
+    // Safety: if target is also 0 and we move up, we get -1
+    // If everything is 0, moving up makes it -1, moving down makes it 1.
+    // This naturally sorts -1, 0, 1.
+    
+    try {
+        await axios.post(`/registries/${item.id}`, { sort_order: newOrder, _method: 'PATCH' });
+        loadData();
+    } catch (e) { console.error('Reorder failed', e); }
+};
+
 const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';
 
 const copyToLine = (item) => {

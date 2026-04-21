@@ -72,8 +72,17 @@
                             </button>
                         </div>
 
-                        <div v-for="(p, idx) in personnel" :key="idx" class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-3 relative group animate-fade-in">
-                            <button @click="removePersonnelRow(idx)" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 transition-colors">✕</button>
+                        <div v-for="(p, idx) in personnel" :key="idx" class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-3 relative group animate-fade-in shadow-sm">
+                            <div class="absolute top-2 right-2 flex items-center space-x-1">
+                                <!-- Reorder Buttons -->
+                                <button v-if="personnel.length > 1" @click="movePersonnel(idx, -1)" :disabled="idx === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-10 transition-all active:scale-90">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <button v-if="personnel.length > 1" @click="movePersonnel(idx, 1)" :disabled="idx === personnel.length - 1" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-10 transition-all active:scale-90">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 transition-colors p-1">✕</button>
+                            </div>
                             
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
@@ -108,9 +117,6 @@
                 <div v-if="localMode === 'batch'" class="space-y-3 animate-fade-in">
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[14px] font-normal text-slate-400 block">批量內容 (支援一筆一人或一筆多人)</label>
-                        <button @click="handleSubmit" :disabled="isSaving" class="bg-indigo-50 text-indigo-600 font-bold text-[11px] py-1 px-3 rounded-xl hover:bg-indigo-100 active:scale-95 transition-all">
-                            確認一次新增
-                        </button>
                     </div>
                     <textarea v-model="batchInput" rows="10" 
                         class="w-full rounded-2xl border border-slate-100 shadow-sm text-[16px] font-normal text-slate-900 bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
@@ -123,9 +129,12 @@
             </div>
 
             <!-- Footer Action -->
-            <div v-if="localMode === 'single'" class="px-6 pt-5 pb-[calc(1.25rem+8vh)] bg-white border-t border-slate-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-                <button @click="handleSubmit" :disabled="isSaving" class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-md active:scale-95 transition-all disabled:bg-slate-200 disabled:text-slate-400">
+            <div class="px-6 pt-5 pb-[calc(1.25rem+8vh)] bg-white border-t border-slate-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-md active:scale-95 transition-all disabled:bg-slate-200 disabled:text-slate-400">
                     {{ isSaving ? '儲存中...' : '確認新增' }}
+                </button>
+                <button v-else @click="handleSubmit" :disabled="isSaving" class="w-full text-red-600 border-2 border-red-100 bg-white font-black h-[52px] rounded-2xl shadow-md active:scale-95 transition-all disabled:bg-slate-200 disabled:text-slate-400 text-[16px]">
+                    {{ isSaving ? '批量處理中...' : '確認一次新增' }}
                 </button>
             </div>
         </div>
@@ -191,6 +200,14 @@ onMounted(() => {
 
 const removePersonnelRow = (idx) => {
     personnel.value.splice(idx, 1);
+};
+
+const movePersonnel = (idx, direction) => {
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= personnel.value.length) return;
+    const item = personnel.value[idx];
+    personnel.value.splice(idx, 1);
+    personnel.value.splice(targetIdx, 0, item);
 };
 
 const selectedMasterName = computed(() => {

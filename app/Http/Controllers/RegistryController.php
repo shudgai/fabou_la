@@ -183,22 +183,36 @@ class RegistryController extends Controller
                     foreach ($recordData['dharma_name_registries'] as $dn) {
                         if (empty($dn['custom_name']) && empty($dn['dharma_name_id'])) continue;
 
-                        if (empty($dn['dharma_name_id']) && !empty($dn['custom_name'])) {
-                            $matched = DharmaName::where('name', trim($dn['custom_name']))->first();
+                        $dharma_name_id = $dn['dharma_name_id'] ?? null;
+                        $custom_name = $dn['custom_name'] ?? null;
+
+                        if (empty($dharma_name_id) && !empty($custom_name)) {
+                            $matched = DharmaName::where('name', trim($custom_name))->first();
                             if ($matched) {
-                                $dn['dharma_name_id'] = $matched->id;
-                                $dn['custom_name'] = null;
+                                $dharma_name_id = $matched->id;
+                                $custom_name = null;
                             }
                         }
 
-                        DharmaNameRegistry::create([
-                            'registry_id' => $registry->id,
-                            'dharma_name_id' => $dn['dharma_name_id'] ?? null,
-                            'custom_name' => $dn['custom_name'] ?? null,
-                            'obtained_date' => $dn['obtained_date'] ?? null,
-                            'remarks' => $dn['remarks'] ?? null,
-                            'related_personnel' => $dn['related_personnel'] ?? null
-                        ]);
+                        // Deduplication: Avoid adding the same person on the same date to the same treasure
+                        $exists = DharmaNameRegistry::where('registry_id', $registry->id)
+                            ->where('obtained_date', $dn['obtained_date'] ?? null)
+                            ->where(function($q) use ($dharma_name_id, $custom_name) {
+                                if ($dharma_name_id) $q->where('dharma_name_id', $dharma_name_id);
+                                else $q->where('custom_name', $custom_name);
+                            })
+                            ->exists();
+
+                        if (!$exists) {
+                            DharmaNameRegistry::create([
+                                'registry_id' => $registry->id,
+                                'dharma_name_id' => $dharma_name_id,
+                                'custom_name' => $custom_name,
+                                'obtained_date' => $dn['obtained_date'] ?? null,
+                                'remarks' => $dn['remarks'] ?? null,
+                                'related_personnel' => $dn['related_personnel'] ?? null
+                            ]);
+                        }
                     }
                 }
                 $results[] = $registry->id;
