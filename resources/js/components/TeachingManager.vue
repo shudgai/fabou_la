@@ -53,8 +53,13 @@
                         {{ addMode ? (editingId ? '修改記錄' : ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示新增記錄' : (currentFolder?.name || '仙師') + '開示新增記錄')) : (currentFolder?.id === 0 || currentFolder?.id === '0' ? '每日開示記錄' : currentFolder?.name + '開示記錄') }}
                     </h2>
                 </div>
-                <div v-if="!addMode" class="ml-2 pr-1">
-                    <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
+                <div v-if="!addMode" class="ml-2 pr-1 flex items-center space-x-2">
+                    <button @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-indigo-50 border-indigo-100 text-indigo-500'"
+                            class="px-3 py-1.5 text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
+                    </button>
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-slate-400 bg-slate-50 border border-slate-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </div>
@@ -1066,13 +1071,26 @@
                                 <template v-for="(item, index) in dateGroup.items" :key="item.id">
                             <!-- EACH RECORD IS A SEPARATE SESSION FOLDER per user request -->
                              <div v-show="focusedId === null || focusedId === item.id"
-                                  @click.stop="toggleExpand(item.id)"
+                                  @click.stop="reorderMode ? null : toggleExpand(item.id)"
                                   class="px-5 py-4 flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
                                   :class="[isSessionFocused(item) ? 'bg-slate-50 ring-2 ring-indigo-50/10' : '']">
                                 
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center min-w-0 flex-1">
-                                        <svg :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <!-- Sequence Number / Reorder Input -->
+                                        <div class="mr-3 shrink-0 flex items-center justify-center">
+                                            <div v-if="!reorderMode" class="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center text-[13px] font-black text-slate-500">
+                                                {{ index + 1 }}
+                                            </div>
+                                            <input v-else 
+                                                   type="number" 
+                                                   :value="index + 1"
+                                                   @click.stop
+                                                   @change="e => handleReorder(item, e.target.value, dateGroup.items)"
+                                                   class="w-10 h-8 bg-blue-50 border border-blue-200 rounded-lg text-center text-[14px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
+                                        </div>
+
+                                        <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col">
                                             <span class="text-[13px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ item.date.replace(/-/g, '/') }}</span>
                                             <div class="flex flex-col mt-1.5">
@@ -1434,6 +1452,40 @@ const focusedDate = ref(null);
 const activeDropdownId = ref(null);
 const allExpanded = ref(false);
 const sortDesc = ref(true);
+const reorderMode = ref(false);
+
+const handleReorder = async (item, newOrder, currentList) => {
+    const targetOrder = parseInt(newOrder);
+    if (isNaN(targetOrder)) return;
+
+    const list = [...currentList];
+    const oldIndex = list.findIndex(r => r.id === item.id);
+    if (oldIndex === -1) return;
+
+    const [movedItem] = list.splice(oldIndex, 1);
+    list.splice(Math.max(0, targetOrder - 1), 0, movedItem);
+
+    // Prepare API orders. Note: Each "item" in currentList might represent multiple merged records (ids)
+    const orders = [];
+    list.forEach((block, idx) => {
+        const newSortOrder = idx + 1;
+        // Update all records that belong to this block
+        const idsToUpdate = block.ids || [block.id];
+        idsToUpdate.forEach(id => {
+            orders.push({ id, sort_order: newSortOrder });
+            
+            // Update local state for immediate feedback
+            const orig = visibleItems.value.find(v => v.id === id);
+            if (orig) orig.sort_order = newSortOrder;
+        });
+    });
+
+    try {
+        await axios.post('/teachings/reorder', { orders });
+    } catch (err) {
+        console.error('Reorder failed:', err);
+    }
+};
 
 const showPreviewRecipients = ref(new Set());
 const togglePreviewRecipients = (idx) => {
@@ -1459,13 +1511,21 @@ const groupedRecords = computed(() => {
     list.sort((a, b) => {
         const dA = new Date(a.date).getTime();
         const dB = new Date(b.date).getTime();
+        
+        // Always group by date first
         if (sortDesc.value) {
             if (dB !== dA) return dB - dA;
-            return b.id - a.id;
         } else {
             if (dA !== dB) return dA - dB;
-            return a.id - b.id;
         }
+        
+        // Within same date, use sort_order
+        const sA = a.sort_order || 999999;
+        const sB = b.sort_order || 999999;
+        if (sA !== sB) return sA - sB;
+        
+        // Last resort: ID
+        return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
 
     // Grouping logic: Merge records with same date and same dharma names

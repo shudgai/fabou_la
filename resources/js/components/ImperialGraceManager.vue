@@ -169,7 +169,22 @@
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else class="px-0 bg-white">
+        <div v-else-if="currentFolder" class="px-0 bg-white min-h-screen">
+            <!-- Header for Level 2 -->
+            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
+                <div class="flex items-center space-x-1">
+                    <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <span class="text-[17px] font-black text-slate-900">{{ displayTitle }}</span>
+                </div>
+                <button @click="reorderMode = !reorderMode" 
+                    :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
+                    class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm">
+                    {{ reorderMode ? '確認排序' : '修改排序' }}
+                </button>
+            </div>
+            
             <!-- List Display Area -->
             <div style="padding: 0px 8px 10px 8px;" class="mt-0">
                 <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
@@ -183,7 +198,7 @@
                         ]">
                         
                         <!-- List Item Display (Header when collapsed) -->
-                        <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col pointer-events-none">
+                        <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col">
                             <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1 font-black">
                                 {{ getMasterName(reg.master_id) }}
                             </div>
@@ -200,9 +215,14 @@
                                 <div class="w-8"></div>
                             </div>
 
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between pointer-events-none">
                                 <div class="flex items-center flex-1">
-                                    <div class="w-8 shrink-0 text-[14px] font-black text-slate-300 font-outfit">{{ index + 1 }}</div>
+                                    <div class="w-10 shrink-0 text-[14px] font-black font-outfit">
+                                        <input v-if="reorderMode" type="number" :value="index + 1" 
+                                            @click.stop @change="handleReorder(reg, $event.target.value)"
+                                            class="w-8 h-8 rounded-lg bg-indigo-50 border-none text-center text-indigo-600 focus:ring-2 focus:ring-indigo-500 pointer-events-auto">
+                                        <span v-else class="text-slate-300 ml-2">{{ index + 1 }}</span>
+                                    </div>
                                     <div class="text-[17px] font-black text-slate-900 leading-tight">
                                         {{ reg.name }}
                                     </div>
@@ -312,17 +332,6 @@
                                 <div v-else></div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-50">
-                                <div class="space-y-1">
-                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">修改項次 (目前第 {{ index + 1 }} 號)</label>
-                                    <div class="flex items-center space-x-2 px-1">
-                                        <input type="number" :value="index + 1" @change="handleReorder(reg, $event.target.value)" 
-                                            class="w-20 h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 text-[16px] font-black text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20">
-                                        <span class="text-xs text-slate-400 font-bold">輸入號碼後即自動重排</span>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div v-if="reg.remarks" class="space-y-1">
                                 <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">詳細內容 / 備註</label>
                                 <div class="w-full px-3 py-1 text-[17px] text-slate-900 leading-normal whitespace-pre-wrap">
@@ -398,6 +407,7 @@ const openMenuId = ref(null);
 const fileInput = ref(null);
 const showAddMenu = ref(false); // 控制底部新增選單
 const showSearch = ref(false);
+const reorderMode = ref(false);
 const deleteConfirmId = ref(null); // 追蹤正在準備刪除的物件
 const expandedIds = ref(new Set());
 const focusedId = ref(null); // 追蹤正在「聚焦」的單筆紀錄
@@ -438,7 +448,7 @@ const addActions = computed(() => [
 const displayTitle = computed(() => {
     const base = '重大皇恩專區';
     if (currentFolder.value) {
-        return `${base} - ${currentFolder.value.name}`;
+        return `${base}-${currentFolder.value.name}`;
     }
     return base;
 });
@@ -525,6 +535,7 @@ const handleBack = () => {
         expandedIds.value.clear();
     } else if (currentFolder.value) {
         currentFolder.value = null;
+        reorderMode.value = false;
         searchQuery.value = '';
         expandedIds.value.clear();
         // If we came directly from unobtained to level 0
@@ -882,7 +893,7 @@ const saveBatch = async (payload = null) => {
         const existingNames = allRegistries.value.map(r => r.name.trim());
         
         const duplicates = payload.rows
-            .map(row => String(row.c0 || '').trim())
+            .map(row => String(row.name || '').trim())
             .filter(name => name && existingNames.includes(name));
 
         if (duplicates.length > 0) {

@@ -15,6 +15,7 @@ class Registry extends Model
 
     protected $fillable = [
         'master_id',
+        'sort_order',
         'name',
         'purpose',
         'acquisition_method',

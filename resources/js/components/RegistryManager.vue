@@ -15,9 +15,16 @@
                 <span class="truncate flex-1">
                     {{ dynamicHeaderTitle }}
                 </span>
-                <button v-if="currentFolder && !focusedId" @click="toggleSort" class="ml-2 px-2 py-1 text-[11px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shrink-0">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
-                </button>
+                <div v-if="currentFolder && !focusedId" class="flex items-center space-x-2 shrink-0">
+                    <button @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-indigo-50 border-indigo-100 text-indigo-500'"
+                            class="px-3 py-1.5 text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
+                    </button>
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[11px] text-slate-400 bg-slate-50 border border-slate-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                </div>
             </h2>
         </div>
 
@@ -170,14 +177,17 @@
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4' : ''
                              ]">
                             
-                            <!-- Reorder Handle/Buttons -->
-                            <div class="flex flex-col items-center justify-center mr-3 pt-1 space-y-2 opacity-30 hover:opacity-100 transition-opacity">
-                                <button @click.stop="moveRegistryItem(item, -1)" :disabled="idx === 0" class="p-1 text-slate-400 hover:text-indigo-600 disabled:opacity-10 active:scale-75 transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <button @click.stop="moveRegistryItem(item, 1)" :disabled="idx === filteredTreasures.length - 1" class="p-1 text-slate-400 hover:text-indigo-600 disabled:opacity-10 active:scale-75 transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
+                            <!-- Sequence Number / Reorder Input -->
+                            <div class="mr-4 shrink-0 flex items-center justify-center pt-1">
+                                <div v-if="!reorderMode" class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-[14px] font-black text-slate-500">
+                                    {{ idx + 1 }}
+                                </div>
+                                <input v-else 
+                                       type="number" 
+                                       :value="idx + 1"
+                                       @click.stop
+                                       @change="e => handleReorder(item, e.target.value)"
+                                       class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
                             </div>
 
                             <div class="flex-1 min-w-0 pr-10">
@@ -1256,26 +1266,46 @@ const deleteItem = async (id) => {
 const toggleMenu = (id) => openMenuId.value = openMenuId.value === id ? null : id;
 const toggleSort = () => sortDesc.value = !sortDesc.value;
 
+const reorderMode = ref(false);
+
+const handleReorder = async (item, newOrder) => {
+    const targetOrder = parseInt(newOrder);
+    if (isNaN(targetOrder)) return;
+
+    const list = [...filteredTreasures.value];
+    const oldIndex = list.findIndex(r => r.id === item.id);
+    if (oldIndex === -1) return;
+
+    // Remove from old position
+    const [movedItem] = list.splice(oldIndex, 1);
+    // Insert at new position (1-based index)
+    list.splice(Math.max(0, targetOrder - 1), 0, movedItem);
+
+    // Update sort_order for all in the FULL list
+    const orders = list.map((r, idx) => ({
+        id: r.id,
+        sort_order: idx + 1
+    }));
+
+    // Update local state immediately
+    list.forEach((r, idx) => {
+        const orig = allTreasures.value.find(v => v.id === r.id);
+        if (orig) orig.sort_order = idx + 1;
+    });
+
+    try {
+        await axios.post('/registries/reorder', { orders });
+    } catch (err) {
+        console.error('Reorder failed:', err);
+    }
+};
+
 const moveRegistryItem = async (item, direction) => {
     const list = filteredTreasures.value;
     const index = list.findIndex(t => t.id === item.id);
     const targetIdx = index + direction;
     if (targetIdx < 0 || targetIdx >= list.length) return;
-
-    const targetItem = list[targetIdx];
-    
-    // To ensure they actually swap, we might need to distribute orders if many are 0
-    // But for a simple approach, we'll increment/decrement from the target's order
-    let newOrder = (targetItem.sort_order || 0) + (direction > 0 ? 1 : -1);
-    
-    // Safety: if target is also 0 and we move up, we get -1
-    // If everything is 0, moving up makes it -1, moving down makes it 1.
-    // This naturally sorts -1, 0, 1.
-    
-    try {
-        await axios.post(`/registries/${item.id}`, { sort_order: newOrder, _method: 'PATCH' });
-        loadData();
-    } catch (e) { console.error('Reorder failed', e); }
+    await handleReorder(item, targetIdx + 1);
 };
 
 const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';

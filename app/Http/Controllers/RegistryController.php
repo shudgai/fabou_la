@@ -15,7 +15,7 @@ class RegistryController extends Controller
         if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
             return response()->json(['error' => '您沒有權限查看法寶登記專區'], 403);
         }
-        return Registry::with('dharmaNameRegistries')->get();
+        return Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc')->get();
     }
 
     public function store(Request $request)
@@ -228,5 +228,19 @@ class RegistryController extends Controller
         }
         $registry->delete();
         return response()->json(['message' => 'Deleted']);
+    }
+
+    public function reorder(Request $request)
+    {
+        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $orders = $request->input('orders', []);
+        foreach ($orders as $order) {
+            if (isset($order['id']) && isset($order['sort_order'])) {
+                Registry::where('id', $order['id'])->update(['sort_order' => $order['sort_order']]);
+            }
+        }
+        return response()->json(['message' => 'Reordered']);
     }
 }

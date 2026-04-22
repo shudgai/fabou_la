@@ -12,7 +12,7 @@ class Teaching extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'date', 'master_id', 
+        'sort_order', 'date', 'master_id', 
         'content', 'supplement', 'target_remarks', 
         'remarks', 'items', 'items_footer_remarks', 'user_id'
     ];

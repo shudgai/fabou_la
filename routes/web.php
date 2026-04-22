@@ -29,7 +29,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware(['auth'])->group(function () {
     Route::resource('masters', App\Http\Controllers\MasterController::class);
     Route::post('registries/batch', [App\Http\Controllers\RegistryController::class, 'batchStore']);
-Route::resource('registries', App\Http\Controllers\RegistryController::class);
+    Route::post('registries/reorder', [App\Http\Controllers\RegistryController::class, 'reorder']);
+    Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::resource('imperial-graces', App\Http\Controllers\ImperialGraceController::class);
     Route::post('imperial-graces/registry', [App\Http\Controllers\ImperialGraceController::class, 'storeRegistry']);
     Route::match(['PUT', 'PATCH'], 'imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'updateRegistry']);
@@ -38,6 +39,7 @@ Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::post('imperial-graces/registry/reorder', [App\Http\Controllers\ImperialGraceController::class, 'reorder']);
     Route::post('treasures/batch', [App\Http\Controllers\TreasureController::class, 'batchStore']);
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
+    Route::post('teachings/reorder', [App\Http\Controllers\TeachingController::class, 'reorder']);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
     Route::resource('groups', App\Http\Controllers\GroupController::class);

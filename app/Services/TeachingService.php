@@ -17,7 +17,7 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
         
-        return $query->latest('date')->latest('id')->paginate($perPage);
+        return $query->latest('date')->orderBy('sort_order', 'asc')->oldest('id')->paginate($perPage);
     }
 
     public function getPaginatedDates($masterId = null, $perPage = 15)
@@ -48,7 +48,7 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
         
-        return $query->latest()->get();
+        return $query->orderBy('sort_order', 'asc')->oldest()->get();
     }
 
     public function create(array $data): Teaching
@@ -94,6 +94,16 @@ class TeachingService
         $teaching = Teaching::find($id);
         if (!$teaching) return false;
         return $teaching->delete();
+    }
+
+    public function reorder(array $orders): bool
+    {
+        foreach ($orders as $order) {
+            if (isset($order['id']) && isset($order['sort_order'])) {
+                Teaching::where('id', $order['id'])->update(['sort_order' => $order['sort_order']]);
+            }
+        }
+        return true;
     }
 
     protected function resolveRelations(array $data): array

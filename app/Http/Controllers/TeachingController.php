@@ -69,6 +69,13 @@ class TeachingController extends Controller
         return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
     }
 
+    public function reorder(Request $request)
+    {
+        $orders = $request->input('orders', []);
+        $this->teachingService->reorder($orders);
+        return response()->json(['message' => 'Reordered']);
+    }
+
     public function rules()
     {
         return response()->json($this->teachingService->getSpecializedRules());
