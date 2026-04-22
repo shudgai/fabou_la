@@ -12,7 +12,7 @@
                     v-model="query" 
                     type="text" 
                     :placeholder="placeholder"
-                    class="w-full bg-white border-none rounded-full pl-9 pr-20 py-[2.5px] text-[15.5px] leading-tight focus:ring-0 text-slate-700 placeholder:text-slate-300"
+                    class="w-full bg-white border-none rounded-full pl-9 pr-20 py-[2.5px] text-[17px] font-black leading-tight focus:ring-0 text-slate-700 placeholder:text-slate-300 placeholder:text-[17px] placeholder:font-black"
                     @input="$emit('update:modelValue', query)"
                 >
                 <button v-if="query" @click="clearSearch" class="absolute right-10 text-slate-300 hover:text-slate-400 transition-colors">

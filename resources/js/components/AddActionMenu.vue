@@ -15,7 +15,7 @@
                         <div v-if="action.icon" v-html="action.icon" class="w-4 h-4 flex items-center justify-center stroke-[2.2]"></div>
                     </div>
                     <div class="text-left flex-1 min-w-0">
-                        <p class="text-[14px] font-bold text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors truncate">{{ action.label }}</p>
+                        <p class="text-[17px] font-black text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors truncate">{{ action.label }}</p>
                         <p v-if="action.description" style="color: #3b82f6 !important;" class="text-[11px] font-normal leading-tight truncate">{{ action.description }}</p>
                     </div>
                 </button>
