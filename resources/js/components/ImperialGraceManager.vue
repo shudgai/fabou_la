@@ -121,7 +121,7 @@
                 <button @click="currentCategory = null" class="text-slate-400 p-4 active:scale-90 transition-transform z-10">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center" style="color: black !important;">重大皇恩 - 子資料夾</h1>
+                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center" style="color: black !important;">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
