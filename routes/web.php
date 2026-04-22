@@ -35,6 +35,7 @@ Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::match(['PUT', 'PATCH'], 'imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'updateRegistry']);
     Route::delete('imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'destroyRegistry']);
     Route::post('imperial-graces/registry/batch', [App\Http\Controllers\ImperialGraceController::class, 'batchStoreRegistry']);
+    Route::post('imperial-graces/registry/reorder', [App\Http\Controllers\ImperialGraceController::class, 'reorder']);
     Route::post('treasures/batch', [App\Http\Controllers\TreasureController::class, 'batchStore']);
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);

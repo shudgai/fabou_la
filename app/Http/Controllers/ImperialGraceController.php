@@ -19,24 +19,30 @@ class ImperialGraceController extends Controller
 
     public function storeRegistry(Request $request)
     {
-        // ... Logic for single storing in master list (Specialist)
         $data = $request->all();
+        if (ImperialGrace::where('name', $data['name'])->exists()) {
+            return response()->json(['message' => "法寶名稱「{$data['name']}」已存在，請勿重複載錄。"], 422);
+        }
         $grace = ImperialGrace::create($data);
         return response()->json($grace, 201);
     }
 
     public function batchStoreRegistry(Request $request)
     {
-        // Simplified batch store
         $items = $request->input('items', []);
         $masterId = $request->input('master_id');
         $created = [];
 
         foreach ($items as $item) {
+            // Check for duplicates
+            if (ImperialGrace::where('name', $item['name'])->exists()) {
+                return response()->json(['message' => "法寶名稱「{$item['name']}」已存在，請勿重複載錄。"], 422);
+            }
+
             $created[] = ImperialGrace::create(array_merge([
                 'master_id' => $masterId,
                 'status' => '已登記',
-                'record_date' => now(),
+                // Removed record_date => now() to allow nulls
             ], $item));
         }
 
@@ -48,6 +54,15 @@ class ImperialGraceController extends Controller
         $grace = ImperialGrace::findOrFail($id);
         $grace->update($request->all());
         return response()->json($grace);
+    }
+
+    public function reorder(Request $request)
+    {
+        $orders = $request->input('orders', []);
+        foreach ($orders as $item) {
+            ImperialGrace::where('id', $item['id'])->update(['sort_order' => $item['sort_order']]);
+        }
+        return response()->json(['message' => 'Reordered']);
     }
 
     public function destroyRegistry($id)

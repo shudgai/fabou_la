@@ -61,6 +61,15 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-[2.5px]">
+                        <div class="space-y-1">
+                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
+                            <select v-model="form.status" @change="handleStatusChange" style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"
+                                :style="form.status === '未求得' ? 'color: #dc2626 !important;' : (form.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                <option value="未求得">未求得</option>
+                                <option value="已求得">已求得</option>
+                                <option value="已登記">已登記</option>
+                            </select>
+                        </div>
                         <div v-if="form.status !== '已登記'" class="space-y-1">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
                             <div @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
@@ -73,15 +82,6 @@
                             </div>
                         </div>
                         <div v-else></div>
-                        <div class="space-y-1">
-                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
-                            <select v-model="form.status" @change="handleStatusChange" style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"
-                                :class="form.status === '未求得' ? 'text-red-500' : 'text-emerald-600'">
-                                <option value="未求得">未求得</option>
-                                <option value="已求得">已求得</option>
-                                <option value="已登記">已登記</option>
-                            </select>
-                        </div>
                     </div>
 
                     <div class="space-y-1">

@@ -201,8 +201,11 @@
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <div class="text-[17px] font-black text-slate-900 leading-tight flex-1">
-                                    {{ reg.name }}
+                                <div class="flex items-center flex-1">
+                                    <div class="w-8 shrink-0 text-[14px] font-black text-slate-300 font-outfit">{{ index + 1 }}</div>
+                                    <div class="text-[17px] font-black text-slate-900 leading-tight">
+                                        {{ reg.name }}
+                                    </div>
                                 </div>
                                 <div class="flex items-center space-x-2 mr-6">
                                     <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
@@ -307,6 +310,17 @@
                                     </div>
                                 </div>
                                 <div v-else></div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-50">
+                                <div class="space-y-1">
+                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">修改項次 (目前第 {{ index + 1 }} 號)</label>
+                                    <div class="flex items-center space-x-2 px-1">
+                                        <input type="number" :value="index + 1" @change="handleReorder(reg, $event.target.value)" 
+                                            class="w-20 h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 text-[16px] font-black text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20">
+                                        <span class="text-xs text-slate-400 font-bold">輸入號碼後即自動重排</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div v-if="reg.remarks" class="space-y-1">
@@ -585,6 +599,36 @@ const downloadOnly = (reg) => {
     triggerSimpleDownload(text, `重大皇恩_${reg.name}.txt`);
     persistentToast.value = { msg: '已啟動檔案下載.', type: 'success' };
     openMenuId.value = null;
+};
+
+const handleReorder = async (reg, newOrderStr) => {
+    const newOrder = parseInt(newOrderStr);
+    const currentList = [...filteredRegistries.value];
+    const oldIndex = currentList.findIndex(item => item.id === reg.id);
+    const newIndex = newOrder - 1;
+    
+    if (isNaN(newOrder) || oldIndex === -1 || newIndex < 0 || newIndex >= currentList.length) {
+        persistentToast.value = { msg: '✖ 無效的項次', type: 'error' };
+        return;
+    }
+    
+    // Move item in array
+    const [movedItem] = currentList.splice(oldIndex, 1);
+    currentList.splice(newIndex, 0, movedItem);
+    
+    // Assign new sort_order to everyone in this filtered list
+    const updates = currentList.map((item, idx) => ({
+        id: item.id,
+        sort_order: idx + 1
+    }));
+    
+    try {
+        await axios.post('/imperial-graces/registry/reorder', { orders: updates });
+        persistentToast.value = { msg: '✓ 順序更新成功', type: 'success' };
+        await loadData();
+    } catch (e) {
+        persistentToast.value = { msg: '✖ 順序更新失敗', type: 'error' };
+    }
 };
 
 // 3. 全部複製
@@ -916,6 +960,11 @@ const filteredRegistries = computed(() => {
     const statusOrder = { '未求得': 1, '已求得': 2, '已登記': 3 };
     
     filtered.sort((a, b) => {
+        // Priority 0: Manual sort_order
+        if (a.sort_order !== b.sort_order) {
+            return (a.sort_order || 9999) - (b.sort_order || 9999);
+        }
+
         // Priority 1: Status (Always kept)
         const orderA = statusOrder[a.status] || 99;
         const orderB = statusOrder[b.status] || 99;
