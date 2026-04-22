@@ -46,13 +46,11 @@
                 </button>
             </div>
 
-            <!-- MORE/EXPORT BUTTON -->
+            <!-- FONT SIZE TOGGLE BUTTON (Rightmost) -->
             <div class="flex justify-center">
-                <button @click="$emit('more')" 
-                    :disabled="!canMore"
-                    :class="[moreActive ? 'text-indigo-600 bg-indigo-50' : (canMore ? 'text-slate-400 active:scale-95' : 'text-slate-100')]"
-                    class="w-14 h-14 rounded-xl flex items-center justify-center transition-all">
-                    <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button @click="cycleFontSize" 
+                    class="w-14 h-14 rounded-xl flex items-center justify-center transition-all text-indigo-600 bg-indigo-50/50 active:scale-95 font-bold text-[14px]">
+                    字{{ fontSizeLabel }}
                 </button>
             </div>
         </div>
@@ -60,6 +58,8 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
+
 defineProps({
     canBack: { type: Boolean, default: true },
     canHome: { type: Boolean, default: true },
@@ -68,10 +68,26 @@ defineProps({
     actionDisabled: { type: Boolean, default: false },
     canSearch: { type: Boolean, default: true },
     searchActive: { type: Boolean, default: false },
-    canMore: { type: Boolean, default: true },
-    moreActive: { type: Boolean, default: false },
     activeTab: { type: String, default: '' }
 });
 
-defineEmits(['back', 'home', 'action', 'search', 'more']);
+defineEmits(['back', 'home', 'action', 'search']);
+
+// Font Size System
+const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
+const fontSizeLabel = computed(() => {
+    const opts = { 'font-small': '小', 'font-medium': '中', 'font-large': '大' };
+    return opts[currentFontSize.value] || '中';
+});
+
+const cycleFontSize = () => {
+    const sequence = ['font-small', 'font-medium', 'font-large'];
+    let idx = sequence.indexOf(currentFontSize.value);
+    idx = (idx + 1) % sequence.length;
+    const key = sequence[idx];
+    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+    document.body.classList.add(key);
+    localStorage.setItem('fabou_font_size', key);
+    currentFontSize.value = key;
+};
 </script>

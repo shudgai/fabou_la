@@ -221,16 +221,12 @@
                                 <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
-                    <!-- 行動版：user + 字體切換 (最右側) -->
+                    <!-- 行動版：user (最右側) -->
                     <div class="flex items-center gap-2">
                         @auth
                             <div class="w-8 h-8 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[10px]">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
-                            <!-- 單一循環按鈕 -->
-                            <button x-data="fontSizeToggle()" @click="cycleSize()" class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-[13px] hover:bg-indigo-100 transition-colors active:scale-95" title="切換字體大小">
-                                <span x-text="'字' + currentLabel"></span>
-                            </button>
                         @endauth
                     </div>
                 </header>

@@ -62,3 +62,51 @@ body.font-large {
     .text-app-body  { font-size: var(--fs-body);  }
     .text-app-title { font-size: var(--fs-title); }
 }
+
+/* ============================================================
+   全局覆寫規則 (Global Overrides for Hardcoded Tailwind Classes)
+   這會自動捕捉系統中常用的 class，並強制套用使用者的字體設定
+   ============================================================ */
+
+/* --- 內文 (.text-[17px], .text-[15px] 常用於資料呈現) --- */
+body.font-small .text-\[17px\], body.font-small .text-\[15px\], body.font-small td {
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: #111827 !important;
+}
+
+body.font-medium .text-\[17px\], body.font-medium .text-\[15px\], body.font-medium td {
+    font-size: 17px !important;
+    font-weight: 400 !important;
+    color: #111827 !important;
+}
+
+body.font-large .text-\[17px\], body.font-large .text-\[15px\], body.font-large td {
+    font-size: 19px !important;
+    font-weight: 400 !important;
+    color: #111827 !important;
+}
+
+/* --- 標題 (label, th, 以及卡片標題 .text-[18px]) --- */
+body.font-small label, body.font-small th, body.font-small .text-\[18px\] {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #6B7280 !important;
+}
+
+body.font-medium label, body.font-medium th, body.font-medium .text-\[18px\] {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #6B7280 !important;
+}
+
+body.font-large label, body.font-large th, body.font-large .text-\[18px\] {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #6B7280 !important;
+}
+
+/* 確保輸入框也跟著變，但顏色稍微深一點 */
+body.font-small input, body.font-small select { font-size: 15px !important; font-weight: 400 !important; }
+body.font-medium input, body.font-medium select { font-size: 17px !important; font-weight: 400 !important; }
+body.font-large input, body.font-large select { font-size: 19px !important; font-weight: 400 !important; }
