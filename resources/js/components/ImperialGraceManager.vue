@@ -193,11 +193,8 @@
                                     <div class="text-[15px] text-slate-400 uppercase tracking-wider whitespace-nowrap font-black">法寶名稱</div>
                                     <div class="text-[14px] text-slate-400 font-black">
                                         <template v-if="reg.record_date">
-                                            得知: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                            {{ reg.status === '已登記' ? '登記' : '得知' }}: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.record_date.replace(/-/g, '/') }}</span>
                                         </template>
-                                        <span :class="{'ml-2': reg.record_date}">
-                                            求得: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.obtained_date?.replace(/-/g, '/') || '----' }}</span>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="w-8"></div>
@@ -211,9 +208,11 @@
                                     <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
                                         'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
-                                        'bg-red-50 text-red-700 border-red-200': reg.status === '未求得',
+                                        'bg-pink-100': reg.status === '未求得',
                                         'cursor-pointer': currentFolder.id === 'unobtained'
-                                    }" class="text-[14px] px-2 py-0.5 rounded border font-black select-none whitespace-nowrap active:scale-90 transition-all">
+                                    }" 
+                                    :style="reg.status === '未求得' ? 'color: #dc2626 !important; border-width: 0px !important; font-weight: 900 !important;' : 'font-weight: 900 !important;'"
+                                    class="text-[14px] px-2 py-0.5 rounded border select-none whitespace-nowrap active:scale-90 transition-all">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -228,13 +227,13 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">
+                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-indigo-50 border-b border-slate-50">
                                         {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                         </div>
@@ -248,13 +247,13 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">
+                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-indigo-50 border-b border-slate-50">
                                         {{ expandedIds.has(reg.id) ? '收合清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                             
@@ -265,7 +264,7 @@
                                         <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-slate-400 active:scale-90 transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[14px] font-black text-slate-400 tracking-wider block">得知日期</label>
+                                        <label class="text-[14px] font-black text-slate-400 tracking-wider block">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
                                     </div>
                                     <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
@@ -293,20 +292,21 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
+                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">目前狀態</label>
+                                    <div class="w-full px-3 flex items-center text-[17px] font-black"
+                                        :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                        {{ reg.status }}
+                                    </div>
+                                </div>
+                                <div v-if="reg.status !== '已登記'" class="space-y-1">
                                     <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">求得日期</label>
                                     <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
-                                <div class="space-y-1">
-                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black"
-                                        :class="reg.status === '未求得' ? 'text-red-600' : 'text-emerald-600'">
-                                        {{ reg.status }}
-                                    </div>
-                                </div>
+                                <div v-else></div>
                             </div>
 
                             <div v-if="reg.remarks" class="space-y-1">

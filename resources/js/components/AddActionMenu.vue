@@ -16,7 +16,7 @@
                     </div>
                     <div class="text-left flex-1 min-w-0">
                         <p class="text-[14px] font-bold text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors truncate">{{ action.label }}</p>
-                        <p v-if="action.description" class="text-[11px] text-slate-400 font-normal leading-tight truncate">{{ action.description }}</p>
+                        <p v-if="action.description" style="color: #3b82f6 !important;" class="text-[11px] font-normal leading-tight truncate">{{ action.description }}</p>
                     </div>
                 </button>
             </div>

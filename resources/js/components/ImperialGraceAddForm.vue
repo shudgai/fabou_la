@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-[2.5px]">
-                        <div class="space-y-1">
+                        <div v-if="form.status !== '已登記'" class="space-y-1">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
                             <div @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
                                 :class="form.status === '未求得' ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'"
@@ -72,6 +72,7 @@
                                 <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </div>
                         </div>
+                        <div v-else></div>
                         <div class="space-y-1">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
                             <select v-model="form.status" @change="handleStatusChange" style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"
@@ -104,9 +105,8 @@
                         
                         <div class="relative group">
                             <textarea v-model="batchInput" rows="8" 
-                                @paste="handleBatchPaste"
                                 class="w-full rounded-xl border-none shadow-sm text-[14px] bg-white focus:ring-2 focus:ring-indigo-500/20 p-4 font-mono leading-relaxed pr-10 placeholder:text-slate-300" 
-                                placeholder="支援直接貼上 Excel 或 LINE 內容..."></textarea>
+                                placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
                             <button v-if="batchInput" @click="batchInput = ''" 
                                 class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -224,7 +224,20 @@ watch(() => props.initialData, (newVal) => {
 watch(() => props.mode, (newVal) => {
     if (newVal) {
         localMode.value = newVal;
-        if (newVal === 'batch') form.value.record_date = '';
+        if (newVal === 'batch') {
+            form.value.record_date = '';
+        }
+        // 重新開啟介面時，清空上一次輸入的 batch 資料，避免殘留
+        batchInput.value = '';
+        excelRows.value = [];
+        excelCols.value = [];
+        showTotal.value = false;
+        sumKey.value = '';
+        
+        // 如果是新增模式（沒有id），重設 form 資料
+        if (!props.initialData?.id) {
+            form.value = { count: 1, ...props.initialData };
+        }
     }
 });
 
@@ -234,35 +247,69 @@ watch(localMode, (newVal) => {
     }
 });
 
+watch(batchInput, (newVal) => {
+    if (!newVal || newVal.trim() === '') {
+        excelRows.value = [];
+        showTotal.value = false;
+        sumKey.value = '';
+        return;
+    }
+    const lines = newVal.trim().split(/\r?\n/).map(line => line.split(/[\t]+/).map(c => c.trim()));
+    processBatchLines(lines);
+});
+
 const handleStatusChange = () => {
     if (form.value.status === '未求得') form.value.obtained_date = '';
-};
-
-const handleBatchPaste = (e) => {
-    const pasteData = e.clipboardData.getData('text');
-    if (pasteData && pasteData.trim()) {
-        const lines = pasteData.trim().split(/\r?\n/).map(line => line.split('\t').map(c => c.trim()));
-        processBatchLines(lines);
-    }
 };
 
 const processBatchLines = (rawLines) => {
     if (!rawLines || rawLines.length === 0) return;
     
+    // 偵測日期行
+    const flexibleDateRegex = /\d{4}[-\/]\d{2}[-\/]\d{2}/;
+    let globalDate = '';
+    const filteredLines = [];
+
+    for (const row of rawLines) {
+        if (!row || row.length === 0) continue;
+        const firstCell = row[0] || '';
+        
+        // 若此行包含日期
+        if (flexibleDateRegex.test(firstCell)) {
+            if (!globalDate) globalDate = firstCell.match(flexibleDateRegex)[0];
+            // 若此行只有一個欄位且幾乎全是日期，則跳過這行不當作法寶資料
+            if (row.length === 1 && firstCell.replace(flexibleDateRegex, '').trim().length < 3) {
+                continue;
+            }
+        }
+        
+        if (row.some(c => c.trim() !== '')) {
+            filteredLines.push(row);
+        }
+    }
+
+    if (filteredLines.length === 0) {
+        excelRows.value = [];
+        return;
+    }
+
     // Auto-detect columns
-    const maxCols = Math.max(...rawLines.map(r => r.length));
+    const maxCols = Math.max(...filteredLines.map(r => r.length));
     excelCols.value = Array.from({ length: maxCols }).map((_, i) => ({
         key: `c${i}`,
         label: i === 0 ? '法門/法號' : (i === 1 ? '用意/數量' : `欄位 ${i + 1}`)
     }));
 
-    excelRows.value = rawLines.map(row => {
+    excelRows.value = filteredLines.map(row => {
         const rowData = {};
         for (let i = 0; i < maxCols; i++) {
             rowData[`c${i}`] = row[i] || '';
         }
+        if (globalDate) {
+            rowData._record_date = globalDate;
+        }
         return rowData;
-    }).filter(r => Object.values(r).some(v => v));
+    });
 
     // Guess Sum Key
     if (excelRows.value.length > 0 && !sumKey.value) {
@@ -330,8 +377,9 @@ const handleSubmit = () => {
             rows: excelRows.value.map(row => ({
                 name: row.c0,
                 purpose: row.c1,
+                record_date: row._record_date || '', // 自動補上日期
                 count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
-                remarks: Object.keys(row).filter(k => !['c0', 'c1', sumKey.value].includes(k)).map(k => row[k]).join(' ')
+                remarks: Object.keys(row).filter(k => !['c0', 'c1', '_record_date', sumKey.value].includes(k)).map(k => row[k]).join(' ')
             })),
             total: batchTotalValue.value
         });
