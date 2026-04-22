@@ -2,6 +2,13 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <!-- 字體大小初始化：讀 localStorage，避免頁面閃爍 -->
+    <script>
+        (function () {
+            var size = localStorage.getItem('fabou_font_size') || 'font-medium';
+            document.documentElement.className = size;
+        })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -39,7 +46,7 @@
     @stack('styles')
 </head>
 
-<body class="antialiased text-slate-900 bg-white">
+<body class="antialiased text-slate-900 bg-white font-medium">
     <div class="min-h-screen flex flex-col">
         <!-- Retractable Sidebar -->
         <div x-data="{ sidebarOpen: false, sidebarCollapsed: false }" class="flex-1 flex overflow-hidden">
@@ -181,6 +188,7 @@
                         </div>
                     @endauth
 
+
                     <!-- Desktop Toggle Button -->
                     <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:flex w-full items-center justify-center p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-indigo-600 transition-colors">
                         <svg :class="{ 'rotate-180': sidebarCollapsed }" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,16 +200,6 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <!-- Guest Desktop Login Button (Top Right) -->
-                @guest
-                    <div class="hidden lg:block absolute top-6 right-6 z-50">
-                        <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl shadow-sm hover:shadow-md hover:bg-slate-50 transition-all active:scale-95 space-x-2">
-                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span>立即登錄</span>
-                        </a>
-                    </div>
-                @endguest
-
                 <!-- Mobile Header -->
                 @if(!request()->routeIs('note.index'))
                 <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0 shrink-0">
@@ -223,16 +221,17 @@
                                 <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
-                    </div>
-
-                    <div>
-                        @guest
-                            <a href="{{ route('login') }}" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">登入</a>
-                        @else
+                    <!-- 行動版：user + 字體切換 (最右側) -->
+                    <div class="flex items-center gap-2">
+                        @auth
                             <div class="w-8 h-8 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[10px]">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
-                        @endguest
+                            <!-- 單一循環按鈕 -->
+                            <button x-data="fontSizeToggle()" @click="cycleSize()" class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-[13px] hover:bg-indigo-100 transition-colors active:scale-95" title="切換字體大小">
+                                <span x-text="'字' + currentLabel"></span>
+                            </button>
+                        @endauth
                     </div>
                 </header>
                 @endif
@@ -245,6 +244,38 @@
     </div> <!-- End #app -->
 
     @stack('scripts')
+
+    <script>
+    function fontSizeToggle() {
+        return {
+            options: [
+                { key: 'font-small',  label: '小' },
+                { key: 'font-medium', label: '中' },
+                { key: 'font-large',  label: '大' },
+            ],
+            current: localStorage.getItem('fabou_font_size') || 'font-medium',
+            get currentLabel() {
+                return this.options.find(o => o.key === this.current)?.label || '中';
+            },
+            cycleSize() {
+                let idx = this.options.findIndex(o => o.key === this.current);
+                idx = (idx + 1) % this.options.length;
+                const key = this.options[idx].key;
+                const body = document.body;
+                body.classList.remove('font-small', 'font-medium', 'font-large');
+                body.classList.add(key);
+                localStorage.setItem('fabou_font_size', key);
+                this.current = key;
+            },
+            init() {
+                const saved = localStorage.getItem('fabou_font_size') || 'font-medium';
+                document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                document.body.classList.add(saved);
+                this.current = saved;
+            }
+        };
+    }
+    </script>
 </body>
 
 </html>

@@ -27,6 +27,22 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
+                <!-- Dharma Name field -->
+                <div class="space-y-2">
+                    <label for="dharma_name" class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">法號</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <input id="dharma_name" type="text" name="dharma_name" value="{{ old('dharma_name') }}" required autocomplete="off" autofocus
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-300 @error('dharma_name') ring-2 ring-red-500/20 @enderror"
+                            placeholder="輸入您的法號">
+                    </div>
+                    @error('dharma_name')
+                        <p class="text-red-500 text-[11px] font-bold mt-1 ml-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Email field -->
                 <div class="space-y-2">
                     <label for="email" class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">電子郵件信箱</label>
@@ -34,7 +50,7 @@
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email"
                             class="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-300 @error('email') ring-2 ring-red-500/20 @enderror"
                             placeholder="example@mail.com">
                     </div>

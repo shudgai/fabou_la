@@ -3,3 +3,62 @@
 @tailwind utilities;
 
 [x-cloak] { display: none !important; }
+
+/* ============================================================
+   字體大小系統 (Font Size System)
+   ============================================================
+   規則：
+     .app-body  → 內文：明細體(font-weight:400)、黑色(#111827)
+     .app-title → 標題：粗體(font-weight:700)、灰色(#6B7280)
+
+   三種尺寸 (套用在 <body> 或任意父容器):
+     小 (.font-small)  → 內文 15px / 標題 13px
+     中 (.font-medium) → 內文 17px / 標題 15px  [預設]
+     大 (.font-large)  → 內文 19px / 標題 16px
+   ============================================================ */
+
+/* --- 預設 (中) --- */
+:root {
+    --fs-body:  17px;
+    --fs-title: 15px;
+}
+
+/* --- 小 --- */
+body.font-small {
+    --fs-body:  15px;
+    --fs-title: 13px;
+}
+
+/* --- 中 --- */
+body.font-medium {
+    --fs-body:  17px;
+    --fs-title: 15px;
+}
+
+/* --- 大 --- */
+body.font-large {
+    --fs-body:  19px;
+    --fs-title: 16px;
+}
+
+/* ── 工具 class ────────────────────────────── */
+
+/* 內文：明細體 + 黑色 */
+.app-body {
+    font-size:   var(--fs-body) !important;
+    font-weight: 400 !important;
+    color:       #111827 !important;
+}
+
+/* 標題：粗體 + 灰色 */
+.app-title {
+    font-size:   var(--fs-title) !important;
+    font-weight: 700 !important;
+    color:       #6B7280 !important;
+}
+
+/* ── Tailwind 工具 class (可直接用在 template) ── */
+@layer utilities {
+    .text-app-body  { font-size: var(--fs-body);  }
+    .text-app-title { font-size: var(--fs-title); }
+}
