@@ -194,43 +194,44 @@
                         v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'py-[10px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 z-10'
+                            'w-full block py-[12px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none'
                         ]">
                         
                         <!-- List Item Display (Header when collapsed) -->
-                        <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col">
-                            <div class="flex items-center justify-between mb-0.5">
-                                <div class="app-title font-bold">
-                                    <template v-if="reg.record_date">
-                                        {{ reg.status === '已登記' ? '登記' : '得知' }}: <span class="app-title font-bold">{{ reg.record_date.replace(/-/g, '/') }}</span>
-                                    </template>
-                                </div>
-                                <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="app-title opacity-60">
-                                    {{ getMasterName(reg.master_id) }}
-                                </div>
-                                <div v-else class="w-8"></div>
+                        <div v-if="expandedId !== reg.id" class="mt-0 flex items-start">
+                            <!-- Number column -->
+                            <div class="w-10 shrink-0 pt-0.5">
+                                <input v-if="reorderMode" type="number" :value="index + 1" 
+                                    @click.stop @change="handleReorder(reg, $event.target.value)"
+                                    class="w-8 h-8 rounded-lg bg-indigo-50 border-none text-center text-indigo-600 focus:ring-2 focus:ring-indigo-500 pointer-events-auto">
+                                <span v-else class="app-title text-slate-300 ml-2">{{ index + 1 }}</span>
                             </div>
 
-                            <div class="flex items-center justify-between pointer-events-none">
-                                <div class="flex items-center flex-1">
-                                    <div class="w-10 shrink-0 app-title font-outfit">
-                                        <input v-if="reorderMode" type="number" :value="index + 1" 
-                                            @click.stop @change="handleReorder(reg, $event.target.value)"
-                                            class="w-8 h-8 rounded-lg bg-indigo-50 border-none text-center text-indigo-600 focus:ring-2 focus:ring-indigo-500 pointer-events-auto">
-                                        <span v-else class="text-slate-300 ml-2">{{ index + 1 }}</span>
-                                    </div>
-                                    <div class="app-body leading-tight">
-                                        {{ reg.name }}
-                                    </div>
+                            <!-- Content column: date on top, name+status on bottom -->
+                            <div class="flex flex-col flex-1 min-w-0 pr-8">
+                                <!-- Row 1: Date -->
+                                <div class="app-title font-bold mb-0.5">
+                                    <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
+                                        登記：<span class="app-title font-bold">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
+                                    </template>
+                                    <template v-else-if="reg.record_date">
+                                        得知：<span class="app-title font-bold">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                    </template>
+                                    <template v-else>
+                                        <span class="text-slate-300">未知日期</span>
+                                    </template>
+                                    <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="ml-2 app-title opacity-50">{{ getMasterName(reg.master_id) }}</span>
                                 </div>
-                                <div class="flex items-center space-x-2 mr-6">
+                                <!-- Row 2: Name + Status -->
+                                <div class="flex items-center justify-between">
+                                    <div class="app-body leading-tight truncate">{{ reg.name }}</div>
                                     <span :class="{
                                         'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
                                         'bg-pink-100': reg.status === '未求得'
                                     }" 
                                     :style="reg.status === '未求得' ? 'color: #dc2626 !important; border-width: 0px !important;' : ''"
-                                    class="app-title font-bold px-2 py-0.5 rounded border select-none whitespace-nowrap transition-all">
+                                    class="app-title font-bold px-2 py-0.5 rounded border select-none whitespace-nowrap shrink-0 ml-2">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -238,7 +239,7 @@
                         </div>
 
                         <!-- Independent Menu Button (Three Dots) -->
-                        <div v-if="!expandedIds.has(reg.id)" class="absolute right-1 top-0.5 z-20">
+                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-2">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
                                     <svg class="h-5 v-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -255,7 +256,7 @@
                         </div>
 
                         <!-- Expanded Detail (Pure White Frameless Wide Style) -->
-                        <div v-if="expandedIds.has(reg.id)" class="animate-fade-in py-3 bg-white space-y-3.5 relative px-1.5">
+                        <div v-if="expandedId === reg.id" class="animate-fade-in py-3 bg-white space-y-4 relative px-2">
                             <!-- Action Menu in Expanded Mode -->
                             <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors">
@@ -378,9 +379,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits, watch } from 'vue';
+import { ref, reactive, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import SearchComponent from './SearchComponent.vue';
+import AddActionMenu from './AddActionMenu.vue';
+import ImperialGraceAddForm from './ImperialGraceAddForm.vue';
 
 const emit = defineEmits(['goHome']);
 
@@ -400,7 +404,7 @@ const showAddMenu = ref(false); // 控制底部新增選單
 const showSearch = ref(false);
 const reorderMode = ref(false);
 const deleteConfirmId = ref(null); // 追蹤正在準備刪除的物件
-const expandedIds = ref(new Set());
+const expandedId = ref(null); // 追蹤目前展開的 ID，單一變數最穩
 const focusedId = ref(null); // 追蹤正在「聚焦」的單筆紀錄
 const batchInput = ref('');
 const batchMasterId = ref(null);
@@ -496,27 +500,18 @@ const toggleMenu = (id) => {
     } else {
         openMenuId.value = id;
         focusedId.value = id;
-        const newSet = new Set();
-        newSet.add(id);
-        expandedIds.value = new Set([id]);
+        expandedId.value = id;
     }
     deleteConfirmId.value = null;
 };
 const toggleExpand = (id) => {
-    const s = new Set(expandedIds.value);
-    if (s.has(id)) {
-        s.delete(id);
-        expandedIds.value = s;
+    if (expandedId.value === id) {
+        expandedId.value = null;
         if (focusedId.value === id) focusedId.value = null;
-        // 當收回時，自動開啟該筆的動作選單 (清單)
         openMenuId.value = id;
     } else {
-        // 進入聚焦模式：展開該筆並隱藏其他
-        const newSet = new Set();
-        newSet.add(id);
-        expandedIds.value = newSet;
+        expandedId.value = id;
         focusedId.value = id;
-        // 展開時確保選單是關閉的
         openMenuId.value = null;
     }
 };
@@ -526,12 +521,12 @@ const handleBack = () => {
         addMode.value = null;
     } else if (focusedId.value) {
         focusedId.value = null;
-        expandedIds.value.clear();
+        expandedId.value = null;
     } else if (currentFolder.value) {
         currentFolder.value = null;
         reorderMode.value = false;
         searchQuery.value = '';
-        expandedIds.value.clear();
+        expandedId.value = null;
         // If we came directly from unobtained to level 0
         if (currentCategory.value === 'unobtained') {
             currentCategory.value = null;
@@ -545,7 +540,7 @@ const handleBack = () => {
 
 watch(currentFolder, () => {
     focusedId.value = null;
-    expandedIds.value.clear();
+    expandedId.value = null;
     openMenuId.value = null;
     searchQuery.value = '';
 });
@@ -566,7 +561,7 @@ const executeDelete = async () => {
         await axios.delete(`/imperial-graces/registry/${deleteConfirmId.value}`); 
         persistentToast.value = { msg: '✓ 已成功刪除', type: 'success' };
         focusedId.value = null;
-        expandedIds.value.clear();
+        expandedId.value = null;
         loadData(); 
     }
     catch (e) { alert('刪除失敗'); }
@@ -856,7 +851,7 @@ const changeStatus = async (reg, nextStatus) => {
                     currentCategory.value = 'masters';
                     currentFolder.value = matchedFolder;
                     focusedId.value = reg.id;
-                    expandedIds.value.add(reg.id);
+                    expandedId.value = reg.id;
                     persistentToast.value = { 
                         msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, 
                         type: 'success',
@@ -944,8 +939,7 @@ onMounted(() => {
             if (openMenuId.value) openMenuId.value = null;
             if (showAddMenu.value) showAddMenu.value = false;
             if (statusMenuOpenId.value) statusMenuOpenId.value = null;
-            // Collapse details but STAY in focused mode
-            if (expandedIds.value.size > 0) expandedIds.value.clear();
+            // expandedId is managed exclusively by the row @click (toggleExpand)
         }
     });
 });
@@ -961,28 +955,28 @@ const filteredRegistries = computed(() => {
     }
 
 
-    // Sort mapping based on user priority: Unobtained -> Obtained -> Registered
+    // 狀態排序：未求得 → 已求得 → 已登記
     const statusOrder = { '未求得': 1, '已求得': 2, '已登記': 3 };
     
     filtered.sort((a, b) => {
-        // Priority 0: Manual sort_order
-        if (a.sort_order !== b.sort_order) {
-            return (a.sort_order || 9999) - (b.sort_order || 9999);
-        }
-
-        // Priority 1: Status (Always kept)
+        // Priority 1: Status (always first)
         const orderA = statusOrder[a.status] || 99;
         const orderB = statusOrder[b.status] || 99;
         if (orderA !== orderB) return orderA - orderB;
+
+        // Priority 2: Manual sort_order (within same status)
+        if ((a.sort_order || 9999) !== (b.sort_order || 9999)) {
+            return (a.sort_order || 9999) - (b.sort_order || 9999);
+        }
         
-        // Priority 2: Date
+        // Priority 3: Date (within same status & sort_order)
         const dateA = a.record_date || '';
         const dateB = b.record_date || '';
         if (dateA !== dateB) {
             return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
         }
         
-        // Priority 3: ID Fallback
+        // Priority 4: ID Fallback
         return sortDesc.value ? ((b.id || 0) - (a.id || 0)) : ((a.id || 0) - (b.id || 0));
     });
 
@@ -1024,18 +1018,6 @@ const getFolderSum = (id) => {
     }
     return filtered.reduce((sum, r) => sum + (Number(r.count) || 1), 0);
 };
-
-onMounted(() => {
-    window.addEventListener('click', (e) => {
-        const isOutside = !e.target.closest('.relative');
-        if (isOutside) {
-            if (openMenuId.value) openMenuId.value = null;
-            if (showAddMenu.value) showAddMenu.value = false;
-            // Collapse details but STAY in focused mode
-            if (expandedIds.value.size > 0) expandedIds.value.clear();
-        }
-    });
-});
 </script>
 
 <style scoped>

@@ -79,8 +79,7 @@
                             <!-- Row 2: Name & Quantity & Status -->
                             <div class="flex items-center justify-between mt-1">
                                 <div class="app-body font-bold truncate flex-1">
-                                    {{ item.user_name || '-' }}
-                                    <span v-if="item.user_remarks" class="app-body ml-1.5">{{ item.user_remarks }}</span>
+                                    {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body ml-0.5">{{ item.user_remarks }}</span>
                                 </div>
                                 <div class="flex items-center space-x-2 shrink-0 ml-4">
                                     <div class="app-title">數量:</div>
