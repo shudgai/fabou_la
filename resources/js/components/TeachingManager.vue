@@ -1238,8 +1238,10 @@
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div class="text-[16px] font-black text-slate-900 leading-tight">
-                                                <span class="text-[13px] font-bold text-slate-400 mr-2 tracking-tighter">{{ item.date.replace(/-/g, '/') }}</span>
+                                            <div class="app-title mb-0.5">
+                                                {{ item.date.replace(/-/g, '/') }}
+                                            </div>
+                                            <div class="app-body font-bold leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->

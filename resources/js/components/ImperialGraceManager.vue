@@ -199,43 +199,38 @@
                         
                         <!-- List Item Display (Header when collapsed) -->
                         <div v-if="!expandedIds.has(reg.id)" class="mt-0 flex flex-col">
-                            <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="text-[15px] text-slate-400 leading-none mb-1 font-black">
-                                {{ getMasterName(reg.master_id) }}
-                            </div>
-
-                            <div class="flex items-center justify-between mb-1">
-                                <div class="flex items-baseline space-x-2">
-                                    <div class="text-[15px] text-slate-400 uppercase tracking-wider whitespace-nowrap font-black">法寶名稱</div>
-                                    <div class="text-[14px] text-slate-400 font-black">
-                                        <template v-if="reg.record_date">
-                                            {{ reg.status === '已登記' ? '登記' : '得知' }}: <span class="text-[14px] text-slate-900 font-black ml-0.5">{{ reg.record_date.replace(/-/g, '/') }}</span>
-                                        </template>
-                                    </div>
+                            <div class="flex items-center justify-between mb-0.5">
+                                <div class="app-title font-bold">
+                                    <template v-if="reg.record_date">
+                                        {{ reg.status === '已登記' ? '登記' : '得知' }}: <span class="app-title font-bold">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                    </template>
                                 </div>
-                                <div class="w-8"></div>
+                                <div v-if="currentFolder.id === 'unobtained' && reg.master_id" class="app-title opacity-60">
+                                    {{ getMasterName(reg.master_id) }}
+                                </div>
+                                <div v-else class="w-8"></div>
                             </div>
 
                             <div class="flex items-center justify-between pointer-events-none">
                                 <div class="flex items-center flex-1">
-                                    <div class="w-10 shrink-0 text-[14px] font-black font-outfit">
+                                    <div class="w-10 shrink-0 app-title font-outfit">
                                         <input v-if="reorderMode" type="number" :value="index + 1" 
                                             @click.stop @change="handleReorder(reg, $event.target.value)"
                                             class="w-8 h-8 rounded-lg bg-indigo-50 border-none text-center text-indigo-600 focus:ring-2 focus:ring-indigo-500 pointer-events-auto">
                                         <span v-else class="text-slate-300 ml-2">{{ index + 1 }}</span>
                                     </div>
-                                    <div class="text-[17px] font-black text-slate-900 leading-tight">
+                                    <div class="app-body leading-tight">
                                         {{ reg.name }}
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2 mr-6">
-                                    <span @click.stop="currentFolder.id === 'unobtained' ? quickToggleStatus(reg) : null" :class="{
+                                    <span :class="{
                                         'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
-                                        'bg-pink-100': reg.status === '未求得',
-                                        'cursor-pointer': currentFolder.id === 'unobtained'
+                                        'bg-pink-100': reg.status === '未求得'
                                     }" 
-                                    :style="reg.status === '未求得' ? 'color: #dc2626 !important; border-width: 0px !important; font-weight: 900 !important;' : 'font-weight: 900 !important;'"
-                                    class="text-[14px] px-2 py-0.5 rounded border select-none whitespace-nowrap active:scale-90 transition-all">
+                                    :style="reg.status === '未求得' ? 'color: #dc2626 !important; border-width: 0px !important;' : ''"
+                                    class="app-title font-bold px-2 py-0.5 rounded border select-none whitespace-nowrap transition-all">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -246,17 +241,15 @@
                         <div v-if="!expandedIds.has(reg.id)" class="absolute right-1 top-0.5 z-20">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                    <svg class="h-5 v-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-indigo-50 border-b border-slate-50">
-                                        {{ expandedIds.has(reg.id) ? '縮起清單' : '展開清單' }}
-                                    </button>
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-red-50">刪除</button>
+                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body hover:bg-indigo-50 border-b border-slate-50">展開清單</button>
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                         </div>
@@ -270,16 +263,14 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-indigo-50 border-b border-slate-50">
-                                        {{ expandedIds.has(reg.id) ? '收合清單' : '展開清單' }}
-                                    </button>
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-green-50 border-b border-slate-50 font-medium whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-blue-50 border-b border-slate-50 font-normal whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left text-[14px] hover:bg-red-50">刪除</button>
+                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body hover:bg-indigo-50 border-b border-slate-50">收合清單</button>
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
-                            
+
                             <!-- Detail Content Grid -->
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
@@ -287,45 +278,45 @@
                                         <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-slate-400 active:scale-90 transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[14px] font-black text-slate-400 tracking-wider block">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                        <label class="app-title tracking-wider block">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
+                                    <div class="w-full px-3 flex items-center app-body">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">載錄目標仙師</label>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
+                                    <label class="app-title tracking-wider block ml-1">載錄目標仙師</label>
+                                    <div class="w-full px-3 flex items-center app-body">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">法寶名稱</label>
-                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 leading-tight">
+                                <label class="app-title tracking-wider block ml-1">法寶名稱</label>
+                                <div class="w-full px-3 flex items-center app-body">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">法寶用意</label>
-                                <div class="w-full px-3 py-0.5 flex items-center text-[17px] font-black text-slate-900 leading-tight">
+                                <label class="app-title tracking-wider block ml-1">法寶用意</label>
+                                <div class="w-full px-3 py-0.5 flex items-center app-body">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
 
                              <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black"
+                                    <label class="app-title tracking-wider block ml-1">目前狀態</label>
+                                    <div class="w-full px-3 flex items-center app-body"
                                         :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
                                         {{ reg.status }}
                                     </div>
                                 </div>
                                 <div v-if="reg.status !== '已登記'" class="space-y-1">
-                                    <label class="text-[14px] font-black text-slate-400 tracking-wider block ml-1">求得日期</label>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
+                                    <label class="app-title tracking-wider block ml-1">求得日期</label>
+                                    <div class="w-full px-3 flex items-center app-body">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
@@ -333,8 +324,8 @@
                             </div>
 
                             <div v-if="reg.remarks" class="space-y-1">
-                                <label class="text-[14px] font-normal text-slate-400 tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[17px] text-slate-900 leading-normal whitespace-pre-wrap">
+                                <label class="app-title tracking-wider block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 app-body leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
                                 </div>
                             </div>
@@ -517,14 +508,17 @@ const toggleExpand = (id) => {
         s.delete(id);
         expandedIds.value = s;
         if (focusedId.value === id) focusedId.value = null;
+        // 當收回時，自動開啟該筆的動作選單 (清單)
+        openMenuId.value = id;
     } else {
         // 進入聚焦模式：展開該筆並隱藏其他
         const newSet = new Set();
         newSet.add(id);
         expandedIds.value = newSet;
         focusedId.value = id;
+        // 展開時確保選單是關閉的
+        openMenuId.value = null;
     }
-    openMenuId.value = null;
 };
 
 const handleBack = () => {

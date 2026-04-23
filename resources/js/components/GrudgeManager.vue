@@ -41,10 +41,15 @@
 
         <!-- Total Simple Overlay -->
         <div v-if="showTotal" class="fixed inset-x-0 top-[60px] z-[60] px-4 animate-fade-in pointer-events-none">
-            <div class="bg-white text-slate-900 px-6 py-4 rounded-[24px] shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100">
-                <span class="text-[17px] font-black uppercase tracking-widest text-slate-400">怨靈紀錄總量</span>
-                <span class="text-[18px] font-black font-outfit">{{ totalGrudgeQuantity }}</span>
+        <div class="bg-white text-slate-900 px-6 py-4 rounded-[24px] shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100 relative">
+            <div class="flex items-center space-x-3">
+                <span class="text-[14px] font-black uppercase tracking-widest text-slate-400">怨靈紀錄總量</span>
+                <span class="text-[22px] font-black font-outfit text-indigo-600">{{ totalGrudgeQuantity }}</span>
             </div>
+            <button @click="showTotal = false" class="p-2 -mr-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
         </div>
 
         <!-- Scrollable Content -->
@@ -66,24 +71,27 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="text-[12px] font-black text-slate-400 uppercase tracking-wider">得知日期</div>
-                                    <div class="text-[17px] text-slate-900 font-black ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-title">得知日期</div>
+                                    <div class="app-body ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
                             <!-- Row 2: Name & Quantity & Status -->
                             <div class="flex items-center justify-between mt-1">
-                                <div class="text-[17px] font-black text-slate-900 truncate flex-1">
+                                <div class="app-body font-bold truncate flex-1">
                                     {{ item.user_name || '-' }}
-                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">({{ item.user_remarks }})</span>
+                                    <span v-if="item.user_remarks" class="app-body ml-1.5">{{ item.user_remarks }}</span>
                                 </div>
                                 <div class="flex items-center space-x-2 shrink-0 ml-4">
-                                    <div class="text-[14px] font-black text-slate-400">數量:</div>
-                                    <div class="text-[17px] font-black text-slate-900">{{ item.quantity }}</div>
+                                    <div class="app-title">數量:</div>
+                                    <div class="app-body">{{ item.quantity }}</div>
                                 </div>
                                 <div class="ml-4">
-                                    <span :class="item.destination === '未處理' ? 'text-slate-300' : 'text-emerald-500'" class="text-[17px] font-black shrink-0">
-                                        {{ item.destination === '未處理' ? '未處理' : '已處理' }}
+                                    <span v-if="item.destination === '未處理'" class="app-title px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 uppercase tracking-tighter">
+                                        未處理
+                                    </span>
+                                    <span v-else class="app-title px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                                        已處理
                                     </span>
                                 </div>
                             </div>
@@ -92,11 +100,11 @@
                         <!-- Menu Button Layer -->
                         <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
                             <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">展開詳情</button>
-                                <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                <button @click.stop="copyItem(item)" class="w-full p-2.5 text-left text-[14px] text-green-600 hover:bg-green-50 border-b border-slate-50 font-medium">複製貼 LINE</button>
-                                <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
+                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
+                                <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                <button @click.stop="copyItem(item)" class="w-full p-3 text-left app-body text-green-600 hover:bg-green-50 border-b border-slate-50">複製貼 LINE</button>
+                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body text-red-600 hover:bg-red-50">刪除</button>
                             </div>
                         </div>
 
@@ -104,11 +112,11 @@
                         <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative">
                             <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">收合詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-2.5 text-left text-[14px] text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-3 text-left app-body text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
 
@@ -117,35 +125,39 @@
                                     <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300 active:scale-90 transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
-                                    <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block">得知日期</label>
+                                    <label class="app-title block">得知日期</label>
                                 </div>
-                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
+                                <div class="w-full px-3 flex items-center app-body">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
                             </div>
 
                             <!-- Detail Row 2: user_name & user_remarks (Merged) -->
                             <div class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">法號 (親友/信眾)</label>
-                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">
+                                <label class="app-title block ml-1">法號 (親友/信眾)</label>
+                                <div class="w-full px-3 flex items-center app-body font-bold">
                                     {{ item.user_name || '-' }}
-                                    <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">{{ item.user_remarks }}</span>
+                                    <span v-if="item.user_remarks" class="app-body font-normal ml-1.5">{{ item.user_remarks }}</span>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">數量</label>
-                                <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900">{{ item.quantity }}</div>
+                                <label class="app-title block ml-1">數量</label>
+                                <div class="w-full px-3 flex items-center app-body">{{ item.quantity }}</div>
+                            </div>
+
+                            <div v-if="item.process_date" class="space-y-1">
+                                <label class="app-title block ml-1">處理日期</label>
+                                <div class="w-full px-3 flex items-center app-body">{{ formatDate(item.process_date) }}</div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">處理結果</label>
-                                <div class="w-full px-3 flex flex-col text-[17px] font-black" :class="item.destination === '未處理' ? 'text-slate-300' : 'text-slate-900'">
+                                <label class="app-title block ml-1">處理結果</label>
+                                <div class="w-full px-3 flex flex-col app-body" :class="item.destination === '未處理' ? 'text-slate-300' : ''">
                                     <div v-for="(line, idx) in formatDestinations(item.destination)" :key="idx" class="flex items-center space-x-2">
                                         <span>{{ line }}</span>
-                                        <span v-if="idx === 0 && item.process_date" class="text-[14px] text-slate-400 font-normal">({{ formatDate(item.process_date) }})</span>
                                     </div>
                                 </div>
                                 <!-- Military Breakdown (Moved Here) -->
-                                <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="w-full px-3 mt-1 text-[17px] font-black text-slate-900">
+                                <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="w-full px-3 mt-1 app-body">
                                     <span v-if="item.destination === '黑曜軍'">
                                         閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }} 
                                         &nbsp;&nbsp; 
@@ -160,8 +172,8 @@
                             </div>
 
                             <div v-if="item.remarks_text" class="space-y-1">
-                                <label class="text-[14px] font-black text-slate-400 uppercase tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 text-[17px] font-black text-slate-900 leading-normal">{{ item.remarks_text }}</div>
+                                <label class="app-title block ml-1">詳細內容 / 備註</label>
+                                <div class="w-full px-3 py-1 app-body leading-normal">{{ item.remarks_text }}</div>
                             </div>
                         </div>
                     </div>

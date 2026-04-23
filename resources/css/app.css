@@ -12,27 +12,27 @@
      .app-title → 標題：粗體(font-weight:700)、灰色(#6B7280)
 
    三種尺寸 (套用在 <body> 或任意父容器):
-     小 (.font-small)  → 內文 15px / 標題 13px
-     中 (.font-medium) → 內文 17px / 標題 15px  [預設]
+     小 (.font-small)  → 內文 15px / 標題 12px
+     中 (.font-medium) → 內文 17px / 標題 14px  [預設]
      大 (.font-large)  → 內文 19px / 標題 16px
    ============================================================ */
 
 /* --- 預設 (中) --- */
 :root {
     --fs-body:  17px;
-    --fs-title: 15px;
+    --fs-title: 14px;
 }
 
 /* --- 小 --- */
 body.font-small {
     --fs-body:  15px;
-    --fs-title: 13px;
+    --fs-title: 12px;
 }
 
 /* --- 中 --- */
 body.font-medium {
     --fs-body:  17px;
-    --fs-title: 15px;
+    --fs-title: 14px;
 }
 
 /* --- 大 --- */
@@ -69,44 +69,44 @@ body.font-large {
    ============================================================ */
 
 /* --- 內文 (.text-[17px], .text-[15px], .text-[16px], .text-[14px] 常用於資料與選單) --- */
-body.font-small .text-\[17px\], body.font-small .text-\[16px\], body.font-small .text-\[15px\], body.font-small .text-\[14px\], body.font-small td, body.font-small p {
+body.font-small .text-\[17px\], body.font-small .text-\[16px\], body.font-small .text-\[15px\], body.font-small .text-\[14px\], body.font-small td, body.font-small p, body.font-small .app-body {
     font-size: 15px !important;
     font-weight: 400 !important;
     color: #111827 !important;
 }
 
-body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium .text-\[15px\], body.font-medium .text-\[14px\], body.font-medium td, body.font-medium p {
+body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium .text-\[15px\], body.font-medium .text-\[14px\], body.font-medium td, body.font-medium p, body.font-medium .app-body {
     font-size: 17px !important;
     font-weight: 400 !important;
     color: #111827 !important;
 }
 
-body.font-large .text-\[17px\], body.font-large .text-\[16px\], body.font-large .text-\[15px\], body.font-large .text-\[14px\], body.font-large td, body.font-large p {
+body.font-large .text-\[17px\], body.font-large .text-\[16px\], body.font-large .text-\[15px\], body.font-large .text-\[14px\], body.font-large td, body.font-large p, body.font-large .app-body {
     font-size: 19px !important;
     font-weight: 400 !important;
     color: #111827 !important;
 }
 
 /* --- 標題 (label, th, 以及小字 .text-[11px], .text-[13px] 與大標題 .text-[18px]) --- */
-body.font-small label, body.font-small th, body.font-small .text-\[18px\], body.font-small .text-\[13px\], body.font-small .text-\[11px\] {
-    font-size: 13px !important;
+body.font-small label, body.font-small th, body.font-small .text-\[18px\], body.font-small .text-\[13px\], body.font-small .text-\[11px\], body.font-small .app-title {
+    font-size: 12px !important;
     font-weight: 700 !important;
     color: #6B7280 !important;
 }
 
-body.font-medium label, body.font-medium th, body.font-medium .text-\[18px\], body.font-medium .text-\[13px\], body.font-medium .text-\[11px\] {
-    font-size: 15px !important;
+body.font-medium label, body.font-medium th, body.font-medium .text-\[18px\], body.font-medium .text-\[13px\], body.font-medium .text-\[11px\], body.font-medium .app-title {
+    font-size: 14px !important;
     font-weight: 700 !important;
     color: #6B7280 !important;
 }
 
-body.font-large label, body.font-large th, body.font-large .text-\[18px\], body.font-large .text-\[13px\], body.font-large .text-\[11px\] {
+body.font-large label, body.font-large th, body.font-large .text-\[18px\], body.font-large .text-\[13px\], body.font-large .text-\[11px\], body.font-large .app-title {
     font-size: 16px !important;
     font-weight: 700 !important;
     color: #6B7280 !important;
 }
 
 /* 確保輸入框也跟著變，但顏色稍微深一點 */
-body.font-small input, body.font-small select { font-size: 15px !important; font-weight: 400 !important; }
-body.font-medium input, body.font-medium select { font-size: 17px !important; font-weight: 400 !important; }
-body.font-large input, body.font-large select { font-size: 19px !important; font-weight: 400 !important; }
+body.font-small input, body.font-small select, body.font-small textarea { font-size: 15px !important; font-weight: 400 !important; }
+body.font-medium input, body.font-medium select, body.font-medium textarea { font-size: 17px !important; font-weight: 400 !important; }
+body.font-large input, body.font-large select, body.font-large textarea { font-size: 19px !important; font-weight: 400 !important; }
