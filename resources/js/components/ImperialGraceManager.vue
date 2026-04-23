@@ -121,7 +121,7 @@
                 <button @click="currentCategory = null" class="text-slate-400 p-4 active:scale-90 transition-transform z-10">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center" style="color: black !important;">重大皇恩專區</h1>
+                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
@@ -194,7 +194,8 @@
                         v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'w-full block py-[12px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none'
+                            'w-full block py-[12px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
+                            openMenuId === reg.id ? 'z-[50]' : 'z-0'
                         ]">
                         
                         <!-- List Item Display (Header when collapsed) -->
@@ -204,7 +205,7 @@
                                 <input v-if="reorderMode" type="number" :value="index + 1" 
                                     @click.stop @change="handleReorder(reg, $event.target.value)"
                                     class="w-8 h-8 rounded-lg bg-indigo-50 border-none text-center text-indigo-600 focus:ring-2 focus:ring-indigo-500 pointer-events-auto">
-                                <span v-else class="app-title text-slate-300 ml-2">{{ index + 1 }}</span>
+                                <span v-else class="app-title text-slate-500 font-black ml-2">{{ index + 1 }}</span>
                             </div>
 
                             <!-- Content column: date on top, name+status on bottom -->
@@ -218,13 +219,13 @@
                                         得知：<span class="app-title font-bold">{{ reg.record_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else>
-                                        <span class="text-slate-300">未知日期</span>
+                                        <span class="text-slate-400 font-bold">未知日期</span>
                                     </template>
                                     <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="ml-2 app-title opacity-50">{{ getMasterName(reg.master_id) }}</span>
                                 </div>
                                 <!-- Row 2: Name + Status -->
                                 <div class="flex items-center justify-between">
-                                    <div class="app-body leading-tight truncate">{{ reg.name }}</div>
+                                    <div class="app-body font-black text-slate-900 leading-tight truncate">{{ reg.name }}</div>
                                     <span :class="{
                                         'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
@@ -245,12 +246,12 @@
                                     <svg class="h-5 v-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body hover:bg-indigo-50 border-b border-slate-50">展開清單</button>
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body hover:bg-red-50">刪除</button>
+                                     class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">展開清單</button>
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                         </div>
@@ -281,13 +282,13 @@
                                         </button>
                                         <label class="app-title tracking-wider block">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center app-body">
+                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900 font-outfit">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">載錄目標仙師</label>
-                                    <div class="w-full px-3 flex items-center app-body">
+                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
@@ -295,14 +296,14 @@
 
                             <div class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">法寶名稱</label>
-                                <div class="w-full px-3 flex items-center app-body">
+                                <div class="w-full px-3 flex items-center app-body font-black text-slate-900">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">法寶用意</label>
-                                <div class="w-full px-3 py-0.5 flex items-center app-body">
+                                <div class="w-full px-3 py-0.5 flex items-center app-body font-black text-slate-900">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
@@ -310,14 +311,14 @@
                              <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center app-body"
+                                    <div class="w-full px-3 flex items-center app-body font-black"
                                         :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
                                         {{ reg.status }}
                                     </div>
                                 </div>
                                 <div v-if="reg.status !== '已登記'" class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">求得日期</label>
-                                    <div class="w-full px-3 flex items-center app-body">
+                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900 font-outfit">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
@@ -326,7 +327,7 @@
 
                             <div v-if="reg.remarks" class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 app-body leading-normal whitespace-pre-wrap">
+                                <div class="w-full px-3 py-1 app-body font-black text-slate-900 leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
                                 </div>
                             </div>

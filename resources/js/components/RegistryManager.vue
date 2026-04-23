@@ -174,7 +174,8 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                              :class="[
                                  'bg-white p-4 mb-4 border border-slate-100 rounded-[28px] shadow-sm relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4' : ''
+                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
+                                 openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
                             <!-- Sequence Number / Reorder Input -->
@@ -203,9 +204,9 @@
                                 </button>
                                 
                                 <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl z-40 py-2 ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
+                                     class="absolute right-0 mt-2 w-48 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-2 ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-black text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path v-if="expandedIds.has(item.id)" d="M19 15l-7-7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                                             <path v-else d="M5 9l7 7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -213,22 +214,22 @@
                                         {{ expandedIds.has(item.id) ? '收起詳情' : '展開詳情' }}
                                     </button>
                                     <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-black text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         修改資料
                                     </button>
                                     <button @click.stop="copyToLine(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-black text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         貼 LINE
                                     </button>
                                     <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-black text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         下載資料
                                     </button>
                                     <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors">
+                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         刪除資料
                                     </button>
@@ -245,12 +246,12 @@
                                 </div>
 
                                 <div class="flex items-center justify-between pr-12">
-                                    <div class="text-[14px] text-slate-400 font-black font-outfit uppercase tracking-widest">{{ item.record_date?.replace(/-/g, '/') || '-' }}</div>
+                                    <div class="text-[16px] text-slate-900 font-black font-outfit uppercase tracking-widest">{{ item.record_date?.replace(/-/g, '/') || '-' }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
                                     <div class="flex flex-col">
-                                        <div class="text-[18px] font-black text-black leading-tight truncate font-outfit flex items-center">
+                                        <div class="text-[19px] font-black text-slate-900 leading-tight truncate font-outfit flex items-center">
                                             {{ item.name }}
                                             <button v-if="expandedIds.has(item.id) && (item.purpose || item.acquisition_method || item.remarks)" 
                                                     @click.stop="showItemDetails = !showItemDetails" 
@@ -394,7 +395,7 @@
                                         <div class="overflow-x-auto border-y border-slate-100 shadow-sm mb-20 -mx-4 bg-white">
                                             <table class="w-full border-collapse bg-white text-[16px]">
                                                 <thead>
-                                                    <tr class="bg-amber-50/50 text-slate-700 font-outfit">
+                                                    <tr class="bg-amber-50/50 text-slate-900 font-outfit">
                                                         <th class="border-b border-slate-100 px-3 py-2.5 text-left font-black w-[120px] whitespace-nowrap">日期</th>
                                                         <th class="border-b border-slate-100 px-3 py-2.5 text-left font-black w-[80px] whitespace-nowrap">法號</th>
                                                         <th class="border-b border-slate-100 px-3 py-2.5 text-left font-black">備註</th>
@@ -425,7 +426,7 @@
                                                                 <span v-if="editingIds.has(item.id)" :class="editMap[item.id + '-' + dnr.dharma_name_id]?.remarks ? 'text-black' : 'text-slate-300'" class="text-[15px] font-black font-outfit truncate not-italic">
                                                                     {{ editMap[item.id + '-' + dnr.dharma_name_id]?.remarks ? (editMap[item.id + '-' + dnr.dharma_name_id].remarks.length > 8 ? editMap[item.id + '-' + dnr.dharma_name_id].remarks.substring(0, 8) + '...' : editMap[item.id + '-' + dnr.dharma_name_id].remarks) : '...' }}
                                                                 </span>
-                                                                <span v-else :class="dnr.remarks ? 'text-slate-600' : 'text-slate-200'" class="text-[15px] font-black font-outfit truncate not-italic">
+                                                                <span v-else :class="dnr.remarks ? 'text-slate-900' : 'text-slate-200'" class="text-[15px] font-black font-outfit truncate not-italic">
                                                                     {{ dnr.remarks ? (dnr.remarks.length > 8 ? dnr.remarks.substring(0, 8) + '...' : dnr.remarks) : '-' }}
                                                                 </span>
                                                                 <!-- Delete btn inside row during edit -->

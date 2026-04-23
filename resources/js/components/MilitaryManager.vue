@@ -18,14 +18,14 @@
 
             <!-- Right: Interactive Total Toggle / Sort -->
             <div class="flex-1 flex items-center justify-end shrink-0 z-10 space-x-1 pr-2">
-                <button v-if="currentFolder" 
-                    @click="toggleFullTotal"
-                    class="text-slate-900 font-black whitespace-nowrap active:opacity-60 transition-all text-[17px] mr-1"
-                >
-                    總量
-                </button>
                 <button v-if="currentFolder" @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-black bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
+                </button>
+                <button v-if="currentFolder" 
+                    @click="toggleFullTotal"
+                    class="text-slate-900 font-black whitespace-nowrap active:opacity-60 transition-all text-[17px] ml-1"
+                >
+                    總量
                 </button>
             </div>
         </div>
@@ -101,7 +101,8 @@
                             v-show="focusedId === null || focusedId === item.id"
                             @click="toggleExpand(item.id)"
                             :class="[
-                                'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer z-10',
+                                'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                openMenuId === item.id ? 'z-[50]' : 'z-0',
                                 item.groupParity === 1 ? 'bg-slate-50/50' : 'bg-white',
                                 { 'border-t border-slate-900': index === 0 && !focusedId, 'border-b-0': focusedId === item.id }
                             ]"
@@ -111,8 +112,8 @@
                                 <!-- Row 1: Date only -->
                                 <div class="flex items-center mb-0.5">
                                     <div class="flex items-baseline space-x-2">
-                                        <div class="text-[15px] font-black text-slate-400 uppercase tracking-wider">日期</div>
-                                        <div class="text-[14px] text-slate-900 font-black ml-0.5">{{ formatDate(item.know_date) }}</div>
+                                        <div class="app-title font-black text-slate-700">日期</div>
+                                        <div class="app-title font-black text-slate-900 ml-0.5 font-outfit">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
 
@@ -120,14 +121,21 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1 flex items-center justify-between">
                                         <!-- Dharma Name -->
-                                        <div class="text-[17px] font-black text-slate-900 leading-tight truncate pr-2">
+                                        <div class="app-body font-black text-slate-900 leading-tight truncate pr-2 text-[19px]">
                                             {{ item.user_name || '-' }}
-                                            <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">({{ item.user_remarks }})</span>
+                                            <span v-if="item.user_remarks" class="app-body font-black ml-1.5">({{ item.user_remarks }})</span>
                                         </div>
                                         <!-- Subtotal -->
-                                        <div class="text-[17px] text-slate-900 font-black flex items-center space-x-2">
-                                            <span class="text-[15px] font-black text-slate-400 uppercase tracking-wider">小計:</span> 
-                                            <span class="text-[17px] text-slate-900 font-black">{{ formatArmyTotal(item.quantity) }}</span>
+                                        <div class="app-body flex items-center space-x-2 text-[19px]">
+                                            <span class="app-title font-black text-slate-700">數量:</span>
+                                            <span class="app-body font-black text-slate-900 font-outfit">
+                                                <template v-if="['虎甲軍','虎賁軍'].includes(item.army_type)">
+                                                    {{ (Number(item.quantity) || 0).toLocaleString() }}
+                                                </template>
+                                                <template v-else>
+                                                    {{ formatArmyTotal(item.quantity) }}
+                                                </template>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -136,10 +144,10 @@
                             <!-- Menu Button Layer -->
                             <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
                                 <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400 active:text-indigo-600 transition-colors"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[100] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">展開詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50">刪除</button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left app-body font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
 
@@ -148,10 +156,10 @@
                                 <!-- Menu Button for Expanded State -->
                                 <div class="absolute right-0 top-0 z-[101]">
                                     <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
-                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left text-[14px] text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 font-normal">收合詳情</button>
-                                        <button @click.stop="editItem(item)" class="w-full p-2.5 text-left text-[14px] text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                        <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left text-[14px] text-red-600 hover:bg-red-50 font-medium">刪除</button>
+                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
+                                        <button @click.stop="editItem(item)" class="w-full p-2.5 text-left app-body font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                        <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
                                     </div>
                                 </div>
 
@@ -161,56 +169,63 @@
                                         <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </button>
-                                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider">日期</label>
+                                        <label class="app-title">日期</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center text-[14px] font-black text-slate-900 font-mono">
+                                    <div class="w-full px-3 flex items-center app-title">
                                         {{ formatDate(item.know_date) }}
                                     </div>
                                 </div>
 
                                 <!-- Name Row (Combined) -->
                                 <div class="space-y-1">
-                                    <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider ml-1">法號 (親友/信眾)</label>
-                                    <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 leading-tight">
+                                    <label class="app-title ml-1">法號 (親友/信眾)</label>
+                                    <div class="w-full px-3 flex items-center app-body leading-tight">
                                         {{ item.user_name }}
-                                        <span v-if="item.user_remarks" class="text-slate-900 ml-1.5 font-black">({{ item.user_remarks }})</span>
+                                        <span v-if="item.user_remarks" class="app-body ml-1.5">({{ item.user_remarks }})</span>
                                     </div>
                                 </div>
 
-                                <!-- Quantities Row (Grid) -->
-                                <div v-if="['黑曜軍', '耀紫軍'].includes(item.army_type)" class="grid grid-cols-2 gap-3">
+                                <!-- Quantities Row (Grid) - only for armies with sub-fields -->
+                                <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="grid grid-cols-2 gap-3">
                                      <template v-if="item.army_type === '黑曜軍'">
                                          <div class="space-y-1">
-                                             <label class="text-[13px] font-black text-[#aeb4be] tracking-wider ml-1">閻尊數量</label>
-                                             <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 font-mono">{{ item.yan_zun || 0 }}</div>
+                                             <label class="app-title ml-1">閻尊數量</label>
+                                             <div class="w-full px-3 flex items-center app-body">{{ (item.yan_zun || 0).toLocaleString() }}</div>
                                          </div>
                                          <div class="space-y-1">
-                                             <label class="text-[13px] font-black text-[#aeb4be] tracking-wider ml-1">閻闇數量</label>
-                                             <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 font-mono">{{ item.yan_an || 0 }}</div>
+                                             <label class="app-title ml-1">閻闇數量</label>
+                                             <div class="w-full px-3 flex items-center app-body">{{ (item.yan_an || 0).toLocaleString() }}</div>
                                          </div>
                                      </template>
                                      <template v-if="item.army_type === '耀紫軍'">
                                          <div class="space-y-1">
-                                             <label class="text-[13px] font-black text-[#aeb4be] tracking-wider ml-1">龍勝數量</label>
-                                             <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 font-mono">{{ item.long_sheng || 0 }}</div>
+                                             <label class="app-title ml-1">龍勝數量</label>
+                                             <div class="w-full px-3 flex items-center app-body">{{ (item.long_sheng || 0).toLocaleString() }}</div>
                                          </div>
                                          <div class="space-y-1">
-                                             <label class="text-[13px] font-black text-[#aeb4be] tracking-wider ml-1">龍戰數量</label>
-                                             <div class="w-full px-3 flex items-center text-[17px] font-black text-slate-900 font-mono">{{ item.long_zhan || 0 }}</div>
+                                             <label class="app-title ml-1">龍戰數量</label>
+                                             <div class="w-full px-3 flex items-center app-body">{{ (item.long_zhan || 0).toLocaleString() }}</div>
                                          </div>
                                      </template>
                                  </div>
 
-                                <!-- Subtotal Special Row (Minimalist Style) -->
+                                <!-- Subtotal Special Row -->
                                 <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
-                                    <span class="text-[15px] font-black text-slate-400 uppercase tracking-wider">小計</span>
-                                    <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(item.quantity) }}</span>
+                                    <span class="app-title">數量</span>
+                                    <span class="app-body">
+                                        <template v-if="['虎甲軍','虎賁軍'].includes(item.army_type)">
+                                            {{ (Number(item.quantity) || 0).toLocaleString() }}
+                                        </template>
+                                        <template v-else>
+                                            {{ formatArmyTotal(item.quantity) }}
+                                        </template>
+                                    </span>
                                 </div>
 
                                 <!-- Remarks Row -->
                                 <div v-if="item.remarks_text" class="space-y-1">
-                                    <label class="text-[13px] font-black text-[#aeb4be] tracking-wider ml-1">備註文字</label>
-                                    <div class="w-full px-3 py-1 text-[16px] font-black text-slate-600 leading-relaxed whitespace-pre-wrap">
+                                    <label class="app-title ml-1">備註文字</label>
+                                    <div class="w-full px-3 py-1 app-body leading-relaxed whitespace-pre-wrap">
                                         {{ item.remarks_text }}
                                     </div>
                                 </div>
@@ -359,11 +374,8 @@ const filteredItems = computed(() => {
         if (!i.army_type) return false;
         const recordType = String(i.army_type).trim();
         const target = currentFolder.value?.name;
-        // Super loose match
-        return recordType === target || 
-               recordType.includes(target) || 
-               target.includes(recordType) ||
-               regex.test(recordType);
+        
+        return recordType === target || recordType.includes(target);
     });
     
     if (searchQuery.value) {
@@ -557,11 +569,10 @@ const performExcelExport = () => {
     const data = sortedItems.value.map(item => {
         const qty = Number(item.quantity) || 0;
         total += qty;
-        const row = {
-            '日期': formatDate(item.know_date),
-            '法號': item.user_name + (item.user_remarks || ''),
-            '總數量': qty
-        };
+        
+        const row = {};
+        row['日期'] = formatDate(item.know_date);
+        row['法號'] = item.user_name + (item.user_remarks || '');
         
         if (item.army_type === '黑曜軍') {
             row['閻尊量'] = item.yan_zun || 0;
@@ -569,14 +580,9 @@ const performExcelExport = () => {
         } else if (item.army_type === '耀紫軍') {
             row['龍勝量'] = item.long_sheng || 0;
             row['龍戰量'] = item.long_zhan || 0;
-        } else if (item.army_type === '虎甲軍') {
-            row['閻爵量'] = item.yan_jue || 0;
-            row['閻澤量'] = item.yan_ze || 0;
-        } else if (item.army_type === '虎賁軍') {
-            row['閻帝量'] = item.yan_di || 0;
-            row['閻願量'] = item.yan_yuan || 0;
         }
         
+        row['總數量'] = qty;
         row['備註'] = item.remarks_text || '';
         return row;
     });
@@ -584,7 +590,7 @@ const performExcelExport = () => {
     // Add Total Row at the end
     data.push({
         '日期': '',
-        '法號': '總結',
+        '法號': '總量',
         '總數量': total,
         '備註': ''
     });

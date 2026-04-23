@@ -62,7 +62,8 @@
                         v-show="focusedId === null || focusedId === item.id"
                         @click="toggleExpand(item.id)"
                         :class="[
-                            'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 z-10',
+                            'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                            { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
                             { 'border-t border-slate-900': index === 0 && !focusedId, 'border-b-0': focusedId === item.id }
                         ]"
                     >
@@ -71,19 +72,19 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="app-title">得知日期</div>
-                                    <div class="app-body ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-title font-black text-slate-700">得知日期</div>
+                                    <div class="app-title font-black text-slate-900 ml-0.5 font-outfit">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
                             <!-- Row 2: Name & Quantity & Status -->
                             <div class="flex items-center justify-between mt-1">
-                                <div class="app-body font-bold truncate flex-1">
-                                    {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body ml-0.5">{{ item.user_remarks }}</span>
+                                <div class="app-body font-black text-slate-900 truncate flex-1 text-[19px]">
+                                    {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body font-black ml-0.5">({{ item.user_remarks }})</span>
                                 </div>
-                                <div class="flex items-center space-x-2 shrink-0 ml-4">
-                                    <div class="app-title">數量:</div>
-                                    <div class="app-body">{{ item.quantity }}</div>
+                                <div class="flex items-center space-x-2 shrink-0 ml-4 text-[19px]">
+                                    <div class="app-title font-black text-slate-700">數量:</div>
+                                    <div class="app-body font-black text-slate-900 font-outfit">{{ item.quantity }}</div>
                                 </div>
                                 <div class="ml-4">
                                     <span v-if="item.destination === '未處理'" class="app-title px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 uppercase tracking-tighter">
@@ -100,10 +101,10 @@
                         <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
                             <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
                             <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
-                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
-                                <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                <button @click.stop="copyItem(item)" class="w-full p-3 text-left app-body text-green-600 hover:bg-green-50 border-b border-slate-50">複製貼 LINE</button>
-                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body text-red-600 hover:bg-red-50">刪除</button>
+                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
+                                <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                <button @click.stop="copyItem(item)" class="w-full p-3 text-left app-body font-bold text-green-600 hover:bg-green-50 border-b border-slate-50">複製貼 LINE</button>
+                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
                             </div>
                         </div>
 
@@ -112,10 +113,10 @@
                             <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
                                 <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-3 text-left app-body text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body text-red-600 hover:bg-red-50">刪除</button>
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-3 text-left app-body font-bold text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
 
@@ -126,7 +127,7 @@
                                     </button>
                                     <label class="app-title block">得知日期</label>
                                 </div>
-                                <div class="w-full px-3 flex items-center app-body">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
+                                <div class="w-full px-3 flex items-center app-title">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
                             </div>
 
                             <!-- Detail Row 2: user_name & user_remarks (Merged) -->
