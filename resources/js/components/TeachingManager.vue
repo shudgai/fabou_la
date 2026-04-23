@@ -56,7 +56,7 @@
                 <div v-if="!addMode" class="ml-2 pr-1 flex items-center space-x-2">
                     <button @click="reorderMode = !reorderMode" 
                             :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-indigo-50 border-indigo-100 text-indigo-500'"
-                            class="px-3 py-1.5 text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
+                            class="px-3 py-[10px] text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                     <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-slate-400 bg-slate-50 border border-slate-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
@@ -229,7 +229,7 @@
                                             <label class="text-[13px] text-slate-400 font-bold px-1">對象 / 群組</label>
                                             <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px] relative">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 px-4 flex items-center h-[56px] relative">
                                             <input type="text" 
                                                    @input="e => { activePractitionerDropdownId = 'mainPract'; handleDharmaSearchInput(e) }" 
                                                    @focus="activePractitionerDropdownId = 'mainPract'"
@@ -240,15 +240,15 @@
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-for="g in groups.filter(gr => !dharmaSearchQuery || gr.name.includes(dharmaSearchQuery))" :key="'g'+g.id"
-                                                     @click.stop="dharmaSearchQuery = g.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: g.name}})"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
-                                                    {{ g.name }}
-                                                </div>
-                                                <div v-for="dn in dharmaNames.filter(d => !dharmaSearchQuery || d.name.includes(dharmaSearchQuery))" :key="'dn'+dn.id"
+                                                <div v-for="dn in dharmaNames.filter(d => !dharmaSearchQuery || d.name.includes(dharmaSearchQuery)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'dn'+dn.id"
                                                      @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ dn.name }}
+                                                </div>
+                                                <div v-for="g in groups.filter(gr => !dharmaSearchQuery || gr.name.includes(dharmaSearchQuery)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'g'+g.id"
+                                                     @click.stop="dharmaSearchQuery = g.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: g.name}})"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ g.name }}
                                                 </div>
                                             </div>
                                         </div>
@@ -264,7 +264,7 @@
                                     <div v-if="form.dharma_name_ids.length > 0" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
                                             <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
-                                                 class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-1.5 rounded-2xl text-[17px] font-black flex items-center shadow-sm hover:border-indigo-200 transition-colors">
+                                                 class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl text-[17px] font-black flex items-center shadow-sm hover:border-indigo-200 transition-colors">
                                                 <span class="mr-2 w-2 h-2 bg-indigo-400 rounded-full"></span>
                                                 {{ getDharmaNameText(id) }}
                                                 <button @click.prevent="toggleDharmaName(id)" class="ml-2 text-slate-300 hover:text-red-500 transition-colors">
@@ -286,11 +286,11 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
                                     <div class="flex space-x-2">
-                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
                                             匯入檔案
                                             <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
                                         </label>
-                                        <button @click="processBatchText" class="bg-black text-white px-4 py-1.5 rounded-xl text-[12px] font-black active:scale-95 transition-all">
+                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-1.5 rounded-xl text-[12px] font-black active:scale-95 transition-all">
                                             智慧解析
                                         </button>
                                     </div>
@@ -418,7 +418,7 @@
                                     <span>降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-black text-white rounded-2xl py-3.5 active:scale-95 disabled:opacity-50 text-[20px] font-black tracking-[0.2em] shadow-lg shadow-slate-900/20">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -448,8 +448,8 @@
                                         <span v-if="activeBatchIndex !== null" class="ml-2 text-[14px] text-blue-500 font-black">
                                             (目前開示給：{{ getRecipientName(batchRecords[activeBatchIndex]) }})
                                         </span>
-                                        <span v-else-if="form.dharma_name_ids.length > 0" class="ml-2 text-[14px] text-blue-500 font-black">
-                                            (目前開示給：{{ getRecipientName({dharma_name_ids: form.dharma_name_ids}) }})
+                                        <span v-else-if="form.dharma_name_ids.length > 0 || form.target_remarks" class="ml-2 text-[14px] text-blue-500 font-black">
+                                            (目前開示給：{{ getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks}) }})
                                         </span>
                                     </div>
                                     <button v-if="newItemName" @click="addNewItemQuickly" 
@@ -460,7 +460,7 @@
                                     <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('師兄姐') || newItemName.includes('師兄姊')) ? 'col-span-10' : 'col-span-9'" class="space-y-1 relative">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
-                                            <div class="flex-1 border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center transition-all h-[56px] relative">
+                                            <div class="flex-1 border border-blue-100/50 rounded-xl bg-blue-50/40 flex items-center transition-all h-[56px] relative">
                                                 <input v-model="newItemName" @input="activeTreasureDropdownId = 'main'" @focus="activeTreasureDropdownId = 'main'"
                                                        class="treasure-name-input w-full bg-transparent border-none px-4 text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black">
                                                 <div class="flex items-center space-x-1 pr-1">
@@ -475,7 +475,7 @@
                                         </div>
                                         <!-- Custom Treasure Dropdown -->
                                         <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                            <div v-for="name in uniqueTreasureNames.filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
+                                            <div v-for="name in uniqueTreasureNames.slice().sort((a,b) => a.localeCompare(b)).filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
                                                  @click.stop="newItemName = name; activeTreasureDropdownId = null" 
                                                  class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                 {{ name }}
@@ -485,7 +485,7 @@
                                             <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                     :key="t"
                                                     @click="newItemName = t"
-                                                    class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                    class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                 {{ t }}
                                             </button>
                                         </div>
@@ -639,7 +639,7 @@
                                                     <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
                                                 <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                    <div v-for="dn in dharmaNames.filter(d => !newItemPractitioner || d.name.includes(newItemPractitioner))" :key="'pract2'+dn.id" 
+                                                    <div v-for="dn in dharmaNames.filter(d => !newItemPractitioner || d.name.includes(newItemPractitioner)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'pract2'+dn.id" 
                                                          @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ dn.name }}
@@ -703,7 +703,7 @@
                                                 </div>
                                                 <!-- Custom Sub-Treasure Dropdown -->
                                                 <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                    <div v-for="name in uniqueTreasureNames.filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
+                                                    <div v-for="name in uniqueTreasureNames.slice().sort((a,b) => a.localeCompare(b)).filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
                                                          @click.stop="newItemSubName = name; activeSubTreasureDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ name }}
@@ -713,7 +713,7 @@
                                                     <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                             :key="t"
                                                             @click="newItemSubName = t"
-                                                            class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                            class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                         {{ t }}
                                                     </button>
                                                 </div>
@@ -884,11 +884,11 @@
                                         <!-- Specialized Item Confirm Action -->
                                         <div class="mt-8 pt-4 border-t border-slate-100 flex justify-center space-x-3">
                                             <button @click.prevent="handleItemsDetailClose" 
-                                                    class="flex-1 py-4.5 bg-slate-100 text-slate-600 rounded-[24px] font-bold text-[17px] active:scale-[0.98] transition-all">
+                                                    class="flex-1 py-[10px] bg-slate-100 text-slate-600 rounded-[24px] font-bold text-[17px] active:scale-[0.98] transition-all">
                                                 關閉
                                             </button>
                                             <button @click.prevent="addNewItemQuickly" 
-                                                    class="flex-2 py-4.5 bg-black text-white rounded-[24px] font-black text-[19px] shadow-xl shadow-slate-200 active:scale-[0.98] transition-all flex items-center justify-center px-8">
+                                                    class="flex-2 py-[10px] bg-[#FFD296] text-white rounded-[24px] font-black text-[19px] shadow-xl shadow-slate-200 active:scale-[0.98] transition-all flex items-center justify-center px-8">
                                                 新增項目
                                             </button>
                                         </div>
@@ -959,7 +959,7 @@
                                 <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
                                     <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ form.date.replace(/-/g, '/') }}</span>
                                     <span class="text-[16px] font-black text-slate-900 leading-tight mt-1.5 pr-8">
-                                        {{ (masterNameInput || form.master_name || '仙師') }}開示給：{{ getRecipientName({ dharma_name_ids: form.dharma_name_ids }) }}{{ form.target_remarks ? ` (${form.target_remarks})` : '' }}
+                                        {{ (masterNameInput || form.master_name || '仙師') }}開示給：{{ getRecipientName({ dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks }) }}
                                     </span>
                                 </div>
 
@@ -1001,7 +1001,7 @@
                                         <span>完成並新增</span>
                                         <span class="text-[11px] opacity-60">下一位人員</span>
                                     </button>
-                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-black text-white rounded-[24px] py-4 active:scale-95 disabled:opacity-50 text-[18px] font-black shadow-xl shadow-slate-900/20 tracking-[0.2em]">
+                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-[#FFB266] text-white rounded-[24px] py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-xl shadow-slate-900/20">
                                         確認存檔
                                     </button>
                                 </div>
@@ -1031,7 +1031,7 @@
                 </div>
 
                 <!-- Dharma Picker Modal -->
-                <div v-if="showDharmaPicker" class="fixed inset-0 z-[400] bg-black/40 flex items-end justify-center sm:items-center animate-fade-in">
+                <div v-if="showDharmaPicker" class="fixed inset-0 z-[400] bg-[#FFB266]/40 flex items-end justify-center sm:items-center animate-fade-in">
                     <div class="bg-white w-full h-[85vh] sm:h-[70vh] sm:max-w-xl rounded-t-[32px] sm:rounded-[32px] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
                         <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
                             <div>
@@ -1296,7 +1296,7 @@
 
 
                 <search-component v-if="showSearch" v-model="searchQuery" :show="showSearch" @close="showSearch = false" />
-                <div v-if="distributionModal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                <div v-if="distributionModal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#FFB266]/60 backdrop-blur-sm animate-fade-in">
                     <div class="bg-white rounded-[32px] w-full max-w-sm overflow-hidden shadow-2xl animate-slide-up border border-white/20">
                         <div class="p-8 text-center space-y-6">
                             <div class="space-y-2">
@@ -1307,7 +1307,7 @@
                             <div class="flex flex-col space-y-3 pt-2">
                                 <!-- Primary Action: Distribute -->
                                 <button @click="executeDistributionSave('distribute')" 
-                                        class="w-full py-4 bg-black text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg">
+                                        class="w-full py-4 bg-[#FFB266] text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg">
                                     {{ distributionModal.detectedNames.length === 1 ? '存入「' + distributionModal.detectedNames[0] + '」資料夾' : '依內容自動分流儲存' }}
                                 </button>
                                 
@@ -1355,7 +1355,7 @@
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
                                 <span class="text-[17px] font-black text-slate-900 leading-tight">
-                                    {{ item.master_name }}開示給：{{ getRecipientName(item) }}{{ item.target_remarks ? ` (${item.target_remarks})` : '' }}
+                                    {{ item.master_name }}開示給：{{ getRecipientName(item) }}
                                 </span>
                             </div>
 
@@ -1402,10 +1402,10 @@
                     </div>
 
                     <div class="fixed bottom-[8.5vh] left-0 right-0 px-6 py-5 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
-                        <button @click="performActualSave" class="flex-1 py-4.5 bg-black text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
+                        <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
                             {{ saving ? '錄入中...' : '確認存檔' }}
                         </button>
-                        <button @click="saveConfirmModal.show = false" class="px-10 py-4.5 bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
+                        <button @click="saveConfirmModal.show = false" class="px-10 py-[10px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
                     </div>
@@ -1864,7 +1864,7 @@ const uniqueTreasureNames = computed(() => {
     ];
     
     const combined = [...new Set([...names, ...extraSuggestions])];
-    return combined.filter(n => n && n !== '清煞法寶').sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    return combined.filter(n => n && n !== '清煞法寶').sort((a, b) => a.length - b.length || a.localeCompare(b, 'zh-TW', { collation: 'stroke' }));
 });
 
 
@@ -2445,6 +2445,7 @@ function addNewItemQuickly() {
     }
 
     // Reset everything
+    itemsDetailMode.value = false;
     newItemName.value = '';
     newItemDays.value = '';
     newItemMainTimes.value = '';
