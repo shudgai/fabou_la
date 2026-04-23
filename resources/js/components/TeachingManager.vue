@@ -25,6 +25,9 @@
             <datalist id="unit-list">
                 <option v-for="u in units" :key="u" :value="u">{{ u }}</option>
             </datalist>
+            <datalist id="remark-list">
+                <option value="*允同享皇恩" />
+            </datalist>
 
             <datalist id="dharma-search-list">
                 <option v-for="dn in dharmaNames" :key="'dn'+dn.id" :value="dn.name">{{ dn.name }}</option>
@@ -194,7 +197,6 @@
 
 
                         <div class="space-y-4 pb-32 flex-1 p-4">
-                            <template v-if="activeEntryTab === 'single'">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <label class="text-[13px] text-slate-400 font-bold px-1 select-none">日期</label>
@@ -222,6 +224,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <template v-if="activeEntryTab === 'single'">
                                 
                                 <div class="grid grid-cols-12 gap-3 py-1.5 border-b border-blue-100/10">
                                     <div class="col-span-8 space-y-0.5">
@@ -299,8 +303,8 @@
                                     <div class="p-5 flex-1 flex flex-col">
                                         <textarea v-model="batchImportContent" 
                                                   @paste="handleBatchPaste"
-                                                  placeholder="在此貼上多筆開示資料...&#10;格式例：&#10;父皇仙師開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情&#10;&#10;--下一筆--" 
-                                                  class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder-slate-300 placeholder:text-[17px]"></textarea>
+                                                  placeholder="整筆智慧錄入 (V2) (不可手動輸入文字，僅供貼上或匯入檔案)&#10;&#10;在此貼上資料...&#10;格式例：&#10;父皇仙師開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
+                                                  class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
                                         
                                         <!-- Instructions -->
                                         <div class="mt-4 p-4 bg-white/60 rounded-2xl border border-blue-50 text-[13px] text-slate-400 leading-normal">
@@ -339,8 +343,24 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
                                             </button>
                                         </div>
-                                        <div class="font-bold text-slate-900 text-[16px]">{{ getRecipientName(record) }}</div>
-                                        <div class="text-slate-500 text-[15px] line-clamp-2">{{ record.content }}</div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="font-black text-slate-900 text-[17px]">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
+                                            <div class="flex items-center space-x-1 shrink-0">
+                                                <span class="text-[12px] font-bold text-slate-400">📅</span>
+                                                <input type="date" v-model="record.date" class="border-none bg-slate-50 text-[12px] font-black text-slate-500 rounded-lg py-1 px-2 focus:ring-1 focus:ring-indigo-100 outline-none w-32">
+                                            </div>
+                                        </div>
+                                        <div class="text-slate-600 text-[16px] font-bold leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
+                                        <!-- Item Preview inside card -->
+                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-slate-50 space-y-1">
+                                            <div class="text-[11px] font-black text-slate-300 uppercase tracking-widest mb-1">已識別清單：</div>
+                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-indigo-400 font-bold flex items-center">
+                                                <span class="mr-1.5 opacity-60">💎</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
+                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-slate-300 hover:text-red-400">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
@@ -507,9 +527,9 @@
                                         {{ showMainRemarks ? '隱藏主備註' : '+ 加入主備註' }}
                                     </button>
                                     <div v-if="showMainRemarks" class="mt-2 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[72px] flex items-center animate-fade-in overflow-hidden">
-                                        <textarea v-model="newItemMainRemarks" 
-                                               class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
-                                               placeholder="加入備註..."></textarea>
+                                        <input v-model="newItemMainRemarks" list="remark-list"
+                                               class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
+                                               placeholder="加入備註...">
                                     </div>
                                 </div>
 
@@ -887,9 +907,9 @@
                                             </button>
                                             <div v-if="showSubRemarks" class="mt-2 flex items-center animate-fade-in overflow-hidden">
                                                 <div class="flex-1 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[64px] flex items-center overflow-hidden">
-                                                    <textarea v-model="newItemRemarks" 
-                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
-                                                           placeholder="加入內容物備註..."></textarea>
+                                                    <input v-model="newItemRemarks" list="remark-list"
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
+                                                           placeholder="加入內容物備註...">
                                                 </div>
                                             </div>
                                         </div>
@@ -1205,7 +1225,7 @@
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
                                         <div class="mr-3 shrink-0 flex items-center justify-center">
-                                            <div v-if="!reorderMode" class="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center text-[13px] font-black text-slate-500">
+                                            <div v-if="!reorderMode" class="w-7 h-7 flex items-center justify-center text-[16px] font-black text-slate-400">
                                                 {{ index + 1 }}
                                             </div>
                                             <input v-else 
@@ -1217,25 +1237,15 @@
                                         </div>
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ item.date.replace(/-/g, '/') }}</span>
-                                            <div class="flex flex-col mt-1.5">
-                                                <span class="text-[16px] font-black text-slate-900 leading-tight">
-                                                    {{ item.master?.name || item.master_name || '仙師' }}開示給：
-                                                </span>
-                                                <template v-if="getFullRecipientList(item)?.groupName">
-                                                    <div class="flex flex-col">
-                                                        <span class="text-[16px] font-black text-indigo-600 leading-tight">
-                                                            {{ getFullRecipientList(item).groupName }}
-                                                        </span>
-                                                        <span class="text-[14px] font-bold text-slate-400 leading-tight">
-                                                            {{ getFullRecipientList(item).names.join(', ') }}
-                                                        </span>
-                                                    </div>
-                                                </template>
-                                                <span v-else class="text-[16px] font-black text-slate-900 leading-tight">
-                                                    {{ getRecipientName(item) }}
-                                                </span>
+                                        <div class="flex flex-col min-w-0">
+                                            <div class="text-[16px] font-black text-slate-900 leading-tight">
+                                                <span class="text-[13px] font-bold text-slate-400 mr-2 tracking-tighter">{{ item.date.replace(/-/g, '/') }}</span>
+                                                {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
+                                            </div>
+                                            <!-- Request 2: Content/Item Summary in List Header -->
+                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[14px] text-slate-500 font-medium truncate opacity-70">
+                                                <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
+                                                <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1272,14 +1282,14 @@
                                 <div v-if="isSessionFocused(item)" class="px-5 pb-5 animate-fade-in space-y-4">
                                     <!-- Personnel Detail Box: Toggleable for high-density -->
                                     <div v-if="getFullRecipientList(item)" class="mt-1 space-y-2">
-                                        <button @click="toggleRecipientDetails(item.id)" 
+                                        <button @click.stop="toggleRecipientDetails(item.id)" 
                                                 class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
                                             <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <svg class="w-3.5 h-3.5" :class="showRecipientDetails.has(item.id) ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </div>
                                             <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
                                         </button>
-                                        <div v-if="showRecipientDetails.has(item.id)" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
+                                        <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
                                             <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="text-[18px] font-black text-indigo-700 leading-tight">
                                                 {{ getFullRecipientList(item).groupName }}
                                             </div>
@@ -1420,12 +1430,12 @@
                                 <button @click="toggleRecipientDetails(item.id || bIdx)" 
                                         class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
                                     <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <svg class="w-3.5 h-3.5" :class="showRecipientDetails.has(item.id || bIdx) ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id || bIdx] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </div>
                                     <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
                                 </button>
 
-                                <div v-if="showRecipientDetails.has(item.id || bIdx)" 
+                                <div v-if="showRecipientDetails[item.id || bIdx]" 
                                      class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-2.5 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
                                     <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="flex items-center text-indigo-700">
                                         <span class="mr-2 text-[15px]">🏘️</span> 
@@ -1675,43 +1685,13 @@ const groupedRecords = computed(() => {
         return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
 
-    // Grouping logic: Merge records with same date and same dharma names
-    const grouped = [];
-    list.forEach(item => {
-        // Grouping: Merge records with SAME DATE, SAME MASTER, and SAME DHARMA NAMES
-        const names = (item.dharma_names || []).map(dn => dn.name).sort().join(',');
-        const mId = item.master?.id || item.master_id;
-        const prevGroup = grouped[grouped.length - 1];
-        
-        if (prevGroup && prevGroup.date === item.date && 
-            (prevGroup.master?.id === mId || prevGroup.master_id === mId) &&
-            prevGroup.namesKey === names) {
-            // Append content and items
-            if (item.content?.trim()) {
-                prevGroup.content = (prevGroup.content || '') + '\n\n' + item.content.trim();
-            }
-            if (item.items?.length > 0) {
-                prevGroup.items = [...(prevGroup.items || []), ...item.items];
-            }
-            // Merge unique dharma_names for the combined header
-            const combinedDNs = [...(prevGroup.dharma_names || [])];
-            (item.dharma_names || []).forEach(dn => {
-                if (!combinedDNs.find(c => c.id === dn.id)) combinedDNs.push(dn);
-            });
-            prevGroup.dharma_names = combinedDNs;
-            
-            // Re-calculate group detection metadata if needed
-            prevGroup.namesKey = prevGroup.dharma_names.map(dn => dn.name).sort().join(',');
-            
-            prevGroup.ids.push(item.id);
-        } else {
-            grouped.push({
-                ...item,
-                namesKey: names,
-                ids: [item.id]
-            });
-        }
-    });
+    // Disabled Merging Logic: Every database record is now treated as an independent entry 
+    // unless they are explicitly saved as a single record.
+    const grouped = list.map(item => ({
+        ...item,
+        namesKey: (item.dharma_names || []).map(dn => dn.name).sort().join(','),
+        ids: [item.id]
+    }));
     
     return grouped;
 });
@@ -1735,7 +1715,7 @@ const toggleDateExpand = (date) => {
         focusedDate.value = date;
         focusedId.value = null; 
         activeDropdownId.value = null;
-        showRecipientDetails.value.clear();
+        showRecipientDetails.value = {};
     }
 };
 
@@ -1757,10 +1737,9 @@ const pickMaster = (name, index = null) => {
     activeMasterDropdownId.value = null;
 };
 
-const showRecipientDetails = ref(new Set());
+const showRecipientDetails = ref({});
 const toggleRecipientDetails = (id) => {
-    if (showRecipientDetails.value.has(id)) showRecipientDetails.value.delete(id);
-    else showRecipientDetails.value.add(id);
+    showRecipientDetails.value[id] = !showRecipientDetails.value[id];
 };
 const itemsDetailMode = ref(false);
 const expandedDetails = ref({});
@@ -2047,7 +2026,7 @@ const handleBlockDharmaInput = (index, val) => {
 
 const form = ref({
     supplement: '', target_remarks: '', content: '',
-    date: new Date().toISOString().split('T')[0], master_id: null, items: [], 
+    date: '', master_id: null, items: [], 
     remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
 });
 
@@ -2322,7 +2301,10 @@ const fetchItems = async (page = 1) => {
             page: page 
         };
         const isDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
-        if (isDaily) params.is_daily = 1;
+        if (isDaily) {
+            params.is_daily = 1;
+            params.per_page = 100;
+        }
         // In Master folders, we don't pass is_daily so it fetches all records for that master
 
         const res = await axios.get('/teachings', { params });
@@ -2779,7 +2761,7 @@ const toggleExpand = (id) => {
         focusedId.value = id;
     }
     activeDropdownId.value = null;
-    if (showRecipientDetails.value) showRecipientDetails.value.clear();
+    if (showRecipientDetails.value) showRecipientDetails.value = {};
 };
 
 const isDateOfFocused = (date) => {
@@ -2841,7 +2823,7 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
         }
     }
 
-    return `${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
+    return `${item.date.replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
 };
 
 const downloadTeaching = (item) => {
@@ -2894,20 +2876,20 @@ const processBatchText = () => {
             target_remarks: '', items: [], master_name: '', date: null
         };
         
-        // 0. Date Detection (Look for pattern like 4/11 or 2024/04/11 at start)
-        const dateMatch = text.match(/^(\d{1,4}[\/\s.-]\d{1,2}([\/\s.-]\d{1,4})?)/);
+        // 0. Date Detection (Look for date patterns anywhere in the text)
+        const dateMatch = text.match(/(\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})/) || text.match(/(\d{1,2}[\/\s.-]\d{1,2})/);
         if (dateMatch) {
-            let dStr = dateMatch[1].trim();
+            let dStr = dateMatch[0].trim();
             // Basic normalization: if it's M/D, prepend current year
             if (dStr.split(/[\/\s.-]/).length === 2) {
                 dStr = new Date().getFullYear() + '/' + dStr;
             }
             try {
-                const dObj = new Date(dStr);
+                const dObj = new Date(dStr.replace(/\s+/g, '/').replace(/\./g, '/').replace(/-/g, '/'));
                 if (!isNaN(dObj.getTime())) {
                     record.date = dObj.toISOString().split('T')[0];
-                    // Strip the date from text
-                    text = text.substring(dateMatch[0].length).trim();
+                    // Strip the date from text to avoid cluttering the content
+                    text = text.replace(dateMatch[0], '').trim();
                 }
             } catch(e) {}
         }
@@ -2954,18 +2936,29 @@ const processBatchText = () => {
             contentToParse = contentToParse.replace(leadingRegex, '').trim();
         }
         
-        // 3. Treasure Splitting
-        if (contentToParse.includes('賜降：')) {
-            const parts = contentToParse.split('賜降：');
-            record.content = parts[0].trim();
-            const treasurePart = parts[1].trim();
+        // 3. Line-by-line Parsing (Heuristic for content vs items)
+        const lines = contentToParse.split('\n');
+        let contentLines = [];
+        let parsingTreasures = false;
+
+        lines.forEach(line => {
+            const l = line.trim();
+            if (!l) return;
             
-            const lines = treasurePart.split('\n').filter(l => l.trim());
-            lines.forEach(line => {
-                const cleanLine = line.trim();
-                if (!cleanLine) return;
-                
-                const tMatch = cleanLine.match(/^(\d+\.|[+*])\s*(.*?)([:：]\s*(.*))?$/);
+            if (l.includes('賜降：')) {
+                parsingTreasures = true;
+                return;
+            }
+            
+            // Heuristic: If it has a prefix (1. or +) OR it's under "賜降：" 
+            // OR it contains keywords like "法寶", "天份", "金丹", "符", "疏文"
+            const isItem = parsingTreasures || l.match(/^(\d+\.|[+*])/) || 
+                           l.includes('法寶') || l.includes('天份') || 
+                           l.includes('金丹') || l.includes('符') || 
+                           l.includes('疏文');
+            
+            if (isItem) {
+                const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
                 if (tMatch) {
                     record.items.push({
                         uid: Date.now() + Math.random(),
@@ -2973,20 +2966,12 @@ const processBatchText = () => {
                         details: tMatch[4] || '',
                         name: '', sub_name: ''
                     });
-                } else if (cleanLine.length > 0) {
-                    // Handle un-prefixed treasures
-                    const parts = cleanLine.split(/[:：]/);
-                    record.items.push({
-                        uid: Date.now() + Math.random(),
-                        treasure_name: parts[0].trim(),
-                        details: parts[1] || '',
-                        name: '', sub_name: ''
-                    });
                 }
-            });
-        } else {
-            record.content = contentToParse.trim();
-        }
+            } else {
+                contentLines.push(l);
+            }
+        });
+        record.content = contentLines.join('\n');
         
         newRecords.push(record);
     });
@@ -3250,6 +3235,14 @@ const saveItem = async () => {
     // The previous block checked for empty content/items and alerted.
 
     if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1 || (batchRecords.value.length === 1 && (batchRecords.value[0].content || batchRecords.value[0].items.length > 0))) {
+        // Requirement: If user hasn't clicked "Smart Parse" yet but has content in the textarea, do it now
+        if (activeEntryTab.value === 'batch' && batchImportContent.value.trim()) {
+            const hasSubstantialRecords = batchRecords.value.some(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
+            if (!hasSubstantialRecords) {
+                processBatchText();
+            }
+        }
+
         // If current form has content/items/persona not yet stashed, add it as a final block now
         if (form.value.content.trim() || form.value.items.length > 0 || form.value.dharma_name_ids.length > 0) {
             const currentBlock = {
@@ -3360,12 +3353,53 @@ const executeDistributionSave = async (mode) => {
     const mid = form.value.master_id || currentFolder.value?.id;
     const currentMasterId = (mid == 0 || mid === '0') ? null : mid;
 
+    // Requirement: If user hasn't clicked "Smart Parse" yet, do it automatically
+    if (activeEntryTab.value === 'batch' && batchImportContent.value.trim()) {
+        const hasSubstantialRecords = batchRecords.value.some(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
+        if (!hasSubstantialRecords) {
+            processBatchText();
+        }
+    }
+
     try {
         // Iterate through each block record
         for (const record of batchRecords.value) {
-            const content = record.content?.trim() || '';
-            const items = record.items || [];
+            let content = record.content?.trim() || '';
+            let items = [...(record.items || [])];
             
+            // Requirement: If user typed into the card manually, we should try to extract items from content
+            if (content && items.length === 0) {
+                const lines = content.split('\n');
+                let remainingContent = [];
+                let parsingTreasures = false;
+                
+                lines.forEach(line => {
+                    const l = line.trim();
+                    if (!l) return;
+                    if (l.includes('賜降：')) { parsingTreasures = true; return; }
+                    
+                    const isItem = parsingTreasures || l.match(/^(\d+\.|[+*])/) || 
+                                   l.includes('法寶') || l.includes('天份') || 
+                                   l.includes('金丹') || l.includes('符') || 
+                                   l.includes('疏文');
+                                   
+                    if (isItem) {
+                        const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
+                        if (tMatch) {
+                            items.push({
+                                uid: Date.now() + Math.random(),
+                                treasure_name: tMatch[2].trim(),
+                                details: tMatch[4] || '',
+                                name: '', sub_name: ''
+                            });
+                        }
+                    } else {
+                        remainingContent.push(l);
+                    }
+                });
+                content = remainingContent.join('\n');
+            }
+
             // Allow save if there is content OR items OR names selected (as per user request)
             if (!content && items.length === 0 && record.dharma_name_ids.length === 0) continue;
 
@@ -3400,20 +3434,45 @@ const executeDistributionSave = async (mode) => {
 
             const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
             
+            let finalDharmaIds = [...(record.dharma_name_ids || [])];
+            let finalTargetRemarks = record.target_remarks || form.value.target_remarks || '';
+
+            // If no IDs but have a search query (manual type), try to resolve it
+            if (finalDharmaIds.length === 0 && record.dharmaSearchQuery) {
+                const nameField = record.dharmaSearchQuery.trim();
+                const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
+                if (foundDN) {
+                    finalDharmaIds = [foundDN.id];
+                } else {
+                    const foundGroup = (groups.value || []).find(g => g.name === nameField);
+                    if (foundGroup) {
+                        finalDharmaIds = (foundGroup.dharma_names || []).map(dn => dn.id);
+                    } else {
+                        // If still not found, put it in target_remarks so user can see who it's for
+                        finalTargetRemarks = (finalTargetRemarks ? finalTargetRemarks + ' ' : '') + nameField;
+                    }
+                }
+            }
+
             const payload = {
-                date: record.date || form.value.date,
+                date: record.date || form.value.date || new Date().toISOString().split('T')[0],
                 master_id: blockMasterId,
                 content: content,
-                dharma_name_ids: record.dharma_name_ids.length > 0 ? record.dharma_name_ids : form.value.dharma_name_ids,
-                target_remarks: record.target_remarks || form.value.target_remarks,
-                items: record.items || [],
+                dharma_name_ids: finalDharmaIds.length > 0 ? finalDharmaIds : (form.value.dharma_name_ids || []),
+                target_remarks: finalTargetRemarks,
+                items: items,
                 user_id: 1,
-                is_daily: isDailyFolder ? 1 : 0
+                is_daily: (activeEntryTab.value === 'batch' || isDailyFolder) ? 1 : 0
             };
             
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
-                if (!focusedId.value) focusedId.value = res.data.id;
+                // Optimistic UI: Add to the beginning of the list to ensure visibility
+                visibleItems.value.unshift(res.data);
+                if (!focusedId.value) {
+                    focusedId.value = res.data.id;
+                    focusedDate.value = res.data.date;
+                }
             }
         }
         
@@ -3444,7 +3503,7 @@ const showAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: new Date().toLocaleDateString('en-CA'), master_id: null, items: [], 
+        date: '', master_id: null, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 
@@ -3476,7 +3535,7 @@ const showMultiMasterAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: new Date().toLocaleDateString('en-CA'), master_id: 5, items: [], 
+        date: '', master_id: 5, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 

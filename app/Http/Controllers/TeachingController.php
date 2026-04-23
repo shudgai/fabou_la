@@ -20,6 +20,7 @@ class TeachingController extends Controller
         $masterId = $request->query('master_id');
         $date = $request->query('date');
         $mode = $request->query('mode'); // 'dates' or 'items'
+        $perPage = $request->query('per_page', 15);
         
         $permissions = auth()->user()->getPermissions();
         if ($masterId == 0 && !$permissions['can_see_daily_teachings']) {
@@ -27,14 +28,14 @@ class TeachingController extends Controller
         }
 
         if ($mode === 'dates') {
-            return response()->json($this->teachingService->getPaginatedDates($masterId));
+            return response()->json($this->teachingService->getPaginatedDates($masterId, $perPage));
         }
 
         if ($date) {
             return response()->json($this->teachingService->getByDate($date, $masterId));
         }
 
-        return response()->json($this->teachingService->getAll($masterId));
+        return response()->json($this->teachingService->getAll($masterId, $perPage));
     }
 
     public function store(Request $request)

@@ -12,7 +12,7 @@ class TeachingService
         $query = Teaching::with(['master', 'dharmaNames', 'user']);
         
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
-            // Show all records
+            $query->where('is_daily', 1);
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
         }
@@ -25,7 +25,7 @@ class TeachingService
         $query = Teaching::query();
         
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
-            // Show all dates for the daily/master dashboard
+            $query->where('is_daily', 1);
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
         }
@@ -43,7 +43,7 @@ class TeachingService
             ->where('date', $date);
             
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
-            // No extra master filter for daily
+            $query->where('is_daily', 1);
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
         }
