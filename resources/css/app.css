@@ -46,17 +46,15 @@ body.font-large {
 /* 內文：明細體 + 深色 */
 .app-body {
     font-size:   var(--fs-body) !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color:       #0f172a !important; /* slate-900 */
-    text-shadow: 0.5px 0 0 currentColor; /* 微調加粗 */
 }
 
 /* 標題：粗體 + 灰藍色 */
 .app-title {
     font-size:   var(--fs-title) !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color:       #334155 !important; /* slate-700 */
-    text-shadow: 0.3px 0 0 currentColor; /* 微調加粗 */
 }
 
 /* ── Tailwind 工具 class (可直接用在 template) ── */
@@ -73,45 +71,39 @@ body.font-large {
 /* --- 內文 (.text-[17px], .text-[15px], .text-[16px], .text-[14px] 常用於資料與選單) --- */
 body.font-small .text-\[17px\], body.font-small .text-\[16px\], body.font-small .text-\[15px\], body.font-small .text-\[14px\], body.font-small td, body.font-small p, body.font-small .app-body {
     font-size: 15px !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color: #0f172a !important;
-    text-shadow: 0.5px 0 0 currentColor;
 }
 
 body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium .text-\[15px\], body.font-medium .text-\[14px\], body.font-medium td, body.font-medium p, body.font-medium .app-body {
     font-size: 17px !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color: #0f172a !important;
-    text-shadow: 0.5px 0 0 currentColor;
 }
 
 body.font-large .text-\[17px\], body.font-large .text-\[16px\], body.font-large .text-\[15px\], body.font-large .text-\[14px\], body.font-large td, body.font-large p, body.font-large .app-body {
     font-size: 19px !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color: #0f172a !important;
-    text-shadow: 0.5px 0 0 currentColor;
 }
 
 /* --- 標題 (label, th, 以及小字 .text-[11px], .text-[13px] 與大標題 .text-[18px]) --- */
 body.font-small label, body.font-small th, body.font-small .text-\[18px\], body.font-small .text-\[13px\], body.font-small .text-\[11px\], body.font-small .app-title {
     font-size: 12px !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color: #334155 !important;
-    text-shadow: 0.3px 0 0 currentColor;
 }
 
 body.font-medium label, body.font-medium th, body.font-medium .text-\[18px\], body.font-medium .text-\[13px\], body.font-medium .text-\[11px\], body.font-medium .app-title {
     font-size: 14px !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color: #334155 !important;
-    text-shadow: 0.3px 0 0 currentColor;
 }
 
 body.font-large label, body.font-large th, body.font-large .text-\[18px\], body.font-large .text-\[13px\], body.font-large .text-\[11px\], body.font-large .app-title {
     font-size: 16px !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color: #334155 !important;
-    text-shadow: 0.3px 0 0 currentColor;
 }
 
 /* 確保輸入框也跟著變，但顏色稍微深一點 */

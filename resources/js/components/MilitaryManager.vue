@@ -112,8 +112,8 @@
                                 <!-- Row 1: Date only -->
                                 <div class="flex items-center mb-0.5">
                                     <div class="flex items-baseline space-x-2">
-                                        <div class="app-title font-black text-slate-700">日期</div>
-                                        <div class="app-title font-black text-slate-900 ml-0.5 font-outfit">{{ formatDate(item.know_date) }}</div>
+                                        <div class="app-title">日期</div>
+                                        <div class="app-title font-bold text-slate-900 ml-0.5">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
 
@@ -121,14 +121,14 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1 flex items-center justify-between">
                                         <!-- Dharma Name -->
-                                        <div class="app-body font-black text-slate-900 leading-tight truncate pr-2 text-[19px]">
+                                        <div class="app-body font-bold leading-tight truncate pr-2">
                                             {{ item.user_name || '-' }}
-                                            <span v-if="item.user_remarks" class="app-body font-black ml-1.5">({{ item.user_remarks }})</span>
+                                            <span v-if="item.user_remarks" class="app-body ml-1.5">({{ item.user_remarks }})</span>
                                         </div>
                                         <!-- Subtotal -->
-                                        <div class="app-body flex items-center space-x-2 text-[19px]">
-                                            <span class="app-title font-black text-slate-700">數量:</span>
-                                            <span class="app-body font-black text-slate-900 font-outfit">
+                                        <div class="app-body flex items-center space-x-2">
+                                            <span class="app-title">數量:</span>
+                                            <span class="app-body">
                                                 <template v-if="['虎甲軍','虎賁軍'].includes(item.army_type)">
                                                     {{ (Number(item.quantity) || 0).toLocaleString() }}
                                                 </template>

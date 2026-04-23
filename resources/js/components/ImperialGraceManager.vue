@@ -213,10 +213,10 @@
                                 <!-- Row 1: Date -->
                                 <div class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
-                                        登記：<span class="app-title font-bold">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
+                                        登記：<span class="app-title font-bold text-slate-400">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
-                                        得知：<span class="app-title font-bold">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                        得知：<span class="app-title font-bold text-slate-400">{{ reg.record_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else>
                                         <span class="text-slate-400 font-bold">未知日期</span>
@@ -225,7 +225,7 @@
                                 </div>
                                 <!-- Row 2: Name + Status -->
                                 <div class="flex items-center justify-between">
-                                    <div class="app-body font-black text-slate-900 leading-tight truncate">{{ reg.name }}</div>
+                                    <div class="app-body font-bold text-slate-900 leading-tight truncate">{{ reg.name }}</div>
                                     <span :class="{
                                         'bg-blue-50 text-blue-700 border-blue-200': reg.status === '已求得',
                                         'bg-emerald-50 text-emerald-700 border-emerald-200': reg.status === '已登記',
@@ -282,13 +282,13 @@
                                         </button>
                                         <label class="app-title tracking-wider block">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
                                     </div>
-                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900 font-outfit">
+                                    <div class="w-full px-3 flex items-center app-body text-slate-400 font-outfit">
                                         {{ reg.record_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">載錄目標仙師</label>
-                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900">
+                                    <div class="w-full px-3 flex items-center app-body text-slate-700">
                                         {{ getMasterName(reg.master_id) }}
                                     </div>
                                 </div>
@@ -296,14 +296,14 @@
 
                             <div class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">法寶名稱</label>
-                                <div class="w-full px-3 flex items-center app-body font-black text-slate-900">
+                                <div class="w-full px-3 flex items-center app-body font-bold text-slate-900">
                                     {{ reg.name }}
                                 </div>
                             </div>
 
                             <div class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">法寶用意</label>
-                                <div class="w-full px-3 py-0.5 flex items-center app-body font-black text-slate-900">
+                                <div class="w-full px-3 py-0.5 flex items-center app-body font-bold text-slate-900">
                                     {{ reg.purpose || '-' }}
                                 </div>
                             </div>
@@ -311,14 +311,14 @@
                              <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">目前狀態</label>
-                                    <div class="w-full px-3 flex items-center app-body font-black"
+                                    <div class="w-full px-3 flex items-center app-body"
                                         :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
                                         {{ reg.status }}
                                     </div>
                                 </div>
                                 <div v-if="reg.status !== '已登記'" class="space-y-1">
                                     <label class="app-title tracking-wider block ml-1">求得日期</label>
-                                    <div class="w-full px-3 flex items-center app-body font-black text-slate-900 font-outfit">
+                                    <div class="w-full px-3 flex items-center app-body text-slate-400 font-outfit">
                                         {{ reg.obtained_date?.replace(/-/g, '/') || '-' }}
                                     </div>
                                 </div>
@@ -327,7 +327,7 @@
 
                             <div v-if="reg.remarks" class="space-y-1">
                                 <label class="app-title tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <div class="w-full px-3 py-1 app-body font-black text-slate-900 leading-normal whitespace-pre-wrap">
+                                <div class="w-full px-3 py-1 app-body font-bold text-slate-900 leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
                                 </div>
                             </div>

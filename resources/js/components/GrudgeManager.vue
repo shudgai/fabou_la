@@ -72,19 +72,19 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="app-title font-black text-slate-700">得知日期</div>
-                                    <div class="app-title font-black text-slate-900 ml-0.5 font-outfit">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-title">得知日期</div>
+                                    <div class="app-title font-bold text-slate-900 ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
                             <!-- Row 2: Name & Quantity & Status -->
                             <div class="flex items-center justify-between mt-1">
-                                <div class="app-body font-black text-slate-900 truncate flex-1 text-[19px]">
-                                    {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body font-black ml-0.5">({{ item.user_remarks }})</span>
+                                <div class="app-body font-bold truncate flex-1">
+                                    {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body ml-0.5">{{ item.user_remarks }}</span>
                                 </div>
-                                <div class="flex items-center space-x-2 shrink-0 ml-4 text-[19px]">
-                                    <div class="app-title font-black text-slate-700">數量:</div>
-                                    <div class="app-body font-black text-slate-900 font-outfit">{{ item.quantity }}</div>
+                                <div class="flex items-center space-x-2 shrink-0 ml-4">
+                                    <div class="app-title">數量:</div>
+                                    <div class="app-body">{{ item.quantity }}</div>
                                 </div>
                                 <div class="ml-4">
                                     <span v-if="item.destination === '未處理'" class="app-title px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 uppercase tracking-tighter">

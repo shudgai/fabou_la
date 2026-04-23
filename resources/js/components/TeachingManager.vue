@@ -1202,13 +1202,13 @@
                             <div v-show="focusedId === null || isDateOfFocused(dateGroup.date)"
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
-                                <div class="flex items-center">
-                                    <span class="text-[19px] font-black text-slate-900 tracking-tight font-outfit">{{ dateGroup.date.replace(/-/g, '/') }}</span>
-                                    <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-300 rounded-full text-[13px] font-black text-slate-700 font-outfit">
-                                        {{ dateGroup.items.length }} 則
-                                    </span>
-                                </div>
-                                <svg :class="focusedDate === dateGroup.date ? 'rotate-180' : 'rotate-[-90deg]'" class="w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                 <div class="flex items-center">
+                                     <span class="text-[17px] font-black text-slate-400 tracking-tight font-outfit">{{ dateGroup.date.replace(/-/g, '/') }}</span>
+                                     <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-300 rounded-full text-[12px] font-black text-slate-400 font-outfit">
+                                         {{ dateGroup.items.length }} 則
+                                     </span>
+                                 </div>
+                                 <svg :class="focusedDate === dateGroup.date ? 'rotate-180' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </div>
 
                             <!-- List of Teachings for this Date -->
@@ -1241,11 +1241,11 @@
                                             <div class="app-title font-black text-slate-700 mb-0.5 font-outfit tracking-tighter">
                                                 {{ item.date.replace(/-/g, '/') }}
                                             </div>
-                                            <div class="app-body font-black text-slate-900 leading-tight text-[19px]">
+                                            <div class="app-body font-bold text-slate-600 leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->
-                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[15px] text-slate-500 font-black truncate opacity-80 font-outfit">
+                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[14px] text-slate-400 font-medium truncate opacity-70 font-outfit">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
                                                 <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
@@ -1304,7 +1304,7 @@
                                         </div>
                                     </div>
 
-                                    <div v-if="item.content?.trim()" class="text-[19px] text-slate-900 font-black leading-snug whitespace-pre-wrap">
+                                    <div v-if="item.content?.trim()" class="text-[17px] text-black font-medium leading-tight whitespace-pre-wrap">
                                         {{ item.content.trim() }}
                                     </div>
 
@@ -1312,7 +1312,7 @@
                                         <div class="text-[17px] text-slate-900 font-bold mb-1">賜降：</div>
                                         <div class="space-y-0.5">
                                             <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
-                                                    <div class="text-[19px] font-black text-slate-900">
+                                                    <div class="text-[17px] font-bold text-black">
                                                         {{ stripMasterPrefix(gName) }}
                                                         <template v-if="group.length === 1 && !group[0].name">
                                                             <span v-if="getMergedContent(group[0].details, group[0].remarks || group[0].sub_name)" class="ml-1">: {{ getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) }}</span>
@@ -1321,15 +1321,15 @@
                                                     <!-- Specialized Indented Layout: Show if multi-item or has name -->
                                                     <div class="space-y-0.5" v-if="group.length > 1 || (group[0] && group[0].name)">
                                                         <div v-if="group.length > 1 && getMainDetails(group)" 
-                                                             class="pl-6 text-[18px] text-slate-900 font-black">
+                                                             class="pl-6 text-[17px] text-black font-bold opacity-80">
                                                             {{ getMainDetails(group) }}
                                                         </div>
                                                     <div v-for="(m, midx) in group" :key="midx">
-                                                        <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[18px] text-slate-900 font-black">
+                                                        <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
                                                             <template v-if="m.name">
                                                                 <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
                                                                 <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details && !getCleanRemark(m.remarks || m.sub_name, m.details)) ? ':' + m.details : '' }}</span>
-                                                                <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4">{{ m.details }}</div>
+                                                                <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
                                                             </template>
                                                             
                                                             <div v-if="m.sub_name?.trim() || m.remarks?.trim()" class="pl-4 text-[14px] text-slate-700 italic font-bold leading-tight mt-0.5">

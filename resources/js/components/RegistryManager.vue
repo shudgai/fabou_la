@@ -7,7 +7,7 @@
             </button>
             <h2 :class="[
                 'font-black font-outfit tracking-tight flex-1 flex items-center min-w-0',
-                currentFolder ? 'text-[21px] text-left' : 'text-[25px] text-left'
+                currentFolder ? 'text-[21px] text-left' : 'text-[30px] text-left'
             ]" :style="{ color: (currentCategory === 'major' && currentFolder) ? 'black' : 'rgb(220, 20, 40)' }">
                 <span v-if="focusedId" @click="focusedId = null; expandedIds.clear()" class="mr-3 p-1.5 bg-slate-100 rounded-full text-slate-500 cursor-pointer active:scale-90 transition-all font-black shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -58,7 +58,7 @@
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <div class="flex-1">
-                        <h1 class="text-[24px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
+                        <h1 class="text-[30px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[17px] text-slate-400">- {{ currentFolder.name }} -</span>
@@ -68,7 +68,7 @@
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[24px] border-2 border-[rgb(240,20,40)] p-3 w-[200px] h-[220px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-indigo-100 p-3 w-[200px] h-[220px] relative transition-all shadow-sm">
                         <div class="mb-2">
                             <svg class="w-[120px] h-[120px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
                                 <defs>
@@ -85,7 +85,7 @@
                         <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 rounded-[24px] border-2 border-[rgb(240,20,40)] p-3 w-[200px] h-[220px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-indigo-100 p-3 w-[200px] h-[220px] relative transition-all shadow-sm">
                         <div class="mb-2">
                             <svg class="w-[120px] h-[120px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
                                 <defs>
@@ -99,7 +99,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[22px] font-black text-yellow-400 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
+                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
                     </button>
 
                 </div>
@@ -108,7 +108,7 @@
                 <div v-else class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border border-red-50 group p-2 w-[180px] h-[180px] relative">
+                        class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 border-indigo-100 group p-2 w-[180px] h-[180px] relative bg-white shadow-sm">
                         
                         <div class="relative mb-1">
                              <svg class="w-[110px] h-[110px] transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
@@ -173,7 +173,7 @@
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                              :class="[
-                                 'bg-white p-4 mb-4 border border-slate-100 rounded-[28px] shadow-sm relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
+                                 'bg-white p-4 mb-4 border-2 border-indigo-100 rounded-[28px] shadow-sm relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
@@ -239,19 +239,19 @@
                             <!-- Card Header (Toggle Expansion) -->
                             <div @click="toggleExpand(item.id)" class="space-y-2">
                                 <!-- Expanded Header Title -->
-                                <div v-if="expandedIds.has(item.id)" class="mb-4 border-b border-red-50 pb-3 -mt-1 scale-105 origin-left">
-                                    <label class="text-[20px] text-red-600 uppercase tracking-tighter font-black font-outfit">
-                                        {{ dynamicHeaderTitle }}
+                                <div v-if="expandedIds.has(item.id)" class="mb-4 border-b border-indigo-50 pb-3 -mt-1 scale-105 origin-left">
+                                    <label class="text-[20px] text-indigo-600 uppercase tracking-tighter font-black font-outfit">
+                                        法寶登記專區 - {{ item.master?.name || '仙師' }}
                                     </label>
                                 </div>
 
                                 <div class="flex items-center justify-between pr-12">
-                                    <div class="text-[16px] text-slate-900 font-black font-outfit uppercase tracking-widest">{{ item.record_date?.replace(/-/g, '/') || '-' }}</div>
+                                    <div class="text-[14px] text-slate-900 font-black font-outfit uppercase tracking-widest">{{ item.record_date?.replace(/-/g, '/') || '-' }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
                                     <div class="flex flex-col">
-                                        <div class="text-[19px] font-black text-slate-900 leading-tight truncate font-outfit flex items-center">
+                                        <div class="text-[18px] font-black text-slate-900 leading-tight truncate font-outfit flex items-center">
                                             {{ item.name }}
                                             <button v-if="expandedIds.has(item.id) && (item.purpose || item.acquisition_method || item.remarks)" 
                                                     @click.stop="showItemDetails = !showItemDetails" 
@@ -798,11 +798,9 @@ const filteredTreasures = computed(() => {
 });
 
 const dynamicHeaderTitle = computed(() => {
-    if (!currentCategory.value) return '法寶登記專區';
+    if (!currentFolder.value) return '法寶登記專區';
     
     const catName = currentCategory.value === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿';
-    if (!currentFolder.value) return catName;
-    
     return `${catName}-${currentFolder.value.name}`;
 });
 
