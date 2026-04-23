@@ -229,13 +229,28 @@
                                             <label class="text-[13px] text-slate-400 font-bold px-1">對象 / 群組</label>
                                             <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px]">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px] relative">
                                             <input type="text" 
-                                                   @input="handleDharmaSearchInput" 
-                                                   list="dharma-search-list"
+                                                   @input="e => { activePractitionerDropdownId = 'mainPract'; handleDharmaSearchInput(e) }" 
+                                                   @focus="activePractitionerDropdownId = 'mainPract'"
                                                    v-model="dharmaSearchQuery"
                                                    placeholder="搜尋法號或群組..." 
                                                    class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400 placeholder:text-[17px]">
+                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainPract' ? null : 'mainPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="g in groups.filter(gr => !dharmaSearchQuery || gr.name.includes(dharmaSearchQuery))" :key="'g'+g.id"
+                                                     @click.stop="dharmaSearchQuery = g.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: g.name}})"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ g.name }}
+                                                </div>
+                                                <div v-for="dn in dharmaNames.filter(d => !dharmaSearchQuery || d.name.includes(dharmaSearchQuery))" :key="'dn'+dn.id"
+                                                     @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ dn.name }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-span-4 space-y-0.5">
@@ -470,7 +485,7 @@
                                             <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                     :key="t"
                                                     @click="newItemName = t"
-                                                    class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[14px] font-bold border border-blue-100 active:scale-95 transition-all">
+                                                    class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                 {{ t }}
                                             </button>
                                         </div>
@@ -572,8 +587,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div v-if="newItemName.includes('疏文')" class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center">
-                                            <input v-model="newItemSubPractitioner" list="dharma-search-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                        <div v-if="newItemName.includes('疏文')" class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
+                                            <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract1'" @focus="activeSubPractitionerDropdownId = 'subPract1'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                            <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract1' ? null : 'subPract1')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract1' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeSubPractitionerDropdownId === 'subPract1'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp1'+dn.id" 
+                                                     @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ dn.name }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -608,9 +633,18 @@
                                     <div class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
                                         <div class="relative group">
-                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
-                                                <input v-model="newItemPractitioner" list="dharma-search-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
-                                                <svg class="w-5 h-5 text-slate-900 shrink-0 ml-1 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'pract2'" @focus="activePractitionerDropdownId = 'pract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
+                                                <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'pract2' ? null : 'pract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                    <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                                <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="dn in dharmaNames.filter(d => !newItemPractitioner || d.name.includes(newItemPractitioner))" :key="'pract2'+dn.id" 
+                                                         @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ dn.name }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -679,7 +713,7 @@
                                                     <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                             :key="t"
                                                             @click="newItemSubName = t"
-                                                            class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[14px] font-bold border border-blue-100 active:scale-95 transition-all">
+                                                            class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                         {{ t }}
                                                     </button>
                                                 </div>
@@ -798,9 +832,18 @@
                                                 <div class="space-y-1.5">
                                                     <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
                                                     <div class="relative group">
-                                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
-                                                            <input v-model="newItemSubPractitioner" list="dharma-search-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入法號...">
-                                                            <svg class="w-5 h-5 text-slate-900 shrink-0 ml-1 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                            <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract2'" @focus="activeSubPractitionerDropdownId = 'subPract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入法號...">
+                                                            <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract2' ? null : 'subPract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                                <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                            </button>
+                                                            <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                                <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp2'+dn.id" 
+                                                                     @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                    {{ dn.name }}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1476,6 +1519,9 @@ const activeDropdownId = ref(null);
 const allExpanded = ref(false);
 const sortDesc = ref(true);
 const reorderMode = ref(false);
+
+const activePractitionerDropdownId = ref(null);
+const activeSubPractitionerDropdownId = ref(null);
 
 const handleReorder = async (item, newOrder, currentList) => {
     const targetOrder = parseInt(newOrder);
