@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
+    <div v-if="mode" class="fixed inset-0 z-[250] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
@@ -16,14 +16,17 @@
                         {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
                     </h3>
                 </div>
+                <button @click="$emit('cancel')" class="text-slate-400 hover:text-slate-600 transition-colors p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
 
             <!-- Scrollable Content -->
             <div class="flex-1 overflow-y-auto px-6 py-4 space-y-5 custom-scrollbar bg-white">
                 
                 <!-- Date & Master -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
+                <div :class="localMode === 'batch' ? 'grid-cols-1' : 'grid-cols-2'" class="grid gap-4">
+                    <div v-if="localMode !== 'batch'" class="space-y-1.5">
                         <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">日期</label>
                         <div @click="activePicker = { idx: 'main', field: 'record_date', title: '設定主要日期' }" 
                             class="w-full h-[46px] rounded-2xl border border-slate-100 bg-white px-4 flex items-center justify-between cursor-pointer shadow-sm active:scale-[0.98] transition-all">
@@ -88,16 +91,21 @@
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1 font-black">法號</label>
                                     <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
-                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-3 text-[18px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
+                                        class="personnel-name-input w-full h-[36px] rounded-xl border border-slate-200 bg-white px-3 text-[18px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1">日期</label>
-                                    <div @click="activePicker = { idx, field: 'obtained_date', title: p.custom_name || '設定取得日期' }" 
-                                        class="w-full h-[36px] rounded-xl border border-slate-200 bg-white px-2 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors">
-                                        <span :class="p.obtained_date ? 'text-slate-900' : 'text-slate-300'" class="text-[14px] font-bold font-outfit uppercase">
-                                            {{ p.obtained_date ? p.obtained_date.replace(/-/g, '/') : '年/月/日' }}
-                                        </span>
-                                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    <div class="relative w-full h-[36px] rounded-xl border border-slate-200 bg-white flex items-center shadow-sm overflow-hidden group/date">
+                                        <input 
+                                            :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''"
+                                            @input="e => handlePersonnelDateInput(idx, e)"
+                                            placeholder="年/月/日"
+                                            class="personnel-date-input w-full h-full bg-transparent px-2 text-[14px] font-bold font-outfit text-slate-900 outline-none uppercase"
+                                        >
+                                        <button @click="activePicker = { idx, field: 'obtained_date', title: p.custom_name || '設定取得日期' }" 
+                                            class="absolute right-0 top-0 h-full px-2 text-slate-300 hover:text-indigo-500 transition-colors bg-white/80 backdrop-blur-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -230,6 +238,73 @@ watch(() => props.initialData, (newVal) => {
 watch(() => props.mode, (newVal) => {
     if (newVal) localMode.value = newVal;
 });
+
+// Intelligent Date Auto-conversion and Auto-newline for Batch Mode
+watch(batchInput, (newVal, oldVal) => {
+    if (newVal.length <= oldVal.length) return;
+    
+    // Pattern: 2-3 digit ROC year followed by date separators
+    const rocRegex = /(\b\d{2,3})([/.-])(\d{1,2})\2(\d{1,2})$/;
+    const ceRegex = /(\b\d{4})([/.-])(\d{1,2})\2(\d{1,2})$/;
+    
+    let match = newVal.match(rocRegex);
+    if (match) {
+        const y = parseInt(match[1]) + 1911;
+        const s = match[2];
+        const m = match[3].padStart(2, '0');
+        const d = match[4].padStart(2, '0');
+        batchInput.value = newVal.replace(rocRegex, `${y}${s}${m}${s}${d}\n`);
+    } else {
+        const ceMatch = newVal.match(ceRegex);
+        if (ceMatch) {
+            // Even for CE, if complete, add newline
+            const y = ceMatch[1];
+            const s = ceMatch[2];
+            const m = ceMatch[3].padStart(2, '0');
+            const d = ceMatch[4].padStart(2, '0');
+            batchInput.value = newVal.replace(ceRegex, `${y}${s}${m}${s}${d}\n`);
+        }
+    }
+});
+
+import { nextTick } from 'vue';
+const handlePersonnelDateInput = (idx, event) => {
+    let val = event.target.value.trim();
+    if (!val) return;
+    
+    const rocRegex = /^(\d{2,3})([/.-])(\d{1,2})\2(\d{1,2})$/;
+    const ceRegex = /^(\d{4})([/.-])(\d{1,2})\2(\d{1,2})$/;
+    
+    let isComplete = false;
+    let match = val.match(rocRegex);
+    if (match) {
+        const y = parseInt(match[1]) + 1911;
+        const m = match[3].padStart(2, '0');
+        const d = match[4].padStart(2, '0');
+        personnel.value[idx].obtained_date = `${y}-${m}-${d}`;
+        isComplete = true;
+    } else {
+        match = val.match(ceRegex);
+        if (match) {
+            const y = match[1];
+            const m = match[3].padStart(2, '0');
+            const d = match[4].padStart(2, '0');
+            personnel.value[idx].obtained_date = `${y}-${m}-${d}`;
+            isComplete = true;
+        }
+    }
+    
+    if (isComplete) {
+        // Move focus to next line (next person's name field)
+        if (idx === personnel.value.length - 1) {
+            addPersonnelRow();
+        }
+        nextTick(() => {
+            const nextRowNameInput = document.querySelectorAll('.personnel-name-input')[idx + 1];
+            if (nextRowNameInput) nextRowNameInput.focus();
+        });
+    }
+};
 
 const handleSubmit = () => {
     // Clean up personnel: remove empty rows
