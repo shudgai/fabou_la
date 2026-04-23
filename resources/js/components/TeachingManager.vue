@@ -240,12 +240,12 @@
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-for="dn in dharmaNames.filter(d => !dharmaSearchQuery || d.name.includes(dharmaSearchQuery)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'dn'+dn.id"
+                                                <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn'+dn.id"
                                                      @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ dn.name }}
                                                 </div>
-                                                <div v-for="g in groups.filter(gr => !dharmaSearchQuery || gr.name.includes(dharmaSearchQuery)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'g'+g.id"
+                                                <div v-for="g in mainSearchFilteredGroups" :key="'g'+g.id"
                                                      @click.stop="dharmaSearchQuery = g.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: g.name}})"
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ g.name }}
@@ -461,7 +461,7 @@
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
                                             <div class="flex-1 border border-blue-100/50 rounded-xl bg-blue-50/40 flex items-center transition-all h-[56px] relative">
-                                                <input v-model="newItemName" @input="activeTreasureDropdownId = 'main'" @focus="activeTreasureDropdownId = 'main'"
+                                                <input v-model="newItemName" ref="treasureInput" @input="activeTreasureDropdownId = 'main'"
                                                        class="treasure-name-input w-full bg-transparent border-none px-4 text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black">
                                                 <div class="flex items-center space-x-1 pr-1">
                                                     <button @click.stop="activeTreasureDropdownId = (activeTreasureDropdownId === 'main' ? null : 'main')" class="p-1 text-slate-300 hover:text-indigo-500">
@@ -475,7 +475,7 @@
                                         </div>
                                         <!-- Custom Treasure Dropdown -->
                                         <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                            <div v-for="name in uniqueTreasureNames.slice().sort((a,b) => a.localeCompare(b)).filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
+                                            <div v-for="name in uniqueTreasureNames.filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
                                                  @click.stop="newItemName = name; activeTreasureDropdownId = null" 
                                                  class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                 {{ name }}
@@ -490,7 +490,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('師兄姐') && !newItemName.includes('師兄姊') && !showAddDetails" class="col-span-3 space-y-1">
+                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('師兄姐') && !newItemName.includes('師兄姊') && !showAddDetails && !newItemMainRemarks.trim()" class="col-span-3 space-y-1">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-center">天份</div>
                                         <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-2 transition-all h-[46px]">
                                             <input v-model="newItemDays" list="num-list"
@@ -537,7 +537,7 @@
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
-                                        <div class="space-y-1">
+                                        <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
                                             <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-2 h-[46px]">
                                                 <input v-model="newItemMainDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
@@ -561,7 +561,7 @@
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
                                             </div>
                                         </div>
-                                        <div class="space-y-1">
+                                        <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
                                             <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
                                                 <input v-model="newItemMainDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
@@ -579,7 +579,7 @@
                                                     <input v-model="newItemSubSize" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="尺寸">
                                                 </div>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">天數</div>
                                                 <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
                                                     <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
@@ -587,14 +587,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div v-if="newItemName.includes('疏文')" class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
-                                            <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract1'" @focus="activeSubPractitionerDropdownId = 'subPract1'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
-                                            <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract1' ? null : 'subPract1')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
-                                                <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract1' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
+                                            <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'mainFulingPract'" @focus="activePractitionerDropdownId = 'mainFulingPract'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainFulingPract' ? null : 'mainFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activeSubPractitionerDropdownId === 'subPract1'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp1'+dn.id" 
-                                                     @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                            <div v-if="activePractitionerDropdownId === 'mainFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="dn in dharmaNames.filter(d => !newItemPractitioner || d.name.includes(newItemPractitioner))" :key="'mainfp'+dn.id" 
+                                                     @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ dn.name }}
                                                 </div>
@@ -639,7 +639,7 @@
                                                     <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
                                                 <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                    <div v-for="dn in dharmaNames.filter(d => !newItemPractitioner || d.name.includes(newItemPractitioner)).sort((a,b) => a.name.localeCompare(b.name, 'zh-TW', {collation: 'stroke'}))" :key="'pract2'+dn.id" 
+                                                    <div v-for="dn in detailModalFilteredDharmaNames" :key="'pract2'+dn.id" 
                                                          @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ dn.name }}
@@ -688,7 +688,7 @@
                                             <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')) ? 'col-span-12' : 'col-span-9'" class="space-y-1 relative">
                                                 <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">內容物名稱</div>
                                                 <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
-                                                    <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'" @focus="activeSubTreasureDropdownId = 'sub'"
+                                                    <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'"
                                                            class="w-full bg-transparent border-none outline-none shadow-none text-[17px] font-black text-slate-900 focus:ring-0 text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
                                                            placeholder="輸入法寶名稱">
                                                     <div class="flex items-center space-x-2 pr-1">
@@ -703,7 +703,7 @@
                                                 </div>
                                                 <!-- Custom Sub-Treasure Dropdown -->
                                                 <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                    <div v-for="name in uniqueTreasureNames.slice().sort((a,b) => a.localeCompare(b)).filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
+                                                    <div v-for="name in uniqueTreasureNames.filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
                                                          @click.stop="newItemSubName = name; activeSubTreasureDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ name }}
@@ -802,6 +802,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
+                                                        <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subFulingPract'" @focus="activeSubPractitionerDropdownId = 'subFulingPract'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                                        <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subFulingPract' ? null : 'subFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                            <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                        <div v-if="activeSubPractitionerDropdownId === 'subFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'spsub'+dn.id" 
+                                                                 @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ dn.name }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                             </div>
                                             <div v-else-if="magicItemSubCategory === '香環'" class="grid grid-cols-2 gap-2">
                                                 <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
@@ -875,21 +888,66 @@
                                             <div v-if="showSubRemarks" class="mt-2 flex items-center animate-fade-in overflow-hidden">
                                                 <div class="flex-1 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[64px] flex items-center overflow-hidden">
                                                     <textarea v-model="newItemRemarks" 
-                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400 placeholder:text-[17px]" 
-                                                           placeholder="加入細項備註..."></textarea>
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left resize-none py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
+                                                           placeholder="加入內容物備註..."></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         
+                                        <!-- Current Item Preview & History -->
+                                        <div v-if="newItemName" class="mt-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 mb-2 animate-fade-in">
+                                            <div class="text-[11px] text-orange-400 font-bold mb-1">本次即將新增：</div>
+                                            <div class="text-[16px] font-black text-slate-900 leading-tight">{{ newItemName }}</div>
+                                            <div v-if="currentEntryPreview" class="text-[14px] font-bold text-slate-600 mt-1">
+                                                {{ currentEntryPreview }}
+                                            </div>
+                                            <div v-if="newItemMainRemarks" class="text-[12px] text-slate-400 italic mt-1.5 font-medium leading-tight">
+                                                主備註：{{ newItemMainRemarks }}
+                                            </div>
+                                            <div v-if="newItemRemarks" class="text-[12px] text-slate-400 italic mt-0.5 font-medium leading-tight">
+                                                內容物備註：{{ newItemRemarks }}
+                                            </div>
+                                        </div>
+
+                                        <!-- History List -->
+                                        <div v-if="form.items.length > 0" class="mt-4 px-1 border-t border-slate-50 pt-4 mb-2">
+                                            <div class="text-[12px] font-bold text-slate-400 mb-2 flex items-center justify-between">
+                                                <span>已加入記錄 ({{ form.items.length }})</span>
+                                                <span class="text-[10px] opacity-50">最下方為最新</span>
+                                            </div>
+                                            <div class="space-y-3 pr-1">
+                                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-white border border-slate-100 p-3.5 rounded-2xl shadow-sm space-y-2 text-left">
+                                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
+                                                        {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
+                                                    </div>
+                                                    <div class="space-y-2.5">
+                                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-indigo-50">
+                                                            <div class="flex-1">
+                                                                <div class="text-[14px] text-slate-600 font-bold flex items-start leading-tight">
+                                                                    <span class="text-indigo-400 mr-1.5 shrink-0">+ </span>
+                                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-indigo-400 mr-1.5 shrink-0">{{ item.name }}</span>
+                                                                    <span>{{ item.details }}</span>
+                                                                </div>
+                                                                <div v-if="item.sub_name || item.remarks" class="text-[11px] text-slate-400 italic mt-0.5">
+                                                                    備註：{{ item.remarks || item.sub_name }}
+                                                                </div>
+                                                            </div>
+                                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-200 hover:text-red-400 transition-all text-[18px] leading-none">×</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Specialized Item Confirm Action -->
-                                        <div class="mt-8 pt-4 border-t border-slate-100 flex justify-center space-x-3">
-                                            <button @click.prevent="handleItemsDetailClose" 
-                                                    class="flex-1 py-[10px] bg-slate-100 text-slate-600 rounded-[24px] font-bold text-[17px] active:scale-[0.98] transition-all">
-                                                關閉
-                                            </button>
+                                        <div class="mt-4 pt-6 border-t border-slate-100 flex flex-col items-center space-y-4 px-2 mb-20">
                                             <button @click.prevent="addNewItemQuickly" 
-                                                    class="flex-2 py-[10px] bg-[#FFD296] text-white rounded-[24px] font-black text-[19px] shadow-xl shadow-slate-200 active:scale-[0.98] transition-all flex items-center justify-center px-8">
-                                                新增項目
+                                                    class="w-full py-[14px] bg-blue-600 text-white rounded-[24px] font-black text-[20px] shadow-xl shadow-blue-100 active:scale-[0.98] transition-all flex items-center justify-center">
+                                                確認新增法寶
+                                            </button>
+                                            <button @click.prevent="handleItemsDetailClose" 
+                                                    class="text-slate-400 font-bold text-[16px] active:scale-[0.98] transition-all pb-10">
+                                                離開視窗
                                             </button>
                                         </div>
                                     </div>
@@ -912,24 +970,23 @@
                                                 <span v-if="group[0].details" class="text-black font-bold ml-1"> : {{ group[0].details }}</span>
                                             </template>
                                         </span>
-                                        <div class="mt-2.5 pl-4 space-y-2 animate-fade-in">
+                                        <div v-if="isSpecialTreasure(gName) || group.length > 1 || (group[0] && group[0].name)" class="mt-2.5 pl-4 space-y-2 animate-fade-in">
                                             <div v-for="(m, midx) in group" :key="midx" class="text-[15px]">
-                                                <template v-if="m.name || m.sub_name?.trim()">
-                                                    <div class="flex items-start group">
-                                                        <span class="text-slate-400 font-black mr-2 shrink-0">+</span>
-                                                        <div class="flex flex-col flex-1 min-w-0">
-                                                            <div class="flex items-center">
-                                                                <span class="font-bold text-slate-700 truncate">{{ m.name ? m.name : '項目' }}</span>
-                                                                <span v-if="m.details" class="ml-1.5 text-indigo-600 font-black">{{ m.details }}</span>
-                                                                <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                                                            </div>
-                                                            <div v-if="m.sub_name?.trim()" class="mt-0.5 text-[13px] text-slate-400 font-medium leading-tight italic">
-                                                                {{ m.sub_name.trim() }}
-                                                            </div>
+                                                <div v-if="m.name || getCleanRemark(m.remarks || m.sub_name, m.details)" class="flex items-start group">
+                                                    <span class="text-slate-400 font-black mr-2 shrink-0">+</span>
+                                                    <div class="flex flex-col flex-1 min-w-0">
+                                                        <div class="flex items-center">
+                                                            <span v-if="m.name" class="font-bold text-slate-700 truncate">{{ m.name }}</span>
+                                                            <span v-else-if="!getMainDetails(group)" class="font-bold text-slate-700 truncate">項目</span>
+                                                            
+                                                            <span v-if="m.details && (m.name || !getMainDetails(group)) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="ml-1.5 text-indigo-600 font-black">{{ m.details }}</span>
+                                                            <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                                        </div>
+                                                        <div v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="mt-0.5 text-[13px] text-slate-400 font-medium leading-tight italic">
+                                                            {{ getCleanRemark(m.remarks || m.sub_name, m.details) }}
                                                         </div>
                                                     </div>
-                                                </template>
-                                                <button v-else-if="group.length > 1" @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 text-[13px]">✕ (空內容)</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1138,7 +1195,8 @@
                             <div v-if="focusedDate === dateGroup.date" class="bg-white animate-fade-in">
                                 <template v-for="(item, index) in dateGroup.items" :key="item.id">
                             <!-- EACH RECORD IS A SEPARATE SESSION FOLDER per user request -->
-                             <div v-show="focusedId === null || focusedId === item.id"
+                             <div :id="'teaching-row-' + item.id"
+                                  v-show="focusedId === null || focusedId === item.id"
                                   @click.stop="reorderMode ? null : toggleExpand(item.id)"
                                   class="px-5 py-4 flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
                                   :class="[isSessionFocused(item) ? 'bg-slate-50 ring-2 ring-indigo-50/10' : '']">
@@ -1212,20 +1270,17 @@
 
                                 <!-- Expanded Content (Linked Expansion) -->
                                 <div v-if="isSessionFocused(item)" class="px-5 pb-5 animate-fade-in space-y-4">
-                                    <!-- Full Recipient List (Group & Members) -->
-                                    <div v-if="getFullRecipientList(item)" 
-                                         @click.stop="toggleRecipientDetails(item.id)"
-                                         class="mt-1 text-[14px] font-bold cursor-pointer transition-all rounded-2xl group">
-                                        
-                                        <!-- Collapsed State Hint -->
-                                        <div v-if="!showRecipientDetails.has(item.id)" class="flex items-center text-slate-300 py-1 hover:text-indigo-400">
-                                            <span class="mr-1">👥</span>
-                                            <span class="text-[12px] italic">點擊展開對象人員明細...</span>
-                                        </div>
-
-                                        <!-- Expanded Detail Box: Multi-line Format as requested -->
-                                        <div v-else class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
-                                            <div v-if="getFullRecipientList(item).groupName" class="text-[18px] font-black text-indigo-700 leading-tight">
+                                    <!-- Personnel Detail Box: Toggleable for high-density -->
+                                    <div v-if="getFullRecipientList(item)" class="mt-1 space-y-2">
+                                        <button @click="toggleRecipientDetails(item.id)" 
+                                                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
+                                            <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <svg class="w-3.5 h-3.5" :class="showRecipientDetails.has(item.id) ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </div>
+                                            <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
+                                        </button>
+                                        <div v-if="showRecipientDetails.has(item.id)" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
+                                            <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="text-[18px] font-black text-indigo-700 leading-tight">
                                                 {{ getFullRecipientList(item).groupName }}
                                             </div>
                                             <div class="text-[15px] font-bold opacity-80 leading-snug">
@@ -1245,29 +1300,30 @@
                                         <div class="text-[17px] text-slate-900 font-bold mb-1">賜降：</div>
                                         <div class="space-y-0.5">
                                             <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
-                                                <div class="text-[17px] font-black text-black">
-                                                    {{ stripMasterPrefix(gName) }}
-                                                    <template v-if="group.length === 1 && !group[0].name && !isSpecialTreasure(gName)">
-                                                        <span v-if="group[0].details" class="ml-1">: {{ group[0].details }}</span>
-                                                    </template>
-                                                </div>
-                                                <!-- Specialized Indented Layout -->
-                                                <div class="space-y-0.5" v-if="isSpecialTreasure(gName) || group.length > 1 || (group[0] && group[0].name)">
-                                                    <div v-if="getMainDetails(group)" 
-                                                         class="pl-6 text-[17px] text-black font-bold opacity-80">
-                                                        {{ getMainDetails(group) }}
+                                                    <div class="text-[17px] font-black text-black">
+                                                        {{ stripMasterPrefix(gName) }}
+                                                        <template v-if="group.length === 1 && !group[0].name">
+                                                            <span v-if="getMergedContent(group[0].details, group[0].remarks || group[0].sub_name)" class="ml-1">: {{ getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) }}</span>
+                                                        </template>
                                                     </div>
+                                                    <!-- Specialized Indented Layout: Show if multi-item or has name -->
+                                                    <div class="space-y-0.5" v-if="group.length > 1 || (group[0] && group[0].name)">
+                                                        <div v-if="group.length > 1 && getMainDetails(group)" 
+                                                             class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                            {{ getMainDetails(group) }}
+                                                        </div>
                                                     <div v-for="(m, midx) in group" :key="midx">
-                                                        <div v-if="m && m.name && m.name !== gName" class="pl-6 text-[17px] text-black font-bold opacity-80">
-                                                            <template v-if="isSpecialTreasure(m.name)">
-                                                                <div>{{ stripMasterPrefix(m.name) }}</div>
-                                                                <div v-if="m.details" class="pl-4 opacity-80">{{ m.details }}</div>
+                                                        <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                            <template v-if="m.name">
+                                                                <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
+                                                                <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details && !getCleanRemark(m.remarks || m.sub_name, m.details)) ? ':' + m.details : '' }}</span>
+                                                                <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
                                                             </template>
-                                                            <template v-else>
-                                                                {{ stripMasterPrefix(m.name) }}{{ m.details ? ':' + m.details : '' }}
-                                                            </template>
-                                                            <div v-if="m.sub_name?.trim()" class="pl-4 text-[14px] text-slate-400 italic font-medium leading-tight">
-                                                                {{ m.sub_name.trim() }}
+                                                            
+                                                            <div v-if="m.sub_name?.trim() || m.remarks?.trim()" class="pl-4 text-[14px] text-slate-400 italic font-medium leading-tight mt-0.5">
+                                                                <template v-if="getCleanRemark(m.remarks || m.sub_name, m.details)">
+                                                                    {{ getCleanRemark(m.remarks || m.sub_name, m.details) }}
+                                                                </template>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1345,7 +1401,7 @@
                     </div>
                     
                     <!-- High-Density Summary Content: Full Preview of All Records -->
-                    <div class="flex-1 overflow-y-auto px-4 py-4 custom-scrollbar bg-slate-50/30 space-y-4">
+                    <div class="flex-1 overflow-y-auto px-4 py-4 pb-32 custom-scrollbar bg-slate-50/30 space-y-4">
                         <div v-for="(item, bIdx) in saveConfirmModal.records" :key="bIdx" 
                              class="bg-white rounded-[28px] p-5 border border-slate-100 shadow-sm space-y-4 animate-fade-in text-left">
                             <div class="flex items-center justify-between mb-1">
@@ -1359,18 +1415,19 @@
                                 </span>
                             </div>
 
-                            <!-- Personnel Detail Box for Multi-Persona audit: Collapsible per request -->
-                            <div v-if="getFullRecipientList(item)" 
-                                 @click="togglePreviewRecipients(bIdx)"
-                                 class="text-[14px] font-bold cursor-pointer transition-all rounded-2xl">
-                                
-                                <div v-if="!showPreviewRecipients.has(bIdx)" class="flex items-center text-slate-300 py-1 hover:text-indigo-400">
-                                    <span class="mr-2">👥</span>
-                                    <span class="text-[12px] italic">點擊展開對象人員明細...</span>
-                                </div>
+                            <!-- Personnel Detail Box: Toggleable for high-density -->
+                            <div v-if="getFullRecipientList(item)" class="space-y-2">
+                                <button @click="toggleRecipientDetails(item.id || bIdx)" 
+                                        class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
+                                    <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-3.5 h-3.5" :class="showRecipientDetails.has(item.id || bIdx) ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                    <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
+                                </button>
 
-                                <div v-else class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-2.5 border border-indigo-100/50 space-y-1 animate-fade-in">
-                                    <div v-if="getFullRecipientList(item).groupName" class="flex items-center text-indigo-700">
+                                <div v-if="showRecipientDetails.has(item.id || bIdx)" 
+                                     class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-2.5 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
+                                    <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="flex items-center text-indigo-700">
                                         <span class="mr-2 text-[15px]">🏘️</span> 
                                         <span>群組：{{ getFullRecipientList(item).groupName }}</span>
                                     </div>
@@ -1389,11 +1446,15 @@
                                 <div class="text-[12px] font-black text-slate-300 uppercase tracking-widest pl-1">賜降：</div>
                                 <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[15px] text-slate-800 font-bold flex flex-col px-1">
                                     <div class="flex items-center">
-                                        {{ stripMasterPrefix(gName) }}{{ getMainDetails(group) ? ' : ' + getMainDetails(group) : '' }}
+                                        {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
                                     </div>
-                                    <div v-if="group.some(m => m.name || m.sub_name)" class="pl-7 space-y-0.5 mt-1">
-                                        <div v-for="m in group.filter(sm => sm.name || sm.sub_name)" :key="m.uid" class="text-[13px] text-slate-400 font-bold">
-                                            + {{ m.name }}{{ m.details ? ' : ' + m.details : '' }}
+                                    <div v-if="group.length > 1 || (group[0] && group[0].name)" class="pl-7 space-y-0.5 mt-1">
+                                        <div v-for="m in group" :key="m.uid">
+                                            <div v-if="(m.name && !shouldHideContentName(gName, m.name)) || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="text-[13px] text-slate-400 font-bold">
+                                                + {{ m.name ? m.name : (getMainDetails(group) ? '' : '項目') }}
+                                                {{ (m.details && (m.name || !getMainDetails(group)) && !getCleanRemark(m.remarks || m.sub_name, m.details)) ? (m.name ? ' : ' : '') + m.details : '' }}
+                                                {{ getCleanRemark(m.remarks || m.sub_name, m.details) ? ' (' + getCleanRemark(m.remarks || m.sub_name, m.details) + ')' : '' }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1433,7 +1494,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits, watch } from 'vue';
+import { ref, computed, onMounted, defineEmits, watch, nextTick } from 'vue';
 import axios from 'axios';
 import SearchComponent from './SearchComponent.vue';
 import MobileNavbar from './MobileNavbar.vue';
@@ -1462,15 +1523,15 @@ const stripMasterPrefix = (name) => {
 
 const getMainDetails = (items) => {
     if (!items || items.length === 0) return '';
-    // Look for items with an empty name - these represent the main treasure's details/header
     const main = items.find(i => !i.name);
-    if (!main) {
-        // Fallback: If no empty name item, check if there's an item whose name matches the treasure name (sometimes happens in quick add)
-        const treasureName = items[0]?.treasure_name;
-        const matching = items.find(i => i.name === treasureName);
-        return matching ? (matching.details || '') : '';
+    if (main) return main.details || '';
+    
+    // Fallback: If no header record (name: ''), but it's a special treasure with exactly one item
+    const tName = items[0]?.treasure_name || '';
+    if (items.length === 1 && (tName.includes('七素') || tName.includes('七表'))) {
+        return items[0].details || '';
     }
-    return main ? (main.details || '') : '';
+    return '';
 };
 
 const getRecordHeaderPreview = (item, index, allRecords) => {
@@ -1520,7 +1581,25 @@ const allExpanded = ref(false);
 const sortDesc = ref(true);
 const reorderMode = ref(false);
 
+const getCleanRemark = (remark, details) => {
+    if (!remark) return '';
+    if (!details) return remark;
+    const dayMatch = details.match(/(\d+)\s*天份/);
+    if (dayMatch) {
+        const d = dayMatch[1];
+        const regex = new RegExp(d + '\\s*天份', 'g');
+        return remark.replace(regex, '').replace(/^[,\s:]+/, '').replace(/[,\s:]+$/, '').trim();
+    }
+    return remark;
+};
+
+const getMergedContent = (details, remark) => {
+    if (remark?.trim()) return remark.trim();
+    return details || '';
+};
+
 const activePractitionerDropdownId = ref(null);
+const treasureInput = ref(null);
 const activeSubPractitionerDropdownId = ref(null);
 
 const handleReorder = async (item, newOrder, currentList) => {
@@ -1873,6 +1952,27 @@ const canCRUD = (item) => {
     return item.user_id === props.user.id || props.user.is_admin;
 };
 
+const currentEntryPreview = computed(() => {
+    if (!newItemName.value) return '';
+    const effectiveCategory = newItemSubName.value ? magicItemSubCategory.value : magicItemCategory.value;
+    return buildTreasureDetails(
+        effectiveCategory,
+        newItemSubName.value ? newItemSubTimes.value : newItemMainTimes.value,
+        newItemSubName.value ? newItemSubHours.value : newItemMainHours.value,
+        newItemSubName.value ? newItemDetailsExtraDays.value : (newItemMainDays.value || newItemDays.value || newItemSubDetails.value),
+        newItemSubSize.value,
+        newItemSubSheets.value,
+        newItemSubName.value ? newItemSubPractitioner.value : newItemPractitioner.value,
+        newItemSubName.value || newItemName.value,
+        newItemSubBodyPart.value,
+        newItemSubInstrumentName.value,
+        newItemSubSun.value,
+        newItemSubMoon.value,
+        newItemSubLight.value,
+        newItemName.value
+    );
+});
+
 const magicItemCategory = computed(() => {
     if (!newItemName.value) return 'default';
     if (newItemName.value.includes('三光金丹')) return '三光金丹';
@@ -1952,6 +2052,22 @@ const form = ref({
 });
 
 const dharmaSearchQuery = ref('');
+
+const mainSearchFilteredDharmaNames = computed(() => {
+    return (dharmaNames.value || [])
+        .filter(d => !dharmaSearchQuery.value || (d.name && d.name.includes(dharmaSearchQuery.value)));
+});
+
+const mainSearchFilteredGroups = computed(() => {
+    return (groups.value || [])
+        .filter(g => !dharmaSearchQuery.value || (g.name && g.name.includes(dharmaSearchQuery.value)));
+});
+
+const detailModalFilteredDharmaNames = computed(() => {
+    return (dharmaNames.value || [])
+        .filter(d => !newItemPractitioner.value || (d.name && d.name.includes(newItemPractitioner.value)))
+        .sort((a, b) => a.name.localeCompare(b.name, 'zh-TW', { collation: 'stroke' }));
+});
 
 const folders_list = [
     { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
@@ -2273,18 +2389,20 @@ const removeMagicItem = (uid) => {
     form.value.items = form.value.items.filter(item => item.uid !== uid); 
 };
 
-const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart = '', instrument = '', sun = '', moon = '', light = '') => {
+const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart = '', instrument = '', sun = '', moon = '', light = '', mainTreasureName = '') => {
     let parts = [];
     if (cat === '三光金丹') {
         if (sun) parts.push(`日-${sun} 金丹吃`);
         if (moon) parts.push(`月-${moon} 金丹吃`);
         if (light) parts.push(`光-${light} 金丹吃`);
         if (d) parts.push(`${d} 天份`);
-    } else if (cat === '金丹' || (itemName && (itemName.includes('丹') || itemName.includes('金丹')))) {
-        if (t) parts.push(`${t} 金丹吃`);
-        if (h) parts.push(`${h} 金丹洗`);
+    } else if (cat === '金丹' || (itemName && (itemName.includes('丹') || itemName.includes('金丹'))) || (mainTreasureName && (mainTreasureName.includes('七素') || mainTreasureName.includes('七表'))) || (itemName && (itemName.includes('七素') || itemName.includes('七表')))) {
+        // Rule: All pill-type items now use "金丹" label for eat/wash as per user request
+        const pillLabel = '金丹';
+        if (t) parts.push(`${t} ${pillLabel}吃`.replace('  ', ' ').trim());
+        if (h) parts.push(`${h} ${pillLabel}洗`.replace('  ', ' ').trim());
         if (d) parts.push(`${d} 天份`);
-        return parts.join(', '); // Pills use commas per request
+        return parts.join(' '); // Commas removed per request
     } else if (cat === '符令' || cat === '太令') {
         if (sz) parts.push(sz);
         if (d) parts.push(`${d} 天份`);
@@ -2324,7 +2442,8 @@ function stageContent() {
         newItemSubInstrumentName.value,
         newItemSubSun.value,
         newItemSubMoon.value,
-        newItemSubLight.value
+        newItemSubLight.value,
+        newItemName.value
     );
 
     stagedContents.value.push({
@@ -2354,6 +2473,8 @@ function stageContent() {
     newItemMoon.value = '';
     newItemLight.value = '';
     showAddDetails.value = false;
+    showSubRemarks.value = false;
+    showMainRemarks.value = false;
 }
 
 function addNewItemQuickly() {
@@ -2363,10 +2484,23 @@ function addNewItemQuickly() {
     setTimeout(() => { isSaving.value = false; }, 400); // Prevent rapid-fire
 
     // Standard items logic
-    let finalDetails = '';
-    const baseVal = newItemMainDays.value || newItemDays.value || '';
-    if (baseVal === '1' || baseVal === 1) finalDetails = '一次性';
-    else if (baseVal) finalDetails = `${baseVal}天份`;
+    // Use buildTreasureDetails for main item header to ensure SevenElement rules apply
+    let finalDetails = buildTreasureDetails(
+        magicItemCategory.value,
+        newItemMainTimes.value,
+        newItemMainHours.value,
+        newItemMainRemarks.value.trim() ? '' : (newItemMainDays.value || newItemDays.value || ''),
+        '', // size
+        '', // sheets
+        newItemPractitioner.value,
+        '', // itemName
+        '', // bodyPart
+        '', // instrument
+        newItemSun.value,
+        newItemMoon.value,
+        newItemLight.value,
+        newItemName.value
+    );
 
     const mainItem = {
         treasure_name: newItemName.value,
@@ -2405,7 +2539,7 @@ function addNewItemQuickly() {
             effectiveCategory,
             newItemSubName.value ? newItemSubTimes.value : newItemMainTimes.value,
             newItemSubName.value ? newItemSubHours.value : newItemMainHours.value,
-            newItemSubName.value ? newItemDetailsExtraDays.value : (newItemMainDays.value || newItemDays.value || newItemSubDetails.value),
+            newItemSubName.value ? newItemDetailsExtraDays.value : (newItemMainRemarks.value.trim() ? '' : (newItemMainDays.value || newItemDays.value || newItemSubDetails.value)),
             newItemSubSize.value,
             newItemSubSheets.value,
             newItemSubName.value ? newItemSubPractitioner.value : newItemPractitioner.value,
@@ -2414,18 +2548,31 @@ function addNewItemQuickly() {
             newItemSubInstrumentName.value,
             newItemSubName.value ? newItemSubSun.value : newItemSun.value,
             newItemSubName.value ? newItemSubMoon.value : newItemMoon.value,
-            newItemSubName.value ? newItemSubLight.value : newItemLight.value
+            newItemSubName.value ? newItemSubLight.value : newItemLight.value,
+            newItemName.value
         );
 
-        // If both main name and sub name are present, and both have details, save them separately
-        if (newItemSubName.value && mainItem.details && directDetails && mainItem.details !== directDetails) {
-            form.value.items.push({
-                uid: Date.now() + Math.random(),
-                treasure_name: mainItem.treasure_name,
-                details: mainItem.details,
-                name: '',
-                sub_name: mainItem.main_remarks
-            });
+        // Logic fix: Ensure header details are always present if mainItem has details
+        if (mainItem.details) {
+            // Push header record if it doesn't exist for this treasure in current session
+            const exists = form.value.items.some(i => i.treasure_name === mainItem.treasure_name && !i.name);
+            if (!exists) {
+                form.value.items.push({
+                    uid: Date.now() + Math.random(),
+                    treasure_name: mainItem.treasure_name,
+                    details: mainItem.details,
+                    name: '',
+                    sub_name: mainItem.main_remarks
+                });
+            } else if (!newItemSubName.value) {
+                // If only main stats updated and no sub-name, update existing header details
+                const idx = form.value.items.findIndex(i => i.treasure_name === mainItem.treasure_name && !i.name);
+                if (idx !== -1) form.value.items[idx].details = mainItem.details;
+            }
+        }
+
+        // Push sub-item if provided
+        if (newItemSubName.value) {
             form.value.items.push({
                 uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
@@ -2433,19 +2580,19 @@ function addNewItemQuickly() {
                 name: newItemSubName.value,
                 sub_name: combinedRemarks
             });
-        } else {
+        } else if (!mainItem.details) {
+            // Fallback for simple items
             form.value.items.push({
                 uid: Date.now() + Math.random(),
                 treasure_name: mainItem.treasure_name,
-                details: directDetails || mainItem.details,
-                name: newItemSubName.value || '',
+                details: '',
+                name: '',
                 sub_name: combinedRemarks
             });
         }
     }
 
     // Reset everything
-    itemsDetailMode.value = false;
     newItemName.value = '';
     newItemDays.value = '';
     newItemMainTimes.value = '';
@@ -2465,14 +2612,20 @@ function addNewItemQuickly() {
     newItemSubBodyPart.value = '';
     newItemSubInstrumentName.value = '';
     newItemRemarks.value = '';
+    showMainRemarks.value = false;
     showSubRemarks.value = false;
     stagedContents.value = [];
     showAddDetails.value = false;
     // Flash success
     isAddingFlash.value = true;
-    setTimeout(() => {
-        isAddingFlash.value = false;
-    }, 600);
+    setTimeout(() => { isAddingFlash.value = false; }, 600);
+
+    // Refocus the treasure input
+    nextTick(() => {
+        if (treasureInput.value) {
+            treasureInput.value.focus();
+        }
+    });
 }
 
 const addNewCategory = () => {
@@ -2505,6 +2658,11 @@ const groupItems = (items) => {
         groups[key].push({ ...item }); 
     });
     return groups;
+};
+
+const shouldHideContentName = (treasureName, contentName) => {
+    const isSeven = (treasureName || '').includes('七素') || (treasureName || '').includes('七表');
+    return isSeven && contentName === '金丹';
 };
 
 const generateSummary = (item) => { 
@@ -3161,7 +3319,17 @@ const performActualSave = async () => {
         if (editingId.value) {
             await axios.put(`/teachings/${editingId.value}`, payload);
         } else {
-            await axios.post('/teachings', payload);
+            const res = await axios.post('/teachings', payload);
+            if (res.data?.id) {
+                focusedId.value = res.data.id;
+                // Ensure the newly added item is scrolled into view
+                setTimeout(() => {
+                    const element = document.getElementById(`teaching-row-${res.data.id}`);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 600);
+            }
         }
         
         saveConfirmModal.value.show = false;
@@ -3243,15 +3411,25 @@ const executeDistributionSave = async (mode) => {
                 is_daily: isDailyFolder ? 1 : 0
             };
             
-            await axios.post('/teachings', payload);
+            const res = await axios.post('/teachings', payload);
+            if (res.data?.id) {
+                if (!focusedId.value) focusedId.value = res.data.id;
+            }
+        }
+        
+        if (focusedId.value) {
+            setTimeout(() => {
+                const element = document.getElementById(`teaching-row-${focusedId.value}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 600);
         }
         
         distributionModal.value.show = false;
         addMode.value = false;
-        // Navigation: Reliable return to Daily Teachings category and folder
         currentCategory.value = 'daily';
         currentFolder.value = { id: 0, name: '父皇仙師每日開示' }; 
-        // Reset batch records
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         fetchItems(1);
         alert('錄入成功');
