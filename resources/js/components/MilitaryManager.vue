@@ -121,8 +121,8 @@
                                 <!-- Row 1: Date only -->
                                 <div class="flex items-center mb-0.5">
                                     <div class="flex items-baseline space-x-2">
-                                        <div class="app-title">日期</div>
-                                        <div class="app-title ml-0.5">{{ formatDate(item.know_date) }}</div>
+                                        <div class="app-title !font-black !text-black font-outfit" style="font-size: 18px !important; font-weight: 900 !important; color: #0d0d0d !important;">日期</div>
+                                        <div class="app-title ml-0.5 !font-black !text-black font-outfit" style="font-size: 18px !important; font-weight: 900 !important; color: #0d0d0d !important;">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
 

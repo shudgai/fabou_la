@@ -1212,7 +1212,7 @@
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
-                                     <span class="text-[20px] tracking-tight font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
+                                     <span class="text-[20px] tracking-tight font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
                                      <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-200 rounded-full text-[12px] font-black font-outfit" style="color: #0f172a !important;">
                                          {{ dateGroup.items.length }} 則
                                      </span>
@@ -1247,7 +1247,7 @@
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div class="text-[15px] mb-0.5 font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 400 !important;">
+                                            <div class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ item.date.replace(/-/g, '/') }}
                                             </div>
                                             <div class="app-body font-bold leading-tight">

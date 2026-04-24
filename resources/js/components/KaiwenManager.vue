@@ -1,15 +1,23 @@
 <template>
     <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Shared) -->
-        <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
+        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
                 <div class="app-title text-[24px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
-                    {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : (hasAnyExpanded ? '內容明細' : '開文專區') }}
+                    {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : '開文專區' }}
                 </div>
             </div>
             
+            <!-- Search Icon (Only in main list view) -->
+            <div v-if="!addMode && !hasAnyExpanded" class="flex items-center space-x-2 mr-2">
+                <button @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all">
+                    <svg v-if="!showSearch" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg v-else class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
             <!-- Tab Switcher (Only in main list view, hide when expanded or in add mode) -->
-            <div v-if="!addMode && !hasAnyExpanded" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner">
+            <div v-if="!addMode && !hasAnyExpanded && !showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
                     class="px-3 py-1.5 app-body text-[17px] font-bold rounded-lg transition-all whitespace-nowrap">
@@ -21,9 +29,15 @@
                     自行開文
                 </button>
             </div>
+
+            <!-- Search Input (Only when showSearch is active) -->
+            <div v-if="showSearch && !addMode && !hasAnyExpanded" class="absolute right-12 top-1/2 -translate-y-1/2 flex items-center animate-fade-in" style="width: calc(100% - 150px);">
+                <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
+                    class="w-full h-[36px] bg-slate-50 border border-slate-200 rounded-xl px-4 text-[16px] outline-none focus:border-purple-300 transition-all shadow-inner">
+            </div>
             
             <!-- Header placeholder for alignment -->
-            <div class="w-[80px]"></div>
+            <div class="w-[40px]"></div>
         </div>
 
 
@@ -52,7 +66,7 @@
 
                 <!-- Weekly List -->
                 <div 
-                    v-for="post in weeklyPosts" 
+                    v-for="post in filteredWeeklyPosts" 
                     :key="post.id"
                     :id="`post-${post.id}`"
                     @click="toggleExpand(post.id)"
@@ -103,18 +117,7 @@
                         </div>
                         
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
-                            <!-- Date & Status Header -->
-                            <div class="flex justify-between items-start border-b border-slate-200 pb-2">
-                                <div class="flex flex-col">
-                                    <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">日期</span>
-                                    <span class="text-[15px] tracking-tighter" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
-                                </div>
-                                <div class="flex flex-col items-end">
-                                    <span class="app-title uppercase tracking-widest mb-1">狀態</span>
-                                    <span :style="`color: ${post.status === '合格' ? '#16a34a' : (post.status === '不合格' ? '#dc2626' : '#0f172a')} !important`" 
-                                        class="app-body !font-bold tracking-widest">{{ post.status || '待定' }}</span>
-                                </div>
-                            </div>
+
                             
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
@@ -209,18 +212,7 @@
                         </div>
                         
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 mt-2 animate-fade-in overflow-y-auto" @click.stop>
-                            <!-- Date & Type Header -->
-                            <div class="flex justify-between items-start border-b border-slate-200 pb-2">
-                                <div class="flex flex-col">
-                                    <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">日期</span>
-                                    <span class="text-[15px] tracking-tighter" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
-                                </div>
-                                <div class="flex flex-col items-end">
-                                    <span class="app-title uppercase tracking-widest mb-1">類型</span>
-                                    <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : '#92400e'} !important`" 
-                                        class="app-body !font-bold tracking-widest">{{ post.message_type }}</span>
-                                </div>
-                            </div>
+
                             
                             <div>
                                 <span class="app-title block mb-3 uppercase tracking-widest">開文內容</span>
@@ -417,6 +409,13 @@
                 </div>
             </button>
 
+            <!-- Search Button -->
+            <button @click="showSearch = !showSearch" :class="showSearch ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
+                <div :class="showSearch ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+            </button>
+
             <button @click="cycleFontSize" class="flex flex-col items-center justify-center text-slate-400 active:scale-90 transition-all">
                 <div class="p-2 rounded-xl hover:bg-slate-50 flex items-center justify-center">
                     <span class="text-[17px] font-black">{{ fontSizeLabel }}</span>
@@ -447,6 +446,27 @@ const weeklyPosts = ref([]);
 const selfPosts = ref([]);
 const masters = ref([]);
 const loading = ref(false);
+const searchQuery = ref('');
+const showSearch = ref(false);
+
+const filteredWeeklyPosts = computed(() => {
+    if (!searchQuery.value) return weeklyPosts.value;
+    const q = searchQuery.value.toLowerCase();
+    return weeklyPosts.value.filter(p => 
+        (p.title && p.title.toLowerCase().includes(q)) || 
+        (p.original_content && p.original_content.toLowerCase().includes(q)) ||
+        (p.modified_content && p.modified_content.toLowerCase().includes(q))
+    );
+});
+
+const filteredSelfPosts = computed(() => {
+    if (!searchQuery.value) return selfPosts.value;
+    const q = searchQuery.value.toLowerCase();
+    return selfPosts.value.filter(p => 
+        (p.original_content && p.original_content.toLowerCase().includes(q)) ||
+        (p.modified_content && p.modified_content.toLowerCase().includes(q))
+    );
+});
 
 // Form States
 const addMode = ref(null); // 'weekly' or 'self' or null

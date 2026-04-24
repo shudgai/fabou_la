@@ -230,7 +230,7 @@
                             <!-- Card Header (Toggle Expansion) -->
                             <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
                                 <div class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="text-[15px] font-normal font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                    <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
@@ -256,7 +256,7 @@
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                                <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
                                             </div>
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
