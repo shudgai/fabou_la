@@ -2,18 +2,14 @@
     <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Shared) -->
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
-            <button @click="handleBack" class="flex items-center text-slate-400 -ml-2 mr-2 active:scale-95 transition-transform shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                <span v-if="!addMode && !hasAnyExpanded" class="app-body text-[16px] font-black ml-1 text-slate-500">回標題區</span>
-            </button>
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
                 <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
                     {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : (hasAnyExpanded ? '內容明細' : '開文專區') }}
                 </div>
             </div>
             
-            <!-- Tab Switcher (Only in List View) -->
-            <div v-if="!addMode" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner">
+            <!-- Tab Switcher (Only in main list view, hide when expanded or in add mode) -->
+            <div v-if="!addMode && !hasAnyExpanded" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
                     class="px-3 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap">
@@ -26,23 +22,8 @@
                 </button>
             </div>
             
-            <!-- Form View Sub-Tabs -->
-            <div v-else class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner">
-                <button @click="formTab = 'original'" 
-                    :class="formTab === 'original' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400'"
-                    class="px-3 py-1.5 text-[13px] font-black rounded-lg transition-all whitespace-nowrap">
-                    原始內容
-                </button>
-                <button @click="handleModifiedTabClick" 
-                    :class="[
-                        formTab === 'modified' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400',
-                        isModifiedLocked ? 'opacity-50 grayscale' : ''
-                    ]"
-                    class="px-3 py-1.5 text-[13px] font-black rounded-lg transition-all whitespace-nowrap flex items-center">
-                    <svg v-if="isModifiedLocked" class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
-                    殿中貼文
-                </button>
-            </div>
+            <!-- Header placeholder for alignment -->
+            <div class="w-[80px]"></div>
         </div>
 
 
@@ -67,10 +48,7 @@
         <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar p-3 pb-32 relative z-[1]">
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 max-w-2xl mx-auto">
-                <button @click="openAddMode('weekly')" class="w-full bg-white border border-purple-100 rounded-2xl py-2.5 px-4 flex items-center justify-center space-x-3 text-purple-600 hover:bg-purple-50 transition-all shadow-sm active:scale-[0.98]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span class="app-body font-black text-[18px] tracking-widest">新增每週開文紀錄</span>
-                </button>
+                <!-- Removed top add button -->
 
                 <!-- Weekly List -->
                 <div 
@@ -87,15 +65,15 @@
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
-                                <span class="app-body text-[16px] font-black text-slate-400 tracking-widest mb-1">{{ post.date || '無日期' }}</span>
-                                <h3 v-if="!expandedIds[post.id]" class="app-body text-[19px] font-normal text-slate-900 tracking-[0.2em] whitespace-pre-wrap">
-                                    {{ post.title || '無抬頭' }}
+                                <span class="app-title text-[15px] mr-2">{{ post.date }}</span>
+                                <h3 v-if="!expandedIds[post.id]" class="app-body !font-bold tracking-widest whitespace-pre-line">
+                                    {{ formatListTitle(post.title) }}
                                 </h3>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
-                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="app-body font-black text-[18px] shrink-0 tracking-widest">合格</span>
-                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="app-body font-black text-[18px] shrink-0 tracking-widest">不合格</span>
-                                <span v-else class="app-body text-slate-900 font-black text-[18px] shrink-0 tracking-widest">待定</span>
+                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="app-body !font-black tracking-widest">合格</span>
+                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="app-body !font-black tracking-widest">不合格</span>
+                                <span v-else class="app-body !font-black tracking-widest">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
@@ -133,9 +111,9 @@
                                     <span class="text-[16px] font-black text-slate-700 tracking-widest">{{ post.date || '無日期' }}</span>
                                 </div>
                                 <div class="flex flex-col items-end">
-                                    <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">狀態</span>
+                                    <span class="app-title uppercase tracking-widest mb-1">狀態</span>
                                     <span :style="`color: ${post.status === '合格' ? '#16a34a' : (post.status === '不合格' ? '#dc2626' : '#0f172a')} !important`" 
-                                        class="app-body text-[20px] font-black tracking-widest">{{ post.status || '待定' }}</span>
+                                        class="app-body !font-black tracking-widest">{{ post.status || '待定' }}</span>
                                 </div>
                             </div>
                             
@@ -179,10 +157,7 @@
 
             <!-- Self Post View -->
             <div v-if="currentTab === 'self'" class="space-y-3 max-w-2xl mx-auto">
-                <button @click="openAddMode('self')" class="w-full bg-white border border-purple-100 rounded-2xl py-2.5 px-4 flex items-center justify-center space-x-3 text-purple-600 hover:bg-purple-50 transition-all shadow-sm active:scale-[0.98]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span class="app-body font-black text-[18px] tracking-widest">新增自行開文紀錄</span>
-                </button>
+                <!-- Removed top add button -->
                 <div 
                     v-for="post in selfPosts" 
                     :key="post.id"
@@ -204,10 +179,10 @@
                             </div>
                              <div class="flex items-center space-x-2 self-start">
                                 <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : '#92400e'} !important`" 
-                                    class="app-body text-[18px] font-black shrink-0 tracking-widest">
+                                    class="app-body !font-black shrink-0 tracking-widest">
                                     {{ post.message_type }}
                                 </span>
-                                <span class="app-body text-[15px] font-black text-purple-600 shrink-0">{{ post.master?.name }}</span>
+                                <span class="app-title !text-purple-600 shrink-0">{{ post.master?.name }}</span>
                                 
                                 <template v-if="!expandedIds[post.id]">
                                     <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
@@ -244,9 +219,9 @@
                                     <span class="text-[16px] font-black text-slate-700 tracking-widest">{{ post.date || '無日期' }}</span>
                                 </div>
                                 <div class="flex flex-col items-end">
-                                    <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">類型</span>
+                                    <span class="app-title uppercase tracking-widest mb-1">類型</span>
                                     <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : '#92400e'} !important`" 
-                                        class="app-title text-[20px] font-black tracking-widest">{{ post.message_type }}</span>
+                                        class="app-body !font-black tracking-widest">{{ post.message_type }}</span>
                                 </div>
                             </div>
                             
@@ -277,30 +252,12 @@
 
         <!-- FORM VIEW (Full Page) -->
         <div v-else class="flex-1 overflow-y-auto custom-scrollbar bg-white animate-fade-in flex flex-col">
-            <!-- Form Tabs -->
-            <div class="flex border-b border-slate-100 bg-slate-50/50 sticky top-0 z-10">
-                <button @click="formTab = 'original'" 
-                    :class="formTab === 'original' ? 'text-purple-600 border-b-2 border-purple-600 bg-white' : 'text-slate-400 hover:bg-slate-100'"
-                    class="flex-1 py-1.5 text-[18px] font-black tracking-widest transition-all">
-                    原始內容
-                </button>
-                <button v-if="addMode === 'weekly' || form.message_type === '玄訊'" 
-                    @click="handleModifiedTabClick" 
-                    :class="[
-                        formTab === 'modified' ? 'text-purple-600 border-b-2 border-purple-600 bg-white' : 'text-slate-400',
-                        isModifiedLocked ? 'opacity-50 grayscale' : 'hover:bg-slate-100'
-                    ]"
-                    class="flex-1 py-1.5 text-[18px] font-black tracking-widest transition-all flex items-center justify-center">
-                    殿中貼文
-                    <svg v-if="isModifiedLocked" class="w-3.5 h-3.5 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-                </button>
-            </div>
+
 
             <div class="flex-1 p-4 md:p-6">
                 <div class="max-w-2xl mx-auto space-y-6">
-                    <!-- Tab 1: Original Content & Meta -->
-                    <template v-if="formTab === 'original'">
-                        <div class="space-y-4">
+                    <!-- Original Content & Meta -->
+                    <div class="space-y-4">
                                 <div class="space-y-1">
                                     <div @click="activeDate = 'date'" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all mt-5 shadow-sm overflow-hidden">
                                         <span :class="form.date ? 'text-slate-900 font-bold' : 'text-slate-400'" class="app-body leading-tight">
@@ -350,16 +307,16 @@
                                     </div>
                                 </div>
                                 
-                                <div v-if="addMode === 'self'" class="space-y-1">
+                                <div v-if="addMode === 'self'" class="space-y-4">
                                     <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 app-body font-bold text-slate-900 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm"></textarea>
+                                    
                                 </div>
                             </div>
-                            
                         </div>
-                    </template>
 
-                    <!-- Tab 2: Modified Content -->
-                    <template v-else>
+                        <!-- Section 2: Modified Content (For Weekly Only) -->
+                        <div v-if="addMode === 'weekly'" class="pt-8 mt-8 border-t border-slate-100">
+                            <h3 class="app-title text-[20px] mb-4 text-purple-600">殿中貼文內容</h3>
                         <div v-if="isModifiedLocked" class="bg-amber-50 border border-amber-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center space-y-4 py-20">
                             <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shadow-inner">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -368,7 +325,6 @@
                                 <h3 class="text-[18px] font-black text-amber-900 mb-1 tracking-widest">功能鎖定中</h3>
                                 <p class="text-[15px] font-bold text-amber-700 tracking-wider">有合格才有機會鋪文。<br>請先在列表將此紀錄核定為「合格」。</p>
                             </div>
-                            <button @click="formTab = 'original'" class="px-6 py-2 bg-white border border-amber-200 text-amber-700 rounded-xl font-black text-[14px] shadow-sm tracking-widest">返回原始內容</button>
                         </div>
 
                         <template v-else>
@@ -398,43 +354,45 @@
                                             </div>
                                         </template>
                                         
-                                        <!-- Text/Empty Mode -->
+                                        <!-- Moved Textarea (Removed floating button from here) -->
                                         <template v-else>
                                             <textarea 
                                                 v-model="form.modified_content"
                                                 @paste="onImagePaste"
-                                                placeholder="在此直接貼上 (Ctrl+V) 文字或截圖...&#10;若要上傳圖片檔案，請點擊右下角圖示。"
+                                                placeholder="在此直接貼上 (Ctrl+V) 文字或截圖..."
                                                 class="w-full h-full min-h-[300px] bg-transparent p-6 app-body font-bold text-purple-900 outline-none resize-none cursor-text placeholder:text-purple-200 leading-relaxed"
                                             ></textarea>
-                                            
-                                            <!-- Floating Upload Button -->
-                                            <button @click="triggerImageUpload" class="absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow-lg border border-purple-100 flex items-center justify-center text-purple-600 hover:bg-purple-50 hover:scale-110 active:scale-95 transition-all group/btn">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                                <div class="absolute bottom-full right-0 mb-2 px-3 py-1 bg-slate-800 text-white text-[11px] rounded-lg opacity-0 group-hover/btn:opacity-100 whitespace-nowrap transition-opacity pointer-events-none">上傳圖片檔案</div>
-                                            </button>
                                         </template>
                                         
                                         <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                                     </div>
-                                </div>
 
-                                <div v-if="addMode === 'self'" class="space-y-1">
-                                    <label class="app-title ml-1">由那位師兄姐修改</label>
-                                    <input v-model="form.modified_by" type="text" placeholder="例如：玄義宮師兄" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 app-body font-bold text-slate-900 outline-none shadow-sm focus:border-purple-300 transition-all">
+                                    <!-- Moved Upload Button to Bottom of zone -->
+                                    <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
+                                        <button @click="triggerImageUpload" class="flex items-center space-x-2 px-6 py-3 bg-white border border-purple-200 rounded-2xl text-purple-600 font-black shadow-sm hover:bg-purple-50 transition-all active:scale-95">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <span class="app-body">上傳圖片檔案</span>
+                                        </button>
+                                    </div>
                                 </div>
-                        </template>
-                    </template>
+                                <datalist id="masterList">
+                                    <option v-for="m in masters" :key="m.id" :value="m.name"></option>
+                                </datalist>
+                            </template>
+                        </div>
+
                 </div>
             </div>
 
-            <!-- Form Footer -->
-            <div class="p-4 bg-white border-t border-slate-100 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+            <!-- Form Footer (Fixed at bottom) -->
+            <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky bottom-0 z-[110]">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 h-16 rounded-2xl font-black text-[18px] text-slate-500 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-all active:scale-[0.98] tracking-widest">取消返回</button>
+                    <button @click="addMode = null" class="flex-1 h-[44px] rounded-xl font-black text-[16px] text-slate-500 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-all active:scale-[0.98] tracking-widest">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving" 
-                        class="flex-[2] bg-purple-600 !text-white h-16 rounded-2xl font-black text-[20px] shadow-xl shadow-purple-200 hover:bg-purple-700 active:scale-[0.98] transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
+                        style="color: #ffffff !important;"
+                        class="flex-[2] bg-purple-600 h-[44px] rounded-xl font-black text-[18px] shadow-lg shadow-purple-100 hover:bg-purple-700 active:scale-[0.98] transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
                         <template v-if="isSaving">
-                            <svg class="animate-spin h-7 w-7 !text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>
                         <template v-else>
                             儲存紀錄
@@ -452,6 +410,39 @@
             />
         </div>
 
+
+        <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport, icons nudged down -->
+        <div v-if="!addMode" class="fixed bottom-0 inset-x-0 h-[7dvh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 pt-1.5 pb-0 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
+            <button @click="$emit('goHome')" class="flex flex-col items-center justify-center transition-all active:scale-90 text-slate-400">
+                <div class="p-2 rounded-xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </button>
+
+            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
+                <div :class="currentTab === 'weekly' ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </button>
+
+            <!-- Center Add Button (Reverted to 36px, optimized click) -->
+            <button @click.stop="openAddMode(currentTab)" 
+                class="relative z-[120] top-[-2px] w-[36px] h-[36px] bg-purple-600 text-white rounded-full shadow-2xl shadow-purple-200 flex items-center justify-center active:scale-95 transition-all border-2 border-slate-50 cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
+                <div :class="currentTab === 'self' ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </button>
+
+            <button @click="cycleFontSize" class="flex flex-col items-center justify-center text-slate-400 active:scale-90 transition-all">
+                <div class="p-2 rounded-xl hover:bg-slate-50 flex items-center justify-center">
+                    <span class="text-[17px] font-black">{{ fontSizeLabel }}</span>
+                </div>
+            </button>
+        </div>
 
         <!-- Image Zoom Overlay -->
         <div v-if="viewerImage" class="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4 md:p-12 animate-fade-in" @click="viewerImage = null">
@@ -485,6 +476,37 @@ const activeDate = ref(null);
 const isSaving = ref(false);
 const viewerImage = ref(null);
 const activeStatusDropdownId = ref(null);
+
+const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
+const fontSizeLabel = computed(() => {
+    if (currentFontSize.value === 'font-small') return '小';
+    if (currentFontSize.value === 'font-large') return '大';
+    return '中';
+});
+
+const cycleFontSize = () => {
+    const options = ['font-small', 'font-medium', 'font-large'];
+    let idx = options.indexOf(currentFontSize.value);
+    idx = (idx + 1) % options.length;
+    const next = options[idx];
+    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+    document.body.classList.add(next);
+    localStorage.setItem('fabou_font_size', next);
+    currentFontSize.value = next;
+};
+
+const formatListTitle = (title) => {
+    if (!title) return '無抬頭';
+    if (currentFontSize.value !== 'font-large') return title;
+    
+    // For large font, split every 7 characters
+    const clean = title.replace(/\s+/g, '');
+    let res = '';
+    for (let i = 0; i < clean.length; i += 7) {
+        res += clean.substring(i, i + 7) + '\n';
+    }
+    return res.trim();
+};
 
 const expandedIds = ref({});
 const hasAnyExpanded = computed(() => Object.values(expandedIds.value).some(v => v));
@@ -891,4 +913,6 @@ const executeDelete = async () => {
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 </style>
