@@ -1,5 +1,5 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[55] flex items-end justify-center px-4 pb-20">
+    <div v-if="show" class="fixed inset-0 z-[55] flex items-center justify-center px-4">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" @click="$emit('close')"></div>
         
@@ -16,13 +16,13 @@
                     </div>
                     <div class="text-left flex-1 min-w-0">
                         <p class="text-[17px] font-black text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors truncate">{{ action.label }}</p>
-                        <p v-if="action.description" style="color: #3b82f6 !important;" class="text-[11px] font-normal leading-tight truncate">{{ action.description }}</p>
+                        <p v-if="action.description" style="color: #3b82f6 !important;" class="text-[17px] font-normal leading-tight truncate">{{ action.description }}</p>
                     </div>
                 </button>
             </div>
             
             <div class="mt-0.5 mb-1 px-1">
-                <button @click="$emit('close')" class="w-full py-2 font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-[0.2em] text-center text-[11px] active:scale-[0.98]">
+                <button @click="$emit('close')" class="w-full py-2 font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-[0.2em] text-center text-[17px] active:scale-[0.98]">
                     取消
                 </button>
             </div>

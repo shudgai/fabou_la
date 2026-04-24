@@ -20,9 +20,7 @@ class ImperialGraceController extends Controller
     public function storeRegistry(Request $request)
     {
         $data = $request->all();
-        if (ImperialGrace::where('name', $data['name'])->exists()) {
-            return response()->json(['message' => "法寶名稱「{$data['name']}」已存在，請勿重複載錄。"], 422);
-        }
+        // 移除重複名稱驗證，允許同名法寶重複載錄
         $grace = ImperialGrace::create($data);
         return response()->json($grace, 201);
     }
@@ -34,10 +32,7 @@ class ImperialGraceController extends Controller
         $created = [];
 
         foreach ($items as $item) {
-            // Check for duplicates
-            if (ImperialGrace::where('name', $item['name'])->exists()) {
-                return response()->json(['message' => "法寶名稱「{$item['name']}」已存在，請勿重複載錄。"], 422);
-            }
+            // 移除批次新增時的重複名稱驗證，允許同名法寶重複載錄
 
             $created[] = ImperialGrace::create(array_merge([
                 'master_id' => $masterId,

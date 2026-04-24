@@ -90,16 +90,41 @@ const handleBatchSave = async () => {
 
     lines.forEach(line => {
         // 0. Normalize
-        let normLine = line.normalize('NFKC');
+        let normLine = line.normalize('NFKC').trim();
+        if (!normLine) return;
+
+        // NEW: Standalone Year detection (e.g., "113年" or "2024")
+        const standaloneYMatch = normLine.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+        if (standaloneYMatch) {
+            let y = parseInt(standaloneYMatch[1]);
+            if (y < 1000) y += 1911;
+            const yDate = `${y}-01-01`;
+            currentProcessDate = yDate;
+            currentKnowDate = yDate;
+            return;
+        }
 
         // 1. Detect date
-        const dateMatch = normLine.match(/^(\d{3,4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})$/);
-        if (dateMatch) {
-            let year = parseInt(dateMatch[1]);
-            const month = dateMatch[2].padStart(2, '0');
-            const day = dateMatch[3].padStart(2, '0');
+        const cleanDateStr = normLine.replace(/[年月]/g, '-').replace(/[日]/g, '');
+        const dateParts = cleanDateStr.split(/[.\/-]/).map(p => p.trim());
+
+        if (dateParts.length === 3) {
+            let year = parseInt(dateParts[0]);
+            const month = dateParts[1].padStart(2, '0');
+            const day = dateParts[2].padStart(2, '0');
             if (year < 1000) year += 1911;
             const parsedDate = `${year}-${month}-${day}`;
+            currentProcessDate = parsedDate;
+            currentKnowDate = parsedDate;
+            return;
+        }
+        
+        // Detect Short Date (M/D) as a standalone line
+        if (dateParts.length === 2 && !isNaN(parseInt(dateParts[0])) && !isNaN(parseInt(dateParts[1]))) {
+            const y = currentKnowDate.split('-')[0];
+            const m = dateParts[0].padStart(2, '0');
+            const d = dateParts[1].padStart(2, '0');
+            const parsedDate = `${y}-${m}-${d}`;
             currentProcessDate = parsedDate;
             currentKnowDate = parsedDate;
             return;

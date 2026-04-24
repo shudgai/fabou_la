@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('masters', App\Http\Controllers\MasterController::class);
     Route::post('registries/batch', [App\Http\Controllers\RegistryController::class, 'batchStore']);
     Route::post('registries/reorder', [App\Http\Controllers\RegistryController::class, 'reorder']);
+    Route::patch('registries/personnel/{id}/remarks', [App\Http\Controllers\RegistryController::class, 'updatePersonnelRemarks']);
     Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::resource('imperial-graces', App\Http\Controllers\ImperialGraceController::class);
     Route::post('imperial-graces/registry', [App\Http\Controllers\ImperialGraceController::class, 'storeRegistry']);

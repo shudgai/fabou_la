@@ -68,43 +68,46 @@ body.font-large {
    這會自動捕捉系統中常用的 class，並強制套用使用者的字體設定
    ============================================================ */
 
-/* --- 內文 (.text-[17px], .text-[15px], .text-[16px], .text-[14px] 常用於資料與選單) --- */
-body.font-small .text-\[17px\], body.font-small .text-\[16px\], body.font-small .text-\[15px\], body.font-small .text-\[14px\], body.font-small td, body.font-small p, body.font-small .app-body {
-    font-size: 15px !important;
-    font-weight: 400 !important;
-    color: #0f172a !important;
-}
+/* ============================================================
+   全局覆寫規則 (Global Overrides for Hardcoded Tailwind Classes)
+   這會自動捕捉系統中常用的 class，並強制套用使用者的字體設定
+   ============================================================ */
 
-body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium .text-\[15px\], body.font-medium .text-\[14px\], body.font-medium td, body.font-medium p, body.font-medium .app-body {
-    font-size: 17px !important;
-    font-weight: 400 !important;
-    color: #0f172a !important;
-}
+/* --- Tier 1: 標籤與細項 (th, label, 11px~13px) --- */
+/* Now matched to Tier 3 size and color as per user request: 小 (15px) | 中 (17px) | 大 (19px) */
+body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-size: 15px !important; font-weight: 700 !important; color: #0f172a !important; }
+body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-size: 17px !important; font-weight: 700 !important; color: #0f172a !important; }
+body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-size: 19px !important; font-weight: 700 !important; color: #0f172a !important; }
 
-body.font-large .text-\[17px\], body.font-large .text-\[16px\], body.font-large .text-\[15px\], body.font-large .text-\[14px\], body.font-large td, body.font-large p, body.font-large .app-body {
-    font-size: 19px !important;
-    font-weight: 400 !important;
-    color: #0f172a !important;
-}
+/* --- Tier 2: 次要內文與小按鈕 (14px~15px) --- */
+/* 小 (13px) | 中 (15px) | 大 (17px) */
+body.font-small  .text-\[15px\], body.font-small  .text-\[14px\] { font-size: 13px !important; }
+body.font-medium .text-\[15px\], body.font-medium .text-\[14px\] { font-size: 15px !important; }
+body.font-large  .text-\[15px\], body.font-large  .text-\[14px\] { font-size: 17px !important; }
 
-/* --- 標題 (label, th, 以及小字 .text-[11px], .text-[13px] 與大標題 .text-[18px]) --- */
-body.font-small label, body.font-small th, body.font-small .text-\[18px\], body.font-small .text-\[13px\], body.font-small .text-\[11px\], body.font-small .app-title {
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    color: #334155 !important;
-}
+/* --- Tier 3: 主要內容與標準內文 (td, p, input, 16px~18px) --- */
+/* 小 (15px) | 中 (17px) | 大 (19px) */
+body.font-small  .text-\[18px\], body.font-small  .text-\[17px\], body.font-small  .text-\[16px\], body.font-small td, body.font-small p, body.font-small .app-body { font-size: 15px !important; font-weight: 400 !important; color: #0f172a !important; }
+body.font-medium .text-\[18px\], body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium td, body.font-medium p, body.font-medium .app-body { font-size: 17px !important; font-weight: 400 !important; color: #0f172a !important; }
+body.font-large  .text-\[18px\], body.font-large  .text-\[17px\], body.font-large  .text-\[16px\], body.font-large td, body.font-large p, body.font-large .app-body { font-size: 19px !important; font-weight: 400 !important; color: #0f172a !important; }
 
-body.font-medium label, body.font-medium th, body.font-medium .text-\[18px\], body.font-medium .text-\[13px\], body.font-medium .text-\[11px\], body.font-medium .app-title {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    color: #334155 !important;
-}
+/* --- Tier 4: 大型按鈕與小標題 (19px~21px) --- */
+/* 小 (17px) | 中 (19px) | 大 (21px) */
+body.font-small  .text-\[21px\], body.font-small  .text-\[20px\], body.font-small  .text-\[19px\] { font-size: 17px !important; }
+body.font-medium .text-\[21px\], body.font-medium .text-\[20px\], body.font-medium .text-\[19px\] { font-size: 19px !important; }
+body.font-large  .text-\[21px\], body.font-large  .text-\[20px\], body.font-large  .text-\[19px\] { font-size: 21px !important; }
 
-body.font-large label, body.font-large th, body.font-large .text-\[18px\], body.font-large .text-\[13px\], body.font-large .text-\[11px\], body.font-large .app-title {
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    color: #334155 !important;
-}
+/* --- Tier 5: 中型標題 (22px~24px) --- */
+/* 小 (20px) | 中 (22px) | 大 (24px) */
+body.font-small  .text-\[24px\], body.font-small  .text-\[23px\], body.font-small  .text-\[22px\] { font-size: 20px !important; }
+body.font-medium .text-\[24px\], body.font-medium .text-\[23px\], body.font-medium .text-\[22px\] { font-size: 22px !important; }
+body.font-large  .text-\[24px\], body.font-large  .text-\[23px\], body.font-large  .text-\[22px\] { font-size: 24px !important; }
+
+/* --- Tier 6: 大型標題與 Hero Text (25px~32px) --- */
+/* 小 (24px) | 中 (28px) | 大 (32px) */
+body.font-small  .text-\[32px\], body.font-small  .text-\[30px\], body.font-small  .text-\[28px\], body.font-small  .text-\[26px\], body.font-small  .text-\[25px\] { font-size: 24px !important; }
+body.font-medium .text-\[32px\], body.font-medium .text-\[30px\], body.font-medium .text-\[28px\], body.font-medium .text-\[26px\], body.font-medium .text-\[25px\] { font-size: 28px !important; }
+body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-large  .text-\[28px\], body.font-large  .text-\[26px\], body.font-large  .text-\[25px\] { font-size: 32px !important; }
 
 /* 確保輸入框也跟著變，但顏色稍微深一點 */
 body.font-small input, body.font-small select, body.font-small textarea { font-size: 15px !important; font-weight: 400 !important; }

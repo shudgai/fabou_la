@@ -1,16 +1,20 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Only show in Folder-view or Item-view) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 bg-white sticky top-0 z-10" style="padding: 10px 10px 8px 10px;">
-            <div class="flex items-center justify-start relative py-2 ml-1">
-                <h2 class="text-[23px] font-black font-outfit tracking-tight text-left" style="color: black !important;">
-                    重大皇恩 - {{ currentFolder.name }}
-                </h2>
-                <div class="absolute right-0 top-1/2 -translate-y-1/2 mr-1">
-                    <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
-                        {{ sortDesc ? '新→舊' : '舊→新' }}
-                    </button>
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
+            <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+                <div class="text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                    重大皇恩專區
                 </div>
+            </div>
+
+            <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                    {{ sortDesc ? '新→舊' : '舊→新' }}
+                </button>
             </div>
         </div>
         <!-- Perfectly Centered Ultra-Compact Warning Banner -->
@@ -26,14 +30,14 @@
                         class="text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center font-normal text-sm">✕</button>
                 </div>
                 <!-- Action Buttons (Horizontal Layout) -->
-                <div v-if="['confirm', 'deleteConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-3 pb-1">
+                <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="flex space-x-2 mt-3 pb-1">
                     <template v-if="persistentToast.type === 'confirm'">
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-normal whitespace-nowrap">確定</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 px-2 py-1.5 rounded shadow-sm text-[11px] font-normal whitespace-nowrap" style="color: #ffffff !important;">確定</button>
                     </template>
                     <template v-if="persistentToast.type === 'mismatchConfirm'">
-                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">存入{{ currentFolder?.name }}</button>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1.5 rounded shadow-sm text-[11px] font-bold whitespace-nowrap">存入{{ getMasterName(form.master_id) }}</button>
-                        <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 px-2 py-1.5 rounded text-[11px] font-normal">取消</button>
+                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 hover:bg-amber-600 px-2 py-1.5 rounded shadow-sm text-[13px] font-bold whitespace-nowrap" style="color: #ffffff !important;">存入{{ currentFolder?.name }}</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 px-2 py-1.5 rounded shadow-sm text-[13px] font-bold whitespace-nowrap" style="color: #ffffff !important;">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 px-2 py-1.5 rounded text-[13px] font-bold">取消</button>
                     </template>
                     <template v-if="persistentToast.type === 'deleteConfirm'">
                         <button @click="persistentToast = null" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2 py-1.5 rounded border border-slate-200 text-[11px] font-normal whitespace-nowrap">取消</button>
@@ -186,7 +190,7 @@
             </div>
             
             <!-- List Display Area -->
-            <div style="padding: 0px 8px 10px 8px;" class="mt-0">
+            <div style="padding: 0px 10px 10px 10px;" class="mt-0">
                 <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
                 <div v-else class="flex flex-col">
                     <!-- Data Rows -->
@@ -739,13 +743,7 @@ const saveSingle = async (resolutionOrData = null) => {
         return;
     }
 
-    const targetName = form.value.name.trim().toLowerCase();
-    const isDuplicate = allRegistries.value.some(r => r.id !== form.value.id && r.name.trim().toLowerCase() === targetName);
-
-    if (isDuplicate) {
-        persistentToast.value = { msg: `✖ 法寶名稱「${form.value.name}」已存在，請勿重複存檔。`, type: 'error' };
-        return;
-    }
+    // 移除重複名稱驗證，允許同名法寶重複載錄
     
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
         persistentToast.value = { msg: '錯誤：請輸入求得日期', type: 'error' };
@@ -769,23 +767,36 @@ const saveSingle = async (resolutionOrData = null) => {
             persistentToast.value = { msg: '✓ 新增成功', type: 'success' };
         }
         
-        // 智慧導向：如果選擇分流，或是在「未求得」區改為已求得，依照「ID」匹配資料夾
-        const isFromUnobtained = String(currentFolder.value?.id) === 'unobtained' && ['已求得', '已登記'].includes(form.value.status);
-        if ((resolution === 'shunt' || isFromUnobtained) && targetMaster) {
-            // 先找對應的仙師資料夾 (改用 ID 匹配更精準)
+        // 智慧導向：不論從哪裡新增，完成後都跳回該筆資料所屬的仙師資料夾
+        if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
             if (matchedFolder) {
                 currentCategory.value = 'masters';
                 currentFolder.value = matchedFolder;
-                focusedId.value = res?.data?.id || form.value.id;
-                persistentToast.value = { 
-                    msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
-                    type: 'success',
-                    duration: 1500 
-                };
+                setTimeout(() => {
+                    focusedId.value = res?.data?.id || form.value.id;
+                    expandedId.value = res?.data?.id || form.value.id;
+                }, 50);
             }
+        } else if (!finalMid || String(finalMid) === 'unobtained') {
+            currentCategory.value = 'unobtained';
+            currentFolder.value = { id: 'unobtained', name: '未求得' };
+            setTimeout(() => {
+                focusedId.value = res?.data?.id || form.value.id;
+                expandedId.value = res?.data?.id || form.value.id;
+            }, 50);
         }
-        addMode.value = null; 
+        
+        // 彈出成功訊息
+        if (resolution === 'shunt' || isFromUnobtained) {
+            persistentToast.value = { 
+                msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
+                type: 'success',
+                duration: 1500 
+            };
+        }
+        
+        addMode.value = null;
         await loadData();
     } catch (e) {
         console.error('儲存失敗:', e);
@@ -877,23 +888,7 @@ const saveBatch = async (payload = null) => {
 
     if (!batchInput.value || !batchMasterId.value || isSaving.value) return;
     
-    // Check for duplicates in pre-processed rows
-    if (payload && payload.rows && payload.rows.length > 0) {
-        const mid = String(batchMasterId.value);
-        const existingNames = allRegistries.value.map(r => r.name.trim());
-        
-        const duplicates = payload.rows
-            .map(row => String(row.name || '').trim())
-            .filter(name => name && existingNames.includes(name));
-
-        if (duplicates.length > 0) {
-            persistentToast.value = { 
-                msg: `注意：偵測到 ${duplicates.length} 筆重複名稱（如 ${duplicates[0]}...）`, 
-                type: 'error' 
-            };
-            return;
-        }
-    }
+    // 移除批次新增時的重複名稱驗證，允許同名法寶重複載錄
 
     isSaving.value = true;
     try {
@@ -921,6 +916,20 @@ const saveBatch = async (payload = null) => {
         await axios.post('/imperial-graces/registry/batch', dataToSend);
         
         persistentToast.value = { msg: '✓ 多筆新增成功', type: 'success' };
+        
+        // 智慧導向：多筆新增完成後，自動跳回該仙師的資料夾
+        const targetMaster = masters.value.find(m => String(m.id) === String(finalMasterId));
+        if (targetMaster) {
+            const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
+            if (matchedFolder) {
+                currentCategory.value = 'masters';
+                currentFolder.value = matchedFolder;
+            }
+        } else if (!finalMasterId || String(finalMasterId) === 'unobtained') {
+            currentCategory.value = 'unobtained';
+            currentFolder.value = { id: 'unobtained', name: '未求得' };
+        }
+        
         addMode.value = null;
         loadData();
     } catch (e) { 
@@ -1030,5 +1039,4 @@ const getFolderSum = (id) => {
 /* Custom Scrollbar for a cleaner mobile look */
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-</style>
+.custom-scrollbar::-webkit-sc

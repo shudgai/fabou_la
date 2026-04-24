@@ -18,6 +18,20 @@ class RegistryController extends Controller
         return Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc')->get();
     }
 
+    /**
+     * 將任意格式的備註值正規化為純字串陣列
+     */
+    private function normalizeRemarks($raw): array
+    {
+        if (is_array($raw)) {
+            return array_values(array_filter(array_map('trim', $raw), fn($v) => $v !== ''));
+        }
+        if (is_string($raw) && $raw !== '') {
+            return array_values(array_filter(array_map('trim', preg_split('/[\n；;]/u', $raw)), fn($v) => $v !== ''));
+        }
+        return [];
+    }
+
     public function store(Request $request)
     {
         if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
@@ -32,73 +46,128 @@ class RegistryController extends Controller
 
         return DB::transaction(function () use ($request, $nameAliasMap) {
             $cleanName = trim($request->name);
-            // Check for existing treasure with same name, master, and category (Cross-date merge)
+
             $registry = Registry::where('name', $cleanName)
                 ->where('master_id', $request->master_id)
                 ->where('category', $request->category)
                 ->first();
 
             if (!$registry) {
-                $payload = $request->all();
-                $payload['name'] = $cleanName; // Ensure name is trimmed in DB
-                $registry = Registry::create($payload);
+                $registry = Registry::create([
+                    'name'               => $cleanName,
+                    'master_id'          => $request->master_id,
+                    'category'           => $request->category ?? 'major',
+                    'purpose'            => $request->purpose,
+                    'acquisition_method' => $request->acquisition_method,
+                    'remarks'            => $request->remarks,
+                    'record_date'        => $request->record_date,
+                    'obtained_date'      => $request->obtained_date,
+                    'status'             => $request->status ?? '已求得',
+                    'sort_order'         => $request->sort_order ?? 0,
+                ]);
             } else {
-                // Update metadata if provided
                 $registry->update(array_filter([
                     'acquisition_method' => $request->acquisition_method,
-                    'purpose' => $request->purpose,
-                    'remarks' => $request->remarks,
+                    'purpose'            => $request->purpose,
+                    'remarks'            => $request->remarks,
                 ]));
             }
 
             if ($request->has('dharma_name_registries')) {
                 foreach ($request->input('dharma_name_registries') as $dn) {
-                    $custom_name = $dn['custom_name'] ?? null;
-                    $remarks = $dn['remarks'] ?? null;
+                    $custom_name   = $dn['custom_name'] ?? null;
                     $obtained_date = $dn['obtained_date'] ?? null;
+
+                    // 立刻將 remarks 正規化為純陣列
+                    $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
 
                     // 1. 法號翻譯規則
                     if ($custom_name && isset($nameAliasMap[$custom_name])) {
                         $custom_name = $nameAliasMap[$custom_name];
                     }
 
-                    // 4. 親友關係轉備註規則
+                    // 2. 親友關係轉備註規則（例如：元續之母 或 元續三姑）
                     if ($custom_name) {
-                        if (preg_match('/^(.*?)(之[夫妻子女左右大小父母兄弟姊姐]|的[夫妻子女左右大小父母兄弟姊姐].*)$/u', $custom_name, $matches)) {
-                            $custom_name = $matches[1];
-                            $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
-                            $relationshipRemark = $datePrefix . $matches[0];
-                            $remarks = $remarks ? ($remarks . '；' . $relationshipRemark) : $relationshipRemark;
+                        $relationshipMatch = null;
+                        if (preg_match('/^(.*?)([之的].+)$/u', $custom_name, $matches)) {
+                            $relationshipMatch = $matches;
+                        } else {
+                            $dnNames = DharmaName::pluck('name')->toArray();
+                            usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                            foreach ($dnNames as $dnName) {
+                                if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
+                                    $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($relationshipMatch) {
+                            $custom_name      = $relationshipMatch[1];
+                            $datePrefix       = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
+                            $relationshipRemark = $datePrefix . $relationshipMatch[0];
+                            if (!in_array($relationshipRemark, $remarks)) {
+                                $remarks[] = $relationshipRemark;
+                            }
                         }
                     }
 
+                    // 3. 嘗試解析 dharma_name_id
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     if (empty($dharma_name_id) && !empty($custom_name)) {
                         $matched = DharmaName::where('name', trim($custom_name))->first();
                         if ($matched) {
                             $dharma_name_id = $matched->id;
-                            $custom_name = null;
+                            $custom_name    = null;
                         }
                     }
 
-                    // 3. 自動去重：避免同法寶在同一天存入同一個法號
-                    $exists = DharmaNameRegistry::where('registry_id', $registry->id)
-                        ->where('obtained_date', $obtained_date)
-                        ->where(function($q) use ($dharma_name_id, $custom_name) {
-                            if ($dharma_name_id) $q->where('dharma_name_id', $dharma_name_id);
-                            else $q->where('custom_name', $custom_name);
-                        })
-                        ->exists();
+                    // 4. 合併親友欄位到備註（Mirrored Logic）
+                    $relatedArr = is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [];
+                    if (!empty($relatedArr)) {
+                        $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
+                        foreach ($relatedArr as $rel) {
+                            $relRemark = $datePrefix . ($custom_name ?: '') . $rel;
+                            if (!in_array($relRemark, $remarks)) {
+                                $remarks[] = $relRemark;
+                            }
+                        }
+                    }
 
-                    if (!$exists) {
+                    // 5. 查找是否已存在相同人員紀錄（移除日期限制，確保跨日期備註能正確合併到同一格）
+                    $existingDnr = DharmaNameRegistry::where('registry_id', $registry->id)
+                        ->where(function ($q) use ($dharma_name_id, $custom_name) {
+                            if ($dharma_name_id)
+                                $q->where('dharma_name_id', $dharma_name_id);
+                            else
+                                $q->where('custom_name', $custom_name);
+                        })
+                        ->first();
+
+                    if (!$existingDnr) {
                         DharmaNameRegistry::create([
-                            'registry_id' => $registry->id,
-                            'dharma_name_id' => $dharma_name_id,
-                            'custom_name' => $custom_name,
-                            'obtained_date' => $obtained_date,
-                            'remarks' => $remarks,
-                            'related_personnel' => $dn['related_personnel'] ?? null
+                            'registry_id'      => $registry->id,
+                            'dharma_name_id'   => $dharma_name_id,
+                            'custom_name'      => $custom_name,
+                            'obtained_date'    => $obtained_date,
+                            'remarks'          => $remarks,
+                            'related_personnel'=> is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [],
                         ]);
+                    } else {
+                        // 若已存在，合併新備註（去除重複）
+                        if (!empty($remarks)) {
+                            $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
+                            $merged = false;
+                            foreach ($remarks as $r) {
+                                if ($r !== '' && !in_array($r, $existingRemarks)) {
+                                    $existingRemarks[] = $r;
+                                    $merged = true;
+                                }
+                            }
+                            if ($merged) {
+                                $existingDnr->update(['remarks' => array_values($existingRemarks)]);
+                            }
+                        }
                     }
                 }
             }
@@ -116,44 +185,33 @@ class RegistryController extends Controller
             $registry->update($request->all());
 
             if ($request->has('dharma_name_registries')) {
-                $incoming = $request->input('dharma_name_registries');
-                $keepIds = [];
-                
-                foreach ($incoming as $dn) {
-                    // AUTO-RESOLVE names
+                foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     if (empty($dharma_name_id) && !empty($dn['custom_name'])) {
                         $matched = DharmaName::where('name', trim($dn['custom_name']))->first();
                         if ($matched) {
-                            $dharma_name_id = $matched->id;
+                            $dharma_name_id    = $matched->id;
                             $dn['custom_name'] = null;
                         }
                     }
 
                     $record = DharmaNameRegistry::updateOrCreate(
                         [
-                            'registry_id' => $registry->id,
+                            'registry_id'    => $registry->id,
                             'dharma_name_id' => $dharma_name_id,
-                            'custom_name' => $dn['custom_name'] ?? null,
+                            'custom_name'    => $dn['custom_name'] ?? null,
                         ],
-                        [
-                            'obtained_date' => $dn['obtained_date'] ?? null,
-                            'remarks' => $dn['remarks'] ?? null,
-                            // Do NOT overwrite related_personnel if not sent, to preserve existing parser data
-                        ]
+                        ['obtained_date' => $dn['obtained_date'] ?? null]
                     );
 
-                    // If they DO send related_personnel, update it
-                    if (array_key_exists('related_personnel', $dn)) {
-                        $record->update(['related_personnel' => $dn['related_personnel']]);
+                    if (isset($dn['remarks'])) {
+                        $record->update(['remarks' => $this->normalizeRemarks($dn['remarks'])]);
                     }
 
-                    $keepIds[] = $record->id;
+                    if (isset($dn['related_personnel'])) {
+                        $record->update(['related_personnel' => (array)$dn['related_personnel']]);
+                    }
                 }
-
-                // Optional: Cleanup missing ones IF the user expects a full sync. 
-                // However, for in-place grid editing, we might just want to keep all.
-                // For now, let's keep all to be safe unless they explicitly delete.
             }
 
             return $registry->load('dharmaNameRegistries');
@@ -167,16 +225,9 @@ class RegistryController extends Controller
         }
 
         $records = $request->all();
-        if (!is_array($records)) return response()->json(['error' => '無效的資料格式'], 400);
+        if (!is_array($records))
+            return response()->json(['error' => '無效的資料格式'], 400);
 
-        /**
-         * 行政規則記入：
-         * 1. 法號翻譯：金開頭的法號需自動轉換為對應的靈/龍/元字輩法號。
-         * 2. 同名合併：若同類別、同仙師、同法寶名稱、同日期，則視為同一筆紀錄。
-         * 3. 自動去重：同法寶下，同一個法號（或姓名）在同一天不可重複存檔。
-         * 4. 關係識別：若為「XX之母/夫/妻」等，則提取XX為主體，關係記入備註。
-         * 5. 求寶方式：識別「求寶：」關鍵字並記入為求寶方式（acquisition_method）。
-         */
         $nameAliasMap = [
             '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
             '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熙' => '靈情', '金吉' => '靈奇',
@@ -186,47 +237,65 @@ class RegistryController extends Controller
         return DB::transaction(function () use ($records, $nameAliasMap) {
             $results = [];
             foreach ($records as $recordData) {
-                if (empty($recordData['name']) || empty($recordData['master_id'])) continue;
+                if (empty($recordData['name']) || empty($recordData['master_id']))
+                    continue;
 
                 $cleanName = trim($recordData['name']);
-                // 2. 同名合併邏輯：尋找是否已有同分類、同仙師、同名稱的紀錄（跨日期合併）
-                $registry = Registry::where('name', $cleanName)
+                $registry  = Registry::where('name', $cleanName)
                     ->where('master_id', $recordData['master_id'])
                     ->where('category', $recordData['category'] ?? 'major')
                     ->first();
 
                 if (!$registry) {
-                    $recordData['name'] = $cleanName; // Ensure name is trimmed
+                    $recordData['name'] = $cleanName;
                     $registry = Registry::create($recordData);
                 } else {
-                    // 若已存在，則更新可能變動的欄位（如求寶方式、用途）
                     $registry->update(array_filter([
                         'acquisition_method' => $recordData['acquisition_method'] ?? null,
-                        'purpose' => $recordData['purpose'] ?? null,
-                        'remarks' => $recordData['remarks'] ?? null,
+                        'purpose'            => $recordData['purpose'] ?? null,
+                        'remarks'            => $recordData['remarks'] ?? null,
                     ]));
                 }
 
                 if (!empty($recordData['dharma_name_registries'])) {
                     foreach ($recordData['dharma_name_registries'] as $dn) {
-                        if (empty($dn['custom_name']) && empty($dn['dharma_name_id'])) continue;
+                        if (empty($dn['custom_name']) && empty($dn['dharma_name_id']))
+                            continue;
 
-                        $custom_name = $dn['custom_name'] ?? null;
-                        $remarks = $dn['remarks'] ?? null;
+                        $custom_name   = $dn['custom_name'] ?? null;
                         $obtained_date = $dn['obtained_date'] ?? null;
-                        
-                        // 1. 法號翻譯規則
+
+                        // 立刻將 remarks 正規化為純陣列
+                        $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
+
+                        // 1. 法號翻譯
                         if ($custom_name && isset($nameAliasMap[$custom_name])) {
                             $custom_name = $nameAliasMap[$custom_name];
                         }
 
-                        // 4. 親友關係轉備註規則 (例如: 元續之母)
+                        // 2. 親友關係轉備註
                         if ($custom_name) {
-                            if (preg_match('/^(.*?)(之[夫妻子女左右大小父母兄弟姊姐]|的[夫妻子女左右大小父母兄弟姊姐].*)$/u', $custom_name, $matches)) {
-                                $custom_name = $matches[1];
-                                $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
-                                $relationshipRemark = $datePrefix . $matches[0];
-                                $remarks = $remarks ? ($remarks . '；' . $relationshipRemark) : $relationshipRemark;
+                            $relationshipMatch = null;
+                            if (preg_match('/^(.*?)([之的].+)$/u', $custom_name, $matches)) {
+                                $relationshipMatch = $matches;
+                            } else {
+                                $dnNames = DharmaName::pluck('name')->toArray();
+                                usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                                foreach ($dnNames as $dnName) {
+                                    if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
+                                        $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($relationshipMatch) {
+                                $custom_name        = $relationshipMatch[1];
+                                $datePrefix         = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
+                                $relationshipRemark = $datePrefix . $relationshipMatch[0];
+                                if (!in_array($relationshipRemark, $remarks)) {
+                                    $remarks[] = $relationshipRemark;
+                                }
                             }
                         }
 
@@ -235,28 +304,55 @@ class RegistryController extends Controller
                             $matched = DharmaName::where('name', trim($custom_name))->first();
                             if ($matched) {
                                 $dharma_name_id = $matched->id;
-                                $custom_name = null;
+                                $custom_name    = null;
                             }
                         }
 
-                        // 3. 自動去重：避免同法寶在同一天存入同一個法號
-                        $exists = DharmaNameRegistry::where('registry_id', $registry->id)
-                            ->where('obtained_date', $obtained_date)
-                            ->where(function($q) use ($dharma_name_id, $custom_name) {
-                                if ($dharma_name_id) $q->where('dharma_name_id', $dharma_name_id);
-                                else $q->where('custom_name', $custom_name);
-                            })
-                            ->exists();
+                        // 4. 合併親友欄位到備註（Mirrored Logic）
+                        $relatedArr = is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [];
+                        if (!empty($relatedArr)) {
+                            $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
+                            foreach ($relatedArr as $rel) {
+                                $relRemark = $datePrefix . ($custom_name ?: '') . $rel;
+                                if (!in_array($relRemark, $remarks)) {
+                                    $remarks[] = $relRemark;
+                                }
+                            }
+                        }
 
-                        if (!$exists) {
+                        // 5. 查找是否已存在相同人員紀錄（移除日期限制，確保跨日期備註能正確合併到同一格）
+                        $existingDnr = DharmaNameRegistry::where('registry_id', $registry->id)
+                            ->where(function ($q) use ($dharma_name_id, $custom_name) {
+                                if ($dharma_name_id)
+                                    $q->where('dharma_name_id', $dharma_name_id);
+                                else
+                                    $q->where('custom_name', $custom_name);
+                            })
+                            ->first();
+
+                        if (!$existingDnr) {
                             DharmaNameRegistry::create([
-                                'registry_id' => $registry->id,
-                                'dharma_name_id' => $dharma_name_id,
-                                'custom_name' => $custom_name,
-                                'obtained_date' => $obtained_date,
-                                'remarks' => $remarks,
-                                'related_personnel' => $dn['related_personnel'] ?? null
+                                'registry_id'       => $registry->id,
+                                'dharma_name_id'    => $dharma_name_id,
+                                'custom_name'       => $custom_name,
+                                'obtained_date'     => $obtained_date,
+                                'remarks'           => $remarks,
+                                'related_personnel' => is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [],
                             ]);
+                        } else {
+                            if (!empty($remarks)) {
+                                $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
+                                $merged = false;
+                                foreach ($remarks as $r) {
+                                    if ($r !== '' && !in_array($r, $existingRemarks)) {
+                                        $existingRemarks[] = $r;
+                                        $merged = true;
+                                    }
+                                }
+                                if ($merged) {
+                                    $existingDnr->update(['remarks' => array_values($existingRemarks)]);
+                                }
+                            }
                         }
                     }
                 }
@@ -287,5 +383,15 @@ class RegistryController extends Controller
             }
         }
         return response()->json(['message' => 'Reordered']);
+    }
+
+    /**
+     * 更新人員備註（Inline 彈窗儲存）
+     */
+    public function updatePersonnelRemarks(Request $request, $id)
+    {
+        $dnr = DharmaNameRegistry::findOrFail($id);
+        $dnr->update(['remarks' => $this->normalizeRemarks($request->remarks)]);
+        return response()->json(['success' => true]);
     }
 }

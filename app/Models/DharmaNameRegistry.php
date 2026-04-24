@@ -22,6 +22,7 @@ class DharmaNameRegistry extends Model
 
     protected $casts = [
         'related_personnel' => 'array',
+        'remarks' => 'array',
     ];
 
     public function registry()

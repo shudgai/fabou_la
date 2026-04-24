@@ -6,12 +6,18 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="flex items-center justify-between p-4 border-b border-slate-50">
-                <h3 class="app-title !text-[23px] !text-slate-900">
-                    {{ editingId ? '修改載錄' : '怨靈載錄' }}
-                </h3>
-                <button @click="$emit('cancel')" class="text-slate-400 hover:text-slate-600 p-1 active:scale-95">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="px-[10px] py-2 flex items-center bg-white border-b border-slate-50 relative">
+                <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 flex flex-col justify-center min-w-0">
+                    <div class="text-[20px] font-black leading-none font-outfit uppercase tracking-wider" style="color: rgb(220, 20, 40);">怨靈載錄專區</div>
+                    <div class="text-[13px] font-black mt-0 truncate font-outfit" style="color: rgb(220, 20, 40);">
+                        {{ editingId ? '修改載錄' : '怨靈載錄登記簿' }}
+                    </div>
+                </div>
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 

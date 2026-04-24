@@ -94,6 +94,15 @@ const parsedItems = computed(() => {
         const trimmed = line.trim();
         if (!trimmed) return;
 
+        // NEW: Standalone Year detection (e.g., "113年" or "2024")
+        const standaloneYMatch = trimmed.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+        if (standaloneYMatch) {
+            let y = parseInt(standaloneYMatch[1]);
+            if (y < 1000) y += 1911;
+            lastDate = `${y}-01-01`; // Anchor to start of year
+            return;
+        }
+
         // Split by Tab (common in Excel copy), Multiple spaces, or Comma
         let parts = trimmed.split(/[\t]+|[\s]{2,}|[,，]/);
         if (parts.length <= 1) {
@@ -103,30 +112,19 @@ const parsedItems = computed(() => {
         let possibleDate = parts[0];
         let dateFound = null;
 
-        // Regex for Minguo: 110.01.02 or 110/01/02
-        const minguoMatch = possibleDate.match(/^(\d{2,3})[./-](\d{1,2})[./-](\d{1,2})$/);
-        // Regex for AD Full: 2021/01/02
-        const adMatch = possibleDate.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$/);
-        // Regex for AD Short: 01/02
-        const shortMatch = possibleDate.match(/^(\d{1,2})[./-](\d{1,2})$/);
+        // NEW: Flexible Date Detection (Supports any ROC or CE year)
+        const cleanDate = possibleDate.replace(/[年月]/g, '-').replace(/[日]/g, '');
+        const dateParts = cleanDate.split(/[.\/-]/).map(p => p.trim());
 
-        if (minguoMatch) {
-            const y = parseInt(minguoMatch[1]) + 1911;
-            const m = minguoMatch[2].padStart(2, '0');
-            const d = minguoMatch[3].padStart(2, '0');
-            dateFound = `${y}-${m}-${d}`;
-            parts.shift(); // Remove date part from data
-        } else if (adMatch) {
-            const y = adMatch[1];
-            const m = adMatch[2].padStart(2, '0');
-            const d = adMatch[3].padStart(2, '0');
-            dateFound = `${y}-${m}-${d}`;
+        if (dateParts.length === 3) {
+            let y = parseInt(dateParts[0]);
+            if (y < 1000) y += 1911;
+            dateFound = `${y}-${dateParts[1].padStart(2, '0')}-${dateParts[2].padStart(2, '0')}`;
             parts.shift();
-        } else if (shortMatch) {
-            const y = new Date().getFullYear();
-            const m = shortMatch[1].padStart(2, '0');
-            const d = shortMatch[2].padStart(2, '0');
-            dateFound = `${y}-${m}-${d}`;
+        } else if (dateParts.length === 2) {
+            // Short date format (M/D)
+            const y = lastDate.split('-')[0];
+            dateFound = `${y}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
             parts.shift();
         }
 
@@ -156,7 +154,7 @@ const parsedItems = computed(() => {
                 user_remarks: '',
                 remarks_text: ''
             };
-
+            
             // Specialized field handling
             if (props.armyType === '黑曜軍') {
                 item.yan_zun = Math.ceil(qty / 2);

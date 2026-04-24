@@ -6,12 +6,17 @@
         <!-- Form Container -->
         <div class="relative w-full h-[100dvh] md:max-w-4xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="p-[10px] border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-[24px] font-black text-slate-900 leading-tight">
-                    重大皇恩載錄 <span v-if="selectedMasterName" class="text-indigo-600 ml-1">- {{ selectedMasterName }}</span>
-                </h3>
-                <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="px-[10px] py-2 flex items-center bg-white border-b border-slate-50 relative">
+                <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pr-6">
+                    <div class="text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                        重大皇恩專區
+                    </div>
+                </div>
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
@@ -265,9 +270,20 @@ const handleStatusChange = () => {
 const processBatchLines = (rawLines) => {
     if (!rawLines || rawLines.length === 0) return;
     
-    // 偵測日期行
-    const flexibleDateRegex = /\d{4}[-\/]\d{2}[-\/]\d{2}/;
-    let globalDate = '';
+    // 偵測日期行 (支援 民國 與 西元)
+    const parseDateText = (str) => {
+        if (!str) return null;
+        const rocMatch = str.match(/(\d{2,3})[/-](\d{1,2})[/-](\d{1,2})/);
+        if (rocMatch) {
+            const y = parseInt(rocMatch[1]) + 1911;
+            return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+        }
+        const ceMatch = str.match(/(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+        return null;
+    };
+
+    let currentBlockDate = form.value.record_date || form.value.obtained_date || '';
     const filteredLines = [];
 
     for (const row of rawLines) {
@@ -275,15 +291,26 @@ const processBatchLines = (rawLines) => {
         const firstCell = row[0] || '';
         
         // 若此行包含日期
-        if (flexibleDateRegex.test(firstCell)) {
-            if (!globalDate) globalDate = firstCell.match(flexibleDateRegex)[0];
+        const parsed = parseDateText(firstCell);
+        if (parsed) {
+            currentBlockDate = parsed;
             // 若此行只有一個欄位且幾乎全是日期，則跳過這行不當作法寶資料
-            if (row.length === 1 && firstCell.replace(flexibleDateRegex, '').trim().length < 3) {
+            if (row.length === 1 && firstCell.length < 12) {
                 continue;
             }
         }
         
         if (row.some(c => c.trim() !== '')) {
+            // 將當前日期注入到這筆資料中，如果該行沒有自定義日期
+            const rowData = [...row];
+            if (!parsed && rowData.length > 2) {
+                 // 可能在第三欄有日期，檢查看看
+                 const thirdCellDate = parseDateText(rowData[2]);
+                 if (thirdCellDate) rowData[2] = thirdCellDate;
+            }
+            
+            // 標記這行使用的日期
+            row._injectedDate = currentBlockDate;
             filteredLines.push(row);
         }
     }
@@ -305,8 +332,8 @@ const processBatchLines = (rawLines) => {
         for (let i = 0; i < maxCols; i++) {
             rowData[`c${i}`] = row[i] || '';
         }
-        if (globalDate) {
-            rowData._record_date = globalDate;
+        if (row._injectedDate) {
+            rowData._record_date = row._injectedDate;
         }
         return rowData;
     });
