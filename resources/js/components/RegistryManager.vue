@@ -7,7 +7,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -25,7 +25,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[20px] font-medium text-slate-400 truncate tracking-tight">
+                    <span class="text-[20px] font-normal truncate tracking-tight" style="color: #475569 !important;">
                         {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
                     </span>
                 </div>
@@ -230,7 +230,7 @@
                             <!-- Card Header (Toggle Expansion) -->
                             <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
                                 <div class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="text-[14px] text-slate-400 font-bold font-outfit uppercase tracking-widest">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                    <div class="text-[14px] font-bold font-outfit uppercase tracking-widest" style="color: #475569 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
@@ -256,7 +256,7 @@
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                                <div class="text-[20px] font-normal font-outfit" style="color: #475569 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
                                             </div>
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
@@ -325,7 +325,7 @@
                                                                     <div class="flex items-center px-[2px] py-1 h-[42px] justify-center group/date-cell" 
                                                                         :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
                                                                         @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
-                                                                        <span :class="editMap[item.id + '-' + dn.id].obtained_date ? 'text-black' : 'text-slate-200'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif;">
+                                                                        <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
                                                                             {{ editMap[item.id + '-' + dn.id].obtained_date || (editingIds.has(item.id) ? '----/--/--' : '-') }}
                                                                         </span>
                                                                     </div>
@@ -359,7 +359,7 @@
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div class="flex items-center px-[2px] py-1 h-[42px] justify-center" 
                                                                         @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
-                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif;">{{ editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date || dnr.obtained_date?.replace(/-/g, '/') || '-' }}</span>
+                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #475569 !important;">{{ editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date || dnr.obtained_date?.replace(/-/g, '/') || '-' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
@@ -391,7 +391,7 @@
                                                             <tr v-if="editingIds.has(item.id)" class="bg-indigo-50/20 border-t-2 border-indigo-100/50">
                                                                 <td class="p-0 border-b border-indigo-100">
                                                                     <div @click="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
-                                                                        <span class="text-[14px] font-black text-indigo-600">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
+                                                                        <span class="text-[14px] font-black" style="color: #475569 !important;">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-2 border-b border-indigo-100">
@@ -544,6 +544,7 @@
             v-if="activePicker"
             v-model="editMap[activePicker.id][activePicker.field]"
             :title="activePicker.title"
+            :scale="0.8"
             @close="activePicker = null"
         />
 

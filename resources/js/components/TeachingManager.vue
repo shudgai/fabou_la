@@ -54,7 +54,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         父皇仙師開示專區
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[20px] font-black text-slate-900 truncate tracking-tight ml-[20px]">
+                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px]" style="color: #0f172a !important;">
                         {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
@@ -1212,8 +1212,8 @@
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
-                                     <span class="text-[17px] font-black text-slate-400 tracking-tight font-outfit">{{ dateGroup.date.replace(/-/g, '/') }}</span>
-                                     <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-300 rounded-full text-[12px] font-black text-slate-400 font-outfit">
+                                     <span class="text-[20px] tracking-tight font-outfit" style="color: #475569 !important; font-weight: 400 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
+                                     <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-200 rounded-full text-[12px] font-black font-outfit" style="color: #0f172a !important;">
                                          {{ dateGroup.items.length }} 則
                                      </span>
                                  </div>
@@ -1247,14 +1247,14 @@
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div class="app-title font-black text-slate-700 mb-0.5 font-outfit tracking-tighter">
+                                            <div class="app-title text-[20px] mb-0.5 font-outfit tracking-tighter" style="color: #475569 !important; font-weight: 400 !important;">
                                                 {{ item.date.replace(/-/g, '/') }}
                                             </div>
                                             <div class="app-body font-bold text-slate-600 leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->
-                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[14px] text-slate-400 font-medium truncate opacity-70 font-outfit">
+                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[17px] font-normal truncate font-outfit" style="color: #0f172a !important;">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
                                                 <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>

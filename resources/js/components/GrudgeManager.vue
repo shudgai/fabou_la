@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="flex-1 flex justify-center items-center min-w-0">
-                <h1 class="text-[23px] font-black font-outfit tracking-tight text-slate-900 truncate">{{ displayTitle }}</h1>
+                <h1 class="text-[23px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
                 <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-black bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100">
@@ -73,7 +73,7 @@
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
                                     <div class="app-title">得知日期</div>
-                                    <div class="app-title font-bold ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-title font-bold ml-0.5 text-slate-600">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 

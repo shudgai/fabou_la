@@ -6,7 +6,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                     重大皇恩專區
                 </div>
             </div>
@@ -50,10 +50,7 @@
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
             <div class="px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
-                <button @click="$emit('goHome')" class="text-slate-400 p-4 active:scale-90 transition-transform z-10 shrink-0">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-                <div class="flex-1 pr-12">
+            <div class="flex-1 pr-12">
                     <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
                 </div>
             </div>
@@ -122,9 +119,6 @@
         <div v-if="currentCategory === 'masters' && !currentFolder" class="bg-white group-fade-in">
             <!-- Header Title -->
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px]">
-                <button @click="currentCategory = null" class="text-slate-400 p-4 active:scale-90 transition-transform z-10">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
                 <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
@@ -177,10 +171,7 @@
             <!-- Header for Level 2 -->
             <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
                 <div class="flex items-center space-x-1">
-                    <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <span class="text-[20px] font-medium text-slate-400">{{ displayTitle }}</span>
+                    <span class="text-[20px] font-normal" style="color: #475569 !important;">{{ displayTitle }}</span>
                 </div>
                 <button @click="reorderMode = !reorderMode" 
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
@@ -217,13 +208,13 @@
                                 <!-- Row 1: Date -->
                                 <div class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
-                                        登記：<span class="app-title font-bold text-slate-400">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
+                                        登記：<span class="app-title font-bold" style="color: #475569 !important;">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
-                                        得知：<span class="app-title font-bold text-slate-400">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                        得知：<span class="app-title font-bold" style="color: #475569 !important;">{{ reg.record_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else>
-                                        <span class="text-slate-400 font-bold">未知日期</span>
+                                        <span class="font-bold" style="color: #475569 !important;">未知日期</span>
                                     </template>
                                     <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="ml-2 app-title opacity-50">{{ getMasterName(reg.master_id) }}</span>
                                 </div>
@@ -247,7 +238,7 @@
                             </div>
                         </div>
 
-                        <!-- Independent Menu Button (Three Dots) -->
+                        <!-- Independent Menu Button (Three Dots) for Collapsed State -->
                         <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-2">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
@@ -264,93 +255,68 @@
                             </div>
                         </div>
 
-                        <!-- Expanded Detail (Direct Edit Style) -->
-                        <div v-if="expandedId === reg.id" class="animate-fade-in py-3 bg-white space-y-4 relative px-2">
-                            <!-- Detail Content Grid (Direct Inputs) -->
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <div class="flex items-center space-x-1 ml-1">
-                                        <button @click.stop="toggleExpand(reg.id)" class="p-1 -ml-1 text-slate-400 active:scale-90 transition-all">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        </button>
-                                        <label class="app-title tracking-wider block">{{ inlineEditData.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                    </div>
-                                    <div @click="activePicker = { id: reg.id, field: 'record_date', title: '修改日期' }" 
-                                         class="w-full h-[38px] px-3 flex items-center app-body bg-slate-50 rounded-xl border border-slate-100 cursor-pointer">
-                                        <span :class="inlineEditData.record_date ? 'text-slate-900' : 'text-slate-300'">
-                                            {{ inlineEditData.record_date?.replace(/-/g, '/') || '年/月/日' }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block ml-1">載錄目標仙師</label>
-                                    <select v-model="inlineEditData.master_id" class="w-full h-[38px] px-2 flex items-center app-body bg-slate-50 rounded-xl border border-slate-100 outline-none">
-                                        <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="app-title tracking-wider block ml-1">法寶名稱</label>
-                                <input v-model="inlineEditData.name" 
-                                       class="w-full h-[40px] px-3 flex items-center app-body font-bold text-slate-900 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:border-indigo-300 transition-colors">
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="app-title tracking-wider block ml-1">法寶用意</label>
-                                <input v-model="inlineEditData.purpose" 
-                                       class="w-full h-[40px] px-3 flex items-center app-body font-bold text-slate-900 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:border-indigo-300 transition-colors">
-                            </div>
-
-                             <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block ml-1">目前狀態</label>
-                                    <select v-model="inlineEditData.status" 
-                                            class="w-full h-[40px] px-2 flex items-center app-body font-bold bg-slate-50 rounded-xl border border-slate-100 outline-none"
-                                            :style="inlineEditData.status === '未求得' ? 'color: #dc2626 !important;' : (inlineEditData.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                        <option value="未求得">未求得</option>
-                                        <option value="已求得">已求得</option>
-                                        <option value="已登記">已登記</option>
-                                    </select>
-                                </div>
-                                <div v-if="inlineEditData.status !== '已登記'" class="space-y-1">
-                                    <label class="app-title tracking-wider block ml-1">求得日期</label>
-                                    <div @click="activePicker = { id: reg.id, field: 'obtained_date', title: '修改日期' }" 
-                                         class="w-full h-[40px] px-3 flex items-center app-body bg-slate-50 rounded-xl border border-slate-100 cursor-pointer">
-                                        <span :class="inlineEditData.obtained_date ? 'text-slate-900' : 'text-slate-300'">
-                                            {{ inlineEditData.obtained_date?.replace(/-/g, '/') || '年/月/日' }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div v-else></div>
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="app-title tracking-wider block ml-1">詳細內容 / 備註</label>
-                                <textarea v-model="inlineEditData.remarks" 
-                                          class="w-full p-3 app-body font-bold text-slate-900 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:border-indigo-300 transition-colors leading-normal"
-                                          rows="3"
-                                          placeholder="輸入備註..."></textarea>
-                            </div>
-
-                            <!-- Save/Action Bar -->
-                            <div class="flex space-x-3 pt-2">
-                                <button @click.stop="toggleExpand(reg.id)" class="flex-1 h-[48px] rounded-2xl bg-slate-100 text-slate-600 font-black text-[15px] active:scale-95 transition-all">收合</button>
-                                <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-[2] h-[48px] rounded-2xl bg-[#f97316] text-white font-black text-[17px] shadow-lg active:scale-95 transition-all disabled:bg-slate-300">
-                                    {{ saving ? '正在存檔...' : '確認修改' }}
+                        <!-- Expanded Detail (Read-Only Style) -->
+                        <div v-if="expandedId === reg.id" class="animate-fade-in py-4 bg-white space-y-4 relative px-3 border-t border-slate-50">
+                            <!-- Three dots menu in expanded view -->
+                            <div class="absolute right-2 top-2 z-[20]">
+                                <button @click.stop="toggleMenu(reg.id)" class="p-3 text-slate-400 active:scale-90 transition-all">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
-                                <button @click.stop="toggleMenu(reg.id)" class="w-[48px] h-[48px] rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 active:scale-90 transition-all">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
+                                <div v-if="openMenuId === reg.id" @click.stop 
+                                     class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
+                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+
+                            <!-- Detail Content Grid (Read Only) -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                    <div class="app-body font-normal text-[20px]" style="color: #475569 !important;">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</div>
+                                </div>
+                                <div class="space-y-1 text-right pr-8">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                    <div class="app-body font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose || '-' }}</div>
+                            </div>
+
+                             <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                    <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                        {{ reg.status }}
+                                    </div>
+                                </div>
+                                <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                    <div class="app-body font-bold text-slate-900">{{ reg.obtained_date?.replace(/-/g, '/') || '-' }}</div>
+                                </div>
+                            </div>
+
+                            <div v-if="reg.remarks" class="space-y-1 pt-2 border-t border-slate-50">
+                                <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div> <!-- End Scrollable Area -->
-    
+
     <mobile-navbar 
         :can-back="true"
         :show-action="!!currentFolder && currentFolder.id !== 'unobtained'"
@@ -363,7 +329,6 @@
         @search="showSearch = !showSearch"
         @more="downloadListOnly"
     />
-
 
     <!-- MODAL COMPONENTS -->
     <search-component 
@@ -395,7 +360,7 @@
         :title="activePicker.title"
         @close="activePicker = null"
     />
-    </div>
+    </div> <!-- End Root Module Div -->
 </template>
 
 <script setup>
@@ -767,6 +732,7 @@ const saveSingle = async (resolutionOrData = null) => {
     
     let formMid = form.value.master_id ? String(form.value.master_id) : '';
     const folderId = currentFolder.value ? String(currentFolder.value.id) : '';
+    const isFromUnobtained = folderId === 'unobtained';
 
     // 核心判定：是否發生預期外的資料夾分流 (未求得區改為已求得時，改為自動分流不再提示)
     const isActuallyMismatched = folderId !== 'unobtained' && folderId !== '' && formMid !== folderId;

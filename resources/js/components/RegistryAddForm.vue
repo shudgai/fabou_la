@@ -12,7 +12,7 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-widest" style="color: rgb(220, 20, 40);">法寶登記專區</div>
+                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-widest" style="color: rgb(220, 20, 40) !important;">法寶登記專區</div>
                     <div class="text-[14px] font-bold mt-2 truncate font-outfit" style="color: rgba(220, 20, 40, 0.75);">
                         {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
                     </div>

@@ -7,7 +7,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[22px] font-black text-slate-900 tracking-tight">其他專區資料夾</h2>
+                    <h2 class="text-[22px] font-black tracking-tight" style="color: #0f172a !important;">其他專區資料夾</h2>
                 </div>
                 <button v-if="!activeFolderId" class="w-10 h-10 bg-slate-100 border border-slate-200 rounded-full flex items-center justify-center text-slate-300 cursor-not-allowed">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -72,7 +72,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         其他專區
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                     <button @click="activeFolderId = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[20px] font-medium text-slate-400 truncate tracking-tight">
+                    <h2 class="text-[20px] font-normal truncate tracking-tight" style="color: #0f172a !important;">
                         其他專區 - {{ activeFolder?.name }}
                     </h2>
                 </div>

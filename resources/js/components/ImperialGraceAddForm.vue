@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0 imperial-grace-module">
+    <div v-if="mode" class="fixed inset-0 z-[500] flex items-end md:items-center justify-center px-0 imperial-grace-module">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
@@ -11,7 +11,7 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pr-6">
-                    <div class="text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                    <div class="text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         重大皇恩專區
                     </div>
                 </div>
