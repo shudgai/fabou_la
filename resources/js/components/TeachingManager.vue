@@ -52,7 +52,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0">
-                    <h2 class="text-[23px] font-black font-outfit tracking-tight text-slate-900 truncate w-full text-left">
+                    <h2 class="app-title text-[24px] font-black font-outfit tracking-tight text-slate-900 truncate w-full text-left">
                         {{ addMode ? (editingId ? '修改記錄' : ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示新增記錄' : (currentFolder?.name || '仙師') + '開示新增記錄')) : (currentFolder?.id === 0 || currentFolder?.id === '0' ? '每日開示記錄' : currentFolder?.name + '開示記錄') }}
                     </h2>
                 </div>
@@ -192,24 +192,19 @@
                 <!-- Add View -->
                 <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
                     <div class="bg-white w-full h-full relative flex flex-col">
-
-                        
-
-
                         <div class="space-y-4 pb-32 flex-1 p-4">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
-                                        <label class="text-[13px] text-slate-400 font-bold px-1 select-none">日期</label>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px]">
-                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
+                                        <div @click="form.date = form.date" class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm mt-4">
+                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
+                                            <svg class="w-4 h-4 text-slate-300 ml-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">
-                                        <label class="text-[13px] text-slate-400 font-bold px-1 select-none">仙師</label>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px]">
-                                            <input v-model="masterNameInput" list="master-list-entry" @change="resolveMasterId" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
+                                        <label class="app-title ml-1">仙師</label>
+                                        <div class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm">
+                                            <input v-model="masterNameInput" list="master-list-entry" @change="resolveMasterId" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                         </div>
-
                                     </div>
                                 </div>
 
