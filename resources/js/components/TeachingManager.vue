@@ -206,22 +206,10 @@
                                     </div>
                                     <div class="space-y-0.5 relative">
                                         <label class="text-[13px] text-slate-400 font-bold px-1 select-none">仙師</label>
-                                        <div @click.stop="activeMasterDropdownId = activeMasterDropdownId === 'main' ? null : 'main'" 
-                                             class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center justify-between h-[56px] cursor-pointer active:bg-slate-100 transition-all">
-                                            <span class="text-[17px] font-black" :class="masterNameInput ? 'text-slate-900' : 'text-slate-400'">
-                                                {{ masterNameInput || '請選擇仙師...' }}
-                                            </span>
-                                            <svg class="w-5 h-5 text-slate-300" :class="activeMasterDropdownId === 'main' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden px-4 flex items-center h-[56px]">
+                                            <input v-model="masterNameInput" list="master-list-entry" @change="resolveMasterId" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                         </div>
-                                        
-                                        <!-- Custom Dropdown Menu -->
-                                        <div v-if="activeMasterDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[60] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                            <div v-for="m in allMastersList" :key="m" @click.stop="pickMaster(m)" 
-                                                 class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all">
-                                                <span v-if="masterNameInput === m" class="mr-3 w-2.5 h-2.5 bg-indigo-500 rounded-full"></span>
-                                                {{ m }}
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
 

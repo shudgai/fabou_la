@@ -62,6 +62,7 @@ const menuItems = [
     { id: 'grudge', label: '怨靈記錄專區', icon: '👻', color: 'bg-rose-50' },
     { id: 'military', label: '軍隊記錄專區', icon: '🛡️', color: 'bg-emerald-50' },
     { id: 'treasure', label: '法寶登記專區', icon: '💎', color: 'bg-sky-50' },
+    { id: 'kaiwen', label: '開文專區', icon: '📝', color: 'bg-purple-50' },
     { id: 'other', label: '其他專區', icon: '📁', color: 'bg-orange-50' },
     { id: 'trash', label: '回收桶', icon: '🗑️', color: 'bg-slate-100' },
     { id: 'admin', label: '系統資料管理', icon: '⚙️', color: 'bg-slate-800 text-white' },

@@ -38,6 +38,18 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('imperial-graces/registry/{id}', [App\Http\Controllers\ImperialGraceController::class, 'destroyRegistry']);
     Route::post('imperial-graces/registry/batch', [App\Http\Controllers\ImperialGraceController::class, 'batchStoreRegistry']);
     Route::post('imperial-graces/registry/reorder', [App\Http\Controllers\ImperialGraceController::class, 'reorder']);
+    
+    // Kaiwen Manager Routes
+    Route::get('kaiwen', [App\Http\Controllers\KaiwenManagerController::class, 'index']);
+    Route::post('kaiwen/weekly', [App\Http\Controllers\KaiwenManagerController::class, 'storeWeekly']);
+    Route::match(['PUT', 'PATCH'], 'kaiwen/weekly/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'updateWeekly']);
+    Route::delete('kaiwen/weekly/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'destroyWeekly']);
+    Route::post('kaiwen/weekly/reorder', [App\Http\Controllers\KaiwenManagerController::class, 'reorderWeekly']);
+    
+    Route::post('kaiwen/self', [App\Http\Controllers\KaiwenManagerController::class, 'storeSelf']);
+    Route::match(['PUT', 'PATCH'], 'kaiwen/self/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'updateSelf']);
+    Route::delete('kaiwen/self/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'destroySelf']);
+    Route::post('kaiwen/self/reorder', [App\Http\Controllers\KaiwenManagerController::class, 'reorderSelf']);
     Route::post('treasures/batch', [App\Http\Controllers\TreasureController::class, 'batchStore']);
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::post('teachings/reorder', [App\Http\Controllers\TeachingController::class, 'reorder']);

@@ -93,6 +93,7 @@ import MilitaryManager from './MilitaryManager.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import OtherManager from './OtherManager.vue';
+import KaiwenManager from './KaiwenManager.vue';
 
 // Font Size System
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
@@ -136,6 +137,7 @@ const notebookItems = computed(() => {
         { id: 'grudge', label: '怨靈記錄專區' },
         { id: 'military', label: '軍隊記錄專區' },
         { id: 'treasure', label: '法寶登記專區' },
+        { id: 'kaiwen', label: '開文專區' },
         { id: 'other', label: '其他專區' },
     ];
 
@@ -173,6 +175,7 @@ const components = {
     grudge: markRaw(GrudgeManager),
     military: markRaw(MilitaryManager),
     treasure: markRaw(RegistryManager),
+    kaiwen: markRaw(KaiwenManager),
     other: markRaw(OtherManager),
     // Admin
     dharma: markRaw(DharmaCrud),

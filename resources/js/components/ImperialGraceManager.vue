@@ -1039,4 +1039,5 @@ const getFolderSum = (id) => {
 /* Custom Scrollbar for a cleaner mobile look */
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-sc
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+</style>
