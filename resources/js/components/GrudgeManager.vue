@@ -73,7 +73,7 @@
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
                                     <div class="app-title">得知日期</div>
-                                    <div class="app-title font-bold text-slate-900 ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-title font-bold ml-0.5">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 

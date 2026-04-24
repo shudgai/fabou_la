@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
+    <div v-if="mode" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0 imperial-grace-module">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         

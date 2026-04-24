@@ -8,37 +8,38 @@
    字體大小系統 (Font Size System)
    ============================================================
    規則：
-     .app-body  → 內文：明細體(font-weight:400)、黑色(#111827)
-     .app-title → 標題：粗體(font-weight:700)、灰色(#6B7280)
+     .app-body  → 內文：明細體(font-weight:700)、深藍黑(#0f172a)
+     .app-title → 小標：粗體(font-weight:700)、灰色(#94a3b8)
+                [規則：小標必須比內文小 2px]
 
    三種尺寸 (套用在 <body> 或任意父容器):
-     小 (.font-small)  → 內文 15px / 標題 12px
-     中 (.font-medium) → 內文 17px / 標題 14px  [預設]
-     大 (.font-large)  → 內文 19px / 標題 16px
+     小 (.font-small)  → 內文 15px | 小標 13px
+     中 (.font-medium) → 內文 17px | 小標 15px  [預設]
+     大 (.font-large)  → 內文 19px | 小標 17px
    ============================================================ */
 
 /* --- 預設 (中) --- */
 :root {
     --fs-body:  17px;
-    --fs-title: 14px;
+    --fs-title: 15px;
 }
 
 /* --- 小 --- */
 body.font-small {
     --fs-body:  15px;
-    --fs-title: 12px;
+    --fs-title: 13px;
 }
 
 /* --- 中 --- */
 body.font-medium {
     --fs-body:  17px;
-    --fs-title: 14px;
+    --fs-title: 15px;
 }
 
 /* --- 大 --- */
 body.font-large {
     --fs-body:  19px;
-    --fs-title: 16px;
+    --fs-title: 17px;
 }
 
 /* ── 工具 class ────────────────────────────── */
@@ -50,11 +51,11 @@ body.font-large {
     color:       #0f172a !important; /* slate-900 */
 }
 
-/* 標題：粗體 + 淡灰色 */
+/* 標題：粗體 + 淡灰色 (slate-300) */
 .app-title {
     font-size:   var(--fs-title) !important;
     font-weight: 700 !important;
-    color:       #94a3b8 !important; /* slate-400 */
+    color:       #cbd5e1 !important; /* slate-300 */
 }
 
 /* ── Tailwind 工具 class (可直接用在 template) ── */
@@ -69,10 +70,16 @@ body.font-large {
    ============================================================ */
 
 /* --- Tier 1: 標籤與細項 (th, label, 11px~13px) --- */
-/* Now matched to Tier 3 size and color as per user request: 小 (15px) | 中 (17px) | 大 (19px) */
-body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-size: 15px !important; font-weight: 700 !important; color: #94a3b8 !important; }
-body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-size: 17px !important; font-weight: 700 !important; color: #94a3b8 !important; }
-body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-size: 19px !important; font-weight: 700 !important; color: #94a3b8 !important; }
+/* Rule: Always 2px smaller than Tier 3. 小 (13px) | 中 (15px) | 大 (17px) | 顏色：slate-300 */
+body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-size: 13px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
+body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-size: 15px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
+body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-size: 17px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
+
+/* Exception: Imperial Grace Module labels should remain Black */
+.imperial-grace-module .app-title,
+.imperial-grace-module label {
+    color: #0f172a !important;
+}
 
 /* --- Tier 2: 次要內文與小按鈕 (14px~15px) --- */
 /* 小 (13px) | 中 (15px) | 大 (17px) */

@@ -71,7 +71,7 @@
                     <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[20px] font-medium text-slate-400 truncate tracking-tight ml-[20px]">
+                    <h2 class="text-[20px] font-black text-slate-900 truncate tracking-tight ml-[20px]">
                         {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
@@ -212,7 +212,7 @@
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <div @click="form.date = form.date" class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm mt-4">
-                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black custom-date-input" style="font-size: 17px !important;">
+                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-title text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">
@@ -278,7 +278,7 @@
                                     <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生'" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
                                             <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
-                                                 class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl text-[17px] font-black flex items-center shadow-sm hover:border-indigo-200 transition-colors">
+                                                 class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl app-body flex items-center shadow-sm hover:border-indigo-200 transition-colors">
                                                 <span class="mr-2 w-2 h-2 bg-indigo-400 rounded-full"></span>
                                                 {{ getDharmaNameText(id) }}
                                                 <button @click.prevent="toggleDharmaName(id)" class="ml-2 text-slate-300 hover:text-red-500 transition-colors">
@@ -290,9 +290,9 @@
                                 </div>
                                 
                                 <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 px-4 flex items-start">
-                                    <label class="text-[13px] text-slate-400 w-10 text-left shrink-0 mt-2 font-bold uppercase tracking-wider">開示</label>
+                                    <label class="app-title w-10 text-left shrink-0 mt-2 uppercase tracking-wider">開示</label>
                                     <div class="flex-1 ml-1 border border-slate-100 rounded-2xl bg-white overflow-hidden shadow-inner">
-                                        <textarea v-model="form.content" @paste="e => handleSmartPaste(e, form, null)" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入具體內容 (支援格式貼入自動解析)..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none p-4 resize-none overflow-hidden min-h-[46px] font-black leading-relaxed placeholder-sky-400 placeholder:text-[17px]"></textarea>
+                                        <textarea v-model="form.content" @paste="e => handleSmartPaste(e, form, null)" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入具體內容 (支援格式貼入自動解析)..." class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none p-4 resize-none overflow-hidden min-h-[46px] leading-relaxed placeholder-sky-400"></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -1303,24 +1303,24 @@
                                                 <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
                                             </button>
                                             <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
-                                                <div v-if="getFullRecipientList(item).groupName" class="text-[18px] font-black text-indigo-700 leading-tight">
+                                                <div v-if="getFullRecipientList(item).groupName" class="app-body text-indigo-700 leading-tight">
                                                     {{ getFullRecipientList(item).groupName }}
                                                 </div>
-                                                <div v-if="getFullRecipientList(item).names.length > 0" class="text-[15px] font-bold opacity-80 leading-snug">
+                                                <div v-if="getFullRecipientList(item).names.length > 0" class="app-title !text-indigo-600/70 leading-snug">
                                                     {{ getFullRecipientList(item).names.join(', ') }}
                                                 </div>
-                                                <div v-if="item.target_remarks" class="text-[12px] font-medium text-indigo-400 italic pt-1">
+                                                <div v-if="item.target_remarks" class="app-title !text-indigo-400 italic pt-1">
                                                     說明：{{ item.target_remarks }}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div v-if="item.content?.trim()" class="text-[17px] text-black font-medium leading-tight whitespace-pre-wrap">
+                                        <div v-if="item.content?.trim()" class="app-body whitespace-pre-wrap">
                                             {{ item.content.trim() }}
                                         </div>
 
                                         <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="mt-2">
-                                            <div class="text-[17px] text-slate-900 font-bold mb-1">賜降：</div>
+                                            <div class="app-title !text-slate-900 mb-1">賜降：</div>
                                             <div class="space-y-0.5">
                                                 <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
                                                         <div class="text-[17px] font-bold text-black">
@@ -1355,12 +1355,12 @@
                                             </div>
                                         </div>
 
-                                        <div v-if="item.items_footer_remarks?.trim()" class="text-[16px] text-slate-700 font-black italic pt-2">
+                                        <div v-if="item.items_footer_remarks?.trim()" class="app-title !text-slate-700 italic pt-2">
                                             備註：{{ item.items_footer_remarks.trim() }}
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
-                                            <span class="text-[17px] text-slate-900 font-bold tracking-widest">完畢</span>
+                                            <span class="app-title !text-slate-900 tracking-widest">完畢</span>
                                         </div>
 
                                     </div>
