@@ -171,7 +171,7 @@
             <!-- Header for Level 2 -->
             <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
                 <div class="flex items-center space-x-1">
-                    <span class="text-[20px] font-normal" style="color: #475569 !important;">{{ displayTitle }}</span>
+                    <span class="text-[20px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ displayTitle }}</span>
                 </div>
                 <button @click="reorderMode = !reorderMode" 
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
@@ -208,13 +208,13 @@
                                 <!-- Row 1: Date -->
                                 <div class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
-                                        登記：<span class="app-title font-bold" style="color: #475569 !important;">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
+                                        登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
-                                        得知：<span class="app-title font-bold" style="color: #475569 !important;">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                        得知：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.record_date.replace(/-/g, '/') }}</span>
                                     </template>
                                     <template v-else>
-                                        <span class="font-bold" style="color: #475569 !important;">未知日期</span>
+                                        <span class="font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">未知日期</span>
                                     </template>
                                     <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="ml-2 app-title opacity-50">{{ getMasterName(reg.master_id) }}</span>
                                 </div>
@@ -246,8 +246,10 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">展開清單</button>
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">
+                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
+                                    </button>
+                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                     <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
                                     <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
@@ -264,7 +266,10 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">
+                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
+                                    </button>
+                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                     <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
                                     <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
@@ -275,7 +280,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                    <div class="app-body font-normal text-[20px]" style="color: #475569 !important;">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</div>
+                                    <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</div>
                                 </div>
                                 <div class="space-y-1 text-right pr-8">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>

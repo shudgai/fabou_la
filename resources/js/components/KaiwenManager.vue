@@ -3,7 +3,7 @@
         <!-- Header (Shared) -->
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
+                <div class="app-title text-[24px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
                     {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : (hasAnyExpanded ? '內容明細' : '開文專區') }}
                 </div>
             </div>
@@ -12,12 +12,12 @@
             <div v-if="!addMode && !hasAnyExpanded" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
-                    class="px-3 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap">
+                    class="px-3 py-1.5 app-body text-[17px] font-bold rounded-lg transition-all whitespace-nowrap">
                     每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
-                    class="px-3 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap">
+                    class="px-3 py-1.5 app-body text-[17px] font-bold rounded-lg transition-all whitespace-nowrap">
                     自行開文
                 </button>
             </div>
@@ -65,14 +65,14 @@
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
-                                <span class="app-body text-[16px] font-black text-slate-400 tracking-widest mb-0.5">{{ post.date || '無日期' }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] font-black text-slate-800 tracking-widest">{{ (post.title || '').substring(0, 7) }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] font-bold text-slate-600 tracking-widest">{{ (post.title || '').substring(7, 14) }}</span>
+                                <span class="text-[15px] tracking-tighter mb-0.5" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
+                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #1e293b !important;">{{ (post.title || '').replace(/\s+/g, '').substring(0, 7) }}</span>
+                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ (post.title || '').replace(/\s+/g, '').substring(7, 14) }}</span>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
-                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="app-body !font-black tracking-widest">合格</span>
-                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="app-body !font-black tracking-widest">不合格</span>
-                                <span v-else class="app-body !font-black tracking-widest">待定</span>
+                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="app-body !font-bold tracking-widest">合格</span>
+                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="app-body !font-bold tracking-widest">不合格</span>
+                                <span v-else class="app-body !font-bold tracking-widest">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
@@ -107,12 +107,12 @@
                             <div class="flex justify-between items-start border-b border-slate-200 pb-2">
                                 <div class="flex flex-col">
                                     <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">日期</span>
-                                    <span class="text-[16px] font-black text-slate-700 tracking-widest">{{ post.date || '無日期' }}</span>
+                                    <span class="text-[15px] tracking-tighter" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
                                 </div>
                                 <div class="flex flex-col items-end">
                                     <span class="app-title uppercase tracking-widest mb-1">狀態</span>
                                     <span :style="`color: ${post.status === '合格' ? '#16a34a' : (post.status === '不合格' ? '#dc2626' : '#0f172a')} !important`" 
-                                        class="app-body !font-black tracking-widest">{{ post.status || '待定' }}</span>
+                                        class="app-body !font-bold tracking-widest">{{ post.status || '待定' }}</span>
                                 </div>
                             </div>
                             
@@ -136,7 +136,7 @@
                                         @click.stop="viewerImage = post.modified_content"
                                         class="max-w-full md:max-w-xl h-auto rounded-xl border border-purple-100 shadow-lg cursor-zoom-in hover:brightness-95 transition-all" alt="殿中修改之文">
                                 </div>
-                                <p v-else class="text-[18px] font-black text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
+                                <p v-else class="text-[18px] font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
                             <div v-else-if="post.status === '合格'" class="pt-4">
                                 <button @click.stop="openPostMode(post, 'weekly')" class="w-full py-4 bg-purple-50 text-purple-600 rounded-2xl border border-purple-100 font-black text-[17px] tracking-widest hover:bg-purple-100 transition-all flex items-center justify-center">
@@ -171,13 +171,13 @@
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
-                                <span class="app-body text-[16px] font-black text-slate-400 tracking-widest mb-0.5">{{ post.date || '無日期' }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] font-black text-slate-800 tracking-widest">{{ getSelfMaster(post.original_content) }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] font-bold text-slate-600 tracking-widest">{{ getSelfPreview(post.original_content) }}</span>
+                                <span class="text-[15px] tracking-tighter mb-0.5" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
+                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #1e293b !important;">{{ getSelfMaster(post.original_content) }}</span>
+                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ getSelfPreview(post.original_content) }}</span>
                             </div>
                              <div class="flex items-center space-x-2 self-start">
                                 <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : post.message_type === '非玄訊' ? '#92400e' : '#94a3b8'} !important`"
-                                    class="app-body !font-black shrink-0 tracking-widest">
+                                    class="app-body !font-bold shrink-0 tracking-widest">
                                     {{ post.message_type || '待定' }}
                                 </span>
                                 
@@ -213,12 +213,12 @@
                             <div class="flex justify-between items-start border-b border-slate-200 pb-2">
                                 <div class="flex flex-col">
                                     <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest mb-1">日期</span>
-                                    <span class="text-[16px] font-black text-slate-700 tracking-widest">{{ post.date || '無日期' }}</span>
+                                    <span class="text-[15px] tracking-tighter" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
                                 </div>
                                 <div class="flex flex-col items-end">
                                     <span class="app-title uppercase tracking-widest mb-1">類型</span>
                                     <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : '#92400e'} !important`" 
-                                        class="app-body !font-black tracking-widest">{{ post.message_type }}</span>
+                                        class="app-body !font-bold tracking-widest">{{ post.message_type }}</span>
                                 </div>
                             </div>
                             
@@ -234,7 +234,7 @@
                                         @click.stop="viewerImage = post.modified_content"
                                         class="max-w-full md:max-w-xl h-auto rounded-xl border border-purple-100 shadow-lg cursor-zoom-in hover:brightness-95 transition-all" alt="殿中修改之文">
                                 </div>
-                                <p v-else class="app-body font-black text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
+                                <p v-else class="app-body font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
                             
                             <div class="pt-8 flex justify-center space-x-4 pb-12">
@@ -257,7 +257,7 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <div @click="activeDate = 'date'" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all mt-5 shadow-sm overflow-hidden">
-                                <span :class="form.date ? 'text-slate-900 font-bold' : 'text-slate-400'" class="app-body leading-tight">
+                                <span :class="form.date ? 'text-slate-900' : 'text-slate-400'" class="leading-tight" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">
                                     {{ form.date || '選擇日期' }}
                                 </span>
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -265,8 +265,8 @@
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
-                            <label class="app-title ml-1">類型</label>
-                            <select v-model="form.message_type" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 app-body font-bold text-slate-900 outline-none shadow-sm">
+                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">類型</label>
+                            <select v-model="form.message_type" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 outline-none shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
                                 <option value="">待定</option>
                                 <option value="玄訊">玄訊</option>
                                 <option value="非玄訊">非玄訊</option>
@@ -274,37 +274,37 @@
                         </div>
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
-                            <label class="app-title ml-1">審核狀態</label>
+                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">審核狀態</label>
                             <div class="flex items-center space-x-4 h-[36px] px-2">
-                                <button @click="form.status = null" :class="!form.status ? 'text-slate-900' : 'text-slate-400'" class="app-body font-black transition-all active:scale-95 tracking-widest">待定</button>
-                                <button @click="form.status = '合格'" :class="form.status === '合格' ? 'text-[#15803d]' : 'text-slate-400'" class="app-body font-black transition-all active:scale-95 tracking-widest">合格</button>
-                                <button @click="form.status = '不合格'" :class="form.status === '不合格' ? 'text-red-500' : 'text-slate-400'" class="app-body font-black transition-all active:scale-95 tracking-widest">不合格</button>
+                                <button @click="form.status = null" :class="!form.status ? 'text-slate-900' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">待定</button>
+                                <button @click="form.status = '合格'" :class="form.status === '合格' ? 'text-[#15803d]' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">合格</button>
+                                <button @click="form.status = '不合格'" :class="form.status === '不合格' ? 'text-red-500' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">不合格</button>
                             </div>
                         </div>
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
-                            <label class="app-title ml-1">抬頭</label>
-                            <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 app-body font-bold text-slate-900 outline-none shadow-sm focus:border-purple-300 transition-all">
+                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
+                            <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
-                            <label class="app-title ml-1">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 app-body font-bold text-slate-900 outline-none shadow-sm focus:border-purple-300 transition-all">
+                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">仙師</label>
+                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name"></option>
                             </datalist>
                         </div>
 
                         <div class="space-y-1">
-                            <label class="app-title ml-1">開文內容</label>
+                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
                             <div v-if="addMode === 'weekly'" class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
                                 <div v-for="(char, i) in titleChars" :key="i" class="flex items-center bg-white border-b border-slate-50 last:border-0 group">
-                                    <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 app-body font-black text-slate-400 group-hover:text-purple-600 transition-colors">{{ char }}</div>
-                                    <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent app-body font-bold text-slate-800 outline-none placeholder:text-slate-200">
+                                    <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important;">{{ char }}</div>
+                                    <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
                                 </div>
                             </div>
                             <div v-if="addMode === 'self'">
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 app-body font-bold text-slate-900 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm"></textarea>
+                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;"></textarea>
                             </div>
                         </div>
                     </div>

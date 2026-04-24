@@ -20,9 +20,9 @@
     <!-- Fonts: Inter & Outfit for a premium feel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Lexend:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/taipei-sans-tc/dist/Regular/TaipeiSansTCBeta-Regular.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/taipei-sans-tc/dist/Bold/TaipeiSansTCBeta-Bold.css" rel="stylesheet" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -31,16 +31,19 @@
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Lexend', 'Inter', sans-serif;
             background-color: #ffffff;
         }
 
         h1,
         h2,
-        h3,
-        .font-outfit {
-            font-family: 'Outfit', sans-serif;
+        h3 {
+            font-family: 'Taipei Sans TC Beta', 'Noto Sans TC', sans-serif !important;
+            font-weight: 700 !important;
         }
+        
+        .font-taipei { font-family: 'Taipei Sans TC Beta', sans-serif !important; }
+        .font-noto   { font-family: 'Noto Sans TC', sans-serif !important; }
         /* Diagnostic: Force a red line at the very top */
     </style>
     @stack('styles')

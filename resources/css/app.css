@@ -46,16 +46,18 @@ body.font-large {
 
 /* 內文：加粗 + 深灰藍 (跟 Imperial Grace 一致) */
 .app-body {
+    font-family: 'Montserrat', sans-serif !important;
     font-size:   var(--fs-body) !important;
-    font-weight: 700 !important;
+    font-weight: 400 !important;
     color:       #0f172a !important; /* slate-900 */
 }
 
 /* 標題：粗體 + 淡灰色 (slate-300) */
 .app-title {
+    font-family: 'Noto Sans TC', sans-serif !important;
     font-size:   var(--fs-title) !important;
-    font-weight: 700 !important;
-    color:       #cbd5e1 !important; /* slate-300 */
+    font-weight: 900 !important;
+    color:       #1e293b !important; /* slate-800 */
 }
 
 /* ── Tailwind 工具 class (可直接用在 template) ── */
@@ -71,9 +73,9 @@ body.font-large {
 
 /* --- Tier 1: 標籤與細項 (th, label, 11px~13px) --- */
 /* Rule: Always 2px smaller than Tier 3. 小 (13px) | 中 (15px) | 大 (17px) | 顏色：slate-300 */
-body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-size: 13px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
-body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-size: 15px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
-body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-size: 17px !important; font-weight: 700 !important; color: #cbd5e1 !important; }
+body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 13px !important; font-weight: 900 !important; color: #1e293b !important; }
+body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; color: #1e293b !important; }
+body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 17px !important; font-weight: 900 !important; color: #1e293b !important; }
 
 /* Exception: Imperial Grace Module labels should remain Black */
 .imperial-grace-module .app-title,
@@ -89,9 +91,9 @@ body.font-large  .text-\[15px\], body.font-large  .text-\[14px\] { font-size: 17
 
 /* --- Tier 3: 主要內容與標準內文 (td, p, input, 16px~18px) --- */
 /* 小 (15px) | 中 (17px) | 大 (19px) */
-body.font-small  .text-\[18px\], body.font-small  .text-\[17px\], body.font-small  .text-\[16px\], body.font-small td, body.font-small p, body.font-small .app-body { font-size: 15px !important; font-weight: 700 !important; color: #0f172a !important; }
-body.font-medium .text-\[18px\], body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium td, body.font-medium p, body.font-medium .app-body { font-size: 17px !important; font-weight: 700 !important; color: #0f172a !important; }
-body.font-large  .text-\[18px\], body.font-large  .text-\[17px\], body.font-large  .text-\[16px\], body.font-large td, body.font-large p, body.font-large .app-body { font-size: 19px !important; font-weight: 700 !important; color: #0f172a !important; }
+body.font-small  .text-\[18px\], body.font-small  .text-\[17px\], body.font-small  .text-\[16px\], body.font-small td, body.font-small p, body.font-small .app-body { font-family: 'Montserrat', sans-serif !important; font-size: 15px !important; font-weight: 400 !important; color: #0f172a !important; }
+body.font-medium .text-\[18px\], body.font-medium .text-\[17px\], body.font-medium .text-\[16px\], body.font-medium td, body.font-medium p, body.font-medium .app-body { font-family: 'Montserrat', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; color: #0f172a !important; }
+body.font-large  .text-\[18px\], body.font-large  .text-\[17px\], body.font-large  .text-\[16px\], body.font-large td, body.font-large p, body.font-large .app-body { font-family: 'Montserrat', sans-serif !important; font-size: 19px !important; font-weight: 400 !important; color: #0f172a !important; }
 
 /* --- Tier 4: 大型按鈕與小標題 (19px~21px) --- */
 /* 小 (17px) | 中 (19px) | 大 (21px) */
@@ -112,6 +114,6 @@ body.font-medium .text-\[32px\], body.font-medium .text-\[30px\], body.font-medi
 body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-large  .text-\[28px\], body.font-large  .text-\[26px\], body.font-large  .text-\[25px\] { font-size: 32px !important; }
 
 /* 確保輸入框也跟著變，且強制加粗以符合 Imperial Grace 風格 */
-body.font-small input, body.font-small select, body.font-small textarea { font-size: 15px !important; font-weight: 700 !important; }
-body.font-medium input, body.font-medium select, body.font-medium textarea { font-size: 17px !important; font-weight: 700 !important; }
-body.font-large input, body.font-large select, body.font-large textarea { font-size: 19px !important; font-weight: 700 !important; }
+body.font-small input, body.font-small select, body.font-small textarea { font-family: 'Montserrat', sans-serif !important; font-size: 15px !important; font-weight: 400 !important; }
+body.font-medium input, body.font-medium select, body.font-medium textarea { font-family: 'Montserrat', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; }
+body.font-large input, body.font-large select, body.font-large textarea { font-family: 'Montserrat', sans-serif !important; font-size: 19px !important; font-weight: 400 !important; }

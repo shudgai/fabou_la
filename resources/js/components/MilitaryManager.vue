@@ -30,7 +30,7 @@
             </div>
             <div class="ml-2 flex items-center">
                 <button @click="toggleFullTotal" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
-                    總量
+                    總數
                 </button>
             </div>
         </div>
@@ -50,15 +50,10 @@
                                         <stop offset="50%" style="stop-color:rgb(147, 51, 234);stop-opacity:1" />
                                         <stop offset="100%" style="stop-color:rgb(126, 34, 206);stop-opacity:1" />
                                     </template>
-                                    <template v-else-if="folder.name === '虎甲軍' || folder.name === '黑曜軍'">
+                                    <template v-else-if="['虎甲軍', '黑曜軍', '虎賁軍'].includes(folder.name)">
                                         <stop offset="0%" style="stop-color:rgb(55, 65, 81);stop-opacity:1" />
                                         <stop offset="50%" style="stop-color:rgb(17, 24, 39);stop-opacity:1" />
                                         <stop offset="100%" style="stop-color:rgb(0, 0, 0);stop-opacity:1" />
-                                    </template>
-                                    <template v-else-if="folder.name === '虎賁軍'">
-                                        <stop offset="0%" style="stop-color:rgb(59, 130, 246);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(37, 99, 235);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(29, 78, 216);stop-opacity:1" />
                                     </template>
                                     <template v-else>
                                         <stop offset="0%" style="stop-color:rgb(107, 114, 128);stop-opacity:1" />
@@ -252,37 +247,37 @@
 
         <!-- Total Overlay (Enhanced with Breakdown & Close Button) -->
         <div v-if="showFullTotal" class="fixed inset-0 z-[200] flex items-center justify-center px-6 animate-fade-in pointer-events-none">
-            <div class="bg-white text-slate-900 px-8 py-10 rounded-[32px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] flex flex-col pointer-events-auto border border-slate-100 space-y-6 relative w-full max-w-sm">
+            <div class="bg-white text-slate-900 px-8 py-6 rounded-[24px] shadow-2xl flex flex-col pointer-events-auto border border-slate-100 space-y-4 relative w-full max-w-sm">
                 <!-- Close Button -->
                 <button @click="showFullTotal = false" class="absolute right-6 top-6 text-slate-300 hover:text-slate-600 active:scale-95 transition-all p-1">
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
 
-                <div class="flex flex-col items-center justify-center space-y-3">
-                    <span class="app-title !text-slate-400 uppercase tracking-[0.2em]">{{ currentFolder?.name }}總量</span>
-                    <span class="app-body whitespace-nowrap">{{ formatArmyTotal(currentFolderTotal) }}</span>
+                <div class="flex flex-col items-center justify-center space-y-1">
+                    <span class="app-body text-slate-400" style="font-weight: 400 !important;">{{ currentFolder?.name }}總數</span>
+                    <span class="app-body text-slate-900" style="font-weight: 400 !important;">{{ formatArmyTotal(currentFolderTotal) }}</span>
                 </div>
                 
                 <!-- Breakdown Grid (Specific to current army) -->
                 <div v-if="currentFolder?.name === '黑曜軍' || currentFolder?.name === '耀紫軍'" class="pt-4 border-t border-slate-50 grid grid-cols-2 gap-4">
                     <template v-if="currentFolder?.name === '黑曜軍'">
-                        <div class="flex flex-col">
-                            <span class="text-[17px] font-black text-slate-400">總閻尊</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.yan_zun) }}</span>
+                        <div class="flex flex-col items-center">
+                            <span class="app-body text-slate-400" style="font-weight: 400 !important;">閻尊總數</span>
+                            <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important;">{{ formatArmyTotal(breakdownTotals.yan_zun) }}</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-[17px] font-black text-slate-400">總閻闇</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.yan_an) }}</span>
+                        <div class="flex flex-col items-center">
+                            <span class="app-body text-slate-400" style="font-weight: 400 !important;">閻闇總數</span>
+                            <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important;">{{ formatArmyTotal(breakdownTotals.yan_an) }}</span>
                         </div>
                     </template>
                     <template v-if="currentFolder?.name === '耀紫軍'">
-                        <div class="flex flex-col">
-                            <span class="text-[17px] font-black text-slate-400">總龍勝</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.long_sheng) }}</span>
+                        <div class="flex flex-col items-center">
+                            <span class="app-body text-slate-400" style="font-weight: 400 !important;">龍勝總數</span>
+                            <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important;">{{ formatArmyTotal(breakdownTotals.long_sheng) }}</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-[17px] font-black text-slate-400">總龍戰</span>
-                            <span class="text-[17px] font-black text-slate-900">{{ formatArmyTotal(breakdownTotals.long_zhan) }}</span>
+                        <div class="flex flex-col items-center">
+                            <span class="app-body text-slate-400" style="font-weight: 400 !important;">龍戰總數</span>
+                            <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important;">{{ formatArmyTotal(breakdownTotals.long_zhan) }}</span>
                         </div>
                     </template>
                 </div>

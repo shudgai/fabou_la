@@ -71,7 +71,7 @@
                     <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px]" style="color: #0f172a !important;">
+                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
                         {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
@@ -1212,7 +1212,7 @@
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
-                                     <span class="text-[20px] tracking-tight font-outfit" style="color: #475569 !important; font-weight: 400 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
+                                     <span class="text-[20px] tracking-tight font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
                                      <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-200 rounded-full text-[12px] font-black font-outfit" style="color: #0f172a !important;">
                                          {{ dateGroup.items.length }} 則
                                      </span>
@@ -1247,10 +1247,10 @@
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div class="app-title text-[20px] mb-0.5 font-outfit tracking-tighter" style="color: #475569 !important; font-weight: 400 !important;">
+                                            <div class="text-[15px] mb-0.5 font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 400 !important;">
                                                 {{ item.date.replace(/-/g, '/') }}
                                             </div>
-                                            <div class="app-body font-bold text-slate-600 leading-tight">
+                                            <div class="app-body font-bold leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->
@@ -1267,7 +1267,11 @@
                                             </button>
                                             <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-50 overflow-hidden p-1.5 focus:outline-none">
                                                 <div class="flex flex-col space-y-1">
-                                                    <button @click.stop="startInlineEdit(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                    <button @click.stop="toggleExpand(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                        <span class="mr-3 text-lg">{{ isSessionFocused(item) ? '🔼' : '🔽' }}</span>
+                                                        <span class="text-[14px] font-bold text-slate-900">{{ isSessionFocused(item) ? '收起清單' : '展開清單' }}</span>
+                                                    </button>
+                                                    <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
                                                         <span class="mr-3 text-lg">📝</span>
                                                         <span class="text-[14px] font-bold text-slate-900">修改</span>
                                                     </button>
@@ -1290,7 +1294,7 @@
                                 </div>
 
                                 <!-- Expanded Content (Linked Expansion) -->
-                                <div v-if="isSessionFocused(item)" class="px-5 pb-5 animate-fade-in">
+                                <div v-if="isSessionFocused(item)" @click.stop class="px-5 pb-5 animate-fade-in">
                                     <!-- View Mode (Read-Only) -->
                                     <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                         <!-- Personnel Detail Box: Toggleable for high-density -->
@@ -1320,7 +1324,7 @@
                                         </div>
 
                                         <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="mt-2">
-                                            <div class="app-title !text-slate-900 mb-1">賜降：</div>
+                                            <div class="app-body font-bold mb-1">賜降：</div>
                                             <div class="space-y-0.5">
                                                 <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
                                                         <div class="text-[17px] font-bold text-black">
@@ -1355,12 +1359,12 @@
                                             </div>
                                         </div>
 
-                                        <div v-if="item.items_footer_remarks?.trim()" class="app-title !text-slate-700 italic pt-2">
+                                        <div v-if="item.items_footer_remarks?.trim()" class="app-body italic pt-2">
                                             備註：{{ item.items_footer_remarks.trim() }}
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
-                                            <span class="app-title !text-slate-900 tracking-widest">完畢</span>
+                                            <span class="tracking-widest font-bold" style="color: #0d0d0d !important; font-size: 15px;">完畢</span>
                                         </div>
 
                                     </div>
@@ -1372,8 +1376,8 @@
                                             <div class="grid grid-cols-2 gap-3">
                                                 <div class="space-y-1">
                                                     <label class="app-title block ml-1">開示日期</label>
-                                                    <input type="date" v-model="inlineEditData.date" 
-                                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-3 py-2.5 bg-white">
+                                                    <input type="date" v-model="inlineEditData.date"
+                                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-3 py-2.5 bg-white app-body text-[16px] font-bold">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="app-title block ml-1">主講仙師</label>
@@ -1705,12 +1709,14 @@ const inlineEditData = ref({
     items_footer_remarks: ''
 });
 
+const handleMenuEdit = (item) => {
+    startInlineEdit(item);
+    activeDropdownId.value = null;
+};
+
 const startInlineEdit = (item) => {
-    // Ensure the row is expanded and focused
-    if (focusedId.value !== item.id) {
-        toggleExpand(item.id);
-    }
-    
+    // Explicitly set focus to ensure expansion without toggling
+    focusedId.value = item.id;
     inlineEditingId.value = item.id;
     inlineEditData.value = { 
         id: item.id,

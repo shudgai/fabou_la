@@ -15,7 +15,7 @@
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
-                    總量<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[18px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
+                    總數<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[18px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
                 </button>
             </div>
         </div>
@@ -41,13 +41,13 @@
 
         <!-- Total Simple Overlay -->
         <div v-if="showTotal" class="fixed inset-x-0 top-[60px] z-[60] px-4 animate-fade-in pointer-events-none">
-        <div class="bg-white text-slate-900 px-6 py-4 rounded-[24px] shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100 relative">
-            <div class="flex items-center space-x-3">
-                <span class="text-[14px] font-black uppercase tracking-widest text-slate-400">怨靈紀錄總量</span>
-                <span class="text-[22px] font-black font-outfit text-indigo-600">{{ totalGrudgeQuantity }}</span>
+        <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100 relative">
+            <div class="flex flex-col items-center flex-1">
+                <span class="app-body text-slate-400" style="font-weight: 400 !important;">怨靈紀錄總數</span>
+                <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important; font-family: 'Montserrat', sans-serif !important;">{{ totalGrudgeQuantity }}</span>
             </div>
-            <button @click="showTotal = false" class="p-2 -mr-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button @click="showTotal = false" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-300 active:scale-90 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
         </div>
         </div>
@@ -72,8 +72,8 @@
                             <!-- Row 1: Date only -->
                             <div class="flex items-center mb-0.5">
                                 <div class="flex items-baseline space-x-2">
-                                    <div class="app-title">得知日期</div>
-                                    <div class="app-title font-bold ml-0.5 text-slate-600">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
+                                    <div class="app-body text-slate-400" style="font-weight: 400 !important; font-size: 15px !important;">得知日期</div>
+                                    <div class="app-body font-bold ml-0.5 text-slate-600" style="font-size: 15px !important;">{{ item.know_date ? formatDate(item.know_date) : '----/--/--' }}</div>
                                 </div>
                             </div>
 
@@ -82,15 +82,15 @@
                                 <div class="app-body font-bold truncate flex-1">
                                     {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body ml-0.5">{{ item.user_remarks }}</span>
                                 </div>
-                                <div class="flex items-center space-x-2 shrink-0 ml-4">
-                                    <div class="app-title">數量:</div>
+                                <div class="flex items-center space-x-1 shrink-0 ml-4">
+                                    <div class="app-body text-slate-400" style="font-weight: 400 !important;">數量:</div>
                                     <div class="app-body">{{ item.quantity }}</div>
                                 </div>
                                 <div class="ml-4">
-                                    <span v-if="item.destination === '未處理'" class="app-title px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 uppercase tracking-tighter">
+                                    <span v-if="item.destination === '未處理'" class="app-body px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 uppercase tracking-tighter" style="font-weight: 400 !important;">
                                         未處理
                                     </span>
-                                    <span v-else class="app-title px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter">
+                                    <span v-else class="app-body px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter" style="font-weight: 400 !important;">
                                         已處理
                                     </span>
                                 </div>
@@ -140,7 +140,7 @@
                             </div>
 
                             <div class="space-y-1">
-                                <label class="app-title block ml-1">數量</label>
+                                <label class="app-body block ml-1 text-slate-400" style="font-weight: 400 !important;">數量</label>
                                 <div class="w-full px-3 flex items-center app-body">{{ item.quantity }}</div>
                             </div>
 
@@ -152,7 +152,7 @@
                             <div class="space-y-1">
                                 <label class="app-title block ml-1">處理結果</label>
                                 <div class="w-full px-3 flex flex-col app-body" :class="item.destination === '未處理' ? 'text-slate-300' : ''">
-                                    <div v-for="(line, idx) in formatDestinations(item.destination)" :key="idx" class="flex items-center space-x-2">
+                                    <div v-for="(line, idx) in formatDestinations(item.destination)" :key="idx" class="flex items-center space-x-2" style="font-weight: 400 !important;">
                                         <span>{{ line }}</span>
                                     </div>
                                 </div>
