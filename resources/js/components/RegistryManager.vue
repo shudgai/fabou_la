@@ -1,24 +1,39 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
-        <!-- Header (Sub-levels) -->
-        <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+        <!-- Global Dual Header System -->
+        <!-- Header 1: Module Level -->
+        <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
             <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
-            <div class="flex-1 flex flex-col justify-center min-w-0">
-                <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-widest" style="color: rgb(220, 20, 40);">法寶登記專區</div>
-                <div v-if="currentFolder" class="text-[14px] font-bold truncate mt-2 font-outfit" style="color: rgba(220, 20, 40, 0.75);">
-                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40);">
+                    法寶登記專區
                 </div>
             </div>
-
-            <div v-if="currentFolder && !focusedId" class="flex flex-col items-end space-y-1 shrink-0 ml-2">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[11px] text-slate-400 bg-slate-50 border border-slate-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
+            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
+            </div>
+        </div>
+
+        <!-- Header 2: Folder/Action Level -->
+        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-2">
+            <div class="flex items-center flex-1 min-w-0">
+                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex flex-col min-w-0">
+                    <span class="text-[20px] font-medium text-slate-400 truncate tracking-tight">
+                        {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
+                    </span>
+                </div>
+            </div>
+            <div v-if="!addMode" class="ml-2 flex items-center">
                 <button @click="reorderMode = !reorderMode" 
-                        :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-indigo-50 border-indigo-100 text-indigo-500'"
-                        class="px-3 py-1.5 text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
+                        :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
+                        class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
                     {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
             </div>

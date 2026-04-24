@@ -65,12 +65,29 @@
 
         <!-- Level 2: Record List / Content View -->
         <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto pb-24">
-            <!-- Content Header -->
-            <div class="px-6 py-4 flex items-center border-b border-white bg-white/80 backdrop-blur-md sticky top-0 z-30">
-                <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <!-- Global Dual Header System -->
+            <!-- Header 1: Module Level -->
+            <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
+                <button @click="activeFolderId = null" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h2 class="text-[15px] font-black text-slate-900 flex-1 truncate">{{ activeFolder?.name }}</h2>
+                <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                        其他專區
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header 2: Folder Level -->
+            <div class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-2">
+                <div class="flex items-center flex-1 min-w-0">
+                    <button @click="activeFolderId = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <h2 class="text-[20px] font-medium text-slate-400 truncate tracking-tight">
+                        其他專區 - {{ activeFolder?.name }}
+                    </h2>
+                </div>
             </div>
 
             <div v-if="activeFolder" class="h-full">

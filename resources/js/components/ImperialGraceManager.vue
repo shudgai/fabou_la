@@ -180,7 +180,7 @@
                     <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <span class="text-[17px] font-black text-slate-900">{{ displayTitle }}</span>
+                    <span class="text-[20px] font-medium text-slate-400">{{ displayTitle }}</span>
                 </div>
                 <button @click="reorderMode = !reorderMode" 
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
@@ -198,7 +198,7 @@
                         v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'w-full block py-[12px] px-1 border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
+                            'w-full block p-[6px] border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
                             openMenuId === reg.id ? 'z-[50]' : 'z-0'
                         ]">
                         
@@ -270,7 +270,7 @@
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-[102] overflow-hidden animate-slide-up">
                                     <button @click.stop="toggleExpand(reg.id)" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body hover:bg-indigo-50 border-b border-slate-50">收合清單</button>
-                                    <button @click.stop="editItem(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="startInlineEdit(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-slate-50 border-b border-slate-50">修改內容</button>
                                     <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
                                     <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body hover:bg-red-50">刪除</button>
@@ -333,6 +333,50 @@
                                 <label class="app-title tracking-wider block ml-1">詳細內容 / 備註</label>
                                 <div class="w-full px-3 py-1 app-body font-bold text-slate-900 leading-normal whitespace-pre-wrap">
                                     {{ reg.remarks }}
+                                </div>
+                            </div>
+
+
+
+                            <!-- Inline Edit Form (Comprehensive Boxed Style) -->
+                            <div v-if="inlineEditingId === reg.id" class="pt-4 border-t-2 border-indigo-100 mt-4 space-y-4 animate-fade-in text-left">
+                                <div class="space-y-1">
+                                    <label class="app-title block ml-1 mb-1">法寶名稱</label>
+                                    <input v-model="inlineEditData.name" 
+                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-4 py-3 bg-white">
+                                </div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="space-y-1">
+                                        <label class="app-title block ml-1 mb-1">用意</label>
+                                        <input v-model="inlineEditData.purpose" 
+                                               class="w-full rounded-xl border border-slate-300 px-3 py-2.5 bg-white">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="app-title block ml-1 mb-1">狀態</label>
+                                        <select v-model="inlineEditData.status" 
+                                                class="w-full rounded-xl border border-slate-300 px-2 py-2.5 bg-white">
+                                            <option value="已求得">已求得</option>
+                                            <option value="未求得">未求得</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="app-title block ml-1 mb-1">日期</label>
+                                        <input type="date" v-model="inlineEditData.obtained_date" 
+                                               class="w-full rounded-xl border border-slate-300 px-2 py-2.5 bg-white shadow-sm">
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="app-title block ml-1 mb-1">詳細內容 / 備註</label>
+                                    <textarea v-model="inlineEditData.remarks" 
+                                              class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 p-4 bg-white shadow-sm"
+                                              rows="4"
+                                              placeholder="輸入備註..."></textarea>
+                                </div>
+                                <div class="flex space-x-3 pt-4 border-t border-slate-50">
+                                    <button @click.stop="cancelInlineEdit" class="flex-1 h-[56px] rounded-2xl bg-slate-100 text-slate-600 font-black text-[16px] active:scale-95 transition-all">取消</button>
+                                    <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-1 h-[56px] rounded-2xl bg-[#FFB266] text-white font-black text-[19px] shadow-xl active:scale-95 transition-all">
+                                        {{ saving ? '正在存檔...' : '確認修改' }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -448,7 +492,7 @@ const addActions = computed(() => [
 const displayTitle = computed(() => {
     const base = '重大皇恩專區';
     if (currentFolder.value) {
-        return `${base}-${currentFolder.value.name}`;
+        return `${currentFolder.value.name}-${base}`;
     }
     return base;
 });
@@ -519,6 +563,7 @@ const toggleExpand = (id) => {
         focusedId.value = id;
         openMenuId.value = null;
     }
+    inlineEditingId.value = null;
 };
 
 const handleBack = () => {
@@ -551,6 +596,51 @@ watch(currentFolder, () => {
 });
 
 const handleStatusChange = () => { if (form.value.status === '未求得') form.value.obtained_date = ''; };
+
+const inlineEditingId = ref(null);
+const inlineEditData = ref({ id: null, name: '', purpose: '', status: '', obtained_date: '', remarks: '' });
+
+const startInlineEdit = (reg) => {
+    // Ensure the row is expanded and focused
+    if (expandedId.value !== reg.id) {
+        toggleExpand(reg.id);
+    }
+    
+    inlineEditingId.value = reg.id;
+    inlineEditData.value = { 
+        id: reg.id,
+        name: reg.name,
+        purpose: reg.purpose || '',
+        status: reg.status || '未求得',
+        obtained_date: reg.obtained_date || '',
+        remarks: reg.remarks || ''
+    };
+};
+
+const cancelInlineEdit = () => {
+    inlineEditingId.value = null;
+    inlineEditData.value = { id: null, name: '', purpose: '', status: '', obtained_date: '', remarks: '' };
+};
+
+const saveInlineEdit = async () => {
+    if (!inlineEditData.value.id) return;
+    saving.value = true;
+    try {
+        await axios.patch(`/imperial-graces/registry/${inlineEditData.value.id}`, {
+            name: inlineEditData.value.name,
+            purpose: inlineEditData.value.purpose,
+            status: inlineEditData.value.status,
+            obtained_date: inlineEditData.value.obtained_date,
+            remarks: inlineEditData.value.remarks
+        });
+        loadData();
+        cancelInlineEdit();
+    } catch (err) {
+        alert('修改失敗');
+    } finally {
+        saving.value = false;
+    }
+};
 
 const editItem = (reg) => { form.value = { ...reg }; addMode.value = 'single'; openMenuId.value = null; };
 

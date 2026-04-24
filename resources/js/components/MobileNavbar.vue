@@ -46,12 +46,21 @@
                 </button>
             </div>
 
-            <!-- FONT SIZE TOGGLE BUTTON (Rightmost) -->
-            <div class="flex justify-center">
-                <button @click="cycleFontSize" 
+            <!-- FONT SIZE DROPDOWN (Rightmost) -->
+            <div class="flex justify-center relative">
+                <button @click="showFontMenu = !showFontMenu" 
                     class="w-14 h-14 rounded-xl flex items-center justify-center transition-all text-indigo-600 bg-indigo-50/50 active:scale-95 font-bold text-[14px]">
                     字{{ fontSizeLabel }}
                 </button>
+                <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-2 w-20 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-[110] animate-slide-up">
+                    <button v-for="(label, key) in {'font-small':'小', 'font-medium':'中', 'font-large':'大'}" 
+                            :key="key"
+                            @click="setFontSize(key); showFontMenu = false"
+                            :class="currentFontSize === key ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600'"
+                            class="w-full py-3 text-center font-bold text-[15px] hover:bg-slate-50 transition-colors border-b last:border-b-0 border-slate-50">
+                        字{{ label }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -74,20 +83,27 @@ defineProps({
 defineEmits(['back', 'home', 'action', 'search']);
 
 // Font Size System
+const showFontMenu = ref(false);
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
 const fontSizeLabel = computed(() => {
     const opts = { 'font-small': '小', 'font-medium': '中', 'font-large': '大' };
     return opts[currentFontSize.value] || '中';
 });
 
-const cycleFontSize = () => {
-    const sequence = ['font-small', 'font-medium', 'font-large'];
-    let idx = sequence.indexOf(currentFontSize.value);
-    idx = (idx + 1) % sequence.length;
-    const key = sequence[idx];
+const setFontSize = (key) => {
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(key);
     localStorage.setItem('fabou_font_size', key);
     currentFontSize.value = key;
 };
 </script>
+
+<style scoped>
+.animate-slide-up {
+    animation: slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+</style>

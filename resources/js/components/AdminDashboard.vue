@@ -133,11 +133,11 @@ const notebookItems = computed(() => {
     
     const items = [
         { id: 'grace', label: '重大皇恩專區' },
-        { id: 'teaching', label: '父皇仙師開示記錄' },
+        { id: 'teaching', label: '父皇仙師開示專區' },
+        { id: 'kaiwen', label: '開文專區' },
         { id: 'grudge', label: '怨靈記錄專區' },
         { id: 'military', label: '軍隊記錄專區' },
         { id: 'treasure', label: '法寶登記專區' },
-        { id: 'kaiwen', label: '開文專區' },
         { id: 'other', label: '其他專區' },
     ];
 

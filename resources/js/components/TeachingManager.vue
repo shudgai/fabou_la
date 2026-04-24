@@ -47,23 +47,39 @@
             </datalist>
 
             <!-- Header with Back Button (Persistent) -->
-            <div v-if="currentFolder !== null" class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-[60] w-full" style="padding: 12px 10px 10px 10px;">
-                <button @click="handleBack" class="text-slate-400 p-2 mr-2 active:scale-90 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <!-- Global Dual Header System -->
+            <!-- Header 1: Module Level -->
+            <div v-if="currentFolder !== null && !addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
+                <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <div class="flex-1 flex flex-col justify-start min-w-0">
-                    <h2 class="app-title text-[24px] font-black font-outfit tracking-tight text-slate-900 truncate w-full text-left">
-                        {{ addMode ? (editingId ? '修改記錄' : ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示新增記錄' : (currentFolder?.name || '仙師') + '開示新增記錄')) : (currentFolder?.id === 0 || currentFolder?.id === '0' ? '每日開示記錄' : currentFolder?.name + '開示記錄') }}
+                <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                        父皇仙師開示專區
+                    </div>
+                </div>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                    <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Header 2: Folder/Action Level -->
+            <div v-if="currentFolder !== null" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full" :class="{'sticky top-0': addMode}" style="padding: 10px 10px;">
+                <div class="flex items-center flex-1 min-w-0">
+                    <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <h2 class="text-[20px] font-medium text-slate-400 truncate tracking-tight ml-[20px]">
+                        {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
-                <div v-if="!addMode" class="ml-2 pr-1 flex items-center space-x-2">
+                <div v-if="!addMode" class="ml-2 flex items-center">
                     <button @click="reorderMode = !reorderMode" 
-                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-indigo-50 border-indigo-100 text-indigo-500'"
-                            class="px-3 py-[10px] text-[13px] border rounded-xl active:scale-95 transition-all font-black whitespace-nowrap shadow-sm">
+                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
+                            class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
-                    </button>
-                    <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-slate-400 bg-slate-50 border border-slate-100 rounded-lg active:scale-95 transition-all font-black whitespace-nowrap">
-                        {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </div>
             </div>
@@ -196,14 +212,25 @@
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <div @click="form.date = form.date" class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm mt-4">
-                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
-                                            <svg class="w-4 h-4 text-slate-300 ml-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black custom-date-input" style="font-size: 17px !important;">
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">
                                         <label class="app-title ml-1">仙師</label>
-                                        <div class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm">
-                                            <input v-model="masterNameInput" list="master-list-entry" @change="resolveMasterId" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
+                                        <div class="border border-slate-100 rounded-xl bg-slate-50/50 px-3 flex items-center h-[36px] shadow-sm relative">
+                                            <input v-model="masterNameInput" @change="resolveMasterId" @focus="activeMasterDropdownId = 'mainMaster'" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
+                                            <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
+                                                <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            
+                                            <!-- Custom Dropdown Menu -->
+                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇仙師', '太宰仙師', '太子', '閻王仙師']" :key="m"
+                                                     @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
+                                                     class="px-4 h-[38px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ m }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -248,7 +275,7 @@
                                     </div>
 
                                     <!-- Full-Width Selected Personnel Tag Display (Utilizes full page width per user request) -->
-                                    <div v-if="form.dharma_name_ids.length > 0" class="col-span-12 mt-1 animate-fade-in">
+                                    <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生'" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
                                             <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
                                                  class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl text-[17px] font-black flex items-center shadow-sm hover:border-indigo-200 transition-colors">
@@ -328,9 +355,8 @@
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <div class="font-black text-slate-900 text-[17px]">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
-                                            <div class="flex items-center space-x-1 shrink-0">
-                                                <span class="text-[12px] font-bold text-slate-400">📅</span>
-                                                <input type="date" v-model="record.date" class="border-none bg-slate-50 text-[12px] font-black text-slate-500 rounded-lg py-1 px-2 focus:ring-1 focus:ring-indigo-100 outline-none w-32">
+                                            <div v-if="record.date" class="text-[12px] font-bold text-slate-400 flex items-center">
+                                                <span class="mr-1">📅</span> {{ record.date }}
                                             </div>
                                         </div>
                                         <div class="text-slate-600 text-[16px] font-bold leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
@@ -414,7 +440,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[8.5vh] left-0 right-0 p-4 pb-6 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[8.5vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-3.5 shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
@@ -1029,7 +1055,7 @@
                                         <span class="mr-2 text-[15px]">🏘️</span> 
                                         <span>群組：{{ getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).groupName }}</span>
                                     </div>
-                                    <div class="flex items-start">
+                                    <div v-if="getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).names.length > 0" class="flex items-start">
                                         <span class="mr-2 text-[15px] shrink-0">👥</span>
                                         <span class="opacity-80">人員：{{ getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).names.join(', ') }}</span>
                                     </div>
@@ -1201,7 +1227,7 @@
                              <div :id="'teaching-row-' + item.id"
                                   v-show="focusedId === null || focusedId === item.id"
                                   @click.stop="reorderMode ? null : toggleExpand(item.id)"
-                                  class="px-5 py-4 flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
+                                  class="p-[6px] flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
                                   :class="[isSessionFocused(item) ? 'bg-slate-50 ring-2 ring-indigo-50/10' : '']">
                                 
                                 <div class="flex items-center justify-between">
@@ -1241,7 +1267,7 @@
                                             </button>
                                             <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-50 overflow-hidden p-1.5 focus:outline-none">
                                                 <div class="flex flex-col space-y-1">
-                                                    <button @click.stop="editItem(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                    <button @click.stop="startInlineEdit(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
                                                         <span class="mr-3 text-lg">📝</span>
                                                         <span class="text-[14px] font-bold text-slate-900">修改</span>
                                                     </button>
@@ -1264,75 +1290,165 @@
                                 </div>
 
                                 <!-- Expanded Content (Linked Expansion) -->
-                                <div v-if="isSessionFocused(item)" class="px-5 pb-5 animate-fade-in space-y-4">
-                                    <!-- Personnel Detail Box: Toggleable for high-density -->
-                                    <div v-if="getFullRecipientList(item)" class="mt-1 space-y-2">
-                                        <button @click.stop="toggleRecipientDetails(item.id)" 
-                                                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
-                                            <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </div>
-                                            <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
-                                        </button>
-                                        <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
-                                            <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="text-[18px] font-black text-indigo-700 leading-tight">
-                                                {{ getFullRecipientList(item).groupName }}
-                                            </div>
-                                            <div class="text-[15px] font-bold opacity-80 leading-snug">
-                                                {{ getFullRecipientList(item).names.join(', ') }}
-                                            </div>
-                                            <div v-if="item.target_remarks" class="text-[12px] font-medium text-indigo-400 italic pt-1">
-                                                說明：{{ item.target_remarks }}
+                                <div v-if="isSessionFocused(item)" class="px-5 pb-5 animate-fade-in">
+                                    <!-- View Mode (Read-Only) -->
+                                    <div v-if="inlineEditingId !== item.id" class="space-y-4">
+                                        <!-- Personnel Detail Box: Toggleable for high-density -->
+                                        <div v-if="getFullRecipientList(item)" class="mt-1 space-y-2">
+                                            <button @click.stop="toggleRecipientDetails(item.id)" 
+                                                    class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
+                                                <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                    <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </div>
+                                                <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
+                                            </button>
+                                            <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
+                                                <div v-if="getFullRecipientList(item).groupName" class="text-[18px] font-black text-indigo-700 leading-tight">
+                                                    {{ getFullRecipientList(item).groupName }}
+                                                </div>
+                                                <div v-if="getFullRecipientList(item).names.length > 0" class="text-[15px] font-bold opacity-80 leading-snug">
+                                                    {{ getFullRecipientList(item).names.join(', ') }}
+                                                </div>
+                                                <div v-if="item.target_remarks" class="text-[12px] font-medium text-indigo-400 italic pt-1">
+                                                    說明：{{ item.target_remarks }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div v-if="item.content?.trim()" class="text-[17px] text-black font-medium leading-tight whitespace-pre-wrap">
-                                        {{ item.content.trim() }}
-                                    </div>
+                                        <div v-if="item.content?.trim()" class="text-[17px] text-black font-medium leading-tight whitespace-pre-wrap">
+                                            {{ item.content.trim() }}
+                                        </div>
 
-                                    <div v-if="item.items?.length > 0" class="mt-2">
-                                        <div class="text-[17px] text-slate-900 font-bold mb-1">賜降：</div>
-                                        <div class="space-y-0.5">
-                                            <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
-                                                    <div class="text-[17px] font-bold text-black">
-                                                        {{ stripMasterPrefix(gName) }}
-                                                        <template v-if="group.length === 1 && !group[0].name">
-                                                            <span v-if="getMergedContent(group[0].details, group[0].remarks || group[0].sub_name)" class="ml-1">: {{ getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) }}</span>
-                                                        </template>
-                                                    </div>
-                                                    <!-- Specialized Indented Layout: Show if multi-item or has name -->
-                                                    <div class="space-y-0.5" v-if="group.length > 1 || (group[0] && group[0].name)">
-                                                        <div v-if="group.length > 1 && getMainDetails(group)" 
-                                                             class="pl-6 text-[17px] text-black font-bold opacity-80">
-                                                            {{ getMainDetails(group) }}
-                                                        </div>
-                                                    <div v-for="(m, midx) in group" :key="midx">
-                                                        <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
-                                                            <template v-if="m.name">
-                                                                <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
-                                                                <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details && !getCleanRemark(m.remarks || m.sub_name, m.details)) ? ':' + m.details : '' }}</span>
-                                                                <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
+                                        <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="mt-2">
+                                            <div class="text-[17px] text-slate-900 font-bold mb-1">賜降：</div>
+                                            <div class="space-y-0.5">
+                                                <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
+                                                        <div class="text-[17px] font-bold text-black">
+                                                            {{ stripMasterPrefix(gName) }}
+                                                            <template v-if="group.length === 1 && !group[0].name">
+                                                                <span v-if="getMergedContent(group[0].details, group[0].remarks || group[0].sub_name)" class="ml-1">: {{ getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) }}</span>
                                                             </template>
-                                                            
-                                                            <div v-if="m.sub_name?.trim() || m.remarks?.trim()" class="pl-4 text-[14px] text-slate-700 italic font-bold leading-tight mt-0.5">
-                                                                <template v-if="getCleanRemark(m.remarks || m.sub_name, m.details)">
-                                                                    {{ getCleanRemark(m.remarks || m.sub_name, m.details) }}
+                                                        </div>
+                                                        <!-- Specialized Indented Layout: Show if multi-item or has name -->
+                                                        <div class="space-y-0.5" v-if="group.length > 1 || (group[0] && group[0].name)">
+                                                            <div v-if="group.length > 1 && getMainDetails(group)" 
+                                                                 class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                                {{ getMainDetails(group) }}
+                                                            </div>
+                                                        <div v-for="(m, midx) in group" :key="midx">
+                                                            <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                                <template v-if="m.name">
+                                                                    <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
+                                                                    <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details && !getCleanRemark(m.remarks || m.sub_name, m.details)) ? ':' + m.details : '' }}</span>
+                                                                    <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
                                                                 </template>
+                                                                
+                                                                <div v-if="m.sub_name?.trim() || m.remarks?.trim()" class="pl-4 text-[14px] text-slate-700 italic font-bold leading-tight mt-0.5">
+                                                                    <template v-if="getCleanRemark(m.remarks || m.sub_name, m.details)">
+                                                                        {{ getCleanRemark(m.remarks || m.sub_name, m.details) }}
+                                                                    </template>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </template>
+                                                </template>
+                                            </div>
                                         </div>
+
+                                        <div v-if="item.items_footer_remarks?.trim()" class="text-[16px] text-slate-700 font-black italic pt-2">
+                                            備註：{{ item.items_footer_remarks.trim() }}
+                                        </div>
+
+                                        <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
+                                            <span class="text-[17px] text-slate-900 font-bold tracking-widest">完畢</span>
+                                        </div>
+
                                     </div>
 
-                                    <div v-if="item.items_footer_remarks?.trim()" class="text-[16px] text-slate-700 font-black italic pt-2">
-                                        備註：{{ item.items_footer_remarks.trim() }}
-                                    </div>
+                                    <!-- Edit Mode (Interactive Modification Interface) -->
+                                    <div v-if="inlineEditingId === item.id" class="pt-4 border-t-2 border-indigo-100 mt-4 space-y-4 animate-fade-in text-left">
+                                        <!-- Header Boxes (Master & Date & Recipient) -->
+                                        <div class="space-y-3">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="space-y-1">
+                                                    <label class="app-title block ml-1">開示日期</label>
+                                                    <input type="date" v-model="inlineEditData.date" 
+                                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-3 py-2.5 bg-white">
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <label class="app-title block ml-1">主講仙師</label>
+                                                    <input v-model="inlineEditData.master_name" 
+                                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-3 py-2.5 bg-white"
+                                                           placeholder="仙師名稱...">
+                                                </div>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title block ml-1">對象 (開示給)</label>
+                                                <input v-model="inlineEditData.target_name" 
+                                                       class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-4 py-3 bg-white"
+                                                       placeholder="輸入對象...">
+                                            </div>
+                                        </div>
 
-                                    <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
-                                        <span class="text-[17px] text-slate-900 font-bold tracking-widest">完畢</span>
+                                        <!-- Content Box (Opening Content) -->
+                                        <div class="space-y-1">
+                                            <label class="app-title block ml-1">【開示內容】</label>
+                                            <textarea v-model="inlineEditData.content" 
+                                                      @paste="e => handleSmartPaste(e, inlineEditData, null)"
+                                                      class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 p-4 bg-white"
+                                                      rows="5"
+                                                      placeholder="請輸入開示內容..."></textarea>
+                                        </div>
+
+                                        <!-- Items Boxes (Treasure Content) -->
+                                        <div class="space-y-3">
+                                            <label class="app-title block ml-1">【降寶內容】(可直接修改)</label>
+                                            <div v-for="(m, midx) in inlineEditData.items" :key="midx" class="p-4 bg-slate-50 rounded-2xl border-2 border-slate-200 space-y-3 relative shadow-sm">
+                                                <button @click.stop="inlineEditData.items.splice(midx, 1)" class="absolute top-2 right-2 p-1 text-rose-400 active:scale-90 transition-all">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                </button>
+                                                <div class="space-y-1 pr-8">
+                                                    <label class="app-title block ml-1 uppercase">法寶名稱</label>
+                                                    <input v-model="m.name" 
+                                                           class="w-full rounded-xl border border-slate-300 px-3 py-2 bg-white"
+                                                           placeholder="輸入法寶名稱">
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-3">
+                                                    <div class="space-y-1">
+                                                        <label class="app-title block ml-1 uppercase">數據/天份</label>
+                                                        <input v-model="m.details" 
+                                                               class="w-full rounded-xl border border-slate-300 px-3 py-2 bg-white"
+                                                               placeholder="例如：9天份">
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="app-title block ml-1 uppercase">備註</label>
+                                                        <input v-model="m.remarks" 
+                                                               class="w-full rounded-xl border border-slate-300 px-3 py-2 bg-white"
+                                                               placeholder="額外說明">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button @click.stop="inlineEditData.items.push({ name: '', details: '', remarks: '' })" 
+                                                    class="w-full py-3 border-2 border-dashed border-indigo-200 rounded-2xl text-indigo-500 font-black text-[15px] hover:bg-indigo-50 active:scale-[0.99] transition-all bg-indigo-50/20">
+                                                + 新增降寶項目
+                                            </button>
+                                        </div>
+
+                                        <!-- Footer Remarks Box -->
+                                        <div class="space-y-1">
+                                            <label class="app-title block ml-1">【結尾備註】</label>
+                                            <input v-model="inlineEditData.items_footer_remarks" 
+                                                   class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-4 py-3 bg-white"
+                                                   placeholder="例如：完畢...">
+                                        </div>
+
+                                        <!-- Final Action Buttons -->
+                                        <div class="flex space-x-3 pt-6 pb-10">
+                                            <button @click.stop="cancelInlineEdit" class="flex-1 h-[56px] rounded-2xl bg-slate-100 text-slate-600 font-black text-[16px] active:scale-95 transition-all">取消</button>
+                                            <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-1 h-[56px] rounded-2xl bg-[#FFB266] text-white font-black text-[19px] shadow-xl active:scale-95 transition-all">
+                                                {{ saving ? '正在存檔...' : '確認修改' }}
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <!-- Read-Only View: Actions are tucked in the top right menu -->
@@ -1422,13 +1538,16 @@
 
                                 <div v-if="showRecipientDetails[item.id || bIdx]" 
                                      class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-2.5 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
-                                    <div v-if="getFullRecipientList(item).groupName && getFullRecipientList(item).names.length > 1" class="flex items-center text-indigo-700">
+                                    <div v-if="getFullRecipientList(item).groupName" class="flex items-center text-indigo-700">
                                         <span class="mr-2 text-[15px]">🏘️</span> 
                                         <span>群組：{{ getFullRecipientList(item).groupName }}</span>
                                     </div>
-                                    <div class="flex items-start">
+                                    <div v-if="getFullRecipientList(item).names.length > 0" class="flex items-start">
                                         <span class="mr-2 text-[15px] shrink-0">👥</span>
                                         <span class="opacity-80">人員：{{ getFullRecipientList(item).names.join(', ') }}</span>
+                                    </div>
+                                    <div v-if="item.target_remarks" class="text-[12px] font-medium text-indigo-400 italic pt-1">
+                                        說明：{{ item.target_remarks }}
                                     </div>
                                 </div>
                             </div>
@@ -1437,7 +1556,7 @@
                                 {{ item.content.trim() }}
                             </div>
 
-                            <div v-if="item.items?.length > 0" class="pt-3 border-t border-slate-50 space-y-3">
+                            <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="pt-3 border-t border-slate-50 space-y-3">
                                 <div class="text-[12px] font-black text-slate-300 uppercase tracking-widest pl-1">賜降：</div>
                                 <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[15px] text-slate-800 font-bold flex flex-col px-1">
                                     <div class="flex items-center">
@@ -1575,6 +1694,72 @@ const activeDropdownId = ref(null);
 const allExpanded = ref(false);
 const sortDesc = ref(true);
 const reorderMode = ref(false);
+const inlineEditingId = ref(null);
+const inlineEditData = ref({
+    id: null,
+    date: '',
+    master_name: '',
+    target_name: '',
+    content: '',
+    items: [],
+    items_footer_remarks: ''
+});
+
+const startInlineEdit = (item) => {
+    // Ensure the row is expanded and focused
+    if (focusedId.value !== item.id) {
+        toggleExpand(item.id);
+    }
+    
+    inlineEditingId.value = item.id;
+    inlineEditData.value = { 
+        id: item.id,
+        date: item.date || '',
+        master_name: item.master?.name || item.master_name || '父皇仙師',
+        target_name: getRecipientName(item),
+        content: item.content || '',
+        // Robust normalization to ensure pre-filling works regardless of property names (name vs treasure_name)
+        items: item.items ? item.items.map(i => ({
+            name: i.name || i.treasure_name || '',
+            details: i.details || '',
+            remarks: i.remarks || i.sub_name || ''
+        })) : [],
+        items_footer_remarks: item.items_footer_remarks || ''
+    };
+};
+
+const cancelInlineEdit = () => {
+    inlineEditingId.value = null;
+    inlineEditData.value = { id: null, date: '', master_name: '', target_name: '', content: '', items: [], items_footer_remarks: '' };
+};
+
+const saveInlineEdit = async () => {
+    if (!inlineEditData.value.id) return;
+    saving.value = true;
+    try {
+        const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, {
+            date: inlineEditData.value.date,
+            master_name: inlineEditData.value.master_name,
+            target_name: inlineEditData.value.target_name,
+            content: inlineEditData.value.content,
+            items: inlineEditData.value.items,
+            items_footer_remarks: inlineEditData.value.items_footer_remarks
+        });
+        
+        // Update local state
+        const idx = teachings.value.findIndex(t => t.id === inlineEditData.value.id);
+        if (idx !== -1) {
+            teachings.value[idx] = { ...teachings.value[idx], ...res.data };
+        }
+        
+        cancelInlineEdit();
+    } catch (err) {
+        console.error('Failed to save inline edit:', err);
+        alert('存檔失敗，請稍後再試');
+    } finally {
+        saving.value = false;
+    }
+};
 
 const getCleanRemark = (remark, details) => {
     if (!remark) return '';
@@ -2128,6 +2313,25 @@ const addActions = computed(() => {
 // Methods
 const toggleGroupAccordion = (id) => { expandedGroupPicker.value = expandedGroupPicker.value === id ? null : id; };
 
+const stripContentHeaders = (text) => {
+    if (!text) return "";
+    let cleaned = text.trim();
+    // 1. Strip the "開示給" line and everything before it
+    const recMatch = cleaned.match(/開示給(.*?)[：:]/);
+    if (recMatch) {
+        const matchIndex = cleaned.indexOf(recMatch[0]);
+        const lineEndIndex = cleaned.indexOf('\n', matchIndex);
+        if (lineEndIndex !== -1) {
+            cleaned = cleaned.substring(lineEndIndex).trim();
+        } else {
+            cleaned = ""; // Only header was present
+        }
+    }
+    // 2. Strip any date lines at the top
+    cleaned = cleaned.replace(/^(\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})\s*$/m, '').trim();
+    return cleaned;
+};
+
 const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
     const text = e.clipboardData.getData('text') || '';
     if (!text.includes('仙師') && !text.includes('賜降')) return; // Not our format, allow browser default paste
@@ -2140,6 +2344,24 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
     const target = isMainForm ? form.value : targetRefOrObj;
     if (!target) return;
 
+    // 0. Date Detection
+    const dateMatch = text.match(/(\d{4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})/);
+    if (dateMatch) {
+        let dStr = dateMatch[1].trim();
+        const dObj = new Date(dStr.replace(/\s+/g, '/').replace(/\./g, '/').replace(/-/g, '/'));
+        if (!isNaN(dObj)) {
+            const yyyy = dObj.getFullYear();
+            const mm = String(dObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dObj.getDate()).padStart(2, '0');
+            target.date = `${yyyy}-${mm}-${dd}`;
+            
+            // Sync with global date if in main form
+            if (isMainForm) {
+                form.value.date = `${yyyy}-${mm}-${dd}`;
+            }
+        }
+    }
+
     // 1. Master Detection
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const masterMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
@@ -2151,9 +2373,6 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
                 target.master_id = masterMap[mName];
                 masterNameInput.value = mName + '仙師';
             }
-            // Strip header from content safely
-            const headerPart = text.split(mName + '仙師')[0] + (mName + '仙師');
-            teachingContent = teachingContent.replace(headerPart, '');
             break;
         }
     }
@@ -2175,17 +2394,12 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
                 else target.dharmaSearchQuery = foundGroup.name;
             }
         }
-        // Strip recipient header from content
-        teachingContent = teachingContent.replace(recipientMatch[0], '');
     }
 
     // 3. Treasure Detection
     if (text.includes('賜降：')) {
         const parts = text.split('賜降：');
         const treasurePart = parts[1].split('完畢')[0];
-        
-        // Strip treasure block from content
-        teachingContent = teachingContent.split('賜降：')[0];
 
         const lines = treasurePart.split('\n').map(l => l.trim()).filter(l => l && !l.includes('完畢'));
         const newItems = [];
@@ -2217,8 +2431,8 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
         }
     }
 
-    // 4. Content Cleanup & Reactive Update
-    target.content = teachingContent.replace(/完畢[！!]?/g, '').trim();
+    // 4. Content Cleanup: Strip redundant headers to match Image 3 requirement
+    target.content = stripContentHeaders(text);
 
     // Trigger UI updates
     setTimeout(() => {
@@ -2666,9 +2880,14 @@ const getRecipientName = (item) => {
     
     if (!listInfo) return '全體成員' + remarks;
     
-    if (listInfo.groupName && listInfo.names.length > 1) {
-        // Show both group name and the members for full transparency
-        return `${listInfo.groupName} (${listInfo.names.join(', ')})${remarks}`;
+    if (listInfo.groupName) {
+        if (listInfo.groupName === '全體殿生') {
+             return `${listInfo.groupName}${remarks}`;
+        }
+        if (listInfo.names.length > 1) {
+             // Show both group name and the members for full transparency
+             return `${listInfo.groupName} (${listInfo.names.join(', ')})${remarks}`;
+        }
     }
     return listInfo.names.join(', ') + remarks;
 };
@@ -2698,6 +2917,9 @@ const getFullRecipientList = (item) => {
         });
         if (matched) groupName = matched.name;
     }
+
+    // Sort names alphabetically (zh-TW stroke order) for consistent display
+    resolvedNames.sort((a, b) => a.localeCompare(b, 'zh-TW', { collation: 'stroke' }));
 
     return { groupName, names: resolvedNames };
 };
@@ -2745,6 +2967,7 @@ const toggleExpand = (id) => {
     } else {
         focusedId.value = id;
     }
+    inlineEditingId.value = null;
     activeDropdownId.value = null;
     if (showRecipientDetails.value) showRecipientDetails.value = {};
 };
@@ -2872,9 +3095,10 @@ const processBatchText = () => {
             try {
                 const dObj = new Date(dStr.replace(/\s+/g, '/').replace(/\./g, '/').replace(/-/g, '/'));
                 if (!isNaN(dObj.getTime())) {
-                    record.date = dObj.toISOString().split('T')[0];
-                    // Strip the date from text to avoid cluttering the content
-                    text = text.replace(dateMatch[0], '').trim();
+                    const yyyy = dObj.getFullYear();
+                    const mm = String(dObj.getMonth() + 1).padStart(2, '0');
+                    const dd = String(dObj.getDate()).padStart(2, '0');
+                    record.date = `${yyyy}-${mm}-${dd}`;
                 }
             } catch(e) {}
         }
@@ -2911,14 +3135,7 @@ const processBatchText = () => {
         // Clean up any remaining instances of the master name (headers/repetitions) 
         // to avoid duplication with the UI's fixed master header.
         if (matchedKeywordInText) {
-            // Apply a global case-insensitive replacement for the specific keyword 
-            // when it appears as a standalone line or header
-            const headerRegex = new RegExp('^' + matchedKeywordInText + '[：:\\s]*$', 'gm');
-            contentToParse = contentToParse.replace(headerRegex, '').trim();
-            
-            // Also catch "Master：" at the beginning of remaining contents
-            const leadingRegex = new RegExp('^' + matchedKeywordInText + '[：:\\s]*', 'm');
-            contentToParse = contentToParse.replace(leadingRegex, '').trim();
+            // Master name is extracted but NOT stripped to preserve "exactly same" content
         }
         
         // 3. Line-by-line Parsing (Heuristic for content vs items)
@@ -2956,7 +3173,13 @@ const processBatchText = () => {
                 contentLines.push(l);
             }
         });
-        record.content = contentLines.join('\n');
+        // Final record content is the cleaned text block (minus headers) plus "完畢" 
+        // to match Image 3 visual standard.
+        let cleanedRecordContent = stripContentHeaders(text);
+        if (block.includes('完畢') && !cleanedRecordContent.includes('完畢')) {
+            cleanedRecordContent += "\n\n完畢";
+        }
+        record.content = cleanedRecordContent;
         
         newRecords.push(record);
     });
@@ -3488,7 +3711,7 @@ const showAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: '', master_id: null, items: [], 
+        date: new Date().toLocaleDateString('sv-SE'), master_id: null, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 
@@ -3520,7 +3743,7 @@ const showMultiMasterAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: '', master_id: 5, items: [], 
+        date: new Date().toLocaleDateString('sv-SE'), master_id: 5, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 
@@ -3604,3 +3827,4 @@ onMounted(syncRecords);
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
 </style>
+ 

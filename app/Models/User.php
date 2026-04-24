@@ -95,6 +95,7 @@ class User extends Authenticatable
         $isAdmin = $this->isAdmin();
 
         $permissions = [
+            'can_see_kaiwen' => true, // 開文專區對所有人開放
             'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, [
                 '閻帝', '閻爵', '閻澤', '閻願', '靈果', '靈妙', '元續', '金頤', '靈心', '金振', 
                 '金了', '金曉', '道妙', '金悟', '金淑', '金源', '靈智', '靈慧', '金雲', '金戒', 

@@ -37,6 +37,14 @@
                 <h3 class="text-base font-bold font-outfit text-slate-800">父皇仙師開示專區</h3>
             </a>
 
+            <!-- Kaiwen Card -->
+            <a href="{{ route('note.index') }}#kaiwen" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3 class="text-base font-bold font-outfit text-slate-800">開文專區</h3>
+            </a>
+
             <!-- Grudge Card -->
             <a href="{{ route('note.index') }}#grudge" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
                 <div class="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
@@ -59,14 +67,6 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <h3 class="text-base font-bold font-outfit text-slate-800">法寶登記專區</h3>
-            </a>
-
-            <!-- Kaiwen Card -->
-            <a href="{{ route('note.index') }}#kaiwen" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <h3 class="text-base font-bold font-outfit text-slate-800">開文專區</h3>
             </a>
 
             <!-- Other Card -->

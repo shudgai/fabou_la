@@ -1,30 +1,35 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
-        <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-2 h-[60px]">
-            <!-- Left: Back/Return Button -->
-            <div class="w-[60px] flex items-center shrink-0 z-10">
-                <button @click="handleBack" class="text-slate-400 p-3 active:scale-90 transition-transform">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+        <!-- Global Dual Header System -->
+        <!-- Header 1: Module Level -->
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
+            <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                    軍隊記錄專區
+                </div>
             </div>
-
-            <!-- Absolute Center: Title -->
-            <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none h-full">
-                <h1 class="text-[23px] font-black text-slate-900 tracking-tight whitespace-nowrap pointer-events-auto">
-                    {{ currentFolder ? currentFolder.name : '軍隊記錄專區' }}
-                </h1>
-            </div>
-
-            <!-- Right: Interactive Total Toggle / Sort -->
-            <div class="flex-1 flex items-center justify-end shrink-0 z-10 space-x-1 pr-2">
-                <button v-if="currentFolder" @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-black bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100">
+            <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button v-if="currentFolder" 
-                    @click="toggleFullTotal"
-                    class="text-slate-900 font-black whitespace-nowrap active:opacity-60 transition-all text-[17px] ml-1"
-                >
+            </div>
+        </div>
+
+        <!-- Header 2: Folder/Action Level -->
+        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-2">
+            <div class="flex items-center flex-1 min-w-0">
+                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <h2 class="text-[20px] font-medium text-slate-400 truncate tracking-tight">
+                    {{ currentFolder.name }}
+                </h2>
+            </div>
+            <div class="ml-2 flex items-center">
+                <button @click="toggleFullTotal" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
                     總量
                 </button>
             </div>
