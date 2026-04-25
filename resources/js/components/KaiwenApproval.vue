@@ -7,17 +7,15 @@
                 <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-24" style="padding-left: 10px; padding-right: 10px;">
                     <!-- Selection Grid matched to RandomGroup -->
                     <div class="flex items-center justify-between px-3 py-1.5">
-                        <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
-                            {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
-                        </span>
-                        <div class="flex items-center space-x-2">
-                            <button v-if="selectionList.length > 0" @click="toggleSelectionFilter" 
-                                class="px-4 py-1.5 rounded-lg text-[17px] font-black border transition-colors shadow-sm"
-                                :class="selectionFiltered ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-200'"
-                                :style="{ color: selectionFiltered ? 'white !important' : '#2563eb' }"
-                            >
-                                {{ selectionFiltered ? '返回全名冊' : '排列' }}
+                        <div class="flex items-center">
+                            <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
+                            <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                                {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
                             <span class="text-[14px] font-bold shrink-0" :style="{ color: selectionList.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ selectionList.length }} 人</span>
                         </div>
                     </div>
@@ -174,6 +172,10 @@ const loadUsers = async () => {
                     let list = parsed.selectionList || [];
                     selectionList.value = list.map(item => typeof item === 'string' ? { name: item, slots: [null, null, null, null, null] } : item);
                 } catch (err) {}
+            } else {
+                selectionList.value = users.value
+                    .filter(u => u && !excludedNames.includes(u.name))
+                    .map(u => ({ name: u.name.trim(), slots: [null, null, null, null, null] }));
             }
         }
     } catch (e) {

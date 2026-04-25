@@ -54,7 +54,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                    <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                    <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         父皇仙師開示專區
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[22px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
+                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
                         {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
@@ -88,7 +88,7 @@
             <div v-if="currentCategory === null && currentFolder === null" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1">
-                        <h1 class="text-[25px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
+                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
                     </div>
                 </div>
                 
@@ -111,7 +111,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[22px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[42px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     每日開示
                                 </span>
                             </div>
@@ -136,7 +136,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[22px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[42px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     開示記錄
                                 </span>
                             </div>
@@ -153,7 +153,7 @@
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="absolute inset-x-0 text-[22px] font-black tracking-tight text-center text-slate-900">開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">開示資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
@@ -174,7 +174,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                                 <span :class="[
-                                    'font-black tracking-tight leading-tight text-center transition-all text-[22px]',
+                                    'font-black tracking-tight leading-tight text-center transition-all text-[20px]',
                                     folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                                 ]" style="font-weight: 900 !important;">
                                     {{ folder.name }}

@@ -9,6 +9,9 @@
                     <div class="flex flex-col w-full gap-1">
                         <!-- First Row: Main Title -->
                         <div class="flex items-center">
+                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
                             <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
                                 其他專區
                             </div>
@@ -215,7 +218,7 @@
                                 <span class="text-[64px] filter drop-shadow-lg">👑</span>
                                 <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
                             </div>
-                            <h3 class="text-[32px] font-black text-slate-900 bg-white border border-slate-200 px-8 py-4 rounded-2xl shadow-lg mb-4">{{ results[0] }}</h3>
+                            <h3 class="text-[32px] font-black px-8 py-4 rounded-2xl shadow-lg mb-4" style="background-color: #facc15 !important; color: #dc2626 !important; border: 2px solid #eab308 !important;">{{ results[0] }}</h3>
                             <div class="flex items-center space-x-2 text-indigo-300">
                                 <div class="h-[2px] w-8 bg-indigo-100"></div>
                                 <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
@@ -283,7 +286,8 @@ const displayUsers = computed(() => {
 });
 
 const getPendingStyle = (name) => {
-    const isSelected = pendingNames.value.includes(name);
+    const t = name.trim();
+    const isSelected = pendingNames.value.includes(t);
     if (isSelected) {
         return {
             backgroundColor: '#bfdbfe', // Light Blue for Selected
@@ -387,6 +391,8 @@ const loadUsers = async () => {
             selectionFiltered.value = parsed.selectionFiltered || false;
             currentStep.value = parsed.currentStep || 1;
             drawCount.value = parsed.drawCount || 1;
+        } else {
+            pendingNames.value = users.value.map(u => u.name);
         }
     } catch (e) { console.error(e); }
 };

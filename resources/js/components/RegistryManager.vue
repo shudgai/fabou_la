@@ -62,7 +62,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#goldGradL1)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
                     <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
@@ -79,7 +79,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
+                        <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
                     </button>
 
                 </div>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="text-center px-1">
                             <div :class="[
-                                'font-black tracking-tight leading-tight text-center transition-all text-[22px]',
+                                'font-black tracking-tight leading-tight text-center transition-all text-[23px]',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
                             ]" style="font-weight: 900 !important;">{{ folder.name }}</div>
                         </div>

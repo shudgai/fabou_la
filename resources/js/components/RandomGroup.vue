@@ -8,9 +8,14 @@
             <div class="flex-1 overflow-y-auto no-scrollbar pb-20">
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5">
-                    <span class="font-black" style="font-size: 22px !important; color: #0f172a !important;">
-                        {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
-                    </span>
+                    <div class="flex items-center">
+                        <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <span class="font-black" style="font-size: 22px !important; color: #0f172a !important;">
+                            {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
+                        </span>
+                    </div>
                     <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
 
@@ -53,9 +58,10 @@
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
             <!-- Navigation Header -->
             <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10">
-                <div class="w-1"></div>
+                <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
                 <div class="flex items-center space-x-2">
-                    <h2 class="font-black tracking-tight" style="color: #0f172a !important; font-size: 25px !important;">隨機分組設定</h2>
                     <div class="flex items-center space-x-1 text-slate-400">
                         <span class="text-[15px] font-bold">總計</span>
                         <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }}</span>
@@ -562,6 +568,8 @@ const loadUsers = async () => {
                 includeGuardians.value = parsed.includeGuardians || false;
                 currentStep.value = parsed.currentStep || 1;
             } catch (err) { console.error('Draft load failed', err); }
+        } else {
+            pendingNames.value = users.value.map(u => u.name.trim());
         }
     } catch (e) { console.error('Failed to load users', e); }
 };
