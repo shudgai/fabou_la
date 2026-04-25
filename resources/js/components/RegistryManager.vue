@@ -282,7 +282,7 @@
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">日期</label>
                                                     <div @click="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
-                                                        class="w-full bg-white border border-slate-200 rounded-xl px-3 h-[42px] flex items-center justify-between cursor-pointer">
+                                                        class="w-full bg-white border border-slate-400 rounded-xl px-3 h-[42px] flex items-center justify-between cursor-pointer">
                                                         <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">
                                                             {{ formatToROC(editMap[item.id].record_date) || '未設定' }}
                                                         </span>
@@ -291,19 +291,19 @@
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶名稱</label>
-                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                             </div>
                                         </div>

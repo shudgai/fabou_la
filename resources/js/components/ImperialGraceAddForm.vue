@@ -24,21 +24,21 @@
             <div class="px-4 py-[2.5px] bg-white flex space-x-1 border-b border-slate-100 mt-[-5px]">
                 <button @click="localMode = 'single'" 
                     :class="localMode === 'single' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
-                    class="flex-1 py-2 text-sm rounded-xl transition-all">逐筆登錄</button>
+                    class="flex-1 py-2 text-[18px] font-black rounded-xl transition-all">逐筆登錄</button>
                 <button @click="localMode = 'batch'" 
                     :class="localMode === 'batch' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
-                    class="flex-1 py-2 text-sm rounded-xl transition-all">文字/EXCEL 記載</button>
+                    class="flex-1 py-2 text-[18px] font-black rounded-xl transition-all">文字/EXCEL 記載</button>
             </div>
 
             <!-- Scrollable Content -->
             <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
                 
                 <!-- COMMON FIELDS (Date & Master) -->
-                <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px]">
+                <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px] py-[5px]">
                     <div class="space-y-1">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">得知日期</label>
                         <div @click="activeDate = 'record_date'" 
-                            class="w-full h-[36px] rounded-xl bg-white px-3 flex items-center justify-between cursor-pointer shadow-sm">
+                            class="w-full h-[36px] rounded-xl bg-white px-3 flex items-center justify-between cursor-pointer border border-slate-400 shadow-sm">
                             <span :class="form.record_date ? 'text-slate-900 font-bold' : 'text-slate-400'" style="font-size: 17px;">
                                 {{ form.record_date || '選擇日期' }}
                             </span>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="space-y-1">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
-                        <select v-model="form.master_id" style="font-size: 17px;" class="w-full h-[36px] rounded-xl bg-white px-3 font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
+                        <select v-model="form.master_id" style="font-size: 17px;" class="w-full h-[36px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
@@ -55,31 +55,31 @@
 
                 <!-- SINGLE MODE -->
                 <div v-if="localMode === 'single'" class="space-y-1 mt-[-8px] animate-fade-in">
-                    <div class="space-y-1">
+                    <div class="space-y-1 py-[5px]">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300">
+                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300">
                     </div>
 
-                    <div class="space-y-1">
+                    <div class="space-y-1 py-[5px]">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300">
+                        <input v-model="form.purpose" type="text" placeholder="輸入法寶用途..." style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300">
                     </div>
 
                     <div class="grid grid-cols-2 gap-[2.5px]">
-                        <div class="space-y-1">
+                        <div class="space-y-1 py-[5px]">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
-                            <select v-model="form.status" @change="handleStatusChange" style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"
+                            <select v-model="form.status" @change="handleStatusChange" style="font-size: 17px;" class="w-full h-[38px] rounded-xl bg-white px-3 font-bold border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"
                                 :style="form.status === '未求得' ? 'color: #dc2626 !important;' : (form.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
                                 <option value="未求得">未求得</option>
                                 <option value="已求得">已求得</option>
                                 <option value="已登記">已登記</option>
                             </select>
                         </div>
-                        <div v-if="form.status !== '已登記'" class="space-y-1">
+                        <div v-if="form.status !== '已登記'" class="space-y-1 py-[5px]">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
                             <div @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
                                 :class="form.status === '未求得' ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'"
-                                class="w-full h-[38px] rounded-xl bg-white px-3 flex items-center justify-between shadow-sm border-none">
+                                class="w-full h-[38px] rounded-xl bg-white px-3 flex items-center justify-between shadow-sm border border-slate-400">
                                 <span :class="form.obtained_date ? 'text-slate-900 font-bold' : 'text-slate-400'" style="font-size: 17px;">
                                     {{ form.obtained_date || (form.status === '未求得' ? '-' : '選擇日期') }}
                                 </span>
@@ -89,9 +89,9 @@
                         <div v-else></div>
                     </div>
 
-                    <div class="space-y-1">
+                    <div class="space-y-1 py-[5px]">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
-                        <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." style="font-size: 17px;" class="w-full h-[40px] rounded-xl bg-white p-2 font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 outline-none leading-normal placeholder:text-slate-300"></textarea>
+                        <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." style="font-size: 17px;" class="w-full h-[40px] rounded-xl bg-white p-2 font-bold text-slate-900 border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none leading-normal placeholder:text-slate-300"></textarea>
                     </div>
                 </div>
 
@@ -110,7 +110,7 @@
                         
                         <div class="relative group">
                             <textarea v-model="batchInput" rows="8" 
-                                class="w-full rounded-xl border-none shadow-sm text-[14px] bg-white focus:ring-2 focus:ring-indigo-500/20 p-4 font-mono leading-relaxed pr-10 placeholder:text-slate-300" 
+                                class="w-full rounded-xl shadow-sm text-[14px] bg-white border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 p-4 font-mono leading-relaxed pr-10 placeholder:text-slate-300" 
                                 placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
                             <button v-if="batchInput" @click="batchInput = ''" 
                                 class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm">

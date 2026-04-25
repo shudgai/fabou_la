@@ -258,7 +258,7 @@
                         </div>
 
                         <!-- Expanded Detail (Read-Only Style) -->
-                        <div v-if="expandedId === reg.id" class="animate-fade-in py-4 bg-white space-y-4 relative px-3 border-t border-slate-50">
+                        <div v-if="expandedId === reg.id" class="animate-fade-in pt-[5px] pb-4 bg-white space-y-4 relative px-3 border-t border-slate-50">
                             <!-- Three dots menu in expanded view -->
                             <div class="absolute right-2 top-2 z-[20]">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-3 text-slate-400 active:scale-90 transition-all">
