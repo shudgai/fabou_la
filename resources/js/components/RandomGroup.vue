@@ -5,25 +5,25 @@
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
 
             <!-- Main scrollable selection grid -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar pb-20">
+            <div class="flex-1 overflow-y-auto no-scrollbar pb-20">
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5">
-                    <span class="font-black text-[13px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                    <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
                         {{ selectionFiltered ? '已確認名單 (可再調整)' : '點選在場名冊 (藍色為已選)' }}
                     </span>
-                    <span class="text-[13px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
+                    <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
 
-                <!-- 5-per-row grid — zero side padding, fills full width -->
-                <div class="grid grid-cols-5 px-1" style="gap: 2px; background: #ffffff;">
+                <!-- Grid evenly distributed, stretching boxes -->
+                <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
                     <button
                         v-for="user in displayUsers"
                         :key="user.id"
                         @click="togglePending(user.name)"
-                        class="flex items-center justify-center font-black text-[18px] transition-all active:scale-95 rounded-lg border-none py-[10px] shadow-none"
+                        class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                         :style="getPendingStyle(user.name)"
                     >
-                        {{ user.name }}
+                        <span class="truncate leading-none">{{ user.name }}</span>
                     </button>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
-                    class="w-full py-[10px] rounded-2xl font-black text-[18px] transition-all active:scale-[0.98] text-white"
+                    class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white"
                     :style="{
                         background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
                         boxShadow: 'none',
@@ -52,14 +52,12 @@
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden animate-slide-in">
             <!-- Navigation Header -->
             <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10">
-                <button @click="currentStep = 1" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <div class="w-1"></div>
                 <div class="flex items-center space-x-2">
-                    <h2 class="text-[20px] font-black text-slate-900">隨機分組設定</h2>
+                    <h2 class="text-[19px] font-black text-slate-900">隨機分組設定</h2>
                     <div class="flex items-center space-x-1 text-slate-400">
-                        <span class="text-[13px] font-bold">總計</span>
-                        <span class="text-[16px] font-black text-indigo-600">{{ selectedNames.length }}</span>
+                        <span class="text-[15px] font-bold">總計</span>
+                        <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }}</span>
                     </div>
                 </div>
             </div>
@@ -70,8 +68,8 @@
                 <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
                 <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
                     <div class="flex items-center justify-between px-0.5">
-                        <label class="text-[17px] font-black uppercase tracking-wider text-amber-600">🌟 指定關主</label>
-                        <span class="text-[13px] font-black text-amber-400 uppercase tracking-widest">⚠️ 全場抽選</span>
+                        <label class="text-[15px] font-black uppercase tracking-wider text-amber-600">🌟 指定關主</label>
+                        <span class="text-[15px] font-black text-amber-400 uppercase tracking-widest">⚠️ 全場抽選</span>
                     </div>
                     
                     <div class="flex items-start space-x-2">
@@ -80,7 +78,7 @@
                             <div class="relative">
                                 <div class="flex items-center bg-white border border-amber-100 rounded-xl px-3 h-10 shadow-sm">
                                     <input type="text" v-model="guardianQuery" placeholder="搜尋或選取關主..." @focus="isGDropdownOpen = true" 
-                                        class="w-full bg-transparent outline-none text-[16px] font-black text-amber-700 placeholder:text-amber-200">
+                                        class="w-full bg-transparent outline-none text-[15px] font-black text-amber-700 placeholder:text-amber-200">
                                     <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div v-show="isGDropdownOpen && filteredGDropdown.length > 0 && !isDrawing" class="absolute top-[42px] left-0 right-0 bg-white border border-amber-100 rounded-xl shadow-2xl z-[50] max-h-[160px] overflow-y-auto custom-scrollbar">
@@ -253,9 +251,9 @@
                             </div>
                         </div>
                         <div class="grid gap-1">
-                            <div v-for="(group, idx) in groups" :key="idx" :class="['p-1.5 px-3 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-50 border-amber-100 ring-2 ring-amber-50' : 'bg-white border-slate-100 shadow-none']">
-                                <div class="flex items-center justify-between mb-0.5"><span :class="['text-[15px] font-black uppercase tracking-tight', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.name }}</span><span class="text-[11px] font-bold text-slate-300">{{ group.members.length }} 人</span></div>
-                                <div class="flex flex-wrap gap-x-4 gap-y-0.5"><span v-for="member in group.members" :key="member" :class="['text-[17px] font-black', group.isSeed ? 'text-amber-900' : 'text-slate-900']">{{ member }}</span></div>
+                            <div v-for="(group, idx) in groups" :key="idx" class="p-1.5 px-3 rounded-2xl border transition-all bg-white border-slate-300 shadow-sm">
+                                <div class="flex items-center justify-between mb-0.5"><span class="text-[15px] font-black uppercase tracking-tight text-slate-900">{{ group.name }}</span><span class="text-[12px] font-bold text-slate-600">{{ group.members.length }} 人</span></div>
+                                <div class="flex flex-wrap gap-x-4 gap-y-0.5"><span v-for="member in group.members" :key="member" class="text-[17px] font-black text-black">{{ member }}</span></div>
                             </div>
                         </div>
                     </div>
@@ -268,7 +266,7 @@
                     <button
                         @click="doGrouping"
                         :disabled="selectedNames.length < 1 || isDrawing"
-                        class="w-full py-[10px] rounded-2xl font-black text-[18px] transition-all active:scale-[0.98] shadow-none"
+                        class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-none"
                         style="background: #4f46e5; color: #ffffff;"
                     >
                         <span style="color: #ffffff !important;">開始分組演算</span>
@@ -361,14 +359,14 @@
                 <!-- Group results -->
                 <div v-if="groups.length > 0" class="space-y-2">
                     <div v-for="(group, idx) in groups" :key="'g3g'+idx"
-                        :class="['p-3 px-4 rounded-2xl border', group.isSeed ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200']"
+                        :class="['p-3 px-4 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-600 border-amber-400 shadow-amber-100' : 'bg-[#3b82f6] border-white/20 shadow-blue-100']"
                     >
                         <div class="flex items-center justify-between mb-1">
-                            <span :class="['text-[15px] font-black', group.isSeed ? 'text-amber-600' : 'text-slate-500']">{{ group.name }}</span>
-                            <span class="text-[12px] font-bold text-slate-300">{{ group.members.length }} 人</span>
+                            <span :class="['text-[13px] font-black', group.isSeed ? 'text-amber-100' : 'text-white/70']">{{ group.name }}</span>
+                            <span :class="['text-[11px] font-bold', group.isSeed ? 'text-amber-200' : 'text-white/50']">{{ group.members.length }} 人</span>
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-0">
-                            <span v-for="member in group.members" :key="member" :class="['text-[20px] font-black', group.isSeed ? 'text-amber-900' : 'text-slate-900']">{{ member }}</span>
+                            <span v-for="member in group.members" :key="member" class="text-[19px] font-black text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3)">{{ member }}</span>
                         </div>
                     </div>
                 </div>
@@ -406,23 +404,43 @@ const STORAGE_KEY = 'fabou_random_group_draft_v2';
 // Show all users, or only selected ones after first confirm
 const selectionFiltered = ref(false);
 const displayUsers = computed(() => {
-    if (!users.value) return [];
+    if (!users.value || !Array.isArray(users.value)) return [];
+    const pending = pendingNames.value || [];
     if (selectionFiltered.value) {
-        // Only show selected, in original user list order
-        const pending = pendingNames.value || [];
         return users.value.filter(u => u && u.name && pending.includes(u.name.trim()));
     }
-    return users.value;
+    return users.value.filter(u => u && u.name);
 });
+
+const selectAll = () => {
+    if (!users.value) return;
+    pendingNames.value = users.value.map(u => u.name.trim());
+};
 
 // Style for pending selection: blue = selected, dim = not selected
 const getPendingStyle = (name) => {
     const t = name.trim();
     const isSelected = pendingNames.value.includes(t);
-    return {
-        backgroundColor: isSelected ? '#3b82f6' : '#94a3b8',
-        color: '#ffffff',
-    };
+    if (isSelected) {
+        return {
+            backgroundColor: '#bfdbfe', // Light Blue for Selected
+            color: '#000000',
+            border: '2px solid #93c5fd'
+        };
+    } else {
+        return {
+            backgroundColor: '#ffffff', // White for Unselected
+            color: '#000000', // Black text
+            border: '1px solid #d1d5db',
+            textShadow: 'none'
+        };
+    }
+};
+
+const toggleSelectionFilter = () => {
+    if (pendingNames.value.length > 0) {
+        selectionFiltered.value = !selectionFiltered.value;
+    }
 };
 
 // Toggle a name in the pending list
@@ -459,19 +477,21 @@ const confirmSelection = () => {
 };
 
 const availableSeeds = computed(() => {
+    if (!users.value || !selectedNames.value) return [];
     const filtered = selectedNames.value.filter(n => !seedNames.value.includes(n));
     return filtered.sort((a, b) => {
-        const idxA = users.value.findIndex(u => u.name === a);
-        const idxB = users.value.findIndex(u => u.name === b);
+        const idxA = users.value.findIndex(u => u && u.name === a);
+        const idxB = users.value.findIndex(u => u && u.name === b);
         return idxA - idxB;
     });
 });
 
 const availableGuardians = computed(() => {
+    if (!users.value || !selectedNames.value) return [];
     const list = selectedNames.value.filter(n => !guardianResults.value.includes(n));
     return list.sort((a, b) => {
-        const idxA = users.value.findIndex(u => u.name === a);
-        const idxB = users.value.findIndex(u => u.name === b);
+        const idxA = users.value.findIndex(u => u && u.name === a);
+        const idxB = users.value.findIndex(u => u && u.name === b);
         return idxA - idxB;
     });
 });
@@ -645,7 +665,7 @@ const buildFlyingSticks = (names) => {
         id: i,
         name: name,
         x: 20 + (i * 5.5) % 60,
-        dur: 2.2 + (i * 0.2) % 1.5,
+        dur: 1.8 + (i * 0.1) % 1.2,
         delay: (i * 0.25) % 2.5,
         rotate: -40 + (i * 17) % 80,
         drift: -60 + (i * 23) % 120,
@@ -771,7 +791,10 @@ onMounted(loadUsers);
 
 defineExpose({
     invertSelection,
-    resetAll
+    resetAll,
+    selectAll,
+    toggleSelectionFilter,
+    selectionFiltered
 });
 </script>
 

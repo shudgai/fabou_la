@@ -3,49 +3,63 @@
         
         <!-- Step 1: Selection Page -->
         <div v-if="step === 1" class="flex flex-col h-full overflow-hidden animate-fade-in relative">
-            <div class="bg-white border-b border-slate-100 py-2 px-4 flex justify-between items-center shrink-0 shadow-sm z-10">
-                <h3 class="text-[18px] font-black text-slate-900">選擇法號與開文人員</h3>
-                <button @click="clearAll" class="text-[14px] text-rose-500 font-bold active:scale-95 transition-transform bg-rose-50 px-3 py-1 rounded-lg hover:bg-rose-100">
-                    清空
-                </button>
-            </div>
 
-            <div class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar pb-24">
+
+            <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-24" style="padding-left: 10px; padding-right: 10px;">
                 
 
-                <!-- Selection Grid -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="bg-slate-50 px-3 py-2 border-b border-slate-100 flex items-center justify-between sticky top-0 z-10">
-                        <span class="font-black text-[14px] text-slate-500">
-                            點選待定法號 (紅色為已選)
-                        </span>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-[14px] font-bold text-slate-400">已選 {{ selectionList.length }} 人</span>
-                        </div>
+                <!-- Selection Grid matched to RandomGroup -->
+                <div class="flex items-center justify-between px-3 py-1.5">
+                    <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                        {{ selectionFiltered ? '已確認排序名單' : '點選待定法號 (藍色為已選)' }}
+                    </span>
+                    <div class="flex items-center space-x-2">
+                        <button v-if="selectionList.length > 0" @click="toggleSelectionFilter" 
+                            class="px-4 py-1.5 rounded-lg text-[17px] font-black border transition-colors shadow-sm"
+                            :class="selectionFiltered ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-200'"
+                            :style="{ color: selectionFiltered ? 'white !important' : '#2563eb' }"
+                        >
+                            {{ selectionFiltered ? '返回全名冊' : '排列' }}
+                        </button>
+                        <span class="text-[14px] font-bold shrink-0" :style="{ color: selectionList.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ selectionList.length }} 人</span>
                     </div>
-                    <div class="grid grid-cols-6 gap-1 p-2">
+                </div>
+
+                <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
                         <button v-for="user in filteredUsers" :key="user.id" 
                             @click="addParticipant(user.name)"
-                            class="h-[38px] flex items-center justify-center transition-all active:scale-95 rounded-lg border cursor-pointer"
-                            :style="{ 
-                                backgroundColor: isParticipantSelected(user.name) ? '#fff1f2' : 'transparent',
-                                borderColor: isParticipantSelected(user.name) ? '#fda4af' : 'transparent',
-                                color: isParticipantSelected(user.name) ? '#e11d48' : '#1e293b'
-                            }"
-                        >
-                            <span class="text-[17px] font-black transition-all truncate px-0.5 leading-none">
-                                {{ user.name }}
+                            class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                        :style="{ 
+                            backgroundColor: isParticipantSelected(user.name) ? '#bfdbfe' : '#ffffff',
+                            borderColor: isParticipantSelected(user.name) ? '#93c5fd' : '#d1d5db',
+                            color: '#000000',
+                            borderStyle: 'solid',
+                            borderWidth: isParticipantSelected(user.name) ? '2px' : '1px',
+                            textShadow: 'none'
+                        }"
+                    >
+                        <span class="truncate leading-none">
+                            <span v-if="isParticipantSelected(user.name)" class="text-[15px] mr-0.5 opacity-70">
+                                {{ getParticipantIndex(user.name) }}.
                             </span>
-                        </button>
-                    </div>
+                            {{ user.name }}
+                        </span>
+                    </button>
                 </div>
 
             </div>
             
             <!-- Confirm Action -->
-            <div class="absolute bottom-[7vh] md:bottom-6 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 z-20 flex justify-center">
-                <button @click="goToStep2" :disabled="selectionList.length === 0" class="w-full max-w-lg bg-indigo-600 font-black text-[18px] py-3.5 rounded-2xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:bg-indigo-700 hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none disabled:active:scale-100" style="color: white !important;">
-                    確定 (進入核定表)
+            <div class="fixed bottom-[7vh] left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center">
+                <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
+                    :disabled="selectionList.length === 0" 
+                    class="w-full max-w-lg font-black text-[17px] py-3.5 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 shadow-lg flex items-center justify-center" 
+                    :style="{ 
+                        backgroundColor: !selectionFiltered ? '#1d4ed8' : '#16a34a',
+                        boxShadow: !selectionFiltered ? '0 4px 14px 0 rgba(29, 78, 216, 0.39)' : '0 4px 14px 0 rgba(22, 163, 74, 0.39)'
+                    }"
+                >
+                    <span style="color: #ffffff !important;">{{ !selectionFiltered ? '完成人員選取 (進入排列)' : '確定順序 (進入核定表)' }}</span>
                 </button>
             </div>
         </div>
@@ -57,16 +71,16 @@
                     <button @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <h3 class="text-[18px] font-black text-slate-900 tracking-tight">核定結果</h3>
+                    <h3 class="text-[17px] font-black text-slate-900 tracking-tight">核定結果</h3>
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto px-2 py-4 flex flex-col custom-scrollbar">
+            <div class="flex-1 overflow-y-auto py-4 flex flex-col custom-scrollbar" style="padding-left: 10px; padding-right: 10px;">
                 
                 <!-- Instruction Text -->
                 <div class="px-2 pb-4 mb-2 flex flex-col space-y-1">
-                    <div class="text-[16px] font-black text-slate-700 tracking-wide">✓代表合格 ×代表不合格</div>
-                    <div class="text-[16px] font-black text-slate-700 tracking-wide">開文結果請示如下：</div>
+                    <div class="text-[15px] font-black text-slate-700 tracking-wide">✓代表合格 ×代表不合格</div>
+                    <div class="text-[15px] font-black text-slate-700 tracking-wide">開文結果請示如下：</div>
                 </div>
 
                 <!-- Ledger Table -->
@@ -75,7 +89,7 @@
                         <tbody>
                             <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[42px]">
                                 <td class="pl-3 pr-1 py-1 w-20 whitespace-nowrap align-middle border-b border-slate-50">
-                                    <span class="text-[18px] font-black text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
+                                    <span class="text-[17px] font-black text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
                                 </td>
                                 
                                 <td v-for="n in 3" :key="'slot'+n" class="text-center w-22 px-1 py-1 align-middle border-b border-slate-50">
@@ -101,11 +115,10 @@
                 </div>
             </div>
 
-            <!-- Copy Action -->
-            <div class="absolute bottom-[7vh] md:bottom-6 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 z-20 flex justify-center">
-                <button @click="copyToLine" class="w-full max-w-lg bg-emerald-600 h-14 rounded-2xl font-black shadow-[0_4px_14px_0_rgb(5,150,105,0.39)] hover:bg-emerald-700 hover:shadow-[0_6px_20px_rgba(5,150,105,0.23)] transition-all active:scale-[0.98] text-[18px] tracking-widest flex items-center justify-center space-x-2" style="color: white !important;">
+            <div class="fixed bottom-[7vh] left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center">
+                <button @click="copyToLine" class="w-full max-w-lg bg-emerald-600 h-14 rounded-2xl font-black shadow-[0_4px_14px_0_rgb(5,150,105,0.39)] hover:bg-emerald-700 hover:shadow-[0_6px_20px_rgba(5,150,105,0.23)] transition-all active:scale-[0.98] text-[17px] tracking-widest flex items-center justify-center space-x-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    <span style="color: white !important;">複製貼 LINE</span>
+                    <span style="color: #ffffff !important;">複製貼 LINE</span>
                 </button>
             </div>
         </div>
@@ -122,6 +135,7 @@ const searchQuery = ref('');
 const users = ref([]);
 const selectionList = ref([]);
 const step = ref(1);
+const selectionFiltered = ref(false);
 
 // Storage Keys
 const STORAGE_KEY = 'fabou_kaiwen_draft_v2';
@@ -174,11 +188,21 @@ const loadUsers = async () => {
 const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾'];
 
 const filteredUsers = computed(() => {
-    let list = users.value.filter(u => !excludedNames.includes(u.name));
+    let list = users.value.filter(u => u && !excludedNames.includes(u.name));
+    if (selectionFiltered.value) {
+        list = list.filter(u => isParticipantSelected(u.name))
+                   .sort((a, b) => getParticipantIndex(a.name) - getParticipantIndex(b.name));
+    }
     if (!searchQuery.value) return list;
     const q = searchQuery.value.toLowerCase();
     return list.filter(u => u.name.toLowerCase().includes(q));
 });
+
+const getParticipantIndex = (name) => {
+    if (!name) return 0;
+    const trimmedName = name.trim();
+    return selectionList.value.findIndex(item => item.name.trim() === trimmedName) + 1;
+};
 
 const isParticipantSelected = (name) => {
     if (!name) return false;
@@ -234,10 +258,24 @@ const invertSelection = () => {
         slots: [null, null, null, null, null]
     }));
 };
+const selectAll = () => {
+    selectionList.value = filteredUsers.value.map(user => ({
+        name: user.name,
+        slots: [null, null, null, null, null]
+    }));
+};
+const toggleSelectionFilter = () => {
+    if (selectionList.value.length > 0) {
+        selectionFiltered.value = !selectionFiltered.value;
+    }
+};
 
 defineExpose({
     clearAll,
-    invertSelection
+    selectAll,
+    invertSelection,
+    toggleSelectionFilter,
+    selectionFiltered
 });
 
 const goToStep2 = () => {
@@ -281,7 +319,6 @@ const copyToLine = () => {
 
 onMounted(loadUsers);
 
-defineExpose({ clearAll });
 </script>
 
 <style scoped>

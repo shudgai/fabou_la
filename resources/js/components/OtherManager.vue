@@ -7,19 +7,18 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[22px] font-black tracking-tight" style="color: #0f172a !important;">其他專區資料夾</h2>
+                    <h2 class="font-black tracking-tight" style="color: #0f172a !important; font-size: 25px !important;">其他專區資料夾</h2>
                 </div>
-                <button v-if="!activeFolderId" class="w-10 h-10 bg-slate-100 border border-slate-200 rounded-full flex items-center justify-center text-slate-300 cursor-not-allowed">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
 
-            <div class="grid grid-cols-2 gap-4 p-6 place-items-center pb-24">
+            <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
-                    <div class="relative w-[148px] h-[148px]">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
+                    style="background-color: rgb(255, 250, 205);">
+                    <div class="relative w-[280px] h-[280px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                             <defs>
                                 <linearGradient :id="'otherGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
@@ -33,7 +32,7 @@
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                             <span :class="[
-                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[32px]',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                             ]" style="font-weight: 900 !important;">
                                 {{ folder.name }}
@@ -42,11 +41,28 @@
                     </div>
                 </button>
 
-                <!-- Lucky Draw Tool Button -->
+                <!-- Lucky Draw Tool Button (RED FOLDER STYLE) -->
                 <button @click="showLuckyDraw = true"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
-                    <div class="relative w-[148px] h-[148px] bg-slate-50 border-2 border-dashed border-indigo-200 rounded-[32px] flex flex-col items-center justify-center shadow-inner">
-                        <span class="text-[25px] font-black text-indigo-600 font-outfit uppercase tracking-tighter text-center px-2">抽籤筒<br>(工具)</span>
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
+                    style="background-color: rgb(255, 250, 205);">
+                    <div class="relative w-[280px] h-[280px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                            <defs>
+                                <linearGradient id="luckyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#luckyGrad)" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#luckyGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[32px]" style="font-weight: 900 !important;">
+                                抽順序
+                            </span>
+                        </div>
                     </div>
                 </button>
             </div>
@@ -67,30 +83,38 @@
         <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto pb-24">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
-            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 48px;">
-                <div class="flex items-center justify-between w-full h-full">
-                    <div class="w-1/2 flex items-center">
-                        <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important;">
+            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 48px;">
+                <div class="flex flex-col w-full gap-1">
+                    <!-- First Row: Main Title -->
+                    <div class="flex items-center">
+                        <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-1 -ml-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
                             其他專區
                         </div>
                     </div>
-                    <div class="w-1/2 flex items-center justify-end">
-                        <div v-if="activeFolder" class="text-[17px] text-slate-500 font-bold flex items-center">
-                            {{ activeFolder.name }}
-                            <template v-if="activeFolder.name.includes('開文核定')">
-                                <button @click="kaiwenRef?.invertSelection()" class="ml-2 px-3 py-[10px] text-[12px] font-black text-white bg-indigo-500 rounded-md transition-colors shadow-none border-none">
-                                    反選
-                                </button>
-                                <button @click="kaiwenRef?.clearAll()" class="ml-1 p-1 text-slate-400 hover:text-red-500 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    
+                    <!-- Second Row: Subtitle + Quick Controls -->
+                    <div v-if="activeFolder" class="flex items-center justify-between w-full mt-1">
+                        <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">{{ activeFolder.name }}</span>
+                        
+                        <div class="flex items-center justify-end flex-1">
+                            <template v-if="activeFolder.name.includes('隨機分組')">
+                                <div class="flex items-center space-x-1 flex-1 max-w-[80px]" style="transform: translateY(-10px);">
+                                    <button ontouchstart="" @click="randomGroupRef?.invertSelection(); activeAction = 'invert'" 
+                                        :class="[
+                                            'flex-1 py-[6px] text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
+                                            activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
+                                        ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+                                </div>
+                                <button @click="randomGroupRef?.resetAll()" class="p-1 ml-1 text-slate-400 hover:text-red-500 shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </template>
-                            <template v-else-if="activeFolder.name.includes('隨機分組')">
-                                <button @click="randomGroupRef?.invertSelection()" class="ml-2 px-3 py-[10px] text-[12px] font-black text-white bg-indigo-500 rounded-md transition-colors shadow-none border-none">
-                                    反選
-                                </button>
-                                <button @click="randomGroupRef?.resetAll()" class="ml-1 p-1 text-slate-400 hover:text-red-500 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <template v-else-if="activeFolder.name.includes('開文核定')">
+                                <button @click="kaiwenRef?.clearAll()" class="p-1 ml-1 text-slate-400 hover:text-red-500 shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </template>
                         </div>
@@ -204,6 +228,7 @@ const showLuckyDraw = ref(false);
 const showAddFolder = ref(false);
 const showAddRecord = ref(false);
 const randomGroupRef = ref(null);
+const activeAction = ref('');
 
 const newFolderName = ref('');
 const newFolderColor = ref('#6366f1');
