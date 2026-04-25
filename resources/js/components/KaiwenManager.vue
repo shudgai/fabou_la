@@ -1,9 +1,14 @@
 <template>
     <div class="bg-slate-50 h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
+        <AddActionMenu 
+            :show="showAddMenu" 
+            :actions="addActions" 
+            @close="showAddMenu = false"
+        />
         <!-- Header (Shared) -->
         <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
-                <div class="app-title text-[24px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
+                <div class="app-title text-[25px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
                     {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : '開文專區' }}
                 </div>
             </div>
@@ -42,16 +47,21 @@
 
 
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col border border-slate-200" style="padding: 10px 15px; min-width: 140px;">
-                <div class="flex items-start justify-between space-x-3">
-                    <span :class="persistentToast.type === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-[15px] font-black leading-normal break-words uppercase tracking-wide">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-center justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-tight whitespace-nowrap tracking-widest">
                         {{ persistentToast.msg }}
                     </span>
-                    <button v-if="persistentToast.type === 'confirm' || persistentToast.type === 'deleteConfirm'" @click="persistentToast = null" class="text-slate-400 w-5 h-5 flex items-center justify-center font-normal text-sm">✕</button>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-2 mt-3 pb-1">
-                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 px-2 py-1.5 rounded border text-[13px] font-normal">取消</button>
-                    <button @click="executeDelete" class="flex-1 bg-red-50 text-red-600 px-2 py-1.5 rounded border border-red-100 text-[13px] font-normal">確定刪除</button>
+                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">確定刪除</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-purple-50 text-purple-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">確定</button>
                 </div>
             </div>
         </div>
@@ -84,9 +94,9 @@
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ (post.title || '').replace(/\s+/g, '').substring(7, 14) }}</span>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
-                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="app-body !font-bold tracking-widest">合格</span>
-                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="app-body !font-bold tracking-widest">不合格</span>
-                                <span v-else class="app-body !font-bold tracking-widest">待定</span>
+                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="text-[17px] font-black tracking-widest">合格</span>
+                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="text-[17px] font-black tracking-widest">不合格</span>
+                                <span v-else class="text-[17px] font-black tracking-widest text-slate-400">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
@@ -100,25 +110,24 @@
                                     
                                     <!-- Actions Menu -->
                                     <div v-if="openMenuId === post.id" class="absolute right-4 top-12 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[100] py-1 animate-fade-in overflow-hidden">
-                                        <button @click.stop="openPostMode(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50">
-                                            <svg class="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        <button @click.stop="openPostMode(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
                                             殿中修改之文
                                         </button>
-                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>展開清單</button>
-                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>收起清單</button>
-                                        <button @click.stop="editItem(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>編輯紀錄</button>
-                                        <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>刪除紀錄</button>
+                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">展開清單</button>
+                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">收起清單</button>
+                                        <button @click.stop="editItem(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
+                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製 LINE</button>
+                                        <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
+                                        <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
                                 </template>
-                                <button v-else class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                                <button v-else @click.stop="toggleExpand(post.id)" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </div>
                         </div>
                         
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
-
-                            
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
                                 <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest block mb-2">抬頭</span>
@@ -127,8 +136,41 @@
                                 </h3>
                             </div>
 
-                            <div>
-                                <span class="app-title block mb-3 uppercase tracking-widest">開文內容</span>
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="app-title block uppercase tracking-widest">開文內容</span>
+                                    <div class="relative">
+                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                                            <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                                <circle cx="5" cy="12" r="2" />
+                                                <circle cx="12" cy="12" r="2" />
+                                                <circle cx="19" cy="12" r="2" />
+                                            </svg>
+                                        </button>
+                                        
+                                        <!-- Actions Menu in Expanded View -->
+                                        <div v-if="openMenuId === 'exp-' + post.id" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[200] py-1 animate-fade-in overflow-hidden">
+                                            <button @click.stop="toggleExpand(post.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                收起清單
+                                            </button>
+                                            <button @click.stop="editItem(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                編輯紀錄
+                                            </button>
+                                            <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                複製 LINE
+                                            </button>
+                                            <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                下載檔案
+                                            </button>
+                                            <button @click.stop="openPostMode(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                殿中修改之文
+                                            </button>
+                                            <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">
+                                                刪除紀錄
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="app-body whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.original_content || '-' }}</p>
                             </div>
                             <div v-if="post.modified_content" class="h-[1px] bg-slate-200"></div>
@@ -148,10 +190,7 @@
                                 </button>
                             </div>
                             
-                            <div class="pt-8 flex justify-center space-x-4 pb-12">
-                                <button @click.stop="toggleExpand(post.id)" class="px-8 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all">返回列表</button>
-                                <button @click.stop="editItem(post, 'weekly')" class="px-8 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">編輯此紀錄</button>
-                            </div>
+                            <div class="pt-8 pb-12"></div>
                         </div>
                     </div>
                 </div>
@@ -159,7 +198,6 @@
 
             <!-- Self Post View -->
             <div v-if="currentTab === 'self'" class="space-y-3 max-w-2xl mx-auto">
-                <!-- Removed top add button -->
                 <div 
                     v-for="post in selfPosts" 
                     :key="post.id"
@@ -195,17 +233,19 @@
                                     
                                     <!-- Actions Menu -->
                                     <div v-if="openMenuId === post.id" class="absolute right-4 top-12 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[100] py-1 animate-fade-in overflow-hidden">
-                                        <button v-if="post.message_type === '玄訊'" @click.stop="openPostMode(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                        <button v-if="post.message_type === '玄訊'" @click.stop="openPostMode(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
                                             <svg class="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             殿中修改之文
                                         </button>
-                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>展開清單</button>
-                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>收起清單</button>
-                                        <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-slate-700 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>編輯紀錄</button>
-                                        <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>刪除紀錄</button>
+                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>展開清單</button>
+                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>收起清單</button>
+                                        <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
+                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製 LINE</button>
+                                        <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
+                                        <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
                                 </template>
-                                <button v-else class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                                <button v-else @click.stop="toggleExpand(post.id)" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </div>
@@ -214,8 +254,35 @@
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 mt-2 animate-fade-in overflow-y-auto" @click.stop>
 
                             
-                            <div>
-                                <span class="app-title block mb-3 uppercase tracking-widest">開文內容</span>
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="app-title block uppercase tracking-widest">開文內容</span>
+                                    <div class="relative">
+                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                                            <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                                <circle cx="5" cy="12" r="2" />
+                                                <circle cx="12" cy="12" r="2" />
+                                                <circle cx="19" cy="12" r="2" />
+                                            </svg>
+                                        </button>
+                                        
+                                        <!-- Actions Menu in Expanded View -->
+                                        <div v-if="openMenuId === 'exp-' + post.id" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[200] py-1 animate-fade-in overflow-hidden">
+                                            <button @click.stop="toggleExpand(post.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                收起清單
+                                            </button>
+                                            <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                編輯紀錄
+                                            </button>
+                                            <button v-if="post.message_type === '玄訊'" @click.stop="openPostMode(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                殿中修改之文
+                                            </button>
+                                            <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">
+                                                刪除紀錄
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p class="app-body whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.original_content || '-' }}</p>
                             </div>
                             <div v-if="post.modified_content" class="h-[1px] bg-slate-200"></div>
@@ -229,10 +296,7 @@
                                 <p v-else class="app-body font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
                             
-                            <div class="pt-8 flex justify-center space-x-4 pb-12">
-                                <button @click.stop="toggleExpand(post.id)" class="px-8 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all">返回列表</button>
-                                <button @click.stop="editItem(post, 'self')" class="px-8 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">編輯此紀錄</button>
-                            </div>
+                            <div class="pt-8 pb-12"></div>
                         </div>
                     </div>
                 </div>
@@ -267,10 +331,16 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">審核狀態</label>
-                            <div class="flex items-center space-x-4 h-[36px] px-2">
-                                <button @click="form.status = null" :class="!form.status ? 'text-slate-900' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">待定</button>
-                                <button @click="form.status = '合格'" :class="form.status === '合格' ? 'text-[#15803d]' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">合格</button>
-                                <button @click="form.status = '不合格'" :class="form.status === '不合格' ? 'text-red-500' : 'text-slate-400'" class="transition-all active:scale-95 tracking-widest" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">不合格</button>
+                            <div class="flex items-center space-x-5 h-[36px] px-2">
+                                <button @click="form.status = null" 
+                                    :class="!form.status ? 'text-slate-900 opacity-100' : 'text-slate-400 opacity-40'" 
+                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">待定</button>
+                                <button @click="form.status = '合格'" 
+                                    :class="form.status === '合格' ? 'text-[#16a34a] opacity-100' : 'text-slate-400 opacity-40'" 
+                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">合格</button>
+                                <button @click="form.status = '不合格'" 
+                                    :class="form.status === '不合格' ? 'text-[#dc2626] opacity-100' : 'text-slate-400 opacity-40'" 
+                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">不合格</button>
                             </div>
                         </div>
 
@@ -289,13 +359,13 @@
 
                         <div class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly'" class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
                                 <div v-for="(char, i) in titleChars" :key="i" class="flex items-center bg-white border-b border-slate-50 last:border-0 group">
                                     <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important;">{{ char }}</div>
                                     <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
                                 </div>
                             </div>
-                            <div v-if="addMode === 'self'">
+                            <div v-else>
                                 <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;"></textarea>
                             </div>
                         </div>
@@ -394,9 +464,9 @@
             </button>
 
             <!-- Center Add Button -->
-            <button @click.stop="openAddMode(currentTab)" 
-                class="w-9 h-9 bg-purple-600 text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button @click.stop="showAddMenu = true" 
+                class="w-12 h-12 bg-purple-600 text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-all -mt-4 ring-4 ring-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
@@ -444,6 +514,7 @@
 import { ref, onMounted, onUnmounted, watch, computed, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
+import AddActionMenu from './AddActionMenu.vue';
 
 const emit = defineEmits(['goHome']);
 
@@ -454,6 +525,51 @@ const masters = ref([]);
 const loading = ref(false);
 const searchQuery = ref('');
 const showSearch = ref(false);
+
+const showFontMenu = ref(false);
+const showAddMenu = ref(false);
+const isManualWeekly = ref(false);
+
+const addActions = computed(() => {
+    if (currentTab.value === 'weekly') {
+        return [
+            { 
+                label: '新增每週開文', 
+                description: '14字抬頭藏頭詩格式',
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />',
+                bgColor: 'bg-purple-100',
+                textColor: 'text-purple-600',
+                handler: () => { openAddMode('weekly'); isManualWeekly.value = false; }
+            },
+            { 
+                label: '新增其他文章', 
+                description: '自由內容、直接貼上或輸入',
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.625A2.25 2.25 0 013.375 18V4.625C3.375 4.004 3.879 3.5 4.5 3.5h9.75a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 01-.75-.75V3.5" />',
+                bgColor: 'bg-amber-100',
+                textColor: 'text-amber-600',
+                handler: () => { openAddMode('weekly'); isManualWeekly.value = true; }
+            }
+        ];
+    }
+    return [
+        { 
+            label: '新增自行載錄', 
+            description: '手動輸入開文內容',
+            icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />',
+            bgColor: 'bg-indigo-100',
+            textColor: 'text-indigo-600',
+            handler: () => { openAddMode('self'); isManualWeekly.value = false; }
+        },
+        { 
+            label: '新增其他文章', 
+            description: '自由內容、直接貼上或輸入',
+            icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.625A2.25 2.25 0 013.375 18V4.625C3.375 4.004 3.879 3.5 4.5 3.5h9.75a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 01-.75-.75V3.5" />',
+            bgColor: 'bg-amber-100',
+            textColor: 'text-amber-600',
+            handler: () => { openAddMode('self'); isManualWeekly.value = true; }
+        }
+    ];
+});
 
 const filteredWeeklyPosts = computed(() => {
     if (!searchQuery.value) return weeklyPosts.value;
@@ -484,7 +600,7 @@ const viewerImage = ref(null);
 const activeStatusDropdownId = ref(null);
 
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
-const showFontMenu = ref(false);
+
 const fontSizeValue = computed(() => {
     if (currentFontSize.value === 'font-small') return 0;
     if (currentFontSize.value === 'font-large') return 2;
@@ -580,7 +696,7 @@ const titleChars = computed(() => {
 });
 
 const currentOriginalPreview = computed(() => {
-    if (addMode.value === 'weekly') {
+    if (addMode.value === 'weekly' && !isManualWeekly.value) {
         return titleChars.value.map((char, i) => (char || '') + (weeklyLines.value[i] || '')).join('\n');
     }
     return form.value.original_content;
@@ -665,16 +781,35 @@ const editItem = (post, type) => {
     form.value = { ...post };
     
     if (type === 'weekly' && post.original_content) {
-        const lines = post.original_content.split('\n');
+        const lines = (post.original_content || '').split('\n');
         const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
-        weeklyLines.value = Array(14).fill('').map((_, i) => {
-            const fullLine = lines[i] || '';
-            const char = cleanTitle[i] || '';
-            if (char && fullLine.startsWith(char)) {
-                return fullLine.substring(char.length);
+        
+        // Detect if it's manual or acrostic
+        // If it's 14 lines and matches the title characters, it's likely acrostic
+        let isAcrostic = lines.length >= 14;
+        if (isAcrostic && cleanTitle) {
+            for (let i = 0; i < 14; i++) {
+                if (cleanTitle[i] && lines[i] && !lines[i].startsWith(cleanTitle[i])) {
+                    isAcrostic = false;
+                    break;
+                }
             }
-            return fullLine;
-        });
+        }
+        
+        isManualWeekly.value = !isAcrostic;
+
+        if (isAcrostic) {
+            weeklyLines.value = Array(14).fill('').map((_, i) => {
+                const fullLine = lines[i] || '';
+                const char = cleanTitle[i] || '';
+                if (char && fullLine.startsWith(char)) {
+                    return fullLine.substring(char.length);
+                }
+                return fullLine;
+            });
+        }
+    } else {
+        isManualWeekly.value = false;
     }
     
     openMenuId.value = null;
@@ -776,6 +911,37 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('paste', handleGlobalPaste);
 });
+
+const copyAsTextFile = (post) => {
+    try {
+        const text = formatPostForFile(post);
+        navigator.clipboard.writeText(text);
+        persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 2000);
+    } catch (err) {
+        console.error('Copy failed:', err);
+    }
+};
+
+const downloadPost = (post) => {
+    const text = formatPostForFile(post);
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `開文紀錄_${post.date}_${(post.title || '').substring(0, 10)}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+};
+
+const formatPostForFile = (post) => {
+    let res = `日期：${post.date}\n`;
+    res += `\n開文內容：\n${post.original_content}\n`;
+    if (post.modified_content && !post.modified_content.startsWith('data:image')) {
+        res += `\n殿中修改之文：\n${post.modified_content}\n`;
+    }
+    return res;
+};
 
 const openPostMode = (post, type) => {
     addMode.value = type;

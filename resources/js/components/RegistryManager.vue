@@ -7,7 +7,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -25,7 +25,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
+                    <span class="text-[22px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
                         {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
                     </span>
                 </div>
@@ -38,7 +38,7 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-4 py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1">
-                        <h1 class="text-[30px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
+                        <h1 class="text-[25px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[17px] text-slate-400">- {{ currentFolder.name }} -</span>
@@ -48,9 +48,9 @@
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[220px] h-[176px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
                         <div class="mb-2">
-                            <svg class="w-[120px] h-[120px]" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-[180px] h-[180px]" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="goldGradL1" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
@@ -62,12 +62,12 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#goldGradL1)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[220px] h-[176px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
                         <div class="mb-2">
-                            <svg class="w-[120px] h-[120px]" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-[180px] h-[180px]" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="redGradL2" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
@@ -79,7 +79,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
+                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
                     </button>
 
                 </div>
@@ -89,12 +89,12 @@
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[144px] h-[144px] relative bg-white shadow-sm',
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[148px] h-[148px] relative bg-white shadow-sm',
                             currentCategory === 'major' ? 'border-yellow-400' : 'border-red-600'
                         ]">
                         
                         <div class="relative mb-1">
-                             <svg class="w-[88px] h-[88px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
+                             <svg class="w-[96px] h-[96px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                 <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop v-if="currentCategory === 'major'" offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
@@ -111,7 +111,7 @@
                         </div>
                         <div class="text-center px-1">
                             <div :class="[
-                                'font-black tracking-tight leading-tight text-center transition-all text-[24px]',
+                                'font-black tracking-tight leading-tight text-center transition-all text-[22px]',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
                             ]" style="font-weight: 900 !important;">{{ folder.name }}</div>
                         </div>
@@ -184,33 +184,25 @@
                                 </button>
                                 
                                 <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-48 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-[5px] ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
+                                     class="absolute right-0 mt-2 w-auto min-w-[140px] bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path v-if="expandedIds.has(item.id)" d="M19 15l-7-7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path v-else d="M5 9l7 7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
+                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                         修改資料
                                     </button>
-                                    <button @click.stop="copyToLine(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        貼 LINE
+                                    <button @click.stop="copyAsTextFile(item); openMenuId = null" 
+                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        複製 LINE
                                     </button>
                                     <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        下載資料
+                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        下載檔案
                                     </button>
                                     <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
                                         刪除資料
                                     </button>
                                 </div>
@@ -258,33 +250,25 @@
                                                         </button>
                                                         <!-- Expanded Item Menu -->
                                                         <div v-if="openMenuId === item.id" @click.stop 
-                                                            class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[110] overflow-hidden animate-pop-in">
+                                                            class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[110] overflow-hidden animate-pop-in py-1">
                                                             <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path v-if="expandedIds.has(item.id)" d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                                                    <path v-else d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                                                </svg>
+                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                                                 {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
                                                             </button>
                                                             <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
-                                                                <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                                                 修改資料
                                                             </button>
-                                                            <button @click.stop="copyToLine(item); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
-                                                                <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                                貼 LINE
+                                                            <button @click.stop="copyAsTextFile(item); openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                                複製 LINE
                                                             </button>
                                                             <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
-                                                                <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                                下載資料
+                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                                下載檔案
                                                             </button>
                                                             <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
-                                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
                                                                 刪除資料
                                                             </button>
                                                         </div>
@@ -530,20 +514,24 @@
         />
         
         <!-- Persistent Toasts/Picker -->
-        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] px-6 w-full max-w-sm">
-             <div class="bg-white p-6 rounded-[32px] shadow-2xl border border-slate-100 text-center animate-fade-in relative">
-                 <button @click="persistentToast = null" class="absolute top-4 right-4 text-slate-300 hover:text-slate-500 transition-colors">
-                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                 </button>
-                 <p class="text-[17px] font-black text-slate-800 font-outfit leading-relaxed pt-2">{{ persistentToast.msg }}</p>
-                 <div v-if="persistentToast.type === 'confirm'" class="mt-6 flex space-x-3">
-                     <button v-for="a in persistentToast.actions" @click="a.handler" class="flex-1 py-3.5 rounded-2xl bg-red-50 text-red-600 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">{{ a.label }}</button>
-                     <button @click="persistentToast = null" class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">取消</button>
-                 </div>
-                 <div v-else class="mt-6">
-                     <button @click="persistentToast = null" class="w-full py-3.5 rounded-2xl bg-indigo-50 text-indigo-600 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">知道了</button>
-                 </div>
-             </div>
+        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-center justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-tight whitespace-nowrap tracking-widest">
+                        {{ persistentToast.msg }}
+                    </span>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div v-if="persistentToast.type === 'confirm'" class="flex space-x-4">
+                    <button v-for="a in persistentToast.actions" :key="a.label" @click="a.handler" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">{{ a.label }}</button>
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-indigo-50 text-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">知道了</button>
+                </div>
+            </div>
         </div>
         
         <!-- Delete Confirmation Overlay -->
@@ -632,6 +620,33 @@ const formatToROC = (dateStr) => {
     let y = parseInt(parts[0]);
     if (y > 1911) y -= 1911;
     return `${y}/${parts[1].padStart(2,'0')}/${parts[2].padStart(2,'0')}`;
+};
+
+const copyAsTextFile = (item) => {
+    try {
+        const text = formatRegistryForFile(item);
+        navigator.clipboard.writeText(text);
+        alert('內容已複製到剪貼簿');
+    } catch (err) {
+        console.error('Copy failed:', err);
+    }
+};
+
+const formatRegistryForFile = (item) => {
+    let registries = [...(item.dharma_name_registries || [])];
+    
+    registries.sort((a, b) => {
+        const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
+        const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
+    });
+
+    let res = `法寶：${item.name}\n用意：${item.purpose || ''}\n日期：${formatToROC(getEarliestDate(item))}\n------------------\n`;
+    registries.forEach(r => {
+        res += `${getDharmaNameText(r)} | ${formatToROC(r.obtained_date) || '-'} | ${r.remarks || ''}\n`;
+    });
+    return res;
 };
 
 // States

@@ -7,7 +7,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
                     軍隊記錄專區
                 </div>
             </div>
@@ -24,7 +24,7 @@
                 <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h2 class="text-[20px] font-black text-slate-900 truncate tracking-tight">
+                <h2 class="text-[22px] font-black text-slate-900 truncate tracking-tight">
                     {{ currentFolder.name }}
                 </h2>
             </div>
@@ -66,7 +66,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                            <span class="font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px] text-white" style="font-weight: 900 !important;">
+                            <span class="font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[22px] text-white" style="font-weight: 900 !important;">
                                 {{ folder.name }}
                             </span>
                         </div>
@@ -110,7 +110,7 @@
                             v-show="focusedId === null || focusedId === item.id"
                             @click="toggleExpand(item.id)"
                             :class="[
-                                'py-[16px] px-2 border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                'py-[16px] pl-2 pr-[10px] border-b border-slate-900 last:border-b-0 relative group transition-all cursor-pointer z-0',
                                 openMenuId === item.id ? 'z-[50]' : 'z-0',
                                 item.groupParity === 1 ? 'bg-slate-50/50' : 'bg-white',
                                 { 'border-t border-slate-900': index === 0 && !focusedId, 'border-b-0': focusedId === item.id }
@@ -152,11 +152,15 @@
 
                             <!-- Menu Button Layer -->
                             <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
-                                <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400 active:text-indigo-600 transition-colors"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full p-2.5 text-left app-body font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
+                                <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400 active:text-indigo-600 transition-colors">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">展開詳情</button>
+                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                 </div>
                             </div>
 
@@ -164,11 +168,15 @@
                             <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative px-1.5">
                                 <!-- Menu Button for Expanded State -->
                                 <div class="absolute right-0 top-0 z-[101]">
-                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-2.5 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
-                                        <button @click.stop="editItem(item)" class="w-full p-2.5 text-left app-body font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                        <button @click.stop="deleteItem(item.id)" class="w-full p-2.5 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
+                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all">
+                                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                    </button>
+                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">收合詳情</button>
+                                        <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                        <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                        <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                        <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                     </div>
                                 </div>
 
@@ -612,6 +620,53 @@ const performExcelExport = () => {
     const fileName = `${currentFolder.value.name}_載錄報表_${dateStr}.xlsx`;
     
     XLSX.writeFile(workbook, fileName);
+};
+
+const triggerSimpleDownload = (text, filename) => {
+    const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+};
+
+const formatMilitaryRecordForFile = (item) => {
+    let res = `【軍隊記錄 - ${item.army_type}】\r\n`;
+    res += `日期：${formatDate(item.know_date)}\r\n`;
+    res += `法號：${item.user_name}${item.user_remarks ? '(' + item.user_remarks + ')' : ''}\r\n`;
+    
+    if (['黑曜軍', '耀紫軍'].includes(item.army_type)) {
+        if (item.army_type === '黑曜軍') {
+            res += `閻尊：${(item.yan_zun || 0).toLocaleString()}\r\n`;
+            res += `閻闇：${(item.yan_an || 0).toLocaleString()}\r\n`;
+        } else {
+            res += `龍勝：${(item.long_sheng || 0).toLocaleString()}\r\n`;
+            res += `龍戰：${(item.long_zhan || 0).toLocaleString()}\r\n`;
+        }
+    }
+    
+    res += `總數：${formatArmyTotal(item.quantity)}\r\n`;
+    res += `備註：${item.remarks_text || '無'}`;
+    return res;
+};
+
+const copySingleRecord = async (item) => {
+    const text = formatMilitaryRecordForFile(item);
+    try {
+        await navigator.clipboard.writeText(text);
+        alert('已複製單筆記錄');
+    } catch (e) {
+        alert('複製失敗');
+    }
+};
+
+const downloadSingleRecord = (item) => {
+    const text = formatMilitaryRecordForFile(item);
+    triggerSimpleDownload(text, `${item.army_type}_${item.user_name}_${formatDate(item.know_date).replace(/\//g, '')}.txt`);
 };
 
 const form = ref({});

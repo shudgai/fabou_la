@@ -54,7 +54,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                    <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         父皇仙師開示專區
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
+                    <h2 class="text-[22px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
                         {{ ((currentFolder?.id === 0 || currentFolder?.id === '0') ? '父皇仙師每日開示記錄' : (currentFolder?.name + '開示記錄')) + (addMode ? '-新增載錄' : '') }}
                     </h2>
                 </div>
@@ -88,7 +88,7 @@
             <div v-if="currentCategory === null && currentFolder === null" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1">
-                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
+                        <h1 class="text-[25px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
                     </div>
                 </div>
                 
@@ -97,7 +97,7 @@
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
-                        <div class="relative w-[260px] h-[208px]">
+                        <div class="relative w-[260px] h-[260px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -111,7 +111,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[32px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[22px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     每日開示
                                 </span>
                             </div>
@@ -122,7 +122,7 @@
                     <button 
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
-                        <div class="relative w-[260px] h-[208px]">
+                        <div class="relative w-[260px] h-[260px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -136,7 +136,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[32px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[22px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     開示記錄
                                 </span>
                             </div>
@@ -153,7 +153,7 @@
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[22px] font-black tracking-tight text-center text-slate-900">開示資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
@@ -174,7 +174,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                                 <span :class="[
-                                    'font-black tracking-tight leading-tight text-center transition-all text-[24px]',
+                                    'font-black tracking-tight leading-tight text-center transition-all text-[22px]',
                                     folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                                 ]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
@@ -1041,7 +1041,7 @@
                                 <div class="absolute top-0 right-0 px-3 py-1 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-xl shadow-sm">預覽</div>
                                 
                                 <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
-                                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ form.date.replace(/-/g, '/') }}</span>
+                                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ (form.date || '').replace(/-/g, '/') }}</span>
                                     <span class="text-[16px] font-black text-slate-900 leading-tight mt-1.5 pr-8">
                                         {{ (masterNameInput || form.master_name || '仙師') }}開示給：{{ getRecipientName({ dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks }) }}
                                     </span>
@@ -1210,7 +1210,7 @@
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
-                                     <span class="text-[20px] tracking-tight font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ dateGroup.date.replace(/-/g, '/') }}</span>
+                                     <span class="text-[20px] tracking-tight font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ (dateGroup.date || '').replace(/-/g, '/') }}</span>
                                      <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-200 rounded-full text-[12px] font-black font-outfit" style="color: #0f172a !important;">
                                          {{ dateGroup.items.length }} 則
                                      </span>
@@ -1246,7 +1246,7 @@
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
                                             <div class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
-                                                {{ item.date.replace(/-/g, '/') }}
+                                                {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
                                             <div class="app-body font-bold leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
@@ -1266,24 +1266,19 @@
                                             <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-50 overflow-hidden p-1.5 focus:outline-none">
                                                 <div class="flex flex-col space-y-1">
                                                     <button @click.stop="toggleExpand(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="mr-3 text-lg">{{ isSessionFocused(item) ? '🔼' : '🔽' }}</span>
-                                                        <span class="text-[14px] font-bold text-slate-900">{{ isSessionFocused(item) ? '收起清單' : '展開清單' }}</span>
+                                                        <span class="text-[17px] font-black text-slate-900">{{ isSessionFocused(item) ? '收起清單' : '展開清單' }}</span>
                                                     </button>
                                                     <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="mr-3 text-lg">📝</span>
-                                                        <span class="text-[14px] font-bold text-slate-900">修改</span>
+                                                        <span class="text-[17px] font-black text-slate-900">修改</span>
                                                     </button>
-                                                    <button @click.stop="copyToLine(item, index, groupedRecords); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="mr-3 text-lg">🗨️</span>
-                                                        <span class="text-[14px] font-bold text-slate-900">複製 LINE</span>
+                                                    <button @click.stop="copyAsTextFile(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                        <span class="text-[17px] font-black text-slate-900">複製 LINE</span>
                                                     </button>
                                                     <button @click.stop="downloadTeaching(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="mr-3 text-lg">📄</span>
-                                                        <span class="text-[14px] font-bold text-slate-900">下載文字檔</span>
+                                                        <span class="text-[17px] font-black text-slate-900">下載檔案</span>
                                                     </button>
                                                     <button @click.stop="deleteItem(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-rose-50 rounded-2xl transition-all text-rose-500">
-                                                        <span class="mr-3 text-lg">🗑️</span>
-                                                        <span class="text-[14px] font-bold">刪除</span>
+                                                        <span class="text-[17px] font-black">刪除</span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1519,7 +1514,7 @@
                              class="bg-white rounded-[28px] p-5 border border-slate-100 shadow-sm space-y-4 animate-fade-in text-left">
                             <div class="flex items-center justify-between mb-1">
                                 <span v-if="saveConfirmModal.records.length > 1" class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-black text-[14px] shadow-lg shadow-indigo-100">{{ bIdx + 1 }}</span>
-                                <span class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">{{ (item.date || form.date).replace(/-/g, '/') }}</span>
+                                <span class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">{{ (item.date || form.date || '').replace(/-/g, '/') }}</span>
                             </div>
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
@@ -2997,6 +2992,49 @@ const handleBack = () => {
     } 
 };
 
+const copyAsTextFile = (item) => {
+    try {
+        const text = formatTeachingForFile(item);
+        navigator.clipboard.writeText(text);
+        alert('內容已複製到剪貼簿');
+    } catch (err) {
+        console.error('Copy failed:', err);
+    }
+};
+
+const formatTeachingForFile = (item, index = null, allRecords = []) => {
+    const recipient = getRecipientName(item);
+    const grouped = groupItems(item.items);
+    let treasureLines = [];
+    const groupKeys = Object.keys(grouped);
+    
+    groupKeys.forEach((gName, gIdx) => {
+        const group = grouped[gName];
+        let line = groupKeys.length > 1 ? `${gIdx + 1}. ${gName}` : gName;
+        
+        if (group.length === 1 && !group[0].name && !group[0].sub_name) {
+            if (group[0].details) line += `: ${group[0].details}`;
+            treasureLines.push(line);
+        } else if (group.length === 1) {
+            line += `: ${group[0].name || ''} ${group[0].sub_name || ''} ${group[0].details || ''}`.replace(/\s+/g, ' ').trim();
+            treasureLines.push(line);
+        } else {
+            treasureLines.push(line);
+            group.forEach(m => {
+                if (m.name || m.sub_name || m.details) {
+                    treasureLines.push(`   ${m.name || ''}${m.details ? ':' + m.details : ''}${m.sub_name ? ' (' + m.sub_name + ')' : ''}`.trimEnd());
+                }
+            });
+        }
+    });
+
+    const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
+    const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
+    
+    let footer = '\n\n完畢';
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
+};
+
 const formatTeachingForExport = (item, index = null, allRecords = []) => {
     const recipient = getRecipientName(item);
     const grouped = groupItems(item.items);
@@ -3035,7 +3073,7 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
         }
     }
 
-    return `${item.date.replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
 };
 
 const downloadTeaching = (item) => {

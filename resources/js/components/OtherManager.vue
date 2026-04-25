@@ -80,7 +80,7 @@
         </div>
 
         <!-- Level 2: Record List / Content View -->
-        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-y-auto pb-24">
+        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 48px;">
@@ -171,6 +171,15 @@
                 @more="handleMore"
             />
         </div>
+
+        <!-- Common Bottom Navbar (Fallback for Level 1) -->
+        <mobile-navbar v-if="!activeFolderId"
+            :can-back="true"
+            :can-home="true"
+            :show-action="false"
+            @back="$emit('goHome')"
+            @home="$emit('goHome')"
+        />
 
         <!-- Add Folder Modal -->
         <div v-if="showAddFolder" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">

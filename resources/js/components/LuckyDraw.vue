@@ -3,55 +3,57 @@
         
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
-            <!-- Header bar -->
-            <div class="border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0 px-2 py-2">
-                <div class="flex flex-col w-full gap-1">
-                    <!-- First Row: Main Title -->
-                    <div class="flex items-center">
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
-                            其他專區
-                        </div>
-                    </div>
-                    
-                    <!-- Second Row: Subtitle + Back -->
-                    <div class="flex items-center justify-between w-full mt-1 px-1">
-                        <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">抽順序</span>
-                        <div class="flex items-center space-x-2">
-                            <div class="flex items-center space-x-1 flex-1 max-w-[80px]">
-                                <button ontouchstart="" @click="invertSelection(); activeAction = 'invert'" 
-                                    :class="[
-                                        'flex-1 py-[6px] px-3 text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
-                                        activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
-                                    ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+            <div class="animate-fade-in flex flex-col h-full overflow-hidden">
+                <!-- Header bar -->
+                <div class="border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0 px-2 py-2">
+                    <div class="flex flex-col w-full gap-1">
+                        <!-- First Row: Main Title -->
+                        <div class="flex items-center">
+                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
+                                其他專區
                             </div>
-                            <button @click="resetAll" class="p-1 text-slate-400 hover:text-red-500 shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+                        </div>
+                        
+                        <!-- Second Row: Subtitle + Back -->
+                        <div class="flex items-center justify-between w-full mt-1 px-1">
+                            <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">抽順序</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-1 flex-1 max-w-[80px]">
+                                    <button ontouchstart="" @click="invertSelection(); activeAction = 'invert'" 
+                                        :class="[
+                                            'flex-1 py-[6px] px-3 text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
+                                            activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
+                                        ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+                                </div>
+                                <button @click="resetAll" class="p-1 text-slate-400 hover:text-red-500 shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Main scrollable selection grid -->
-            <div class="flex-1 overflow-y-auto no-scrollbar pb-24">
-                <div class="flex items-center justify-between px-3 py-1.5">
-                    <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
-                        {{ selectionFiltered ? '已確認名單 (可再調整)' : '點選在場人員 (藍色為已選)' }}
-                    </span>
-                    <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
-                </div>
+                <!-- Main scrollable selection grid -->
+                <div class="flex-1 overflow-y-auto no-scrollbar pb-24">
+                    <div class="flex items-center justify-between px-3 py-1.5">
+                        <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                            {{ selectionFiltered ? '已確認名單 (可再調整)' : '點選在場人員' }}
+                        </span>
+                        <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
+                    </div>
 
-                <!-- Grid evenly distributed, stretching boxes -->
-                <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
-                        <button
-                            v-for="user in displayUsers"
-                            :key="user.id"
-                            @click="togglePending(user.name)"
-                            class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
-                            :style="getPendingStyle(user.name)"
-                        >
-                            <span class="truncate leading-none">{{ user.name }}</span>
-                        </button>
+                    <!-- Grid evenly distributed, stretching boxes -->
+                    <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
+                            <button
+                                v-for="user in displayUsers"
+                                :key="user.id"
+                                @click="togglePending(user.name)"
+                                class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                :style="getPendingStyle(user.name)"
+                            >
+                                <span class="truncate leading-none">{{ user.name }}</span>
+                            </button>
+                    </div>
                 </div>
             </div>
 
@@ -60,10 +62,10 @@
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
-                    class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-lg"
+                    class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-none"
                     :style="{
                         background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
-                        boxShadow: 'none',
+                        color: '#ffffff'
                     }"
                 >
                     <span v-if="!selectionFiltered" style="color: #ffffff !important;">確定 (已選 {{ pendingNames.length }} 人)</span>
@@ -73,41 +75,43 @@
         </div>
 
         <!-- STEP 2: DRAW CONFIGURATION -->
-        <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden animate-slide-in">
-            <div class="bg-white border-b border-slate-100 p-3 flex flex-col sticky top-0 z-10">
-                <div class="flex flex-col w-full gap-1">
-                    <div class="flex items-center">
-                        <div class="w-1"></div>
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
-                            其他專區
-                        </div>
-                    </div>
-                    <!-- Second Row: Subtitle + Back -->
-                    <div class="flex items-center justify-between w-full mt-1 px-1">
+        <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
+                <div class="bg-white border-b border-slate-100 p-3 flex flex-col sticky top-0 z-10">
+                    <div class="flex flex-col w-full gap-1">
                         <div class="flex items-center">
-                            <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">抽籤設定</span>
+                            <div class="w-1"></div>
+                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
+                                其他專區
+                            </div>
                         </div>
-                        <button ontouchstart="" @click="invertSelection(); activeAction = 'invert'" 
-                            :class="[
-                                'py-[6px] px-3 text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
-                                activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
-                            ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+                        <!-- Second Row: Subtitle + Back -->
+                        <div class="flex items-center justify-between w-full mt-1 px-1">
+                            <div class="flex items-center">
+                                <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">抽籤設定</span>
+                            </div>
+                            <button ontouchstart="" @click="invertSelection(); activeAction = 'invert'" 
+                                :class="[
+                                    'py-[6px] px-3 text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
+                                    activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
+                                ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-4 max-w-lg mx-auto w-full no-scrollbar pb-48">
-                <!-- Selected Summary -->
-                <div class="space-y-1.5 px-1 pt-1">
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest">📋 當前待抽名單</label>
-                        <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }} 人</span>
-                    </div>
-                    <div class="grid grid-cols-5 gap-y-3 pt-1">
-                        <span v-for="name in selectedNames" :key="name" class="text-[17px] font-black text-slate-700 text-center">{{ name }}</span>
+                <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-4 max-w-lg mx-auto w-full no-scrollbar pb-48">
+                    <!-- Selected Summary -->
+                    <div class="space-y-1.5 px-1 pt-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest">📋 當前待抽名單</label>
+                            <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }} 人</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-y-3 pt-1">
+                            <span v-for="name in selectedNames" :key="name" class="text-[17px] font-black text-slate-700 text-center">{{ name }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,7 +137,7 @@
                     <!-- Action Button -->
                     <button 
                         @click="performDraw"
-                        class="w-full py-[12px] rounded-3xl bg-indigo-600 font-black text-[17px] shadow-lg active:scale-[0.98] transition-all flex justify-center items-center"
+                        class="w-full py-[12px] rounded-3xl bg-indigo-600 font-black text-[17px] shadow-none active:scale-[0.98] transition-all flex justify-center items-center"
                     >
                         <span style="color: #ffffff !important;">開始抽籤</span>
                     </button>
@@ -141,14 +145,12 @@
             </div>
         </div>
 
-        <!-- STEP 3: ANIMATION & RESULTS -->
         <!-- FULLSCREEN LOTTERY ANIMATION -->
         <div v-if="isDrawing" class="fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
             <div class="absolute inset-0 pointer-events-none">
                 <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
             </div>
 
-            <!-- Bamboo cup + Flying Sticks Container -->
             <div class="lottery-cup-container" style="transform: translateY(10vh);">
                 <div class="absolute inset-0 pointer-events-none">
                     <div v-for="stick in flyingSticks" :key="stick.id"
@@ -192,40 +194,42 @@
         </div>
 
         <!-- STEP 3: RESULTS -->
-        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-white overflow-hidden">
-            <div class="bg-white border-b border-slate-100 p-4 flex items-center justify-between sticky top-0 z-10">
-                <button @click="currentStep = 2" class="text-slate-400 p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <h2 class="text-[19px] font-black text-slate-900 flex-1 text-center">抽籤結果</h2>
-                <div class="flex items-center space-x-2">
-                    <button @click="performDraw" class="text-[15px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
-                    <button @click="copyResults" class="text-[15px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
-                </div>
-            </div>
-
-            <div class="flex-1 overflow-y-auto p-4 no-scrollbar">
-                <div class="max-w-lg mx-auto space-y-8 pb-32 pt-10">
-                    <!-- SINGLE RESULT: CROWN & CENTERED -->
-                    <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-6 animate-scale-in">
-                        <div class="relative">
-                            <span class="text-[64px] filter drop-shadow-lg">👑</span>
-                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
-                        </div>
-                        <h3 class="text-[32px] font-black text-white bg-[#1d4ed8] px-8 py-4 rounded-2xl shadow-xl mb-4">{{ results[0] }}</h3>
-                        <div class="flex items-center space-x-2 text-indigo-300">
-                            <div class="h-[2px] w-8 bg-indigo-100"></div>
-                            <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
-                            <div class="h-[2px] w-8 bg-indigo-100"></div>
-                        </div>
+        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
+            <div class="animate-fade-in flex flex-col h-full overflow-hidden">
+                <div class="bg-white border-b border-slate-100 p-4 flex items-center justify-between sticky top-0 z-10">
+                    <button @click="currentStep = 2" class="text-slate-400 p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <h2 class="text-[19px] font-black text-slate-900 flex-1 text-center">抽籤結果</h2>
+                    <div class="flex items-center space-x-2">
+                        <button @click="performDraw" class="text-[15px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
+                        <button @click="copyResults" class="text-[15px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
                     </div>
+                </div>
 
-                    <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
-                    <div v-else class="flex flex-col items-center space-y-2">
-                        <div v-for="(name, idx) in results" :key="'res'+idx" 
-                            class="w-full py-3 flex flex-col items-center rounded-xl bg-[#3b82f6] border border-white/20 animate-slide-in">
-                            <span class="text-[13px] font-black text-white/70 mb-1">#{{ idx + 1 }}</span>
-                            <span class="text-[19px] font-black text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3)">{{ name }}</span>
+                <div class="flex-1 overflow-y-auto p-4 no-scrollbar">
+                    <div class="max-w-lg mx-auto space-y-8 pb-32 pt-10">
+                        <!-- SINGLE RESULT: CROWN & CENTERED -->
+                        <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-6 animate-scale-in">
+                            <div class="relative">
+                                <span class="text-[64px] filter drop-shadow-lg">👑</span>
+                                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
+                            </div>
+                            <h3 class="text-[32px] font-black text-slate-900 bg-white border border-slate-200 px-8 py-4 rounded-2xl shadow-lg mb-4">{{ results[0] }}</h3>
+                            <div class="flex items-center space-x-2 text-indigo-300">
+                                <div class="h-[2px] w-8 bg-indigo-100"></div>
+                                <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
+                                <div class="h-[2px] w-8 bg-indigo-100"></div>
+                            </div>
+                        </div>
+
+                        <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
+                        <div v-else class="flex flex-col items-center space-y-2">
+                            <div v-for="(name, idx) in results" :key="'res'+idx" 
+                                class="w-full py-3 flex flex-col items-center rounded-xl bg-white border border-slate-200 shadow-sm animate-slide-in">
+                                <span class="text-[13px] font-black text-slate-400 mb-1">#{{ idx + 1 }}</span>
+                                <span class="text-[19px] font-black text-black">{{ name }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,11 +240,9 @@
         <mobile-navbar 
             v-if="!isDrawing"
             :can-back="true"
-            :show-action="true"
-            :action-disabled="true"
-            :can-search="false"
-            :can-more="false"
-            @back="handleBack"
+            :can-home="true"
+            :show-action="false"
+            @back="currentStep === 2 ? currentStep = 1 : $emit('close')"
             @home="$emit('close')"
         />
 

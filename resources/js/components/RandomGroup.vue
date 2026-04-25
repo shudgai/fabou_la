@@ -8,8 +8,8 @@
             <div class="flex-1 overflow-y-auto no-scrollbar pb-20">
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5">
-                    <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
-                        {{ selectionFiltered ? '已確認名單 (可再調整)' : '點選在場名冊 (藍色為已選)' }}
+                    <span class="font-black" style="font-size: 22px !important; color: #0f172a !important;">
+                        {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
                     </span>
                     <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
@@ -49,12 +49,13 @@
 
 
         <!-- STEP 2: GROUPING & RESULTS -->
-        <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden animate-slide-in">
+        <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
             <!-- Navigation Header -->
             <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10">
                 <div class="w-1"></div>
                 <div class="flex items-center space-x-2">
-                    <h2 class="text-[19px] font-black text-slate-900">隨機分組設定</h2>
+                    <h2 class="font-black tracking-tight" style="color: #0f172a !important; font-size: 25px !important;">隨機分組設定</h2>
                     <div class="flex items-center space-x-1 text-slate-400">
                         <span class="text-[15px] font-bold">總計</span>
                         <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }}</span>
@@ -273,6 +274,7 @@
                     </button>
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- FULLSCREEN LOTTERY ANIMATION: 抽籤動畫 -->
@@ -342,7 +344,7 @@
                 <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h2 class="text-[20px] font-black text-slate-900 flex-1">分組結果</h2>
+                <h2 class="flex-1 font-black" style="color: #0f172a !important; font-size: 25px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
                     <button @click="redrawAll" class="text-[12px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
                     <button @click="copyResult" class="text-[12px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
@@ -359,14 +361,14 @@
                 <!-- Group results -->
                 <div v-if="groups.length > 0" class="space-y-2">
                     <div v-for="(group, idx) in groups" :key="'g3g'+idx"
-                        :class="['p-3 px-4 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-600 border-amber-400 shadow-amber-100' : 'bg-[#3b82f6] border-white/20 shadow-blue-100']"
+                        :class="['p-3 px-4 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-200 shadow-sm']"
                     >
                         <div class="flex items-center justify-between mb-1">
-                            <span :class="['text-[13px] font-black', group.isSeed ? 'text-amber-100' : 'text-white/70']">{{ group.name }}</span>
-                            <span :class="['text-[11px] font-bold', group.isSeed ? 'text-amber-200' : 'text-white/50']">{{ group.members.length }} 人</span>
+                            <span :class="['text-[14px] font-black', group.isSeed ? 'text-amber-700' : 'text-slate-900']">{{ group.name }}</span>
+                            <span :class="['text-[12px] font-bold', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.members.length }} 人</span>
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-0">
-                            <span v-for="member in group.members" :key="member" class="text-[19px] font-black text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3)">{{ member }}</span>
+                            <span v-for="member in group.members" :key="member" :class="['text-[20px] font-black', group.isSeed ? 'text-amber-900' : 'text-black']">{{ member }}</span>
                         </div>
                     </div>
                 </div>

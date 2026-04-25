@@ -6,7 +6,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                     重大皇恩專區
                 </div>
             </div>
@@ -51,7 +51,7 @@
         <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
             <div class="px-2 py-4 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
             <div class="flex-1 pr-12">
-                    <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
+                    <h1 class="text-[25px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
                 </div>
             </div>
             
@@ -73,7 +73,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                            <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <span class="text-[22px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 重大皇恩<br>專區
                             </span>
                         </div>
@@ -97,7 +97,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                            <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <span class="text-[22px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 未求得<br>重大皇恩
                             </span>
                         </div>
@@ -117,7 +117,7 @@
         <div v-if="currentCategory === 'masters' && !currentFolder" class="bg-white group-fade-in">
             <!-- Header Title -->
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px]">
-                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
+                <h1 class="absolute inset-x-0 text-[25px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-[10px] p-4 place-items-center">
@@ -139,7 +139,7 @@
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                             <span :class="[
-                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[22px]',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                             ]" style="font-weight: 900 !important;">
                                 <template v-if="folder.id === 'unobtained'">
@@ -169,7 +169,7 @@
             <!-- Header for Level 2 -->
             <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
                 <div class="flex items-center space-x-1">
-                    <span class="text-[20px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ displayTitle }}</span>
+                    <span class="text-[22px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ displayTitle }}</span>
                 </div>
                 <button @click="reorderMode = !reorderMode" 
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
@@ -244,13 +244,13 @@
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
+                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
+                                    <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
                         </div>
@@ -263,14 +263,14 @@
                                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">
+                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
-                                    <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>
+                                    <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
 
@@ -480,7 +480,26 @@ const loadData = async () => {
     finally { loading.value = false; }
 };
 
-const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW').replace(/\//g, '/') : '-';
+const copyAsTextFile = (reg) => {
+    try {
+        const text = formatRegistryForFile(reg);
+        navigator.clipboard.writeText(text);
+        persistentToast.value = { message: '內容已複製到剪貼簿', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 3000);
+    } catch (err) {
+        console.error('Copy failed:', err);
+    }
+};
+
+const formatRegistryForFile = (reg) => {
+    return `【重大皇恩】
+法寶：${reg.name}
+數據：${reg.count || 1}
+用意：${reg.purpose || '無'}
+狀態：${reg.status}
+求得日期：${reg.obtained_date || '-'}
+由來與備註：${reg.remarks || '無'}`;
+};
 
 const getMasterName = (id) => {
     const m = masters.value.find(m => m.id === id);
