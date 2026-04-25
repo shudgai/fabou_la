@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
@@ -8,12 +8,12 @@
             </button>
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
                 <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
-                    法寶登記專區
+                    瘜窄?餉?撠?
                 </div>
             </div>
             <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2">
                 <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
+                    {{ sortDesc ? '?售??? : '???? }}
                 </button>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 </button>
                 <div class="flex flex-col min-w-0">
                     <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
-                        {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
+                        {{ currentCategory === 'major' ? '?之??餉?蝪? : '?嗡???餉?蝪? }} - {{ currentFolder.name }}
                     </span>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 <button @click="reorderMode = !reorderMode" 
                         :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
                         class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
+                    {{ reorderMode ? '蝣箄???' : '靽格??' }}
                 </button>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     </button>
                     <div class="flex-1">
                         <h1 class="text-[30px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
-                            {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
+                            {{ currentCategory ? (currentCategory === 'major' ? '?之??餉?蝪? : '?嗡???餉?蝪?) : '瘜窄?餉?撠?' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[17px] text-slate-400">- {{ currentFolder.name }} -</span>
                         </h1>
@@ -74,7 +74,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#goldGradL1)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">?之?<br>?餉?蝪?/div>
                     </button>
 
                     <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[220px] h-[220px] relative transition-all shadow-sm">
@@ -91,7 +91,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
+                        <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">?嗡??<br>?餉?蝪?/div>
                     </button>
 
                 </div>
@@ -124,7 +124,7 @@
                         <div class="text-center px-1">
                             <div :class="[
                                 'font-black tracking-tight leading-tight text-center transition-all text-[24px]',
-                                folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
+                                folder.name === '?餌?隞葦' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
                             ]" style="font-weight: 900 !important;">{{ folder.name }}</div>
                         </div>
                     </button>
@@ -134,7 +134,7 @@
                 <div class="mt-12 flex justify-center pb-32">
                     <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="text-xs font-medium tracking-widest uppercase">返回專區列表</span>
+                        <span class="text-xs font-medium tracking-widest uppercase">餈?撠??”</span>
                     </button>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                 <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 0px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
-                        <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">載入中...</p>
+                        <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">頛銝?..</p>
                     </div>
 
                     <template v-else>
@@ -154,7 +154,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
-                                <input v-model="searchQuery" type="text" placeholder="搜尋項目、用意、法號..." 
+                                <input v-model="searchQuery" type="text" placeholder="????????.." 
                                     class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
                                 <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -163,261 +163,160 @@
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
+                             @click="toggleExpand(item.id)"
                              :class="[
                                  'bg-white p-[10px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
-                            <!-- Sequence Number / Reorder Input -->
+                            <!-- Sequence Number -->
                             <div class="mr-4 shrink-0 flex items-center justify-center pt-1">
                                 <div v-if="!reorderMode" class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-[14px] font-black text-slate-500">
                                     {{ idx + 1 }}
                                 </div>
-                                <input v-else 
-                                       type="number" 
-                                       :value="idx + 1"
-                                       @click.stop
-                                       @change="e => handleReorder(item, e.target.value)"
+                                <input v-else type="number" :value="idx + 1" @click.stop @change="e => handleReorder(item, e.target.value)"
                                        class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
                             </div>
 
                             <div class="flex-1 min-w-0 pr-[10px]">
-                            <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-4 right-4 z-30">
-                                <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
-                                        class="p-2 text-slate-400 hover:text-indigo-600 active:scale-90 transition-all rounded-full bg-slate-50/50">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="5" cy="12" r="2" />
-                                        <circle cx="12" cy="12" r="2" />
-                                        <circle cx="19" cy="12" r="2" />
-                                    </svg>
-                                </button>
-                                
-                                <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-48 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-2 ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path v-if="expandedIds.has(item.id)" d="M19 15l-7-7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path v-else d="M5 9l7 7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                <!-- Action Dropdown Trigger -->
+                                <div class="absolute top-4 right-4 z-30">
+                                    <button @click.stop="toggleMenu(item.id)" class="p-2 text-slate-400 hover:text-indigo-600 active:scale-90 transition-all rounded-full bg-slate-50/50">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" />
                                         </svg>
-                                        {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        修改資料
-                                    </button>
-                                    <button @click.stop="copyToLine(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        貼 LINE
-                                    </button>
-                                    <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        下載資料
-                                    </button>
-                                    <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors">
-                                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        刪除資料
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Card Header (Toggle Expansion) -->
-                            <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
-                                <div class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                    <div v-if="openMenuId === item.id" class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl z-[110] py-2 divide-y divide-slate-50 overflow-hidden">
+                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            <svg v-if="!expandedIds.has(item.id)" class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            <svg v-else class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            {{ expandedIds.has(item.id) ? '?嗉絲皜' : '撅?皜' }}
+                                        </button>
+                                        <button @click.stop="openAndEdit(item.id); openMenuId = null" class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>靽格鞈?
+                                        </button>
+                                        <button @click.stop="copyToLine(item); openMenuId = null" class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>鞎?LINE
+                                        </button>
+                                        <button @click.stop="downloadItemData(item); openMenuId = null" class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
+                                            <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>銝?鞈?
+                                        </button>
+                                        <button @click.stop="deleteConfirmId = item.id; openMenuId = null" class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors">
+                                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>?芷鞈?
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div class="flex items-center justify-between group/title pr-12">
-                                    <div class="flex flex-col">
-                                        <div class="text-[17px] font-normal text-slate-900 leading-tight truncate font-outfit flex items-center">
-                                            {{ item.name }}
+                                <!-- Always Display Header & Content -->
+                                <div class="space-y-2 mb-3">
+                                    <div class="flex items-center justify-between pr-12 mt-[10px]">
+                                        <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                    </div>
+                                    <div class="flex items-center justify-between group/title pr-12">
+                                        <div class="text-[20px] font-black text-indigo-600 leading-tight font-outfit">{{ item.name }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-[10px] pt-[10px] border-t border-slate-50">
+                                    <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
+                                        <div v-if="item.purpose" class="space-y-1">
+                                            <label class="tracking-widest font-bold font-outfit text-red-600 text-[12px]">瘜窄?冽?</label>
+                                            <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit">{{ item.purpose }}</div>
+                                        </div>
+                                        <div v-if="item.acquisition_method" class="space-y-1">
+                                            <label class="tracking-widest font-bold font-outfit text-red-600 text-[12px]">瘙窄?孵?</label>
+                                            <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.acquisition_method }}</div>
+                                        </div>
+                                        <div v-if="item.remarks" class="space-y-1">
+                                            <label class="tracking-widest font-bold font-outfit text-red-600 text-[12px]">?酉</label>
+                                            <div @click.stop="openRemarks(item.remarks)" class="text-[17px] font-bold text-slate-900 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                         </div>
                                     </div>
-                                    <div class="ml-2 text-slate-300 group-hover/title:text-indigo-400 transition-colors">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                                
 
-                             
-
-
-                                    <div v-if="expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="mt-[10px] pt-[10px] border-t border-slate-50">
-                                        <!-- Detailed Record View -->
-                                        <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
+                                    <div v-if="editingIds.has(item.id)" class="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 space-y-5 shadow-inner mb-8">
+                                        <div class="grid grid-cols-1 gap-4">
                                             <div class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                                <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">?交?</label>
+                                                <div @click="activePicker = { id: item.id, field: 'record_date', title: '靽格?交?' }" class="w-full bg-white border border-slate-200 rounded-xl px-3 h-[42px] flex items-center justify-between cursor-pointer">
+                                                    <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">{{ formatToROC(editMap[item.id].record_date) || '?芾身摰? }}</span>
+                                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </div>
                                             </div>
                                             <div class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
+                                                <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">瘜窄?迂</label>
+                                                <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                             </div>
-                                            <div v-if="item.purpose" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">法寶用意</label>
-                                                <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit">{{ item.purpose }}</div>
+                                            <div class="space-y-1">
+                                                <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">瘜窄?冽?</label>
+                                                <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                             </div>
-                                            <div v-if="item.acquisition_method" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">求寶方式</label>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.acquisition_method }}</div>
+                                            <div class="space-y-1">
+                                                <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">瘙窄?孵?</label>
+                                                <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                             </div>
-                                            <div v-if="item.remarks" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">備註</label>
-                                                <div @click.stop="openRemarks(item.remarks)" class="text-[17px] font-bold text-slate-900 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
+                                            <div class="space-y-1">
+                                                <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">?酉</label>
+                                                <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
                                             </div>
-                                        </div>
-
-                                        <!-- Edit Mode Fields -->
-                                        <div v-if="editingIds.has(item.id)" class="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 space-y-5 shadow-inner mb-8">
-                                            <div class="grid grid-cols-1 gap-4">
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">日期</label>
-                                                    <div @click="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
-                                                        class="w-full bg-white border border-slate-200 rounded-xl px-3 h-[42px] flex items-center justify-between cursor-pointer">
-                                                        <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">
-                                                            {{ formatToROC(editMap[item.id].record_date) || '未設定' }}
-                                                        </span>
-                                                        <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </div>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶名稱</label>
-                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px]">
-                                            <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border-y border-slate-100 shadow-sm mb-20 -mx-4 md:-mx-4 bg-white">
-                                                    <table class="w-full border-collapse bg-white text-[16px]">
-                                                        <thead>
-                                                            <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
-                                                                <th class="border-b border-slate-100 px-3 py-2.5 text-left font-black w-[60px] whitespace-nowrap">法號</th>
-                                                                <th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[130px] whitespace-nowrap">日期</th>
-                                                                <th class="border-b border-slate-100 px-3 py-2.5 text-center font-black">備註</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr v-for="dn in dharmaNames" :key="dn.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 h-[42px] justify-center group/date-cell" 
-                                                                        :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
-                                                                        @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
-                                                                        <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
-                                                                            {{ editMap[item.id + '-' + dn.id].obtained_date || (editingIds.has(item.id) ? '----/--/--' : '-') }}
-                                                                        </span>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div @click="triggerRemarksEdit(item, dn.id)" 
-                                                                        class="w-full h-[42px] px-3 flex items-center justify-center transition-colors">
-                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
-                                                                        <span v-else-if="item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
-                                                                        <span v-else class="text-[15px] text-slate-200">-</span>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <div class="overflow-x-auto border-y border-slate-100 shadow-sm mb-20 -mx-4 bg-white">
-                                                    <table class="w-full border-collapse bg-white text-[16px]">
-                                                        <thead>
-                                                             <tr class="bg-amber-50/50 text-slate-900 font-outfit">
-                                                                 <th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[110px] whitespace-nowrap">日期</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[80px] whitespace-nowrap">法號</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[90px] whitespace-nowrap">親友</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-center font-black">備註</th>
-                                                             </tr>
-                                                         </thead>
-                                                        <tbody>
-                                                            <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 h-[42px] justify-center" 
-                                                                        @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
-                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date || formatToROC(dnr.obtained_date) || '-' }}</span>
-                                                                    </div>
-                                                                </td>
-                                                                <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="w-full h-[42px] px-2 flex items-center">
-                                                                        <input v-if="editingIds.has(item.id)" 
-                                                                            v-model="editMap[item.id + '-' + (dnr.dharma_name_id || dnr.custom_name)].relationship"
-                                                                            class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
-                                                                            placeholder="親友">
-                                                                        <span v-else class="text-[14px] text-slate-600 font-bold">
-                                                                            {{ Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '-') }}
-                                                                        </span>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div @click="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full h-[42px] px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
-                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
-                                                                        <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
-                                                                             :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black' : 'text-[18px] text-amber-500 animate-pulse'">
-                                                                             {{ (Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? '多重' : '●' }}
-                                                                         </span>
-                                                                        <span v-else class="text-[14px] text-slate-300">
-                                                                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                                        </span>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr v-if="editingIds.has(item.id)" class="bg-indigo-50/20 border-t-2 border-indigo-100/50">
-                                                                <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
-                                                                        <span class="text-[14px] font-black" style="color: #1e293b !important;">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="p-2 border-b border-indigo-100">
-                                                                    <select @change="addPersonRowFromSelect(item.id, $event)" class="w-full h-9 rounded-xl border border-indigo-200">
-                                                                        <option value="">＋ 點此加入人員</option>
-                                                                        <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.id">{{ dn.name }}</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click="triggerRemarksEdit(item, 'new')" class="w-full h-[46px] px-3 flex items-center text-[14px] text-slate-300 font-bold truncate">
-                                                                        {{ editMap[item.id + '-new']?.remarks || '輸入備註...' }}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </template>
-                                        </div>
-
-                                        <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click="saveItemInPlace(item)" class="w-full max-w-md py-2.5 bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
                                         </div>
                                     </div>
 
+                                    <div v-if="expandedIds.has(item.id)" class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px]">
+                                        <template v-if="currentCategory === 'major'">
+                                            <div class="overflow-x-auto rounded-xl border-y border-slate-100 shadow-sm mb-20 -mx-4 md:-mx-4 bg-white">
+                                                <table class="w-full border-collapse bg-white text-[16px]">
+                                                    <thead><tr class="text-slate-700 font-outfit border-y border-slate-200"><th class="border-b border-slate-100 px-3 py-2.5 text-left font-black w-[60px] whitespace-nowrap">瘜?</th><th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[130px] whitespace-nowrap">?交?</th><th class="border-b border-slate-100 px-3 py-2.5 text-center font-black">?酉</th></tr></thead>
+                                                    <tbody>
+                                                        <tr v-for="dn in dharmaNames" :key="dn.id" class="hover:bg-slate-50 transition-colors">
+                                                            <td class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
+                                                            <td class="border-b border-slate-50 p-0 text-black">
+                                                                <div class="flex items-center px-[2px] py-1 h-[42px] justify-center group/date-cell" :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''" @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
+                                                                    <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">{{ editMap[item.id + '-' + dn.id].obtained_date || (editingIds.has(item.id) ? '----/--/--' : '-') }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="border-b border-slate-50 p-0 text-black">
+                                                                <div @click="triggerRemarksEdit(item, dn.id)" class="w-full h-[42px] px-3 flex items-center justify-center transition-colors">
+                                                                    <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
+                                                                    <span v-else-if="item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">??/span>
+                                                                    <span v-else class="text-[15px] text-slate-200">-</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="overflow-x-auto border-y border-slate-100 shadow-sm mb-20 -mx-4 bg-white">
+                                                <table class="w-full border-collapse bg-white text-[16px]">
+                                                    <thead><tr class="text-slate-900 font-outfit border-y border-amber-200"><th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[110px] whitespace-nowrap">?交?</th><th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[80px] whitespace-nowrap">瘜?</th><th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[90px] whitespace-nowrap">閬芸?</th><th class="border-b border-slate-100 px-2 py-2.5 text-center font-black">?酉</th></tr></thead>
+                                                    <tbody>
+                                                        <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
+                                                            <td class="border-b border-slate-50 p-0 text-black">
+                                                                <div class="flex items-center px-[2px] py-1 h-[42px] justify-center" :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''" @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.id, field: 'obtained_date', title: '靽格?交?' }) : null">
+                                                                    <span :class="editMap[item.id + '-' + dnr.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">{{ formatToROC(editMap[item.id + '-' + dnr.id].obtained_date) || (editingIds.has(item.id) ? '----/--/--' : '-') }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="border-b border-slate-50 px-2 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
+                                                            <td class="border-b border-slate-50 px-2 py-2 font-normal text-slate-500 whitespace-nowrap">{{ dnr.related_personnel || '-' }}</td>
+                                                            <td class="border-b border-slate-50 p-0 text-black">
+                                                                <div @click="triggerRemarksEdit(item, dnr.id)" class="w-full h-[42px] px-2 flex items-center justify-center transition-colors">
+                                                                    <span v-if="editingIds.has(item.id)" class="text-[14px] font-bold text-indigo-400 truncate max-w-[100px]">{{ editMap[item.id + '-' + dnr.id]?.remarks || '-' }}</span>
+                                                                    <span v-else-if="dnr.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">??/span>
+                                                                    <span v-else class="text-[15px] text-slate-200">-</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
+                                        <button @click="saveItemInPlace(item)" class="w-full max-w-md py-2.5 bg-indigo-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">靽?靽格</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -444,8 +343,8 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">逐筆新增</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">輸入單筆法寶登記紀錄</span>
+                            <span class="text-[17px] font-black font-outfit text-slate-800">???啣?</span>
+                            <span class="text-[17px] text-slate-400 font-medium font-outfit">頛詨?桃?瘜窄?餉?蝝??/span>
                         </div>
                     </button>
 
@@ -454,8 +353,8 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">多筆新增</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">貼上文字清單批次匯入</span>
+                            <span class="text-[17px] font-black font-outfit text-slate-800">憭??啣?</span>
+                            <span class="text-[17px] text-slate-400 font-medium font-outfit">鞎潔???皜?寞活?臬</span>
                         </div>
                     </button>
 
@@ -464,8 +363,8 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">複製隨貼 LINE (全部)</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">將此分類完整清單複製至剪貼簿</span>
+                            <span class="text-[17px] font-black font-outfit text-slate-800">銴ˊ?刻票 LINE (?券)</span>
+                            <span class="text-[17px] text-slate-400 font-medium font-outfit">撠迨??摰皜銴ˊ?喳鞎潛倏</span>
                         </div>
                     </button>
 
@@ -474,13 +373,13 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">匯出 Excel</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">下載法寶登記報表檔案</span>
+                            <span class="text-[17px] font-black font-outfit text-slate-800">?臬 Excel</span>
+                            <span class="text-[17px] text-slate-400 font-medium font-outfit">銝?瘜窄?餉??梯”瑼?</span>
                         </div>
                     </button>
                     
                     <div class="p-2 border-t border-slate-50">
-                        <button @click="showAddMenu = false" class="w-full py-2 text-slate-400 font-black text-[17px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
+                        <button @click="showAddMenu = false" class="w-full py-2 text-slate-400 font-black text-[17px] font-outfit active:scale-95 transition-all uppercase tracking-widest">??</button>
                     </div>
                 </div>
             </div>
@@ -508,10 +407,10 @@
                  <p class="text-[17px] font-black text-slate-800 font-outfit leading-relaxed pt-2">{{ persistentToast.msg }}</p>
                  <div v-if="persistentToast.type === 'confirm'" class="mt-6 flex space-x-3">
                      <button v-for="a in persistentToast.actions" @click="a.handler" class="flex-1 py-3.5 rounded-2xl bg-red-50 text-red-600 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">{{ a.label }}</button>
-                     <button @click="persistentToast = null" class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">取消</button>
+                     <button @click="persistentToast = null" class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">??</button>
                  </div>
                  <div v-else class="mt-6">
-                     <button @click="persistentToast = null" class="w-full py-3.5 rounded-2xl bg-indigo-50 text-indigo-600 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">知道了</button>
+                     <button @click="persistentToast = null" class="w-full py-3.5 rounded-2xl bg-indigo-50 text-indigo-600 font-black text-[14px] uppercase tracking-widest font-outfit active:scale-95 transition-all">?仿?鈭?/button>
                  </div>
              </div>
         </div>
@@ -522,14 +421,14 @@
                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </div>
-                <h3 class="text-[22px] font-black text-center mb-2 font-outfit text-slate-800">確定要刪除嗎？</h3>
-                <p class="text-slate-500 text-center mb-6 font-black font-outfit leading-relaxed">此操作將永久刪除此筆載錄，且無法復原。請確認身分後再執行。</p>
+                <h3 class="text-[22px] font-black text-center mb-2 font-outfit text-slate-800">蝣箏?閬?文?嚗?/h3>
+                <p class="text-slate-500 text-center mb-6 font-black font-outfit leading-relaxed">甇斗?雿?瘞訾??芷甇斤?頛?嚗??⊥?敺拙???蝣箄?頨怠?敺??瑁???/p>
                 <div class="flex flex-col space-y-3">
                     <button @click="deleteItem(deleteConfirmId)" class="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
-                        是的，確認刪除
+                        ?舐?嚗Ⅱ隤??
                     </button>
                     <button @click="deleteConfirmId = null" class="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
-                        返回
+                        餈?
                     </button>
                 </div>
             </div>
@@ -595,7 +494,7 @@ const getEarliestDate = (item) => {
 };
 
 const formatToROC = (dateStr) => {
-    if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr;
+    if (!dateStr || dateStr === '-' || dateStr === '?芾身摰?) return dateStr;
     const cleanDate = dateStr.replace(/\//g, '-');
     const parts = cleanDate.split('-');
     if (parts.length < 3) return dateStr;
@@ -664,10 +563,10 @@ watch(allTreasures, (newVal) => {
             const r   = existing?.remarks;
             const rel = existing?.related_personnel;
             const newRemarks      = Array.isArray(r)   ? r.join('\n')   : (r   || '');
-            const newRelationship = Array.isArray(rel) ? rel.join('、') : (rel || '');
+            const newRelationship = Array.isArray(rel) ? rel.join('??) : (rel || '');
 
             if (!editMap.value[key]) {
-                // 建立新的 key
+                // 撱箇??啁? key
                 editMap.value[key] = {
                     obtained_date: existing?.obtained_date || '',
                     remarks:       newRemarks,
@@ -675,7 +574,7 @@ watch(allTreasures, (newVal) => {
                     related_personnel: rel || []
                 };
             } else if (!editingIds.value.has(item.id)) {
-                // 非編輯模式下強制同步最新資料（修復：避免備註一閃而過）
+                // ?楊頛舀芋撘?撘瑕?郊??啗???靽桀儔嚗??閮颱???嚗?
                 editMap.value[key].obtained_date    = existing?.obtained_date || '';
                 editMap.value[key].remarks          = newRemarks;
                 editMap.value[key].relationship     = newRelationship;
@@ -683,14 +582,14 @@ watch(allTreasures, (newVal) => {
             }
         });
 
-        // 同步 custom_name 人員（非 dharma_name_id 的自訂名稱）
+        // ?郊 custom_name 鈭箏嚗? dharma_name_id ?閮?蝔梧?
         (item.dharma_name_registries || []).forEach(dnr => {
             if (!dnr.dharma_name_id && dnr.custom_name) {
                 const key = `${item.id}-${dnr.custom_name}`;
                 const r   = dnr.remarks;
                 const rel = dnr.related_personnel;
                 const newRemarks      = Array.isArray(r)   ? r.join('\n')   : (r   || '');
-                const newRelationship = Array.isArray(rel) ? rel.join('、') : (rel || '');
+                const newRelationship = Array.isArray(rel) ? rel.join('??) : (rel || '');
 
                 if (!editMap.value[key]) {
                     editMap.value[key] = {
@@ -751,14 +650,14 @@ const form = ref({
 });
 
 const folders = ref([
-    { id: 1, name: '老祖仙師' },
-    { id: 2, name: '元始仙師' },
-    { id: 3, name: '道祖仙師' },
-    { id: 4, name: '靈寶仙師' },
-    { id: 5, name: '父皇' },
-    { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' },
-    { id: 8, name: '閻王仙師' }
+    { id: 1, name: '??隞葦' },
+    { id: 2, name: '??隞葦' },
+    { id: 3, name: '??隞葦' },
+    { id: 4, name: '?窄隞葦' },
+    { id: 5, name: '?嗥?' },
+    { id: 6, name: '憭芸扇隞葦' },
+    { id: 7, name: '憭芸?' },
+    { id: 8, name: '?餌?隞葦' }
 ]);
 
 const loadData = async () => {
@@ -814,9 +713,9 @@ const filteredTreasures = computed(() => {
 });
 
 const dynamicHeaderTitle = computed(() => {
-    if (!currentFolder.value) return '法寶登記專區';
+    if (!currentFolder.value) return '瘜窄?餉?撠?';
     
-    const catName = currentCategory.value === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿';
+    const catName = currentCategory.value === 'major' ? '?之??餉?蝪? : '?嗡???餉?蝪?;
     return `${catName}-${currentFolder.value.name}`;
 });
 
@@ -940,7 +839,7 @@ const openAdd = (mode = 'single') => {
         remarks: '',
         record_date: new Date().toISOString().split('T')[0],
         obtained_date: '',
-        status: '已求得',
+        status: '撌脫?敺?,
         dharma_name_registries: []
     };
     addMode.value = mode;
@@ -973,15 +872,15 @@ const handleBack = () => {
 
 const saveSingle = async (data) => {
     if (!data.name?.trim()) {
-        persistentToast.value = { msg: '✖ 請輸入法寶名稱', type: 'error' };
+        persistentToast.value = { msg: '??隢撓?交?撖嗅?蝔?, type: 'error' };
         return;
     }
     if (!data.master_id) {
-        persistentToast.value = { msg: '✖ 請選擇仙師', type: 'error' };
+        persistentToast.value = { msg: '??隢??撣?, type: 'error' };
         return;
     }
 
-    // 前處理：將「親友」欄位轉換為備註內容後再送出
+    // ????撠扛??雿???酉?批捆敺??
     const processedDnrs = (data.dharma_name_registries || []).map(p => {
         const { relationship, ...rest } = p;
         let remarks = rest.remarks || '';
@@ -995,7 +894,7 @@ const saveSingle = async (data) => {
             ...rest,
             remarks,
             related_personnel: relationship
-                ? relationship.split(/[、, ]+/).filter(x => x)
+                ? relationship.split(/[?? ]+/).filter(x => x)
                 : (rest.related_personnel || [])
         };
     });
@@ -1007,12 +906,12 @@ const saveSingle = async (data) => {
         else await axios.post('/registries', payload);
         addMode.value = null;
         loadData();
-        persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
+        persistentToast.value = { msg: '???脣???', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     } catch (e) {
         console.error(e);
-        const errorMsg = e.response?.data?.error || e.response?.data?.message || '儲存失敗，請檢查資料';
-        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+        const errorMsg = e.response?.data?.error || e.response?.data?.message || '?脣?憭望?嚗?瑼Ｘ鞈?';
+        persistentToast.value = { msg: '??' + errorMsg, type: 'error' };
     } finally {
         isSaving.value = false;
     }
@@ -1028,9 +927,9 @@ const triggerBatchSave = async (batchData) => {
         masters.value.forEach(m => masterMap[m.name] = m.id);
 
         const nameAliasMap = {
-            '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
-            '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰'
+            '?捆': '??', '??': '?', '??': '??', '?': '?', '?像': '?像',
+            '??': '樴', '?': '樴?', '?': '??', '??': '??', '??': '??',
+            '?孕': '?', '?': '?', '?': '??', '??': '韏文陸'
         };
         const translateName = (raw) => nameAliasMap[raw] || raw;
 
@@ -1052,15 +951,15 @@ const triggerBatchSave = async (batchData) => {
 
                 // A. Metadata Detection (Master, Recipient, Date)
                 masterNames.forEach(mName => { if (line.includes(mName)) blockMasterId = masterMap[mName]; });
-                if (line.includes('開示給')) {
-                    const rMatch = line.split(/[：:]/)[1];
+                if (line.includes('?內蝯?)) {
+                    const rMatch = line.split(/[嚗?]/)[1];
                     if (rMatch) blockRecipient = rMatch.trim();
                     continue;
                 }
 
                 const parseDateStr = (str) => {
                     if (!str) return null;
-                    const clean = str.replace(/[年月]/g, '-').replace(/[日]/g, '');
+                    const clean = str.replace(/[撟湔?]/g, '-').replace(/[?包/g, '');
                     const parts = clean.split(/[.\/-]/).map(p => p.trim());
                     if (parts.length === 3) {
                         let y = parseInt(parts[0]);
@@ -1072,13 +971,13 @@ const triggerBatchSave = async (batchData) => {
 
                 // 1. Check for Full Date (Y/M/D)
                 const lineDateParsed = parseDateStr(line);
-                if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t')) {
+                if (lineDateParsed && !line.includes('|') && !line.includes('??) && !line.includes('\t')) {
                     blockDate = lineDateParsed;
                     continue;
                 }
 
-                // 2. Check for Standalone Year (e.g., "113年" or "2024")
-                const standaloneYMatch = line.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+                // 2. Check for Standalone Year (e.g., "113撟? or "2024")
+                const standaloneYMatch = line.match(/^\s*(\d{2,4})\s*[撟弼?\s*$/);
                 if (standaloneYMatch) {
                     let y = parseInt(standaloneYMatch[1]);
                     if (y < 1000) y += 1911;
@@ -1094,17 +993,17 @@ const triggerBatchSave = async (batchData) => {
                     continue;
                 }
 
-                if (line.includes('完畢') || masterNames.some(m => line === m || line === m + '仙師')) continue;
+                if (line.includes('摰') || masterNames.some(m => line === m || line === m + '隞葦')) continue;
                 
                 let treasureName = '';
                 let recipients = [];
                 let lineDate = blockDate;
                 let lineRemarks = '';
 
-                // NEW: Highly Flexible Date Prefix Detection (Handles "113年 5/5", "113.5.5", "5/5" etc.)
-                const datePrefixMatch = line.match(/^(\d{2,4})[年./-](\d{1,2})[月./-](\d{1,2})[日]?\s*(.*)/) || 
-                                      line.match(/^(\d{2,4})[年./-]\s*(\d{1,2})[/-](\d{1,2})\s*(.*)/) ||
-                                      line.match(/^(\d{1,2})[/-](\d{1,2})\s+(.*)/);
+                // NEW: Highly Flexible Date Prefix Detection (Handles "113撟?5/5", "113.5.5", "5/5" etc.)
+                const datePrefixMatch = line.match(/^(\d{2,4})[撟?/-](\d{1,2})[??/-](\d{1,2})[?包?\s*(.*)/) || 
+                                      line.match(/^(\d{2,4})[撟?/-]\s*(\d{1,2})[/-](\d{1,2})\s*(.*)/) ||
+                                      line.match(/^(\d{1,2})[/-](\d{1,2})\s*(.*)/);
 
                 if (datePrefixMatch) {
                     if (datePrefixMatch.length === 5) {
@@ -1122,18 +1021,18 @@ const triggerBatchSave = async (batchData) => {
                     blockDate = lineDate;
                 }
 
-                // Pattern 1: "求寶/求寶方式：..." -> Assign to previous record
-                if (line.match(/^\s*(求寶|求寶方式)[：:]/)) {
-                    const method = line.split(/[：:]/)[1]?.trim();
+                // Pattern 1: "瘙窄/瘙窄?孵?嚗?.." -> Assign to previous record
+                if (line.match(/^\s*(瘙窄|瘙窄?孵?)[嚗?]/)) {
+                    const method = line.split(/[嚗?]/)[1]?.trim();
                     if (method && rawRecords.length > 0) {
                         rawRecords[rawRecords.length - 1].acquisition_method = method;
                     }
                     continue; 
                 }
 
-                // Pattern 2: "備註：..." -> Assign to previous record's remarks
-                if (line.match(/^\s*備註[：:]/)) {
-                    const rmk = line.substring(line.indexOf('：') > -1 ? line.indexOf('：') + 1 : line.indexOf(':') + 1).trim();
+                // Pattern 2: "?酉嚗?.." -> Assign to previous record's remarks
+                if (line.match(/^\s*?酉[嚗?]/)) {
+                    const rmk = line.substring(line.indexOf('嚗?) > -1 ? line.indexOf('嚗?) + 1 : line.indexOf(':') + 1).trim();
                     if (rmk && rawRecords.length > 0) {
                         const lastRec = rawRecords[rawRecords.length - 1];
                         lastRec.remarks = lastRec.remarks ? lastRec.remarks + '\n' + rmk : rmk;
@@ -1141,41 +1040,41 @@ const triggerBatchSave = async (batchData) => {
                     continue;
                 }
 
-                // Pattern 3: "法寶用意/用意：..." -> Assign to previous record
-                if (line.match(/^\s*(法寶用意|用意)[：:]/)) {
-                    const purp = line.substring(line.indexOf('：') > -1 ? line.indexOf('：') + 1 : line.indexOf(':') + 1).trim();
+                // Pattern 3: "瘜窄?冽?/?冽?嚗?.." -> Assign to previous record
+                if (line.match(/^\s*(瘜窄?冽?|?冽?)[嚗?]/)) {
+                    const purp = line.substring(line.indexOf('嚗?) > -1 ? line.indexOf('嚗?) + 1 : line.indexOf(':') + 1).trim();
                     if (purp && rawRecords.length > 0) {
                         const lastRec = rawRecords[rawRecords.length - 1];
-                        lastRec.purpose = lastRec.purpose ? lastRec.purpose + '；' + purp : purp;
+                        lastRec.purpose = lastRec.purpose ? lastRec.purpose + '嚗? + purp : purp;
                     }
                     continue;
                 }
 
-                // Pattern A: "(允求|賜降) 森羅戒：靈果" (Keyword is now optional)
-                const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
+                // Pattern A: "(??|鞈?) 璉桃?????" (Keyword is now optional)
+                const kwMatch = line.match(/^\s*((??|鞈?|敺|鞈?|鞈瘜窄?迂|瘜窄?批捆)\s*)?(.*?)[嚗?](.*)/);
                 if (kwMatch && kwMatch[3] && kwMatch[3].trim()) {
                     treasureName = kwMatch[3].trim();
                     const content = kwMatch[4].trim();
                     if (content) {
-                        recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
+                        recipients = content.split(/[嚗? \s]+/).filter(n => n.trim());
                         pendingTreasureName = ''; // Reset if full line
                     } else {
                         pendingTreasureName = treasureName; // Set pending if no content
                         continue;
                     }
                 } 
-                // Pattern B: "靈果求得森羅戒"
-                else if (line.includes('求得')) {
-                    const parts = line.split('求得').map(p => p.trim());
+                // Pattern B: "??瘙?璉桃???
+                else if (line.includes('瘙?')) {
+                    const parts = line.split('瘙?').map(p => p.trim());
                     if (parts.length >= 2) {
                         recipients = [parts[0]];
                         treasureName = parts[1];
                         pendingTreasureName = '';
                     }
                 }
-                // Pattern C: "森羅戒 | 靈果 | 113/11/24"
-                else if (line.includes('|') || line.includes('│') || line.includes('\t')) {
-                    const parts = line.split(/[|│\t]/).map(p => p.trim());
+                // Pattern C: "璉桃???| ?? | 113/11/24"
+                else if (line.includes('|') || line.includes('??) || line.includes('\t')) {
+                    const parts = line.split(/[|?t]/).map(p => p.trim());
                     treasureName = parts[0];
                     if (parts[1]) recipients = [parts[1]];
                     if (parts[2]) {
@@ -1186,18 +1085,18 @@ const triggerBatchSave = async (batchData) => {
                     if (parts[3]) lineRemarks = parts[3];
                     pendingTreasureName = '';
                 }
-                // Pattern D: "靈心、金振、金涓" (Pure recipients line if pending treasure exists)
+                // Pattern D: "?????胯?瘨? (Pure recipients line if pending treasure exists)
                 else if (pendingTreasureName) {
                     treasureName = pendingTreasureName;
-                    recipients = line.split(/[，、, \s]+/).filter(n => n.trim());
+                    recipients = line.split(/[嚗? \s]+/).filter(n => n.trim());
                     pendingTreasureName = ''; // Done
                 }
-                // Pattern E: "森羅戒 元續之夫" (Space separated, no colon)
-                else if (line.includes(' ') && !line.includes('：') && !line.includes(':')) {
+                // Pattern E: "璉桃?????銋井" (Space separated, no colon)
+                else if (line.includes(' ') && !line.includes('嚗?) && !line.includes(':')) {
                     const spaceParts = line.split(/\s+/);
                     if (spaceParts.length >= 2) {
                         treasureName = spaceParts[0];
-                        recipients = spaceParts.slice(1).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
+                        recipients = spaceParts.slice(1).join(' ').split(/[嚗? \s]+/).filter(n => n.trim());
                     } else {
                         continue;
                     }
@@ -1208,13 +1107,13 @@ const triggerBatchSave = async (batchData) => {
                 }
 
                 if (treasureName) {
-                    treasureName = treasureName.replace(/[：:。！？]$/, '').trim();
+                    treasureName = treasureName.replace(/[嚗???嚗$/, '').trim();
                             const dnr = recipients.map(rawName => {
                                 let translated = translateName(rawName).trim();
                                 if (!translated) return null;
 
-                                // Handle relationship words: "元續之母" or "元續三姑" -> "元續"
-                                let relMatch = translated.match(/^(.*?)([之的].+)$/);
+                                // Handle relationship words: "??銋?" or "??銝?" -> "??"
+                                let relMatch = translated.match(/^(.*?)([銋?].+)$/);
                                 if (!relMatch) {
                                     // Try matching against known dharma names prefixes, longest first
                                     const dnsList = dharmaNames.value || [];
@@ -1227,11 +1126,8 @@ const triggerBatchSave = async (batchData) => {
 
                                 if (relMatch) {
                                     const finalDate = lineDate || blockDate || new Date().toISOString().split('T')[0];
-                                    const dParts = finalDate.split('-');
-                                    let rocY = parseInt(dParts[0]);
-                                    if (rocY > 1911) rocY -= 1911;
-                                    const dStr = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
-                                    return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: finalDate };
+                                    const dStr = finalDate.replace(/-/g, '/');
+                                    return { custom_name: relMatch[1], remarks: `${dStr} ${translated}`, obtained_date: finalDate };
                                 }
                                 return { custom_name: translated, remarks: lineRemarks, obtained_date: lineDate || blockDate };
                             }).filter(n => n !== null);
@@ -1269,13 +1165,13 @@ const triggerBatchSave = async (batchData) => {
 
                 // Merge text fields if new ones are found
                 if (rec.acquisition_method && !existing.acquisition_method.includes(rec.acquisition_method)) {
-                    existing.acquisition_method = existing.acquisition_method ? (existing.acquisition_method + '；' + rec.acquisition_method) : rec.acquisition_method;
+                    existing.acquisition_method = existing.acquisition_method ? (existing.acquisition_method + '嚗? + rec.acquisition_method) : rec.acquisition_method;
                 }
                 if (rec.purpose && !existing.purpose.includes(rec.purpose)) {
-                    existing.purpose = existing.purpose ? (existing.purpose + '；' + rec.purpose) : rec.purpose;
+                    existing.purpose = existing.purpose ? (existing.purpose + '嚗? + rec.purpose) : rec.purpose;
                 }
                 if (rec.remarks && !existing.remarks.includes(rec.remarks)) {
-                    existing.remarks = existing.remarks ? (existing.remarks + '；' + rec.remarks) : rec.remarks;
+                    existing.remarks = existing.remarks ? (existing.remarks + '嚗? + rec.remarks) : rec.remarks;
                 }
                 
                 // Merge registries (merge remarks if personnel already exists)
@@ -1304,7 +1200,7 @@ const triggerBatchSave = async (batchData) => {
 
         const records = Array.from(mergedMap.values());
         if (records.length === 0) {
-            persistentToast.value = { msg: '✖ 無法解析出任何法寶資料', type: 'error' };
+            persistentToast.value = { msg: '???⊥?閫???箔遙雿?撖嗉???, type: 'error' };
             isSaving.value = false;
             return;
         }
@@ -1312,12 +1208,12 @@ const triggerBatchSave = async (batchData) => {
         await axios.post('/registries/batch', records);
         addMode.value = null;
         loadData();
-        persistentToast.value = { msg: `✓ 批量新增成功 (${records.length} 筆)`, type: 'success' };
+        persistentToast.value = { msg: `???寥??啣??? (${records.length} 蝑?`, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     } catch (e) {
         console.error(e);
-        const errorMsg = e.response?.data?.error || '批量儲存失敗';
-        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+        const errorMsg = e.response?.data?.error || '?寥??脣?憭望?';
+        persistentToast.value = { msg: '??' + errorMsg, type: 'error' };
     } finally {
         isSaving.value = false;
     }
@@ -1329,12 +1225,13 @@ const openAndEdit = (id) => {
     } else {
         editingIds.value.add(id);
         if (!expandedIds.value.has(id)) {
-            expandedIds.value.clear();
+            expandedIds.value.clear(); 
             expandedIds.value.add(id);
         }
     }
     openMenuId.value = null;
 };
+
 
 const triggerRemarksEdit = (item, personIdentifier) => {
     // personIdentifier can be dnId (Number), dnr object, or 'new'
@@ -1397,7 +1294,7 @@ const openCombinedRemarks = (item) => {
         .map(r => {
             const name = r.dharma_name ? r.dharma_name.name : r.custom_name;
             const text = Array.isArray(r.remarks) ? r.remarks.join('\n  ') : r.remarks;
-            return `【${name}】：${text}`;
+            return `??{name}??${text}`;
         })
         .join('\n\n');
     openRemarks(combined);
@@ -1406,7 +1303,7 @@ const openCombinedRemarks = (item) => {
 const deleteItem = async (id) => {
     try {
         await axios.delete(`/registries/${id}`);
-        persistentToast.value = { msg: '✓ 已成功刪除資料', type: 'success' };
+        persistentToast.value = { msg: '??撌脫???方???, type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
         
         // Reset states
@@ -1418,8 +1315,8 @@ const deleteItem = async (id) => {
         await loadData();
     } catch (e) {
         console.error(e);
-        const errorMsg = e.response?.data?.error || '刪除失敗';
-        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+        const errorMsg = e.response?.data?.error || '?芷憭望?';
+        persistentToast.value = { msg: '??' + errorMsg, type: 'error' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
     }
 };
@@ -1478,32 +1375,60 @@ const copyToLine = (item) => {
         .filter(r => r.obtained_date)
         .map(r => {
             const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
-            const name = dn?.name || r.custom_name || '未知人員';
-            return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
+            const name = dn?.name || r.custom_name || '?芰鈭箏';
+            return `??${name} | ${r.obtained_date.toString().replace(/-/g, '/')}${r.remarks ? ' | ' + r.remarks : ''}`;
         }).join('\n');
     
-    const finalRecordsText = dnrText || '尚無紀錄';
-    const text = `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${finalRecordsText}`;
+    const finalRecordsText = dnrText || '撠蝝??;
+    const text = `??{item.name}?n?冽?嚗?{item.purpose || '-'}\n?餉??瘜?\n${finalRecordsText}`;
     navigator.clipboard.writeText(text);
-    persistentToast.value = { msg: '✓ 已複製 LINE 格式', type: 'success' };
+    persistentToast.value = { msg: '??撌脰?鋆?LINE ?澆?', type: 'success' };
     setTimeout(() => persistentToast.value = null, 1500);
     openMenuId.value = null;
 };
 
 const downloadItemData = (item) => {
-    const headers = ['法號', '登記日期', '備註'];
-    const rows = dharmaNames.value.map(dn => {
-        const r = item.dharma_name_registries?.find(reg => reg.dharma_name_id === dn.id);
-        return [dn.name, formatToROC(r?.obtained_date) || '', r?.remarks || ''].join(',');
-    });
+    const headers = ['瘜窄?迂', '?餉??交?', '瘜?', '閬芸?', '?酉'];
+    const rows = [];
     
-    // Add UTF-8 BOM to prevent garbled text (亂碼) in Excel
+    // Get all registries for this item
+    const registries = item.dharma_name_registries || [];
+    
+    // If it's a major category, we might want to show all dharma names even if they don't have records
+    // but usually for "Download", people only want existing records. 
+    // However, the previous logic showed ALL dharma names. Let's stick to showing ALL for major, 
+    // but just records for others.
+    
+    if (currentCategory.value === 'major') {
+        dharmaNames.value.forEach(dn => {
+            const r = registries.find(reg => reg.dharma_name_id === dn.id);
+            rows.push([
+                item.name,
+                r?.obtained_date ? formatToROC(r.obtained_date) : '',
+                dn.name,
+                r?.related_personnel || '',
+                (r?.remarks || '').replace(/[\n\r,]+/g, ' ')
+            ].map(v => `"${v}"`).join(','));
+        });
+    } else {
+        registries.forEach(r => {
+            const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
+            rows.push([
+                item.name,
+                r.obtained_date ? formatToROC(r.obtained_date) : '',
+                dn?.name || r.custom_name || '',
+                r.related_personnel || '',
+                (r.remarks || '').replace(/[\n\r,]+/g, ' ')
+            ].map(v => `"${v}"`).join(','));
+        });
+    }
+    
     const csvContent = "\ufeff" + [headers.join(','), ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `${item.name}_登記表.txt`);
+    link.setAttribute("download", `${item.name}_?餉?銵?csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1513,47 +1438,65 @@ const downloadItemData = (item) => {
 const copyAllToLine = () => {
     const items = filteredTreasures.value;
     if (!items.length) {
-        persistentToast.value = { msg: '✖ 尚無資料可複製', type: 'error' };
+        persistentToast.value = { msg: '??撠鞈??航?鋆?, type: 'error' };
         return;
     }
     
     const text = items.map(item => {
         const dnrText = item.dharma_name_registries?.filter(r => r.obtained_date).map(r => {
             const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
-            const name = dn?.name || r.custom_name || '未知人員';
-            return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
-        }).join('\n') || '尚無紀錄';
-        return `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${dnrText}`;
+            const name = dn?.name || r.custom_name || '?芰鈭箏';
+            return `??${name} | ${r.obtained_date.toString().replace(/-/g, '/')}${r.remarks ? ' | ' + r.remarks : ''}`;
+        }).join('\n') || '撠蝝??;
+        return `??{item.name}?n?冽?嚗?{item.purpose || '-'}\n?餉??瘜?\n${dnrText}`;
     }).join('\n\n------------------\n\n');
     
     navigator.clipboard.writeText(text);
-    persistentToast.value = { msg: '✓ 已複製全部資料至 LINE', type: 'success' };
+    persistentToast.value = { msg: '??撌脰?鋆賢?刻?? LINE', type: 'success' };
     setTimeout(() => persistentToast.value = null, 2000);
 };
 
 const downloadAllData = () => {
     const items = filteredTreasures.value;
     if (!items.length) {
-        persistentToast.value = { msg: '✖ 尚無資料可下載', type: 'error' };
+        persistentToast.value = { msg: '??撠鞈??臭?頛?, type: 'error' };
         return;
     }
     
-    const contents = items.map(item => {
-        const dnrText = item.dharma_name_registries?.filter(r => r.obtained_date).map(r => {
-            const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
-            const name = dn?.name || r.custom_name || '未知人員';
-            return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
-        }).join('\r\n') || '尚無紀錄';
-        
-        return `【${item.name}】\r\n用意：${item.purpose || '-'}\r\n登記狀況：\r\n${dnrText}`;
-    }).join('\r\n\r\n--------------------------------\r\n\r\n');
+    const headers = ['瘜窄?迂', '?冽?', '?餉??交?', '瘜?', '閬芸?', '?酉'];
+    const rows = [];
     
-    const finalContent = `【法寶登記專區 - ${currentFolder.value.name} 完整清單】\r\n\r\n${contents}`;
-    const blob = new Blob(["\ufeff" + finalContent], { type: 'text/plain;charset=utf-8;' });
+    items.forEach(item => {
+        const registries = item.dharma_name_registries || [];
+        if (registries.length === 0) {
+            // Optional: include item even if no records
+            rows.push([
+                item.name,
+                item.purpose || '',
+                '', '', '', ''
+            ].map(v => `"${v}"`).join(','));
+        } else {
+            registries.forEach(r => {
+                const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
+                rows.push([
+                    item.name,
+                    item.purpose || '',
+                    r.obtained_date ? formatToROC(r.obtained_date) : '',
+                    dn?.name || r.custom_name || '',
+                    r.related_personnel || '',
+                    (r.remarks || '').replace(/[\n\r,]+/g, ' ')
+                ].map(v => `"${v}"`).join(','));
+            });
+        }
+    });
+    
+    const csvName = currentFolder.value ? currentFolder.value.name : '?券皜';
+    const csvContent = "\ufeff" + [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `法寶登記專區_${currentFolder.value.name}_完整清單.txt`);
+    link.setAttribute("download", `瘜窄?餉?撠?_${csvName}_摰鞈?.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1580,7 +1523,7 @@ const saveItemInPlace = async (item) => {
                     dharma_name_id: dn.id,
                     obtained_date: data.obtained_date ? data.obtained_date.replace(/\//g, '-') : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.obtained_date || null),
                     remarks: data.remarks || (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks || ''),
-                    related_personnel: data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.related_personnel || [])
+                    related_personnel: data.relationship ? data.relationship.split(/[?? ]+/).filter(x => x) : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.related_personnel || [])
                 });
             }
         });
@@ -1593,7 +1536,7 @@ const saveItemInPlace = async (item) => {
                     custom_name: r.custom_name,
                     obtained_date: data.obtained_date ? data.obtained_date.replace(/\//g, '-') : (r.obtained_date ? r.obtained_date.replace(/\//g, '-') : null),
                     remarks: data.remarks || (r.remarks || ''),
-                    related_personnel: data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : (r.related_personnel || [])
+                    related_personnel: data.relationship ? data.relationship.split(/[?? ]+/).filter(x => x) : (r.related_personnel || [])
                 });
             }
         });
@@ -1608,14 +1551,14 @@ const saveItemInPlace = async (item) => {
         });
         
         editingIds.value.delete(item.id);
-        persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
+        persistentToast.value = { msg: '???脣???', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
         await loadData();
         openMenuId.value = null;
     } catch (e) {
         console.error(e);
-        const errorMsg = e.response?.data?.error || '儲存失敗';
-        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+        const errorMsg = e.response?.data?.error || '?脣?憭望?';
+        persistentToast.value = { msg: '??' + errorMsg, type: 'error' };
     } finally {
         isSaving.value = false;
     }
@@ -1646,15 +1589,15 @@ const handleRemarksViewerSave = async ({ dnrId, content }) => {
         await axios.patch(`/registries/personnel/${dnrId}/remarks`, {
             remarks: content
         });
-        persistentToast.value = { msg: '✓ 備註已儲存', type: 'success' };
+        persistentToast.value = { msg: '???酉撌脣摮?, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         await loadData();
     } catch (e) {
-        alert('儲存失敗，請重試');
+        alert('?脣?憭望?嚗??岫');
     } finally {
         isSaving.value = false;
-        showRemarksModal.value = false; // 確保關閉
-        currentDnrId.value = null;     // 重置 ID
+        showRemarksModal.value = false; // 蝣箔???
+        currentDnrId.value = null;     // ?蔭 ID
     }
 };
 
@@ -1665,14 +1608,14 @@ const saveRemarksInline = async () => {
         await axios.patch(`/registries/personnel/${currentDnrId.value}/remarks`, {
             remarks: activeRemarks.value
         });
-        // 先關閉 Modal，再更新資料，避免 watch 更新干擾顯示中的內容
+        // ????Modal嚗??湔鞈?嚗??watch ?湔撟脫憿舐內銝剔??批捆
         showRemarksModal.value = false;
         currentDnrId.value = null;
-        persistentToast.value = { msg: '✓ 備註已儲存', type: 'success' };
+        persistentToast.value = { msg: '???酉撌脣摮?, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         await loadData();
     } catch (e) {
-        alert('儲存失敗，請重試');
+        alert('?脣?憭望?嚗??岫');
     } finally {
         isSaving.value = false;
     }

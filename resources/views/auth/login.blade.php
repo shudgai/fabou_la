@@ -20,7 +20,14 @@
             @if (session('error'))
                 <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center space-x-3 text-red-600 animate-shake">
                     <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="text-xs font-bold leading-tight">{{ session('error') }}</span>
+                    <span class="text-base font-bold leading-tight">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if (session('status'))
+                <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center space-x-3 text-emerald-600 animate-fade-in">
+                    <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="text-base font-bold leading-tight">{{ session('status') }}</span>
                 </div>
             @endif
 
@@ -63,8 +70,8 @@
                 <div class="space-y-2">
                     <div class="flex items-center justify-between ml-1">
                         <label for="password" class="text-xs font-bold text-slate-400 uppercase tracking-widest">密碼</label>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-[11px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors uppercase tracking-wider">忘記密碼？</a>
+                        @if (Route::has('password.direct'))
+                            <a href="{{ route('password.direct') }}" class="text-[13px] font-bold text-indigo-500 hover:text-indigo-700 transition-colors uppercase tracking-wider">直接重設密碼？</a>
                         @endif
                     </div>
                     <div class="relative">

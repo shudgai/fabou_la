@@ -23,6 +23,10 @@ Auth::routes();
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 
+// Direct Password Reset (Simplified Flow)
+Route::get('password/direct-reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showDirectResetForm'])->name('password.direct');
+Route::post('password/direct-reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'directReset'])->name('password.direct.update');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Archival System Routes
