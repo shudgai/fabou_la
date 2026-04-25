@@ -184,20 +184,7 @@
                     </button>
                 </div>
                 
-                <!-- Added Global Multi-Add Button -->
-                <div class="px-6 pb-20">
-                    <button @click="showMultiMasterAdd" 
-                            class="w-full py-5 bg-gradient-to-r from-red-500 to-rose-600 rounded-[28px] text-white font-black text-[19px] shadow-[0_10px_25px_rgba(244,63,94,0.3)] active:scale-95 transition-all flex items-center justify-center group mb-4">
-                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3 group-hover:rotate-90 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </div>
-                        整筆多位仙師智慧錄入
-                    </button>
-                    <p class="text-center text-slate-400 text-[13px] font-bold px-4 leading-relaxed">
-                        💡 貼入包含多位仙師的對話文字，系統將自動分流。
-                    </p>
-                </div>
-                <div class="h-10"></div>
+
             </div>
 
             <!-- Level 2: List & Add View -->
@@ -209,8 +196,11 @@
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <label class="app-title ml-1">日期</label>
-                                        <div @click="form.date = form.date" class="border border-slate-400 rounded-xl bg-slate-50/50 overflow-hidden pl-[10px] pr-[2px] py-[2px] flex items-center h-[39.33px] shadow-sm">
-                                            <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-title text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
+                                        <div @click="activeDate = 'date'" class="border border-slate-400 rounded-xl bg-slate-50/50 overflow-hidden pl-[10px] pr-[2px] py-[2px] flex items-center h-[39.33px] shadow-sm cursor-pointer">
+                                            <span class="app-title" :class="form.date ? 'text-slate-900' : 'text-slate-400'">
+                                                {{ (form.date || '選擇日期').replace(/-/g, '/') }}
+                                            </span>
+                                            <svg class="w-4 h-4 text-slate-300 ml-auto mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">
@@ -1369,8 +1359,10 @@
                                             <div class="grid grid-cols-2 gap-3">
                                                 <div class="space-y-1">
                                                     <label class="app-title block ml-1">開示日期</label>
-                                                    <input type="date" v-model="inlineEditData.date"
-                                                           class="w-full rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-0 px-3 py-2.5 bg-white app-body text-[16px] font-bold">
+                                                    <div @click="activeDate = 'inlineEdit'" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2.5 bg-white app-body text-[16px] font-bold flex items-center justify-between cursor-pointer">
+                                                        <span>{{ (inlineEditData.date || '').replace(/-/g, '/') }}</span>
+                                                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </div>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="app-title block ml-1">主講仙師</label>
@@ -1599,6 +1591,13 @@
                 @search="showSearch = !showSearch"
                 @more="itemPagination.last_page > 0 ? exportListExcel() : null"
             />
+            
+            <compact-date-picker 
+                v-if="activeDate"
+                v-model="datePickerValue"
+                title="選擇日期"
+                @close="activeDate = null"
+            />
             <!-- Floating Login Info Removed per user request -->
         </div>
     </div>
@@ -1610,6 +1609,7 @@ import axios from 'axios';
 import SearchComponent from './SearchComponent.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import AddActionMenu from './AddActionMenu.vue';
+import CompactDatePicker from './CompactDatePicker.vue';
 
 // Reactive State
 const props = defineProps(['user']);
@@ -1620,6 +1620,18 @@ const isAddingFlash = ref(false);
 const currentFolder = ref(null);
 const currentCategory = ref(null);
 const addMode = ref(false);
+const activeDate = ref(null);
+
+const datePickerValue = computed({
+    get: () => activeDate.value === 'inlineEdit' ? inlineEditData.value.date : form.value.date,
+    set: (val) => {
+        if (activeDate.value === 'inlineEdit') {
+            inlineEditData.value.date = val;
+        } else {
+            form.value.date = val;
+        }
+    }
+});
 
 const formatValue = (val, unit) => {
     if (val === '1' || val === 1) return '一次性';

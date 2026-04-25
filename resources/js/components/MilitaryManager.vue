@@ -97,7 +97,7 @@
                 </button>
             </div>
 
-            <div class="flex-1 overflow-x-auto overflow-y-auto pl-[10px] bg-white flex flex-col" :class="[focusedId ? 'h-full pb-0' : 'pb-24']">
+            <div v-if="!showFullTotal" class="flex-1 overflow-x-auto overflow-y-auto pl-[10px] bg-white flex flex-col" :class="[focusedId ? 'h-full pb-0' : 'pb-24']">
                 <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
                 <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">
                     目前尚無{{ currentFolder.name }}載錄資料。
@@ -121,8 +121,8 @@
                                 <!-- Row 1: Date only -->
                                 <div class="flex items-center mb-0.5">
                                     <div class="flex items-baseline space-x-2">
-                                        <div class="app-title !font-black !text-black font-outfit" style="font-size: 18px !important; font-weight: 900 !important; color: #0d0d0d !important;">日期</div>
-                                        <div class="app-title ml-0.5 !font-black !text-black font-outfit" style="font-size: 18px !important; font-weight: 900 !important; color: #0d0d0d !important;">{{ formatDate(item.know_date) }}</div>
+                                        <div class="app-title !font-black !text-black font-outfit" style="font-weight: 900 !important; color: #0d0d0d !important;">日期</div>
+                                        <div class="app-title ml-0.5 !font-black !text-black font-outfit" style="font-weight: 900 !important; color: #0d0d0d !important;">{{ formatDate(item.know_date) }}</div>
                                     </div>
                                 </div>
 

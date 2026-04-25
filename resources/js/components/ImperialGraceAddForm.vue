@@ -1,22 +1,19 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[500] flex items-end md:items-center justify-center px-0 imperial-grace-module">
+    <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0 imperial-grace-module">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100vh] md:max-w-4xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-[100vh] md:max-w-4xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
-            <div class="px-[10px] py-[5px] flex items-center bg-white border-b border-slate-50 relative">
-                <button @click="$emit('cancel')" class="text-slate-400 py-[5px] -ml-2 mr-0.5 active:scale-90 transition-transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-[5px] pr-6">
-                    <div class="text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                    <div class="text-[25px] font-bold leading-tight font-outfit tracking-widest break-words text-slate-900">
                         重大皇恩專區
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors py-[5px] absolute right-4 top-1/2 -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
@@ -31,7 +28,7 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto p-2 pb-32 space-y-1 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-4 pt-6 pb-32 space-y-4 custom-scrollbar">
                 
                 <!-- COMMON FIELDS (Date & Master) -->
                 <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px] py-[5px]">
@@ -158,12 +155,12 @@
             </div>
 
             <!-- Footer Action (Fixed exactly above Navbar) -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-2 bg-white/90 backdrop-blur-sm border-t border-slate-100 z-[10] flex items-center justify-center">
+            <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] flex items-center justify-center">
                 <button 
                     @click="handleSubmit" 
                     :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
-                    style="font-size: 17px !important; color: white !important;"
-                    class="w-full bg-indigo-600 py-[10px] rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:bg-slate-300 font-black border-none outline-none"
+                    style="font-size: 20px !important; color: white !important;"
+                    class="w-full bg-indigo-600 py-[10px] rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:bg-slate-300 font-bold border-none outline-none"
                 >
                     <template v-if="isSaving">
                         <span class="flex items-center justify-center">
@@ -179,7 +176,7 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
-                @back="$emit('cancel')"
+                :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"

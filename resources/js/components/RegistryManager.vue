@@ -111,9 +111,9 @@
                         </div>
                         <div class="text-center px-1">
                             <div :class="[
-                                'font-black tracking-tight leading-tight text-center transition-all text-[23px]',
+                                'font-black tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
-                            ]" style="font-weight: 900 !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 22px !important;">{{ folder.name }}</div>
                         </div>
                     </button>
 

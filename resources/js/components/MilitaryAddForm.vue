@@ -1,28 +1,25 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
+    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
-            <div class="px-[10px] py-[5px] flex items-center bg-white border-b border-slate-50 relative">
-                <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[20px] font-black leading-none font-outfit uppercase tracking-wider" style="color: rgb(220, 20, 40);">軍隊載錄專區</div>
-                    <div class="text-[13px] font-black mt-0 truncate font-outfit" style="color: rgb(220, 20, 40);">
+                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區</div>
+                    <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
                         {{ editingId ? '修改軍隊載錄' : armyType + '-逐筆新增' }}
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-[10px] pt-[5px] pb-6 space-y-[5px] custom-scrollbar bg-white">
+            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-6 space-y-[5px] custom-scrollbar bg-white">
                 <div class="space-y-[5px]">
                     <!-- Row 1: 日期 -->
                     <div class="space-y-1">
@@ -110,10 +107,10 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="p-3 pb-24 border-t border-slate-100 bg-white">
+            <div class="px-6 py-4 bg-white border-t border-slate-50">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 font-black py-[5px] px-4 text-[18px] rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all"
+                    class="w-full bg-indigo-600 font-bold py-[10px] px-4 text-[20px] rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all"
                     style="color: white !important;"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
@@ -122,34 +119,12 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
-                @back="$emit('cancel')"
+                :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"
             />
-
-            <!-- Custom Full-Screen Overlay Picker (Kept for component structure but logically unused now) -->
-            <div v-if="false" class="absolute inset-0 bg-white z-[100] p-8 flex flex-col animate-fade-in md:rounded-[32px]">
-                <div class="flex items-center justify-between mb-10">
-                    <span class="text-[14px] font-bold text-slate-400">請選取處理狀況</span>
-                    <button @click="showResultPicker = false" class="text-slate-400 p-2"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                </div>
-                <div class="grid grid-cols-2 gap-x-12 flex-1">
-                    <div class="space-y-12">
-                        <div v-for="opt in ['未處理', '暫驅離開', '殲滅']" :key="opt"
-                            @click="form.destination = opt; showResultPicker = false"
-                            class="cursor-pointer font-bold text-[20px] transition-all active:scale-95 py-[5px]"
-                            :class="[
-                                form.destination === opt ? 'text-indigo-600 underline underline-offset-4' : 'text-slate-900 opacity-60'
-                            ]"
-                        >
-                            {{ opt }}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
         <!-- Custom Date Picker -->
         <compact-date-picker 
             v-if="activeDate"

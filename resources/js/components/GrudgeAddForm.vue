@@ -1,28 +1,25 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
+    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
-            <div class="px-[10px] py-[5px] flex items-center bg-white border-b border-slate-50 relative">
-                <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[20px] font-black leading-none font-outfit uppercase tracking-wider" style="color: rgb(220, 20, 40);">怨靈載錄專區</div>
-                    <div class="text-[13px] font-black mt-0 truncate font-outfit" style="color: rgb(220, 20, 40);">
+                    <div class="text-[25px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900">怨靈載錄專區</div>
+                    <div class="text-[22px] font-bold mt-2 truncate font-outfit text-slate-900">
                         {{ editingId ? '修改載錄' : '怨靈載錄登記簿' }}
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-[10px] pt-[5px] pb-4 space-y-[15px] custom-scrollbar bg-white">
+            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-4 space-y-[15px] custom-scrollbar bg-white">
                 <!-- New Organized Layout -->
                 <div class="space-y-[15px]">
                     <!-- Row 1: 得知日期 -->
@@ -122,11 +119,11 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="px-4 pb-24 bg-white">
+            <div class="p-4 bg-white border-t border-slate-50">
                 <button 
                     @click="handleSave" 
                     style="color: white !important"
-                    class="w-full bg-indigo-600 font-black py-[5px] text-[16px] rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
+                    class="w-full bg-indigo-600 font-bold py-[10px] text-[20px] rounded-xl hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
@@ -134,7 +131,7 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
-                @back="$emit('cancel')"
+                :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"

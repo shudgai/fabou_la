@@ -53,7 +53,7 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
+        <div v-if="!showTotal" class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
             <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
