@@ -2,56 +2,51 @@
     <div class="flex h-full bg-white overflow-hidden font-sans relative">
         
         <!-- STEP 1: PERSONNEL SELECTION -->
-        <div v-show="currentStep === 1" class="flex w-full h-full overflow-hidden">
-            <!-- Left Sidebar: Master Dharma Name List -->
-            <div class="w-[58.33%] border-r border-slate-100 flex flex-col h-full bg-white pl-1.5">
-                <div class="p-2 border-b border-slate-50 flex items-center justify-between">
-                    <h3 class="text-[20px] font-black text-slate-900">法號全表</h3>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-[14px] font-bold text-slate-400">已選 {{ selectedNames.length }}</span>
-                        <button @click="resetAll" class="text-slate-300 hover:text-red-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
+        <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
+
+            <!-- Main scrollable selection grid -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar pb-20">
+                <!-- Header bar -->
+                <div class="flex items-center justify-between px-3 py-1.5">
+                    <span class="font-black text-[13px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                        {{ selectionFiltered ? '已確認名單 (可再調整)' : '點選在場名冊 (藍色為已選)' }}
+                    </span>
+                    <span class="text-[13px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
-                <div class="flex-1 overflow-y-auto px-1 py-1 custom-scrollbar">
-                    <div class="grid grid-cols-4 gap-0.5">
-                        <button v-for="user in users" :key="user.id"
-                            @click="toggleSelect(user.name)"
-                            class="h-8 flex items-center justify-center transition-all active:scale-95">
-                            <span :class="['text-[17px] font-black whitespace-nowrap',
-                                         selectedNames.includes(user.name) ? 'text-slate-300' : 'text-slate-800']">
-                                {{ user.name }}
-                            </span>
-                        </button>
-                    </div>
+
+                <!-- 5-per-row grid — zero side padding, fills full width -->
+                <div class="grid grid-cols-5 px-1" style="gap: 2px; background: #ffffff;">
+                    <button
+                        v-for="user in displayUsers"
+                        :key="user.id"
+                        @click="togglePending(user.name)"
+                        class="flex items-center justify-center font-black text-[18px] transition-all active:scale-95 rounded-lg border-none py-[10px] shadow-none"
+                        :style="getPendingStyle(user.name)"
+                    >
+                        {{ user.name }}
+                    </button>
                 </div>
             </div>
 
-            <!-- Right Area: On-site Personnel Pool -->
-            <div class="w-[41.67%] flex flex-col h-full bg-slate-50/10">
-                <div class="p-3 border-b border-slate-100 bg-white flex items-center justify-between">
-                    <h2 class="text-[20px] font-black text-slate-900 whitespace-nowrap">在場名冊</h2>
-                    <button v-if="selectedNames.length > 0" @click="currentStep = 2" 
-                        class="text-indigo-600 hover:text-indigo-800 transition-all p-1 active:scale-90 transform -mr-2">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                    <div v-if="selectedNames.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200">
-                        <p class="text-[15px] font-bold uppercase tracking-widest text-slate-200">待選取人員</p>
-                    </div>
-                    <div class="grid grid-cols-3 gap-y-1 text-center">
-                        <div v-for="name in selectedNames" :key="'sel'+name" class="flex justify-center">
-                            <span @click="toggleSelect(name)" 
-                                class="text-[17px] font-black text-indigo-600 cursor-pointer hover:text-red-500 transition-colors whitespace-nowrap">
-                                {{ name }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Confirm button — FIXED above mobile nav -->
+            <div class="fixed bottom-[7vh] left-0 right-0 px-3 pb-2 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
+                <button
+                    @click="confirmSelection"
+                    :disabled="pendingNames.length === 0"
+                    class="w-full py-[10px] rounded-2xl font-black text-[18px] transition-all active:scale-[0.98] text-white"
+                    :style="{
+                        background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
+                        boxShadow: 'none',
+                    }"
+                >
+                    <span v-if="!selectionFiltered" style="color: #ffffff !important;">確定 (已選 {{ pendingNames.length }} 人)</span>
+                    <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
+                </button>
             </div>
         </div>
+
+
+
 
         <!-- STEP 2: GROUPING & RESULTS -->
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden animate-slide-in">
@@ -70,7 +65,7 @@
             </div>
 
             <!-- Main Content Container -->
-            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full">
+            <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
                 
                 <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
                 <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
@@ -108,20 +103,25 @@
                                 <div v-for="name in guardianResults" :key="'glist'+name" 
                                     class="flex items-center space-x-1 bg-amber-500 text-white text-[14px] font-black px-2 py-0.5 rounded-lg animate-fade-in shadow-sm">
                                     <span>{{ name }}</span>
-                                    <button @click="removeGuardian(name)" class="opacity-60 hover:opacity-100 transition-opacity">×</button>
+                                    <button @click="removeGuardian(name)" class="text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-[12px] shadow-none">×</button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="flex-1 flex flex-col space-y-1 pt-0.5">
                             <div class="flex items-center space-x-1">
-                                <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-sm flex-1">
-                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-7 h-full font-black text-[18px] text-amber-400">−</button>
-                                    <span class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none">{{ pickSize }}</span>
-                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-7 h-full font-black text-[18px] text-amber-400">＋</button>
+                                <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-none w-36">
+                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-400 font-black text-[18px] shadow-none border-none">−</button>
+                                    <input 
+                                        type="number" 
+                                        v-model.number="pickSize" 
+                                        @blur="pickSize = Math.max(1, Math.min(selectedNames.length, pickSize || 1))"
+                                        class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
+                                    >
+                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-400 font-black text-[18px] shadow-none border-none">＋</button>
                                 </div>
                                 <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
-                                    class="h-9 px-3 font-black text-[13px] rounded-lg bg-amber-500 text-white shadow-md active:scale-95 disabled:opacity-30 whitespace-nowrap">
+                                    class="py-[10px] px-3 font-black text-[13px] rounded-lg bg-amber-500 text-white shadow-none active:scale-95 disabled:opacity-30 whitespace-nowrap">
                                     {{ guardianResults.length > 0 ? '加抽人員' : '隨機抽' }}
                                 </button>
                             </div>
@@ -164,7 +164,7 @@
                             </div>
                         </div>
 
-                        <div :class="['p-3 rounded-xl border transition-all duration-300', includeGuardians ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'bg-slate-50 border-slate-200']">
+                        <div class="p-3 space-y-3 transition-all duration-300">
                             <div class="flex items-center justify-between mb-2 flex-nowrap overflow-hidden">
                                 <span class="text-[14px] font-black text-slate-500 whitespace-nowrap truncate mr-2">📋 分派人數試算</span>
                                 <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full shrink-0', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '包含關主模式' : '排除關主模式' }}</span>
@@ -205,17 +205,23 @@
                         <div class="space-y-1.5">
                             <label class="text-[17px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
                             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-14 bg-slate-50/50">
-                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-slate-400 hover:bg-white text-[20px] font-black transition-colors">−</button>
-                                <div class="flex-1 flex flex-col items-center justify-center"><span class="text-[20px] font-black text-slate-800 leading-none">{{ groupSize }}</span></div>
-                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-slate-400 hover:bg-white text-[20px] font-black transition-colors">＋</button>
+                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-400 font-black text-[20px] transition-colors shadow-none border-none">−</button>
+                                <div class="flex-1 flex flex-col items-center justify-center">
+                                    <input 
+                                        type="number" 
+                                        v-model.number="groupSize" 
+                                        @blur="groupSize = Math.max(2, Math.min(selectedNames.length, groupSize || 2))"
+                                        class="text-[20px] font-black text-slate-800 leading-none bg-transparent outline-none text-center w-full"
+                                    >
+                                </div>
+                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-400 font-black text-[20px] transition-colors shadow-none border-none">＋</button>
                             </div>
                         </div>
-                        <button @click="doGrouping" :disabled="selectedNames.length < 1" class="w-full h-14 bg-indigo-600 text-white font-black text-[18px] rounded-2xl transition-all active:scale-95 shadow-lg disabled:opacity-30">開始分組演算</button>
                     </div>
                 </div>
 
-                <!-- Results Display Area (Including Suspense Animation) -->
-                <div class="animate-fade-in space-y-3 pb-20 px-1 -mt-4 min-h-[100px]">
+                <!-- Results Display Area -->
+                <div class="animate-fade-in space-y-3 pb-32 px-1 -mt-4 min-h-[100px]">
                     <div class="border-t border-slate-100 w-16 mx-auto mb-1"></div>
                     
                     <!-- Suspense Animation (Relocated here for visibility) -->
@@ -231,7 +237,7 @@
                     <div v-if="guardianResults.length > 0 && !isDrawing" class="bg-amber-50 p-1.5 rounded-2xl border border-amber-200/50">
                         <div class="flex items-center justify-between mb-1">
                             <h4 class="text-[15px] font-black text-amber-600 tracking-wider uppercase">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
-                            <button @click="clearGuardians" class="text-[11px] font-black text-amber-400 hover:text-amber-600">重抽</button>
+                            <button @click="clearGuardians" class="text-[12px] font-black text-white bg-amber-500 px-3 py-[10px] rounded-full shadow-none">重抽</button>
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-0.5">
                             <div v-for="name in guardianResults" :key="'guard'+name" class="text-amber-700 font-black text-[17px]">{{ name }}</div>
@@ -241,9 +247,9 @@
                         <div class="flex items-center justify-between">
                             <h4 class="text-[13px] font-black text-slate-400 tracking-wider uppercase">分組名冊</h4>
                             <div class="flex items-center space-x-2">
-                                <button @click="redrawAll" class="text-[11px] font-black text-rose-500 hover:text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100"><span>重抽</span></button>
-                                <button @click="copyResult" class="text-[11px] font-black text-emerald-600 hover:text-emerald-800 flex items-center space-x-1 border border-emerald-100 bg-white px-2 py-0.5 rounded-full"><span>複製名單</span></button>
-                                <button @click="groups = []" class="text-[11px] font-black text-slate-300 hover:text-red-500 px-1">隱藏</button>
+                                <button @click="redrawAll" class="text-[11px] font-black text-white bg-rose-500 px-2 py-[10px] rounded-full shadow-none border-none"><span>重抽</span></button>
+                                <button @click="copyResult" class="text-[11px] font-black text-white bg-emerald-500 flex items-center space-x-1 shadow-none border-none px-2 py-[10px] rounded-full"><span>複製名單</span></button>
+                                <button @click="groups = []" class="text-[11px] font-black text-white bg-slate-400 px-3 py-[10px] rounded-full shadow-none">隱藏</button>
                             </div>
                         </div>
                         <div class="grid gap-1">
@@ -255,16 +261,122 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Fixed Bottom Action Area -->
+            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
+                <div class="max-w-2xl mx-auto">
+                    <button
+                        @click="doGrouping"
+                        :disabled="selectedNames.length < 1 || isDrawing"
+                        class="w-full py-[10px] rounded-2xl font-black text-[18px] transition-all active:scale-[0.98] shadow-none"
+                        style="background: #4f46e5; color: #ffffff;"
+                    >
+                        <span style="color: #ffffff !important;">開始分組演算</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- Success Notification -->
-        <transition name="fade">
-            <div v-if="showSavedToast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-4 py-2 rounded-full text-[13px] font-bold shadow-2xl z-[100] flex items-center space-x-2 border border-white/10 backdrop-blur-md">
-                <svg v-if="toastMsg.includes('抽出')" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <svg v-else class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>{{ toastMsg }}</span>
+        <!-- FULLSCREEN LOTTERY ANIMATION: 抽籤動畫 -->
+        <div v-if="isDrawing && currentType === 'group'" class="fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
+
+            <!-- Ambient glow -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
             </div>
-        </transition>
+
+            <!-- Bamboo cup + Flying Sticks Container -->
+            <div class="lottery-cup-container" style="transform: translateY(10vh);">
+                <!-- Flying sticks (multiple, staggered) -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div v-for="stick in flyingSticks" :key="stick.id"
+                        class="lottery-stick"
+                        :style="{
+                            left: stick.x + '%',
+                            animationDuration: stick.dur + 's',
+                            animationDelay: stick.delay + 's',
+                            '--rotate': stick.rotate + 'deg',
+                            '--drift': stick.drift + 'px',
+                        }"
+                    >
+                        <!-- Stick body -->
+                        <div class="stick-body" style="background: #d97706;">
+                            <span class="stick-name">{{ stick.name }}</span>
+                        </div>
+                        <!-- Stick tip -->
+                        <div class="stick-tip" style="background: #dc2626;"></div>
+                    </div>
+                </div>
+
+                <!-- Cup body -->
+                <div class="lottery-cup">
+                    <!-- Cup rim -->
+                    <div class="cup-rim"></div>
+                    <!-- Sticks inside the cup, shaking -->
+                    <div class="cup-sticks-wrapper">
+                        <div v-for="i in 9" :key="'cs'+i" class="cup-stick" :style="{ '--ci': i, '--ctilt': (i*23%11 - 5) + 'deg', background: '#d97706' }"></div>
+                    </div>
+                    <!-- Cup body -->
+                    <div class="cup-body"></div>
+                    <!-- Cup base -->
+                    <div class="cup-base"></div>
+                </div>
+                <!-- Current name flying out -->
+                <div class="flying-name-display">
+                    <span class="flying-name-text">{{ lotteryDisplayNames[0] || '' }}</span>
+                </div>
+            </div>
+
+            <!-- Status text -->
+            <div class="absolute top-[3vh] left-0 right-0 flex flex-col items-center space-y-2">
+                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <div class="flex gap-2">
+                    <span class="dot-lg" style="background:#b45309;"></span>
+                    <span class="dot-lg" style="background:#d97706;"></span>
+                    <span class="dot-lg" style="background:#f59e0b;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: RESULTS -->
+        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-white overflow-hidden">
+            <div class="bg-white border-b border-slate-100 p-3 px-4 flex items-center justify-between sticky top-0 z-10">
+                <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <h2 class="text-[20px] font-black text-slate-900 flex-1">分組結果</h2>
+                <div class="flex items-center space-x-2">
+                    <button @click="redrawAll" class="text-[12px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
+                    <button @click="copyResult" class="text-[12px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-24">
+                <!-- Guardian results -->
+                <div v-if="guardianResults.length > 0" class="bg-amber-50 p-3 rounded-2xl border border-amber-200 mb-3">
+                    <h4 class="text-[15px] font-black text-amber-600 mb-2">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
+                    <div class="flex flex-wrap gap-x-4 gap-y-0.5">
+                        <div v-for="name in guardianResults" :key="'g3'+name" class="text-amber-700 font-black text-[18px]">{{ name }}</div>
+                    </div>
+                </div>
+                <!-- Group results -->
+                <div v-if="groups.length > 0" class="space-y-2">
+                    <div v-for="(group, idx) in groups" :key="'g3g'+idx"
+                        :class="['p-3 px-4 rounded-2xl border', group.isSeed ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200']"
+                    >
+                        <div class="flex items-center justify-between mb-1">
+                            <span :class="['text-[15px] font-black', group.isSeed ? 'text-amber-600' : 'text-slate-500']">{{ group.name }}</span>
+                            <span class="text-[12px] font-bold text-slate-300">{{ group.members.length }} 人</span>
+                        </div>
+                        <div class="flex flex-wrap gap-x-4 gap-y-0">
+                            <span v-for="member in group.members" :key="member" :class="['text-[20px] font-black', group.isSeed ? 'text-amber-900' : 'text-slate-900']">{{ member }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="text-center py-20 text-slate-400 font-bold">尚未分組，請回上一頁按「開始分組演算」</div>
+            </div>
+        </div>
+
+
     </div>
 </template>
 
@@ -273,7 +385,8 @@ import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 
 const users = ref([]);
-const selectedNames = ref([]);
+const selectedNames = ref([]);   // Step 2 uses this
+const pendingNames = ref([]);    // Step 1 selection buffer
 const groupSize = ref(4);
 const seedNames = ref([]);
 const groups = ref([]);
@@ -282,14 +395,68 @@ const isDrawing = ref(false);
 const currentType = ref('');
 const pickSize = ref(1);
 const includeGuardians = ref(false);
-const showSavedToast = ref(false);
-const toastMsg = ref('進度已暫存');
+
 const currentStep = ref(1);
 
 const guardianQuery = ref('');
 const isGDropdownOpen = ref(false);
 
 const STORAGE_KEY = 'fabou_random_group_draft_v2';
+
+// Show all users, or only selected ones after first confirm
+const selectionFiltered = ref(false);
+const displayUsers = computed(() => {
+    if (!users.value) return [];
+    if (selectionFiltered.value) {
+        // Only show selected, in original user list order
+        const pending = pendingNames.value || [];
+        return users.value.filter(u => u && u.name && pending.includes(u.name.trim()));
+    }
+    return users.value;
+});
+
+// Style for pending selection: blue = selected, dim = not selected
+const getPendingStyle = (name) => {
+    const t = name.trim();
+    const isSelected = pendingNames.value.includes(t);
+    return {
+        backgroundColor: isSelected ? '#3b82f6' : '#94a3b8',
+        color: '#ffffff',
+    };
+};
+
+// Toggle a name in the pending list
+const togglePending = (name) => {
+    if (!name) return;
+    const t = name.trim();
+    const idx = pendingNames.value.indexOf(t);
+    if (idx === -1) {
+        pendingNames.value = [...pendingNames.value, t];
+    } else {
+        pendingNames.value = pendingNames.value.filter(n => n !== t);
+    }
+};
+
+// Confirm Step 1 — two stages:
+// Stage 1: filter grid to show only selected names
+// Stage 2: move to Step 2 grouping
+const confirmSelection = () => {
+    if (pendingNames.value.length === 0) return;
+    if (!selectionFiltered.value) {
+        // First confirm: filter the grid
+        selectionFiltered.value = true;
+        return;
+    }
+    // Second confirm: go to Step 2
+    const ordered = users.value
+        .map(u => u.name.trim())
+        .filter(n => pendingNames.value.includes(n));
+    selectedNames.value = ordered;
+    seedNames.value = [];
+    groups.value = [];
+    guardianResults.value = [];
+    currentStep.value = 2;
+};
 
 const availableSeeds = computed(() => {
     const filtered = selectedNames.value.filter(n => !seedNames.value.includes(n));
@@ -336,9 +503,11 @@ const removeGuardian = (name) => {
     guardianResults.value = guardianResults.value.filter(n => n !== name);
 };
 
-const saveToLocalStorage = () => {
+const saveToSessionStorage = () => {
     const data = {
         selectedNames: selectedNames.value,
+        pendingNames: pendingNames.value,
+        selectionFiltered: selectionFiltered.value,
         groupSize: groupSize.value,
         seedNames: seedNames.value,
         groups: groups.value,
@@ -347,27 +516,22 @@ const saveToLocalStorage = () => {
         includeGuardians: includeGuardians.value,
         currentStep: currentStep.value
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    
-    // Default save toast (only if not already showing another msg)
-    if (!showSavedToast.value) {
-        toastMsg.value = '進度已暫存';
-        showSavedToast.value = true;
-        setTimeout(() => { showSavedToast.value = false; }, 2000);
-    }
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 };
 
-watch([selectedNames, groupSize, seedNames, groups, guardianResults, pickSize, includeGuardians, currentStep], saveToLocalStorage, { deep: true });
+watch([selectedNames, pendingNames, selectionFiltered, groupSize, seedNames, groups, guardianResults, pickSize, includeGuardians, currentStep], saveToSessionStorage, { deep: true });
 
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         users.value = res.data; 
-        const draft = localStorage.getItem(STORAGE_KEY);
+        const draft = sessionStorage.getItem(STORAGE_KEY);
         if (draft) {
             try {
                 const parsed = JSON.parse(draft);
                 selectedNames.value = parsed.selectedNames || [];
+                pendingNames.value = parsed.pendingNames || [];
+                selectionFiltered.value = parsed.selectionFiltered || false;
                 groupSize.value = parsed.groupSize || 4;
                 seedNames.value = parsed.seedNames || [];
                 groups.value = parsed.groups || [];
@@ -381,14 +545,16 @@ const loadUsers = async () => {
 };
 
 const toggleSelect = (name) => {
-    const idx = selectedNames.value.indexOf(name);
+    if (!name) return;
+    const trimmedName = name.trim();
+    const idx = selectedNames.value.indexOf(trimmedName);
     if (idx === -1) {
-        selectedNames.value.push(name);
+        selectedNames.value = [...selectedNames.value, trimmedName];
     } else {
-        selectedNames.value.splice(idx, 1);
-        removeSeed(name);
-        removeGuardian(name);
-        groups.value = []; // Clear grouping results if personnel changes to avoid stale data
+        selectedNames.value = selectedNames.value.filter(n => n !== trimmedName);
+        removeSeed(trimmedName);
+        removeGuardian(trimmedName);
+        groups.value = []; 
     }
 };
 
@@ -467,6 +633,31 @@ const distributePlayers = (players, size) => {
     return result;
 };
 
+const cupStickColors = ['#d97706'];
+
+const stickBodyColors = ['#d97706'];
+const stickTipColors  = ['#dc2626'];
+
+const flyingSticks = ref([]);
+
+const buildFlyingSticks = (names) => {
+    flyingSticks.value = names.slice(0, 12).map((name, i) => ({
+        id: i,
+        name: name,
+        x: 20 + (i * 5.5) % 60,
+        dur: 2.2 + (i * 0.2) % 1.5,
+        delay: (i * 0.25) % 2.5,
+        rotate: -40 + (i * 17) % 80,
+        drift: -60 + (i * 23) % 120,
+        color: stickBodyColors[i % stickBodyColors.length],
+        tipColor: stickTipColors[i % stickTipColors.length],
+    }));
+};
+
+const lotteryDisplayNames = ref([]);
+
+let lotteryInterval = null;
+
 const doGrouping = () => {
     if (selectedNames.value.length < 1) return;
     
@@ -474,11 +665,26 @@ const doGrouping = () => {
     currentType.value = 'group';
     groups.value = [];
     
+    // Build flying sticks from current selected names
+    buildFlyingSticks([...selectedNames.value]);
+    
+    // Start cycling names for animation
+    const pool = [...selectedNames.value];
+    let idx = 0;
+    lotteryDisplayNames.value = [pool[0]];
+    lotteryInterval = setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        lotteryDisplayNames.value = [pool[idx]];
+    }, 80);
+    
     setTimeout(() => {
-        // ALWAYS use full selectedNames pool, distributePlayers handles exclusion logic
+        clearInterval(lotteryInterval);
+        lotteryInterval = null;
         groups.value = distributePlayers([...selectedNames.value], groupSize.value);
         isDrawing.value = false;
-        saveToLocalStorage();
+        lotteryDisplayNames.value = [];
+        saveToSessionStorage();
+        currentStep.value = 3;
     }, 3000);
 };
 
@@ -497,18 +703,15 @@ const pickGuardians = () => {
             guardianResults.value.push(name);
         }
         isDrawing.value = false;
-        saveToLocalStorage();
-        
-        toastMsg.value = '關主已抽出';
-        showSavedToast.value = true;
-        setTimeout(() => { showSavedToast.value = false; }, 2000);
+        saveToSessionStorage();
+
     }, 3000);
 };
 
 const clearGuardians = () => {
     if (!confirm('確定要清空關主名單嗎？')) return;
     guardianResults.value = [];
-    saveToLocalStorage();
+    saveToSessionStorage();
 };
 
 const redrawAll = () => {
@@ -518,7 +721,7 @@ const redrawAll = () => {
     groups.value = [];
     isDrawing.value = false;
     currentType.value = '';
-    saveToLocalStorage();
+    saveToSessionStorage();
 };
 
 const copyResult = () => {
@@ -535,8 +738,23 @@ const copyResult = () => {
     navigator.clipboard.writeText(text).then(() => { alert('已複製名單（含關主）！'); });
 };
 
+const invertSelection = () => {
+    const allNames = users.value.map(u => u.name.trim());
+    if (currentStep.value === 1) {
+        // Invert pending selection → show inverted as red hint
+        pendingNames.value = allNames.filter(n => !pendingNames.value.includes(n));
+    } else {
+        selectedNames.value = allNames.filter(n => !selectedNames.value.includes(n));
+        seedNames.value = seedNames.value.filter(n => selectedNames.value.includes(n));
+        guardianResults.value = guardianResults.value.filter(n => selectedNames.value.includes(n));
+        groups.value = [];
+    }
+};
+
 const resetAll = () => {
     if (!confirm('確定要清空所有選取與結果嗎？這將重置所有進度。')) return;
+    pendingNames.value = [];
+    selectionFiltered.value = false;
     selectedNames.value = [];
     seedNames.value = [];
     groups.value = [];
@@ -545,11 +763,16 @@ const resetAll = () => {
     currentType.value = '';
     currentStep.value = 1;
     includeGuardians.value = false;
-    localStorage.removeItem(STORAGE_KEY);
-    saveToLocalStorage();
+    sessionStorage.removeItem(STORAGE_KEY);
+    saveToSessionStorage();
 };
 
 onMounted(loadUsers);
+
+defineExpose({
+    invertSelection,
+    resetAll
+});
 </script>
 
 <style scoped>
@@ -559,6 +782,9 @@ onMounted(loadUsers);
 .dot { border-radius: 50%; animation: bounce 0.6s infinite alternate; }
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
+.dot-lg { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: bounce 0.5s infinite alternate; }
+.dot-lg:nth-child(2) { animation-delay: 0.15s; }
+.dot-lg:nth-child(3) { animation-delay: 0.3s; }
 @keyframes bounce { 
     from { transform: translateY(0); opacity: 0.4; }
     to   { transform: translateY(-8px); opacity: 1; }
@@ -570,4 +796,158 @@ onMounted(loadUsers);
 }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s, transform 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; transform: translate(-50%, -20px); }
+
+/* ========== LOTTERY STICK ANIMATION ========== */
+
+/* Flying stick */
+.lottery-stick {
+    position: absolute;
+    bottom: 192px; /* Start relative to cup top */
+    width: 16px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    transform-origin: bottom center;
+    animation: stickFly var(--dur, 1.4s) cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s) infinite;
+    animation-duration: inherit;
+    animation-delay: inherit;
+}
+@keyframes stickFly {
+    0%   { transform: translateY(64px) scale(0.6); opacity: 0; }
+    5%   { opacity: 1; transform: translateY(32px) scale(0.8); }
+    15%  { transform: translateY(-96px) scale(1.1); opacity: 1; }
+    60%  { transform: translateY(-60vh) translateX(var(--drift)) rotate(var(--rotate)) scale(1); opacity: 1; }
+    100% { transform: translateY(-90vh) translateX(var(--drift)) rotate(var(--rotate)) scale(0.9); opacity: 0; }
+}
+.stick-body {
+    width: 16px;
+    height: 96px;
+    border-radius: 8px 8px 3px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.stick-name {
+    font-size: 11px;
+    font-weight: 900;
+    color: #1e1b4b;
+    letter-spacing: 1px;
+    text-shadow: none;
+}
+.stick-tip {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: -3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Bamboo cup */
+.lottery-cup-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lottery-cup {
+    position: relative;
+    width: 160px;
+    animation: cupShake 0.15s ease-in-out infinite alternate;
+    transform-origin: bottom center;
+}
+@keyframes cupShake {
+    from { transform: rotate(-6deg) translateX(-6px); }
+    to   { transform: rotate(6deg) translateX(6px); }
+}
+.cup-rim {
+    width: 160px;
+    height: 10px;
+    background: #92400e;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    border-bottom: 2px solid #78350f;
+}
+.cup-sticks-wrapper {
+    position: absolute;
+    top: -96px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 128px;
+    height: 96px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+}
+.cup-stick {
+    width: 11px;
+    height: 112px;
+    border-radius: 3px 3px 1px 1px;
+    transform: rotate(var(--ctilt));
+    transform-origin: bottom center;
+    animation: cupStickJiggle 0.15s ease-in-out infinite alternate;
+    animation-delay: calc(var(--ci) * 15ms);
+}
+@keyframes cupStickJiggle {
+    from { transform: rotate(calc(var(--ctilt) - 2deg)) translateY(0px); }
+    to   { transform: rotate(calc(var(--ctilt) + 2deg)) translateY(-4px); }
+}
+.cup-body {
+    width: 160px;
+    height: 192px;
+    background: linear-gradient(90deg, 
+        #92400e 0%, 
+        #b45309 15%, 
+        #92400e 30%, 
+        #78350f 50%, 
+        #92400e 70%, 
+        #b45309 85%, 
+        #78350f 100%
+    );
+    border-radius: 3px 3px 6px 6px;
+    box-shadow: inset 3px 0 8px rgba(255,255,255,0.05), 0 10px 32px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+/* Bamboo vertical lines */
+.cup-body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(0,0,0,0.15) 16px);
+}
+.cup-base {
+    width: 176px;
+    height: 10px;
+    background: #451a03;
+    border-radius: 2px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+}
+
+/* Name display above cup */
+.flying-name-display {
+    margin-top: 24px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flying-name-text {
+    font-size: 36px;
+    font-weight: 900;
+    color: #92400e;
+    letter-spacing: 6px;
+    text-shadow: 0 2px 10px rgba(217,119,6,0.2);
+    animation: namePulse 0.1s ease-in-out;
+}
+@keyframes namePulse {
+    from { opacity: 0.2; transform: scale(0.9); }
+    to   { opacity: 1;   transform: scale(1); }
+}
 </style>
+

@@ -49,13 +49,13 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
-            <div class="px-2 py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
-                <div class="flex-1 pr-12">
+            <div class="px-2 py-4 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
+            <div class="flex-1 pr-12">
                     <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
                 </div>
             </div>
             
-            <div class="px-6 pb-24 flex flex-col items-center space-y-16">
+            <div class="px-6 pb-24 flex flex-col items-center space-y-2">
                 <button 
                     @click="currentCategory = 'masters'"
                     class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
@@ -240,7 +240,7 @@
                         <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-2">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
-                                    <svg class="h-5 v-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
                                      class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">

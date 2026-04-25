@@ -1,210 +1,223 @@
 <template>
     <div v-if="show" class="fixed inset-0 z-[150] flex flex-col bg-white overflow-hidden animate-fade-in font-sans">
-        <!-- Dashboard Header (Only shown during Setup) -->
-        <div v-if="!isDrawing && !hasResult" class="h-[60px] border-b border-slate-100 flex items-center justify-center px-4 bg-white sticky top-0 z-10 shrink-0 relative">
-            <button @click="$emit('close')" class="absolute left-4 text-slate-400 p-2 active:scale-90 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <h3 class="text-[22px] font-black text-slate-900 font-outfit uppercase tracking-widest text-center">
-                抽籤筒
-            </h3>
-            <button @click="resetAll" class="absolute right-4 text-slate-400 hover:text-red-500 p-2 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 flex overflow-hidden">
-            
-            <!-- STEP 1: INPUT PHASE -->
-            <div v-show="!hasResult && !isDrawing" class="flex w-full h-full overflow-hidden animate-fade-in">
-                <!-- Left: Dharma Name Table (50% Split) -->
-                <div class="w-1/2 border-r border-slate-100 flex flex-col h-full bg-white pl-1.5">
-                    <div class="px-2 py-2 border-b border-slate-50 space-y-1 bg-white relative z-10">
-                        <!-- Row 1: Title & Global Action -->
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-[20px] font-black text-slate-900">法號表</h4>
-                            <button @click="selectAll" class="text-[16px] text-indigo-600 font-black px-4 py-1.5 bg-indigo-50 border border-indigo-100 rounded-xl active:scale-95 transition-transform shadow-sm">全選</button>
-                        </div>
-                        <!-- Row 2: Operation Modes -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-[14px] font-black text-slate-400 tracking-tighter">{{ isInverseMode ? '選不在場' : '選在場' }}</span>
-                            <button @click="isInverseMode = !isInverseMode" 
-                                :class="['flex items-center px-4 py-2 rounded-full border-2 transition-all text-[15px] font-black shrink-0 shadow-sm', 
-                                         isInverseMode ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-700']">
-                                {{ isInverseMode ? '反向' : '正向' }}
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-1 overflow-y-auto p-1 custom-scrollbar">
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-1">
-                            <button v-for="user in users" :key="user.id"
-                                @click="toggleSelect(user.name)"
-                                class="h-10 flex items-center justify-center transition-all active:scale-95 border-b border-slate-50">
-                                <span :class="['text-[20px] font-normal whitespace-nowrap transition-colors duration-200',
-                                             isItemSelected(user.name) ? (isInverseMode ? 'text-rose-500 font-black' : 'text-indigo-500 font-black') : 'text-slate-800']">
-                                    {{ user.name }}
-                                </span>
-                            </button>
-                        </div>
-                    </div>
+        
+        <!-- STEP 1: PERSONNEL SELECTION -->
+        <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
+            <!-- Header bar -->
+            <div class="h-[60px] border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 shrink-0 px-2">
+                <button @click="$emit('close')" class="text-slate-400 p-2 mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <h3 class="text-[19px] font-black text-slate-900 tracking-tighter whitespace-nowrap mr-2">抽籤筒(抽順序)</h3>
+                
+                <!-- Quick Selection Controls -->
+                <div class="flex-1 flex items-center space-x-1.5 px-1">
+                    <button @click="selectAll" class="flex-1 py-[10px] rounded-xl bg-pink-500 text-white font-black text-[15px] active:scale-95 shadow-none border-none">全選</button>
+                    <button @click="invertSelection" class="flex-1 py-[10px] rounded-xl bg-pink-500 text-white font-black text-[15px] active:scale-95 shadow-none border-none">反選</button>
                 </div>
 
-                <!-- Right: Pool Preview Only (50% Split) -->
-                <div class="w-1/2 flex flex-col h-full bg-slate-50/10">
-                    <div class="p-3 border-b border-slate-100 bg-white flex items-center justify-between">
-                        <h4 class="text-[22px] font-black text-slate-900">抽籤池</h4>
-                        <button @click="clearAll" class="text-[14px] text-rose-500 font-bold hover:underline">清空</button>
-                    </div>
-                    <div class="flex-1 flex flex-col p-3 space-y-3 overflow-hidden translate-y-[-15px]">
-                        <!-- Visual Roster (Now Full Height of Pool Area) -->
-                        <div class="flex-1 shrink-0 flex flex-col min-h-0">
-                            <label class="text-[16px] font-black text-slate-400 uppercase tracking-widest mb-1 text-center">名單預覽 (並排顯示)</label>
-                            <div class="flex-1 bg-white border border-slate-100 rounded-2xl p-4 overflow-y-auto custom-scrollbar">
-                                <div v-if="selectedNames.length === 0" class="h-full flex flex-col items-center justify-center text-slate-200">
-                                    <p class="text-[16px] font-bold uppercase tracking-widest text-center">待選取人員</p>
-                                </div>
-                                <div class="grid grid-cols-3 gap-x-1 gap-y-0.5 text-center">
-                                    <div v-for="name in selectedNames" :key="'pool'+name" class="flex justify-center border-b border-slate-100 pb-0.5">
-                                        <span @click="toggleSelect(name)" 
-                                            class="text-[20px] font-normal text-indigo-600 cursor-pointer hover:text-red-500 transition-colors whitespace-nowrap">
-                                            {{ name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <button @click="resetAll" class="text-slate-400 p-2 ml-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
 
-                        <!-- Settings Area (Bottom) -->
-                        <div class="h-auto flex-none flex flex-col justify-end space-y-3 py-3 border-t border-slate-100 px-2 bg-white">
-                            <div class="flex items-center justify-between bg-slate-50/50 p-2 rounded-xl border border-slate-100">
-                                <label class="text-[17px] font-black text-slate-400 uppercase tracking-widest">抽取人數</label>
-                                <select v-model="drawCount" class="w-32 h-10 bg-white border border-slate-200 rounded-lg px-2 text-[18px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm text-center">
-                                    <option v-for="n in 10" :key="n" :value="n">{{ n }} 人</option>
-                                    <option :value="999">全部</option>
-                                </select>
-                            </div>
-                            <button 
-                                @click="performDraw"
-                                :disabled="!isValid"
-                                :class="['w-[92%] mx-auto py-[15px] rounded-2xl font-black text-[20px] tracking-[4px] transition-all shadow-xl active:scale-95 flex items-center justify-center leading-none whitespace-nowrap',
-                                         isValid ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-100 text-slate-300 cursor-not-allowed']"
+            <!-- Main scrollable selection grid -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar pb-24">
+                <div class="flex items-center justify-between px-3 py-1.5 bg-slate-50/30">
+                    <span class="text-[15px] font-black text-slate-400 italic">點選在場人員 (藍色為已選)</span>
+                    <span class="text-[17px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
+                </div>
+
+                <!-- 5-per-row grid -->
+                <div class="grid grid-cols-5 px-1" style="gap: 2px; background: #ffffff;">
+                    <button
+                        v-for="user in users"
+                        :key="user.id"
+                        @click="togglePending(user.name)"
+                        class="flex items-center justify-center font-black text-[19px] transition-all active:scale-95 rounded-lg border-none py-[10px] shadow-none"
+                        :style="getPendingStyle(user.name)"
+                    >
+                        {{ user.name }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Confirm button -->
+            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
+                <button
+                    @click="confirmSelection"
+                    :disabled="pendingNames.length === 0"
+                    class="w-full py-[10px] rounded-2xl font-black text-[19px] transition-all active:scale-[0.98] text-white"
+                    :style="{
+                        background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
+                        boxShadow: 'none',
+                    }"
+                >
+                    <span v-if="!selectionFiltered">確定 (已選 {{ pendingNames.length }} 人)</span>
+                    <span v-else>確定 → 進入抽籤設定</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: DRAW CONFIGURATION -->
+        <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden animate-slide-in">
+            <div class="bg-white border-b border-slate-100 p-3 flex items-center sticky top-0 z-10">
+                <button @click="currentStep = 1" class="text-slate-400 p-2 mr-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <h2 class="text-[19px] font-black text-slate-900">抽籤設定</h2>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-4 max-w-lg mx-auto w-full no-scrollbar pb-48">
+                <!-- Selected Summary -->
+                <div class="space-y-1.5 px-1 pt-1">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-[17px] font-black text-slate-400 uppercase tracking-widest">📋 當前待抽名單</label>
+                        <span class="text-[19px] font-black text-indigo-600">{{ selectedNames.length }} 人</span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-y-3 pt-1">
+                        <span v-for="name in selectedNames" :key="name" class="text-[19px] font-black text-slate-700 text-center">{{ name }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Action Config -->
+            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
+                <div class="max-w-lg mx-auto space-y-3">
+                    <div class="flex items-center justify-between px-1">
+                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider">抽取人數</label>
+                        <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-12 bg-slate-50/50 w-48">
+                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-14 h-full text-white bg-slate-400 text-[20px] font-black shadow-none border-none">−</button>
+                            <input 
+                                type="number" 
+                                v-model.number="drawCount" 
+                                @blur="drawCount = Math.max(1, Math.min(selectedNames.length, drawCount || 1))"
+                                class="flex-1 text-center text-[20px] font-black text-slate-800 bg-transparent outline-none w-full"
                             >
-                                開始抽籤
-                            </button>
+                            <button @click="drawCount = Math.min(selectedNames.length, drawCount + 1)" class="w-14 h-full text-white bg-slate-400 text-[20px] font-black shadow-none border-none">＋</button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- DRAWING ANIMATION PHASE (Visual Tube - Enlarged to 80%) -->
-            <div v-show="isDrawing" class="w-full h-full flex flex-col items-center justify-center animate-fade-in bg-white overflow-hidden p-6">
-                <div class="relative w-full h-[80%] flex flex-col items-center justify-center select-none">
-                    <!-- Shaking Tube Container - Centered Alignment -->
-                    <div class="relative w-full max-w-sm flex flex-col items-center animate-shake justify-center">
-                        
-                        <!-- The Sticks inside (Wood Color) -->
-                        <div class="flex justify-center space-x-[-20px] mb-[-60px] z-0">
-                            <div v-for="i in 15" :key="'stick'+i" 
-                                class="w-8 h-48 bg-[#D3B68A] border-x border-[#A67C52] rounded-t-xl shadow-sm relative animate-stick-bounce overflow-hidden"
-                                :style="{ animationDelay: (i * 0.08) + 's', transform: `rotate(${(i - 8) * 3}deg)` }">
-                                <!-- Wood Grain Pattern -->
-                                <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]"></div>
-                                <!-- Clear Dharma Name (Randomly selected from pool) -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center px-1">
-                                    <span class="text-[14px] font-black leading-[1.1] text-[#7C5F3E] [writing-mode:vertical-rl] tracking-tighter filter drop-shadow-sm">
-                                        {{ displaySticks[i % displaySticks.length] || '法號' }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- The Tube (CSS Cylinder - High Quality) -->
-                        <div class="relative w-56 h-72 z-10 filter drop-shadow-2xl">
-                            <!-- Tube Shadow/Depth -->
-                            <div class="absolute inset-0 bg-[#8B5E3C] rounded-3xl shadow-inner border-t-[15px] border-[#654321] overflow-hidden">
-                                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]"></div>
-                            </div>
-                            <!-- Tube Front Highlight -->
-                            <div class="absolute inset-4 top-8 right-8 bottom-4 left-8 bg-white/10 rounded-3xl blur-xl"></div>
-                            <!-- Tube Decoration Labels -->
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="border-4 border-[#654321]/40 p-4 rounded-2xl flex flex-col items-center bg-[#8B5E3C]/20 backdrop-blur-sm">
-                                    <div class="flex flex-col items-center space-y-[5px] text-[#F5F5F5] font-black text-[32px] drop-shadow-md">
-                                        <span>抽</span>
-                                        <span>籤</span>
-                                        <span>筒</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- STEP 2: RESULT PHASE (Centered List) -->
-            <div v-show="hasResult && !isDrawing" class="w-full h-full p-4 overflow-y-auto custom-scrollbar animate-fade-in bg-white">
-                <div class="max-w-2xl mx-auto space-y-10 py-6 text-center">
                     
-                    <div v-if="results.length > 0" class="flex flex-col items-center space-y-12">
-                        <!-- Sequential Result Sticks Display (5 Per Row) -->
-                        <div class="w-full grid grid-cols-5 gap-3 py-6 px-2 overflow-y-auto custom-scrollbar max-h-[50vh]">
-                            <div v-for="(name, index) in results" :key="'res-stick'+index" 
-                                class="animate-stick-reveal relative flex flex-col items-center"
-                                :style="{ animationDelay: (index * 0.15) + 's' }">
-                                
-                                <!-- Result Stick Visual (Highly Compacted - 1/2 Smaller) -->
-                                <div class="w-full max-w-[35px] bg-[#D3B68A] border border-[#8B5E3C] rounded-md shadow-md flex flex-col items-center relative overflow-hidden transform hover:-translate-y-1 transition-transform h-36">
-                                    <!-- Wood Grain -->
-                                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]"></div>
-                                    
-                                    <!-- RED Dharma Name (Centered Legibility) -->
-                                    <div class="flex-1 flex flex-col items-center justify-center p-1 z-10">
-                                        <span class="text-[15px] font-black leading-[1.1] text-red-600 [writing-mode:vertical-rl] tracking-[2px] filter drop-shadow-sm brightness-110">
-                                            {{ name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Summary List Below (Quick Read - Delayed 1.5s) -->
-                        <div v-if="showResultList" class="w-full bg-slate-50/50 rounded-3xl p-6 border border-slate-100 animate-fade-in">
-                            <h6 class="text-[16px] font-black text-slate-400 capitalize tracking-widest mb-4">名單總覽</h6>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div v-for="(name, index) in results" :key="'list'+index" class="flex items-center space-x-2 justify-center">
-                                    <span class="text-slate-300 font-mono text-[15px]">#{{ index + 1 }}</span>
-                                    <span class="text-[18px] font-normal text-slate-900">{{ name }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Header (Centered) -->
-                        <div class="space-y-6 pt-4">
-                            <button @click="copyResults" class="text-indigo-600 font-black text-[16px] flex items-center bg-white px-8 py-3 rounded-full active:scale-95 border-2 border-indigo-50 shadow-md hover:shadow-lg transition-all mx-auto">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                點擊複製名單
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="pb-24">
-                        <button 
-                            @click="hasResult = false"
-                            class="w-full h-14 bg-slate-100 text-slate-500 rounded-2xl font-black text-[16px] active:scale-95 transition-all"
-                        >
-                            返回修改名單
-                        </button>
-                </div>
+                    <button 
+                        @click="performDraw"
+                        class="w-full py-[10px] rounded-3xl bg-indigo-600 text-white font-black text-[19px] shadow-none active:scale-95 transition-all"
+                    >
+                        開始抽籤
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- STEP 3: ANIMATION & RESULTS -->
+        <!-- FULLSCREEN LOTTERY ANIMATION -->
+        <div v-if="isDrawing" class="fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
+            <div class="absolute inset-0 pointer-events-none">
+                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+            </div>
+
+            <!-- Bamboo cup + Flying Sticks Container -->
+            <div class="lottery-cup-container" style="transform: translateY(10vh);">
+                <div class="absolute inset-0 pointer-events-none">
+                    <div v-for="stick in flyingSticks" :key="stick.id"
+                        class="lottery-stick"
+                        :style="{
+                            left: stick.x + '%',
+                            animationDuration: stick.dur + 's',
+                            animationDelay: stick.delay + 's',
+                            '--rotate': stick.rotate + 'deg',
+                            '--drift': stick.drift + 'px',
+                        }"
+                    >
+                        <div class="stick-body" style="background: #d97706;">
+                            <span class="stick-name">{{ stick.name }}</span>
+                        </div>
+                        <div class="stick-tip" style="background: #dc2626;"></div>
+                    </div>
+                </div>
+
+                <div class="lottery-cup">
+                    <div class="cup-rim"></div>
+                    <div class="cup-sticks-wrapper">
+                        <div v-for="i in 9" :key="'cs'+i" class="cup-stick" :style="{ '--ci': i, '--ctilt': (i*23%11 - 5) + 'deg', background: '#d97706' }"></div>
+                    </div>
+                    <div class="cup-body"></div>
+                    <div class="cup-base"></div>
+                </div>
+                <div class="flying-name-display">
+                    <span class="flying-name-text">{{ lotteryDisplayNames[0] || '' }}</span>
+                </div>
+            </div>
+
+            <div class="absolute top-[3vh] left-0 right-0 flex flex-col items-center space-y-2">
+                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <div class="flex gap-2">
+                    <span class="dot-lg" style="background:#b45309;"></span>
+                    <span class="dot-lg" style="background:#d97706;"></span>
+                    <span class="dot-lg" style="background:#f59e0b;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: RESULTS -->
+        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-white overflow-hidden">
+            <div class="bg-white border-b border-slate-100 p-4 flex items-center justify-between sticky top-0 z-10">
+                <button @click="currentStep = 2" class="text-slate-400 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <h2 class="text-[19px] font-black text-slate-900 flex-1 text-center">抽籤結果</h2>
+                <div class="flex items-center space-x-2">
+                    <button @click="performDraw" class="text-[15px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
+                    <button @click="copyResults" class="text-[15px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 no-scrollbar">
+                <div class="max-w-lg mx-auto space-y-8 pb-32 pt-10">
+                    <!-- SINGLE RESULT: CROWN & CENTERED -->
+                    <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-6 animate-scale-in">
+                        <div class="relative">
+                            <span class="text-[64px] filter drop-shadow-lg">👑</span>
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
+                        </div>
+                        <h3 class="text-[48px] font-black text-indigo-900 tracking-tighter">{{ results[0] }}</h3>
+                        <div class="flex items-center space-x-2 text-indigo-300">
+                            <div class="h-[2px] w-8 bg-indigo-100"></div>
+                            <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
+                            <div class="h-[2px] w-8 bg-indigo-100"></div>
+                        </div>
+                    </div>
+
+                    <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
+                    <div v-else class="flex flex-col items-center space-y-2">
+                        <div v-for="(name, idx) in results" :key="'res'+idx" 
+                            class="w-full py-3 flex flex-col items-center border-b border-slate-50 last:border-0 animate-slide-in">
+                            <span class="text-[15px] font-black text-indigo-300 mb-1">#{{ idx + 1 }}</span>
+                            <span class="text-[24px] font-black text-indigo-900">{{ name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLOBAL BOTTOM NAVIGATION -->
+        <mobile-navbar 
+            v-if="!isDrawing"
+            :can-back="true"
+            :show-action="true"
+            :action-disabled="true"
+            :can-search="false"
+            :can-more="false"
+            @back="handleBack"
+            @home="$emit('close')"
+        />
+
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean
@@ -213,194 +226,314 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const users = ref([]);
-const inputRaw = ref('');
-const selectedOnList = ref([]); // Who IS present (Normal Mode)
-const excludedOnList = ref([]); // Who IS absent (Inverse Mode)
+const pendingNames = ref([]);
+const selectedNames = ref([]);
 const drawCount = ref(1);
+const currentStep = ref(1);
+const selectionFiltered = ref(false);
 const isDrawing = ref(false);
 const hasResult = ref(false);
-const showResultList = ref(false);
-const isInverseMode = ref(false);
 const results = ref([]);
 
-// Computed Pool of strictly "People Present"
-const selectedNames = computed(() => {
-    // Note: inputRaw is no longer visually present but logic preserved for future-proofing
-    const rawList = inputRaw.value.split(/[,\n\s]+/).map(n => n.trim()).filter(n => n.length > 0);
-    
-    if (!isInverseMode.value) {
-        // Normal Mode: Textbox + Whoever is specifically selected
-        return [...new Set([...rawList, ...selectedOnList.value])];
+const STORAGE_KEY = 'fabou_lucky_draw_session';
+
+const getPendingStyle = (name) => {
+    const isSelected = pendingNames.value.includes(name);
+    return {
+        backgroundColor: isSelected ? '#2563eb' : '#94a3b8',
+        color: '#ffffff',
+    };
+};
+
+const togglePending = (name) => {
+    const idx = pendingNames.value.indexOf(name);
+    if (idx === -1) {
+        pendingNames.value.push(name);
     } else {
-        // Inverse Mode: Textbox + (All DB users MINUS those marked as absent)
-        const allDbNames = users.value.map(u => u.name);
-        const presentFromDb = allDbNames.filter(n => !excludedOnList.value.includes(n));
-        return [...new Set([...rawList, ...presentFromDb])];
+        pendingNames.value.splice(idx, 1);
     }
-});
+};
 
 const selectAll = () => {
-    if (isInverseMode.value) {
-        excludedOnList.value = [];
-    } else {
-        selectedOnList.value = users.value.map(u => u.name);
-    }
+    pendingNames.value = users.value.map(u => u.name);
 };
 
-const clearAll = () => {
-    inputRaw.value = '';
-    if (isInverseMode.value) {
-        // In inverse mode, clearing the pool means marking everyone as ABSENT
-        excludedOnList.value = users.value.map(u => u.name);
-    } else {
-        // In normal mode, simply empty the selection
-        selectedOnList.value = [];
-    }
+const invertSelection = () => {
+    const allNames = users.value.map(u => u.name);
+    pendingNames.value = allNames.filter(n => !pendingNames.value.includes(n));
 };
 
-const displaySticks = ref([]);
-
-// Randomized names for the shake animation
-const shuffleSticks = () => {
-    if (selectedNames.value.length === 0) {
-        displaySticks.value = [];
-    } else {
-        // Shuffle the pool and take up to 20 names for the tube
-        displaySticks.value = [...selectedNames.value]
-            .sort(() => Math.random() - 0.5);
+const confirmSelection = () => {
+    if (pendingNames.value.length === 0) return;
+    if (!selectionFiltered.value) {
+        selectionFiltered.value = true;
+        return;
     }
+    selectedNames.value = [...pendingNames.value].sort((a, b) => {
+        const idxA = users.value.findIndex(u => u.name === a);
+        const idxB = users.value.findIndex(u => u.name === b);
+        return idxA - idxB;
+    });
+    drawCount.value = Math.min(1, selectedNames.value.length);
+    currentStep.value = 2;
 };
 
-const isItemSelected = (name) => {
-    if (!isInverseMode.value) return selectedOnList.value.includes(name);
-    return excludedOnList.value.includes(name);
+const handleBack = () => {
+    if (hasResult.value) {
+        hasResult.value = false;
+        currentStep.value = 2;
+        return;
+    }
+    if (currentStep.value === 2) {
+        currentStep.value = 1;
+        return;
+    }
+    emit('close');
 };
 
 const resetAll = () => {
-    inputRaw.value = '';
-    selectedOnList.value = [];
-    excludedOnList.value = [];
-    results.value = [];
+    if (!confirm('確定要清空所有進度嗎？')) return;
+    pendingNames.value = [];
+    selectedNames.value = [];
+    selectionFiltered.value = false;
+    currentStep.value = 1;
     hasResult.value = false;
-    showResultList.value = false;
+    sessionStorage.removeItem(STORAGE_KEY);
 };
 
-const toggleSelect = (name) => {
-    if (!isInverseMode.value) {
-        if (selectedOnList.value.includes(name)) {
-            selectedOnList.value = selectedOnList.value.filter(n => n !== name);
-        } else {
-            selectedOnList.value.push(name);
-        }
-    } else {
-        if (excludedOnList.value.includes(name)) {
-            excludedOnList.value = excludedOnList.value.filter(n => n !== name);
-        } else {
-            excludedOnList.value.push(name);
-        }
-    }
+const saveToSession = () => {
+    const data = {
+        pendingNames: pendingNames.value,
+        selectedNames: selectedNames.value,
+        selectionFiltered: selectionFiltered.value,
+        currentStep: currentStep.value,
+        drawCount: drawCount.value
+    };
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 };
+
+watch([pendingNames, selectedNames, selectionFiltered, currentStep, drawCount], saveToSession, { deep: true });
 
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         users.value = res.data;
+        const draft = sessionStorage.getItem(STORAGE_KEY);
+        if (draft) {
+            const parsed = JSON.parse(draft);
+            pendingNames.value = parsed.pendingNames || [];
+            selectedNames.value = parsed.selectedNames || [];
+            selectionFiltered.value = parsed.selectionFiltered || false;
+            currentStep.value = parsed.currentStep || 1;
+            drawCount.value = parsed.drawCount || 1;
+        }
     } catch (e) { console.error(e); }
+};
+
+// Animation Logic
+const lotteryDisplayNames = ref([]);
+const flyingSticks = ref([]);
+let lotteryInterval = null;
+
+const buildFlyingSticks = (names) => {
+    flyingSticks.value = names.slice(0, 12).map((name, i) => ({
+        id: i,
+        name: name,
+        x: 20 + (i * 5.5) % 60,
+        dur: 2.2 + (i * 0.2) % 1.5,
+        delay: (i * 0.25) % 2.5,
+        rotate: -40 + (i * 17) % 80,
+        drift: -60 + (i * 23) % 120,
+    }));
 };
 
 const performDraw = () => {
     if (selectedNames.value.length === 0) return;
     
-    // Refresh the animation sticks every single time
-    shuffleSticks();
-    
     isDrawing.value = true;
-    showResultList.value = false;
-    
+    hasResult.value = false;
+    buildFlyingSticks([...selectedNames.value]);
+
+    const pool = [...selectedNames.value];
+    let idx = 0;
+    lotteryInterval = setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        lotteryDisplayNames.value = [pool[idx]];
+    }, 80);
+
     setTimeout(() => {
-        const pool = [...selectedNames.value];
-        const count = Math.min(drawCount.value, pool.length);
-        const shuffled = pool.sort(() => Math.random() - 0.5);
-        results.value = shuffled.slice(0, count);
+        clearInterval(lotteryInterval);
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+        results.value = shuffled.slice(0, Math.min(drawCount.value, pool.length));
         isDrawing.value = false;
         hasResult.value = true;
-
-        // Step 2: Delay summary list by 1.5s
-        setTimeout(() => {
-            showResultList.value = true;
-        }, 1500);
+        currentStep.value = 3;
     }, 3000);
 };
 
 const copyResults = () => {
     const text = results.value.map((n, i) => `${i + 1}. ${n}`).join('\n');
-    navigator.clipboard.writeText(text);
-    alert('抽籤結果已複製到剪貼簿');
+    navigator.clipboard.writeText(text).then(() => alert('已複製抽籤結果！'));
 };
 
-const isValid = computed(() => selectedNames.value.length > 0);
-
-onMounted(() => {
-    loadUsers();
+defineExpose({
+    resetAll,
+    selectAll,
+    invertSelection
 });
+
+onMounted(loadUsers);
 </script>
 
 <style scoped>
-@keyframes shake {
-    0%, 100% { transform: rotate(-5deg) translateY(0); }
-    25% { transform: rotate(5deg) translateY(-10px); }
-    50% { transform: rotate(-5deg) translateY(0); }
-    75% { transform: rotate(5deg) translateY(-10px); }
-}
-
-@keyframes stick-bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-
-.animate-shake {
-    animation: shake 0.4s ease-in-out infinite;
-}
-
-.animate-stick-bounce {
-    animation: stick-bounce 0.3s ease-in-out infinite;
-}
-
-@keyframes stick-reveal {
-    0% { transform: translateY(100px) rotate(10deg); opacity: 0; }
-    100% { transform: translateY(0) rotate(0); opacity: 1; }
-}
-
-.animate-stick-reveal {
-    animation: stick-reveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    opacity: 0;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #E2E8F0;
-    border-radius: 10px;
-}
-</style>
-
-<style scoped>
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-@keyframes bounceShort {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-.animate-bounce-short {
-    animation: bounceShort 0.8s ease-in-out infinite;
-}
-
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-slide-in { animation: slideIn 0.4s ease-out; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+.dot-lg { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: bounce 0.5s infinite alternate; }
+.dot-lg:nth-child(2) { animation-delay: 0.15s; }
+.dot-lg:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { from { transform: translateY(0); opacity: 0.4; } to { transform: translateY(-8px); opacity: 1; } }
+
+/* PEN HOLDER STYLES */
+.lottery-cup-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lottery-cup {
+    position: relative;
+    width: 160px;
+    animation: cupShake 0.15s ease-in-out infinite alternate;
+    transform-origin: bottom center;
+}
+@keyframes cupShake {
+    from { transform: rotate(-6deg) translateX(-6px); }
+    to   { transform: rotate(6deg) translateX(6px); }
+}
+.cup-rim {
+    width: 160px;
+    height: 10px;
+    background: #92400e;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    border-bottom: 2px solid #78350f;
+}
+.cup-sticks-wrapper {
+    position: absolute;
+    top: -96px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 128px;
+    height: 96px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+}
+.cup-stick {
+    width: 11px;
+    height: 112px;
+    border-radius: 3px 3px 1px 1px;
+    transform: rotate(var(--ctilt));
+    transform-origin: bottom center;
+    animation: cupStickJiggle 0.15s ease-in-out infinite alternate;
+    animation-delay: calc(var(--ci) * 15ms);
+}
+@keyframes cupStickJiggle {
+    from { transform: rotate(calc(var(--ctilt) - 2deg)) translateY(0px); }
+    to   { transform: rotate(calc(var(--ctilt) + 2deg)) translateY(-4px); }
+}
+.cup-body {
+    width: 160px;
+    height: 192px;
+    background: linear-gradient(90deg, #92400e 0%, #b45309 15%, #92400e 30%, #78350f 50%, #92400e 70%, #b45309 85%, #78350f 100%);
+    border-radius: 3px 3px 6px 6px;
+    box-shadow: inset 3px 0 8px rgba(255,255,255,0.05), 0 10px 32px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+.cup-body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(0,0,0,0.15) 16px);
+}
+.cup-base {
+    width: 176px;
+    height: 10px;
+    background: #451a03;
+    border-radius: 2px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+}
+
+/* Flying stick */
+.lottery-stick {
+    position: absolute;
+    bottom: 192px;
+    width: 16px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    transform-origin: bottom center;
+    animation: stickFly var(--dur, 1.4s) cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s) infinite;
+}
+@keyframes stickFly {
+    0%   { transform: translateY(64px) scale(0.6); opacity: 0; }
+    5%   { opacity: 1; transform: translateY(32px) scale(0.8); }
+    15%  { transform: translateY(-96px) scale(1.1); opacity: 1; }
+    60%  { transform: translateY(-60vh) translateX(var(--drift)) rotate(var(--rotate)) scale(1); opacity: 1; }
+    100% { transform: translateY(-90vh) translateX(var(--drift)) rotate(var(--rotate)) scale(0.9); opacity: 0; }
+}
+.stick-body {
+    width: 16px;
+    height: 96px;
+    border-radius: 8px 8px 3px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.stick-name {
+    font-size: 11px;
+    font-weight: 900;
+    color: #1e1b4b;
+    letter-spacing: 1px;
+}
+.stick-tip {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: -3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.flying-name-display {
+    margin-top: 24px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flying-name-text {
+    font-size: 36px;
+    font-weight: 900;
+    color: #92400e;
+    letter-spacing: 6px;
+    animation: namePulse 0.1s ease-in-out;
+}
+@keyframes namePulse { from { opacity: 0.2; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 </style>

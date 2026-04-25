@@ -1,143 +1,116 @@
 <template>
-    <div class="flex h-full bg-white overflow-hidden relative">
+    <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
         
-        <!-- Left Sidebar: Dharma Name Table (Toggleable) -->
-        <div :class="[isCollapsed ? 'w-[15px]' : 'w-[75%]']" class="border-r border-slate-100 flex flex-col h-full bg-white font-sans transition-all duration-300 relative overflow-hidden">
-            <div class="p-3 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
-                <h3 v-if="!isCollapsed" class="text-[15px] font-black text-slate-900 flex items-center">
-                    選擇法號
-                </h3>
-            </div>
-
-            <!-- Quick Search / Add Input -->
-            <div v-show="!isCollapsed" class="px-3 py-2 border-b border-slate-50 bg-slate-50/10">
-                <div class="relative">
-                    <input v-model="searchQuery" @keyup.enter="handleQuickAdd" placeholder="搜尋或直接輸入姓名..." 
-                        class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-[15px] focus:ring-2 focus:ring-indigo-500/20 transition-all font-black">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/></svg>
-                </div>
-            </div>
-
-            <!-- Dharma Name Grid (4 columns, tighter, frameless) -->
-            <div class="flex-1 overflow-y-auto px-2 py-4 custom-scrollbar bg-white">
-                <div :class="[isCollapsed ? 'grid-cols-1' : 'grid-cols-4']" class="grid gap-x-1 gap-y-1">
-                    <button v-for="user in filteredUsers" :key="user.id" 
-                        @click="addParticipant(user.name)"
-                        class="h-[34px] flex items-center justify-center transition-all bg-transparent active:scale-95 hover:text-indigo-600">
-                        <span :class="[isCollapsed ? 'text-[0px]' : 'text-[17px]']" class="font-black text-slate-900 transition-all truncate px-0.5 leading-none">
-                            {{ user.name }}
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Content: Approval Table & Selection Queue -->
-        <div :class="[isCollapsed ? 'flex-1 border-l border-slate-50' : 'w-[25%]']" class="overflow-hidden flex flex-col h-full bg-slate-50/10 relative font-sans transition-all duration-300">
-            <!-- Header Area -->
-            <div class="bg-white border-b border-slate-50 px-4 pt-4 pb-2 flex items-center justify-between sticky top-0 z-10 shrink-0">
-                <div class="flex flex-col flex-1">
-                    <!-- Collapse mode: Back button + Title -->
-                    <div v-if="isCollapsed" class="flex items-center space-x-1">
-                        <button @click="isCollapsed = false" class="p-1 -ml-1 text-blue-500 hover:text-blue-700 active:scale-90 transition-all">
-                            <svg class="h-6 w-6 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <h2 class="text-[15px] font-black text-blue-500 tracking-tight">核定結果</h2>
-                    </div>
-
-                    <!-- Expand mode: Actions stacked on the right -->
-                    <div v-else class="flex flex-col items-end space-y-1 w-full">
-                        <button @click="clearAll" class="text-slate-400 hover:text-red-500 p-0.5 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <button @click="isCollapsed = true" class="flex flex-col items-end justify-center space-y-0 text-blue-500 hover:text-indigo-700 active:scale-95 transition-all">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" />
-                            </svg>
-                            <span class="text-[15px] font-black tracking-tight whitespace-nowrap">核定名單</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- Independent Clear Button (Only in collapsed mode) -->
-                <button v-if="isCollapsed" @click="clearAll" class="text-slate-400 hover:text-red-500 p-1 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- Step 1: Selection Page -->
+        <div v-if="step === 1" class="flex flex-col h-full overflow-hidden animate-fade-in relative">
+            <div class="bg-white border-b border-slate-100 py-2 px-4 flex justify-between items-center shrink-0 shadow-sm z-10">
+                <h3 class="text-[18px] font-black text-slate-900">選擇法號與開文人員</h3>
+                <button @click="clearAll" class="text-[14px] text-rose-500 font-bold active:scale-95 transition-transform bg-rose-50 px-3 py-1 rounded-lg hover:bg-rose-100">
+                    清空
                 </button>
             </div>
 
-            <!-- Table Content -->
-            <div class="flex-1 overflow-y-auto p-0 flex flex-col">
-                <div class="w-full">
-                    <!-- Instruction Text -->
-                    <div v-if="isCollapsed" class="py-3 text-left space-y-0.5 animate-fade-in pl-2">
-                        <p class="text-[15px] font-black text-slate-900 leading-tight">√ 代表合格 × 代表不合格</p>
-                        <p class="text-[15px] font-black text-slate-900 leading-tight">開文結果請示如下：</p>
-                    </div>
+            <div class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar pb-24">
+                
 
-                    <!-- Right-side Selection Queue (Denser Mode) -->
-                    <div v-if="!isCollapsed" class="flex flex-col p-2 animate-fade-in space-y-1">
-                        <div v-for="(item, idx) in selectionList" :key="'r'+idx" 
-                            class="flex items-center">
-                            <span class="text-[15px] font-black text-blue-500 tracking-wide">{{ item.name }}</span>
-                        </div>
-                        <div v-if="selectionList.length === 0" class="w-full text-slate-200 text-[13px] font-bold py-10 text-center uppercase tracking-widest leading-relaxed">
-                            待選
+                <!-- Selection Grid -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="bg-slate-50 px-3 py-2 border-b border-slate-100 flex items-center justify-between sticky top-0 z-10">
+                        <span class="font-black text-[14px] text-slate-500">
+                            點選待定法號 (紅色為已選)
+                        </span>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-[14px] font-bold text-slate-400">已選 {{ selectionList.length }} 人</span>
                         </div>
                     </div>
+                    <div class="grid grid-cols-6 gap-1 p-2">
+                        <button v-for="user in filteredUsers" :key="user.id" 
+                            @click="addParticipant(user.name)"
+                            class="h-[38px] flex items-center justify-center transition-all active:scale-95 rounded-lg border cursor-pointer"
+                            :style="{ 
+                                backgroundColor: isParticipantSelected(user.name) ? '#fff1f2' : 'transparent',
+                                borderColor: isParticipantSelected(user.name) ? '#fda4af' : 'transparent',
+                                color: isParticipantSelected(user.name) ? '#e11d48' : '#1e293b'
+                            }"
+                        >
+                            <span class="text-[17px] font-black transition-all truncate px-0.5 leading-none">
+                                {{ user.name }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
 
-                    <!-- Ledger Table (Ultra Density, 28px) -->
-                    <table v-else class="w-full text-left border-separate border-spacing-0 table-fixed">
+            </div>
+            
+            <!-- Confirm Action -->
+            <div class="absolute bottom-[7vh] md:bottom-6 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 z-20 flex justify-center">
+                <button @click="goToStep2" :disabled="selectionList.length === 0" class="w-full max-w-lg bg-indigo-600 font-black text-[18px] py-3.5 rounded-2xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:bg-indigo-700 hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none disabled:active:scale-100" style="color: white !important;">
+                    確定 (進入核定表)
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Approval Table Page -->
+        <div v-if="step === 2" class="flex flex-col h-full bg-white overflow-hidden animate-fade-in relative">
+            <div class="bg-white border-b border-slate-100 py-2 px-3 flex items-center justify-between shrink-0 shadow-sm z-10">
+                <div class="flex items-center space-x-2">
+                    <button @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <h3 class="text-[18px] font-black text-slate-900 tracking-tight">核定結果</h3>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-2 py-4 flex flex-col custom-scrollbar">
+                
+                <!-- Instruction Text -->
+                <div class="px-2 pb-4 mb-2 flex flex-col space-y-1">
+                    <div class="text-[16px] font-black text-slate-700 tracking-wide">✓代表合格 ×代表不合格</div>
+                    <div class="text-[16px] font-black text-slate-700 tracking-wide">開文結果請示如下：</div>
+                </div>
+
+                <!-- Ledger Table -->
+                <div class="w-full pb-32">
+                    <table class="w-full text-left border-separate border-spacing-0 table-fixed">
                         <tbody>
-                            <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[28px]">
-                                <td class="pl-0.5 pr-0.5 py-0 relative w-16 whitespace-nowrap align-middle">
-                                    <span class="text-[15px] font-black text-blue-500 leading-none">{{ item.name }}</span>
-                                    <button @click="removeItem(idx)" class="absolute -left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-2 text-rose-50 hover:text-rose-500 transition-opacity">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
-                                    </button>
+                            <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[42px]">
+                                <td class="pl-3 pr-1 py-1 w-20 whitespace-nowrap align-middle border-b border-slate-50">
+                                    <span class="text-[18px] font-black text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
                                 </td>
                                 
-                                <td v-for="n in 3" :key="'slot'+n" class="text-center w-22 px-1 py-0 h-[28px] align-middle">
-                                    <!-- High-Contrast Interactive Grid -->
-                                    <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden divide-x divide-slate-200 h-[24px]">
+                                <td v-for="n in 3" :key="'slot'+n" class="text-center w-22 px-1 py-1 align-middle border-b border-slate-50">
+                                    <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden divide-x divide-slate-200 h-[36px] shadow-sm">
                                         <button @click="setStatus(idx, n-1, 'v')" 
-                                            :class="[item.slots[n-1] === 'v' ? 'text-indigo-900 bg-indigo-100' : 'text-slate-300 hover:text-indigo-600']"
-                                            class="w-1/2 h-full flex items-center justify-center transition-all">
-                                            <span class="text-[19px] font-black leading-none">√</span>
+                                            :class="[item.slots[n-1] === 'v' ? 'text-indigo-900 bg-indigo-100' : 'text-slate-300 hover:text-indigo-600 hover:bg-slate-50']"
+                                            class="w-1/2 h-full flex items-center justify-center transition-colors active:bg-slate-100">
+                                            <span class="text-[20px] font-black leading-none">√</span>
                                         </button>
                                         <button @click="setStatus(idx, n-1, 'x')" 
-                                            :class="[item.slots[n-1] === 'x' ? 'text-rose-600 bg-rose-100' : 'text-slate-300 hover:text-rose-600']"
-                                            class="w-1/2 h-full flex items-center justify-center transition-all">
-                                            <span class="text-[19px] font-black leading-none">×</span>
+                                            :class="[item.slots[n-1] === 'x' ? 'text-rose-600 bg-rose-100' : 'text-slate-300 hover:text-rose-600 hover:bg-slate-50']"
+                                            class="w-1/2 h-full flex items-center justify-center transition-colors active:bg-slate-100">
+                                            <span class="text-[20px] font-black leading-none">×</span>
                                         </button>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr v-if="selectionList.length === 0">
-                                <td colspan="4" class="py-32 text-center text-slate-300">
-                                    <p class="text-[17px] font-bold text-slate-200 uppercase tracking-widest">請展開選單開始作業</p>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-            <!-- Copy Button (Only in collapsed mode) -->
-                    <div v-if="isCollapsed" class="mt-8 mb-20 flex justify-center w-full">
-                        <button @click="copyToLine" class="w-full max-w-xs bg-emerald-600 text-white h-14 rounded-2xl font-black shadow-xl shadow-emerald-900/10 hover:bg-emerald-700 transition-all active:scale-95 text-[17px] uppercase tracking-widest">
-                            複製貼 LINE
-                        </button>
-                    </div>
+
+
                 </div>
+            </div>
+
+            <!-- Copy Action -->
+            <div class="absolute bottom-[7vh] md:bottom-6 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 z-20 flex justify-center">
+                <button @click="copyToLine" class="w-full max-w-lg bg-emerald-600 h-14 rounded-2xl font-black shadow-[0_4px_14px_0_rgb(5,150,105,0.39)] hover:bg-emerald-700 hover:shadow-[0_6px_20px_rgba(5,150,105,0.23)] transition-all active:scale-[0.98] text-[18px] tracking-widest flex items-center justify-center space-x-2" style="color: white !important;">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <span style="color: white !important;">複製貼 LINE</span>
+                </button>
             </div>
         </div>
 
-        <!-- Draft Saved Toast (Floating) -->
-        <transition name="fade">
-            <div v-if="showSavedToast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-4 py-2 rounded-full text-[13px] font-bold shadow-2xl z-[100] flex items-center space-x-2 border border-white/10 backdrop-blur-md">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>進度已暫存覽器</span>
-            </div>
-        </transition>
+
     </div>
 </template>
 
@@ -148,27 +121,23 @@ import axios from 'axios';
 const searchQuery = ref('');
 const users = ref([]);
 const selectionList = ref([]);
-const isCollapsed = ref(true); // Default to table-view for better mobile visibility
-const showSavedToast = ref(false);
+const step = ref(1);
 
 // Storage Keys
-const STORAGE_KEY = 'fabou_kaiwen_draft';
+const STORAGE_KEY = 'fabou_kaiwen_draft_v2';
 
 const saveToLocalStorage = () => {
     const data = {
         selectionList: selectionList.value,
-        isCollapsed: isCollapsed.value
+        step: step.value
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     
-    // Show toast briefly
-    showSavedToast.value = true;
-    setTimeout(() => { showSavedToast.value = false; }, 2000);
 };
 
 // Auto-save on any change
 watch(selectionList, saveToLocalStorage, { deep: true });
-watch(isCollapsed, saveToLocalStorage);
+watch(step, saveToLocalStorage);
 
 const loadUsers = async () => {
     try {
@@ -180,13 +149,21 @@ const loadUsers = async () => {
         if (draft) {
             try {
                 const parsed = JSON.parse(draft);
-                selectionList.value = parsed.selectionList || [];
-                // Respect saved state if it exists, otherwise use default true
-                if (Object.prototype.hasOwnProperty.call(parsed, 'isCollapsed')) {
-                    isCollapsed.value = parsed.isCollapsed;
-                }
+                let list = parsed.selectionList || [];
+                // Migration: convert string array to object array if needed
+                selectionList.value = list.map(item => typeof item === 'string' ? { name: item, slots: [null, null, null, null, null] } : item);
+                if (parsed.step) step.value = parsed.step;
             } catch (err) {
                 console.error('Failed to parse draft', err);
+            }
+        } else {
+            const oldDraft = localStorage.getItem('fabou_kaiwen_draft');
+            if (oldDraft) {
+                try {
+                    const parsed = JSON.parse(oldDraft);
+                    let list = parsed.selectionList || [];
+                    selectionList.value = list.map(item => typeof item === 'string' ? { name: item, slots: [null, null, null, null, null] } : item);
+                } catch (err) {}
             }
         }
     } catch (e) {
@@ -203,22 +180,25 @@ const filteredUsers = computed(() => {
     return list.filter(u => u.name.toLowerCase().includes(q));
 });
 
-const addParticipant = (name) => {
-    if (!name) return;
-    if (selectionList.value.some(item => item.name === name)) {
-        alert('此法號已在清單中。');
-        return;
-    }
-    selectionList.value.push({
-        name: name,
-        slots: [null, null, null]
-    });
+const isParticipantSelected = (name) => {
+    if (!name) return false;
+    const trimmedName = name.trim();
+    return selectionList.value.some(item => item.name.trim() === trimmedName);
 };
 
-const handleQuickAdd = () => {
-    if (!searchQuery.value) return;
-    addParticipant(searchQuery.value.trim());
-    searchQuery.value = '';
+const addParticipant = (name) => {
+    if (!name) return;
+    const trimmedName = name.trim();
+
+    const index = selectionList.value.findIndex(item => item.name.trim() === trimmedName);
+    if (index !== -1) {
+        selectionList.value = selectionList.value.filter((_, i) => i !== index);
+        return;
+    }
+    selectionList.value = [...selectionList.value, {
+        name: trimmedName,
+        slots: [null, null, null, null, null]
+    }];
 };
 
 const setStatus = (rowIdx, slotIdx, type) => {
@@ -235,10 +215,37 @@ const removeItem = (idx) => {
 };
 
 const clearAll = () => {
-    if (confirm('確定要清空整份表格嗎？')) {
+    if (confirm('確定要清空整份名單與表格嗎？')) {
         selectionList.value = [];
+        step.value = 1;
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('fabou_kaiwen_draft');
     }
+};
+
+const invertSelection = () => {
+    const allNames = filteredUsers.value.map(u => u.name);
+    const selectedNames = selectionList.value.map(item => item.name);
+    const unselectedNames = allNames.filter(n => !selectedNames.includes(n));
+    
+    // Completely replace selectionList with unselected
+    selectionList.value = unselectedNames.map(name => ({
+        name: name,
+        slots: [null, null, null, null, null]
+    }));
+};
+
+defineExpose({
+    clearAll,
+    invertSelection
+});
+
+const goToStep2 = () => {
+    if (selectionList.value.length === 0) {
+        alert('請先加入至少一位待定法號。');
+        return;
+    }
+    step.value = 2;
 };
 
 const copyToLine = () => {
@@ -258,7 +265,7 @@ const copyToLine = () => {
             return '　'; // full-width ideographic space (same width as Chinese char)
         });
         
-        // Full-width semicolon as separator — same width as Chinese char in LINE
+        // Full-width semicolon as separator
         const results = slots.join('；');
         
         text += `${item.name}：${results}\n`;
@@ -273,6 +280,8 @@ const copyToLine = () => {
 };
 
 onMounted(loadUsers);
+
+defineExpose({ clearAll });
 </script>
 
 <style scoped>
@@ -286,6 +295,15 @@ onMounted(loadUsers);
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #e2e8f0;
     border-radius: 10px;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -48,9 +48,9 @@
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[220px] h-[220px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[220px] h-[176px] relative transition-all shadow-sm">
                         <div class="mb-2">
-                            <svg class="w-[120px] h-[120px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-[120px] h-[120px]" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="goldGradL1" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
@@ -65,9 +65,9 @@
                         <div class="text-[26px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[220px] h-[220px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[220px] h-[176px] relative transition-all shadow-sm">
                         <div class="mb-2">
-                            <svg class="w-[120px] h-[120px] drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-[120px] h-[120px]" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="redGradL2" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
@@ -94,7 +94,7 @@
                         ]">
                         
                         <div class="relative mb-1">
-                             <svg class="w-[88px] h-[88px] transition-transform group-hover:scale-110 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+                             <svg class="w-[88px] h-[88px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                 <linearGradient id="folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop v-if="currentCategory === 'major'" offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />

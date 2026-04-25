@@ -92,13 +92,13 @@
                     </div>
                 </div>
                 
-                <div class="px-6 pb-24 flex flex-col items-center space-y-16 mt-[-30px]">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-[-10px] mt-[-30px]">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
-                        <div class="relative w-[260px] h-[260px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                        <div class="relative w-[260px] h-[208px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
@@ -111,7 +111,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[32px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     每日開示
                                 </span>
                             </div>
@@ -122,8 +122,8 @@
                     <button 
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
-                        <div class="relative w-[260px] h-[260px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                        <div class="relative w-[260px] h-[208px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
@@ -136,7 +136,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
-                                <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                <span class="text-[32px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     開示記錄
                                 </span>
                             </div>
@@ -160,7 +160,7 @@
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
                         <div class="relative w-[148px] h-[148px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <defs>
                                     <linearGradient :id="'fGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
@@ -174,7 +174,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                                 <span :class="[
-                                    'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all text-[24px]',
+                                    'font-black tracking-tight leading-tight text-center transition-all text-[24px]',
                                     folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                                 ]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
@@ -3831,4 +3831,4 @@ onMounted(syncRecords);
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
 </style>
- 
+ 
