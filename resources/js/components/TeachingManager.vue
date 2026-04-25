@@ -27,6 +27,7 @@
             </datalist>
             <datalist id="remark-list">
                 <option value="*允同享皇恩" />
+                <option value="完畢" />
             </datalist>
 
             <datalist id="dharma-search-list">
@@ -427,11 +428,20 @@
                                 <p class="text-[14px] mt-1">請點選下方「降寶詳情」按鈕開始輸入</p>
                             </div>
 
-                            <!-- Global Footer Remarks in Add Mode (Top) -->
+                            <!-- Global Footer Remarks in Add Mode (Multi-entry) -->
                             <div class="px-4 mt-6">
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
-                                <div class="border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm">
-                                    <input v-model="form.items_footer_remarks" list="remark-list" placeholder="例如：完畢..." class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
+                                <!-- Added entries list -->
+                                <div v-if="footerRemarksList.length > 0" class="mb-2 space-y-1">
+                                    <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-50 rounded-2xl px-3 py-2">
+                                        <span class="flex-1 text-[16px] font-bold text-slate-800">{{ r }}</span>
+                                        <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-300 hover:text-red-400 ml-2 text-[18px] leading-none transition-all">×</button>
+                                    </div>
+                                </div>
+                                <!-- Input + Add button -->
+                                <div class="flex items-center border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm">
+                                    <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
+                                    <button @click="addFooterRemark" class="px-4 py-3 text-indigo-500 font-black text-[22px] leading-none hover:text-indigo-700 transition-all">+</button>
                                 </div>
                             </div>
 
@@ -439,11 +449,11 @@
                             <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
-                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[5px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
+                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[20px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
                                     <span>降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[5px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[20px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -464,7 +474,7 @@
                         </div>
                     </div>
 
-                    <div class="px-2.5 pt-0 pb-40 space-y-5">
+                    <div class="px-2.5 pt-0 pb-[20px] space-y-5">
                         <div class="bg-white rounded-[24px] border border-slate-50 p-2.5 shadow-sm">
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase flex items-center justify-between px-1 mb-2">
                                     <div class="flex items-center">
@@ -912,84 +922,77 @@
                                             </button>
                                             <div v-if="showSubRemarks" class="mt-2 flex items-center animate-fade-in overflow-hidden">
                                                 <div class="flex-1 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[64px] flex items-center overflow-hidden">
-                                                    <input v-model="newItemRemarks" list="remark-list"
+                                                    <input v-model="newItemRemarks"
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
                                                            placeholder="加入內容物備註...">
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        <!-- Current Item Preview & History -->
-                                        <div v-if="newItemName" class="mt-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 mb-2 animate-fade-in">
-                                            <div class="text-[11px] text-orange-400 font-bold mb-1">本次即將新增：</div>
-                                            <div class="text-[16px] font-black text-slate-900 leading-tight">{{ newItemName }}</div>
-                                            <div v-if="currentEntryPreview" class="text-[14px] font-bold text-slate-600 mt-1">
-                                                {{ currentEntryPreview }}
-                                            </div>
-                                            <div v-if="newItemMainRemarks" class="text-[12px] text-slate-400 italic mt-1.5 font-medium leading-tight">
-                                                主備註：{{ newItemMainRemarks }}
-                                            </div>
-                                            <div v-if="newItemRemarks" class="text-[12px] text-slate-400 italic mt-0.5 font-medium leading-tight">
-                                                內容物備註：{{ newItemRemarks }}
-                                            </div>
-                                        </div>
 
-                                        <!-- History List -->
-                                        <div v-if="form.items.length > 0" class="mt-4 px-1 border-t border-slate-50 pt-4 mb-2">
-                                            <div class="text-[12px] font-bold text-slate-400 mb-2 flex items-center justify-between">
-                                                <span>已加入記錄 ({{ form.items.length }})</span>
-                                                <span class="text-[10px] opacity-50">最下方為最新</span>
-                                            </div>
-                                            <div class="space-y-3 pr-1">
-                                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-white border border-slate-100 p-3.5 rounded-2xl shadow-sm space-y-2 text-left">
-                                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
-                                                        {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
-                                                    </div>
-                                                    <div class="space-y-2.5">
-                                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-indigo-50">
-                                                            <div class="flex-1">
-                                                                <div class="text-[14px] text-slate-600 font-bold flex items-start leading-tight">
-                                                                    <span class="text-indigo-400 mr-1.5 shrink-0">+ </span>
-                                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-indigo-400 mr-1.5 shrink-0">{{ item.name }}</span>
-                                                                    <span>{{ item.details }}</span>
-                                                                </div>
-                                                                <div v-if="item.sub_name || item.remarks" class="text-[11px] text-slate-400 italic mt-0.5">
-                                                                    備註：{{ item.remarks || item.sub_name }}
-                                                                </div>
-                                                            </div>
-                                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-200 hover:text-red-400 transition-all text-[18px] leading-none">×</button>
-                                                        </div>
-                                                    </div>
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- History List (always visible, outside collapsible) -->
+                        <div v-if="form.items.length > 0" class="mt-4 px-1 border-t border-slate-50 pt-4 mb-2">
+                            <div class="text-[12px] font-bold text-slate-400 mb-2 flex items-center justify-between">
+                                <span>已加入記錄 ({{ form.items.length }})</span>
+                                <span class="text-[10px] opacity-50">最下方為最新</span>
+                            </div>
+                            <div class="space-y-3 pr-1">
+                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-white border border-slate-100 p-3.5 rounded-2xl shadow-sm space-y-2 text-left">
+                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
+                                        {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
+                                    </div>
+                                    <div class="space-y-2.5">
+                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-indigo-50">
+                                            <div class="flex-1">
+                                                <div class="text-[14px] text-slate-600 font-bold flex items-start leading-tight">
+                                                    <span class="text-indigo-400 mr-1.5 shrink-0">+ </span>
+                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-indigo-400 mr-1.5 shrink-0">{{ item.name }}</span>
+                                                    <span>{{ item.details }}</span>
+                                                </div>
+                                                <div v-if="item.sub_name || item.remarks" class="text-[11px] text-slate-400 italic mt-0.5">
+                                                    備註：{{ item.remarks || item.sub_name }}
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div v-if="form.items_footer_remarks" class="px-4 py-3 bg-indigo-50/30 border-t border-slate-100 italic text-[15px] text-indigo-600 font-bold mb-2 rounded-xl">
-                                            結尾備註：{{ form.items_footer_remarks }}
-                                        </div>
-
-                                        <!-- Modal Footer Remarks -->
-                                        <div class="px-1 mt-6 mb-4">
-                                            <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
-                                            <div class="border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm">
-                                                <input v-model="form.items_footer_remarks" list="remark-list" placeholder="例如：完畢..." class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
-                                            </div>
-                                        </div>
-
-                                        <!-- Specialized Item Confirm Action -->
-                                        <div class="mt-4 pt-6 border-t border-slate-100 flex flex-col items-center space-y-4 px-2 mb-20">
-                                            <button @click.prevent="addNewItemQuickly" 
-                                                    class="w-full py-[14px] bg-blue-600 text-white rounded-[24px] font-black text-[20px] shadow-xl shadow-blue-100 active:scale-[0.98] transition-all flex items-center justify-center">
-                                                確認新增法寶
-                                            </button>
-                                            <button @click.prevent="handleItemsDetailClose" 
-                                                    class="text-slate-400 font-bold text-[16px] active:scale-[0.98] transition-all pb-10">
-                                                離開視窗
-                                            </button>
+                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-200 hover:text-red-400 transition-all text-[18px] leading-none">×</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Footer Remarks (independent, always visible, multi-entry) -->
+                        <div class="px-1 mt-4 mb-2">
+                            <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
+                            <!-- Added entries list -->
+                            <div v-if="footerRemarksList.length > 0" class="mb-2 space-y-1">
+                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-50 rounded-2xl px-3 py-2">
+                                    <span class="flex-1 text-[16px] font-bold text-slate-800">{{ r }}</span>
+                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-300 hover:text-red-400 ml-2 text-[18px] leading-none transition-all">×</button>
+                                </div>
+                            </div>
+                            <!-- Input + Add button -->
+                            <div class="flex items-center border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm">
+                                <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
+                                <button @click="addFooterRemark" class="px-4 py-3 text-indigo-500 font-black text-[22px] leading-none hover:text-indigo-700 transition-all">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Close Button -->
+                        <div class="px-2 pb-10 flex justify-center">
+                            <button @click.prevent="handleItemsDetailClose" 
+                                    class="text-slate-400 font-bold text-[16px] active:scale-[0.98] transition-all">
+                                離開視窗
+                            </button>
                         </div>
 
                 <!-- Plain List Section (No Boxes) -->
@@ -1091,7 +1094,7 @@
 
                             <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-5 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <div class="grid grid-cols-2 gap-3">
-                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-4 active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
+                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-[10px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
                                         <span>完成並新增</span>
                                         <span class="text-[11px] opacity-60">下一位人員</span>
                                     </button>
@@ -1362,8 +1365,8 @@
                                             </div>
                                         </div>
 
-                                        <div v-if="item.items_footer_remarks?.trim()" class="app-body italic pt-2">
-                                            備註：{{ item.items_footer_remarks.trim() }}
+                                        <div v-if="item.items_footer_remarks?.trim()" class="app-body italic pt-1">
+                                            {{ item.items_footer_remarks.trim() }}
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!item.content?.includes('完畢')">
@@ -2186,11 +2189,11 @@ const initializedDates = ref(new Set());
 
 const uniqueDharmaNames = computed(() => {
     const names = (dharmaNames.value || []).map(d => (d.name || '').trim());
-    return [...new Set(names.filter(n => n))].sort((a, b) => a.localeCompare(b, 'zh-TW', { collation: 'stroke' }));
+    return [...new Set(names.filter(n => n))];
 });
 
 const sortedDharmaNames = computed(() => {
-    return (dharmaNames.value || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+    return (dharmaNames.value || []).slice();
 });
 
 const uniqueUnits = computed(() => {
@@ -2235,12 +2238,40 @@ const form = ref({
     remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
 });
 
+// Multi-entry footer remarks
+const footerRemarksList = ref([]);
+const newFooterRemark = ref('');
+
+const syncFooterRemarks = () => {
+    form.value.items_footer_remarks = footerRemarksList.value.join('\n');
+};
+
+const addFooterRemark = () => {
+    const val = newFooterRemark.value.trim();
+    if (!val) return;
+    footerRemarksList.value.push(val);
+    newFooterRemark.value = '';
+    syncFooterRemarks();
+};
+
+// When loading an existing record for edit, parse existing remarks back to list
+watch(() => form.value.items_footer_remarks, (val) => {
+    if (typeof val === 'string' && val.trim()) {
+        const lines = val.split('\n').map(l => l.trim()).filter(l => l);
+        // Only sync if the list doesn't already match (avoid infinite loop)
+        if (lines.join('\n') !== footerRemarksList.value.join('\n')) {
+            footerRemarksList.value = lines;
+        }
+    } else if (!val) {
+        footerRemarksList.value = [];
+    }
+}, { immediate: true });
+
 const dharmaSearchQuery = ref('');
 
 const mainSearchFilteredDharmaNames = computed(() => {
     return (dharmaNames.value || [])
-        .filter(d => !dharmaSearchQuery.value || (d.name && d.name.includes(dharmaSearchQuery.value)))
-        .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+        .filter(d => !dharmaSearchQuery.value || (d.name && d.name.includes(dharmaSearchQuery.value)));
 });
 
 const mainSearchFilteredGroups = computed(() => {
@@ -2250,8 +2281,7 @@ const mainSearchFilteredGroups = computed(() => {
 
 const detailModalFilteredDharmaNames = computed(() => {
     return (dharmaNames.value || [])
-        .filter(d => !newItemPractitioner.value || (d.name && d.name.includes(newItemPractitioner.value)))
-        .sort((a, b) => a.name.localeCompare(b.name, 'zh-TW', { collation: 'stroke' }));
+        .filter(d => !newItemPractitioner.value || (d.name && d.name.includes(newItemPractitioner.value)));
 });
 
 const folders_list = [
@@ -2285,7 +2315,7 @@ const filteredPickerResults = computed(() => {
         const nameMatch = (dn.name || '').toLowerCase().includes(q);
         const groupMatch = matchedDNsFromGroups.has(dn.id);
         return nameMatch || groupMatch;
-    }).sort((a, b) => (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+    });
 });
 
 const filteredGroups = computed(() => {
@@ -2294,8 +2324,7 @@ const filteredGroups = computed(() => {
     
     if (!pickerSearch.value) return list;
     const q = pickerSearch.value.toLowerCase();
-    return list.filter(g => (g.name || '').toLowerCase().includes(q))
-        .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+    return list.filter(g => (g.name || '').toLowerCase().includes(q));
 });
 
 const instrumentTreasures = computed(() => {
@@ -3069,7 +3098,7 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
     
-    let footer = '\n\n完畢';
+    let footer = form.value?.items_footer_remarks ? '\n\n' + form.value.items_footer_remarks : '';
     return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
 };
 
@@ -3104,7 +3133,7 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
     
-    let footer = '\n\n完畢';
+    let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (index !== null && allRecords.length > 0) {
         if (isSameSessionAsNext(item, index, allRecords)) {
             footer = '';
