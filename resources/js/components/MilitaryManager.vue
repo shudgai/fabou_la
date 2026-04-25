@@ -3,10 +3,7 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
-            <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                 <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
                     軍隊記錄專區
                 </div>
@@ -20,10 +17,7 @@
 
         <!-- Header 2: Folder/Action Level -->
         <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-2">
-            <div class="flex items-center flex-1 min-w-0">
-                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+            <div class="flex items-center flex-1 min-w-0 justify-start">
                 <h2 class="text-[22px] font-black text-slate-900 truncate tracking-tight">
                     {{ currentFolder.name }}
                 </h2>

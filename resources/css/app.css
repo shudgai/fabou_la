@@ -117,3 +117,73 @@ body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-larg
 body.font-small input, body.font-small select, body.font-small textarea { font-family: 'Montserrat', sans-serif !important; font-size: 15px !important; font-weight: 400 !important; }
 body.font-medium input, body.font-medium select, body.font-medium textarea { font-family: 'Montserrat', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; }
 body.font-large input, body.font-large select, body.font-large textarea { font-family: 'Montserrat', sans-serif !important; font-size: 19px !important; font-weight: 400 !important; }
+
+/* ============================================================
+   電腦版專屬字體排版設計 (Desktop Typography - min-width: 768px)
+   依照指示：
+   - 手機版完全不改動 (透過 @media 隔離)
+   - 電腦版不需要小中大選項，統一給予最佳閱讀體驗
+   - 內文：18px，行高 1.6~1.8 (設定為 1.7)
+   - 標題 (大標、次標)：行高 1.3~1.4 (設定為 1.35)
+   ============================================================ */
+@media (min-width: 768px) {
+    /* --- 1. 標準內文 (Body Text) --- */
+    body.font-small .app-body, body.font-medium .app-body, body.font-large .app-body,
+    body.font-small p, body.font-medium p, body.font-large p,
+    body.font-small a, body.font-medium a, body.font-large a,
+    body.font-small td, body.font-medium td, body.font-large td,
+    body.font-small input, body.font-medium input, body.font-large input,
+    body.font-small select, body.font-medium select, body.font-large select,
+    body.font-small textarea, body.font-medium textarea, body.font-large textarea,
+    body.font-small .text-\[16px\], body.font-medium .text-\[16px\], body.font-large .text-\[16px\],
+    body.font-small .text-\[17px\], body.font-medium .text-\[17px\], body.font-large .text-\[17px\],
+    body.font-small .text-\[18px\], body.font-medium .text-\[18px\], body.font-large .text-\[18px\],
+    body.font-small .text-base, body.font-medium .text-base, body.font-large .text-base {
+        font-size: 20px !important;
+        line-height: 1.7 !important;
+    }
+
+    /* --- 2. 小標題、表格標題、標籤 (Sub-titles, Labels) --- */
+    body.font-small .app-title, body.font-medium .app-title, body.font-large .app-title,
+    body.font-small label, body.font-medium label, body.font-large label,
+    body.font-small th, body.font-medium th, body.font-large th,
+    body.font-small .text-\[11px\], body.font-medium .text-\[11px\], body.font-large .text-\[11px\],
+    body.font-small .text-\[12px\], body.font-medium .text-\[12px\], body.font-large .text-\[12px\],
+    body.font-small .text-\[13px\], body.font-medium .text-\[13px\], body.font-large .text-\[13px\],
+    body.font-small .text-\[14px\], body.font-medium .text-\[14px\], body.font-large .text-\[14px\],
+    body.font-small .text-\[15px\], body.font-medium .text-\[15px\], body.font-large .text-\[15px\],
+    body.font-small .text-sm, body.font-medium .text-sm, body.font-large .text-sm,
+    body.font-small .text-xs, body.font-medium .text-xs, body.font-large .text-xs {
+        font-size: 18px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* --- 3. 中型標題、按鈕 (Medium Titles) --- */
+    body.font-small .text-\[19px\], body.font-medium .text-\[19px\], body.font-large .text-\[19px\],
+    body.font-small .text-\[20px\], body.font-medium .text-\[20px\], body.font-large .text-\[20px\],
+    body.font-small .text-\[21px\], body.font-medium .text-\[21px\], body.font-large .text-\[21px\],
+    body.font-small .text-\[22px\], body.font-medium .text-\[22px\], body.font-large .text-\[22px\],
+    body.font-small .text-\[23px\], body.font-medium .text-\[23px\], body.font-large .text-\[23px\],
+    body.font-small .text-\[24px\], body.font-medium .text-\[24px\], body.font-large .text-\[24px\],
+    body.font-small .text-lg, body.font-medium .text-lg, body.font-large .text-lg,
+    body.font-small .text-xl, body.font-medium .text-xl, body.font-large .text-xl,
+    body.font-small .text-2xl, body.font-medium .text-2xl, body.font-large .text-2xl {
+        font-size: 24px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* --- 4. 大型標題、頁面主標 (Large/Hero Titles) --- */
+    body.font-small h1, body.font-medium h1, body.font-large h1,
+    body.font-small h2, body.font-medium h2, body.font-large h2,
+    body.font-small h3, body.font-medium h3, body.font-large h3,
+    body.font-small .text-\[25px\], body.font-medium .text-\[25px\], body.font-large .text-\[25px\],
+    body.font-small .text-\[26px\], body.font-medium .text-\[26px\], body.font-large .text-\[26px\],
+    body.font-small .text-\[28px\], body.font-medium .text-\[28px\], body.font-large .text-\[28px\],
+    body.font-small .text-\[30px\], body.font-medium .text-\[30px\], body.font-large .text-\[30px\],
+    body.font-small .text-\[32px\], body.font-medium .text-\[32px\], body.font-large .text-\[32px\],
+    body.font-small .text-\[42px\], body.font-medium .text-\[42px\], body.font-large .text-\[42px\],
+    body.font-small .text-3xl, body.font-medium .text-3xl, body.font-large .text-3xl {
+        font-size: 34px !important;
+        line-height: 1.35 !important;
+    }
+}

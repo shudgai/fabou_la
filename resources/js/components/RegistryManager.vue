@@ -3,10 +3,7 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
-            <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                 <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
@@ -172,7 +169,7 @@
 
                             <div class="flex-1 min-w-0 pr-[10px]">
                             <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-4 right-4 z-30 translate-x-[15px]">
+                            <div class="absolute top-4 right-4 z-30 translate-x-0">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
                                         class="p-2 active:scale-90 transition-all rounded-full bg-slate-50/50"
                                         style="color: rgb(220, 20, 40) !important;">
@@ -211,7 +208,7 @@
                             <!-- Card Header (Toggle Expansion) -->
                             <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
                                 <div class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                    <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
@@ -232,17 +229,17 @@
                              
 
 
-                                    <div v-if="expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="mt-[10px] pt-[10px] border-t border-slate-50">
+                                    <div v-if="expandedIds.has(item.id)" @click.stop class="mt-[10px] pt-[10px] border-t border-slate-50">
                                         <!-- Detailed Record View -->
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
+                                                <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                             </div>
                                             <div class="space-y-1">
                                                 <div class="flex items-center justify-between">
                                                     <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
-                                                    <div class="relative translate-x-[15px]">
+                                                    <div class="relative translate-x-0">
                                                         <button @click.stop="openMenuId = (openMenuId === item.id ? null : item.id)" 
                                                                 class="p-1 active:scale-90 transition-transform"
                                                                 style="color: rgb(220, 20, 40) !important;">
@@ -295,10 +292,10 @@
                                             <div class="grid grid-cols-1 gap-4">
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">日期</label>
-                                                    <div @click="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
+                                                    <div @click.stop="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
                                                         class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] flex items-center justify-between cursor-pointer">
                                                         <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">
-                                                            {{ formatToROC(editMap[item.id].record_date) || '未設定' }}
+                                                            {{ formatDisplayDate(editMap[item.id].record_date) || '未設定' }}
                                                         </span>
                                                         <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </div>
@@ -338,14 +335,14 @@
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div class="flex items-center px-[2px] py-1 py-[5px] justify-center group/date-cell" 
                                                                         :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
-                                                                        @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
+                                                                        @click.stop="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
                                                                         <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
-                                                                            {{ editMap[item.id + '-' + dn.id].obtained_date || (editingIds.has(item.id) ? '----/--/--' : '-') }}
+                                                                            {{ formatDisplayDate(editMap[item.id + '-' + dn.id].obtained_date) || (editingIds.has(item.id) ? '----/--/--' : '-') }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div @click="triggerRemarksEdit(item, dn.id)" 
+                                                                    <div @click.stop="triggerRemarksEdit(item, dn.id)" 
                                                                         class="w-full py-[5px] px-3 flex items-center justify-center transition-colors">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
@@ -372,8 +369,8 @@
                                                             <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div class="flex items-center px-[2px] py-1 py-[5px] justify-center" 
-                                                                        @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
-                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date || formatToROC(dnr.obtained_date) || '-' }}</span>
+                                                                        @click.stop="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
+                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
@@ -389,7 +386,7 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div @click="triggerRemarksEdit(item, dnr)" 
+                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" 
                                                                         class="w-full py-[5px] px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
@@ -404,7 +401,7 @@
                                                             </tr>
                                                             <tr v-if="editingIds.has(item.id)" class="bg-indigo-50/20 border-t-2 border-indigo-100/50">
                                                                 <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
+                                                                    <div @click.stop="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
                                                                         <span class="text-[14px] font-black" style="color: #1e293b !important;">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
                                                                     </div>
                                                                 </td>
@@ -428,7 +425,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
                                         </div>
                                     </div>
 
@@ -612,13 +609,13 @@ const getEarliestDate = (item) => {
     return dates.length > 0 ? dates[0] : (item.record_date || '-');
 };
 
-const formatToROC = (dateStr) => {
+const formatDisplayDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr;
     const cleanDate = dateStr.replace(/\//g, '-');
     const parts = cleanDate.split('-');
     if (parts.length < 3) return dateStr;
     let y = parseInt(parts[0]);
-    if (y > 1911) y -= 1911;
+    // Returns Western Year (CE/AD) formatted as YYYY/MM/DD
     return `${y}/${parts[1].padStart(2,'0')}/${parts[2].padStart(2,'0')}`;
 };
 
@@ -642,9 +639,9 @@ const formatRegistryForFile = (item) => {
         return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
     });
 
-    let res = `法寶：${item.name}\n用意：${item.purpose || ''}\n日期：${formatToROC(getEarliestDate(item))}\n------------------\n`;
+    let res = `法寶：${item.name}\n用意：${item.purpose || ''}\n日期：${formatDisplayDate(getEarliestDate(item))}\n------------------\n`;
     registries.forEach(r => {
-        res += `${getDharmaNameText(r)} | ${formatToROC(r.obtained_date) || '-'} | ${r.remarks || ''}\n`;
+        res += `${getDharmaNameText(r)} | ${formatDisplayDate(r.obtained_date) || '-'} | ${r.remarks || ''}\n`;
     });
     return res;
 };

@@ -2,12 +2,7 @@
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-2 h-[60px]">
-            <div class="w-[60px] flex items-center shrink-0">
-                <button @click="$emit('goHome')" class="text-slate-400 p-3 active:scale-90 transition-transform">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-            </div>
-            <div class="flex-1 flex justify-center items-center min-w-0">
+            <div class="flex-1 flex justify-start items-center min-w-0 pl-2">
                 <h1 class="text-[25px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">

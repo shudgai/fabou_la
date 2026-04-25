@@ -2,10 +2,7 @@
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
-            <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                 <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                     重大皇恩專區
                 </div>

@@ -5,18 +5,14 @@
             <!-- Logo area -->
             <div class="p-4 md:p-6 border-b border-slate-50 flex items-center justify-between bg-white">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">System Controller</p>
+                    <h1 class="text-xl md:text-[28px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="/note" class="p-2 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                     
-                    <!-- Font Size Cycle Button (Desktop only, mobile has it in bottom nav) -->
-                    <button @click="cycleFontSize" class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-[13px] hover:bg-indigo-100 transition-colors active:scale-95" title="切換字體大小">
-                        字{{ fontSizeLabel }}
-                    </button>
+                    <!-- Font size button removed per user request -->
                 </div>
             </div>
 
@@ -24,7 +20,7 @@
             <div class="flex-1 flex md:flex-col items-center md:items-stretch overflow-x-auto md:overflow-y-auto no-scrollbar py-1 md:py-6 bg-white">
                 <!-- Notebook Section -->
                 <div v-if="notebookItems.length > 0" class="hidden md:block px-6 mb-2">
-                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">筆記系統</span>
+                    <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">筆記系統</span>
                 </div>
                 <button v-for="item in notebookItems" :key="item.id" 
                     @click="currentTab = item.id"
@@ -33,12 +29,12 @@
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
-                    <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
+                    <span class="text-[13px] md:text-[20px] font-bold">{{ item.label }}</span>
                 </button>
 
                 <!-- Admin Section -->
                 <div v-if="adminItems.length > 0" class="hidden md:block px-6 mt-6 mb-2">
-                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">系統管理</span>
+                    <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">系統管理</span>
                 </div>
                 <div v-if="notebookItems.length > 0 && adminItems.length > 0" class="md:h-px md:bg-slate-50 md:mx-4 md:my-2 md:hidden h-4 w-px bg-slate-200 mx-2"></div>
                 
@@ -49,7 +45,7 @@
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
-                    <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
+                    <span class="text-[13px] md:text-[20px] font-bold">{{ item.label }}</span>
                 </button>
             </div>
 
@@ -57,7 +53,7 @@
             <div class="hidden md:block p-6 border-t border-slate-50 mt-auto">
                 <div class="flex items-center space-x-3 text-slate-400">
                     <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                    <span class="text-xs font-bold tracking-tighter">系統運行穩定</span>
+                    <span class="text-xs md:text-sm font-bold tracking-tighter">系統運行穩定</span>
                 </div>
             </div>
         </div>
@@ -123,7 +119,7 @@ const props = defineProps({
 const currentTab = ref(props.initialTab);
 
 const dashboardTitle = computed(() => {
-    return isNotebookView.value ? '皇恩筆記' : '系統管理';
+    return isNotebookView.value ? '皇恩筆記簿' : '系統管理';
 });
 
 const user = ref(null);
