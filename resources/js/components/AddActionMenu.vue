@@ -4,7 +4,7 @@
         <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" @click="$emit('close')"></div>
         
         <!-- Menu -->
-        <div class="relative w-full max-w-[240px] bg-white rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-slate-100/50 overflow-hidden animate-menu-up p-1">
+        <div class="relative w-auto min-w-[200px] max-w-[260px] bg-white rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-slate-100/50 overflow-hidden animate-menu-up p-1">
             <div class="flex flex-col space-y-0">
                 <button v-for="action in actions" 
                     :key="action.label"

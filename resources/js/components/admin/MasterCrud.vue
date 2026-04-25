@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden pb-24 relative">
         <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">仙師主檔管理</h2>
@@ -58,12 +58,21 @@
                 </div>
             </div>
         </div>
+
+        <mobile-navbar 
+            :can-back="true"
+            :show-action="true"
+            @back="$emit('goHome')"
+            @home="$emit('goHome')"
+            @action="openCreate"
+        />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import MobileNavbar from '../MobileNavbar.vue';
 
 const items = ref([]);
 const loading = ref(false);

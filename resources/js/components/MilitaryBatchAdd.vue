@@ -62,6 +62,14 @@
         </div>
         <!-- MODALS -->
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
+
+        <!-- Global Mobile Navbar -->
+        <mobile-navbar 
+            @back="$emit('cancel', false)"
+            @home="$emit('cancel', false)"
+            :show-action="false"
+            :can-search="false"
+        />
     </div>
 </template>
 
@@ -69,6 +77,7 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean,

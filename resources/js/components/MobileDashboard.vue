@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
+    <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
         <div style="padding: 16px 20px 8px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[60px] shrink-0">
             <h1 style="font-size: 24px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
@@ -20,7 +20,7 @@
             <div class="flex flex-col space-y-2 pb-24">
                 <button v-for="item in filteredMenuItems" :key="item.id" 
                     @click="navigate(item.id)"
-                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[96px] shrink-0"
+                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[75px] shrink-0"
                     style="padding: 0 20px;">
                     <div class="flex items-center space-x-4">
                         <div class="flex flex-col items-start">

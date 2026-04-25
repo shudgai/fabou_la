@@ -35,7 +35,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="px-4 pb-[40px] bg-white border-t border-slate-100">
+            <div class="px-4 pb-24 bg-white border-t border-slate-100">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
@@ -46,6 +46,14 @@
                     <span class="text-[16px] tracking-widest">{{ loading ? '正在處理中...' : '確認批量載錄' }}</span>
                 </button>
             </div>
+
+            <!-- Global Mobile Navbar -->
+            <mobile-navbar 
+                @back="$emit('cancel')"
+                @home="$emit('cancel')"
+                :show-action="false"
+                :can-search="false"
+            />
         </div>
     </div>
 </template>
@@ -53,6 +61,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean

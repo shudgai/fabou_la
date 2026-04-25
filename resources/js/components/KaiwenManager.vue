@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-slate-50 h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Header (Shared) -->
         <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
@@ -383,44 +383,50 @@
         </div>
 
 
-        <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport, icons nudged down -->
-        <div v-if="!addMode" class="fixed bottom-0 inset-x-0 h-[7dvh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 pt-1.5 pb-0 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
-            <button @click="$emit('goHome')" class="flex flex-col items-center justify-center transition-all active:scale-90 text-slate-400">
-                <div class="p-2 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+        <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport -->
+        <div v-if="!addMode" class="fixed bottom-0 inset-x-0 h-[7vh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
+            <button @click="$emit('goHome')" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
-                <div :class="currentTab === 'weekly' ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <!-- Center Add Button (Reverted to 36px, optimized click) -->
+            <!-- Center Add Button -->
             <button @click.stop="openAddMode(currentTab)" 
-                class="relative z-[120] top-[-2px] w-[36px] h-[36px] bg-purple-600 text-white rounded-full shadow-2xl shadow-purple-200 flex items-center justify-center active:scale-95 transition-all border-2 border-slate-50 cursor-pointer">
+                class="w-9 h-9 bg-purple-600 text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
-                <div :class="currentTab === 'self' ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <!-- Search Button -->
-            <button @click="showSearch = !showSearch" :class="showSearch ? 'text-purple-600' : 'text-slate-400'" class="flex flex-col items-center justify-center transition-all active:scale-90">
-                <div :class="showSearch ? 'bg-purple-50 p-2 rounded-xl' : 'p-2 rounded-xl'">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <!-- Font Gear Menu -->
+            <div class="flex justify-center relative">
+                <button @click="showFontMenu = !showFontMenu" 
+                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all text-purple-600 bg-purple-50/50 active:scale-95">
+                    <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
+                    <div class="h-44 flex flex-col items-center justify-between py-2 relative">
+                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Large</span>
+                        <div class="relative w-1.5 h-32 bg-slate-100 rounded-full overflow-hidden">
+                            <input 
+                                type="range" 
+                                min="0" 
+                                max="2" 
+                                step="1" 
+                                :value="fontSizeValue"
+                                @input="handleFontSizeSlider"
+                                class="absolute w-32 h-1.5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-90 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600"
+                            >
+                        </div>
+                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Small</span>
+                    </div>
                 </div>
-            </button>
-
-            <button @click="cycleFontSize" class="flex flex-col items-center justify-center text-slate-400 active:scale-90 transition-all">
-                <div class="p-2 rounded-xl hover:bg-slate-50 flex items-center justify-center">
-                    <span class="text-[17px] font-black">{{ fontSizeLabel }}</span>
-                </div>
-            </button>
+            </div>
         </div>
 
         <!-- Image Zoom Overlay -->
@@ -478,17 +484,18 @@ const viewerImage = ref(null);
 const activeStatusDropdownId = ref(null);
 
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
-const fontSizeLabel = computed(() => {
-    if (currentFontSize.value === 'font-small') return '小';
-    if (currentFontSize.value === 'font-large') return '大';
-    return '中';
+const showFontMenu = ref(false);
+const fontSizeValue = computed(() => {
+    if (currentFontSize.value === 'font-small') return 0;
+    if (currentFontSize.value === 'font-large') return 2;
+    return 1;
 });
 
-const cycleFontSize = () => {
+const handleFontSizeSlider = (e) => {
+    const val = parseInt(e.target.value);
     const options = ['font-small', 'font-medium', 'font-large'];
-    let idx = options.indexOf(currentFontSize.value);
-    idx = (idx + 1) % options.length;
-    const next = options[idx];
+    const next = options[val];
+    
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(next);
     localStorage.setItem('fabou_font_size', next);

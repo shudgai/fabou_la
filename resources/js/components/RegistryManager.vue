@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
@@ -11,7 +11,7 @@
                     法寶登記專區
                 </div>
             </div>
-            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2">
+            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">
                 <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
@@ -19,36 +19,24 @@
         </div>
 
         <!-- Header 2: Folder/Action Level -->
-        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-2">
+        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-[5px]">
             <div class="flex items-center flex-1 min-w-0">
                 <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
+                    <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
                         {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
                     </span>
                 </div>
-            </div>
-            <div v-if="!addMode" class="ml-2 flex items-center">
-                <button @click="reorderMode = !reorderMode" 
-                        :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                        class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
-                </button>
             </div>
         </div>
 
         <!-- Main Scrollable Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
-            
-
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div class="w-full px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
-                    <button @click="$emit('goHome')" class="text-slate-400 p-4 active:scale-90 transition-transform z-10 shrink-0">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
+                <div class="w-full px-4 py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1">
                         <h1 class="text-[30px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
@@ -141,7 +129,7 @@
 
             <!-- Folder Contents -->
             <div v-else :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[60px] overflow-y-auto' : '']">
-                <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 0px 10px 10px 10px;'" class="mt-0">
+                <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
                         <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">載入中...</p>
@@ -184,9 +172,10 @@
 
                             <div class="flex-1 min-w-0 pr-[10px]">
                             <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-4 right-4 z-30">
+                            <div class="absolute top-4 right-4 z-30 translate-x-[15px]">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
-                                        class="p-2 text-slate-400 hover:text-indigo-600 active:scale-90 transition-all rounded-full bg-slate-50/50">
+                                        class="p-2 active:scale-90 transition-all rounded-full bg-slate-50/50"
+                                        style="color: rgb(220, 20, 40) !important;">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                         <circle cx="5" cy="12" r="2" />
                                         <circle cx="12" cy="12" r="2" />
@@ -195,7 +184,7 @@
                                 </button>
                                 
                                 <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-48 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-2 ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
+                                     class="absolute right-0 mt-2 w-48 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-[5px] ring-1 ring-black ring-opacity-5 animate-fade-in divide-y divide-slate-50 overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
                                             class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors">
                                         <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +248,48 @@
                                                 <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatToROC(getEarliestDate(item)) }}</div>
                                             </div>
                                             <div class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
+                                                <div class="flex items-center justify-between">
+                                                    <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
+                                                    <div class="relative translate-x-[15px]">
+                                                        <button @click.stop="openMenuId = (openMenuId === item.id ? null : item.id)" 
+                                                                class="p-1 active:scale-90 transition-transform"
+                                                                style="color: rgb(220, 20, 40) !important;">
+                                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                        </button>
+                                                        <!-- Expanded Item Menu -->
+                                                        <div v-if="openMenuId === item.id" @click.stop 
+                                                            class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[110] overflow-hidden animate-pop-in">
+                                                            <button @click.stop="toggleExpand(item.id); openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                                <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path v-if="expandedIds.has(item.id)" d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                                                    <path v-else d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                                                </svg>
+                                                                {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
+                                                            </button>
+                                                            <button @click.stop="openAndEdit(item.id); openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
+                                                                <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                修改資料
+                                                            </button>
+                                                            <button @click.stop="copyToLine(item); openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
+                                                                <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                貼 LINE
+                                                            </button>
+                                                            <button @click.stop="downloadItemData(item); openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-slate-700 hover:bg-slate-50 flex items-center transition-colors whitespace-nowrap">
+                                                                <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                下載資料
+                                                            </button>
+                                                            <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
+                                                                    class="w-full text-left px-4 py-3 text-[16px] font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
+                                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                                刪除資料
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
                                             </div>
                                             <div v-if="item.purpose" class="space-y-1">
@@ -282,7 +312,7 @@
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">日期</label>
                                                     <div @click="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
-                                                        class="w-full bg-white border border-slate-400 rounded-xl px-3 h-[42px] flex items-center justify-between cursor-pointer">
+                                                        class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] flex items-center justify-between cursor-pointer">
                                                         <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">
                                                             {{ formatToROC(editMap[item.id].record_date) || '未設定' }}
                                                         </span>
@@ -291,19 +321,19 @@
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶名稱</label>
-                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-2 text-[17px] font-black outline-none font-outfit">
+                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
                                                 </div>
                                             </div>
                                         </div>
@@ -313,16 +343,16 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
-                                                                <th class="border-b border-slate-100 px-3 py-2.5 text-left font-black w-[60px] whitespace-nowrap">法號</th>
-                                                                <th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[130px] whitespace-nowrap">日期</th>
-                                                                <th class="border-b border-slate-100 px-3 py-2.5 text-center font-black">備註</th>
+                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-left font-black w-[60px] whitespace-nowrap">法號</th>
+                                                                <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[130px] whitespace-nowrap">日期</th>
+                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-center font-black">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="dn in dharmaNames" :key="dn.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
+                                                                <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 h-[42px] justify-center group/date-cell" 
+                                                                    <div class="flex items-center px-[2px] py-1 py-[5px] justify-center group/date-cell" 
                                                                         :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
                                                                         @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
                                                                         <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
@@ -332,7 +362,7 @@
                                                                 </td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div @click="triggerRemarksEdit(item, dn.id)" 
-                                                                        class="w-full h-[42px] px-3 flex items-center justify-center transition-colors">
+                                                                        class="w-full py-[5px] px-3 flex items-center justify-center transition-colors">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
                                                                         <span v-else class="text-[15px] text-slate-200">-</span>
@@ -348,23 +378,23 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-amber-50/50 text-slate-900 font-outfit">
-                                                                 <th class="border-b border-slate-100 px-[2px] py-2.5 text-center font-black w-[110px] whitespace-nowrap">日期</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[80px] whitespace-nowrap">法號</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-left font-black w-[90px] whitespace-nowrap">親友</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-2.5 text-center font-black">備註</th>
+                                                                 <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[110px] whitespace-nowrap">日期</th>
+                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[80px] whitespace-nowrap">法號</th>
+                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[90px] whitespace-nowrap">親友</th>
+                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-center font-black">備註</th>
                                                              </tr>
                                                          </thead>
                                                         <tbody>
                                                             <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 h-[42px] justify-center" 
+                                                                    <div class="flex items-center px-[2px] py-1 py-[5px] justify-center" 
                                                                         @click="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
                                                                         <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date || formatToROC(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
-                                                                <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-2 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
+                                                                <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="w-full h-[42px] px-2 flex items-center">
+                                                                    <div class="w-full py-[5px] px-2 flex items-center">
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + (dnr.dharma_name_id || dnr.custom_name)].relationship"
                                                                             class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
@@ -376,7 +406,7 @@
                                                                 </td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div @click="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full h-[42px] px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                                                                        class="w-full py-[5px] px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
                                                                              :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black' : 'text-[18px] text-amber-500 animate-pulse'">
@@ -414,7 +444,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click="saveItemInPlace(item)" class="w-full max-w-md py-2.5 bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
+                                            <button @click="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
                                         </div>
                                     </div>
 
@@ -437,7 +467,7 @@
 
         <!-- Add Action Menu Overlay -->
         <div v-if="showAddMenu" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-fade-in" @click="showAddMenu = false">
-            <div class="bg-white w-full max-w-[320px] rounded-[24px] overflow-hidden shadow-2xl animate-pop-in" @click.stop>
+            <div class="bg-white w-auto min-w-[220px] max-w-[300px] rounded-[24px] overflow-hidden shadow-2xl animate-pop-in" @click.stop>
                 <div class="p-1 space-y-0.5">
                     <button @click="openAdd('single'); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group">
                         <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
@@ -480,7 +510,7 @@
                     </button>
                     
                     <div class="p-2 border-t border-slate-50">
-                        <button @click="showAddMenu = false" class="w-full py-2 text-slate-400 font-black text-[17px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
+                        <button @click="showAddMenu = false" class="w-full py-[5px] text-slate-400 font-black text-[17px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
                     </div>
                 </div>
             </div>

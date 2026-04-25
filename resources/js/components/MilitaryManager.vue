@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
@@ -247,7 +247,7 @@
 
         <!-- Total Overlay (Enhanced with Breakdown & Close Button) -->
         <div v-if="showFullTotal" class="fixed inset-0 z-[200] flex items-center justify-center px-6 animate-fade-in pointer-events-none">
-            <div class="bg-white text-slate-900 px-8 py-6 rounded-[24px] shadow-2xl flex flex-col pointer-events-auto border border-slate-100 space-y-4 relative w-full max-w-sm">
+            <div class="bg-white text-slate-900 px-8 py-6 rounded-[24px] shadow-2xl flex flex-col pointer-events-auto border border-slate-100 space-y-4 relative w-auto min-w-[240px] max-w-[300px]">
                 <!-- Close Button -->
                 <button @click="showFullTotal = false" class="absolute right-6 top-6 text-slate-300 hover:text-slate-600 active:scale-95 transition-all p-1">
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

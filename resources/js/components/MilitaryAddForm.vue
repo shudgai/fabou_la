@@ -6,7 +6,7 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="px-[10px] py-2 flex items-center bg-white border-b border-slate-50 relative">
+            <div class="px-[10px] py-[5px] flex items-center bg-white border-b border-slate-50 relative">
                 <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
@@ -28,7 +28,7 @@
                     <div class="space-y-1">
                         <label class="app-title ml-1">日期</label>
                         <div @click="activeDate = 'know_date'" 
-                            class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 flex items-center justify-between cursor-pointer shadow-sm overflow-hidden">
+                            class="w-full py-[5px] rounded-lg bg-white border border-slate-400 px-2 flex items-center justify-between cursor-pointer shadow-sm overflow-hidden">
                             <span :class="form.know_date ? 'text-slate-900 font-bold' : 'text-slate-400'" class="app-title leading-tight">
                                 {{ form.know_date ? (new Date(form.know_date).getFullYear() + '/' + (new Date(form.know_date).getMonth() + 1) + '/' + new Date(form.know_date).getDate()) : '點選日期' }}
                             </span>
@@ -40,14 +40,14 @@
                     <div class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
-                            <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                            <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             <datalist id="user-list-mil">
                                 <option v-for="u in users" :key="u.id" :value="u.name"></option>
                             </datalist>
                         </div>
                         <div class="space-y-1">
                             <label class="app-title ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
                             <label class="app-title">數量</label>
                             <span v-if="form.quantity >= 1000000" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-lg">{{ formatArmyTotal(form.quantity) }}</span>
                         </div>
-                        <input v-model="form.quantity" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                        <input v-model="form.quantity" type="number" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
@@ -66,14 +66,14 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_zun" type="number" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_an" type="number" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                         </div>
-                        <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
+                        <div class="w-full px-4 flex items-center justify-end py-[5px] border-t border-slate-50 mt-1 space-x-2">
                             <span class="app-title">小計</span>
                             <span class="app-title text-indigo-600 mr-2" v-if="(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) >= 1000000">({{ formatArmyTotal(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }})</span>
                             <span class="app-body text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)).toLocaleString() }}</span>
@@ -87,14 +87,14 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.long_sheng" type="number" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="number" class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.long_zhan" type="number" class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                         </div>
-                        <div class="w-full px-4 flex items-center justify-end py-2 border-t border-slate-50 mt-1 space-x-2">
+                        <div class="w-full px-4 flex items-center justify-end py-[5px] border-t border-slate-50 mt-1 space-x-2">
                             <span class="app-title">小計</span>
                             <span class="app-title text-indigo-600 mr-2" v-if="(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) >= 1000000">({{ formatArmyTotal(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }})</span>
                             <span class="app-body text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)).toLocaleString() }}</span>
@@ -104,21 +104,29 @@
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full h-[36px] rounded-lg border border-slate-100 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body text-slate-900">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full py-[5px] rounded-lg border border-slate-400 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body text-slate-900">
                     </div>
                 </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="p-3 pb-10 border-t border-slate-100 bg-white">
+            <div class="p-3 pb-24 border-t border-slate-100 bg-white">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 font-black py-[10px] px-4 text-[18px] rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all"
+                    class="w-full bg-indigo-600 font-black py-[5px] px-4 text-[18px] rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all"
                     style="color: white !important;"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
             </div>
+
+            <!-- Global Mobile Navbar -->
+            <mobile-navbar 
+                @back="$emit('cancel')"
+                @home="$emit('cancel')"
+                :show-action="false"
+                :can-search="false"
+            />
 
             <!-- Custom Full-Screen Overlay Picker (Kept for component structure but logically unused now) -->
             <div v-if="false" class="absolute inset-0 bg-white z-[100] p-8 flex flex-col animate-fade-in md:rounded-[32px]">
@@ -130,7 +138,7 @@
                     <div class="space-y-12">
                         <div v-for="opt in ['未處理', '暫驅離開', '殲滅']" :key="opt"
                             @click="form.destination = opt; showResultPicker = false"
-                            class="cursor-pointer font-bold text-[20px] transition-all active:scale-95 py-2"
+                            class="cursor-pointer font-bold text-[20px] transition-all active:scale-95 py-[5px]"
                             :class="[
                                 form.destination === opt ? 'text-indigo-600 underline underline-offset-4' : 'text-slate-900 opacity-60'
                             ]"
@@ -155,6 +163,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean,

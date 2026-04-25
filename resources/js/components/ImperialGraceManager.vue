@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
+    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
         <!-- Header (Only show in Folder-view or Item-view) -->
         <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
             <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
@@ -49,18 +49,17 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
-            <div class="px-4 py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
-            <div class="flex-1 pr-12">
+            <div class="px-2 py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
+                <div class="flex-1 pr-12">
                     <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
                 </div>
             </div>
             
-            <div class="px-6 pb-24 flex flex-col items-center space-y-3">
-                <!-- Category 1: Masters (Large Folder Style) -->
+            <div class="px-6 pb-24 flex flex-col items-center space-y-16">
                 <button 
                     @click="currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
-                    <div class="relative w-[220px] h-[220px]">
+                    class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
+                    <div class="relative w-[260px] h-[260px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
                             <defs>
                                 <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -74,18 +73,17 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                            <span class="text-[28px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 重大皇恩<br>專區
                             </span>
                         </div>
                     </div>
                 </button>
 
-                <!-- Category 2: Unobtained (Large Folder Style) -->
                 <button 
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'unobtained'"
-                    class="flex flex-col items-center justify-center p-4 active:scale-95 transition-all group relative">
-                    <div class="relative w-[220px] h-[220px]">
+                    class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
+                    <div class="relative w-[260px] h-[260px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
                             <defs>
                                 <linearGradient id="unobtainedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -99,7 +97,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                            <span class="text-[28px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <span class="text-[32px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 未求得<br>重大皇恩
                             </span>
                         </div>
@@ -245,11 +243,11 @@
                                     <svg class="h-5 v-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-32 bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50">
+                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" style="color: #4f46e5 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
+                                    <button @click.stop="editItem(reg); openMenuId = null" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
                                     <button @click.stop="copyOnly(reg)" style="color: #16a34a !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" style="color: #3b82f6 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">單筆檔案下載</button>
                                     <button @click.stop="confirmDelete(reg.id)" style="color: #dc2626 !important;" class="w-full p-2.5 text-left app-body font-bold hover:bg-red-50">刪除</button>

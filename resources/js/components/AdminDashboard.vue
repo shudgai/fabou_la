@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row h-[100dvh] bg-slate-50 font-sans overflow-hidden">
+    <div class="flex flex-col md:flex-row h-[100vh] bg-slate-50 font-sans overflow-hidden">
         <!-- Sidebar / Top Nav Container -->
         <div class="w-full md:w-72 bg-white border-r border-slate-100 flex-shrink-0 flex flex-col shadow-sm z-[50] h-auto md:h-full">
             <!-- Logo area -->

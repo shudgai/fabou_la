@@ -6,7 +6,7 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="px-[10px] py-2 flex items-center bg-white border-b border-slate-50 relative">
+            <div class="px-[10px] py-[5px] flex items-center bg-white border-b border-slate-50 relative">
                 <button @click="$emit('cancel')" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
@@ -29,7 +29,7 @@
                     <div class="space-y-0.5 mt-[-5px]">
                         <label class="app-title ml-1">得知日期</label>
                         <div @click.stop="activeDate = 'know_date'" 
-                            class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
+                            class="w-full py-[5px] rounded-lg bg-white border border-slate-400 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
                             <span :class="form.know_date ? 'text-slate-900' : 'text-slate-400'" class="app-body">
                                 {{ (form.know_date ? (form.know_date.split('T')[0]) : '選擇日期').replace(/-/g, '/') }}
                             </span>
@@ -41,21 +41,21 @@
                     <div class="grid grid-cols-2 gap-[15px]">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">法號</label>
-                            <input v-model="form.user_name" type="text" list="user-list" placeholder="輸入法號" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
+                            <input v-model="form.user_name" type="text" list="user-list" placeholder="輸入法號" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
                             <datalist id="user-list">
                                 <option v-for="u in users" :key="u.id" :value="u.name"></option>
                             </datalist>
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
                     <!-- Row 3: 數量 -->
                     <div class="space-y-0.5">
                         <label class="app-title ml-1">數量</label>
-                        <input v-model="form.quantity" type="number" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                        <input v-model="form.quantity" type="number" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                     </div>
 
                     <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
@@ -63,7 +63,7 @@
                         <div v-if="form.destination !== '未處理'" class="space-y-0.5">
                             <label class="app-title ml-1">處理日期</label>
                             <div @click.stop="activeDate = 'process_date'" 
-                                class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
+                                class="w-full py-[5px] rounded-lg bg-white border border-slate-400 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
                                 <span :class="form.process_date ? 'text-slate-900' : 'text-slate-400'" class="app-body">
                                     {{ (form.process_date ? (form.process_date.split('T')[0]) : '選擇日期').replace(/-/g, '/') }}
                                 </span>
@@ -75,7 +75,7 @@
                             
                             <!-- Trigger Button -->
                             <div @click.stop="showResultPicker = !showResultPicker" 
-                                class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 flex items-center justify-between cursor-pointer shadow-sm active:bg-slate-50 transition-all overflow-hidden">
+                                class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 flex items-center justify-between cursor-pointer shadow-sm active:bg-slate-50 transition-all overflow-hidden">
                                 <span class="app-body" :class="[
                                     form.destination === '未處理' ? 'text-slate-400' : 
                                     form.destination === '九天' ? 'text-red-600' : 
@@ -92,11 +92,11 @@
                     <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻尊</label>
-                            <input v-model.number="form.remarks.yan_zun" type="number" placeholder="0" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.yan_zun" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻闇</label>
-                            <input v-model.number="form.remarks.yan_an" type="number" placeholder="0" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.yan_an" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
@@ -104,33 +104,41 @@
                     <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍勝</label>
-                            <input v-model.number="form.remarks.long_sheng" type="number" placeholder="0" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.long_sheng" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍戰</label>
-                            <input v-model.number="form.remarks.long_zhan" type="number" placeholder="0" @click.stop class="w-full h-[36px] rounded-lg border border-slate-200 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.long_zhan" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
                     <!-- Row 5: 備註文字 -->
                     <div class="space-y-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full h-[36px] rounded-lg border border-slate-100 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body">
                     </div>
 
                 </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="px-4 pb-[40px] bg-white">
+            <div class="px-4 pb-24 bg-white">
                 <button 
                     @click="handleSave" 
                     style="color: white !important"
-                    class="w-full bg-indigo-600 font-black py-[10px] text-[16px] rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
+                    class="w-full bg-indigo-600 font-black py-[5px] text-[16px] rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
             </div>
+
+            <!-- Global Mobile Navbar -->
+            <mobile-navbar 
+                @back="$emit('cancel')"
+                @home="$emit('cancel')"
+                :show-action="false"
+                :can-search="false"
+            />
 
             <!-- Custom Modal Picker -->
             <div v-if="showResultPicker" class="fixed inset-0 z-[110] flex items-center justify-center px-4">
@@ -187,6 +195,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean,

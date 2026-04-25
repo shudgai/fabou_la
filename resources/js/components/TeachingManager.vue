@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex justify-center text-slate-900 overflow-hidden">
+    <div class="bg-white h-[100vh] flex justify-center text-slate-900 overflow-hidden">
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
@@ -86,16 +86,13 @@
 
             <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
             <div v-if="currentCategory === null && currentFolder === null" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-[10px] py-8 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
-                    <button @click="$emit('goHome')" class="text-slate-400 p-4 active:scale-90 transition-transform z-10 shrink-0">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
+                <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1">
                         <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
                     </div>
                 </div>
                 
-                <div class="px-6 pb-24 flex flex-col items-center space-y-4 mt-[-30px]">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-16 mt-[-30px]">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
@@ -211,13 +208,14 @@
                         <div class="space-y-4 pb-32 flex-1 p-4">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
-                                        <div @click="form.date = form.date" class="border border-slate-100 rounded-xl bg-slate-50/50 overflow-hidden px-3 flex items-center h-[36px] shadow-sm mt-4">
+                                        <label class="app-title ml-1">日期</label>
+                                        <div @click="form.date = form.date" class="border border-slate-400 rounded-xl bg-slate-50/50 overflow-hidden pl-[10px] pr-[2px] py-[2px] flex items-center h-[39.33px] shadow-sm">
                                             <input v-model="form.date" type="date" class="w-full bg-transparent border-none app-title text-slate-900 focus:ring-0 outline-none font-black custom-date-input">
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">
                                         <label class="app-title ml-1">仙師</label>
-                                        <div class="border border-slate-100 rounded-xl bg-slate-50/50 px-3 flex items-center h-[36px] shadow-sm relative">
+                                        <div class="border border-slate-400 rounded-xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[39.33px] shadow-sm relative">
                                             <input v-model="masterNameInput" @change="resolveMasterId" @focus="activeMasterDropdownId = 'mainMaster'" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                             <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
                                                 <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -243,7 +241,7 @@
                                             <label class="text-[13px] text-slate-400 font-bold px-1">對象 / 群組</label>
                                             <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 px-4 flex items-center h-[56px] relative">
+                                        <div class="border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[39.33px] relative">
                                             <input type="text" 
                                                    @input="e => { activePractitionerDropdownId = 'mainPract'; handleDharmaSearchInput(e) }" 
                                                    @focus="activePractitionerDropdownId = 'mainPract'"
@@ -268,9 +266,9 @@
                                         </div>
                                     </div>
                                     <div class="col-span-4 space-y-0.5">
-                                        <label class="text-[13px] text-slate-400 font-bold px-1">親友 / 信眾</label>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/50 overflow-hidden h-[56px]">
-                                            <input v-model="form.target_remarks" placeholder="備註對象..." class="w-full h-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none px-4 font-black placeholder-blue-300 placeholder:text-[17px]">
+                                        <label class="text-[13px] text-slate-400 font-bold px-1">備註對象</label>
+                                        <div class="border border-slate-400 rounded-2xl bg-slate-50/50 overflow-hidden h-[39.33px]">
+                                            <input v-model="form.target_remarks" placeholder="備註對象..." class="w-full h-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[2px] font-black placeholder-blue-300 placeholder:text-[17px]">
                                         </div>
                                     </div>
 
@@ -289,10 +287,10 @@
                                     </div>
                                 </div>
                                 
-                                <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 px-4 flex items-start">
-                                    <label class="app-title w-10 text-left shrink-0 mt-2 uppercase tracking-wider">開示</label>
-                                    <div class="flex-1 ml-1 border border-slate-100 rounded-2xl bg-white overflow-hidden shadow-inner">
-                                        <textarea v-model="form.content" @paste="e => handleSmartPaste(e, form, null)" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入具體內容 (支援格式貼入自動解析)..." class="w-full bg-transparent border-none app-body text-slate-900 focus:ring-0 outline-none p-4 resize-none overflow-hidden min-h-[46px] leading-relaxed placeholder-sky-400"></textarea>
+                                <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 pl-[10px] pr-4 flex flex-col space-y-1.5">
+                                    <label class="text-[13px] text-slate-400 font-bold px-1 uppercase tracking-wider">輸入開示內容</label>
+                                    <div class="flex-1 border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-inner">
+                                        <textarea v-model="form.content" @paste="e => handleSmartPaste(e, form, null)" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入開示內容" class="w-full bg-transparent border-none app-body text-[17px] font-black text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[2px] resize-none overflow-hidden min-h-[39.33px] h-[39.33px] leading-relaxed placeholder-sky-400"></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -300,11 +298,11 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
                                     <div class="flex space-x-2">
-                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[5px] rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
                                             匯入檔案
                                             <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
                                         </label>
-                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-1.5 rounded-xl text-[12px] font-black active:scale-95 transition-all">
+                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[5px] rounded-xl text-[12px] font-black active:scale-95 transition-all">
                                             智慧解析
                                         </button>
                                     </div>
@@ -440,14 +438,14 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[8.5vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
-                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-3.5 shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
+                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[5px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
                                     <span>降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[5px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -489,7 +487,7 @@
                                     <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('師兄姐') || newItemName.includes('師兄姊')) ? 'col-span-10' : 'col-span-9'" class="space-y-1 relative">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
-                                            <div class="flex-1 border border-blue-100/50 rounded-xl bg-blue-50/40 flex items-center transition-all h-[56px] relative">
+                                            <div class="flex-1 border border-slate-400 rounded-xl bg-blue-50/40 flex items-center transition-all py-[5px] relative">
                                                 <input v-model="newItemName" ref="treasureInput" @input="activeTreasureDropdownId = 'main'"
                                                        class="treasure-name-input w-full bg-transparent border-none px-4 text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black">
                                                 <div class="flex items-center space-x-1 pr-1">
@@ -521,7 +519,7 @@
                                     </div>
                                     <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('師兄姐') && !newItemName.includes('師兄姊') && !showAddDetails && !newItemMainRemarks.trim()" class="col-span-3 space-y-1">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-center">天份</div>
-                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-2 transition-all h-[46px]">
+                                        <div class="border border-slate-400 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-2 transition-all py-[5px]">
                                             <input v-model="newItemDays" list="num-list"
                                                    class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px] placeholder:font-black" 
                                                    placeholder="0">
@@ -535,7 +533,7 @@
                                     <button @click="showMainRemarks = !showMainRemarks" class="text-[12px] font-bold text-slate-400 flex items-center px-1">
                                         {{ showMainRemarks ? '隱藏主備註' : '+ 加入主備註' }}
                                     </button>
-                                    <div v-if="showMainRemarks" class="mt-2 border border-blue-100/50 rounded-2xl bg-blue-50/30 px-3 h-[72px] flex items-center animate-fade-in overflow-hidden">
+                                    <div v-if="showMainRemarks" class="mt-2 border border-slate-400 rounded-2xl bg-blue-50/30 px-3 py-[5px] flex items-center animate-fade-in overflow-hidden">
                                         <input v-model="newItemMainRemarks" list="remark-list"
                                                class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-3 placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
                                                placeholder="加入備註...">
@@ -547,28 +545,28 @@
                                     <div v-if="magicItemCategory === '三光金丹'" class="grid grid-cols-4 gap-2">
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
                                         <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-2 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-2 py-[5px]">
                                                 <input v-model="newItemMainDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
                                             </div>
@@ -578,21 +576,21 @@
                                     <div v-else-if="magicItemCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemMainTimes" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
                                             </div>
                                         </div>
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemMainHours" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
                                             </div>
                                         </div>
                                         <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                 <input v-model="newItemMainDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天</span>
                                             </div>
@@ -604,19 +602,19 @@
                                         <div class="grid grid-cols-2 gap-2">
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                     <input v-model="newItemSubSize" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="尺寸">
                                                 </div>
                                             </div>
                                             <div v-if="!newItemMainRemarks.trim()" class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">天數</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                     <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 py-[5px] flex items-center relative">
                                             <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'mainFulingPract'" @focus="activePractitionerDropdownId = 'mainFulingPract'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
                                             <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainFulingPract' ? null : 'mainFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -633,11 +631,11 @@
 
                                     <!-- INCENSE COIL (Strict search) -->
                                     <div v-else-if="magicItemCategory === '香環'" class="grid grid-cols-2 gap-2">
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                             <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                             <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="盒數">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">盒</span>
                                         </div>
@@ -645,11 +643,11 @@
 
                                     <!-- FU-LU INCENSE -->
                                     <div v-else-if="magicItemCategory === '福祿香'" class="grid grid-cols-2 gap-2">
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                             <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
                                         </div>
-                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                             <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">包</span>
                                         </div>
@@ -662,7 +660,7 @@
                                     <div class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
                                         <div class="relative group">
-                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[5px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                 <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'pract2'" @focus="activePractitionerDropdownId = 'pract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
                                                 <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'pract2' ? null : 'pract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                     <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -680,14 +678,14 @@
                                     <!-- 2. Instrument Name - Only show if the name is generic -->
                                     <div v-if="(newItemName === '令牌' || newItemName === '法器' || newItemName === '清煞' || newItemName?.includes('師兄姐') || newItemName?.includes('師兄姊')) && newItemName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemName === k)" class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
-                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[5px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="使用的法器...">
                                         </div>
                                     </div>
                                     <!-- 3. Body Part -->
                                     <div class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
-                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[5px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入部位...">
                                         </div>
                                     </div>
@@ -716,7 +714,7 @@
                                         <div class="grid grid-cols-12 gap-2.5 items-end">
                                             <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')) ? 'col-span-12' : 'col-span-9'" class="space-y-1 relative">
                                                 <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">內容物名稱</div>
-                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[5px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                     <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'"
                                                            class="w-full bg-transparent border-none outline-none shadow-none text-[17px] font-black text-slate-900 focus:ring-0 text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
                                                            placeholder="輸入法寶名稱">
@@ -750,7 +748,7 @@
 
                                             <div v-if="magicItemSubCategory === 'default' && !(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊'))" class="col-span-3 space-y-1.5">
                                                 <div class="text-[13px] text-slate-400 font-bold px-1 text-center select-none">天份</div>
-                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-1 transition-all h-[52px]">
+                                                <div class="border border-slate-400 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-1 transition-all py-[5px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list"
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" 
                                                            placeholder="0">
@@ -764,28 +762,28 @@
                                             <div v-if="magicItemSubCategory === '三光金丹'" class="grid grid-cols-4 gap-2">
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                     <input v-model="newItemSubSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                     <input v-model="newItemSubMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                     <input v-model="newItemSubLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
                                                 </div>
@@ -795,21 +793,21 @@
                                         <div v-else-if="magicItemSubCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                         <input v-model="newItemSubTimes" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
                                                     </div>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                         <input v-model="newItemSubHours" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
                                                     </div>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                         <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
                                                     </div>
@@ -819,19 +817,19 @@
                                                 <div class="grid grid-cols-2 gap-2">
                                                     <div class="space-y-1">
                                                         <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
-                                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                             <input v-model="newItemSubSize" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="尺寸">
                                                         </div>
                                                     </div>
                                                     <div class="space-y-1">
                                                         <div class="text-[11px] text-slate-400 font-bold px-2">天數</div>
-                                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 h-[46px]">
+                                                        <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[5px]">
                                                             <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 h-[46px] flex items-center relative">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 px-3 py-[5px] flex items-center relative">
                                                         <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subFulingPract'" @focus="activeSubPractitionerDropdownId = 'subFulingPract'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
                                                         <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subFulingPract' ? null : 'subFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                             <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -846,21 +844,21 @@
                                                     </div>
                                             </div>
                                             <div v-else-if="magicItemSubCategory === '香環'" class="grid grid-cols-2 gap-2">
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
                                                 </div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                     <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="盒數">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">盒</span>
                                                 </div>
                                             </div>
                                             <div v-else-if="magicItemSubCategory === '福祿香'" class="grid grid-cols-2 gap-2">
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
                                                 </div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 h-[46px]">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[5px]">
                                                     <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">包</span>
                                                 </div>
@@ -1081,7 +1079,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[8.5vh] left-0 right-0 px-6 py-5 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-5 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <div class="grid grid-cols-2 gap-3">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-4 active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
                                         <span>完成並新增</span>
@@ -1580,7 +1578,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[8.5vh] left-0 right-0 px-6 py-5 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
+                    <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-5 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
                         <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
                             {{ saving ? '錄入中...' : '確認存檔' }}
                         </button>
@@ -1590,23 +1588,23 @@
                     </div>
                 </div>
 
-                <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
-
-                <mobile-navbar 
-                    :can-back="currentFolder !== null || currentCategory !== null || addMode"
-                    :show-action="currentFolder !== null && !addMode"
-                    :action-active="showAddMenu"
-                    :search-active="showSearch"
-                    :can-more="!!currentFolder && !addMode"
-                    @back="handleBack"
-                    @home="$emit('goHome')"
-                    @action="showAddMenu = !showAddMenu"
-                    @search="showSearch = !showSearch"
-                    @more="itemPagination.last_page > 0 ? exportListExcel() : null"
-                />
-
-                <!-- Floating Login Info Removed per user request -->
             </template>
+            
+            <!-- Global Components (Visible on all levels) -->
+            <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+            <mobile-navbar 
+                :can-back="currentFolder !== null || currentCategory !== null || addMode"
+                :show-action="currentFolder !== null && !addMode"
+                :action-active="showAddMenu"
+                :search-active="showSearch"
+                :can-more="!!currentFolder && !addMode"
+                @back="handleBack"
+                @home="$emit('goHome')"
+                @action="showAddMenu = !showAddMenu"
+                @search="showSearch = !showSearch"
+                @more="itemPagination.last_page > 0 ? exportListExcel() : null"
+            />
+            <!-- Floating Login Info Removed per user request -->
         </div>
     </div>
 </template>
@@ -3833,4 +3831,4 @@ onMounted(syncRecords);
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
 </style>
- 
+ 

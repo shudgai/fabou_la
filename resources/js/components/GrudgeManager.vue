@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-2 h-[60px]">
             <div class="w-[60px] flex items-center shrink-0">
@@ -41,7 +41,7 @@
 
         <!-- Total Simple Overlay -->
         <div v-if="showTotal" class="fixed inset-x-0 top-[60px] z-[60] px-4 animate-fade-in pointer-events-none">
-        <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100 relative">
+        <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex items-center justify-between pointer-events-auto border border-slate-100 relative w-auto min-w-[200px] max-w-[280px]">
             <div class="flex flex-col items-center flex-1">
                 <span class="app-body text-slate-400" style="font-weight: 400 !important;">怨靈紀錄總數</span>
                 <span class="app-body text-slate-900 mt-1" style="font-weight: 400 !important; font-family: 'Montserrat', sans-serif !important;">{{ totalGrudgeQuantity }}</span>
@@ -100,11 +100,11 @@
                         <!-- Menu Button Layer -->
                         <div v-if="focusedId !== item.id" class="absolute right-0 top-0.5 z-20">
                             <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
-                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">展開詳情</button>
-                                <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                <button @click.stop="copyItem(item)" class="w-full p-3 text-left app-body font-bold text-green-600 hover:bg-green-50 border-b border-slate-50">複製貼 LINE</button>
-                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
+                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[130px] bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
+                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">展開詳情</button>
+                                <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                <button @click.stop="copyItem(item)" class="w-full p-3 text-left app-body font-bold text-green-600 hover:bg-green-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                             </div>
                         </div>
 
@@ -112,11 +112,11 @@
                         <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative">
                             <div class="absolute right-0 top-0 z-[101]">
                                 <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-36 bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50">收合詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50">修改內容</button>
-                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-3 text-left app-body font-bold text-blue-600 hover:bg-blue-50 border-b border-slate-50">下載檔案</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50">刪除</button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[130px] bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up">
+                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left app-body font-bold text-indigo-600 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收合詳情</button>
+                                    <button @click.stop="editItem(item)" class="w-full p-3 text-left app-body font-bold hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full p-3 text-left app-body font-bold text-blue-600 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left app-body font-bold text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                 </div>
                             </div>
 
