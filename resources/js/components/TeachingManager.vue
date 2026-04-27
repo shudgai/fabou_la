@@ -480,7 +480,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[10px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
@@ -1123,7 +1123,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-5 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-2 pb-1 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <div class="grid grid-cols-2 gap-3">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-[10px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
                                         <span>完成並新增</span>
@@ -1698,7 +1698,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-5 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
+                    <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
                         <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
                             {{ saving ? '錄入中...' : '確認存檔' }}
                         </button>
