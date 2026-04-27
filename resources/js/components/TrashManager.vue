@@ -135,11 +135,17 @@ const getContent = (item) => {
 
 const formatDate = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleString('zh-TW', { 
-        month: '2-digit', day: '2-digit', 
-        hour: '2-digit', minute: '2-digit' 
-    }).replace(/\//g, '.');
+    const s = String(dateString).split('T')[0].trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
+            return `${y}/${m}/${d}`;
+        }
+    }
+    return s.replace(/-/g, '/');
 };
 
 onMounted(loadItems);

@@ -11,18 +11,29 @@ class OtherFolderController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
             return response()->json([]);
         }
 
-        return OtherFolder::with(['otherRecords' => function($query) {
-            $query->orderBy('record_date', 'desc')->orderBy('created_at', 'desc');
-        }])->get();
+        $query = OtherFolder::with(['otherRecords' => function($sq) use ($user) {
+            $sq->orderBy('record_date', 'desc')->orderBy('created_at', 'desc');
+            if (!$user->isAdmin()) {
+                $sq->where('user_id', $user->id);
+            }
+        }]);
+
+        if (!$user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->get();
     }
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -31,12 +42,19 @@ class OtherFolderController extends Controller
             'color' => 'nullable|string',
         ]);
 
+        $validated['user_id'] = $user->id;
         return OtherFolder::create($validated);
     }
 
     public function storeRecord(Request $request, $folderId)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $folder = OtherFolder::findOrFail($folderId);
+        if (!$user->isAdmin() && $folder->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -46,7 +64,7 @@ class OtherFolderController extends Controller
             'record_date' => 'nullable|date',
         ]);
 
-        $folder = OtherFolder::findOrFail($folderId);
+        $validated['user_id'] = $user->id;
         return $folder->otherRecords()->create($validated);
     }
 

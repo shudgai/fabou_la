@@ -11,16 +11,24 @@ class ImperialGraceController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $query = ImperialGrace::query();
+
+        if (!$user->isAdmin()) {
+            // Strict isolation: only own records. No linkage via user_imperial_graces.
+            $query->where('user_id', $user->id);
+        }
+
         return response()->json([
-            'registries' => ImperialGrace::all(),
-            'userGraces' => UserImperialGrace::all()
+            'registries' => $query->get(),
+            'userGraces' => UserImperialGrace::where('user_id', $user->id)->get()
         ]);
     }
 
     public function storeRegistry(Request $request)
     {
         $data = $request->all();
-        // 移除重複名稱驗證，允許同名法寶重複載錄
+        $data['user_id'] = auth()->id();
         $grace = ImperialGrace::create($data);
         return response()->json($grace, 201);
     }
@@ -29,15 +37,14 @@ class ImperialGraceController extends Controller
     {
         $items = $request->input('items', []);
         $masterId = $request->input('master_id');
+        $userId = auth()->id();
         $created = [];
 
         foreach ($items as $item) {
-            // 移除批次新增時的重複名稱驗證，允許同名法寶重複載錄
-
             $created[] = ImperialGrace::create(array_merge([
+                'user_id' => $userId,
                 'master_id' => $masterId,
                 'status' => '已登記',
-                // Removed record_date => now() to allow nulls
             ], $item));
         }
 

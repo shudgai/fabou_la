@@ -33,8 +33,7 @@
                     :class="[
                         'px-4 h-14 rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-lg',
                         parsedItems.length === 0 ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 shadow-indigo-100'
-                    ]"
-                    style="color: white !important; opacity: 1 !important;">
+                    ]">
                     <svg class="w-5 h-5 mb-0.5" style="color: white !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span class="text-[11px] font-bold" style="color: white !important;">{{ processing ? '存取中' : `儲存 (${parsedItems.length})` }}</span>
                 </button>
@@ -42,10 +41,12 @@
         </div>
 
         <!-- Input Area -->
-        <div class="flex-1 flex flex-col p-4">
+        <div class="flex-1 flex flex-col p-4 relative">
+            <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-red-500 bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all">
+                清空全部
+            </button>
             <textarea 
                 v-model="batchText" 
-                placeholder="請貼上日期、法號、數量"
                 class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner"
             ></textarea>
 
@@ -86,7 +87,12 @@ const props = defineProps({
 
 const emit = defineEmits(['save', 'cancel']);
 
-const batchDate = ref(new Date().toISOString().split('T')[0]);
+const getTodayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+const batchDate = ref(getTodayStr());
 const batchText = ref('');
 const processing = ref(false);
 const showDatePicker = ref(false);
@@ -100,11 +106,12 @@ const parsedItems = computed(() => {
     const results = [];
     
     lines.forEach(line => {
-        const trimmed = line.trim();
-        if (!trimmed) return;
+        // 0. Normalize
+        let normLine = line.normalize('NFKC').trim();
+        if (!normLine) return;
 
         // NEW: Standalone Year detection (e.g., "113年" or "2024")
-        const standaloneYMatch = trimmed.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+        const standaloneYMatch = normLine.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
         if (standaloneYMatch) {
             let y = parseInt(standaloneYMatch[1]);
             if (y < 1000) y += 1911;
@@ -112,36 +119,39 @@ const parsedItems = computed(() => {
             return;
         }
 
-        // Split by Tab (common in Excel copy), Multiple spaces, or Comma
-        let parts = trimmed.split(/[\t]+|[\s]{2,}|[,，]/);
-        if (parts.length <= 1) {
-            parts = trimmed.split(/\s+/);
+        // 1. Detect date
+        const cleanDateStr = normLine.replace(/[年月]/g, '-').replace(/[日]/g, '');
+        const dateParts = cleanDateStr.split(/[.\/-]/).map(p => p.trim());
+
+        if (dateParts.length === 3 && !isNaN(parseInt(dateParts[0]))) {
+            let year = parseInt(dateParts[0]);
+            const month = dateParts[1].padStart(2, '0');
+            const day = dateParts[2].padStart(2, '0');
+            if (year < 1000) year += 1911;
+            lastDate = `${year}-${month}-${day}`;
+            return;
         }
         
-        let possibleDate = parts[0];
-        let dateFound = null;
-
-        // NEW: Flexible Date Detection (Supports any ROC or CE year)
-        const cleanDate = possibleDate.replace(/[年月]/g, '-').replace(/[日]/g, '');
-        const dateParts = cleanDate.split(/[.\/-]/).map(p => p.trim());
-
-        if (dateParts.length === 3) {
-            let y = parseInt(dateParts[0]);
-            if (y < 1000) y += 1911;
-            dateFound = `${y}-${dateParts[1].padStart(2, '0')}-${dateParts[2].padStart(2, '0')}`;
-            parts.shift();
-        } else if (dateParts.length === 2) {
-            // Short date format (M/D)
+        // Detect Short Date (M/D) as a standalone line
+        if (dateParts.length === 2 && !isNaN(parseInt(dateParts[0])) && !isNaN(parseInt(dateParts[1])) && normLine.length < 10) {
             const y = lastDate.split('-')[0];
-            dateFound = `${y}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
-            parts.shift();
+            const m = dateParts[0].padStart(2, '0');
+            const d = dateParts[1].padStart(2, '0');
+            lastDate = `${y}-${m}-${d}`;
+            return;
         }
 
-        // If a new date is found, update lastDate
-        if (dateFound) {
-            lastDate = dateFound;
-        }
+        // 2. Clear item numbers (Handle multiple levels like "3. 1.")
+        // We capture the "cleaned" line but still need to split for name/qty
+        let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
+        if (!cleanLine) return;
 
+        // Split by Tab (common in Excel copy), Multiple spaces, or Comma
+        let parts = cleanLine.split(/[\t]+|[\s]{2,}|[,，]/);
+        if (parts.length <= 1) {
+            parts = cleanLine.split(/\s+/);
+        }
+        
         // The remaining parts are [DharmaName, Quantity]
         if (parts.length > 0) {
             const name = parts[0].trim();
@@ -172,11 +182,11 @@ const parsedItems = computed(() => {
                 item.long_sheng = Math.ceil(qty / 2);
                 item.long_zhan = Math.floor(qty / 2);
             } else if (props.armyType === '虎甲軍') {
-                item.yan_jue = Math.ceil(qty / 2);
-                item.yan_ze = Math.floor(qty / 2);
+                item.yan_jue = qty;
+                item.yan_ze = 0;
             } else if (props.armyType === '虎賁軍') {
-                item.yan_di = Math.ceil(qty / 2);
-                item.yan_yuan = Math.floor(qty / 2);
+                item.yan_di = qty;
+                item.yan_yuan = 0;
             }
             results.push(item);
         }

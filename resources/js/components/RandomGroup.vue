@@ -8,13 +8,18 @@
             <div class="flex-1 overflow-y-auto no-scrollbar pb-20">
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5">
-                    <div class="flex items-center">
+                    <div class="flex items-center space-x-2 flex-1 mr-4">
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <span class="font-black" style="font-size: 22px !important; color: #0f172a !important;">
-                            {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
+                        <span class="font-black shrink-0" style="font-size: 22px !important; color: #0f172a !important;">
+                            {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                         </span>
+                        <!-- Manual Add Input -->
+                        <div v-if="!selectionFiltered" class="flex items-center bg-slate-100 rounded-lg px-2 py-1 flex-1 max-w-[150px]">
+                            <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="手動輸入..." class="bg-transparent border-none outline-none text-[13px] font-bold w-full">
+                            <button @click="addManualName" class="text-blue-500 font-black text-xl ml-1">+</button>
+                        </div>
                     </div>
                     <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
@@ -23,12 +28,17 @@
                 <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
                     <button
                         v-for="user in displayUsers"
-                        :key="user.id"
-                        @click="togglePending(user.name)"
-                        class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                        :key="user.id || user.name"
+                        @mousedown="startDrag(user.name)"
+                        @mouseenter="onDragEnter(user.name)"
+                        @touchstart.passive="handleTouchStart($event, user.name)"
+                        @touchmove.passive="handleTouchMove($event)"
+                        @touchend.passive="stopDrag"
+                        class="dharma-btn flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                         :style="getPendingStyle(user.name)"
+                        :data-name="user.name"
                     >
-                        <span class="truncate leading-none">{{ user.name }}</span>
+                        <span class="truncate leading-none pointer-events-none">{{ user.name }}</span>
                     </button>
                 </div>
             </div>
@@ -131,7 +141,7 @@
                                 </button>
                             </div>
                             <div v-if="guardianResults.length > 0" class="text-right px-1">
-                                <span class="text-[14px] font-black text-amber-500/80 uppercase tracking-tighter italic">* 已抽 {{ guardianResults.length }} 位</span>
+                                <span class="text-[14px] font-black text-amber-500/80 uppercase tracking-tighter">* 已抽 {{ guardianResults.length }} 位</span>
                             </div>
                         </div>
                     </div>
@@ -188,7 +198,7 @@
                                 </div>
                                 
                                 <div class="flex items-center justify-between text-[14px] font-black pt-1 border-t border-dashed border-slate-100 mt-1">
-                                    <span class="text-rose-400/80 italic">❷ 總計排除</span>
+                                    <span class="text-rose-400/80">❷ 總計排除</span>
                                     <span class="text-rose-500">{{ totalExclusionCount }} 人</span>
                                 </div>
 
@@ -248,8 +258,8 @@
                             <div v-for="name in guardianResults" :key="'guard'+name" class="text-amber-700 font-black text-[17px]">{{ name }}</div>
                         </div>
                     </div>
-                    <div v-if="groups.length > 0" class="space-y-1.5">
-                        <div class="flex items-center justify-between">
+                    <div v-if="groups.length > 0" class="space-y-3">
+                        <div class="flex items-center justify-between py-3">
                             <h4 class="text-[13px] font-black text-slate-400 tracking-wider uppercase">分組名冊</h4>
                             <div class="flex items-center space-x-2">
                                 <button @click="redrawAll" class="text-[11px] font-black text-white bg-rose-500 px-2 py-[10px] rounded-full shadow-none border-none"><span>重抽</span></button>
@@ -407,10 +417,72 @@ const currentStep = ref(1);
 const guardianQuery = ref('');
 const isGDropdownOpen = ref(false);
 
+const isDragging = ref(false);
+const dragSelectionType = ref(null); // 'add' or 'remove'
+const lastTouchedName = ref(null);
+
+const startDrag = (name) => {
+    isDragging.value = true;
+    const isSelected = pendingNames.value.includes(name);
+    dragSelectionType.value = isSelected ? 'remove' : 'add';
+    togglePending(name);
+    window.addEventListener('mouseup', stopDrag);
+};
+
+const onDragEnter = (name) => {
+    if (!isDragging.value) return;
+    const isSelected = pendingNames.value.includes(name);
+    if (dragSelectionType.value === 'add' && !isSelected) {
+        pendingNames.value.push(name);
+    } else if (dragSelectionType.value === 'remove' && isSelected) {
+        const idx = pendingNames.value.indexOf(name);
+        pendingNames.value.splice(idx, 1);
+    }
+};
+
+const handleTouchStart = (e, name) => {
+    lastTouchedName.value = name;
+    startDrag(name);
+};
+
+const handleTouchMove = (e) => {
+    if (!isDragging.value) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!el) return;
+    const btn = el.closest('.dharma-btn');
+    if (btn) {
+        const name = btn.getAttribute('data-name');
+        if (name && name !== lastTouchedName.value) {
+            lastTouchedName.value = name;
+            onDragEnter(name);
+        }
+    }
+};
+
+const stopDrag = () => {
+    isDragging.value = false;
+    lastTouchedName.value = null;
+    window.removeEventListener('mouseup', stopDrag);
+};
+
 const STORAGE_KEY = 'fabou_random_group_draft_v2';
 
 // Show all users, or only selected ones after first confirm
 const selectionFiltered = ref(false);
+const manualName = ref('');
+const addManualName = () => {
+    if (!manualName.value.trim()) return;
+    const name = manualName.value.trim();
+    if (!users.value.some(u => u.name === name)) {
+        users.value.push({ id: Date.now(), name: name });
+    }
+    if (!pendingNames.value.includes(name)) {
+        pendingNames.value.push(name);
+    }
+    manualName.value = '';
+};
+
 const displayUsers = computed(() => {
     if (!users.value || !Array.isArray(users.value)) return [];
     const pending = pendingNames.value || [];
@@ -531,46 +603,29 @@ const removeGuardian = (name) => {
     guardianResults.value = guardianResults.value.filter(n => n !== name);
 };
 
-const saveToSessionStorage = () => {
-    const data = {
-        selectedNames: selectedNames.value,
-        pendingNames: pendingNames.value,
-        selectionFiltered: selectionFiltered.value,
-        groupSize: groupSize.value,
-        seedNames: seedNames.value,
-        groups: groups.value,
-        guardianResults: guardianResults.value,
-        pickSize: pickSize.value,
-        includeGuardians: includeGuardians.value,
-        currentStep: currentStep.value
-    };
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-};
-
-watch([selectedNames, pendingNames, selectionFiltered, groupSize, seedNames, groups, guardianResults, pickSize, includeGuardians, currentStep], saveToSessionStorage, { deep: true });
+// Storage Logic Removed for clean state on load
 
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
-        users.value = res.data; 
-        const draft = sessionStorage.getItem(STORAGE_KEY);
-        if (draft) {
-            try {
-                const parsed = JSON.parse(draft);
-                selectedNames.value = parsed.selectedNames || [];
-                pendingNames.value = parsed.pendingNames || [];
-                selectionFiltered.value = parsed.selectionFiltered || false;
-                groupSize.value = parsed.groupSize || 4;
-                seedNames.value = parsed.seedNames || [];
-                groups.value = parsed.groups || [];
-                guardianResults.value = parsed.guardianResults || [];
-                pickSize.value = parsed.pickSize || 1;
-                includeGuardians.value = parsed.includeGuardians || false;
-                currentStep.value = parsed.currentStep || 1;
-            } catch (err) { console.error('Draft load failed', err); }
-        } else {
-            pendingNames.value = users.value.map(u => u.name.trim());
+        let rawUsers = res.data;
+        
+        // Custom sorting: Ensure 靈奇, 靈傾 are after 靈情
+        let processed = [...rawUsers];
+        const qingIdx = processed.findIndex(u => u.name === '靈情');
+        if (qingIdx > -1) {
+            const lingQi = rawUsers.find(u => u.name === '靈奇');
+            const lingQin = rawUsers.find(u => u.name === '靈傾');
+            processed = processed.filter(u => u.name !== '靈奇' && u.name !== '靈傾');
+            const newQingIdx = processed.findIndex(u => u.name === '靈情');
+            if (lingQi) processed.splice(newQingIdx + 1, 0, lingQi);
+            if (lingQin) processed.splice(newQingIdx + 2, 0, lingQin);
         }
+        users.value = processed;
+        
+        // Select all by default as per user request
+        pendingNames.value = processed.map(u => u.name);
+        selectionFiltered.value = false;
     } catch (e) { console.error('Failed to load users', e); }
 };
 
@@ -713,7 +768,6 @@ const doGrouping = () => {
         groups.value = distributePlayers([...selectedNames.value], groupSize.value);
         isDrawing.value = false;
         lotteryDisplayNames.value = [];
-        saveToSessionStorage();
         currentStep.value = 3;
     }, 3000);
 };
@@ -733,15 +787,12 @@ const pickGuardians = () => {
             guardianResults.value.push(name);
         }
         isDrawing.value = false;
-        saveToSessionStorage();
-
     }, 3000);
 };
 
 const clearGuardians = () => {
     if (!confirm('確定要清空關主名單嗎？')) return;
     guardianResults.value = [];
-    saveToSessionStorage();
 };
 
 const redrawAll = () => {
@@ -751,7 +802,6 @@ const redrawAll = () => {
     groups.value = [];
     isDrawing.value = false;
     currentType.value = '';
-    saveToSessionStorage();
 };
 
 const copyResult = () => {
@@ -794,7 +844,6 @@ const resetAll = () => {
     currentStep.value = 1;
     includeGuardians.value = false;
     sessionStorage.removeItem(STORAGE_KEY);
-    saveToSessionStorage();
 };
 
 onMounted(loadUsers);

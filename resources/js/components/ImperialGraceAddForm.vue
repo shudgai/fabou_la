@@ -21,25 +21,25 @@
             <div class="px-4 py-[5px] bg-white flex space-x-1 border-b border-slate-100 mt-[-5px]">
                 <button @click="localMode = 'single'" 
                     :class="localMode === 'single' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
-                    class="flex-1 py-[5px] text-[18px] font-black rounded-xl transition-all">逐筆登錄</button>
+                    class="flex-1 py-[5px] text-[16px] font-black rounded-xl transition-all whitespace-nowrap">逐筆登錄</button>
                 <button @click="localMode = 'batch'" 
                     :class="localMode === 'batch' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'"
-                    class="flex-1 py-[5px] text-[18px] font-black rounded-xl transition-all">文字/EXCEL 記載</button>
+                    class="flex-1 py-[5px] text-[16px] font-black rounded-xl transition-all whitespace-nowrap">文字/EXCEL 記載</button>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto p-4 pt-6 pb-32 space-y-4 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-32 space-y-4 custom-scrollbar">
                 
                 <!-- COMMON FIELDS (Date & Master) -->
                 <div class="grid grid-cols-2 gap-[2.5px] bg-white p-[5px] mt-[-10px] py-[5px]">
                     <div class="space-y-1">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">得知日期</label>
-                        <div @click="activeDate = 'record_date'" 
-                            class="w-full py-[5px] rounded-xl bg-white px-3 flex items-center justify-between cursor-pointer border border-slate-400 shadow-sm">
-                            <span :class="form.record_date ? 'text-slate-900 font-bold' : 'text-slate-400'" style="font-size: 17px;">
-                                {{ form.record_date || '選擇日期' }}
-                            </span>
-                            <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <div class="relative flex items-center">
+                            <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                class="w-full py-[5px] rounded-xl bg-white pl-2 pr-7 border border-slate-400 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none text-[15px] font-bold text-slate-900">
+                            <button @click="activeDate = 'record_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="space-y-1">
@@ -74,13 +74,16 @@
                         </div>
                         <div v-if="form.status !== '已登記'" class="space-y-1 py-[5px]">
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">求得日期</label>
-                            <div @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
-                                :class="form.status === '未求得' ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'"
-                                class="w-full py-[5px] rounded-xl bg-white px-3 flex items-center justify-between shadow-sm border border-slate-400">
-                                <span :class="form.obtained_date ? 'text-slate-900 font-bold' : 'text-slate-400'" style="font-size: 17px;">
-                                    {{ form.obtained_date || (form.status === '未求得' ? '-' : '選擇日期') }}
-                                </span>
-                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <div class="relative flex items-center">
+                                <input v-model="form.obtained_date" type="text" :placeholder="form.status === '未求得' ? '-' : '年/月/日 或 註記文字'" 
+                                    :disabled="form.status === '未求得'"
+                                    :class="form.status === '未求得' ? 'opacity-30 cursor-not-allowed' : ''"
+                                    class="w-full py-[5px] rounded-xl bg-white pl-2 pr-7 shadow-sm border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none text-[15px] font-bold text-slate-900">
+                                <button @click="form.status !== '未求得' && (activeDate = 'obtained_date')" 
+                                    :disabled="form.status === '未求得'"
+                                    class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
                         </div>
                         <div v-else></div>

@@ -12,10 +12,16 @@ class RegistryController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => '您沒有權限查看法寶登記專區'], 403);
+        $user = auth()->user();
+        $query = Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc');
+
+        if (!$user->isAdmin()) {
+            // Strict isolation: only own records. No linkage via dharma_name_id.
+            // This also handles "赤覺的資料只有赤覺本人可以看到"
+            $query->where('user_id', $user->id);
         }
-        return Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc')->get();
+        
+        return $query->get();
     }
 
     /**
@@ -34,9 +40,9 @@ class RegistryController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => '您沒有權限在法寶登記專區新增紀錄'], 403);
-        }
+        $user = auth()->user();
+        // Allow all users to create, but we can keep some restrictions if needed.
+        // For now, let's allow all as per the new isolation rule.
 
         $nameAliasMap = [
             '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
@@ -44,7 +50,7 @@ class RegistryController extends Controller
             '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
         ];
 
-        return DB::transaction(function () use ($request, $nameAliasMap) {
+        return DB::transaction(function () use ($request, $nameAliasMap, $user) {
             $cleanName = trim($request->name);
 
             $registry = Registry::where('name', $cleanName)
@@ -54,6 +60,7 @@ class RegistryController extends Controller
 
             if (!$registry) {
                 $registry = Registry::create([
+                    'user_id'            => $user->id,
                     'name'               => $cleanName,
                     'master_id'          => $request->master_id,
                     'category'           => $request->category ?? 'major',
@@ -178,8 +185,9 @@ class RegistryController extends Controller
 
     public function update(Request $request, Registry $registry)
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => '您沒有權限修改法寶登記專區'], 403);
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isChijue() && $registry->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
         return DB::transaction(function () use ($request, $registry) {
             $registry->update($request->all());
@@ -220,9 +228,8 @@ class RegistryController extends Controller
 
     public function batchStore(Request $request)
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => '您沒有權限在法寶登記專區新增紀錄'], 403);
-        }
+        $user = auth()->user();
+        // Allow all users to batch store their own records.
 
         $records = $request->all();
         if (!is_array($records))
@@ -234,7 +241,7 @@ class RegistryController extends Controller
             '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
         ];
 
-        return DB::transaction(function () use ($records, $nameAliasMap) {
+        return DB::transaction(function () use ($records, $nameAliasMap, $user) {
             $results = [];
             foreach ($records as $recordData) {
                 if (empty($recordData['name']) || empty($recordData['master_id']))
@@ -248,6 +255,7 @@ class RegistryController extends Controller
 
                 if (!$registry) {
                     $recordData['name'] = $cleanName;
+                    $recordData['user_id'] = $user->id;
                     $registry = Registry::create($recordData);
                 } else {
                     $registry->update(array_filter([
@@ -364,8 +372,9 @@ class RegistryController extends Controller
 
     public function destroy(Registry $registry)
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => '您沒有權限刪除法寶登記專區'], 403);
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isChijue() && $registry->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
         $registry->delete();
         return response()->json(['message' => 'Deleted']);

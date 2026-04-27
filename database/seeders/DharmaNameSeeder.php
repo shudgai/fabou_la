@@ -14,7 +14,7 @@ class DharmaNameSeeder extends Seeder
     {
         $dharmaNames = [
             1 => '鳳尊', 2 => '金巧', 3 => '赤覺', 4 => '紫元', 5 => '靈情',
-            6 => '閻帝', 7 => '鳳媓', 8 => '靈眩', 9 => '龍勝', 10 => '龍戰',
+            6 => '閻帝', 7 => '鳳媓', 8 => '靈昡', 9 => '龍勝', 10 => '龍戰',
             11 => '閻尊', 12 => '閻爵', 13 => '閻澤', 14 => '閻闇', 15 => '閻願',
             16 => '靈果', 17 => '靈妙', 18 => '元續', 19 => '赤峰', 20 => '金頤',
             21 => '靈心', 22 => '金振', 23 => '金了', 24 => '金曉', 25 => '道妙',
@@ -25,9 +25,9 @@ class DharmaNameSeeder extends Seeder
         ];
 
         foreach ($dharmaNames as $order => $name) {
-            \App\Models\DharmaName::firstOrCreate(
-                ['name' => $name],
-                ['order' => $order]
+            \App\Models\DharmaName::updateOrCreate(
+                ['order' => $order],
+                ['name' => $name]
             );
         }
     }

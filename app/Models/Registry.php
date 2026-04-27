@@ -14,6 +14,7 @@ class Registry extends Model
     protected $table = 'registries';
 
     protected $fillable = [
+        'user_id',
         'master_id',
         'sort_order',
         'name',

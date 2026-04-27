@@ -35,11 +35,10 @@ class User extends Authenticatable
     }
 
     public function isAdmin()
-
     {
-        $dharmaName = $this->dharmaName ? $this->dharmaName->name : null;
+        $dName = trim($this->dharmaName ? $this->dharmaName->name : $this->name);
         return $this->role === 'admin' || 
-               ($dharmaName === '元續') ||
+               in_array($dName, ['元續', '赤峰', '閻闇']) ||
                $this->roles()->where('name', '管理員')->exists();
     }
 
@@ -94,40 +93,54 @@ class User extends Authenticatable
 
     public function isChijue()
     {
-        return $this->dharmaName && $this->dharmaName->name === '赤覺';
+        $dName = trim($this->dharmaName ? $this->dharmaName->name : $this->name);
+        return $dName === '赤覺';
     }
 
     public function getPermissions()
     {
-        $dharmaName = $this->dharmaName ? $this->dharmaName->name : null;
-        $isAdmin = $this->isAdmin();
+        $dName = trim($this->dharmaName ? $this->dharmaName->name : $this->name);
+        
+        // 超級管理員 (Owner)
+        $isFullAdmin = $this->isAdmin();
+
+        // 高級權限者 (具有完整父皇仙師專區與其他專區權限)
+        $isAdvanced = in_array($dName, [
+            '鳳尊', '金巧', '赤覺', '紫元', '靈情', '鳳媓', '靈昡', '龍勝', '龍戰', '閻尊'
+        ]);
 
         $permissions = [
-            'can_see_kaiwen' => true, // 開文專區對所有人開放
-            'can_see_daily_teachings' => $isAdmin || in_array($dharmaName, [
-                '閻帝', '閻爵', '閻澤', '閻願', '靈果', '靈妙', '元續', '金頤', '靈心', '金振', 
-                '金了', '金曉', '道妙', '金悟', '金淑', '金源', '靈智', '靈慧', '金雲', '金戒', 
-                '閻珍', '金知', '金忠', '金孝', '金諦', '金彩', '金茹', '金齋', '金德', '靈平', 
-                '金惜', '金護', '靈奇', '靈傾'
-            ]),
-            'can_see_other_folders' => $isAdmin || in_array($dharmaName, [
-                '鳳尊', '金巧', '赤覺', '紫元', '靈情', '鳳媓', '靈昡', '龍勝', '龍戰', '閻尊', 
-                '閻闇', '元續', '赤峰'
-            ]),
-            'can_see_treasures' => $isAdmin || in_array($dharmaName, ['赤覺', '元續']),
-            'can_see_military' => $isAdmin || in_array($dharmaName, [
-                '閻帝', '龍勝', '龍戰', '閻尊', '閻爵', '閻澤', '閻闇', '閻願', '元續'
+            // 1. 基本權限 (所有人皆有)
+            'can_see_grace' => true,
+            'can_see_kaiwen' => true,
+            'can_see_grudge' => true,
+            'can_see_trash' => true,
+            
+            // 2. 父皇仙師專區連動
+            // 基礎用戶僅能看「父皇仙師每日開示」(can_see_daily_teachings)
+            // 管理員及高級用戶可看「八位仙師專區」(can_see_teaching_folders)
+            'can_see_daily_teachings' => true, 
+            'can_see_teaching_folders' => $isFullAdmin || $isAdvanced,
+            
+            // 3. 其他專區與法寶登記
+            'can_see_other_folders' => $isFullAdmin || $isAdvanced,
+            'can_see_treasures' => $isFullAdmin || in_array($dName, ['赤覺']),
+            
+            // 4. 軍隊專區
+            'can_see_military' => $isFullAdmin || in_array($dName, [
+                '閻尊', '龍勝', '龍戰', '閻爵', '閻澤', '閻帝', '閻願'
             ]),
             'allowed_armies' => [],
         ];
 
-        if ($isAdmin) {
+        // 軍隊權限細分
+        if ($isFullAdmin) {
             $permissions['allowed_armies'] = ['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'];
         } else {
-            if (in_array($dharmaName, ['閻尊', '閻闇'])) $permissions['allowed_armies'][] = '黑曜軍';
-            if (in_array($dharmaName, ['龍勝', '龍戰'])) $permissions['allowed_armies'][] = '耀紫軍';
-            if (in_array($dharmaName, ['閻爵', '閻澤'])) $permissions['allowed_armies'][] = '虎甲軍';
-            if (in_array($dharmaName, ['閻帝', '閻願'])) $permissions['allowed_armies'][] = '虎賁軍';
+            if (in_array($dName, ['閻尊'])) $permissions['allowed_armies'][] = '黑曜軍';
+            if (in_array($dName, ['龍勝', '龍戰'])) $permissions['allowed_armies'][] = '耀紫軍';
+            if (in_array($dName, ['閻爵', '閻澤'])) $permissions['allowed_armies'][] = '虎甲軍';
+            if (in_array($dName, ['閻帝', '閻願'])) $permissions['allowed_armies'][] = '虎賁軍';
         }
 
         return $permissions;

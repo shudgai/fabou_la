@@ -3,7 +3,7 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
@@ -23,7 +23,7 @@
                 </button>
                 <div class="flex flex-col min-w-0">
                     <span class="text-[22px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
-                        {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }} - {{ currentFolder.name }}
+                        {{ currentFolder.name + (addMode ? '-新增載錄' : '') }}
                     </span>
                 </div>
             </div>
@@ -33,8 +33,8 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div class="w-full px-4 py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
-                    <div class="flex-1">
+                <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
+                    <div class="flex-1 cursor-pointer" @click="resetToRoot">
                         <h1 class="text-[25px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
@@ -169,7 +169,7 @@
 
                             <div class="flex-1 min-w-0 pr-[10px]">
                             <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-4 right-4 z-30 translate-x-0">
+                            <div class="absolute top-[6px] right-4 z-30 translate-x-0">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
                                         class="p-2 active:scale-90 transition-all rounded-full bg-slate-50/50"
                                         style="color: rgb(220, 20, 40) !important;">
@@ -208,7 +208,7 @@
                             <!-- Card Header (Toggle Expansion) -->
                             <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
                                 <div class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="text-[18px] font-black font-outfit uppercase tracking-widest" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                                    <div class="app-title font-outfit uppercase tracking-widest">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
@@ -234,7 +234,7 @@
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
                                             <div class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="text-[18px] font-black font-outfit" style="color: #0d0d0d !important; font-weight: 900 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                                                <div class="app-title font-outfit">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                             </div>
                                             <div class="space-y-1">
                                                 <div class="flex items-center justify-between">
@@ -333,11 +333,19 @@
                                                             <tr v-for="dn in dharmaNames" :key="dn.id" class="hover:bg-slate-50 transition-colors">
                                                                 <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 py-[5px] justify-center group/date-cell" 
-                                                                        :class="editingIds.has(item.id) ? 'cursor-pointer hover:bg-indigo-50/50' : ''"
-                                                                        @click.stop="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }) : null">
-                                                                        <span :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
-                                                                            {{ formatDisplayDate(editMap[item.id + '-' + dn.id].obtained_date) || (editingIds.has(item.id) ? '----/--/--' : '-') }}
+                                                                    <div class="flex items-center px-[2px] py-1 justify-center relative">
+                                                                        <input v-if="editingIds.has(item.id)" 
+                                                                            v-model="editMap[item.id + '-' + dn.id].obtained_date" 
+                                                                            type="text"
+                                                                            class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none"
+                                                                            style="color: rgb(220, 20, 40) !important;">
+                                                                        <button v-if="editingIds.has(item.id)" 
+                                                                            @click.stop="activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }"
+                                                                            class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
+                                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                        </button>
+                                                                        <span v-else :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
+                                                                            {{ formatDisplayDate(editMap[item.id + '-' + dn.id].obtained_date) || '-' }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
@@ -368,9 +376,18 @@
                                                         <tbody>
                                                             <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 py-[5px] justify-center" 
-                                                                        @click.stop="editingIds.has(item.id) ? (activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }) : null">
-                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
+                                                                    <div class="flex items-center px-[2px] py-1 justify-center relative">
+                                                                        <input v-if="editingIds.has(item.id)" 
+                                                                            v-model="editMap[item.id + '-' + dnr.dharma_name_id].obtained_date" 
+                                                                            type="text"
+                                                                            class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none"
+                                                                            style="color: #1e293b !important;">
+                                                                        <button v-if="editingIds.has(item.id)" 
+                                                                            @click.stop="activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }"
+                                                                            class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
+                                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                        </button>
+                                                                        <span v-else class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
@@ -425,7 +442,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 rounded-2xl font-black text-[18px]" style="color: #ffffff !important;">儲存</button>
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 text-white rounded-2xl font-black text-[18px]">儲存</button>
                                         </div>
                                     </div>
 
@@ -590,11 +607,28 @@
 <script setup>
 import { ref, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
+
+const getTodayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 import MobileNavbar from './MobileNavbar.vue';
 import RegistryAddForm from './RegistryAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import LuckyDraw from './LuckyDraw.vue';
 import RemarksViewer from './RemarksViewer.vue';
+
+const resetToRoot = () => {
+    currentCategory.value = null;
+    currentFolder.value = null;
+    addMode.value = null;
+    searchQuery.value = '';
+    focusedId.value = null;
+    openMenuId.value = null;
+    expandedIds.value = new Set();
+    editingIds.value = new Set();
+    reorderMode.value = false;
+};
 
 const emit = defineEmits(['goHome']);
 
@@ -611,12 +645,18 @@ const getEarliestDate = (item) => {
 
 const formatDisplayDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr;
-    const cleanDate = dateStr.replace(/\//g, '-');
-    const parts = cleanDate.split('-');
-    if (parts.length < 3) return dateStr;
-    let y = parseInt(parts[0]);
-    // Returns Western Year (CE/AD) formatted as YYYY/MM/DD
-    return `${y}/${parts[1].padStart(2,'0')}/${parts[2].padStart(2,'0')}`;
+    // Strip time part if present (e.g., T16:00:00.000000Z)
+    const s = String(dateStr).split('T')[0].trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
+            return `${y}/${m}/${d}`;
+        }
+    }
+    return s.replace(/-/g, '/');
 };
 
 const copyAsTextFile = (item) => {
@@ -980,7 +1020,7 @@ const openAdd = (mode = 'single') => {
         purpose: '',
         acquisition_method: '',
         remarks: '',
-        record_date: new Date().toISOString().split('T')[0],
+        record_date: getTodayStr(),
         obtained_date: '',
         status: '已求得',
         dharma_name_registries: []
@@ -1079,7 +1119,7 @@ const triggerBatchSave = async (batchData) => {
         let rawRecords = [];
 
         let blockMasterId = batchData.masterId || (currentFolder.value?.id);
-        let blockDate = batchData.date || new Date().toISOString().split('T')[0];
+        let blockDate = batchData.date || getTodayStr();
 
         blocks.forEach(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l => l);
@@ -1268,7 +1308,7 @@ const triggerBatchSave = async (batchData) => {
                                 }
 
                                 if (relMatch) {
-                                    const finalDate = lineDate || blockDate || new Date().toISOString().split('T')[0];
+                                    const finalDate = lineDate || blockDate || getTodayStr();
                                     const dParts = finalDate.split('-');
                                     let rocY = parseInt(dParts[0]);
                                     if (rocY > 1911) rocY -= 1911;
@@ -1511,7 +1551,21 @@ const moveRegistryItem = async (item, direction) => {
     await handleReorder(item, targetIdx + 1);
 };
 
-const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';
+const formatDate = (d) => {
+    if (!d) return '-';
+    // Use string splitting instead of new Date() to avoid timezone-related day shifts
+    const s = String(d).trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d_val = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d_val))) {
+            return `${y}/${m}/${d_val}`;
+        }
+    }
+    return s.replace(/-/g, '/');
+};
 
 const copyToLine = (item) => {
     // Collect records from either the saved state or the active edit state

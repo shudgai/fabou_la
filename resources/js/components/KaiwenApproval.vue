@@ -6,7 +6,7 @@
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-24" style="padding-left: 10px; padding-right: 10px;">
                     <!-- Selection Grid matched to RandomGroup -->
-                    <div class="flex items-center justify-between px-3 py-1.5">
+                    <div class="flex items-center justify-between px-3 py-3">
                         <div class="flex items-center">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -81,25 +81,49 @@
 
                     <!-- Ledger Table -->
                     <div class="w-full pb-32">
-                        <table class="w-full text-left border-separate border-spacing-0 table-fixed">
+                        <table class="w-full text-left border-separate border-spacing-0">
                             <tbody>
-                                <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[42px]">
+                                <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[52px]">
                                     <td class="pl-3 pr-1 py-1 w-20 whitespace-nowrap align-middle border-b border-slate-50">
                                         <span class="text-[17px] font-black text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
                                     </td>
                                     
-                                    <td v-for="n in 3" :key="'slot'+n" class="text-center w-22 px-1 py-1 align-middle border-b border-slate-50">
-                                        <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden divide-x divide-slate-200 h-[36px] shadow-sm">
-                                            <button @click="setStatus(idx, n-1, 'v')" 
-                                                :class="[item.slots[n-1] === 'v' ? 'text-indigo-900 bg-indigo-100' : 'text-slate-300 hover:text-indigo-600 hover:bg-slate-50']"
-                                                class="w-1/2 h-full flex items-center justify-center transition-colors active:bg-slate-100">
-                                                <span class="text-[20px] font-black leading-none">√</span>
+                                    <td class="relative py-2 border-b border-slate-50 min-h-[60px]">
+                                        <!-- Fixed Icons at Top-Right of THIS row -->
+                                        <div class="absolute top-1 right-0 flex items-center space-x-2 z-20 bg-white/80 backdrop-blur-sm px-1 rounded-bl-lg">
+                                            <button v-if="(item.slotCount || 3) < 5" 
+                                                @click="item.slotCount = (item.slotCount || 3) + 1" 
+                                                class="text-indigo-400 hover:text-indigo-600 active:scale-90 transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                                             </button>
-                                            <button @click="setStatus(idx, n-1, 'x')" 
-                                                :class="[item.slots[n-1] === 'x' ? 'text-rose-600 bg-rose-100' : 'text-slate-300 hover:text-rose-600 hover:bg-slate-50']"
-                                                class="w-1/2 h-full flex items-center justify-center transition-colors active:bg-slate-100">
-                                                <span class="text-[20px] font-black leading-none">×</span>
+                                            <button @click="removeSlot(item)" 
+                                                class="text-slate-300 hover:text-rose-400 active:scale-90 transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                                             </button>
+                                        </div>
+
+                                        <!-- Scrolling Verification Area -->
+                                        <div class="overflow-x-auto custom-scrollbar pt-4">
+                                            <div class="flex items-center space-x-1.5 min-w-max pr-12 px-0.5 pb-1">
+                                                <div v-for="n in (item.slotCount || 3)" :key="'slot'+n" 
+                                                     :class="[item.slots[n-1] ? 'w-[44px]' : 'w-[78px]']"
+                                                     class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden divide-x divide-slate-200 h-[32px] shrink-0 transition-all duration-300">
+                                                    <!-- Only show V if selected or nothing selected -->
+                                                    <button v-if="!item.slots[n-1] || item.slots[n-1] === 'v'"
+                                                        @click="setStatus(idx, n-1, 'v')" 
+                                                        :class="[item.slots[n-1] === 'v' ? 'bg-emerald-500 text-white w-full' : 'text-slate-300 active:bg-slate-50 w-1/2']"
+                                                        class="h-full flex items-center justify-center transition-all duration-200">
+                                                        <span class="text-[17px] font-black leading-none">✓</span>
+                                                    </button>
+                                                    <!-- Only show X if selected or nothing selected -->
+                                                    <button v-if="!item.slots[n-1] || item.slots[n-1] === 'x'"
+                                                        @click="setStatus(idx, n-1, 'x')" 
+                                                        :class="[item.slots[n-1] === 'x' ? 'bg-rose-500 text-white w-full' : 'text-slate-300 active:bg-slate-50 w-1/2']"
+                                                        class="h-full flex items-center justify-center transition-all duration-200">
+                                                        <span class="text-[17px] font-black leading-none">×</span>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -111,7 +135,7 @@
 
             <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-2 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center">
                 <button @click="copyToLine" class="w-full max-w-lg bg-emerald-600 h-14 rounded-2xl font-black transition-all active:scale-[0.98] text-[17px] tracking-widest flex items-center justify-center space-x-2" style="box-shadow: none;">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     <span style="color: #ffffff !important;">複製貼 LINE</span>
                 </button>
             </div>
@@ -131,59 +155,22 @@ const selectionList = ref([]);
 const step = ref(1);
 const selectionFiltered = ref(false);
 
-// Storage Keys
-const STORAGE_KEY = 'fabou_kaiwen_draft_v2';
+// Storage Keys removed for clean state on load
 
-const saveToLocalStorage = () => {
-    const data = {
-        selectionList: selectionList.value,
-        step: step.value
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    
-};
-
-// Auto-save on any change
-watch(selectionList, saveToLocalStorage, { deep: true });
-watch(step, saveToLocalStorage);
+const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾'];
 
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         users.value = res.data;
         
-        // Load Draft after users are ready
-        const draft = localStorage.getItem(STORAGE_KEY);
-        if (draft) {
-            try {
-                const parsed = JSON.parse(draft);
-                let list = parsed.selectionList || [];
-                // Migration: convert string array to object array if needed
-                selectionList.value = list.map(item => typeof item === 'string' ? { name: item, slots: [null, null, null, null, null] } : item);
-                if (parsed.step) step.value = parsed.step;
-            } catch (err) {
-                console.error('Failed to parse draft', err);
-            }
-        } else {
-            const oldDraft = localStorage.getItem('fabou_kaiwen_draft');
-            if (oldDraft) {
-                try {
-                    const parsed = JSON.parse(oldDraft);
-                    let list = parsed.selectionList || [];
-                    selectionList.value = list.map(item => typeof item === 'string' ? { name: item, slots: [null, null, null, null, null] } : item);
-                } catch (err) {}
-            } else {
-                selectionList.value = users.value
-                    .filter(u => u && !excludedNames.includes(u.name))
-                    .map(u => ({ name: u.name.trim(), slots: [null, null, null, null, null] }));
-            }
-        }
+        // Regular Selection: Start with an empty list
+        selectionList.value = [];
+        selectionFiltered.value = false;
     } catch (e) {
         console.error('Failed to load users', e);
     }
 };
-
-const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾'];
 
 const filteredUsers = computed(() => {
     let list = users.value.filter(u => u && !excludedNames.includes(u.name));
@@ -232,6 +219,14 @@ const setStatus = (rowIdx, slotIdx, type) => {
     }
 };
 
+const removeSlot = (item) => {
+    const current = item.slotCount || 3;
+    if (current > 1) {
+        item.slots[current - 1] = null; // Clear the data of the slot being removed
+        item.slotCount = current - 1;
+    }
+};
+
 const removeItem = (idx) => {
     selectionList.value.splice(idx, 1);
 };
@@ -240,8 +235,7 @@ const clearAll = () => {
     if (confirm('確定要清空整份名單與表格嗎？')) {
         selectionList.value = [];
         step.value = 1;
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem('fabou_kaiwen_draft');
+        selectionFiltered.value = false;
     }
 };
 
@@ -294,11 +288,12 @@ const copyToLine = () => {
     text += `開文結果請示如下：\n`;
     
     selectionList.value.forEach(item => {
-        // Always output all 3 slots with full-width chars for consistent alignment
-        let slots = item.slots.map(s => {
+        // Output active slots for this specific item
+        const count = item.slotCount || 3;
+        let slots = item.slots.slice(0, count).map(s => {
             if (s === 'v') return '✓';
             if (s === 'x') return '× ';
-            return '　'; // full-width ideographic space (same width as Chinese char)
+            return '　'; // full-width ideographic space
         });
         
         // Full-width semicolon as separator

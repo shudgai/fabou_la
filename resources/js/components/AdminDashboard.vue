@@ -90,6 +90,7 @@ import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import OtherManager from './OtherManager.vue';
 import KaiwenManager from './KaiwenManager.vue';
+import TrashManager from './TrashManager.vue';
 
 // Font Size System
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
@@ -135,14 +136,17 @@ const notebookItems = computed(() => {
         { id: 'military', label: '軍隊記錄專區' },
         { id: 'treasure', label: '法寶登記專區' },
         { id: 'other', label: '其他專區' },
+        { id: 'trash', label: '回收桶' },
     ];
 
     if (!user.value) return items;
 
     return items.filter(item => {
+        if (item.id === 'teaching') return user.value.permissions?.can_see_teaching_folders;
         if (item.id === 'treasure') return user.value.permissions?.can_see_treasures;
         if (item.id === 'military') return user.value.permissions?.can_see_military;
         if (item.id === 'other') return user.value.permissions?.can_see_other_folders;
+        if (item.id === 'trash') return user.value.permissions?.can_see_trash;
         return true;
     });
 });
@@ -173,6 +177,7 @@ const components = {
     treasure: markRaw(RegistryManager),
     kaiwen: markRaw(KaiwenManager),
     other: markRaw(OtherManager),
+    trash: markRaw(TrashManager),
     // Admin
     dharma: markRaw(DharmaCrud),
     user: markRaw(UserCrud),
@@ -211,6 +216,10 @@ onMounted(async () => {
     if (props.initialTab && components[props.initialTab]) {
         currentTab.value = props.initialTab;
     }
+
+    // Apply global font size on load
+    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+    document.body.classList.add(currentFontSize.value);
 });
 </script>
 

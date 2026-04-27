@@ -21,28 +21,28 @@
 
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
-                <button @click="localMode = 'single'" :class="localMode === 'single' ? 'bg-blue-600' : 'text-slate-400 hover:bg-slate-50'" :style="localMode === 'single' ? 'color: #ffffff !important;' : ''" class="flex-1 py-[5px] rounded-xl text-[18px] font-bold transition-all">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="localMode === 'batch' ? 'bg-blue-600' : 'text-slate-400 hover:bg-slate-50'" :style="localMode === 'batch' ? 'color: #ffffff !important;' : ''" class="flex-1 py-[5px] rounded-xl text-[18px] font-bold transition-all">文字/EXCEL 記載</button>
+                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 min-h-0 overflow-y-auto px-[24px] py-[20px] space-y-[20px] custom-scrollbar bg-white">
+            <div class="flex-1 min-h-0 overflow-y-auto px-[10px] py-[20px] space-y-[20px] custom-scrollbar bg-white">
                 
                 <!-- Date & Master Selection (Grid Layout as per Screenshot) -->
                 <div class="grid gap-4" :class="localMode === 'single' ? 'grid-cols-2' : 'grid-cols-1'">
                     <div v-if="localMode === 'single'" class="space-y-1.5">
                         <label class="text-[17px] font-bold text-slate-800 block ml-1">得知日期</label>
-                        <div @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" 
-                            class="w-full py-[5px] rounded-2xl border border-slate-400 bg-white px-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition-all">
-                            <span :class="form.record_date ? 'text-slate-900' : 'text-slate-300'" class="text-[16px] font-bold font-outfit">
-                                {{ form.record_date ? form.record_date.replace(/-/g, '/') : '選擇日期' }}
-                            </span>
-                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <div class="relative flex items-center">
+                            <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-8 focus:ring-2 focus:ring-indigo-100 outline-none text-[15px] font-bold text-slate-900 shadow-sm">
+                            <button @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" class="absolute right-3 text-slate-400 hover:text-indigo-600 transition-all p-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-[17px] font-bold text-slate-800 block ml-1">載錄目標仙師</label>
-                        <select v-model="form.master_id" class="w-full py-[5px] rounded-2xl border border-slate-400 bg-white px-4 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                        <select v-model="form.master_id" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
@@ -58,7 +58,7 @@
                     </div>
                     <div v-for="(tn, tnIdx) in treasureNames" :key="tnIdx" class="flex items-center space-x-2 animate-fade-in mb-2">
                         <input v-model="treasureNames[tnIdx]" type="text" placeholder="輸入法寶名稱" 
-                            class="flex-1 py-[5px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            class="flex-1 py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                         <button v-if="treasureNames.length > 1" @click="removeTreasureNameRow(tnIdx)" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
@@ -71,16 +71,16 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1.5">
                             <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">法寶用意</label>
-                            <input v-model="form.purpose" type="text" placeholder="預設用意" class="w-full py-[5px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            <input v-model="form.purpose" type="text" placeholder="預設用意" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">求寶方式</label>
-                            <input v-model="form.acquisition_method" type="text" placeholder="預設方式" class="w-full py-[5px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            <input v-model="form.acquisition_method" type="text" placeholder="預設方式" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
                         </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">備註 (整體)</label>
-                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full py-[5px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                        <input v-model="form.remarks" type="text" placeholder="輸入備註 (選填)" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                     </div>
                 </div>
 
@@ -111,16 +111,16 @@
                                     <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
-                                        class="personnel-name-input w-full py-[5px] rounded-xl border border-slate-400 bg-white px-3 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
+                                        class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">親友</label>
                                     <input v-model="p.relationship" type="text" placeholder="親友"
-                                        class="w-full py-[5px] rounded-xl border border-slate-400 bg-white px-3 text-[16px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                                        class="w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[16px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
-                                    <div class="relative w-full py-[5px] rounded-xl border border-slate-400 bg-white flex items-center overflow-hidden group/date">
+                                    <div class="relative w-full py-[10px] rounded-xl border border-slate-400 bg-white flex items-center overflow-hidden group/date">
                                         <input 
                                             :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''"
                                             @input="e => handlePersonnelDateInput(idx, e)"
@@ -137,7 +137,7 @@
                             <div class="space-y-1">
                                 <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
                                 <div @click="$emit('openRemarksEdit', { idx, remarks: p.remarks })"
-                                    class="w-full min-py-[5px] rounded-xl border border-slate-400 bg-white px-3 py-[5px] text-[15px] font-normal text-slate-900 cursor-pointer hover:border-indigo-300 transition-colors flex items-center justify-between group/rem">
+                                    class="w-full min-py-[10px] rounded-xl border border-slate-400 bg-white px-3 py-[10px] text-[15px] font-normal text-slate-900 cursor-pointer hover:border-indigo-300 transition-colors flex items-center justify-between group/rem">
                                     <span :class="p.remarks ? 'text-slate-900' : 'text-slate-300'" class="truncate flex-1">
                                         {{ p.remarks || '點此輸入詳細備註...' }}
                                     </span>
@@ -201,12 +201,11 @@
 
             <!-- Footer Action -->
             <div class="p-4 bg-white border-t border-slate-50">
-                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 rounded-2xl font-bold text-[20px] py-[10px]" style="color: #ffffff !important;">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px]">
                     {{ isSaving ? '儲存中...' : '儲存' }}
                 </button>
                 <button v-else @click="handleSubmit" :disabled="isSaving" 
-                    class="w-full bg-blue-600 rounded-2xl font-bold text-[20px] py-[10px] transition-all disabled:opacity-50"
-                    style="color: #ffffff !important;">
+                    class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px] transition-all disabled:opacity-50">
                     {{ isSaving ? '儲存中...' : '儲存' }}
                 </button>
             </div>

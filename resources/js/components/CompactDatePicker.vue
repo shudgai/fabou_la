@@ -73,8 +73,23 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'close']);
 
 const today = new Date();
-const currentYear = ref(props.modelValue ? new Date(props.modelValue).getFullYear() : today.getFullYear());
-const currentMonth = ref(props.modelValue ? new Date(props.modelValue).getMonth() : today.getMonth());
+const parseModelValue = (val) => {
+    if (!val) return null;
+    const parts = val.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parseInt(parts[0]);
+        let m = parseInt(parts[1]) - 1;
+        let d = parseInt(parts[2]);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return { y, m, d };
+        }
+    }
+    return null;
+};
+
+const initialDate = parseModelValue(props.modelValue);
+const currentYear = ref(initialDate ? initialDate.y : today.getFullYear());
+const currentMonth = ref(initialDate ? initialDate.m : today.getMonth());
 
 const days = computed(() => {
     const firstDay = new Date(currentYear.value, currentMonth.value, 1);
@@ -127,8 +142,9 @@ const selectDay = (day) => {
 
 const isSelected = (day, isCurrent) => {
     if (!props.modelValue || !isCurrent) return false;
-    const d = new Date(props.modelValue);
-    return d.getFullYear() === currentYear.value && d.getMonth() === currentMonth.value && d.getDate() === day;
+    const parsed = parseModelValue(props.modelValue);
+    if (!parsed) return false;
+    return parsed.y === currentYear.value && parsed.m === currentMonth.value && parsed.d === day;
 };
 
 const isToday = (day, isCurrent) => {

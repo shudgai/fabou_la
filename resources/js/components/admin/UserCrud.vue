@@ -15,7 +15,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-slate-400 text-[13px] uppercase tracking-widest border-b border-slate-50">
-                        <th class="p-6 font-bold">使用者名稱 / Email</th>
+                        <th class="p-6 font-bold">法號 / Email</th>
                         <th class="p-6 font-bold">對應法號</th>
                         <th class="p-6 font-bold">角色權限</th>
                         <th class="p-6 font-bold text-right">操作</th>
@@ -64,8 +64,8 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-1.5">
-                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">顯示名稱</label>
-                                <input v-model="form.name" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold" placeholder="姓名">
+                                <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">法號 (顯示名稱)</label>
+                                <input v-model="form.name" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold" placeholder="輸入法號">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">權限角色</label>

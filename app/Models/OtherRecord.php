@@ -12,7 +12,7 @@ class OtherRecord extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'other_folder_id', 'title', 'content', 'record_date', 'extra_data'
+        'user_id', 'other_folder_id', 'title', 'content', 'record_date', 'extra_data'
     ];
 
     protected $casts = [

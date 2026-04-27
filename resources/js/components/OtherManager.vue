@@ -7,7 +7,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="font-black tracking-tight" style="color: #0f172a !important; font-size: 25px !important;">其他專區資料夾</h2>
+                    <h2 class="font-black tracking-tight cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 25px !important;">其他專區資料夾</h2>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -90,7 +90,7 @@
                         <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-1 -ml-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
+                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 25px !important;">
                             其他專區
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                 <random-group v-else-if="activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
                 
                 <!-- Default View: Standard Records -->
-                <div v-else class="max-w-4xl mx-auto w-full p-6">
+                <div v-else class="max-w-4xl mx-auto w-full px-[10px] py-6">
                     <div class="space-y-4">
                         <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
                             <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
@@ -224,7 +224,21 @@ import RandomGroup from './RandomGroup.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import LuckyDraw from './LuckyDraw.vue';
 
+const getTodayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 const emit = defineEmits(['goHome']);
+
+const resetToRoot = () => {
+    activeFolderId.value = null;
+    showRandomGroup.value = false;
+    showLuckyDraw.value = false;
+    searchQuery.value = '';
+    focusedId.value = null;
+    addMode.value = false;
+};
 
 const props = defineProps({
     user: Object
@@ -241,7 +255,7 @@ const activeAction = ref('');
 
 const newFolderName = ref('');
 const newFolderColor = ref('#6366f1');
-const newRecord = ref({ title: '', content: '', record_date: new Date().toISOString().split('T')[0] });
+const newRecord = ref({ title: '', content: '', record_date: getTodayStr() });
 
 const sortedFolders = computed(() => {
     return [...folders.value].sort((a, b) => {
@@ -293,7 +307,7 @@ const deleteFolder = async (id) => {
 const saveRecord = async () => {
     if (!newRecord.value.content) return;
     await axios.post(`/other-folders/${activeFolderId.value}/records`, newRecord.value);
-    newRecord.value = { title: '', content: '', record_date: new Date().toISOString().split('T')[0] };
+    newRecord.value = { title: '', content: '', record_date: getTodayStr() };
     showAddRecord.value = false;
     await loadData();
 };
@@ -306,7 +320,17 @@ const deleteRecord = async (id) => {
 
 const formatDate = (dateString) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+    const s = String(dateString).split('T')[0].trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
+            return `${y}/${m}/${d}`;
+        }
+    }
+    return s.replace(/-/g, '/');
 };
 
 const prepareAddFolder = () => {

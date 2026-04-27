@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
         return \App\Models\Master::select('id', 'name')->get();
     });
     Route::get('/api/groups-list', function () {
-        return \App\Models\Group::with('dharmaNames:id,name')->select('id', 'name')->get();
+        return \App\Models\Group::with(['dharmaNames:id,name,order', 'dharmaNames.groups:id,name'])->select('id', 'name')->get();
     });
     Route::get('/api/users-list', function () {
         return \App\Models\User::select('id', 'name')->get();

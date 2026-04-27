@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
@@ -26,7 +26,7 @@
                 </button>
                 <div class="flex flex-col min-w-0">
                     <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
-                        {{ currentCategory === 'major' ? '?之??餉?蝪? : '?嗡???餉?蝪? }} - {{ currentFolder.name }}
+                        {{ currentFolder.name + (addMode ? '-新增載錄' : '') }}
                     </span>
                 </div>
             </div>
@@ -910,8 +910,8 @@ const saveSingle = async (data) => {
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     } catch (e) {
         console.error(e);
-        const errorMsg = e.response?.data?.error || e.response?.data?.message || '?脣?憭望?嚗?瑼Ｘ鞈?';
-        persistentToast.value = { msg: '??' + errorMsg, type: 'error' };
+        const errorMsg = e.response?.data?.error || e.response?.data?.message || '儲存失敗，請檢查資料格式';
+        persistentToast.value = { msg: '錯誤：' + errorMsg, type: 'error' };
     } finally {
         isSaving.value = false;
     }
@@ -1125,7 +1125,7 @@ const triggerBatchSave = async (batchData) => {
                                 }
 
                                 if (relMatch) {
-                                    const finalDate = lineDate || blockDate || new Date().toISOString().split('T')[0];
+                                    const finalDate = lineDate || blockDate || new Date().toLocaleDateString('sv-SE');
                                     const dStr = finalDate.replace(/-/g, '/');
                                     return { custom_name: relMatch[1], remarks: `${dStr} ${translated}`, obtained_date: finalDate };
                                 }
@@ -1366,7 +1366,21 @@ const moveRegistryItem = async (item, direction) => {
     await handleReorder(item, targetIdx + 1);
 };
 
-const formatDate = (d) => d ? new Date(d).toLocaleDateString('zh-TW') : '-';
+const formatDate = (d) => {
+    if (!d) return '-';
+    // Use string splitting instead of new Date() to avoid timezone-related day shifts
+    const s = String(d).trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d_val = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d_val))) {
+            return `${y}/${m}/${d_val}`;
+        }
+    }
+    return s.replace(/-/g, '/');
+};
 
 const copyToLine = (item) => {
     // Collect records from either the saved state or the active edit state

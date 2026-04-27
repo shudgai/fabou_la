@@ -25,12 +25,12 @@
                     <!-- Row 1: 得知日期 -->
                     <div class="space-y-0.5 mt-[-5px]">
                         <label class="app-title ml-1">得知日期</label>
-                        <div @click.stop="activeDate = 'know_date'" 
-                            class="w-full py-[5px] rounded-lg bg-white border border-slate-400 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
-                            <span :class="form.know_date ? 'text-slate-900' : 'text-slate-400'" class="app-body">
-                                {{ (form.know_date ? (form.know_date.split('T')[0]) : '選擇日期').replace(/-/g, '/') }}
-                            </span>
-                            <svg class="h-3 w-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <div class="relative flex items-center">
+                            <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-body font-bold">
+                            <button @click.stop="activeDate = 'know_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
                         </div>
                     </div>
 
@@ -38,49 +38,53 @@
                     <div class="grid grid-cols-2 gap-[15px]">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">法號</label>
-                            <input v-model="form.user_name" type="text" list="user-list" placeholder="輸入法號" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
+                            <input v-model="form.user_name" type="text" list="user-list" placeholder="輸入法號" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
                             <datalist id="user-list">
                                 <option v-for="u in users" :key="u.id" :value="u.name"></option>
                             </datalist>
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
                     <!-- Row 3: 數量 -->
                     <div class="space-y-0.5">
                         <label class="app-title ml-1">數量</label>
-                        <input v-model="form.quantity" type="number" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                        <input v-model="form.quantity" type="number" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                     </div>
 
                     <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
                     <div :class="form.destination === '未處理' ? 'space-y-0.5' : 'grid grid-cols-2 gap-[15px]'">
                         <div v-if="form.destination !== '未處理'" class="space-y-0.5">
                             <label class="app-title ml-1">處理日期</label>
-                            <div @click.stop="activeDate = 'process_date'" 
-                                class="w-full py-[5px] rounded-lg bg-white border border-slate-400 px-2 flex items-center justify-start space-x-2 cursor-pointer shadow-sm overflow-hidden">
-                                <span :class="form.process_date ? 'text-slate-900' : 'text-slate-400'" class="app-body">
-                                    {{ (form.process_date ? (form.process_date.split('T')[0]) : '選擇日期').replace(/-/g, '/') }}
-                                </span>
-                                <svg class="h-3 w-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <div class="relative flex items-center">
+                                <input v-model="form.process_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                    class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-body">
+                                <button @click.stop="activeDate = 'process_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
                         </div>
                         <div class="space-y-0.5 relative">
                             <label class="app-title ml-1">處理結果</label>
                             
-                            <!-- Trigger Button -->
-                            <div @click.stop="showResultPicker = !showResultPicker" 
-                                class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 flex items-center justify-between cursor-pointer shadow-sm active:bg-slate-50 transition-all overflow-hidden">
-                                <span class="app-body" :class="[
-                                    form.destination === '未處理' ? 'text-slate-400' : 
-                                    form.destination === '九天' ? 'text-red-600' : 
-                                    form.destination === '耀紫軍' ? 'text-purple-600' : ''
-                                ]">
-                                    {{ form.destination }}
-                                </span>
-                                <svg class="h-3 w-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <!-- Input with Picker Trigger -->
+                            <div class="relative">
+                                <input v-model="form.destination" 
+                                    type="text" 
+                                    placeholder="選擇或輸入結果..." 
+                                    @click.stop="showResultPicker = true"
+                                    class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-10 focus:ring-0 outline-none shadow-sm app-body font-bold"
+                                    :class="[
+                                        form.destination === '未處理' ? 'text-slate-400' : 
+                                        form.destination === '九天' ? 'text-red-600' : 
+                                        form.destination === '耀紫軍' ? 'text-purple-600' : ''
+                                    ]">
+                                <button @click.stop="showResultPicker = !showResultPicker" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 p-1">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -89,11 +93,11 @@
                     <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻尊</label>
-                            <input v-model.number="form.remarks.yan_zun" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.yan_zun" type="number" placeholder="0" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻闇</label>
-                            <input v-model.number="form.remarks.yan_an" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.yan_an" type="number" placeholder="0" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
@@ -101,18 +105,18 @@
                     <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍勝</label>
-                            <input v-model.number="form.remarks.long_sheng" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.long_sheng" type="number" placeholder="0" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍戰</label>
-                            <input v-model.number="form.remarks.long_zhan" type="number" placeholder="0" @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <input v-model.number="form.remarks.long_zhan" type="number" placeholder="0" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
                         </div>
                     </div>
 
                     <!-- Row 5: 備註文字 -->
                     <div class="space-y-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full py-[5px] rounded-lg border border-slate-400 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body">
                     </div>
 
                 </div>
@@ -122,8 +126,7 @@
             <div class="p-4 bg-white border-t border-slate-50">
                 <button 
                     @click="handleSave" 
-                    style="color: white !important"
-                    class="w-full bg-indigo-600 font-bold py-[10px] text-[20px] rounded-xl hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
+                    class="w-full bg-indigo-600 text-white font-bold py-[10px] text-[20px] rounded-xl hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
@@ -150,7 +153,7 @@
                     <div class="grid grid-cols-2 gap-x-8">
                         <!-- Left Column -->
                         <div class="space-y-6">
-                            <div v-for="opt in ['未處理', '暫驅離', '殲滅']" :key="opt"
+                            <div v-for="opt in ['未處理']" :key="opt"
                                 @click="form.destination = opt; onDestinationChange(); showResultPicker = false"
                                 class="cursor-pointer font-normal text-[17px] leading-tight transition-all active:scale-95"
                                 :class="[

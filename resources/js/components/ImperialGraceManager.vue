@@ -1,8 +1,8 @@
 <template>
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
         <!-- Header (Only show in Folder-view or Item-view) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                     重大皇恩專區
                 </div>
@@ -47,7 +47,7 @@
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
             <div class="px-2 py-4 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
-            <div class="flex-1 pr-12">
+                <div class="flex-1 pr-12 cursor-pointer" @click="resetToRoot">
                     <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
                 </div>
             </div>
@@ -113,7 +113,7 @@
         <!-- Level 1: Folder Selection (Masters Grid) -->
         <div v-if="currentCategory === 'masters' && !currentFolder" class="bg-white group-fade-in">
             <!-- Header Title -->
-            <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px]">
+            <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
                 <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
@@ -203,10 +203,10 @@
                                 <!-- Row 1: Date -->
                                 <div class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
-                                        登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.obtained_date.replace(/-/g, '/') }}</span>
+                                        登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.obtained_date) }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
-                                        得知：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.record_date.replace(/-/g, '/') }}</span>
+                                        得知：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</span>
                                     </template>
                                     <template v-else>
                                         <span class="font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">未知日期</span>
@@ -234,7 +234,7 @@
                         </div>
 
                         <!-- Independent Menu Button (Three Dots) for Collapsed State -->
-                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-2">
+                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+10px)] z-[20] pr-2">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
                                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -275,7 +275,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                    <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ reg.record_date?.replace(/-/g, '/') || '-' }}</div>
+                                    <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</div>
                                 </div>
                                 <div class="space-y-1 text-right pr-8">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
@@ -302,7 +302,7 @@
                                 </div>
                                 <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                    <div class="app-body font-bold text-slate-900">{{ reg.obtained_date?.replace(/-/g, '/') || '-' }}</div>
+                                    <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
                                 </div>
                             </div>
 
@@ -372,6 +372,32 @@ import AddActionMenu from './AddActionMenu.vue';
 import ImperialGraceAddForm from './ImperialGraceAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 
+const resetToRoot = () => {
+    currentCategory.value = null;
+    currentFolder.value = null;
+    searchQuery.value = '';
+    focusedId.value = null;
+    expandedId.value = null;
+    openMenuId.value = null;
+    reorderMode.value = false;
+    addMode.value = null;
+};
+
+const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr || '-';
+    const s = String(dateStr).split('T')[0].trim();
+    const parts = s.split(/[-/]/);
+    if (parts.length === 3) {
+        let y = parts[0];
+        let m = parts[1].padStart(2, '0');
+        let d = parts[2].padStart(2, '0');
+        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
+            return `${y}/${m}/${d}`;
+        }
+    }
+    return s.replace(/-/g, '/');
+};
+
 const emit = defineEmits(['goHome']);
 
 const currentCategory = ref(null); 
@@ -431,11 +457,10 @@ const addActions = computed(() => [
 ]);
 
 const displayTitle = computed(() => {
-    const base = '重大皇恩專區';
     if (currentFolder.value) {
-        return `${currentFolder.value.name}-${base}`;
+        return currentFolder.value.name;
     }
-    return base;
+    return '重大皇恩專區';
 });
 
 const triggerBatchSave = (data) => {
@@ -727,7 +752,7 @@ const prepareAdd = (mode) => {
         name: '', 
         purpose: '', 
         remarks: '', 
-        record_date: mode === 'batch' ? '' : new Date().toISOString().split('T')[0], 
+        record_date: mode === 'batch' ? '' : new Date().toLocaleDateString('sv-SE'), 
         obtained_date: '', 
         status: '未求得' 
     };
@@ -884,7 +909,7 @@ const changeStatus = async (reg, nextStatus) => {
         };
         // Auto-fix date if moving to Obtained or Registered (both require obtained_date in backend)
         if (['已求得', '已登記'].includes(nextStatus) && !payload.obtained_date) {
-            payload.obtained_date = new Date().toISOString().split('T')[0];
+            payload.obtained_date = new Date().toLocaleDateString('sv-SE');
         }
         const res = await axios.put(`/imperial-graces/registry/${reg.id}`, payload);
         await loadData();

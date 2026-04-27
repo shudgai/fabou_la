@@ -14,6 +14,7 @@ class ImperialGrace extends Model
     protected $table = 'imperial_graces';
 
     protected $fillable = [
+        'user_id',
         'master_id',
         'sort_order',
         'name',

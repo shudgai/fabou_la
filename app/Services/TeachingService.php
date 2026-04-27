@@ -9,6 +9,7 @@ class TeachingService
 {
     public function getAll($masterId = null, $perPage = 15)
     {
+        $user = auth()->user();
         $query = Teaching::with(['master', 'dharmaNames', 'user']);
         
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
@@ -16,18 +17,41 @@ class TeachingService
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
         }
+
+        if (!$user->isAdmin()) {
+            $query->where(function($q) use ($user) {
+                $q->where('user_id', $user->id);
+                if ($user->dharma_name_id) {
+                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
+                        $sq->where('dharma_names.id', $user->dharma_name_id);
+                    });
+                }
+            });
+        }
         
         return $query->latest('date')->orderBy('sort_order', 'desc')->latest('id')->paginate($perPage);
     }
 
     public function getPaginatedDates($masterId = null, $perPage = 15)
     {
+        $user = auth()->user();
         $query = Teaching::query();
         
         if ($masterId === 'daily' || $masterId === 0 || $masterId === '0') {
             $query->where('is_daily', 1);
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
+        }
+
+        if (!$user->isAdmin()) {
+            $query->where(function($q) use ($user) {
+                $q->where('user_id', $user->id);
+                if ($user->dharma_name_id) {
+                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
+                        $sq->where('dharma_names.id', $user->dharma_name_id);
+                    });
+                }
+            });
         }
         
         return $query->leftJoin('teaching_dharma_name', 'teachings.id', '=', 'teaching_dharma_name.teaching_id')
@@ -39,6 +63,7 @@ class TeachingService
 
     public function getByDate($date, $masterId = null)
     {
+        $user = auth()->user();
         $query = Teaching::with(['master', 'dharmaNames', 'user'])
             ->where('date', $date);
             
@@ -46,6 +71,17 @@ class TeachingService
             $query->where('is_daily', 1);
         } elseif ($masterId) {
             $this->applyMasterGroupFilter($query, $masterId);
+        }
+
+        if (!$user->isAdmin()) {
+            $query->where(function($q) use ($user) {
+                $q->where('user_id', $user->id);
+                if ($user->dharma_name_id) {
+                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
+                        $sq->where('dharma_names.id', $user->dharma_name_id);
+                    });
+                }
+            });
         }
         
         return $query->orderBy('sort_order', 'desc')->latest()->get();

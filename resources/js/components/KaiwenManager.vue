@@ -6,8 +6,8 @@
             @close="showAddMenu = false"
         />
         <!-- Header (Shared) -->
-        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 15px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2">
+        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[25px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
                     {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : '開文專區' }}
                 </div>
@@ -69,7 +69,7 @@
 
 
         <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar p-3 pb-32 relative z-[1]">
+        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1]">
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 max-w-2xl mx-auto">
                 <!-- Removed top add button -->
@@ -465,8 +465,8 @@
 
             <!-- Center Add Button -->
             <button @click.stop="showAddMenu = true" 
-                class="w-12 h-12 bg-purple-600 text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-all -mt-4 ring-4 ring-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 text-purple-600 bg-purple-50/50">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
@@ -516,7 +516,20 @@ import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
 
+const getTodayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 const emit = defineEmits(['goHome']);
+
+const resetToRoot = () => {
+    addMode.value = null;
+    searchQuery.value = '';
+    showSearch.value = false;
+    expandedIds.value = {};
+    openMenuId.value = null;
+};
 
 const currentTab = ref('weekly'); // 'weekly' or 'self'
 const weeklyPosts = ref([]);
@@ -767,7 +780,7 @@ const openAddMode = (type) => {
     formTab.value = 'original';
     weeklyLines.value = Array(14).fill('');
     form.value = {
-        date: new Date().toISOString().split('T')[0],
+        date: getTodayStr(),
         status: null,
         message_type: type === 'self' ? '' : undefined,
         original_content: '',

@@ -18,13 +18,24 @@ class TrashController extends Controller
         // Auto-cleanup for testing JIT
         $this->cleanup();
 
+        $user = auth()->user();
+        $isAdmin = $user->isAdmin();
+
+        $queryFn = function($modelClass) use ($user, $isAdmin) {
+            $q = $modelClass::onlyTrashed();
+            if (!$isAdmin) {
+                $q->where('user_id', $user->id);
+            }
+            return $q;
+        };
+
         // Fetch all soft deleted items
-        $graces = ImperialGrace::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'grace', 'type_label' => '重大皇恩']));
-        $teachings = Teaching::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'teaching', 'type_label' => '父皇仙師開示']));
-        $grudges = Grudge::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'grudge', 'type_label' => '怨靈']));
-        $military = MilitaryRecord::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'military', 'type_label' => '軍隊']));
-        $others = OtherRecord::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'other', 'type_label' => '其他']));
-        $registries = Registry::onlyTrashed()->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'registry', 'type_label' => '法寶登記']));
+        $graces = $queryFn(ImperialGrace::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'grace', 'type_label' => '重大皇恩']));
+        $teachings = $queryFn(Teaching::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'teaching', 'type_label' => '父皇仙師開示']));
+        $grudges = $queryFn(Grudge::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'grudge', 'type_label' => '怨靈']));
+        $military = $queryFn(MilitaryRecord::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'military', 'type_label' => '軍隊']));
+        $others = $queryFn(OtherRecord::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'other', 'type_label' => '其他']));
+        $registries = $queryFn(Registry::class)->get()->map(fn($i) => array_merge($i->toArray(), ['type' => 'registry', 'type_label' => '法寶登記']));
 
         return collect([$graces, $teachings, $grudges, $military, $others, $registries])->flatten(1)->sortByDesc('deleted_at')->values();
     }
@@ -33,12 +44,18 @@ class TrashController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+        $user = auth()->user();
 
         $model = $this->getModel($type);
         if (!$model) return response()->json(['error' => 'Invalid type'], 400);
 
         $item = $model::onlyTrashed()->find($id);
-        if ($item) $item->restore();
+        if ($item) {
+            if (!$user->isAdmin() && $item->user_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            $item->restore();
+        }
 
         return response()->json(['success' => true]);
     }
@@ -47,12 +64,18 @@ class TrashController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+        $user = auth()->user();
 
         $model = $this->getModel($type);
         if (!$model) return response()->json(['error' => 'Invalid type'], 400);
 
         $item = $model::onlyTrashed()->find($id);
-        if ($item) $item->forceDelete();
+        if ($item) {
+            if (!$user->isAdmin() && $item->user_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            $item->forceDelete();
+        }
 
         return response()->json(['success' => true]);
     }

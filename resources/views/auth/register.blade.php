@@ -22,14 +22,14 @@
 
                 <!-- Name field -->
                 <div class="space-y-1.5">
-                    <label for="name" class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">真實姓名 / 稱呼</label>
+                    <label for="name" class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">法號</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <input id="name" type="text" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus
                             class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500/20 transition-all placeholder-slate-300 @error('name') ring-2 ring-red-500/20 @enderror"
-                            placeholder="請輸入您的姓名">
+                            placeholder="請輸入您的法號">
                     </div>
                     @error('name')
                         <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
