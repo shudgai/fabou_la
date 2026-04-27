@@ -162,7 +162,7 @@
             </div>
 
             <!-- Level 1.5: Subfolders for Masters -->
-            <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="currentCategory === 'masters' && !currentFolder" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+            <div v-else-if="currentCategory === 'masters' && !currentFolder" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
                 <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-10">
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -202,7 +202,7 @@
             </div>
 
             <!-- Level 2: List & Add View -->
-            <template v-else-if="!activeModalGroup && !currentMatchedGroup">
+            <template v-else>
                 <!-- Add View -->
                 <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
                     <div class="bg-white w-full h-full relative flex flex-col">
@@ -258,17 +258,17 @@
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
-                                                <div v-for="g in mainSearchFilteredGroups" :key="'g'+g.id"
-                                                     @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
-                                                    {{ formatGroupName(g.name) }}
-                                                </div>
                                                 <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
                                                 <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn'+dn.id"
                                                      @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ dn.name }}
+                                                </div>
+                                                <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
+                                                <div v-for="g in mainSearchFilteredGroups" :key="'g'+g.id"
+                                                     @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ formatGroupName(g.name) }}
                                                 </div>
                                             </div>
                                         </div>
@@ -298,7 +298,7 @@
                                             </template>
                                             
                                             <!-- Individual Mode -->
-                                            <template v-else-if="!activeModalGroup && !currentMatchedGroup">
+                                            <template v-else>
                                                 <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
                                                      class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl app-body flex items-center shadow-sm hover:border-indigo-200 transition-colors">
                                                     <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-slate-300 hover:text-red-500 transition-colors">
@@ -319,7 +319,7 @@
                                     </div>
                                 </div>
                             </template>
-                            <template v-else-if="!activeModalGroup && !currentMatchedGroup">
+                            <template v-else>
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
                                     <div class="flex space-x-2">
@@ -438,7 +438,7 @@
                                                             </div>
                                                         </div>
                                                     </template>
-                                                    <button v-else-if="!activeModalGroup && !currentMatchedGroup"-if="group.length > 1" @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 text-[13px]">✕ (空內容)</button>
+                                                    <button v-else-if="group.length > 1" @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 text-[13px]">✕ (空內容)</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -448,13 +448,13 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
                                             </button>
                                         </div>
-                                        <div class="w-10 shrink-0" v-else-if="!activeModalGroup && !currentMatchedGroup"></div>
+                                        <div class="w-10 shrink-0" v-else></div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Empty State -->
-                            <div v-else-if="!activeModalGroup && !currentMatchedGroup" class="py-20 flex flex-col items-center justify-center text-slate-300">
+                            <div v-else class="py-20 flex flex-col items-center justify-center text-slate-300">
                                 <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
@@ -517,7 +517,7 @@
                                         <span v-if="activeBatchIndex !== null" class="ml-1 text-[13px] font-black truncate text-slate-400">
                                             (<span class="text-blue-600">{{ getRecipientName(batchRecords[activeBatchIndex]) }}</span>)
                                         </span>
-                                        <span v-else-if="!activeModalGroup && !currentMatchedGroup"-if="form.dharma_name_ids.length > 0 || form.target_remarks" class="ml-1 text-[13px] font-black truncate text-slate-400">
+                                        <span v-else-if="form.dharma_name_ids.length > 0 || form.target_remarks" class="ml-1 text-[13px] font-black truncate text-slate-400">
                                             (<span class="text-blue-600">{{ getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks}) }}</span>)
                                         </span>
                                     </div>
@@ -615,7 +615,7 @@
                                         </div>
                                     </div>
 
-                                    <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemCategory === '金丹'" class="grid grid-cols-3 gap-2">
+                                    <div v-else-if="magicItemCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
                                             <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
@@ -640,7 +640,7 @@
                                     </div>
 
                                     <!-- TALISMANS / SHUWUN / TAI-LING -->
-                                    <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemCategory === '符令' || magicItemCategory === '太令'" class="space-y-2.5">
+                                    <div v-else-if="magicItemCategory === '符令' || magicItemCategory === '太令'" class="space-y-2.5">
                                         <div class="grid grid-cols-2 gap-2">
                                             <div class="space-y-1">
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
@@ -672,7 +672,7 @@
                                     </div>
 
                                     <!-- INCENSE COIL (Strict search) -->
-                                    <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemCategory === '香環'" class="grid grid-cols-2 gap-2">
+                                    <div v-else-if="magicItemCategory === '香環'" class="grid grid-cols-2 gap-2">
                                         <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[10px]">
                                             <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
@@ -684,7 +684,7 @@
                                     </div>
 
                                     <!-- FU-LU INCENSE -->
-                                    <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemCategory === '福祿香'" class="grid grid-cols-2 gap-2">
+                                    <div v-else-if="magicItemCategory === '福祿香'" class="grid grid-cols-2 gap-2">
                                         <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[10px]">
                                             <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
@@ -832,7 +832,7 @@
                                             </div>
                                         </div>
 
-                                        <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemSubCategory === '金丹'" class="grid grid-cols-3 gap-2">
+                                        <div v-else-if="magicItemSubCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
                                                     <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
@@ -855,7 +855,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemSubCategory === '符令' || magicItemSubCategory === '太令'" class="space-y-2.5">
+                                            <div v-else-if="magicItemSubCategory === '符令' || magicItemSubCategory === '太令'" class="space-y-2.5">
                                                 <div class="grid grid-cols-2 gap-2">
                                                     <div class="space-y-1">
                                                         <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
@@ -885,7 +885,7 @@
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemSubCategory === '香環'" class="grid grid-cols-2 gap-2">
+                                            <div v-else-if="magicItemSubCategory === '香環'" class="grid grid-cols-2 gap-2">
                                                 <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[10px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
@@ -895,7 +895,7 @@
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">盒</span>
                                                 </div>
                                             </div>
-                                            <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="magicItemSubCategory === '福祿香'" class="grid grid-cols-2 gap-2">
+                                            <div v-else-if="magicItemSubCategory === '福祿香'" class="grid grid-cols-2 gap-2">
                                                 <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-4 py-[10px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
@@ -1048,7 +1048,7 @@
                                                     <div class="flex flex-col flex-1 min-w-0">
                                                         <div class="flex items-center">
                                                             <span v-if="m.name" class="font-bold text-slate-700 truncate">{{ m.name }}</span>
-                                                            <span v-else-if="!activeModalGroup && !currentMatchedGroup"-if="!getMainDetails(group)" class="font-bold text-slate-700 truncate">項目</span>
+                                                            <span v-else-if="!getMainDetails(group)" class="font-bold text-slate-700 truncate">項目</span>
                                                             
                                                             <span v-if="m.details && (m.name || !getMainDetails(group))" class="ml-1.5 text-indigo-600 font-black">
                                                                 {{ m.details }}
@@ -1071,7 +1071,7 @@
                         </div>
                         
                         <!-- Empty State -->
-                        <div v-else-if="!activeModalGroup && !currentMatchedGroup" class="py-20 flex flex-col items-center justify-center text-slate-300">
+                        <div v-else class="py-20 flex flex-col items-center justify-center text-slate-300">
                             <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </div>
@@ -1273,7 +1273,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else-if="!activeModalGroup && !currentMatchedGroup"-if="activeModalGroup" class="grid grid-cols-2 gap-3">
+                            <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
                                 <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
                                      class="flex items-center px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100">
                                     <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-300 hover:text-red-500 transition-colors shrink-0">
@@ -1328,7 +1328,7 @@
                 <!-- Main List View -->
                 <div v-show="!addMode" class="pb-32 flex-1 overflow-y-auto bg-white" @click="focusedId = null; activeDropdownId = null" @scroll="handleScroll">
                     <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
-                    <div v-else-if="!activeModalGroup && !currentMatchedGroup" class="space-y-0 mt-0">
+                    <div v-else class="space-y-0 mt-0">
                         <!-- Date-Based Accordion: Grouping by Daily sessions -->
                         <template v-for="dateGroup in recordsByDate" :key="dateGroup.date">
                             <!-- Date Header: Collapsed by Default -->
@@ -1361,7 +1361,7 @@
                                             <div v-if="!reorderMode" class="w-7 h-7 flex items-center justify-center text-[18px] font-black text-slate-400 font-outfit">
                                                 {{ index + 1 }}
                                             </div>
-                                            <input v-else-if="!activeModalGroup && !currentMatchedGroup" 
+                                            <input v-else 
                                                    type="number" 
                                                    :value="index + 1"
                                                    @click.stop
@@ -1380,7 +1380,7 @@
                                             <!-- Request 2: Content/Item Summary in List Header -->
                                             <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[17px] font-normal truncate font-outfit" style="color: #0f172a !important;">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
-                                                <span v-else-if="!activeModalGroup && !currentMatchedGroup"-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
+                                                <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1462,7 +1462,7 @@
                                                                 <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
                                                                     <template v-if="m.name">
                                                                         <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
-                                                                        <span v-else-if="!activeModalGroup && !currentMatchedGroup">{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[14px] text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
+                                                                        <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[14px] text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
                                                                         <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
                                                                     </template>
                                                                 </div>
@@ -2356,7 +2356,7 @@ const uniqueDharmaNames = computed(() => {
     const names = (dharmaNames.value || []).map(d => (d.name || '').trim());
     return [...new Set(names.filter(n => n))];
 });
-const armyOrder = ['虎寅軍', '虎甲軍', '黑曜軍'];
+const armyOrder = ['虎賁軍', '虎甲軍', '黑曜軍'];
 const palaceOrder = ['玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮', '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'];
 
 const palaceDharmaMapping = computed(() => {
@@ -2529,7 +2529,7 @@ const activeModalGroupGrouped = computed(() => {
         if (pIdx !== undefined) palacesFound.add(pIdx);
     });
 
-    if (!isPositionGroup && palacesFound.size <= 1) return [];
+    if ((!isPositionGroup && palacesFound.size <= 1) || name === '世代交替' || name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(name)) return [];
 
     const grouped = [];
     const currentOrder = name.includes('元帥') ? armyOrder : palaceOrder;
@@ -2557,7 +2557,7 @@ const mainSearchFilteredDharmaNames = computed(() => {
 });
 
 const palacePrioritizedGroups = computed(() => {
-    const armyOrder = ['虎寅軍', '虎甲軍', '黑曜軍'];
+    const armyOrder = ['虎賁軍', '虎甲軍', '黑曜軍'];
 const palaceOrder = [
         '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮', 
         '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
@@ -2863,6 +2863,9 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
 
 const triggerGroupSelection = (group) => {
     activeModalGroup.value = group;
+        if (group.name === '世代交替' || group.name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(group.name)) {
+        group.dharma_names.sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+    }
     const memberIds = (group.dharma_names || []).map(dn => dn.id);
     form.value.dharma_name_ids = memberIds;
     dharmaSearchQuery.value = formatGroupName(group.name);
@@ -2928,6 +2931,9 @@ const toggleDharmaName = (id) => {
 };
 
 const toggleGroupSelection = (group) => {
+        if (group.name === '世代交替' || group.name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(group.name)) {
+        group.dharma_names.sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+    }
     const memberIds = (group.dharma_names || []).map(dn => dn.id);
     const allSelected = memberIds.every(id => form.value.dharma_name_ids.includes(id));
     if (allSelected) { form.value.dharma_name_ids = form.value.dharma_name_ids.filter(id => !memberIds.includes(id)); }
