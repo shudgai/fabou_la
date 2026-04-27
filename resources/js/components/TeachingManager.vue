@@ -483,11 +483,11 @@
                             <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[3px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
-                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[20px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
+                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[10px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
                                     <span>降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[20px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -1284,7 +1284,7 @@
                             </div>
                         </div>
                         <div class="p-6 border-t border-slate-100 bg-white">
-                            <button @click.prevent="showGroupMembersModal = false" class="w-full py-4 bg-amber-100 text-amber-900 border border-amber-200 rounded-2xl font-bold text-[18px] active:scale-95 transition-all shadow-sm">
+                            <button @click.prevent="showGroupMembersModal = false" class="w-full py-[10px] bg-amber-100 text-amber-900 border border-amber-200 rounded-2xl font-bold text-[18px] active:scale-95 transition-all shadow-sm">
                                 關閉預覽
                             </button>
                         </div>
@@ -1808,6 +1808,13 @@ const formatValue = (val, unit) => {
     if (val === '1' || val === 1) return '一次性';
     return val ? `${val}${unit}` : '';
 };
+const getRoleOrder = (member) => {
+    const groupNames = (member.groups || []).map(g => g.name);
+    if (groupNames.includes('宮主')) return 1;
+    if (groupNames.includes('副宮主')) return 2;
+    return 3;
+};
+
 const stripMasterPrefix = (name) => {
     if (!name) return '';
     const parts = name.split(':');
@@ -2529,7 +2536,7 @@ const activeModalGroupGrouped = computed(() => {
         if (pIdx !== undefined) palacesFound.add(pIdx);
     });
 
-    if ((!isPositionGroup && palacesFound.size <= 1) || name === '世代交替' || name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(name)) return [];
+    if ((!isPositionGroup && palacesFound.size <= 1) || name === '世代交替' || name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈', '全體殿生'].includes(name)) return [];
 
     const grouped = [];
     const currentOrder = name.includes('元帥') ? armyOrder : palaceOrder;
@@ -2863,9 +2870,14 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
 
 const triggerGroupSelection = (group) => {
     activeModalGroup.value = group;
-        if (group.name === '世代交替' || group.name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(group.name)) {
-        group.dharma_names.sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
-    }
+
+        // Sort by Role (Master > Vice > Member) then by Palace/Name Order
+    group.dharma_names.sort((a, b) => {
+        const roleA = getRoleOrder(a);
+        const roleB = getRoleOrder(b);
+        if (roleA !== roleB) return roleA - roleB;
+        return (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
+    });
     const memberIds = (group.dharma_names || []).map(dn => dn.id);
     form.value.dharma_name_ids = memberIds;
     dharmaSearchQuery.value = formatGroupName(group.name);
@@ -2931,9 +2943,14 @@ const toggleDharmaName = (id) => {
 };
 
 const toggleGroupSelection = (group) => {
-        if (group.name === '世代交替' || group.name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈'].includes(group.name)) {
-        group.dharma_names.sort((a, b) => (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
-    }
+
+        // Sort by Role (Master > Vice > Member) then by Palace/Name Order
+    group.dharma_names.sort((a, b) => {
+        const roleA = getRoleOrder(a);
+        const roleB = getRoleOrder(b);
+        if (roleA !== roleB) return roleA - roleB;
+        return (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
+    });
     const memberIds = (group.dharma_names || []).map(dn => dn.id);
     const allSelected = memberIds.every(id => form.value.dharma_name_ids.includes(id));
     if (allSelected) { form.value.dharma_name_ids = form.value.dharma_name_ids.filter(id => !memberIds.includes(id)); }
