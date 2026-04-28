@@ -38,7 +38,13 @@
                         :style="getPendingStyle(user.name)"
                         :data-name="user.name"
                     >
-                        <span class="truncate leading-none pointer-events-none">{{ user.name }}</span>
+                        <span class="truncate leading-none pointer-events-none relative">
+                            {{ user.name }}
+                            <span v-if="pendingNames.includes(user.name)" 
+                                class="absolute -top-3.5 -right-3 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center border border-white shadow-sm font-black">
+                                {{ pendingNames.indexOf(user.name) + 1 }}
+                            </span>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -48,10 +54,11 @@
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
-                    class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white"
+                    class="w-full py-[12px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white shadow-sm disabled:opacity-50"
                     :style="{
-                        background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
-                        boxShadow: 'none',
+                        background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#a7f3d0' : '#c7d2fe'),
+                        color: '#ffffff !important',
+                        textShadow: '0 1px 3px rgba(0,0,0,0.3)'
                     }"
                 >
                     <span v-if="!selectionFiltered" style="color: #ffffff !important;">確定 (已選 {{ pendingNames.length }} 人)</span>
@@ -126,17 +133,18 @@
                         <div class="flex-1 flex flex-col space-y-1 pt-0.5">
                             <div class="flex items-center space-x-1">
                                 <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-none w-36">
-                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-400 font-black text-[18px] shadow-none border-none">−</button>
+                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-300 font-black text-[18px] shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">−</button>
                                     <input 
                                         type="number" 
                                         v-model.number="pickSize" 
                                         @blur="pickSize = Math.max(1, Math.min(selectedNames.length, pickSize || 1))"
                                         class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
                                     >
-                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-400 font-black text-[18px] shadow-none border-none">＋</button>
+                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-300 font-black text-[18px] shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">＋</button>
                                 </div>
                                 <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
-                                    class="py-[10px] px-3 font-black text-[13px] rounded-lg bg-amber-500 text-white shadow-none active:scale-95 disabled:opacity-30 whitespace-nowrap">
+                                    class="py-[10px] px-3 font-black text-[13px] rounded-lg bg-amber-200 text-white shadow-sm active:scale-95 disabled:opacity-30 whitespace-nowrap"
+                                    style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
                                     {{ guardianResults.length > 0 ? '加抽人員' : '隨機抽' }}
                                 </button>
                             </div>
@@ -220,7 +228,7 @@
                         <div class="space-y-1.5">
                             <label class="text-[17px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
                             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-14 bg-slate-50/50">
-                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-400 font-black text-[20px] transition-colors shadow-none border-none">−</button>
+                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-300 font-black text-[20px] transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">−</button>
                                 <div class="flex-1 flex flex-col items-center justify-center">
                                     <input 
                                         type="number" 
@@ -229,7 +237,7 @@
                                         class="text-[20px] font-black text-slate-800 leading-none bg-transparent outline-none text-center w-full"
                                     >
                                 </div>
-                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-400 font-black text-[20px] transition-colors shadow-none border-none">＋</button>
+                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-300 font-black text-[20px] transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">＋</button>
                             </div>
                         </div>
                     </div>
@@ -252,7 +260,7 @@
                     <div v-if="guardianResults.length > 0 && !isDrawing" class="bg-amber-50 p-1.5 rounded-2xl border border-amber-200/50">
                         <div class="flex items-center justify-between mb-1">
                             <h4 class="text-[15px] font-black text-amber-600 tracking-wider uppercase">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
-                            <button @click="clearGuardians" class="text-[12px] font-black text-white bg-amber-500 px-3 py-[10px] rounded-full shadow-none">重抽</button>
+
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-0.5">
                             <div v-for="name in guardianResults" :key="'guard'+name" class="text-amber-700 font-black text-[17px]">{{ name }}</div>
@@ -262,9 +270,9 @@
                         <div class="flex items-center justify-between py-3">
                             <h4 class="text-[13px] font-black text-slate-400 tracking-wider uppercase">分組名冊</h4>
                             <div class="flex items-center space-x-2">
-                                <button @click="redrawAll" class="text-[11px] font-black text-white bg-rose-500 px-2 py-[10px] rounded-full shadow-none border-none"><span>重抽</span></button>
-                                <button @click="copyResult" class="text-[11px] font-black text-white bg-emerald-500 flex items-center space-x-1 shadow-none border-none px-2 py-[10px] rounded-full"><span>複製名單</span></button>
-                                <button @click="groups = []" class="text-[11px] font-black text-white bg-slate-400 px-3 py-[10px] rounded-full shadow-none">隱藏</button>
+                                <button @click="redrawAll" class="text-[11px] font-black text-white bg-rose-200 px-2 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"><span>重抽</span></button>
+                                <button @click="copyResult" class="text-[11px] font-black text-white bg-emerald-200 flex items-center space-x-1 shadow-sm border-none px-2 py-[10px] rounded-full transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"><span>複製名單</span></button>
+                                <button @click="groups = []" class="text-[11px] font-black text-white bg-slate-300 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">隱藏</button>
                             </div>
                         </div>
                         <div class="grid gap-1">
@@ -283,8 +291,8 @@
                     <button
                         @click="doGrouping"
                         :disabled="selectedNames.length < 1 || isDrawing"
-                        class="w-full py-[10px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-none"
-                        style="background: #4f46e5; color: #ffffff;"
+                        class="w-full py-[12px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-sm"
+                        style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);"
                     >
                         <span style="color: #ffffff !important;">開始分組演算</span>
                     </button>
@@ -360,10 +368,11 @@
                 <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h2 class="flex-1 font-black" style="color: #0f172a !important; font-size: 25px !important;">分組結果</h2>
+                <h2 class="flex-1 font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 22px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
-                    <button @click="redrawAll" class="text-[12px] font-black text-white bg-rose-500 px-3 py-[10px] rounded-full shadow-none border-none">重抽</button>
-                    <button @click="copyResult" class="text-[12px] font-black text-white bg-emerald-500 px-3 py-[10px] rounded-full shadow-none border-none">複製</button>
+                    <button @click="handleNextRound" class="text-[17px] font-black text-white bg-indigo-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">下一輪</button>
+                    <button @click="redrawAll" class="text-[17px] font-black text-white bg-rose-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重抽</button>
+                    <button @click="copyResult" class="text-[17px] font-black text-white bg-emerald-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-24">
@@ -383,8 +392,8 @@
                             <span :class="['text-[14px] font-black', group.isSeed ? 'text-amber-700' : 'text-slate-900']">{{ group.name }}</span>
                             <span :class="['text-[12px] font-bold', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.members.length }} 人</span>
                         </div>
-                        <div class="flex flex-wrap gap-x-4 gap-y-0">
-                            <span v-for="member in group.members" :key="member" :class="['text-[20px] font-black', group.isSeed ? 'text-amber-900' : 'text-black']">{{ member }}</span>
+                        <div class="flex flex-wrap gap-x-4 gap-y-1">
+                            <span v-for="member in group.members" :key="member" :class="['text-[17px] font-black', group.isSeed ? 'text-amber-900' : 'text-black']">{{ member }}</span>
                         </div>
                     </div>
                 </div>
@@ -413,6 +422,12 @@ const pickSize = ref(1);
 const includeGuardians = ref(false);
 
 const currentStep = ref(1);
+
+const handleNextRound = () => {
+    groups.value = [];
+    guardianResults.value = [];
+    currentStep.value = 2;
+};
 
 const guardianQuery = ref('');
 const isGDropdownOpen = ref(false);
@@ -466,7 +481,16 @@ const stopDrag = () => {
     window.removeEventListener('mouseup', stopDrag);
 };
 
-const STORAGE_KEY = 'fabou_random_group_draft_v2';
+const STORAGE_KEY_PENDING = 'fabou_random_group_pending_v3';
+const STORAGE_KEY_SELECTED = 'fabou_random_group_selected_v3';
+
+watch(pendingNames, (val) => {
+    localStorage.setItem(STORAGE_KEY_PENDING, JSON.stringify(val));
+}, { deep: true });
+
+watch(selectedNames, (val) => {
+    localStorage.setItem(STORAGE_KEY_SELECTED, JSON.stringify(val));
+}, { deep: true });
 
 // Show all users, or only selected ones after first confirm
 const selectionFiltered = ref(false);
@@ -503,14 +527,17 @@ const getPendingStyle = (name) => {
     const isSelected = pendingNames.value.includes(t);
     if (isSelected) {
         return {
-            backgroundColor: '#bfdbfe', // Light Blue for Selected
-            color: '#000000',
-            border: '2px solid #93c5fd'
+            backgroundColor: '#2563eb', // Professional Blue for SELECTED
+            color: '#ffffff !important',
+            borderColor: '#fbbf24',
+            borderWidth: '3px',
+            boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+            zIndex: '5'
         };
     } else {
         return {
-            backgroundColor: '#ffffff', // White for Unselected
-            color: '#000000', // Black text
+            backgroundColor: '#ffffff',
+            color: '#000000',
             border: '1px solid #d1d5db',
             textShadow: 'none'
         };
@@ -623,9 +650,21 @@ const loadUsers = async () => {
         }
         users.value = processed;
         
-        // Select all by default as per user request
-        pendingNames.value = processed.map(u => u.name);
+        // Load from storage or default
+        const savedPending = localStorage.getItem(STORAGE_KEY_PENDING);
+        if (savedPending) {
+            pendingNames.value = JSON.parse(savedPending);
+        } else {
+            pendingNames.value = processed.map(u => u.name);
+        }
+
+        const savedSelected = localStorage.getItem(STORAGE_KEY_SELECTED);
+        if (savedSelected) {
+            selectedNames.value = JSON.parse(savedSelected);
+        }
+
         selectionFiltered.value = false;
+        currentStep.value = 1; // Always start on Step 1 as requested
     } catch (e) { console.error('Failed to load users', e); }
 };
 

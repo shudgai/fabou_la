@@ -41,8 +41,8 @@
                     </div>
                 </button>
 
-                <!-- Lucky Draw Tool Button (RED FOLDER STYLE) -->
-                <button @click="showLuckyDraw = true"
+                <!-- Lucky Draw - Direct Sort (RED FOLDER STYLE) -->
+                <button @click="luckyDrawInitialMode = false; showLuckyDraw = true"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
                     style="background-color: rgb(255, 250, 205);">
                     <div class="relative w-[280px] h-[280px]">
@@ -60,7 +60,32 @@
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                             <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 22px !important;">
-                                抽順序
+                                直接排列
+                            </span>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Lucky Draw - Round Lottery (EMERALD FOLDER STYLE) -->
+                <button @click="luckyDrawInitialMode = true; showLuckyDraw = true"
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
+                    style="background-color: rgb(255, 250, 205);">
+                    <div class="relative w-[280px] h-[280px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                            <defs>
+                                <linearGradient id="roundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:rgb(52, 211, 153);stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:rgb(16, 185, 129);stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgb(5, 150, 105);stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#roundGrad)" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#roundGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 22px !important;">
+                                回合抽籤
                             </span>
                         </div>
                     </div>
@@ -71,11 +96,12 @@
             <mobile-navbar 
                 :can-back="true"
                 :show-action="true"
-                :action-disabled="true"
+                :action-disabled="false"
                 :can-search="false"
                 :can-more="false"
                 @back="$emit('goHome')"
                 @home="$emit('goHome')"
+                @action="prepareAddFolder"
             />
         </div>
 
@@ -130,7 +156,7 @@
                 <random-group v-else-if="activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
                 
                 <!-- Default View: Standard Records -->
-                <div v-else class="max-w-4xl mx-auto w-full px-[10px] py-6">
+                <div v-else class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
                     <div class="space-y-4">
                         <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
                             <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
@@ -163,23 +189,17 @@
             <mobile-navbar 
                 :can-back="true"
                 :show-action="!activeFolder?.name.includes('開文核定') && !activeFolder?.name.includes('隨機分組')"
-                :action-disabled="true"
+                :action-disabled="false"
                 :can-search="false"
                 :can-more="!!activeFolder"
                 @back="activeFolderId = null"
                 @home="$emit('goHome')"
+                @action="prepareAddRecord"
                 @more="handleMore"
             />
         </div>
 
-        <!-- Common Bottom Navbar (Fallback for Level 1) -->
-        <mobile-navbar v-if="!activeFolderId"
-            :can-back="true"
-            :can-home="true"
-            :show-action="false"
-            @back="$emit('goHome')"
-            @home="$emit('goHome')"
-        />
+
 
         <!-- Add Folder Modal -->
         <div v-if="showAddFolder" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -212,7 +232,7 @@
                 </div>
             </div>
         </div>
-        <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
+        <lucky-draw :show="showLuckyDraw" :initial-mode="luckyDrawInitialMode" @close="showLuckyDraw = false" />
     </div>
 </template>
 
@@ -248,6 +268,7 @@ const folders = ref([]);
 const activeFolderId = ref(null);
 const kaiwenRef = ref(null);
 const showLuckyDraw = ref(false);
+const luckyDrawInitialMode = ref(null);
 const showAddFolder = ref(false);
 const showAddRecord = ref(false);
 const randomGroupRef = ref(null);

@@ -441,7 +441,7 @@
                                         </div>
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[40px] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
+                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[7vh] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
                                             <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 text-white rounded-2xl font-black text-[18px]">儲存</button>
                                         </div>
                                     </div>
