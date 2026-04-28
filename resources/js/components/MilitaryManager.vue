@@ -84,13 +84,13 @@
                         @click="toggleDateGroup(group.date)"
                         class="px-3 py-2 bg-slate-50 border-y border-slate-100 flex items-center justify-between sticky top-[48px] z-20 cursor-pointer active:bg-slate-100 transition-colors">
                         <div class="flex items-center">
-                            <svg :class="{'rotate-[-90deg]': !expandedDates.has(group.date)}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            <svg :class="{'rotate-[-90deg]': !expandedDates[group.date]}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
                         </div>
                         <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
                     </div>
 
-                    <div v-if="expandedDates.has(group.date) || focusedId !== null">
+                    <div v-if="expandedDates[group.date] || focusedId !== null">
                         <div v-for="item in group.items" :key="item.id" 
                             v-show="focusedId === null || focusedId === item.id"
                             @click="toggleExpand(item.id)"
@@ -142,7 +142,7 @@
                                 <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">展開詳情</button>
                                     <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                     <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                 </div>
@@ -343,6 +343,8 @@ const folders_list = [
 
 const filteredFolders = computed(() => {
     const allowed = props.user?.permissions?.allowed_armies || [];
+    const isAdmin = props.user?.is_admin || props.user?.role === 'admin' || props.user?.role === '管理員';
+    if (isAdmin) return folders_list;
     return folders_list.filter(f => allowed.includes(f.name));
 });
 
@@ -389,7 +391,8 @@ const toggleFullTotal = () => {
 
 const filteredItems = computed(() => {
     const allowed = props.user?.permissions?.allowed_armies || [];
-    let filtered = items.value.filter(i => allowed.includes(i.army_type) || i.user_id === props.user?.id);
+    const isAdmin = props.user?.is_admin || props.user?.role === 'admin' || props.user?.role === '管理員';
+    let filtered = items.value.filter(i => isAdmin || allowed.includes(i.army_type) || i.user_id === props.user?.id);
 
     if (currentFolder.value) {
         const target = currentFolder.value.name;
@@ -695,11 +698,10 @@ const downloadSingleRecord = (item) => {
 };
 
 const form = ref({});
-const expandedDates = ref(new Set());
+const expandedDates = ref({});
 
 const toggleDateGroup = (date) => {
-    if (expandedDates.value.has(date)) expandedDates.value.delete(date);
-    else expandedDates.value.add(date);
+    expandedDates.value[date] = !expandedDates.value[date];
 };
 
 const loadData = async () => {
@@ -717,6 +719,10 @@ const loadData = async () => {
         items.value = []; 
     } finally { 
         loading.value = false; 
+        // Auto-expand first group if any and nothing is expanded
+        if (groupedItems.value.length > 0 && Object.keys(expandedDates.value).length === 0) {
+            toggleDateGroup(groupedItems.value[0].date);
+        }
     }
 };
 

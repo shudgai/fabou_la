@@ -69,13 +69,23 @@
                 </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1 cursor-pointer" @click="resetToRoot">
                     <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
-                        父皇仙師開示專區
+                        父皇仙師開示資料
                     </div>
                 </div>
                 <div class="absolute right-4 top-1/2 -translate-y-1/2">
                     <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
+                </div>
+            </div>
+
+            <!-- Header 3: Global Add Level -->
+            <div v-if="addMode && currentFolder === null" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full px-3 py-2" style="min-height: 52px;">
+                <button @click="addMode = false" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">父皇仙師開示資料</h2>
                 </div>
             </div>
 
@@ -86,7 +96,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
-                        {{ formatMasterName(currentFolder?.name) + (addMode ? '-新增載錄' : '') }}
+                        {{ formatMasterName(currentFolder?.name) + (addMode ? '-父皇仙師開示資料' : '') }}
                     </h2>
                 </div>
                 <div v-if="!addMode" class="ml-2 flex items-center">
@@ -99,10 +109,10 @@
             </div>
 
             <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
-            <div v-if="currentCategory === null && currentFolder === null" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
+            <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
                     <div class="flex-1">
-                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">開示專區</h1>
+                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">父皇仙師開示資料</h1>
                     </div>
                 </div>
                 
@@ -162,12 +172,12 @@
             </div>
 
             <!-- Level 1.5: Subfolders for Masters -->
-            <div v-else-if="currentCategory === 'masters' && !currentFolder" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-10">
+            <div v-else-if="currentCategory === 'masters' && !currentFolder && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-30">
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900 pointer-events-none">開示資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
@@ -188,7 +198,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                                 <span :class="[
-                                    'font-black tracking-tight leading-tight text-center transition-all text-[20px]',
+                                    'font-black tracking-tight leading-tight text-center transition-all text-[22px] whitespace-nowrap',
                                     folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                                 ]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
@@ -209,7 +219,7 @@
                         <div class="space-y-4 pb-32 flex-1 p-4">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
-                                        <label class="app-title ml-1">日期</label>
+                                        <label class="app-title ml-1 opacity-0">日期</label>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
                                                 class="w-full h-full border border-slate-400 rounded-xl bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[15px]">
@@ -332,7 +342,10 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col">
+                                <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
+                                    <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                    </button>
                                     <div class="p-5 flex-1 flex flex-col">
                                         <textarea v-model="batchImportContent" 
                                                   @paste="handleBatchPaste"
@@ -971,8 +984,17 @@
 
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+
+                                <!-- Secondary Quick Add Bar (Mirrors the top header for better accessibility when form is long) -->
+                                <div v-if="newItemName" class="mt-8 mb-4 px-1 py-4 flex items-center justify-between border-t-2 border-slate-50">
+                                    <div class="flex items-center text-[22px] font-black text-slate-800">
+                                        <span class="w-8 h-8 rounded-full bg-orange-900 text-slate-100 flex items-center justify-center text-[18px] mr-2.5 shrink-0">1</span>
+                                        <span>錄入法寶 <span class="text-indigo-600">({{ stripMasterPrefix(getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks})) }})</span></span>
+                                    </div>
+                                    <button @click="addNewItemQuickly" 
+                                            :class="isAddingFlash ? 'text-emerald-500 scale-125' : 'text-red-500'"
+                                            class="text-[36px] font-light leading-none active:scale-95 transition-all duration-300"> + </button>
+                                </div>
 
                         <!-- History List (always visible, outside collapsible) -->
                         <div v-if="form.items.length > 0" class="mt-4 px-1 border-t border-slate-50 pt-4 mb-2">
@@ -991,7 +1013,7 @@
                                                 <div class="text-[14px] text-slate-600 font-bold flex items-start leading-tight">
                                                     <span class="text-indigo-400 mr-1.5 shrink-0">+ </span>
                                                     <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-indigo-400 mr-1.5 shrink-0">{{ item.name }}</span>
-                                                    <span>{{ item.details }} <span v-if="item.remarks || item.sub_name" class="text-slate-400">({{ item.remarks || item.sub_name }})</span></span>
+                                                    <span>{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-slate-400">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
                                                 </div>
                                             </div>
                                             <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-200 hover:text-red-400 transition-all text-[18px] leading-none">×</button>
@@ -1025,59 +1047,9 @@
                                 離開視窗
                             </button>
                         </div>
-
-                <!-- Plain List Section (No Boxes) -->
-                <div v-if="Object.keys(groupedPendingItems).length > 0" class="pt-2 space-y-0.5 border-t border-slate-100">
-                            <div class="px-2 py-4 text-[13px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center">
-                                📝 已加入記錄 ({{ form.items.length }})
-                            </div>
-                            
-                            <div v-for="(group, gName, gIdx) in groupedPendingItems" :key="gName" class="py-2.5 px-4 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors cursor-pointer" @click="expandedDetails[gName] = !expandedDetails[gName]">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex flex-col flex-1 min-w-0">
-                                        <span class="text-[17px] font-bold text-slate-900 truncate">
-                                            {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}
-                                            <template v-if="!(group.length === 1 && group[0].name)">
-                                                <span v-if="group[0].details" class="text-black font-bold ml-1"> : {{ group[0].details }}</span>
-                                            </template>
-                                        </span>
-                                        <div v-if="isSpecialTreasure(gName) || group.length > 1 || (group[0] && group[0].name)" class="mt-2.5 pl-4 space-y-2 animate-fade-in">
-                                            <div v-for="(m, midx) in group" :key="midx" class="text-[15px]">
-                                                <div v-if="m.name || getCleanRemark(m.remarks || m.sub_name, m.details)" class="flex items-start group">
-                                                    <span class="text-slate-400 font-black mr-2 shrink-0">+</span>
-                                                    <div class="flex flex-col flex-1 min-w-0">
-                                                        <div class="flex items-center">
-                                                            <span v-if="m.name" class="font-bold text-slate-700 truncate">{{ m.name }}</span>
-                                                            <span v-else-if="!getMainDetails(group)" class="font-bold text-slate-700 truncate">項目</span>
-                                                            
-                                                            <span v-if="m.details && (m.name || !getMainDetails(group))" class="ml-1.5 text-indigo-600 font-black">
-                                                                {{ m.details }}
-                                                                <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-slate-400 font-medium ml-1">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span>
-                                                            </span>
-                                                            <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button @click.stop="removeGroup(gName)" class="text-rose-200 hover:text-rose-400 p-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" /></svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Empty State -->
-                        <div v-else class="py-20 flex flex-col items-center justify-center text-slate-300">
-                            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                            </div>
-                            <p class="text-[17px] font-bold">目前無降寶明細</p>
-                            <p class="text-[14px] mt-1">請於上方「增加開示項目」開始輸入</p>
-                        </div>
+                
+                    </div>
+                </div>
 
                         <div class="pt-8 border-t border-slate-100 flex flex-col space-y-5">
                             <!-- High-Fidelity Card Preview - Hidden per user request -->
@@ -1326,9 +1298,12 @@
                 </div>
 
                 <!-- Main List View -->
-                <div v-show="!addMode" class="pb-32 flex-1 overflow-y-auto bg-white" @click="focusedId = null; activeDropdownId = null" @scroll="handleScroll">
+                <div v-show="!addMode" 
+                     class="pb-32 flex-1 overflow-y-auto bg-white" 
+                     @click="focusedId = null; focusedDate = null; activeDropdownId = null" 
+                     @scroll="handleScroll">
                     <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
-                    <div v-else class="space-y-0 mt-0">
+                    <div v-else class="space-y-0 mt-0 min-h-full">
                         <!-- Date-Based Accordion: Grouping by Daily sessions -->
                         <template v-for="dateGroup in recordsByDate" :key="dateGroup.date">
                             <!-- Date Header: Collapsed by Default -->
@@ -1357,25 +1332,15 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
-                                        <div class="mr-3 shrink-0 flex items-center justify-center">
-                                            <div v-if="!reorderMode" class="w-7 h-7 flex items-center justify-center text-[18px] font-black text-slate-400 font-outfit">
-                                                {{ index + 1 }}
-                                            </div>
-                                            <input v-else 
-                                                   type="number" 
-                                                   :value="index + 1"
-                                                   @click.stop
-                                                   @change="e => handleReorder(item, e.target.value, dateGroup.items)"
-                                                   class="w-10 h-8 bg-blue-50 border border-blue-200 rounded-lg text-center text-[14px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
-                                        </div>
+
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
+                                            <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
                                             <div class="app-body font-bold leading-tight">
-                                                {{ item.master?.name || item.master_name || '仙師' }}開示給：{{ getRecipientName(item) }}
+                                                {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->
                                             <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[17px] font-normal truncate font-outfit" style="color: #0f172a !important;">
@@ -1398,7 +1363,7 @@
                                                         <span class="text-[17px] font-black text-slate-900">修改</span>
                                                     </button>
                                                     <button @click.stop="copyAsTextFile(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="text-[17px] font-black text-slate-900">複製 LINE</span>
+                                                        <span class="text-[17px] font-black text-slate-900">複製貼 LINE</span>
                                                     </button>
                                                     <button @click.stop="downloadTeaching(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
                                                         <span class="text-[17px] font-black text-slate-900">下載檔案</span>
@@ -1477,7 +1442,7 @@
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item)">
-                                            <span class="tracking-widest font-bold" style="color: #0d0d0d !important; font-size: 15px;">完畢</span>
+                                            <span class="tracking-widest font-bold" style="color: #0d0d0d !important; font-size: 17px;">完畢</span>
                                         </div>
 
                                     </div>
@@ -1487,7 +1452,7 @@
                                         <!-- Header Boxes (Master & Date & Recipient) -->
                                         <div class="space-y-3">
                                             <div class="grid grid-cols-2 gap-3">
-                                                <div class="space-y-1">
+                                                <div v-if="false" class="space-y-1">
                                                     <label class="app-title block ml-1">開示日期</label>
                                                     <div class="relative flex items-center h-[48px]">
                                                         <input v-model="inlineEditData.date" type="text" placeholder="年/月/日 或 註記文字" 
@@ -1644,7 +1609,7 @@
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
                                 <span class="text-[17px] font-black text-slate-900 leading-tight">
-                                    {{ item.master_name }}開示給：{{ getRecipientName(item) }}
+                                    {{ item.master_name }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                 </span>
                             </div>
 
@@ -1714,7 +1679,7 @@
             <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
             <mobile-navbar 
                 :can-back="currentFolder !== null || currentCategory !== null || addMode"
-                :show-action="currentFolder !== null && !addMode"
+                :show-action="(currentFolder !== null || (currentCategory === 'masters' && !currentFolder)) && !addMode"
                 :action-active="showAddMenu"
                 :search-active="showSearch"
                 :can-more="!!currentFolder && !addMode"
@@ -2401,6 +2366,10 @@ const palaceDharmaMapping = computed(() => {
 const sortedDharmaNames = computed(() => {
     const list = (dharmaNames.value || []).slice();
     return list.sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) {
+            if (a.order !== b.order) return a.order - b.order;
+        }
+        
         const idxA = palaceDharmaMapping.value.get(String(a.id));
         const idxB = palaceDharmaMapping.value.get(String(b.id));
         
@@ -2426,6 +2395,35 @@ visibleItems.value.forEach(item => {
         collapsedDates.value.add(item.date);
         initializedDates.value.add(item.date);
     }
+});
+
+const activeModalGroupGrouped = computed(() => {
+    if (!activeModalGroup.value) return [];
+    
+    // Use the dharma_names already populated in triggerGroupSelection
+    const membersList = activeModalGroup.value.dharma_names || [];
+    if (membersList.length === 0) return [];
+    
+    const name = activeModalGroup.value?.name || '';
+
+    // Filter to only include those actually in the current form selection
+    const currentMembers = membersList.filter(m => {
+        return form.value.dharma_name_ids.some(id => String(id) === String(m.id));
+    });
+
+    // Sort by Database Order
+    currentMembers.sort((a, b) => (a.order || 999) - (b.order || 999) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' }));
+
+    // SPECIAL CASE: '全體殿生' should be a single flat list
+    if (name === '全體殿生') {
+        return [{ palaceName: '全體成員', members: currentMembers }];
+    }
+
+    // Special groups that should be hidden from this modal view
+    if (name === '世代交替' || name.includes('直屬弟子')) return [];
+
+    // Return a single group with all members, no more palace/army subdivision
+    return [{ palaceName: '群組成員', members: currentMembers }];
 });
 
 const showSearch = ref(false);
@@ -2503,6 +2501,10 @@ const currentMatchedGroup = computed(() => {
     if (matched && matched.dharma_names) {
         // Sort dharma_names by palace mapping to ensure correct order for "Palace Master" etc.
         const sorted = [...matched.dharma_names].sort((a, b) => {
+            if (a.order !== undefined && b.order !== undefined) {
+                if (a.order !== b.order) return a.order - b.order;
+            }
+            
             const idxA = palaceDharmaMapping.value.get(String(a.id));
             const idxB = palaceDharmaMapping.value.get(String(b.id));
             
@@ -2523,40 +2525,6 @@ const currentMatchedGroup = computed(() => {
 });
 
 const activeModalGroup = ref(null);
-const activeModalGroupGrouped = computed(() => {
-    if (!activeModalGroup.value || !activeModalGroup.value.dharma_names) return [];
-    
-    // Group if it's a known position group OR contains members from multiple palaces
-    const name = activeModalGroup.value?.name || '' || '';
-    const isPositionGroup = name.includes('宮主') || name.includes('副宮主') || name.includes('組') || name.includes('元帥');
-    
-    const palacesFound = new Set();
-    activeModalGroup.value.dharma_names.forEach(m => {
-        const pIdx = palaceDharmaMapping.value.get(String(m.id));
-        if (pIdx !== undefined) palacesFound.add(pIdx);
-    });
-
-    if ((!isPositionGroup && palacesFound.size <= 1) || name === '世代交替' || name.includes('直屬弟子') || ['同享皇恩', '享享皇天恩', '殿中之人', '龍鳳閻合脈', '全體殿生'].includes(name)) return [];
-
-    const grouped = [];
-    const currentOrder = name.includes('元帥') ? armyOrder : palaceOrder;
-    currentOrder.forEach(pName => {
-        const members = activeModalGroup.value.dharma_names.filter(m => {
-            if (!form.value.dharma_name_ids.map(id => String(id)).includes(String(m.id))) return false;
-            if (name.includes('元帥')) {
-                // For Marshall group, find which army they belong to
-                const groupNames = (m.groups || []).map(g => g.name);
-                return groupNames.includes(pName);
-            }
-            const pIdx = palaceDharmaMapping.value.get(String(m.id));
-            return pIdx !== undefined && palaceOrder[pIdx] === pName;
-        }).sort((a, b) => (a.order || 0) - (b.order || 0));
-        if (members.length > 0) {
-            grouped.push({ palaceName: pName, members });
-        }
-    });
-    return grouped;
-});
 
 const mainSearchFilteredDharmaNames = computed(() => {
     return (dharmaNames.value || [])
@@ -2716,7 +2684,7 @@ const addActions = computed(() => {
     }
 
     actions.push({ 
-        label: '複製 LINE', 
+        label: '複製貼 LINE', 
         description: '將紀錄轉為文字複製貼上',
         icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         colorClass: 'bg-purple-50 text-purple-600',
@@ -2869,16 +2837,46 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
 };
 
 const triggerGroupSelection = (group) => {
-    activeModalGroup.value = group;
+    let members = [];
+    
+    // SPECIAL CASE: '全體殿生' should include ALL dharma names (approx 46 people)
+    if (group.name === '全體殿生') {
+        members = [...dharmaNames.value];
+    } else {
+        // Standard BACKFILL logic for other groups
+        members = group.dharma_names || [];
+        if (members.length === 0) {
+            members = dharmaNames.value.filter(dn => {
+                const gIds = (dn.groups || []).map(g => String(g.id));
+                return gIds.includes(String(group.id));
+            });
+        }
+    }
 
+    const isSpecialSortGroup = group.name.includes('宮主') || group.name.includes('副宮主');
+
+    if (isSpecialSortGroup) {
         // Sort by Role (Master > Vice > Member) then by Palace/Name Order
-    group.dharma_names.sort((a, b) => {
-        const roleA = getRoleOrder(a);
-        const roleB = getRoleOrder(b);
-        if (roleA !== roleB) return roleA - roleB;
-        return (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
-    });
-    const memberIds = (group.dharma_names || []).map(dn => dn.id);
+        members.sort((a, b) => {
+            const roleA = getRoleOrder(a);
+            const roleB = getRoleOrder(b);
+            if (roleA !== roleB) return roleA - roleB;
+            return (a.order || 0) - (b.order || 0) || (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
+        });
+    } else {
+        // All other groups (including All Students and Lineage groups) sort by Database Order primarily
+        members.sort((a, b) => {
+            if (a.order !== undefined && b.order !== undefined) {
+                if (a.order !== b.order) return a.order - b.order;
+            }
+            return (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
+        });
+    }
+
+    // Force reactive update of the modal group with members
+    activeModalGroup.value = { ...group, dharma_names: members };
+
+    const memberIds = members.map(dn => dn.id);
     form.value.dharma_name_ids = memberIds;
     dharmaSearchQuery.value = formatGroupName(group.name);
     activePractitionerDropdownId.value = null;
@@ -3052,23 +3050,24 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart 
         if (light) parts.push(`光-${light} 金丹吃`);
         if (d) parts.push(`${d} 天份`);
     } else if (cat === '金丹' || (itemName && (itemName.includes('丹') || itemName.includes('金丹'))) || (mainTreasureName && (mainTreasureName.includes('七素') || mainTreasureName.includes('七表'))) || (itemName && (itemName.includes('七素') || itemName.includes('七表')))) {
-        // Rule: All pill-type items now use "金丹" label for eat/wash as per user request
         const pillLabel = '金丹';
         if (t) parts.push(`${t} ${pillLabel}吃`.replace('  ', ' ').trim());
         if (h) parts.push(`${h} ${pillLabel}洗`.replace('  ', ' ').trim());
         if (d) parts.push(`${d} 天份`);
-        return parts.join(' '); // Commas removed per request
-    } else if (isSpecialInstrument(itemName) || (itemName && itemName.includes('執法'))) {
-        // Rule: Special instruments always use "執法" label regardless of category
-        if (pr) parts.push(`執法-${pr}`);
-        if (instrument) parts.push(`法器-${instrument}`);
-        if (bodyPart) parts.push(`清煞部份-${bodyPart}`);
-        if (d) parts.push(`${d} 天份`);
-        return parts.join(' '); // Instruments use spaces per request, no comma
+        return parts.join(' ');
     } else if (cat === '符令' || cat === '太令') {
         if (sz) parts.push(sz);
         if (d) parts.push(`${d} 天份`);
-        if (pr) parts.push(`由-${pr} 開立`);
+        if (pr) {
+            if (isSpecialInstrument(itemName)) {
+                parts.push(`執法-${pr}`);
+            } else {
+                parts.push(`由-${pr} 開立`);
+            }
+        }
+        // Even for Fu-Ling, show instrument/bodyPart if filled (e.g. Special Fu-Ling)
+        if (instrument) parts.push(`法器-${instrument}`);
+        if (bodyPart) parts.push(`清煞部位-${bodyPart}`);
     } else if (cat === '香環') {
         if (d) parts.push(`${d} 個`);
         if (sh) parts.push(`${sh} 盒`);
@@ -3076,8 +3075,18 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart 
         if (d) parts.push(`${d} 根`);
         if (sh) parts.push(`${sh} 包`);
     } else {
-        if (d) parts.push(`${d} 天份`);
-        if (pr) parts.push(`由-${pr} 開立`);
+        // Broaden instrument check
+        const isInst = isSpecialInstrument(itemName) || itemName?.includes('執法') || !!instrument || !!bodyPart;
+        
+        if (isInst) {
+            if (pr) parts.push(`執法-${pr}`);
+            if (instrument) parts.push(`法器-${instrument}`);
+            if (bodyPart) parts.push(`清煞部位-${bodyPart}`);
+            if (d) parts.push(`${d} 天份`);
+        } else {
+            if (d) parts.push(`${d} 天份`);
+            if (pr) parts.push(`執法-${pr}`);
+        }
     }
     return parts.join(' ').trim();
 };
@@ -3139,19 +3148,23 @@ function addNewItemQuickly() {
     isSaving.value = true;
     setTimeout(() => { isSaving.value = false; }, 400); // Prevent rapid-fire
 
-    // Standard items logic
+    // Correctly capture Days, Size, and Sheets from specialized input sources
+    const dVal = newItemMainDays.value || newItemDays.value || newItemSubDetails.value || '';
+    const szVal = newItemSubSize.value || '';
+    const shVal = newItemSubSheets.value || '';
+
     // Use buildTreasureDetails for main item header to ensure SevenElement rules apply
     let finalDetails = buildTreasureDetails(
         magicItemCategory.value,
         newItemMainTimes.value,
         newItemMainHours.value,
-        newItemMainRemarks.value.trim() ? '' : (newItemMainDays.value || newItemDays.value || ''),
-        '', // size
-        '', // sheets
+        dVal,
+        szVal,
+        shVal,
         newItemPractitioner.value,
-        '', // itemName
-        '', // bodyPart
-        '', // instrument
+        newItemName.value, // itemName
+        newItemSubBodyPart.value, // bodyPart
+        newItemSubInstrumentName.value, // instrument
         newItemSun.value,
         newItemMoon.value,
         newItemLight.value,
@@ -3351,9 +3364,16 @@ const markings = ref({});
 
 const getRecipientName = (item) => {
     const listInfo = getFullRecipientList(item);
-    const remarks = item.target_remarks ? ` (${item.target_remarks})` : '';
+    // Priority 1: Pasted name from batch import or manual target remarks
+    const pastedName = item.dharmaSearchQuery || item.target_remarks;
     
-    if (!listInfo) return '全體成員' + remarks;
+    // If no formal list found, return the pasted name or default to "All members"
+    if (!listInfo) return (pastedName || '全體成員');
+    
+    // Priority 2: If the pasted name exactly matches the detected group name, just use it
+    if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) return pastedName;
+    
+    const remarks = (item.target_remarks && item.target_remarks !== listInfo.groupName) ? ` (${item.target_remarks})` : '';
     
     if (listInfo.groupName) {
         return `${listInfo.groupName}${remarks}`;
@@ -3400,18 +3420,17 @@ const getFullRecipientList = (item) => {
         }
     }
 
-    // Sort names by palace order first, then stroke order
+    // Sort names by official database order
+    const nameToObj = new Map();
+    dharmaNames.value.forEach(dn => nameToObj.set(dn.name, dn));
+
     resolvedNames.sort((a, b) => {
-        const idxA = palaceDharmaMapping.value.get(a);
-        const idxB = palaceDharmaMapping.value.get(b);
+        const objA = nameToObj.get(a);
+        const objB = nameToObj.get(b);
         
-        if (idxA !== undefined && idxB !== undefined) {
-            if (idxA !== idxB) return idxA - idxB;
-        } else if (idxA !== undefined) {
-            return -1;
-        } else if (idxB !== undefined) {
-            return 1;
-        }
+        if (objA && objB) return objA.order - objB.order;
+        if (objA) return -1;
+        if (objB) return 1;
         return a.localeCompare(b, 'zh-TW', { collation: 'stroke' });
     });
 
@@ -3533,7 +3552,8 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
     
     let footer = form.value?.items_footer_remarks ? '\n\n' + form.value.items_footer_remarks : '';
-    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
+    let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}`;
 };
 
 const formatTeachingForExport = (item, index = null, allRecords = []) => {
@@ -3574,7 +3594,8 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
         }
     }
 
-    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}開示給${recipient}：${safeContent}${treasureText}${footer}`;
+    let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}`;
 };
 
 const downloadTeaching = (item) => {
@@ -3614,6 +3635,16 @@ const processBatchText = () => {
     // Split by common delimiters (e.g., "完畢", horizontal lines, or multiple newlines)
     const rawBlocks = batchImportContent.value.split(/完畢[！!]?|--+|==+/);
     const newRecords = [];
+
+    const nameAliasMap = {
+        '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
+        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+        '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
+        '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
+        '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
+        '金翎': '鳳尊', '金妙': '鳳媓'
+    };
+    const translateName = (n) => nameAliasMap[n] || n;
     
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇仙師', '太宰仙師', '太子', '閻王仙師'];
@@ -3638,7 +3669,11 @@ const processBatchText = () => {
             try {
                 const dObj = new Date(dStr.replace(/\s+/g, '/').replace(/\./g, '/').replace(/-/g, '/'));
                 if (!isNaN(dObj.getTime())) {
-                    const yyyy = dObj.getFullYear();
+                    let yyyy = dObj.getFullYear();
+                    // Handle Minguo year (Taiwan calendar): e.g., 113 -> 2024
+                    if (yyyy < 1000) {
+                        yyyy += 1911;
+                    }
                     const mm = String(dObj.getMonth() + 1).padStart(2, '0');
                     const dd = String(dObj.getDate()).padStart(2, '0');
                     record.date = `${yyyy}-${mm}-${dd}`;
@@ -3659,20 +3694,31 @@ const processBatchText = () => {
         });
         // We do NOT fallback to currentFolder name here to avoid locking records to the current view during shunting
         
-        // 2. Recipient Detection
-        const recMatch = text.match(/開示給(.*?)[：:]/);
+        // 2. Recipient Detection (Highly Robust Regex)
+        // Match "開示給" followed by any characters until a colon, newline, or specific terminator
+        const recMatch = text.match(/開示給\s*([^：:\n\r]*)/);
         let contentToParse = text;
 
-        if (recMatch) {
-            const nameField = recMatch[1].trim();
+        if (recMatch && recMatch[1].trim()) {
+            const nameField = translateName(recMatch[1].trim());
             record.dharmaSearchQuery = nameField;
+            record.target_remarks = nameField; // Essential for persistence
+            
             const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
             if (foundDN) record.dharma_name_ids = [foundDN.id];
             else {
                 const foundGroup = (groups.value || []).find(g => g.name === nameField);
-                if (foundGroup) record.dharma_name_ids = (foundGroup.dharma_names || []).map(dn => dn.id);
+                if (foundGroup) {
+                    record.dharma_name_ids = (foundGroup.dharma_names || []).map(dn => dn.id);
+                }
             }
-            contentToParse = text.substring(text.indexOf(recMatch[0]) + recMatch[0].length).trim();
+            // Clean content to remove the recipient line if it's a distinct line
+            const fullMatch = recMatch[0];
+            contentToParse = text.replace(fullMatch, '').trim();
+            // Handle optional trailing colon if it was outside the capture group
+            if (contentToParse.startsWith('：') || contentToParse.startsWith(':')) {
+                contentToParse = contentToParse.substring(1).trim();
+            }
         }
 
         // Clean up any remaining instances of the master name (headers/repetitions) 
@@ -3695,12 +3741,15 @@ const processBatchText = () => {
                 return;
             }
             
-            // Heuristic: If it has a prefix (1. or +) OR it's under "賜降：" 
+            // Heuristic: If it has a prefix (1. or +) AND (parsingTreasures OR contains treasure keywords)
             // OR it contains keywords like "法寶", "天份", "金丹", "符", "疏文"
-            const isItem = parsingTreasures || l.match(/^(\d+\.|[+*])/) || 
-                           l.includes('法寶') || l.includes('天份') || 
-                           l.includes('金丹') || l.includes('符') || 
-                           l.includes('疏文');
+            const hasTreasureKeywords = l.includes('法寶') || l.includes('天份') || 
+                                       l.includes('金丹') || l.includes('符') || 
+                                       l.includes('疏文');
+            
+            // Only auto-detect as item if we are in treasures section OR it's a short line with keywords
+            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+*])/)) || 
+                           (hasTreasureKeywords && l.length < 60);
             
             if (isItem) {
                 const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
@@ -4254,7 +4303,7 @@ const showAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: new Date().toLocaleDateString('sv-SE'), master_id: null, items: [], 
+        date: '', master_id: null, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 
@@ -4286,7 +4335,7 @@ const showMultiMasterAdd = () => {
     editingId.value = null;
     form.value = {
         supplement: '', target_remarks: '', content: '',
-        date: new Date().toLocaleDateString('sv-SE'), master_id: 5, items: [], 
+        date: '', master_id: 5, items: [], 
         remarks: '', items_footer_remarks: '', user_id: 1, dharma_name_ids: []
     };
 

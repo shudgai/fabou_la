@@ -9,7 +9,7 @@
         <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[25px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
-                    {{ addMode ? (form.id ? '編輯紀錄' : '新增紀錄') : '開文專區' }}
+                    每周開文記錄
                 </div>
             </div>
             
@@ -116,7 +116,7 @@
                                         <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">展開清單</button>
                                         <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">收起清單</button>
                                         <button @click.stop="editItem(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
-                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製 LINE</button>
+                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製貼 LINE</button>
                                         <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
                                         <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
@@ -157,7 +157,7 @@
                                                 編輯紀錄
                                             </button>
                                             <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
-                                                複製 LINE
+                                                複製貼 LINE
                                             </button>
                                             <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
                                                 下載檔案
@@ -240,7 +240,7 @@
                                         <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>展開清單</button>
                                         <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>收起清單</button>
                                         <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
-                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製 LINE</button>
+                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製貼 LINE</button>
                                         <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
                                         <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
@@ -346,12 +346,12 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                            <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
+                            <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
+                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name"></option>
                             </datalist>
@@ -361,12 +361,12 @@
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
                             <div v-if="addMode === 'weekly' && !isManualWeekly" class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
                                 <div v-for="(char, i) in titleChars" :key="i" class="flex items-center bg-white border-b border-slate-50 last:border-0 group">
-                                    <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important;">{{ char }}</div>
-                                    <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;">
+                                    <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important; font-size: 17px !important;">{{ char }}</div>
+                                    <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                                 </div>
                             </div>
                             <div v-else>
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important;"></textarea>
+                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;"></textarea>
                             </div>
                         </div>
                     </div>

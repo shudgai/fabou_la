@@ -2,8 +2,18 @@
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
-        <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+        <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
+            <div v-if="addMode && !currentFolder" class="flex items-center w-full">
+                <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
+                    <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                        新增法寶登記
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
@@ -108,7 +118,7 @@
                         </div>
                         <div class="text-center px-1">
                             <div :class="[
-                                'font-black tracking-tight leading-tight text-center transition-all',
+                                'font-black tracking-tight leading-tight text-center transition-all whitespace-nowrap',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
                             ]" style="font-weight: 900 !important; font-size: 22px !important;">{{ folder.name }}</div>
                         </div>
@@ -125,7 +135,7 @@
             </div>
 
             <!-- Folder Contents -->
-            <div v-else :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[60px] overflow-y-auto' : '']">
+            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[60px] overflow-y-auto' : '']">
                 <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
@@ -192,7 +202,7 @@
                                     </button>
                                     <button @click.stop="copyAsTextFile(item); openMenuId = null" 
                                             class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        複製 LINE
+                                        複製貼 LINE
                                     </button>
                                     <button @click.stop="downloadItemData(item); openMenuId = null" 
                                             class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
@@ -258,7 +268,7 @@
                                                             </button>
                                                             <button @click.stop="copyAsTextFile(item); openMenuId = null" 
                                                                     class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                複製 LINE
+                                                                複製貼 LINE
                                                             </button>
                                                             <button @click.stop="downloadItemData(item); openMenuId = null" 
                                                                     class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
@@ -1112,7 +1122,10 @@ const triggerBatchSave = async (batchData) => {
         const nameAliasMap = {
             '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
             '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
-            '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰'
+            '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
+            '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
+            '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
+            '金翎': '鳳尊', '金妙': '鳳媓'
         };
         const translateName = (raw) => nameAliasMap[raw] || raw;
 
@@ -1581,7 +1594,7 @@ const copyToLine = (item) => {
     const finalRecordsText = dnrText || '尚無紀錄';
     const text = `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${finalRecordsText}`;
     navigator.clipboard.writeText(text);
-    persistentToast.value = { msg: '✓ 已複製 LINE 格式', type: 'success' };
+    persistentToast.value = { msg: '✓ 已複製貼 LINE 格式', type: 'success' };
     setTimeout(() => persistentToast.value = null, 1500);
     openMenuId.value = null;
 };

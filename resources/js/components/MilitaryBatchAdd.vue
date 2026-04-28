@@ -103,6 +103,16 @@ const parsedItems = computed(() => {
     const lines = batchText.value.split('\n');
     let lastDate = batchDate.value; // Fallback to UI date
     
+    const nameAliasMap = {
+        '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
+        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+        '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
+        '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
+        '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
+        '金翎': '鳳尊', '金妙': '鳳媓'
+    };
+    const translateName = (n) => nameAliasMap[n] || n;
+
     const results = [];
     
     lines.forEach(line => {
@@ -154,7 +164,7 @@ const parsedItems = computed(() => {
         
         // The remaining parts are [DharmaName, Quantity]
         if (parts.length > 0) {
-            const name = parts[0].trim();
+            const name = translateName(parts[0].trim());
             if (!name) return;
 
             // Header & Summary Filter: Skip if name contains title or summary keywords

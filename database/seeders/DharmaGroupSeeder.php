@@ -10,10 +10,8 @@ class DharmaGroupSeeder extends Seeder
 {
     public function run(): void
     {
-        // Source of Truth: Group-Centric Definitions
+        // Source of Truth: Group-Centric Definitions (Synchronized with excel_data.json)
         $groupMembers = [
-
-
             '玄通宮' => ['靈果', '靈妙', '靈智', '靈慧'],
             '玄應宮' => ['元續', '赤峰', '閻闇', '金悟'],
             '玄心宮' => ['龍戰', '龍勝', '金熹'],
@@ -32,11 +30,17 @@ class DharmaGroupSeeder extends Seeder
             '同享皇恩' => ['鳳尊', '金巧', '赤覺', '紫元', '靈情', '閻帝', '鳳媓', '靈昡', '龍勝', '龍戰', '閻尊', '閻闇', '元續', '赤峰', '閻㻇', '金熹'],
             '享享皇天恩' => ['鳳尊', '金巧', '赤覺', '紫元', '靈情', '閻帝', '鳳媓', '靈昡', '龍勝', '龍戰', '閻尊', '元續', '金熹', '靈平'],
 
+            '太玄三連脈' => ['金巧', '赤覺', '紫元'],
+            '太玄四連脈' => ['金巧', '赤覺', '紫元', '靈昡'],
+            '玉聖大四喜' => ['金巧', '赤覺', '紫元', '靈情'],
+            '極玄靈合脈' => ['金巧', '赤覺', '紫元', '靈情', '靈昡'],
+
             '虎賁軍' => ['閻帝', '閻願'],
-            '元帥副元帥' => ['閻帝', '閻願', '閻爵', '閻澤', '閻尊', '閻闇'],
+            '元帥副元帥' => ['閻帝', '閻尊', '閻爵', '閻澤', '閻闇', '閻願'],
             '耀紫軍' => ['龍勝', '龍戰'],
             '黑曜軍' => ['閻尊', '閻闇'],
             '虎甲軍' => ['閻爵', '閻澤'],
+            '帝爵兩兄弟' => ['閻帝', '閻爵'],
 
             '副宮主' => ['靈妙', '赤峰', '閻澤', '金了'],
             '宮主' => ['靈果', '元續', '龍戰', '金頤', '靈心', '金振', '靈昡', '閻尊', '金曉', '道妙', '閻願'],
@@ -65,8 +69,6 @@ class DharmaGroupSeeder extends Seeder
             }
         }
 
-        // Ensure Group ID 40 exists
-        //Group::updateOrCreate(['id' => 40], ['name' => '全體殿生']);
         $groupCache = Group::all()->keyBy('name');
 
         // Apply strict synchronization to ALL DharmaNames in database

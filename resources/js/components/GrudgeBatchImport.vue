@@ -124,6 +124,16 @@ const handleBatchSave = async () => {
         return;
     }
 
+    const nameAliasMap = {
+        '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
+        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+        '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
+        '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
+        '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
+        '金翎': '鳳尊', '金妙': '鳳媓'
+    };
+    const translateName = (n) => nameAliasMap[n] || n;
+
     loading.value = true;
     const finalItems = [];
     let currentKnowDate = batchDate.value;
@@ -187,7 +197,7 @@ const handleBatchSave = async () => {
             const separator = separatorMatch[0];
             const [subject, resultsPart] = cleanLine.split(separator).map(s => s.trim());
             
-            let name = subject;
+            let name = translateName(subject);
             let userRemarks = '';
             const remarksMatch = subject.match(/[（\(](.*?)[）\)]/);
             if (remarksMatch) {
@@ -256,7 +266,7 @@ const handleBatchSave = async () => {
             // No separator: Default to Processed unless it contains '未處理'
             const isProcessed = !cleanLine.includes('未處理');
             finalItems.push({
-                user_name: cleanLine,
+                user_name: translateName(cleanLine),
                 user_remarks: '',
                 know_date: currentKnowDate,
                 process_date: isProcessed ? currentKnowDate : null,

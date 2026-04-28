@@ -1,8 +1,18 @@
 <template>
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
-        <!-- Header (Only show in Folder-view or Item-view) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+        <!-- Header (Only show in Folder-view, Item-view or Add-mode) -->
+        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+            <div v-if="addMode && !currentFolder" class="flex items-center w-full">
+                <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                        新增重大皇恩
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                     重大皇恩專區
                 </div>
@@ -45,7 +55,7 @@
         </div>
         <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
         <!-- Level 0: Main Category Selection -->
-        <div v-if="!currentCategory && !currentFolder" class="h-full bg-slate-50/30">
+        <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-slate-50/30">
             <div class="px-2 py-4 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
                 <div class="flex-1 pr-12 cursor-pointer" @click="resetToRoot">
                     <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
@@ -111,7 +121,7 @@
         </div>
 
         <!-- Level 1: Folder Selection (Masters Grid) -->
-        <div v-if="currentCategory === 'masters' && !currentFolder" class="bg-white group-fade-in">
+        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white group-fade-in">
             <!-- Header Title -->
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
                 <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
@@ -136,7 +146,7 @@
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                             <span :class="[
-                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
+                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all whitespace-nowrap',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                             ]" style="font-weight: 900 !important; font-size: 22px !important;">
                                 <template v-if="folder.id === 'unobtained'">
@@ -162,7 +172,7 @@
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else-if="currentFolder" class="px-0 bg-white min-h-screen">
+        <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen">
             <!-- Header for Level 2 -->
             <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
                 <div class="flex items-center space-x-1">
@@ -245,7 +255,7 @@
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                     <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
@@ -265,7 +275,7 @@
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
                                     <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                     <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
@@ -319,7 +329,7 @@
 
     <mobile-navbar 
         :can-back="true"
-        :show-action="!!currentFolder && currentFolder.id !== 'unobtained'"
+        :show-action="(currentFolder !== null || currentCategory === 'masters') && !addMode"
         :action-active="showAddMenu"
         :search-active="showSearch"
         :can-more="!!currentFolder && currentFolder.id !== 'unobtained'"

@@ -69,26 +69,26 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 80px;">
+        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full" style="padding-bottom: 80px;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
             <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
                 <template v-for="group in groupedItems" :key="group.date">
                     <!-- Date Header -->
                     <div v-if="focusedId === null" 
-                        @click="toggleDateGroup(group.date)"
+                        @click.stop="toggleDateGroup(group.date)"
                         class="px-3 py-2 bg-slate-50 border-y border-slate-100 flex items-center justify-between sticky top-0 z-20 cursor-pointer active:bg-slate-100 transition-colors">
                         <div class="flex items-center">
-                            <svg :class="{'rotate-[-90deg]': !expandedDates.has(group.date)}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            <svg :class="{'rotate-[-90deg]': activeDateGroup !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
                         </div>
                         <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
                     </div>
 
-                    <div v-if="expandedDates.has(group.date) || focusedId !== null">
+                    <div v-if="activeDateGroup === group.date || focusedId !== null">
                         <div v-for="item in group.items" :key="item.id" 
                             v-show="focusedId === null || focusedId === item.id"
-                            @click="toggleExpand(item.id)"
+                            @click.stop="toggleExpand(item.id)"
                             :class="[
                                 'py-[16px] px-2 border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
                                 { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
@@ -122,7 +122,7 @@
                                 <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[130px] bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up py-1">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">展開詳情</button>
                                     <button @click.stop="editItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製 LINE</button>
+                                    <button @click.stop="copyItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadItem(item, 'txt')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                     <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                 </div>
@@ -229,23 +229,43 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const emit = defineEmits(['goHome']);
 
+// State Definitions
+const currentFolder = ref({ id: 'all', name: '怨靈記錄專區', status: '全部' });
+const searchQuery = ref('');
+const showSearch = ref(false);
+const addMode = ref(false);
+const activeDateGroup = ref(null);
+const showAddMenu = ref(false);
+const openMenuId = ref(null);
+const items = ref([]);
+const users = ref([]);
+const loading = ref(true);
+const editingId = ref(null);
+const focusedId = ref(null);
+const sortDesc = ref(true);
+const showTotal = ref(false);
+const showBatchImport = ref(false);
+const markings = ref({});
+const saving = ref(false);
+
 const resetToRoot = () => {
     searchQuery.value = '';
     showSearch.value = false;
     addMode.value = false;
     focusedId.value = null;
     openMenuId.value = null;
-    expandedDates.value = new Set();
+    activeDateGroup.value = null;
 };
-const currentFolder = ref({ id: 'all', name: '怨靈記錄專區', status: '全部' });
-const searchQuery = ref('');
-const showSearch = ref(false);
-const addMode = ref(false);
-const expandedDates = ref(new Set());
+
+const clickToCollapse = () => {
+    focusedId.value = null;
+    openMenuId.value = null;
+    activeDateGroup.value = null;
+};
 
 const toggleDateGroup = (date) => {
-    if (expandedDates.value.has(date)) expandedDates.value.delete(date);
-    else expandedDates.value.add(date);
+    if (activeDateGroup.value === date) activeDateGroup.value = null;
+    else activeDateGroup.value = date;
 };
 
 const parseRemarks = (remarks) => {
@@ -297,15 +317,7 @@ const getTodayStr = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-const showAddMenu = ref(false);
-const openMenuId = ref(null);
-const items = ref([]);
-const users = ref([]);
-const loading = ref(true);
-const editingId = ref(null);
-const focusedId = ref(null);
-const sortDesc = ref(true);
-const showTotal = ref(false);
+
 let totalTimer = null;
 const toggleShowTotal = () => {
     showTotal.value = !showTotal.value;
@@ -316,7 +328,7 @@ const toggleShowTotal = () => {
         }, 10000);
     }
 };
-const showBatchImport = ref(false);
+
 
 const filteredItems = computed(() => {
     let filtered = items.value;

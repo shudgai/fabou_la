@@ -94,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
         return \App\Models\User::select('id', 'name')->get();
     });
     Route::get('/api/dharma-names-list', function () {
-        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name', 'alias')->orderBy('order')->get();
+        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name', 'alias', 'order')->orderBy('order')->get();
     });
     Route::get('/api/user-profile', function () {
         $user = auth()->user()->load('dharmaName');
