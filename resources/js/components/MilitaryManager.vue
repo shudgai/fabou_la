@@ -719,9 +719,13 @@ const loadData = async () => {
         items.value = []; 
     } finally { 
         loading.value = false; 
-        // Auto-expand first group if any and nothing is expanded
-        if (groupedItems.value.length > 0 && Object.keys(expandedDates.value).length === 0) {
-            toggleDateGroup(groupedItems.value[0].date);
+        // 確保第一組日期一定是展開的
+        if (groupedItems.value.length > 0) {
+            const firstDate = groupedItems.value[0].date;
+            // 如果這個日期還沒被決定展開/收合狀態，預設為展開
+            if (expandedDates.value[firstDate] === undefined) {
+                expandedDates.value[firstDate] = true;
+            }
         }
     }
 };
@@ -766,23 +770,28 @@ const deleteItem = async (id) => {
 
 const formatDate = (d) => {
     if (!d) return '-';
-    // Strip time part if present (e.g., T16:00:00.000000Z)
-    const s = String(d).split('T')[0].trim();
-    const parts = s.split(/[-/]/);
+    // 徹底拋棄 Date 物件轉換，改用純字串分割，避免時區導致少一天的問題
+    // 支援格式：2026-04-28, 2026-04-28 00:00:00, 2026-04-28T00:00:00.000Z
+    const datePart = String(d).split(/[T ]/)[0]; // 取得 YYYY-MM-DD 部分
+    const parts = datePart.split(/[-/]/);
+    
     if (parts.length === 3) {
-        let y = parts[0];
-        let m = parts[1].padStart(2, '0');
-        let d_val = parts[2].padStart(2, '0');
-        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d_val))) {
-            return `${y}/${m}/${d_val}`;
-        }
+        const y = parts[0];
+        const m = parts[1].padStart(2, '0');
+        const d_val = parts[2].padStart(2, '0');
+        return `${y}/${m}/${d_val}`;
     }
-    return s.replace(/-/g, '/');
+    return datePart.replace(/-/g, '/');
 };
 
 const getTodayStr = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // 強制使用台北時區 (Asia/Taipei)
+    const options = { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(new Date());
+    const y = parts.find(p => p.type === 'year').value;
+    const m = parts.find(p => p.type === 'month').value;
+    const d = parts.find(p => p.type === 'day').value;
+    return `${y}-${m}-${d}`; // 確保回傳 YYYY-MM-DD
 };
 
 onMounted(loadData);

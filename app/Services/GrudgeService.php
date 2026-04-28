@@ -63,23 +63,16 @@ class GrudgeService
                 $parts = array_values(array_filter(array_map('trim', $parts)));
                 $dests = ['虎賁軍', '虎甲軍', '黑曜軍', '耀紫軍', '九天', '暫時驅離', '殲滅'];
                 
-                if (count($parts) === 1) {
-                    $isKnown = false;
-                    foreach ($dests as $d) {
-                        if (str_contains($parts[0], $d)) { $isKnown = true; break; }
-                    }
-                    if ($isKnown) {
-                        $item['destination'] = $parts[0];
-                        $item['remarks_text'] = '';
-                    } else {
-                        $item['destination'] = '已處理';
-                        $item['remarks_text'] = $parts[0];
-                    }
-                } elseif (count($parts) >= 2) {
-                    $item['destination'] = '多項處理';
-                    // remarks_text stays as the raw content
+                if (count($parts) >= 1) {
+                    // Combine all parts as the remark text
+                    $combinedRemarks = implode('、', $parts);
+                    $item['remarks_text'] = $combinedRemarks;
+                    
+                    // Destination is strictly '未處理' if it contains that keyword, else '已處理'
+                    $item['destination'] = str_contains($combinedRemarks, '未處理') ? '未處理' : '已處理';
                 } else {
-                    $item['destination'] = '已處理';
+                    $item['remarks_text'] = '';
+                    $item['destination'] = str_contains($item['user_name'], '未處理') ? '未處理' : '已處理';
                 }
 
                 // 3. Status Logic
@@ -98,6 +91,9 @@ class GrudgeService
                 preg_match_all('/(.*?)[（(](.*?)[）)]/u', $searchSource, $matches, PREG_SET_ORDER);
                 foreach ($matches as $m) {
                     $content = $m[2];
+                    // 略過日期格式 (如 9/26) 以免干擾數量統計
+                    if (preg_match('/\d+[\/\-.]\d+/', $content)) continue;
+
                     $subParts = preg_split('/[、,，]/u', $content);
                     foreach ($subParts as $sp) {
                         preg_match('/(\d+)/', $sp, $nMatch);
@@ -130,13 +126,18 @@ class GrudgeService
                     if ($pending) {
                         $pending->update($item);
                         $results->push($pending);
-                        continue;
+                    } else {
+                        $results->push(Grudge::create($item));
                     }
+                    continue;
                 }
                 $results->push(Grudge::create($item));
                 
             } catch (\Exception $e) {
-                \Log::error("Grudge Batch Import Error for item: " . json_encode($item) . " - " . $e->getMessage());
+                \Log::error("Grudge Batch Import Error: " . $e->getMessage(), [
+                    'item' => $item,
+                    'trace' => $e->getTraceAsString()
+                ]);
                 throw $e;
             }
         }

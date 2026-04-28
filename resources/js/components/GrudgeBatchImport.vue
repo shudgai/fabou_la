@@ -22,8 +22,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     <div class="flex-1">
-                        <p class="text-[13px] text-slate-400 font-bold uppercase tracking-wider">基準日期 (無指定日期時使用)</p>
-                        <p class="text-[17px] font-black text-slate-900 font-outfit">{{ batchDate.replace(/-/g, '/') }}</p>
+                        <p class="text-[17px] font-black text-slate-900 tracking-tight">基準日期 (無指定日期時使用)</p>
                     </div>
                     <div class="text-slate-300">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -99,8 +98,20 @@ const loading = ref(false);
 const showDatePicker = ref(false);
 
 const getTodayStr = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // 建立一個台北時間的日期物件
+    const now = new Date();
+    const taipeiDate = new Intl.DateTimeFormat('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).formatToParts(now);
+
+    const year = taipeiDate.find(p => p.type === 'year').value;
+    const month = taipeiDate.find(p => p.type === 'month').value;
+    const day = taipeiDate.find(p => p.type === 'day').value;
+    
+    return `${year}-${month}-${day}`;
 };
 const batchDate = ref(getTodayStr());
 
@@ -117,6 +128,16 @@ const triggerFileUpload = () => {
     input.click();
 };
 
+const nameAliasMap = {
+    '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
+    '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+    '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
+    '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
+    '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
+    '金翎': '鳳尊', '金妙': '鳳媓'
+};
+const translateName = (n) => nameAliasMap[n] || null;
+
 const handleBatchSave = async () => {
     const lines = batchText.value.split('\n').map(l => l.trim()).filter(l => l !== '');
     if (lines.length === 0) {
@@ -124,7 +145,7 @@ const handleBatchSave = async () => {
         return;
     }
 
-    const nameAliasMap = {
+    const nameMap = {
         '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
         '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
         '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
@@ -132,9 +153,8 @@ const handleBatchSave = async () => {
         '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
         '金翎': '鳳尊', '金妙': '鳳媓'
     };
-    const translateName = (n) => nameAliasMap[n] || n;
+    const translate = (n) => nameMap[n] || n;
 
-    loading.value = true;
     const finalItems = [];
     let currentKnowDate = batchDate.value;
 
@@ -142,152 +162,94 @@ const handleBatchSave = async () => {
         let normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // Date detection (Standalone line)
-        const cleanDateStr = normLine.replace(/[年月]/g, '-').replace(/[日]/g, '');
-        const dateParts = cleanDateStr.split(/[.\/-]/).map(p => p.trim());
-
-        const allNumeric = dateParts.every(p => /^\d+$/.test(p));
-        if (dateParts.length === 3 && allNumeric) {
-            let year = parseInt(dateParts[0]);
-            const month = dateParts[1].padStart(2, '0');
-            const day = dateParts[2].padStart(2, '0');
-            if (year < 1000) year += 1911;
-            currentKnowDate = `${year}-${month}-${day}`;
-            return;
-        }
-        
-        if (dateParts.length === 2 && allNumeric && normLine.length < 10) {
-            const y = currentKnowDate.split('-')[0];
-            const m = dateParts[0].padStart(2, '0');
-            const d = dateParts[1].padStart(2, '0');
-            currentKnowDate = `${y}-${m}-${d}`;
+        // 1. Date Detection
+        const dMatch = normLine.match(/^(\d{4}|\d{2,3})[-\/.](\d{1,2})[-\/.](\d{1,2})$/);
+        if (dMatch) {
+            let y = parseInt(dMatch[1]);
+            if (y < 1000) y += 1911;
+            currentKnowDate = `${y}-${String(dMatch[2]).padStart(2, '0')}-${String(dMatch[3]).padStart(2, '0')}`;
             return;
         }
 
-        // Clean line from sequence numbers
+        // 2. Clean Line (skip headers)
+        const skipKeywords = ['法號', '項目', '日期', '數量', '備註', '項次', '結果', '總結', '總計', '小計', '處理日期', '處理結果'];
+        if (skipKeywords.some(k => normLine.includes(k))) return;
+
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
         if (!cleanLine) return;
 
-        const skipKeywords = ['法號', '項目', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計'];
-        if (skipKeywords.some(key => cleanLine.includes(key))) return;
-
-        // Continuation line detection: if it starts with parentheses, merge it with the last item
-        if (/^[（\(]/.test(cleanLine) && finalItems.length > 0) {
-            const lastItem = finalItems[finalItems.length - 1];
-            lastItem.remarks_text += '\n' + cleanLine;
-            
-            // Re-scan for extra counts in this continuation line
-            const subMatch = cleanLine.match(/[（(](.*?)[）)]/);
-            if (subMatch) {
-                const subParts = subMatch[1].split(/[、,，]/);
-                subParts.forEach(sp => {
-                    const nMatch = sp.match(/(\d+)/);
-                    const n = nMatch ? parseInt(nMatch[1]) : 0;
-                    if (sp.includes('大姐') || sp.includes('大姊') || sp.includes('閻尊')) lastItem.remarks.yan_zun += n;
-                    if (sp.includes('四妹') || sp.includes('闇') || sp.includes('閻闇')) lastItem.remarks.yan_an += n;
-                    if (sp.includes('勝') || sp.includes('龍勝')) lastItem.remarks.long_sheng += n;
-                    if (sp.includes('戰') || sp.includes('龍戰')) lastItem.remarks.long_zhan += n;
-                });
+        // 3. Split Name and Content
+        let subject = cleanLine;
+        let resultsPart = '';
+        const separators = ['—', '–', '-', '―', ':', '：', ' '];
+        for (const sep of separators) {
+            if (cleanLine.includes(sep)) {
+                const idx = cleanLine.indexOf(sep);
+                subject = cleanLine.substring(0, idx).trim();
+                resultsPart = cleanLine.substring(idx + 1).trim();
+                break;
             }
-            return;
         }
 
-        if (cleanLine.includes('—') || cleanLine.includes('–') || cleanLine.includes('-') || cleanLine.includes('―') || cleanLine.includes(':') || cleanLine.includes('：')) {
-            const separatorMatch = cleanLine.match(/[—–\-―:：]/);
-            const separator = separatorMatch[0];
-            const [subject, resultsPart] = cleanLine.split(separator).map(s => s.trim());
-            
-            let name = translateName(subject);
-            let userRemarks = '';
-            const remarksMatch = subject.match(/[（\(](.*?)[）\)]/);
-            if (remarksMatch) {
-                name = subject.replace(/[（\(].*?[）\)]/, '').trim();
-                userRemarks = remarksMatch[1];
-            }
-
-            const results = resultsPart.split(/[、,，]\s*(?![^（(]*[）)])/).map(r => r.trim());
-            
-            let totalQuantity = 0;
-            let destSummaryArr = [];
-            const mergedRemarks = { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
-            let primaryDest = '未處理';
-
-            results.forEach(res => {
-                const numMatch = res.match(/(\d+)/);
-                const q = numMatch ? parseInt(numMatch[1]) : 1;
-                totalQuantity += q;
-                
-                const dests = ['虎賁軍', '虎甲軍', '黑曜軍', '耀紫軍', '九天', '暫時驅離', '殲滅'];
-                let curDest = '未處理';
-                for (const d of dests) {
-                    if (res.includes(d)) {
-                        curDest = d;
-                        primaryDest = d;
-                        break;
-                    }
-                }
-                destSummaryArr.push(`${curDest}(${q})`);
-
-                const subMatch = res.match(/[（(](.*?)[）)]/);
-                if (subMatch) {
-                    const subParts = subMatch[1].split(/[、,，]/);
-                    subParts.forEach(sp => {
-                        const nMatch = sp.match(/(\d+)/);
-                        const n = nMatch ? parseInt(nMatch[1]) : 0;
-                        if (sp.includes('大姐') || sp.includes('大姊') || sp.includes('閻尊')) mergedRemarks.yan_zun += n;
-                        if (sp.includes('四妹') || sp.includes('闇') || sp.includes('閻闇')) mergedRemarks.yan_an += n;
-                        if (sp.includes('勝') || sp.includes('龍勝')) mergedRemarks.long_sheng += n;
-                        if (sp.includes('戰') || sp.includes('龍戰')) mergedRemarks.long_zhan += n;
-                    });
-                } else if (curDest === '黑曜軍' || curDest === '耀紫軍') {
-                    if (res.includes('大姐') || res.includes('大姊') || res.includes('閻尊')) mergedRemarks.yan_zun += q;
-                    if (res.includes('四妹') || res.includes('闇') || res.includes('閻闇')) mergedRemarks.yan_an += q;
-                    if (res.includes('勝') || res.includes('龍勝')) mergedRemarks.long_sheng += q;
-                    if (res.includes('戰') || res.includes('龍戰')) mergedRemarks.long_zhan += q;
-                }
-            });
-
-            // Rule: If "未處理" is NOT in the results, it is "已處理"
-            const isProcessed = !resultsPart.includes('未處理');
-            const finalDisplayDest = results.length > 1 ? destSummaryArr.join('、') : primaryDest;
-
-            finalItems.push({
-                user_name: name,
-                user_remarks: userRemarks,
-                know_date: currentKnowDate,
-                process_date: isProcessed ? currentKnowDate : null,
-                destination: finalDisplayDest,
-                quantity: totalQuantity,
-                remarks: mergedRemarks,
-                status: isProcessed ? '已處理' : '待處理',
-                remarks_text: resultsPart
-            });
-        } else {
-            // No separator: Default to Processed unless it contains '未處理'
-            const isProcessed = !cleanLine.includes('未處理');
-            finalItems.push({
-                user_name: translateName(cleanLine),
-                user_remarks: '',
-                know_date: currentKnowDate,
-                process_date: isProcessed ? currentKnowDate : null,
-                destination: isProcessed ? '已處理' : '未處理',
-                quantity: 1,
-                remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },
-                status: isProcessed ? '已處理' : '待處理',
-                remarks_text: ''
-            });
+        // 4. Translate Name
+        let rawName = subject;
+        let uRemarks = '';
+        const rMatch = subject.match(/[（\(](.*?)[）\)]/);
+        if (rMatch) {
+            rawName = subject.replace(/[（\(].*?[）\)]/, '').trim();
+            uRemarks = rMatch[1];
         }
+        let finalName = translate(rawName);
+
+        // 5. Status & Quantity
+        const isProcessed = resultsPart.includes('已處理') || (!resultsPart.includes('未處理') && !resultsPart.includes('尚未處理'));
+        const globalNumMatch = cleanLine.match(/(\d+)/);
+        const qty = globalNumMatch ? parseInt(globalNumMatch[1]) : 1;
+
+        let pDate = isProcessed ? currentKnowDate : null;
+        const pMatch = resultsPart.match(/(\d{1,2})[\/.-](\d{1,2})(?=.*已處理)/);
+        if (pMatch) {
+            const m = pMatch[1].padStart(2, '0');
+            const d = pMatch[2].padStart(2, '0');
+            pDate = `${currentKnowDate.split('-')[0]}-${m}-${d}`;
+        }
+
+        finalItems.push({
+            user_name: finalName,
+            user_remarks: uRemarks,
+            know_date: currentKnowDate,
+            process_date: pDate,
+            destination: isProcessed ? '已處理' : '未處理',
+            quantity: qty,
+            remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },
+            status: isProcessed ? '已處理' : '待處理',
+            remarks_text: resultsPart || cleanLine
+        });
     });
 
+    if (finalItems.length === 0) {
+        alert('解析失敗，找不到任何有效法號資料。');
+        return;
+    }
+
+    // --- Detailed Preview ---
+    const first = finalItems[0];
+    const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}\n\n是否繼續？`;
+    
+    if (!confirm(preview)) return;
+
+    loading.value = true;
     try {
-        await axios.post('/grudges/batch', { items: finalItems });
+        const response = await axios.post('/grudges/batch', { items: finalItems });
+        const saved = response.data;
+        const pending = saved.filter(i => i.status === '待處理').length;
+        alert(`匯入成功！\n共新增/更新 ${saved.length} 筆紀錄\n- 已處理：${saved.length - pending} 筆\n- 待處理：${pending} 筆`);
         batchText.value = '';
         emit('success');
         emit('cancel');
     } catch (error) {
         console.error('Batch import failed:', error);
-        const msg = error.response?.data?.message || error.message || '未知錯誤';
-        alert('解析或匯入失敗：' + msg + '\n請檢查資料格式是否符合範例。');
+        alert('匯入失敗：' + (error.response?.data?.message || error.message));
     } finally {
         loading.value = false;
     }

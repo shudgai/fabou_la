@@ -64,17 +64,19 @@
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div v-if="currentFolder !== null && !addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 52px;">
-                <button @click="handleBack" class="text-slate-400 p-2 -ml-2 mr-0.5 active:scale-90 transition-transform shrink-0">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-1 cursor-pointer" @click="resetToRoot">
                     <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
                         父皇仙師開示資料
                     </div>
                 </div>
-                <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                <div class="flex items-center space-x-2 mr-2">
                     <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                    <button @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
+                            class="px-3 py-1 rounded-lg text-[12px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
             </div>
@@ -89,22 +91,10 @@
                 </div>
             </div>
 
-            <!-- Header 2: Folder/Action Level -->
-            <div v-if="currentFolder !== null" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full" :class="{'sticky top-0': addMode}" style="padding: 10px 10px;">
+            <!-- Header 2: Action Level (Minimized when in folder view as controls moved to Header 1) -->
+            <div v-if="currentFolder !== null && addMode" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full sticky top-0" style="padding: 10px 10px;">
                 <div class="flex items-center flex-1 min-w-0">
-                    <button v-if="currentFolder?.id !== 0 && currentFolder?.id !== '0'" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <h2 class="text-[20px] font-normal truncate tracking-tight ml-[20px] font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">
-                        {{ formatMasterName(currentFolder?.name) + (addMode ? '-父皇仙師開示資料' : '') }}
-                    </h2>
-                </div>
-                <div v-if="!addMode" class="ml-2 flex items-center">
-                    <button @click="reorderMode = !reorderMode" 
-                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                            class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
-                        {{ reorderMode ? '確認排序' : '修改排序' }}
-                    </button>
+                    <!-- Sub-title removed per user request -->
                 </div>
             </div>
 
@@ -296,7 +286,7 @@
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
                                             <!-- Group Mode -->
                                             <template v-if="activeModalGroup || currentMatchedGroup">
-                                                <div @click="showGroupMembersModal = true" 
+                                                <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
                                                      class="bg-indigo-50 border-2 border-indigo-100 text-indigo-700 px-4 py-[10px] rounded-2xl app-body flex items-center shadow-sm cursor-pointer hover:bg-indigo-100 transition-all">
                                                     <span class="mr-2 w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span>
                                                     <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name) }} ({{ form.dharma_name_ids.length }}人)</span>
@@ -1664,11 +1654,11 @@
                     </div>
 
                     <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
-                        <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
-                            {{ saving ? '錄入中...' : '確認存檔' }}
-                        </button>
                         <button @click="saveConfirmModal.show = false" class="px-10 py-[10px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
+                        </button>
+                        <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
+                            {{ saving ? '錄入中...' : '確認存檔' }}
                         </button>
                     </div>
                 </div>
@@ -2422,7 +2412,36 @@ const activeModalGroupGrouped = computed(() => {
     // Special groups that should be hidden from this modal view
     if (name === '世代交替' || name.includes('直屬弟子')) return [];
 
-    // Return a single group with all members, no more palace/army subdivision
+    // '各宮' or groups containing '宮' (except specific ones) should show Palace subdivision
+    if (name === '各宮' || (name.includes('宮') && !name.includes('宮主'))) {
+        const grouped = [];
+        const palaces = [
+            '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮', 
+            '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
+        ];
+        
+        palaces.forEach(pName => {
+            const members = currentMembers.filter(m => {
+                const pIdx = palaceDharmaMapping.value.get(String(m.id));
+                return pIdx !== undefined && palaces[pIdx] === pName;
+            });
+            if (members.length > 0) {
+                grouped.push({ palaceName: pName, members });
+            }
+        });
+
+        // Add remaining members who don't belong to a palace
+        const handledIds = new Set();
+        grouped.forEach(g => g.members.forEach(m => handledIds.add(String(m.id))));
+        const others = currentMembers.filter(m => !handledIds.has(String(m.id)));
+        if (others.length > 0) {
+            grouped.push({ palaceName: '其他', members: others });
+        }
+        
+        return grouped;
+    }
+
+    // Default: Return a single group with all members
     return [{ palaceName: '群組成員', members: currentMembers }];
 });
 

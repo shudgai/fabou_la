@@ -45,7 +45,7 @@ class DharmaGroupSeeder extends Seeder
             '副宮主' => ['靈妙', '赤峰', '閻澤', '金了'],
             '宮主' => ['靈果', '元續', '龍戰', '金頤', '靈心', '金振', '靈昡', '閻尊', '金曉', '道妙', '閻願'],
             '宮主副宮主' => ['靈果', '靈妙', '元續', '赤峰', '龍戰', '金頤', '靈心', '閻澤', '金振', '靈昡', '閻尊', '金了', '金曉', '道妙', '閻願'],
-            '各宮' => ['靈果', '靈妙', '元續', '赤峰', '龍戰', '金頤', '靈心', '閻澤', '金振', '靈昡', '閻尊', '金了', '金曉', '道妙', '閻願'],
+            '各宮' => ['玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮', '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'],
 
             '老祖仙師直屬弟子' => ['紫元', '金雲', '金熹'],
             '元始仙師直屬弟子' => ['赤覺', '紫元', '龍勝', '龍戰', '元續'],
@@ -61,9 +61,24 @@ class DharmaGroupSeeder extends Seeder
         // Ensure '全體殿生' includes everyone
         $groupMembers['全體殿生'] = DharmaName::pluck('name')->toArray();
 
+        // Resolve Meta-Groups: If a group's "member" list contains the name of another group (like '各宮' containing '玄通宮'), 
+        // expand it to include all members of that referenced group.
+        $finalGroupMembers = [];
+        foreach ($groupMembers as $groupName => $people) {
+            $expandedList = [];
+            foreach ($people as $p) {
+                if (isset($groupMembers[$p]) && $p !== $groupName) {
+                    $expandedList = array_merge($expandedList, $groupMembers[$p]);
+                } else {
+                    $expandedList[] = $p;
+                }
+            }
+            $finalGroupMembers[$groupName] = array_unique($expandedList);
+        }
+
         // Process Person-by-Person Truth
         $truthMatrix = [];
-        foreach ($groupMembers as $groupName => $people) {
+        foreach ($finalGroupMembers as $groupName => $people) {
             foreach ($people as $p) {
                 $truthMatrix[$p][] = $groupName;
             }

@@ -313,8 +313,15 @@ const formatDate = (dateStr) => {
 };
 
 const getTodayStr = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // 強制使用台北時區 (Asia/Taipei)
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+    return formatter.format(now); // 回傳 YYYY-MM-DD
 };
 
 
@@ -348,17 +355,20 @@ const sortedItems = computed(() => {
         if (focusedId.value === a.id) return -1;
         if (focusedId.value === b.id) return 1;
         
-        // Unprocessed items always first
-        const aUnprocessed = a.destination === '未處理';
-        const bUnprocessed = b.destination === '未處理';
-        if (aUnprocessed && !bUnprocessed) return -1;
-        if (!aUnprocessed && bUnprocessed) return 1;
-
+        // 1. 先比日期 (確保同一天的一定在一起)
         const dateA = new Date(a.know_date);
         const dateB = new Date(b.know_date);
         if (dateA - dateB !== 0) {
             return sortDesc.value ? dateB - dateA : dateA - dateB;
         }
+
+        // 2. 同一天內，未處理的排在最前面
+        const aUnprocessed = a.destination === '未處理';
+        const bUnprocessed = b.destination === '未處理';
+        if (aUnprocessed && !bUnprocessed) return -1;
+        if (!aUnprocessed && bUnprocessed) return 1;
+
+        // 3. 最後比 ID
         return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
     return result;
