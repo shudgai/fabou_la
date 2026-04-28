@@ -526,7 +526,7 @@
                                             class="text-[36px] font-light leading-none active:scale-95 transition-all duration-300"> + </button>
                                 </div>
                                 <div class="grid grid-cols-12 gap-2.5 items-end">
-                                    <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('師兄姐') || newItemName.includes('師兄姊')) ? 'col-span-10' : 'col-span-9'" class="space-y-1 relative">
+                                    <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('由')) ? 'col-span-10' : 'col-span-9'" class="space-y-1 relative">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
                                             <div class="flex-1 border border-slate-400 rounded-xl bg-blue-50/40 flex items-center transition-all py-[10px] relative">
@@ -559,7 +559,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('師兄姐') && !newItemName.includes('師兄姊') && !showAddDetails && !newItemMainRemarks.trim()" class="col-span-3 space-y-1">
+                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('由') && !showAddDetails && !newItemMainRemarks.trim()" class="col-span-3 space-y-1">
                                         <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-center">天份</div>
                                         <div class="border border-slate-400 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-2 transition-all py-[10px]">
                                             <input v-model="newItemDays" list="num-list"
@@ -697,10 +697,10 @@
                                 </div>
 
                                 <!-- CLEARING & INSTRUMENT SPECIAL CASE (Visible even in default category) -->
-                                <div v-if="!showAddDetails && (isSpecialInstrument(newItemName) || (newItemName.includes('師兄姐') || newItemName.includes('師兄姊')))" class="mt-4 space-y-4 px-1 mb-4">
+                                <div v-if="!showAddDetails && (isSpecialInstrument(newItemName) || newItemName.includes('由'))" class="mt-4 space-y-4 px-1 mb-4">
                                     <!-- 1. Practitioner -->
                                     <div class="space-y-1.5">
-                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
                                         <div class="relative group">
                                             <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                 <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'pract2'" @focus="activePractitionerDropdownId = 'pract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
@@ -718,7 +718,7 @@
                                         </div>
                                     </div>
                                     <!-- 2. Instrument Name - Only show if the name is generic -->
-                                    <div v-if="(newItemName === '令牌' || newItemName === '法器' || newItemName === '清煞' || newItemName?.includes('師兄姐') || newItemName?.includes('師兄姊')) && newItemName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemName === k)" class="space-y-1.5">
+                                    <div v-if="(newItemName === '令牌' || newItemName === '法器' || newItemName?.includes('由')) && newItemName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemName === k)" class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
                                         <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="使用的法器...">
@@ -754,7 +754,7 @@
 
                                     <div v-if="showAddDetails" class="space-y-3 animate-fade-in mt-1">
                                         <div class="grid grid-cols-12 gap-2.5 items-end">
-                                            <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')) ? 'col-span-12' : 'col-span-9'" class="space-y-1 relative">
+                                            <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由')) ? 'col-span-12' : 'col-span-9'" class="space-y-1 relative">
                                                 <div class="text-[12px] text-slate-400 font-bold px-1 mb-0.5 text-left">內容物名稱</div>
                                                 <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                     <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'"
@@ -788,7 +788,7 @@
                                                 </div>
                                             </div>
 
-                                            <div v-if="magicItemSubCategory === 'default' && !(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊'))" class="col-span-3 space-y-1.5">
+                                            <div v-if="magicItemSubCategory === 'default' && !(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由'))" class="col-span-3 space-y-1.5">
                                                 <div class="text-[13px] text-slate-400 font-bold px-1 text-center select-none">天份</div>
                                                 <div class="border border-slate-400 rounded-xl bg-blue-50/40 overflow-hidden flex items-center px-1 transition-all py-[10px]">
                                                     <input v-model="newItemDetailsExtraDays" list="num-list"
@@ -909,10 +909,10 @@
 
                                             
                                             <!-- SUB-ITEM INSTRUMENT SPECIAL CASE (Always accessible if detected) -->
-                                            <div v-if="isSpecialInstrument(newItemSubName) || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')" class="mt-4 space-y-4">
+                                            <div v-if="isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由')" class="mt-4 space-y-4">
                                                 <!-- 1. Practitioner -->
                                                 <div class="space-y-1.5">
-                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法師兄姐</div>
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
                                                     <div class="relative group">
                                                         <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                             <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract2'" @focus="activeSubPractitionerDropdownId = 'subPract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入法號...">
@@ -930,7 +930,7 @@
                                                     </div>
                                                 </div>
                                                 <!-- 2. Instrument Name - Only show if the name is generic -->
-                                                <div v-if="(newItemSubName === '令牌' || newItemSubName === '法器' || newItemSubName === '清煞' || newItemSubName?.includes('師兄姐') || newItemSubName?.includes('師兄姊')) && newItemSubName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemSubName === k)" class="space-y-1.5">
+                                                <div v-if="(newItemSubName === '令牌' || newItemSubName === '法器' || newItemSubName?.includes('由')) && newItemSubName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemSubName === k)" class="space-y-1.5">
                                                     <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
                                                     <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
                                                         <input v-model="newItemSubInstrumentName" 
@@ -2154,8 +2154,8 @@ const isSpecialInstrument = (name) => {
     if (!name) return false;
     const n = name.toLowerCase();
     const list = [
-        '由師兄姐', '由師兄姊', '金印', '令牌', '令旗', '天筆', '法筆', '玉筆', '寶鏡', '現惡鏡', '寶劍', 
-        '八卦', '寶扇', '油燈', '淨塵', '法器', '清煞', '筆', '鑑', '印', '勾', '旗'
+        '由', '金印', '令牌', '令旗', '天筆', '法筆', '玉筆', '寶鏡', '現惡鏡', '寶劍', 
+        '八卦', '寶扇', '油燈', '淨塵', '法器', '筆', '鑑', '印', '勾', '旗'
     ];
     if (n.includes('陣') || n.includes('提升玄能') || n.includes('解脫')) return false;
     // Removed circular instrumentTreasures.value.some check
@@ -3058,25 +3058,26 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart 
         if (h) parts.push(`${h} ${pillLabel}洗`.replace('  ', ' ').trim());
         if (d) parts.push(`${d} 天份`);
         return parts.join(' '); // Commas removed per request
+    } else if (isSpecialInstrument(itemName) || (itemName && itemName.includes('執法'))) {
+        // Rule: Special instruments always use "執法" label regardless of category
+        if (pr) parts.push(`執法-${pr}`);
+        if (instrument) parts.push(`法器-${instrument}`);
+        if (bodyPart) parts.push(`清煞部份-${bodyPart}`);
+        if (d) parts.push(`${d} 天份`);
+        return parts.join(' '); // Instruments use spaces per request, no comma
     } else if (cat === '符令' || cat === '太令') {
         if (sz) parts.push(sz);
         if (d) parts.push(`${d} 天份`);
-        if (pr) parts.push(`由-${pr} 師兄姐開立`);
+        if (pr) parts.push(`由-${pr} 開立`);
     } else if (cat === '香環') {
         if (d) parts.push(`${d} 個`);
         if (sh) parts.push(`${sh} 盒`);
     } else if (cat === '福祿香') {
         if (d) parts.push(`${d} 根`);
         if (sh) parts.push(`${sh} 包`);
-    } else if (isSpecialInstrument(itemName) || itemName.includes('清煞') || itemName.includes('執法')) {
-        if (pr) parts.push(`執法-${pr}`);
-        if (instrument) parts.push(`法器-${instrument}`);
-        if (bodyPart) parts.push(`清煞部份-${bodyPart}`);
-        if (d) parts.push(`${d} 天份`);
-        return parts.join(' '); // Instruments use spaces per request, no comma
     } else {
         if (d) parts.push(`${d} 天份`);
-        if (pr) parts.push(`由-${pr} 師兄姐開立`);
+        if (pr) parts.push(`由-${pr} 開立`);
     }
     return parts.join(' ').trim();
 };
