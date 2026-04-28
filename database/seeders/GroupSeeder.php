@@ -49,7 +49,8 @@ class GroupSeeder extends Seeder
             '父皇直屬弟子',
             '太宰仙師直屬弟子',
             '閻王仙師直屬弟子',
-            '太子直屬弟子'
+            '太子直屬弟子',
+            '全體殿生'
         ];
 
         foreach ($groups as $name) {

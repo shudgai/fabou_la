@@ -136,7 +136,8 @@ const handleBatchSave = async () => {
         const cleanDateStr = normLine.replace(/[年月]/g, '-').replace(/[日]/g, '');
         const dateParts = cleanDateStr.split(/[.\/-]/).map(p => p.trim());
 
-        if (dateParts.length === 3 && !isNaN(parseInt(dateParts[0]))) {
+        const allNumeric = dateParts.every(p => /^\d+$/.test(p));
+        if (dateParts.length === 3 && allNumeric) {
             let year = parseInt(dateParts[0]);
             const month = dateParts[1].padStart(2, '0');
             const day = dateParts[2].padStart(2, '0');
@@ -145,7 +146,7 @@ const handleBatchSave = async () => {
             return;
         }
         
-        if (dateParts.length === 2 && !isNaN(parseInt(dateParts[0])) && !isNaN(parseInt(dateParts[1])) && normLine.length < 10) {
+        if (dateParts.length === 2 && allNumeric && normLine.length < 10) {
             const y = currentKnowDate.split('-')[0];
             const m = dateParts[0].padStart(2, '0');
             const d = dateParts[1].padStart(2, '0');
@@ -160,8 +161,29 @@ const handleBatchSave = async () => {
         const skipKeywords = ['法號', '項目', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計'];
         if (skipKeywords.some(key => cleanLine.includes(key))) return;
 
-        if (cleanLine.includes('—') || cleanLine.includes('–') || cleanLine.includes('-') || cleanLine.includes(':') || cleanLine.includes('：')) {
-            const separatorMatch = cleanLine.match(/[—–\-:：]/);
+        // Continuation line detection: if it starts with parentheses, merge it with the last item
+        if (/^[（\(]/.test(cleanLine) && finalItems.length > 0) {
+            const lastItem = finalItems[finalItems.length - 1];
+            lastItem.remarks_text += '\n' + cleanLine;
+            
+            // Re-scan for extra counts in this continuation line
+            const subMatch = cleanLine.match(/[（(](.*?)[）)]/);
+            if (subMatch) {
+                const subParts = subMatch[1].split(/[、,，]/);
+                subParts.forEach(sp => {
+                    const nMatch = sp.match(/(\d+)/);
+                    const n = nMatch ? parseInt(nMatch[1]) : 0;
+                    if (sp.includes('大姐') || sp.includes('大姊') || sp.includes('閻尊')) lastItem.remarks.yan_zun += n;
+                    if (sp.includes('四妹') || sp.includes('闇') || sp.includes('閻闇')) lastItem.remarks.yan_an += n;
+                    if (sp.includes('勝') || sp.includes('龍勝')) lastItem.remarks.long_sheng += n;
+                    if (sp.includes('戰') || sp.includes('龍戰')) lastItem.remarks.long_zhan += n;
+                });
+            }
+            return;
+        }
+
+        if (cleanLine.includes('—') || cleanLine.includes('–') || cleanLine.includes('-') || cleanLine.includes('―') || cleanLine.includes(':') || cleanLine.includes('：')) {
+            const separatorMatch = cleanLine.match(/[—–\-―:：]/);
             const separator = separatorMatch[0];
             const [subject, resultsPart] = cleanLine.split(separator).map(s => s.trim());
             
@@ -185,8 +207,8 @@ const handleBatchSave = async () => {
                 const q = numMatch ? parseInt(numMatch[1]) : 1;
                 totalQuantity += q;
                 
+                const dests = ['虎賁軍', '虎甲軍', '黑曜軍', '耀紫軍', '九天', '暫時驅離', '殲滅'];
                 let curDest = '未處理';
-                const dests = ['虎賁軍', '虎甲軍', '黑曜軍', '耀紫軍', '九天'];
                 for (const d of dests) {
                     if (res.includes(d)) {
                         curDest = d;
@@ -202,16 +224,16 @@ const handleBatchSave = async () => {
                     subParts.forEach(sp => {
                         const nMatch = sp.match(/(\d+)/);
                         const n = nMatch ? parseInt(nMatch[1]) : 0;
-                        if (sp.includes('閻尊')) mergedRemarks.yan_zun += n;
-                        if (sp.includes('閻闇')) mergedRemarks.yan_an += n;
-                        if (sp.includes('龍勝')) mergedRemarks.long_sheng += n;
-                        if (sp.includes('龍戰')) mergedRemarks.long_zhan += n;
+                        if (sp.includes('大姐') || sp.includes('大姊') || sp.includes('閻尊')) mergedRemarks.yan_zun += n;
+                        if (sp.includes('四妹') || sp.includes('闇') || sp.includes('閻闇')) mergedRemarks.yan_an += n;
+                        if (sp.includes('勝') || sp.includes('龍勝')) mergedRemarks.long_sheng += n;
+                        if (sp.includes('戰') || sp.includes('龍戰')) mergedRemarks.long_zhan += n;
                     });
                 } else if (curDest === '黑曜軍' || curDest === '耀紫軍') {
-                    if (res.includes('閻尊')) mergedRemarks.yan_zun += q;
-                    if (res.includes('閻闇')) mergedRemarks.yan_an += q;
-                    if (res.includes('龍勝')) mergedRemarks.long_sheng += q;
-                    if (res.includes('龍戰')) mergedRemarks.long_zhan += q;
+                    if (res.includes('大姐') || res.includes('大姊') || res.includes('閻尊')) mergedRemarks.yan_zun += q;
+                    if (res.includes('四妹') || res.includes('闇') || res.includes('閻闇')) mergedRemarks.yan_an += q;
+                    if (res.includes('勝') || res.includes('龍勝')) mergedRemarks.long_sheng += q;
+                    if (res.includes('戰') || res.includes('龍戰')) mergedRemarks.long_zhan += q;
                 }
             });
 
@@ -254,7 +276,8 @@ const handleBatchSave = async () => {
         emit('cancel');
     } catch (error) {
         console.error('Batch import failed:', error);
-        alert('解析或匯入失敗，請檢查資料格式是否符合範例。');
+        const msg = error.response?.data?.message || error.message || '未知錯誤';
+        alert('解析或匯入失敗：' + msg + '\n請檢查資料格式是否符合範例。');
     } finally {
         loading.value = false;
     }

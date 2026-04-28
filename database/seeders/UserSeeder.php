@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         $user = \App\Models\User::firstOrCreate(
             ['email' => 'shudgai999@gmail.com'],
             [
-                'name' => 'Admin',
+                'name' => '元續',
                 'password' => \Illuminate\Support\Facades\Hash::make('abc1234'),
             ]
         );
