@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
-        <!-- Global Dual Header System -->
+    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900">
+
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
@@ -469,47 +469,6 @@
         </div>
 
 
-        <div v-if="showAddMenu" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-fade-in" @click="showAddMenu = false">
-            <div class="bg-white w-auto min-w-[240px] max-w-[320px] rounded-[32px] overflow-hidden shadow-2xl animate-pop-in" @click.stop>
-                <div class="p-3 space-y-2">
-                    <button @click="openAdd('single'); showAddMenu = false" class="w-full p-4 flex items-center space-x-3 bg-indigo-600 text-white rounded-2xl active:scale-95 transition-all group shadow-md shadow-indigo-100">
-                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div class="flex flex-col text-left">
-                            <span class="text-[19px] font-black font-outfit">逐筆新增</span>
-                            <span class="text-[14px] text-white/70 font-medium font-outfit">輸入單筆登記紀錄</span>
-                        </div>
-                    </button>
-
-                    <button @click="openAdd('batch'); showAddMenu = false" class="w-full p-4 flex items-center space-x-3 bg-blue-600 text-white rounded-2xl active:scale-95 transition-all group shadow-md shadow-blue-100">
-                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div class="flex flex-col text-left">
-                            <span class="text-[19px] font-black font-outfit">多筆新增</span>
-                            <span class="text-[14px] text-white/70 font-medium font-outfit">貼上文字批次匯入</span>
-                        </div>
-                    </button>
-
-                    <div class="pt-2 pb-1">
-                        <button @click="copyAllToLine(); showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center text-slate-400 font-bold text-[16px] hover:text-slate-600 transition-colors">
-                            複製全部資料至 LINE
-                        </button>
-                        <button @click="reorderMode = !reorderMode; showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center bg-blue-600 text-white font-bold text-[16px] active:scale-95 transition-all border-t border-slate-50">
-                            {{ reorderMode ? '結束手動排序' : '手動排序' }}
-                        </button>
-                        <button @click="downloadAllData(); showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center text-slate-400 font-bold text-[16px] hover:text-slate-600 transition-colors border-t border-slate-50">
-                            匯出 Excel 報表
-                        </button>
-                    </div>
-                    
-                    <div class="pt-1">
-                        <button @click="showAddMenu = false" class="w-full py-4 bg-slate-50 text-slate-400 font-black text-[17px] rounded-2xl active:scale-95 transition-all uppercase tracking-widest">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <registry-add-form 
             v-if="addMode"
@@ -586,17 +545,24 @@
         />
         <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
 
-        <!-- Bottom Navigation -->
         <mobile-navbar 
-            :can-back="!!currentCategory"
+            :can-back="true"
             :can-home="true"
-            :show-action="!!currentCategory"
+            :show-action="true"
+            :action-disabled="false"
             :action-active="showAddMenu"
             :search-active="showSearch"
             @back="handleBack"
             @home="$emit('goHome')"
             @action="showAddMenu = !showAddMenu"
             @search="showSearch = !showSearch"
+        />
+
+        <!-- Add Action Menu (uses z-[2000], above navbar) -->
+        <add-action-menu
+            :show="showAddMenu"
+            @close="showAddMenu = false"
+            :actions="addActions"
         />
     </div>
 </template>
@@ -610,6 +576,7 @@ const getTodayStr = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 import MobileNavbar from './MobileNavbar.vue';
+import AddActionMenu from './AddActionMenu.vue';
 import RegistryAddForm from './RegistryAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import LuckyDraw from './LuckyDraw.vue';
@@ -702,6 +669,42 @@ const expandedIds = ref(new Set());
 const editingIds = ref(new Set());
 const focusedId = ref(null);
 const showAddMenu = ref(false);
+const addActions = computed(() => [
+    {
+        label: '逐筆新增',
+        description: '輸入單筆登記紀錄',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => openAdd('single')
+    },
+    {
+        label: '多筆新增',
+        description: '貼上文字批次匯入',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        colorClass: 'bg-blue-50 text-blue-600',
+        handler: () => openAdd('batch')
+    },
+    {
+        label: '複製全部至 LINE',
+        description: '複製此資料夾所有記錄',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        colorClass: 'bg-emerald-50 text-emerald-600',
+        handler: () => copyAllToLine()
+    },
+    {
+        label: reorderMode.value ? '結束手動排序' : '手動排序',
+        description: '調整記錄顯示順序',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        colorClass: 'bg-amber-50 text-amber-600',
+        handler: () => { reorderMode.value = !reorderMode.value; }
+    },
+    {
+        label: '匯出 Excel 報表',
+        description: '下載此資料夾完整清單',
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        colorClass: 'bg-slate-100 text-slate-600',
+        handler: () => downloadAllData()
+    },
+]);
 const showSearch = ref(false);
 const searchQuery = ref('');
 const showExportMenu = ref(false);

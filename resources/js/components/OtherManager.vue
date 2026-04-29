@@ -113,7 +113,7 @@
                 <div class="flex flex-col w-full gap-1">
                     <!-- First Row: Main Title -->
                     <div class="flex items-center">
-                        <button @click="activeFolderId = null" class="p-2 text-slate-400 mr-1 -ml-1">
+                        <button @click="resetToRoot" class="p-2 text-slate-400 mr-1 -ml-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 25px !important;">
@@ -128,11 +128,9 @@
                         <div class="flex items-center justify-end flex-1">
                             <template v-if="activeFolder.name.includes('隨機分組')">
                                 <div class="flex items-center space-x-1 flex-1 max-w-[80px]" style="transform: translateY(-10px);">
-                                    <button ontouchstart="" @click="randomGroupRef?.invertSelection(); activeAction = 'invert'" 
-                                        :class="[
-                                            'flex-1 py-[6px] text-[17px] rounded-lg shadow-sm border transition-colors duration-150',
-                                            activeAction === 'invert' ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-black active:bg-slate-400'
-                                        ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '' }">反選</button>
+                                    <button @click="randomGroupRef?.invertSelection()" 
+                                        class="flex-1 py-[6px] text-[17px] rounded-lg shadow-sm border transition-colors duration-150 bg-white border-slate-300 text-slate-700 font-bold active:bg-blue-600 active:text-white active:border-blue-600"
+                                        >反選</button>
                                 </div>
                                 <button @click="randomGroupRef?.resetAll()" class="p-1 ml-1 text-slate-400 hover:text-red-500 shrink-0">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -192,7 +190,7 @@
                 :action-disabled="false"
                 :can-search="false"
                 :can-more="!!activeFolder"
-                @back="activeFolderId = null"
+                @back="resetToRoot"
                 @home="$emit('goHome')"
                 @action="prepareAddRecord"
                 @more="handleMore"
@@ -258,6 +256,7 @@ const resetToRoot = () => {
     searchQuery.value = '';
     focusedId.value = null;
     addMode.value = false;
+    activeAction.value = '';
 };
 
 const props = defineProps({
@@ -299,13 +298,36 @@ const loadData = async () => {
     const res = await axios.get('/other-folders');
     folders.value = res.data;
     
-    // Auto-initialize if empty or missing required folders
-    const hasKaiwen = folders.value.some(f => f.name.includes('開文核定'));
-    const hasRandom = folders.value.some(f => f.name.includes('隨機分組'));
+    const kaiwenFolders = folders.value.filter(f => f.name.includes('開文核定'));
+    const randomFolders = folders.value.filter(f => f.name.includes('隨機分組'));
 
-    if (!hasKaiwen || !hasRandom) {
-        if (!hasKaiwen) await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
-        if (!hasRandom) await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
+    let needReload = false;
+
+    // Remove duplicates if they exist (keep the first one)
+    if (kaiwenFolders.length > 1) {
+        for (let i = 1; i < kaiwenFolders.length; i++) {
+            await axios.delete(`/other-folders/${kaiwenFolders[i].id}`);
+        }
+        needReload = true;
+    }
+    if (randomFolders.length > 1) {
+        for (let i = 1; i < randomFolders.length; i++) {
+            await axios.delete(`/other-folders/${randomFolders[i].id}`);
+        }
+        needReload = true;
+    }
+
+    // Auto-initialize if completely missing
+    if (kaiwenFolders.length === 0) {
+        await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
+        needReload = true;
+    }
+    if (randomFolders.length === 0) {
+        await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
+        needReload = true;
+    }
+
+    if (needReload) {
         return loadData();
     }
 };

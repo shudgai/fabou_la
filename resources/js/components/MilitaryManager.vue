@@ -254,7 +254,7 @@
         <mobile-navbar 
             :can-back="true"
             :show-action="true"
-            :action-disabled="!currentFolder"
+            :action-disabled="false"
             :action-active="showAddMenu"
             :search-active="showSearch"
             :can-search="true"

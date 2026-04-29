@@ -52,7 +52,7 @@
 <body class="antialiased text-slate-900 bg-white font-medium">
     <div class="min-h-screen flex flex-col">
         <!-- Retractable Sidebar -->
-        <div x-data="{ sidebarOpen: false, sidebarCollapsed: false }" class="flex-1 flex overflow-hidden">
+        <div x-data="{ sidebarOpen: false, sidebarCollapsed: false }" class="flex-1 flex {{ request()->routeIs('note.index') ? '' : 'overflow-hidden' }}">
             <!-- Sidebar backdrop for mobile -->
             <div x-show="sidebarOpen" x-cloak
                 @click="sidebarOpen = false" 
@@ -235,7 +235,7 @@
                 </header>
                 @endif
 
-                <main id="app" class="flex-1 overflow-y-auto relative bg-white">
+                <main id="app" class="flex-1 relative bg-white {{ request()->routeIs('note.index') ? '' : 'overflow-y-auto' }}">
                     @yield('content')
                 </main>
             </div> <!-- End Main Content Area -->

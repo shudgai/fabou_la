@@ -871,7 +871,6 @@ const invertSelection = () => {
 };
 
 const resetAll = () => {
-    if (!confirm('確定要清空所有選取與結果嗎？這將重置所有進度。')) return;
     pendingNames.value = [];
     selectionFiltered.value = false;
     selectedNames.value = [];
@@ -882,7 +881,6 @@ const resetAll = () => {
     currentType.value = '';
     currentStep.value = 1;
     includeGuardians.value = false;
-    sessionStorage.removeItem(STORAGE_KEY);
 };
 
 onMounted(loadUsers);

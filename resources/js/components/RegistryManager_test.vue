@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
@@ -323,16 +323,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Navigation Components -->
-        <mobile-navbar 
-            :can-back="true"
-            @back="handleBack"
-            @home="$emit('goHome')"
-            @action="showAddMenu = true"
-            @search="showSearch = !showSearch"
-            @more="showExportMenu = !showExportMenu"
-        />
 
         <!-- Add Action Menu Overlay -->
         <div v-if="showAddMenu" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-fade-in" @click="showAddMenu = false">
