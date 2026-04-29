@@ -481,16 +481,7 @@ const stopDrag = () => {
     window.removeEventListener('mouseup', stopDrag);
 };
 
-const STORAGE_KEY_PENDING = 'fabou_random_group_pending_v3';
-const STORAGE_KEY_SELECTED = 'fabou_random_group_selected_v3';
-
-watch(pendingNames, (val) => {
-    localStorage.setItem(STORAGE_KEY_PENDING, JSON.stringify(val));
-}, { deep: true });
-
-watch(selectedNames, (val) => {
-    localStorage.setItem(STORAGE_KEY_SELECTED, JSON.stringify(val));
-}, { deep: true });
+// Storage Logic Removed for clean state on load
 
 // Show all users, or only selected ones after first confirm
 const selectionFiltered = ref(false);
@@ -650,18 +641,9 @@ const loadUsers = async () => {
         }
         users.value = processed;
         
-        // Load from storage or default
-        const savedPending = localStorage.getItem(STORAGE_KEY_PENDING);
-        if (savedPending) {
-            pendingNames.value = JSON.parse(savedPending);
-        } else {
-            pendingNames.value = processed.map(u => u.name);
-        }
-
-        const savedSelected = localStorage.getItem(STORAGE_KEY_SELECTED);
-        if (savedSelected) {
-            selectedNames.value = JSON.parse(savedSelected);
-        }
+        // Reset to clean state as requested: no pre-selection
+        pendingNames.value = [];
+        selectedNames.value = [];
 
         selectionFiltered.value = false;
         currentStep.value = 1; // Always start on Step 1 as requested

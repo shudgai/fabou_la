@@ -53,8 +53,8 @@
                 <!-- SINGLE MODE -->
                 <div v-if="localMode === 'single'" class="space-y-1 mt-[-8px] animate-fade-in">
                     <div class="space-y-1 py-[5px]">
-                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
-                        <input v-model="form.name" type="text" placeholder="輸入法寶名稱..." style="font-size: 17px;" class="w-full py-[5px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300">
+                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">法寶名稱 (支援多筆貼入)</label>
+                        <textarea v-model="form.name" rows="3" placeholder="輸入法寶名稱，可用空格或換行分隔多筆..." style="font-size: 17px;" class="w-full py-[5px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 focus:ring-2 focus:ring-indigo-500/20 outline-none placeholder:text-slate-300"></textarea>
                     </div>
 
                     <div class="space-y-1 py-[5px]">
@@ -124,34 +124,46 @@
                     </div>
 
                     <!-- Batch Preview Table -->
-                        <div v-if="excelRows.length > 0" class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
-                        <div class="bg-white px-4 py-[5px] border-b border-slate-100 flex justify-between items-center">
-                            <span class="text-[15px] font-black text-indigo-600">偵測到 {{ excelRows.length }} 筆資料</span>
+                    <!-- Batch Preview Table -->
+                    <div v-if="excelRows.length > 0" class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
+                        <div class="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center">
+                            <div class="flex flex-col">
+                                <span class="text-[15px] font-black text-indigo-600">偵測到 {{ excelRows.length }} 筆資料</span>
+                                <span class="text-[11px] text-slate-400 font-medium">點擊下方「開始載錄」即可存入系統</span>
+                            </div>
                             <div class="flex items-center space-x-4">
                                 <label class="flex items-center space-x-2 cursor-pointer">
                                     <input type="checkbox" v-model="showTotal" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                    <span class="text-[15px] font-black text-indigo-600">統計加總</span>
+                                    <span class="text-[13px] font-black text-slate-500 uppercase tracking-tight">統計加總</span>
                                 </label>
-                                <select v-if="showTotal" v-model="sumKey" class="text-[15px] font-black bg-white border-none rounded px-2 py-[5px] outline-none focus:ring-0">
+                                <select v-if="showTotal" v-model="sumKey" class="text-[13px] font-black bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-indigo-500">
                                     <option value="">選擇統計欄</option>
                                     <option v-for="(col, i) in excelCols" :key="i" :value="col.key">第 {{ i + 1 }} 欄 ({{ col.label }})</option>
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Preview Chips (Quick Overview) -->
+                        <div class="px-4 py-2 bg-slate-50/50 flex flex-wrap gap-1.5 border-b border-slate-100 max-h-[100px] overflow-y-auto no-scrollbar">
+                            <span v-for="(row, idx) in excelRows" :key="idx" class="px-2 py-0.5 bg-white border border-slate-200 rounded-lg text-[12px] font-bold text-slate-600">
+                                {{ row.c0 }}
+                            </span>
+                        </div>
+
                         <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
-                            <table class="w-full text-[15px] text-left">
-                                <thead class="bg-white text-slate-500 sticky top-0 uppercase tracking-tighter border-b border-slate-100">
+                            <table class="w-full text-[14px] text-left">
+                                <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tighter border-b border-slate-100">
                                     <tr>
-                                        <th class="p-2 border-b border-slate-100">目標仙師</th>
-                                        <th v-for="col in excelCols" :key="col.key" class="p-2 border-b border-slate-100">{{ col.label }}</th>
+                                        <th class="p-2 border-b border-slate-100 font-black">仙師</th>
+                                        <th v-for="col in excelCols" :key="col.key" class="p-2 border-b border-slate-100 font-black">{{ col.label }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
-                                        <td class="p-2 text-indigo-600 font-black text-xs whitespace-nowrap">
+                                        <td class="py-3 px-2 text-indigo-500 font-black text-[11px] whitespace-nowrap">
                                             {{ getMasterName(row._master_id) }}
                                         </td>
-                                        <td v-for="col in excelCols" :key="col.key" class="p-2 text-slate-600 font-bold truncate max-w-[120px]">{{ row[col.key] }}</td>
+                                        <td v-for="col in excelCols" :key="col.key" class="py-3 px-2 text-slate-600 font-bold truncate max-w-[120px]">{{ row[col.key] }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -290,8 +302,13 @@ watch(batchInput, (newVal) => {
         // 其次嘗試多個空格、逗號或全形逗號
         let parts = trimmedLine.split(/[\s]{2,}|[,，]/);
         if (parts.length <= 1) {
-            // 最後才嘗試單個空格 (風險較高，但對於簡單列表很有效)
-            parts = trimmedLine.split(/\s+/);
+            // 如果只有一欄，且沒有明顯分隔符，則視為一整欄，不要隨意切分空格 (除非包含明顯數字可能為數量)
+            const containsCount = / \d+$/.test(trimmedLine);
+            if (containsCount) {
+                parts = trimmedLine.split(/\s+/);
+            } else {
+                parts = [trimmedLine];
+            }
         }
         return parts.map(c => c.trim());
     }).filter(l => l.length > 0);
@@ -307,13 +324,16 @@ const processBatchLines = (rawLines) => {
     
     const parseDateText = (str) => {
         if (!str) return null;
-        const rocMatch = str.match(/(\d{2,3})[/-](\d{1,2})[/-](\d{1,2})/);
+        // Priority 1: Check for 4-digit year (Western/CE) first to avoid partial ROC matching
+        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+
+        // Priority 2: Check for 2 or 3 digit year (ROC)
+        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
         if (rocMatch) {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
         }
-        const ceMatch = str.match(/(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
-        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
         return null;
     };
 
@@ -331,12 +351,18 @@ const processBatchLines = (rawLines) => {
             continue;
         }
 
-        // 2. 偵測日期行
-        const parsedDate = parseDateText(firstCell);
+        // 2. 偵測日期行 (支援整行偵測內容，不只看第一個格子)
+        const fullLine = row.join(' ');
+        const parsedDate = parseDateText(fullLine);
         if (parsedDate) {
             currentBlockDate = parsedDate;
-            // 若整行只有日期，則跳過，不視為一筆資料
-            if (row.length === 1 || (row.length === 2 && !row[1].trim())) continue;
+            // 若整行看起來只是個日期標題，則跳過，不視為一筆資料
+            if (fullLine.trim().length <= 15) continue;
+        }
+        
+        // 如果此時 currentBlockDate 還是空的，嘗試從 form 抓預設
+        if (!currentBlockDate) {
+            currentBlockDate = form.value.record_date || form.value.obtained_date || '';
         }
 
         // 3. 偵測仙師分流
@@ -374,15 +400,39 @@ const processBatchLines = (rawLines) => {
             }
         }
         
-        // 4. 偵測「用意：」行
-        // 若此行以「用意：」開頭，則將其內容併入上一筆資料的第二欄 (用意)
-        if (firstCell.startsWith('用意：') || firstCell.startsWith('用意:')) {
+        // 4. 偵測屬性行 (如「用意 打通任督二脈」或「狀態：已登記」)
+        const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+        const firstWord = firstCell.trim().split(/[\s：:]/)[0];
+        
+        if (attrKeywords.includes(firstWord)) {
             if (filteredLines.length > 0) {
                 const prevRow = filteredLines[filteredLines.length - 1];
-                const purposeText = firstCell.replace(/^用意[：:]\s*/, '').trim();
-                // 併入第二欄 (index 1)
-                if (!prevRow[1]) prevRow[1] = purposeText;
-                else prevRow[1] += ' ' + purposeText;
+                const attrVal = firstCell.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+                
+                if (firstWord === '用意') {
+                    // 併入第二欄 (index 1)
+                    if (!prevRow[1]) prevRow[1] = attrVal;
+                    else prevRow[1] += ' ' + attrVal;
+                } else if (firstWord === '狀態') {
+                    // 支援多種輸入方式：已登記、已求得、未求得
+                    if (attrVal.includes('已求得')) prevRow._injectedStatus = '已求得';
+                    else if (attrVal.includes('已登記')) prevRow._injectedStatus = '已登記';
+                    else if (attrVal.includes('未求得')) prevRow._injectedStatus = '未求得';
+                    else prevRow._injectedStatus = attrVal;
+                } else if (['得知日期', '日期'].includes(firstWord)) {
+                    prevRow._injectedDate = attrVal;
+                } else if (['登記日期', '求得日期'].includes(firstWord)) {
+                    prevRow._injectedObtainedDate = attrVal;
+                    // 自動判定狀態：求得日期優先於登記日期
+                    const newStatus = (firstWord === '求得日期' ? '已求得' : '已登記');
+                    if (!prevRow._injectedStatus || prevRow._injectedStatus === '未求得' || (newStatus === '已求得' && prevRow._injectedStatus === '已登記')) {
+                        prevRow._injectedStatus = newStatus;
+                    }
+                } else {
+                    // 其他屬性併入備註
+                    if (!prevRow[2]) prevRow[2] = firstWord + ': ' + attrVal;
+                    else prevRow[2] += '；' + firstWord + ': ' + attrVal;
+                }
                 continue;
             }
         }
@@ -411,8 +461,11 @@ const processBatchLines = (rawLines) => {
         for (let i = 0; i < maxCols; i++) {
             rowData[`c${i}`] = row[i] || '';
         }
-        rowData._record_date = row._injectedDate;
+        // 預設日期繼承邏輯：若無明確指定的日期屬性行，則繼承上方標題行的日期
+        rowData._record_date = row._injectedDate || currentBlockDate;
+        rowData._obtained_date = row._injectedObtainedDate || currentBlockDate;
         rowData._master_id = row._injectedMasterId;
+        rowData._status = row._injectedStatus;
         return rowData;
     });
 
@@ -490,7 +543,16 @@ const handleDirectPaste = async () => {
 
 const handleSubmit = () => {
     if (localMode.value === 'single') {
-        emit('saveSingle', form.value);
+        // 優先依換行切分，其次依兩個以上的空格或 Tab 切分，保留單個標點符號作為名稱的一部分
+        const names = form.value.name?.split(/[\n\r]+|[\s\t]{2,}/).filter(n => n.trim()) || [];
+        if (names.length === 0) {
+            alert('請輸入法寶名稱');
+            return;
+        }
+
+        names.forEach(n => {
+            emit('saveSingle', { ...form.value, name: n.trim() });
+        });
     } else {
         // Send the processed list to parent
         emit('saveBatch', { 
@@ -499,10 +561,12 @@ const handleSubmit = () => {
             rows: excelRows.value.map(row => ({
                 name: row.c0,
                 purpose: row.c1,
-                master_id: row._master_id,
-                record_date: row._record_date || '', // 自動補上日期
+                master_id: row._master_id || form.value.master_id,
+                record_date: row._record_date || form.value.record_date || '',
+                obtained_date: row._obtained_date || form.value.obtained_date || '',
+                status: row._status || form.value.status || '未求得',
                 count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
-                remarks: Object.keys(row).filter(k => !['c0', 'c1', '_record_date', '_master_id', sumKey.value].includes(k)).map(k => row[k]).join(' ')
+                remarks: row._status ? `原始狀態: ${row._status}；` : '' + Object.keys(row).filter(k => !['c0', 'c1', '_record_date', '_obtained_date', '_master_id', '_status', sumKey.value].includes(k)).map(k => row[k]).filter(v => v).join(' ')
             })),
             total: batchTotalValue.value
         });

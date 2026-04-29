@@ -194,7 +194,7 @@
                         v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'w-full block p-[6px] border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
+                            'w-full block py-[15px] px-[12px] border-b border-slate-100 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
                             openMenuId === reg.id ? 'z-[50]' : 'z-0'
                         ]">
                         

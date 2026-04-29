@@ -21,8 +21,8 @@
 
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
-                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 !text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 !text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
+                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'single' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
             </div>
 
             <!-- Scrollable Content -->
@@ -48,21 +48,14 @@
                     </div>
                 </div>
 
-                <!-- Treasure Names (Now below Master in both modes) -->
-                <div class="space-y-2">
+                <!-- Treasure Names (Single Mode) -->
+                <div v-if="localMode === 'single'" class="space-y-2">
                     <div class="flex items-center justify-between ml-1">
-                        <label class="text-[15px] font-bold text-red-600 uppercase tracking-wider">法寶名稱</label>
-                        <button @click="addTreasureNameRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm">
-                            ＋ 增行
-                        </button>
+                        <label class="text-[15px] font-bold text-red-600 uppercase tracking-wider">法寶名稱 (支援多筆貼入)</label>
                     </div>
-                    <div v-for="(tn, tnIdx) in treasureNames" :key="tnIdx" class="flex items-center space-x-2 animate-fade-in mb-2">
-                        <input v-model="treasureNames[tnIdx]" type="text" placeholder="輸入法寶名稱" 
-                            class="flex-1 py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
-                        <button v-if="treasureNames.length > 1" @click="removeTreasureNameRow(tnIdx)" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
+                    <textarea v-model="treasureNamesText" rows="3" 
+                        class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none"
+                        placeholder="輸入法寶名稱，可用空格或換行分隔多筆..."></textarea>
                 </div>
 
                 <!-- Single Mode Fields -->
@@ -85,10 +78,10 @@
                 </div>
 
                 <!-- Personnel List (Single Mode) -->
-                <div v-if="localMode === 'single'" class="space-y-4">
+                <div v-if="localMode === 'single'" class="space-y-6">
                         <div class="flex items-center justify-between ml-1">
                             <label class="text-[15px] font-bold text-red-600 uppercase tracking-tight">承接皇恩的師兄姐</label>
-                            <button @click="addPersonnelRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm">
+                            <button @click="addPersonnelRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm" style="color: white !important;">
                                 ＋ 新增人員
                             </button>
                         </div>
@@ -156,7 +149,7 @@
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入清單內容</label>
                         <div class="flex items-center space-x-2">
-                            <button @click="$refs.fileInput.click()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[14px] font-bold flex items-center active:scale-95 transition-all shadow-sm">
+                            <button @click="$refs.fileInput.click()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[14px] font-bold flex items-center active:scale-95 transition-all shadow-sm" style="color: white !important;">
                                 匯入檔案 (Excel/Word)
                                 <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
@@ -167,6 +160,45 @@
                         class="w-full rounded-2xl border border-slate-300 text-[16px] font-normal text-slate-900 bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
                         placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
                     
+                    <!-- Batch Preview Section -->
+                    <div v-if="parsedItemsCount > 0" class="border border-indigo-100 rounded-[24px] overflow-hidden bg-white animate-fade-in">
+                        <div class="bg-indigo-50/50 px-4 py-3 border-b border-indigo-100 flex justify-between items-center">
+                            <div class="flex flex-col">
+                                <span class="text-[15px] font-bold text-indigo-600">偵測到 {{ parsedItemsCount }} 筆資料</span>
+                                <span class="text-[11px] text-indigo-400 font-medium">包含日期與法寶自動識別</span>
+                            </div>
+                        </div>
+
+                        <!-- Preview Chips (Quick Overview) -->
+                        <div class="px-4 py-2 bg-white flex flex-wrap gap-1.5 border-b border-indigo-50 max-h-[100px] overflow-y-auto no-scrollbar">
+                            <span v-for="(item, idx) in previewItems" :key="idx" class="px-2 py-0.5 bg-slate-50 border border-slate-200 rounded-lg text-[12px] font-bold text-slate-600">
+                                {{ item }}
+                            </span>
+                        </div>
+
+                        <!-- Detailed Table Preview -->
+                        <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
+                            <table class="w-full text-[13px] text-left">
+                                <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tight border-b border-slate-100">
+                                    <tr>
+                                        <th class="p-2 border-b border-slate-100 font-bold">預計存入仙師</th>
+                                        <th class="p-2 border-b border-slate-100 font-bold">法寶名稱</th>
+                                        <th class="p-2 border-b border-slate-100 font-bold">內容摘要</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, idx) in batchParsedRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                        <td class="py-3 px-2 text-indigo-500 font-black text-[10px] whitespace-nowrap">
+                                            {{ getMasterName(item.master_id) }}
+                                        </td>
+                                        <td class="py-3 px-2 text-slate-900 font-black truncate max-w-[100px]">{{ item.name }}</td>
+                                        <td class="py-3 px-2 text-slate-500 font-medium truncate max-w-[150px]">{{ item.remarks || item.purpose || '-' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Rules Reference Section -->
                     <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100/50 space-y-3 mt-4">
                         <h4 class="text-[12px] font-bold text-indigo-600 uppercase tracking-widest flex items-center">
@@ -201,12 +233,12 @@
 
             <!-- Footer Action -->
             <div class="p-4 bg-white border-t border-slate-50">
-                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px]">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px]" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : '儲存' }}
                 </button>
-                <button v-else @click="handleSubmit" :disabled="isSaving" 
-                    class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px] transition-all disabled:opacity-50">
-                    {{ isSaving ? '儲存中...' : '儲存' }}
+                <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0" 
+                    class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px] transition-all disabled:opacity-50" style="color: white !important;">
+                    {{ isSaving ? '儲存中...' : `儲存這 ${parsedItemsCount} 筆資料` }}
                 </button>
             </div>
 
@@ -252,46 +284,94 @@ import CompactDatePicker from './CompactDatePicker.vue';
 
 const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
-const treasureNames = ref(['']);
+const treasureNamesText = ref('');
 const batchInput = ref('');
 const personnel = ref([]);
 const dharmaNames = ref([]);
 const activePicker = ref(null); // { idx: number | 'main', field: string, title: string }
 const fileInput = ref(null);
 
-const parsedItemsCount = computed(() => {
-    if (!batchInput.value.trim()) return 0;
-    const lines = batchInput.value.split('\n').filter(l => l.trim());
-    let count = 0;
-    let currentTreasure = null;
-    const cleanedTreasureNames = treasureNames.value.filter(n => n.trim() !== '');
-
-    lines.forEach(line => {
-        const kwMatch = line.match(/(.*)[：:](.*)/);
-        if (kwMatch) {
-            const kw = kwMatch[1].trim();
-            if (kw === '求寶' || kw === '求寶方式' || kw === '用意' || kw === '備註') return;
-            // It's a new treasure
-            count++;
-            currentTreasure = kw;
-        } else if (cleanedTreasureNames.length > 0) {
-            // Recipient for default treasures
-            count += cleanedTreasureNames.length;
-        } else if (line.length < 80 && !line.includes('、')) {
-            // Pure treasure name
-            count++;
-        }
-    });
-    return count;
+const treasureNames = computed(() => {
+    // 優先依換行切分，其次依兩個以上的空格或 Tab 切分，保留單個標點符號（如括號、逗號）作為名稱的一部分
+    return treasureNamesText.value.split(/[\n\r]+|[\s\t]{2,}/).filter(n => n.trim());
 });
 
-const addTreasureNameRow = () => {
-    treasureNames.value.push('');
-};
+const cleanedTreasureNames = computed(() => treasureNames.value);
 
-const removeTreasureNameRow = (idx) => {
-    treasureNames.value.splice(idx, 1);
-};
+const batchParsedRows = computed(() => {
+    if (!batchInput.value.trim()) return [];
+    
+    const lines = batchInput.value.split('\n').filter(l => l.trim());
+    const results = [];
+    let currentMasterId = form.value.master_id;
+    let currentDate = form.value.record_date;
+
+    lines.forEach(line => {
+        // Detect Date/Master Headers (Standard Pattern)
+        // Priority 1: Check for 4-digit year (Western/CE) first
+        const ceMatch = line.match(/\b(\d{4})[/\-\s]\d{1,2}[/\-\s]\d{1,2}\b/);
+        const dateMatch = ceMatch || line.match(/\b(\d{2,3}[/\-\s]\d{1,2}[/\-\s]\d{1,2})\b/);
+        
+        if (dateMatch && line.length < 25) {
+            let dStr = dateMatch[0];
+            // If it's a 2-3 digit year, convert it for internal storage if needed? 
+            // Actually, the current logic just uses dateMatch[0].
+            currentDate = dStr;
+            return;
+        }
+
+        const masterMatch = props.masters?.find(m => line.includes(m.name) && line.length < 15);
+        if (masterMatch) {
+            currentMasterId = masterMatch.id;
+            return;
+        }
+
+        // 3. Detect Attribute Lines (e.g., "用意 打通任督二脈" or "狀態：已登記")
+        const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+        const firstWord = line.trim().split(/[\s：:]/)[0];
+        
+        if (attrKeywords.includes(firstWord)) {
+            if (results.length > 0) {
+                const prevRecord = results[results.length - 1];
+                const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+                if (firstWord === '用意') prevRecord.purpose = val;
+                else if (firstWord === '狀態') prevRecord.status = val;
+                else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) prevRecord.date = val;
+                else prevRecord.remarks = (prevRecord.remarks ? prevRecord.remarks + ' ' : '') + val;
+                return;
+            }
+        }
+
+        // 4. Parse Standard Record "Name: Value" or just "Name"
+        const kwMatch = line.match(/(.*)[：:](.*)/);
+        if (kwMatch) {
+            const name = kwMatch[1].trim();
+            const val = kwMatch[2].trim();
+            // Final safety check: if the "name" part is actually a keyword, handle it as attribute
+            if (attrKeywords.includes(name)) {
+                if (results.length > 0) {
+                    const prevRecord = results[results.length - 1];
+                    if (name === '用意') prevRecord.purpose = val;
+                    else if (name === '狀態') prevRecord.status = val;
+                    else prevRecord.remarks = (prevRecord.remarks ? prevRecord.remarks + ' ' : '') + val;
+                }
+                return;
+            }
+            results.push({ name, remarks: val, master_id: currentMasterId, date: currentDate });
+        } else if (line.length < 50) {
+            results.push({ name: line.trim(), master_id: currentMasterId, date: currentDate });
+        }
+    });
+    return results;
+});
+
+const parsedItemsCount = computed(() => batchParsedRows.value.length);
+
+const previewItems = computed(() => {
+    return batchParsedRows.value.slice(0, 20).map(r => r.name);
+});
+
+// Methods for row management removed as we use textarea now
 
 const fetchDharmaNames = async () => {
     try {
@@ -335,7 +415,7 @@ const selectedMasterName = computed(() => {
 
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal };
-    treasureNames.value = newVal.name ? [newVal.name] : [''];
+    treasureNamesText.value = newVal.name || '';
     if (newVal.dharma_name_registries) {
         personnel.value = newVal.dharma_name_registries.map(r => ({
             dharma_name_id: r.dharma_name_id,
@@ -396,6 +476,12 @@ const handlePersonnelEnter = (idx) => {
         const inputs = document.querySelectorAll('.personnel-name-input');
         if (inputs[idx + 1]) inputs[idx + 1].focus();
     });
+};
+
+// handleTreasureNameInput removed
+const getMasterName = (id) => {
+    const m = props.masters?.find(m => String(m.id) === String(id));
+    return m ? m.name : '預設';
 };
 
 const handlePersonnelNameInput = (idx, event) => {
@@ -509,26 +595,26 @@ const handleSubmit = () => {
         return;
     }
 
-    // Clean up personnel: remove empty rows
-    const cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
-    const cleanedTreasureNames = treasureNames.value.filter(n => n.trim() !== '');
-
     if (localMode.value === 'single') {
-        if (cleanedTreasureNames.length === 0) {
+        if (cleanedTreasureNames.value.length === 0) {
             alert('請至少輸入一個法寶名稱');
             return;
         }
         
+        // Clean up personnel: remove empty rows
+        const cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
+
         // Handle multiple treasure names by emitting multiple save events
-        cleanedTreasureNames.forEach(tn => {
+        cleanedTreasureNames.value.forEach(tn => {
             let finalName = tn.trim();
             let finalMethod = form.value.acquisition_method;
             
             // Smart extraction: "Treasure (求寶：Method)" or "Treasure 求寶:Method"
             const methodMatch = finalName.match(/(.*)\s*(求寶|求寶方式)[：:](.*)/);
             if (methodMatch) {
-                finalName = methodMatch[1].replace(/[()（）]/g, '').trim();
-                finalMethod = methodMatch[3].replace(/[()（）]/g, '').trim();
+                // 保留標點符號，不主動去除括號
+                finalName = methodMatch[1].trim();
+                finalMethod = methodMatch[3].trim();
             }
 
             const payload = { 
@@ -543,20 +629,19 @@ const handleSubmit = () => {
             emit('saveSingle', payload);
         });
     } else {
-        if (!batchInput.value.trim()) {
-            alert('請貼上或輸入資料內容');
+        if (batchParsedRows.value.length === 0) {
+            alert('請貼上或輸入有效資料內容');
             return;
         }
         emit('saveBatch', { 
             input: batchInput.value, 
             masterId: form.value.master_id,
-            date: form.value.record_date,
-            defaults: {
-                names: cleanedTreasureNames, // Support multiple default names
-                purpose: form.value.purpose,
-                acquisition_method: form.value.acquisition_method,
-                remarks: form.value.remarks
-            }
+            rows: batchParsedRows.value.map(row => ({
+                name: row.name,
+                master_id: row.master_id,
+                record_date: row.date || form.value.record_date || '',
+                remarks: row.remarks || form.value.remarks || ''
+            }))
         });
     }
 };

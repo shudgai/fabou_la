@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -72,22 +72,6 @@
                         <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-red-600 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
-                        <div class="mb-2">
-                            <svg class="w-[180px] h-[180px]" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient id="redGradL2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(190, 10, 30);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(160, 0, 20);stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#redGradL2)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#redGradL2)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                            </svg>
-                        </div>
-                        <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">其他皇恩<br>登記簿</div>
-                    </button>
 
                 </div>
 
@@ -164,7 +148,7 @@
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                              :class="[
-                                 'bg-white p-[10px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
+                                 'bg-white py-[15px] px-[12px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
@@ -457,7 +441,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[7vh] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 text-white rounded-2xl font-black text-[18px]">儲存</button>
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 text-white rounded-2xl font-black text-[18px]" style="color: white !important;">儲存</button>
                                         </div>
                                     </div>
 
@@ -499,7 +483,7 @@
                     <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">知道了</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all" style="color: white !important;">知道了</button>
                 </div>
             </div>
         </div>
@@ -513,7 +497,7 @@
                 <h3 class="text-[22px] font-black text-center mb-2 font-outfit text-slate-800">確定要刪除嗎？</h3>
                 <p class="text-slate-500 text-center mb-6 font-black font-outfit leading-relaxed">此操作將永久刪除此筆載錄，且無法復原。請確認身分後再執行。</p>
                 <div class="flex flex-col space-y-3">
-                    <button @click="deleteItem(deleteConfirmId)" class="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
+                    <button @click="deleteItem(deleteConfirmId)" class="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit" style="color: white !important;">
                         是的，確認刪除
                     </button>
                     <button @click="deleteConfirmId = null" class="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
