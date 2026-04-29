@@ -448,18 +448,17 @@
                     </div>
                 </div>
             </div>
+            <!-- GLOBAL BOTTOM NAVIGATION -->
+            <mobile-navbar 
+                v-if="!isDrawing"
+                :can-back="true"
+                :can-home="true"
+                :show-action="false"
+                @back="handleBack"
+                @home="$emit('close')"
+                class="z-[2000]"
+            />
         </div>
-
-        <!-- GLOBAL BOTTOM NAVIGATION -->
-        <mobile-navbar 
-            v-if="!isDrawing"
-            :can-back="true"
-            :can-home="true"
-            :show-action="false"
-            @back="handleBack"
-            @home="$emit('close')"
-            class="z-[2000]"
-        />
 </template>
 
 <script setup>

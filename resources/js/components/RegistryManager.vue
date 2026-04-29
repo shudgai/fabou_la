@@ -669,42 +669,49 @@ const expandedIds = ref(new Set());
 const editingIds = ref(new Set());
 const focusedId = ref(null);
 const showAddMenu = ref(false);
-const addActions = computed(() => [
-    {
-        label: '逐筆新增',
-        description: '輸入單筆登記紀錄',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        handler: () => openAdd('single')
-    },
-    {
-        label: '多筆新增',
-        description: '貼上文字批次匯入',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        colorClass: 'bg-blue-50 text-blue-600',
-        handler: () => openAdd('batch')
-    },
-    {
-        label: '複製全部至 LINE',
-        description: '複製此資料夾所有記錄',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        colorClass: 'bg-emerald-50 text-emerald-600',
-        handler: () => copyAllToLine()
-    },
-    {
-        label: reorderMode.value ? '結束手動排序' : '手動排序',
-        description: '調整記錄顯示順序',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        colorClass: 'bg-amber-50 text-amber-600',
-        handler: () => { reorderMode.value = !reorderMode.value; }
-    },
-    {
-        label: '匯出 Excel 報表',
-        description: '下載此資料夾完整清單',
-        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        colorClass: 'bg-slate-100 text-slate-600',
-        handler: () => downloadAllData()
-    },
-]);
+const addActions = computed(() => {
+    const actions = [
+        {
+            label: '逐筆新增',
+            description: '輸入單筆登記紀錄',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            handler: () => openAdd('single')
+        },
+        {
+            label: '多筆新增',
+            description: '貼上文字批次匯入',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            colorClass: 'bg-blue-50 text-blue-600',
+            handler: () => openAdd('batch')
+        }
+    ];
+
+    if (currentFolder.value) {
+        actions.push({
+            label: '複製全部至 LINE',
+            description: '複製此資料夾所有記錄',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            colorClass: 'bg-emerald-50 text-emerald-600',
+            handler: () => copyAllToLine()
+        });
+        actions.push({
+            label: reorderMode.value ? '結束手動排序' : '手動排序',
+            description: '調整記錄顯示順序',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            colorClass: 'bg-amber-50 text-amber-600',
+            handler: () => { reorderMode.value = !reorderMode.value; }
+        });
+        actions.push({
+            label: '匯出 Excel 報表',
+            description: '下載此資料夾完整清單',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            colorClass: 'bg-slate-100 text-slate-600',
+            handler: () => downloadAllData()
+        });
+    }
+
+    return actions;
+});
 const showSearch = ref(false);
 const searchQuery = ref('');
 const showExportMenu = ref(false);
