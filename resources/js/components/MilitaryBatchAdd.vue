@@ -12,13 +12,20 @@
             <!-- Date Picker, Excel Import & Save -->
             <div class="flex items-center space-x-2">
                 <!-- Date Box (Entirely Clickable) -->
-                <div @click="showDatePicker = true" class="flex-1 flex items-center bg-white p-3 rounded-2xl border border-slate-100 shadow-sm cursor-pointer active:bg-slate-50 transition-all">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 mr-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="flex-1 flex items-center bg-white p-3 rounded-2xl border border-slate-100 shadow-sm transition-all relative">
+                    <div @click="showDatePicker = true" class="flex-1 flex items-center cursor-pointer">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 mr-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-[13px] text-[#aeb4be] font-normal uppercase tracking-wider">錄入日期</p>
+                            <p class="text-[15px] font-bold text-slate-800">{{ batchDate ? batchDate.replace(/-/g, '/') : '未設定 (首位顯示)' }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-[13px] text-[#aeb4be] font-normal uppercase tracking-wider">錄入日期</p>
-                    </div>
+                    <!-- Clear Date Button -->
+                    <button v-if="batchDate" @click="batchDate = null" class="absolute right-3 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
                 
                 <!-- Import Button -->
@@ -156,28 +163,43 @@ const parsedItems = computed(() => {
             return;
         }
 
-        // 2. Clear item numbers (Handle multiple levels like "3. 1.")
-        // We capture the "cleaned" line but still need to split for name/qty
+        // 2. Clear item numbers (Handle leading indices like "1. ", "3) ")
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
         if (!cleanLine) return;
 
-        // Split by Tab (common in Excel copy), Multiple spaces, or Comma
-        let parts = cleanLine.split(/[\t]+|[\s]{2,}|[,，]/);
-        if (parts.length <= 1) {
-            parts = cleanLine.split(/\s+/);
+        // 3. Robust Name & Quantity Extraction
+        // Name is everything up to the first digit. 
+        // Quantity is the sum of all digits AFTER the name, excluding those in parentheses.
+        let name = '';
+        let qty = 0;
+
+        const firstDigitIndex = cleanLine.replace(/[\(\（][^\)\）]*[\)\）]/g, m => ' '.repeat(m.length)).search(/\d/);
+        if (firstDigitIndex === -1) {
+            // No digits found, assume qty 1
+            name = translateName(cleanLine);
+            qty = 1;
+        } else {
+            name = translateName(cleanLine.substring(0, firstDigitIndex).trim());
+            let rest = cleanLine.substring(firstDigitIndex);
+            
+            // Remove parenthetical notes (e.g., "(2位歸於...)" ) to avoid double counting
+            // We handle both half-width and full-width parentheses
+            const restWithoutNotes = rest.replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
+            
+            // Extract all numbers and sum them
+            const numbers = restWithoutNotes.match(/\d+/g);
+            if (numbers) {
+                qty = numbers.reduce((sum, n) => sum + parseInt(n), 0);
+            } else {
+                qty = 1;
+            }
         }
-        
-        // The remaining parts are [DharmaName, Quantity]
-        if (parts.length > 0) {
-            const name = translateName(parts[0].trim());
-            if (!name) return;
 
-            // Header & Summary Filter: Skip if name contains title or summary keywords
-            const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計'];
-            if (skipKeywords.some(key => name.includes(key))) return;
+        if (!name) return;
 
-            let qty = parts.length > 1 ? parseInt(parts[1].replace(/[^0-9]/g, '')) : 1;
-            if (isNaN(qty)) qty = 1;
+        // Header & Summary Filter
+        const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計'];
+        if (skipKeywords.some(key => name.includes(key))) return;
 
             const item = {
                 user_name: name,
@@ -204,7 +226,6 @@ const parsedItems = computed(() => {
                 item.yan_yuan = 0;
             }
             results.push(item);
-        }
     });
     
     return results;

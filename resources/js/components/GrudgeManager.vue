@@ -35,7 +35,7 @@
         </div>
 
         <!-- Total Simple Overlay (Updated with Breakdowns) -->
-        <div v-if="showTotal" class="fixed inset-x-0 top-[60px] z-[60] px-4 animate-fade-in pointer-events-none">
+        <div v-if="showTotal" class="fixed inset-x-0 top-[80px] z-[60] px-4 animate-fade-in pointer-events-none">
             <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex flex-col pointer-events-auto border border-slate-100 relative w-auto min-w-[280px] max-w-md mx-auto">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex flex-col">
@@ -85,7 +85,7 @@
                         <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
                     </div>
 
-                    <div v-if="activeDateGroup === group.date || focusedId !== null">
+                    <div v-show="activeDateGroup === group.date || focusedId !== null">
                         <div v-for="item in group.items" :key="item.id" 
                             v-show="focusedId === null || focusedId === item.id"
                             @click.stop="toggleExpand(item.id)"
@@ -95,103 +95,66 @@
                                 { 'border-b-0': focusedId === item.id }
                             ]"
                         >
-                            <!-- List Item Display (Collapsed) -->
-                            <div v-if="focusedId !== item.id" class="mt-0 flex flex-col pointer-events-none">
-                                <div class="flex items-center justify-between">
-                                    <div class="app-body truncate flex-1 font-bold" :class="item.destination === '未處理' ? 'text-red-600' : 'text-slate-900'">
-                                        {{ item.user_name || '-' }}<span v-if="item.user_remarks" class="app-body ml-0.5 text-slate-500 font-normal">({{ item.user_remarks }})</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1 shrink-0 ml-4">
-                                        <div class="app-body text-slate-400" style="font-weight: 400 !important;">數量:</div>
-                                        <div class="app-body font-mono font-bold">{{ item.quantity }}</div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <span v-if="item.destination === '未處理'" class="app-body px-2.5 py-1 rounded-lg bg-red-50 text-red-600 border border-red-100 uppercase tracking-tighter font-black">
-                                            未處理
-                                        </span>
-                                        <span v-else class="app-body px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-tighter" style="font-weight: 400 !important;">
-                                            已處理
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Menu Button Layer -->
-                            <div v-if="focusedId !== item.id" class="absolute right-0 top-[-8px] z-20">
-                                <button @click.stop="toggleMenu(item.id)" class="p-2 -mr-1 text-slate-400"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[130px] bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up py-1">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">展開詳情</button>
-                                    <button @click.stop="editItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadItem(item, 'txt')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
-                                </div>
-                            </div>
-
-                            <!-- Expanded Detail -->
-                            <div v-if="focusedId === item.id" class="animate-fade-in py-3 bg-white space-y-4 relative">
-                                <div class="absolute right-0 top-0 z-[101]">
-                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-400 hover:text-indigo-600 active:scale-95 transition-all"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[130px] bg-white opacity-100 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 z-[200] overflow-hidden animate-slide-up py-1">
-                                        <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">收合詳情</button>
-                                        <button @click.stop="editItem(item)" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                        <button @click.stop="downloadItem(item, 'txt')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                        <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <div class="flex items-center space-x-1 ml-1">
-                                        <button @click.stop="toggleExpand(item.id)" class="p-1 -ml-1 text-slate-300 active:scale-90 transition-all">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                        </button>
-                                        <label class="app-title block">得知日期</label>
-                                    </div>
-                                    <div class="w-full px-3 flex items-center app-title">{{ item.know_date ? formatDate(item.know_date) : '-' }}</div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title block ml-1">法號 (親友/信眾)</label>
-                                    <div class="w-full px-3 flex items-center app-body">
-                                        {{ item.user_name || '-' }}
-                                        <span v-if="item.user_remarks" class="app-body font-normal ml-1.5">{{ item.user_remarks }}</span>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-body block ml-1 text-slate-400" style="font-weight: 400 !important;">數量</label>
-                                    <div class="w-full px-3 flex items-center app-body font-mono font-bold">{{ item.quantity }}</div>
-                                </div>
-
-                                <div v-if="item.process_date" class="space-y-1">
-                                    <label class="app-title block ml-1">處理日期</label>
-                                    <div class="w-full px-3 flex items-center app-body">{{ formatDate(item.process_date) }}</div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title block ml-1">處理結果</label>
-                                    <div class="w-full px-3 flex flex-col app-body" :class="item.destination === '未處理' ? 'text-red-600 font-black' : ''">
-                                        <div v-for="(line, idx) in formatDestinations(item.destination)" :key="idx" class="flex items-center space-x-2" style="font-weight: 400 !important;">
-                                            <span>{{ line }}</span>
+                            <!-- List Item Detail (Always Shown as requested: "明細都要出現") -->
+                            <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
+                                <!-- Row 1: Name & Quantity -->
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 pr-4">
+                                            <div class="app-body leading-tight font-black text-slate-900" style="font-size: 24px !important;">
+                                                {{ item.user_name || '-' }}
+                                                <span v-if="item.user_remarks" class="block app-body text-slate-400 font-bold mt-1" style="font-size: 16px !important;">
+                                                    {{ item.user_remarks }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-none text-right pr-10">
+                                            <span class="app-body font-black text-slate-900 whitespace-nowrap" style="font-size: 24px !important;">{{ (Number(item.quantity) || 0).toLocaleString() }}位</span>
                                         </div>
                                     </div>
-                                    <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="w-full px-3 mt-1 app-body">
-                                        <span v-if="item.destination === '黑曜軍'">
-                                            閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }} 
-                                            &nbsp;&nbsp; 
-                                            閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}
-                                        </span>
-                                        <span v-if="item.destination === '耀紫軍'">
-                                            龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }} 
-                                            &nbsp;&nbsp; 
-                                            龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}
-                                        </span>
+                                    <!-- Menu Trigger -->
+                                    <div class="absolute right-0 top-0">
+                                        <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
+                                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                        </button>
+                                        <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                            <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                            <button @click.stop="copyItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                            <button @click.stop="downloadItem(item, 'txt'); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                            <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div v-if="item.remarks_text" class="space-y-1">
-                                    <label class="app-title block ml-1">詳細內容 / 備註</label>
-                                    <div class="w-full px-3 py-1 app-body leading-normal">{{ item.remarks_text }}</div>
+                                <!-- Row 2: Grid Info -->
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-4">
+                                    <div class="space-y-1">
+                                        <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">處理日期</label>
+                                        <div class="app-body text-slate-800 font-medium" style="font-size: 20px !important;">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">處理結果</label>
+                                        <div class="app-body text-slate-800 font-medium" style="font-size: 20px !important;">{{ item.destination || '已處理' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Row 3: Remarks -->
+                                <div v-if="item.remarks_text || item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="pt-4 border-t border-slate-50 space-y-3">
+                                    <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">詳細內容 / 備註</label>
+                                    
+                                    <!-- Specialized breakdown for split armies -->
+                                    <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="flex items-center space-x-4 pb-1">
+                                        <template v-if="item.destination === '黑曜軍'">
+                                            <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
+                                            <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
+                                        </template>
+                                        <template v-else-if="item.destination === '耀紫軍'">
+                                            <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
+                                            <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
+                                        </template>
+                                    </div>
+
+                                    <div v-if="item.remarks_text" class="app-body leading-relaxed whitespace-pre-wrap text-slate-700" style="font-size: 19px !important;">{{ item.remarks_text }}</div>
                                 </div>
                             </div>
                         </div>
@@ -220,13 +183,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits } from 'vue';
+import { ref, computed, onMounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import GrudgeAddForm from './GrudgeAddForm.vue';
 import GrudgeBatchImport from './GrudgeBatchImport.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 
+const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
 
 // State Definitions
@@ -297,31 +261,21 @@ const formatDestinations = (destStr) => {
 };
 
 const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    // Strip time part if present (e.g., T16:00:00.000000Z)
-    const s = String(dateStr).split('T')[0].trim();
+    if (!dateStr || dateStr === '-' || dateStr === '未設定' || dateStr === '歷史累積') return '';
+    const s = String(dateStr).split(/[T ]/)[0].trim();
     const parts = s.split(/[-/]/);
     if (parts.length === 3) {
         let y = parts[0];
         let m = parts[1].padStart(2, '0');
         let d = parts[2].padStart(2, '0');
-        if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
-            return `${y}/${m}/${d}`;
-        }
+        return `${y}/${m}/${d}`;
     }
     return s.replace(/-/g, '/');
 };
 
 const getTodayStr = () => {
-    // 強制使用台北時區 (Asia/Taipei)
-    const now = new Date();
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Asia/Taipei',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    return formatter.format(now); // 回傳 YYYY-MM-DD
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
 
@@ -352,23 +306,25 @@ const filteredItems = computed(() => {
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
     result.sort((a, b) => {
-        if (focusedId.value === a.id) return -1;
-        if (focusedId.value === b.id) return 1;
+        // Records without know_date always go to the top
+        if (!a.know_date && b.know_date) return -1;
+        if (a.know_date && !b.know_date) return 1;
+        if (!a.know_date && !b.know_date) return a.id - b.id;
+
+        // 使用字串比較日期，避免 Date 物件轉換時區問題
+        const dateA = String(a.know_date || '');
+        const dateB = String(b.know_date || '');
         
-        // 1. 先比日期 (確保同一天的一定在一起)
-        const dateA = new Date(a.know_date);
-        const dateB = new Date(b.know_date);
-        if (dateA - dateB !== 0) {
-            return sortDesc.value ? dateB - dateA : dateA - dateB;
+        if (dateA !== dateB) {
+            return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
         }
 
-        // 2. 同一天內，未處理的排在最前面
+        // 同一天內，未處理的排在最前面
         const aUnprocessed = a.destination === '未處理';
         const bUnprocessed = b.destination === '未處理';
         if (aUnprocessed && !bUnprocessed) return -1;
         if (!aUnprocessed && bUnprocessed) return 1;
 
-        // 3. 最後比 ID
         return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
     return result;
@@ -379,7 +335,7 @@ const groupedItems = computed(() => {
     const groups = [];
     let currentGroup = null;
     sorted.forEach(item => {
-        const dateStr = item.know_date ? formatDate(item.know_date) : '未知日期';
+        const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
         if (!currentGroup || currentGroup.date !== dateStr) {
             currentGroup = { date: dateStr, items: [] };
             groups.push(currentGroup);
@@ -518,7 +474,12 @@ const loadData = async () => {
         const [res, dres] = await Promise.all([ axios.get('/grudges'), axios.get('/api/dharma-names-list') ]);
         items.value = res.data;
         users.value = dres.data;
-    } catch (e) { console.error(e); } finally { loading.value = false; }
+    } catch (e) { console.error(e); } finally { 
+        loading.value = false; 
+        if (groupedItems.value.length > 0 && !activeDateGroup.value) {
+            activeDateGroup.value = groupedItems.value[0].date;
+        }
+    }
 };
 
 const saveItem = async (formData) => {
@@ -554,6 +515,8 @@ const editItem = (item) => {
 const deleteItem = async (id) => {
     if (!confirm('確定要刪除這筆資料嗎？')) return;
     await axios.delete(`/grudges/${id}`);
+    focusedId.value = null;
+    openMenuId.value = null;
     loadData();
 };
 
@@ -613,6 +576,16 @@ const breakdownTotals = computed(() => {
 const totalGrudgeQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
 const filteredTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
 const displayTitle = computed(() => '怨靈記錄專區');
+
+watch(currentFolder, (newVal) => {
+    if (newVal) {
+        setTimeout(() => {
+            if (groupedItems.value.length > 0) {
+                activeDateGroup.value = groupedItems.value[0].date;
+            }
+        }, 50);
+    }
+});
 
 onMounted(() => {
     loadData();

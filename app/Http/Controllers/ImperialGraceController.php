@@ -29,6 +29,11 @@ class ImperialGraceController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = auth()->id();
+
+        if (ImperialGrace::where('name', $request->name)->exists()) {
+            return response()->json(['error' => 'duplicate', 'message' => '此法寶名稱「' . $request->name . '」已存在於系統中，不可重覆登記。'], 422);
+        }
+
         $grace = ImperialGrace::create($data);
         return response()->json($grace, 201);
     }
@@ -41,9 +46,15 @@ class ImperialGraceController extends Controller
         $created = [];
 
         foreach ($items as $item) {
+            $name = $item['name'] ?? '';
+            if (!$name || ImperialGrace::where('name', $name)->exists()) {
+                continue; // Skip duplicates in batch
+            }
+            
+            $finalMasterId = $item['master_id'] ?? $masterId;
             $created[] = ImperialGrace::create(array_merge([
                 'user_id' => $userId,
-                'master_id' => $masterId,
+                'master_id' => $finalMasterId,
                 'status' => '已登記',
             ], $item));
         }
@@ -54,6 +65,13 @@ class ImperialGraceController extends Controller
     public function updateRegistry(Request $request, $id)
     {
         $grace = ImperialGrace::findOrFail($id);
+        
+        if ($request->has('name') && $request->name !== $grace->name) {
+            if (ImperialGrace::where('name', $request->name)->where('id', '!=', $id)->exists()) {
+                return response()->json(['error' => 'duplicate', 'message' => '此法寶名稱「' . $request->name . '」已存在於系統中，不可重覆。'], 422);
+            }
+        }
+
         $grace->update($request->all());
         return response()->json($grace);
     }

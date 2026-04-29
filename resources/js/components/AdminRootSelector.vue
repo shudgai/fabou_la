@@ -10,6 +10,7 @@
                 <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')"></imperial-grace-manager>
                 <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
                 <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
+                <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')"></other-teaching-manager>
                 <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
                 <kaiwen-manager v-if="currentView === 'kaiwen'" @go-home="handleNavigate('menu')"></kaiwen-manager>
                 <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
@@ -31,6 +32,7 @@ import GrudgeManager from './GrudgeManager.vue';
 import MilitaryManager from './MilitaryManager.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
+import OtherTeachingManager from './OtherTeachingManager.vue';
 import OtherManager from './OtherManager.vue';
 import KaiwenManager from './KaiwenManager.vue';
 import AdminDashboard from './AdminDashboard.vue';
@@ -55,6 +57,7 @@ const syncHash = () => {
         'teaching': 'teaching',
         'military': 'military',
         'other': 'other',
+        'other_teaching': 'other_teaching',
         'kaiwen': 'kaiwen'
     };
     
@@ -91,7 +94,7 @@ const handleNavigate = (view) => {
 
     currentView.value = view;
     // Optionally update hash as well
-    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'other': '#other', 'kaiwen': '#kaiwen', 'menu': '' };
+    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'other': '#other', 'other_teaching': '#other_teaching', 'kaiwen': '#kaiwen', 'menu': '' };
     window.location.hash = reverseMap[view] || '';
 };
 

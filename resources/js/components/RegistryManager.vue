@@ -18,8 +18,8 @@
                     法寶登記專區
                 </div>
             </div>
-            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -155,6 +155,11 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-if="filteredTreasures.length === 0" class="flex flex-col items-center justify-center py-24 px-6 text-center">
+                            <h3 class="text-[17px] font-black text-slate-300 font-outfit uppercase tracking-widest">尚無資料</h3>
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
@@ -463,62 +468,44 @@
             </div>
         </div>
 
-        <!-- Navigation Components -->
-        <mobile-navbar 
-            :can-back="true"
-            @back="handleBack"
-            @home="$emit('goHome')"
-            @action="showAddMenu = true"
-            @search="showSearch = !showSearch"
-            @more="showExportMenu = !showExportMenu"
-        />
 
-        <!-- Add Action Menu Overlay -->
         <div v-if="showAddMenu" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px] animate-fade-in" @click="showAddMenu = false">
-            <div class="bg-white w-auto min-w-[220px] max-w-[300px] rounded-[24px] overflow-hidden shadow-2xl animate-pop-in" @click.stop>
-                <div class="p-1 space-y-0.5">
-                    <button @click="openAdd('single'); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group">
-                        <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="bg-white w-auto min-w-[240px] max-w-[320px] rounded-[32px] overflow-hidden shadow-2xl animate-pop-in" @click.stop>
+                <div class="p-3 space-y-2">
+                    <button @click="openAdd('single'); showAddMenu = false" class="w-full p-4 flex items-center space-x-3 bg-indigo-600 text-white rounded-2xl active:scale-95 transition-all group shadow-md shadow-indigo-100">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">逐筆新增</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">輸入單筆法寶登記紀錄</span>
+                            <span class="text-[19px] font-black font-outfit">逐筆新增</span>
+                            <span class="text-[14px] text-white/70 font-medium font-outfit">輸入單筆登記紀錄</span>
                         </div>
                     </button>
 
-                    <button @click="openAdd('batch'); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="openAdd('batch'); showAddMenu = false" class="w-full p-4 flex items-center space-x-3 bg-blue-600 text-white rounded-2xl active:scale-95 transition-all group shadow-md shadow-blue-100">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">多筆新增</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">貼上文字清單批次匯入</span>
+                            <span class="text-[19px] font-black font-outfit">多筆新增</span>
+                            <span class="text-[14px] text-white/70 font-medium font-outfit">貼上文字批次匯入</span>
                         </div>
                     </button>
 
-                    <button @click="copyAllToLine(); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">複製隨貼 LINE (全部)</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">將此分類完整清單複製至剪貼簿</span>
-                        </div>
-                    </button>
-
-                    <button @click="downloadAllData(); showAddMenu = false" class="w-full p-2.5 flex items-center space-x-3 hover:bg-slate-50 transition-colors rounded-xl group border-t border-slate-50">
-                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-active:scale-90 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div class="flex flex-col text-left">
-                            <span class="text-[17px] font-black font-outfit text-slate-800">匯出 Excel</span>
-                            <span class="text-[17px] text-slate-400 font-medium font-outfit">下載法寶登記報表檔案</span>
-                        </div>
-                    </button>
+                    <div class="pt-2 pb-1">
+                        <button @click="copyAllToLine(); showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center text-slate-400 font-bold text-[16px] hover:text-slate-600 transition-colors">
+                            複製全部資料至 LINE
+                        </button>
+                        <button @click="reorderMode = !reorderMode; showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center bg-blue-600 text-white font-bold text-[16px] active:scale-95 transition-all border-t border-slate-50">
+                            {{ reorderMode ? '結束手動排序' : '手動排序' }}
+                        </button>
+                        <button @click="downloadAllData(); showAddMenu = false" class="w-full px-4 py-3 flex items-center justify-center text-slate-400 font-bold text-[16px] hover:text-slate-600 transition-colors border-t border-slate-50">
+                            匯出 Excel 報表
+                        </button>
+                    </div>
                     
-                    <div class="p-2 border-t border-slate-50">
-                        <button @click="showAddMenu = false" class="w-full py-[5px] text-slate-400 font-black text-[17px] font-outfit active:scale-95 transition-all uppercase tracking-widest">取消</button>
+                    <div class="pt-1">
+                        <button @click="showAddMenu = false" class="w-full py-4 bg-slate-50 text-slate-400 font-black text-[17px] rounded-2xl active:scale-95 transition-all uppercase tracking-widest">取消</button>
                     </div>
                 </div>
             </div>
@@ -553,7 +540,7 @@
                     <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-50 text-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">知道了</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">知道了</button>
                 </div>
             </div>
         </div>
@@ -1217,11 +1204,12 @@ const triggerBatchSave = async (batchData) => {
                     blockDate = lineDate;
                 }
 
-                // Pattern 1: "求寶/求寶方式：..." -> Assign to previous record
-                if (line.match(/^\s*(求寶|求寶方式)[：:]/)) {
+                // Pattern 1: "求寶/求寶方式/方式：..." -> Assign to previous record
+                if (line.match(/^\s*(求寶|求寶方式|方式)[：:]/)) {
                     const method = line.split(/[：:]/)[1]?.trim();
                     if (method && rawRecords.length > 0) {
-                        rawRecords[rawRecords.length - 1].acquisition_method = method;
+                        const lastRec = rawRecords[rawRecords.length - 1];
+                        lastRec.acquisition_method = lastRec.acquisition_method ? lastRec.acquisition_method + '；' + method : method;
                     }
                     continue; 
                 }
@@ -1246,16 +1234,16 @@ const triggerBatchSave = async (batchData) => {
                     continue;
                 }
 
-                // Pattern A: "(允求|賜降) 森羅戒：靈果" (Keyword is now optional)
+                // Pattern A: "(允求|賜降) 森羅戒：靈果" (Keyword is optional)
                 const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
                 if (kwMatch && kwMatch[3] && kwMatch[3].trim()) {
                     treasureName = kwMatch[3].trim();
                     const content = kwMatch[4].trim();
                     if (content) {
                         recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
-                        pendingTreasureName = ''; // Reset if full line
+                        pendingTreasureName = ''; 
                     } else {
-                        pendingTreasureName = treasureName; // Set pending if no content
+                        pendingTreasureName = treasureName;
                         continue;
                     }
                 } 
@@ -1276,30 +1264,43 @@ const triggerBatchSave = async (batchData) => {
                     if (parts[2]) {
                         const parsed = parseDateStr(parts[2]);
                         if (parsed) lineDate = parsed;
-                        else lineDate = parts[2].replace(/\//g,'-'); // Fallback
+                        else lineDate = parts[2].replace(/\//g,'-');
                     }
                     if (parts[3]) lineRemarks = parts[3];
                     pendingTreasureName = '';
                 }
-                // Pattern D: "靈心、金振、金涓" (Pure recipients line if pending treasure exists)
+                // Pattern D: "靈心、金振、金涓" (Recipient line)
                 else if (pendingTreasureName) {
                     treasureName = pendingTreasureName;
                     recipients = line.split(/[，、, \s]+/).filter(n => n.trim());
-                    pendingTreasureName = ''; // Done
+                    pendingTreasureName = '';
                 }
-                // Pattern E: "森羅戒 元續之夫" (Space separated, no colon)
+                // Pattern E: "森羅戒 元續之夫" (Space separated)
                 else if (line.includes(' ') && !line.includes('：') && !line.includes(':')) {
                     const spaceParts = line.split(/\s+/);
-                    if (spaceParts.length >= 2) {
+                    // Check if the second part looks like a name or relationship
+                    if (spaceParts.length >= 2 && spaceParts[1].length <= 10) {
                         treasureName = spaceParts[0];
                         recipients = spaceParts.slice(1).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
                     } else {
-                        continue;
+                        // Treat as a single treasure name if the second part is too long
+                        treasureName = line.trim();
                     }
                 }
-                // If none of the above, skip this line (Strict Rule)
+                // Pattern F: Pure Text (Single word or short sentence)
                 else {
-                    continue;
+                    const trimmedLine = line.trim();
+                    if (trimmedLine.length > 0 && trimmedLine.length < 50) {
+                        // If it's a very short line and follows a treasure, it might be a remark
+                        if (rawRecords.length > 0 && trimmedLine.length > 10 && !trimmedLine.match(/^[A-Z0-9]/i)) {
+                             const lastRec = rawRecords[rawRecords.length - 1];
+                             lastRec.remarks = lastRec.remarks ? lastRec.remarks + '\n' + trimmedLine : trimmedLine;
+                             continue;
+                        }
+                        treasureName = trimmedLine;
+                    } else {
+                        continue;
+                    }
                 }
 
                 if (treasureName) {

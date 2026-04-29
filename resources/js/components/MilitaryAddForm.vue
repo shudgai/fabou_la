@@ -10,7 +10,7 @@
                 <div class="flex-1 flex flex-col justify-center min-w-0">
                     <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區</div>
                     <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
-                        {{ editingId ? '修改軍隊載錄' : armyType + '-逐筆新增' }}
+                        {{ editingId ? '修改軍隊載錄' : (isCumulative ? '之前累積數量匯入' : armyType + '-逐筆新增') }}
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
@@ -34,7 +34,7 @@
                     </div>
 
                     <!-- Row 2: 法號 & 備註 -->
-                    <div class="grid grid-cols-2 gap-[5px]">
+                    <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
                             <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
@@ -99,7 +99,7 @@
                     </div>
 
                     <!-- Row 4: 處理日期 & 處理結果 -->
-                    <div class="grid grid-cols-2 gap-[5px]">
+                    <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">處理日期</label>
                             <div class="relative flex items-center">
@@ -212,7 +212,8 @@ const props = defineProps({
     initialData: Object,
     editingId: [Number, String],
     users: Array,
-    armyType: String
+    armyType: String,
+    isCumulative: Boolean
 });
 
 const emit = defineEmits(['save', 'cancel']);
@@ -249,7 +250,7 @@ const formatArmyTotal = (num) => {
 };
 
 const handleSave = () => {
-    if (!form.value.user_name) {
+    if (!props.isCumulative && !form.value.user_name) {
         alert('請選擇或輸入「法號」，不可留空。');
         return;
     }
@@ -267,10 +268,7 @@ const handleSave = () => {
         form.value.yan_yuan = 0;
     }
 
-    if (form.value.destination !== '未處理' && !form.value.process_date) {
-        alert('處理狀況非「未處理」時，必須填寫處理日期。');
-        return;
-    }
+    console.log('Saving Military Record:', form.value);
     emit('save', form.value);
 };
 </script>

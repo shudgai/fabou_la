@@ -29,24 +29,32 @@ class MilitaryRecordController extends Controller
         $user = auth()->user();
         $permissions = $user->getPermissions();
         
-        $validated = $request->validate([
-            'user_name' => 'required|string',
-            'army_type' => 'required|string',
-            'quantity' => 'required|integer',
-            'know_date' => 'required|date',
-            'process_date' => 'nullable|date',
-            'destination' => 'nullable|string',
-            'user_remarks' => 'nullable|string',
-            'remarks_text' => 'nullable|string',
-            'yan_zun' => 'nullable|integer',
-            'yan_an' => 'nullable|integer',
-            'long_sheng' => 'nullable|integer',
-            'long_zhan' => 'nullable|integer',
-            'yan_jue' => 'nullable|integer',
-            'yan_ze' => 'nullable|integer',
-            'yan_di' => 'nullable|integer',
-            'yan_yuan' => 'nullable|integer',
-        ]);
+        try {
+            $validated = $request->validate([
+                'user_name' => 'nullable|string',
+                'army_type' => 'required|string',
+                'quantity' => 'required|numeric',
+                'know_date' => 'nullable|date',
+                'process_date' => 'nullable|date',
+                'destination' => 'nullable|string',
+                'user_remarks' => 'nullable|string',
+                'remarks_text' => 'nullable|string',
+                'yan_zun' => 'nullable|numeric',
+                'yan_an' => 'nullable|numeric',
+                'long_sheng' => 'nullable|numeric',
+                'long_zhan' => 'nullable|numeric',
+                'yan_jue' => 'nullable|numeric',
+                'yan_ze' => 'nullable|numeric',
+                'yan_di' => 'nullable|numeric',
+                'yan_yuan' => 'nullable|numeric',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed for MilitaryRecord:', [
+                'errors' => $e->errors(),
+                'input' => $request->all()
+            ]);
+            throw $e;
+        }
 
         if (!$user->isAdmin() && !in_array($validated['army_type'], $permissions['allowed_armies'])) {
             return response()->json(['error' => 'Unauthorized army type'], 403);
@@ -69,7 +77,26 @@ class MilitaryRecordController extends Controller
             return response()->json(['error' => 'Unauthorized army type change'], 403);
         }
 
-        $record->update($request->all());
+        $validated = $request->validate([
+            'user_name' => 'nullable|string',
+            'army_type' => 'nullable|string',
+            'quantity' => 'nullable|integer',
+            'know_date' => 'nullable|date',
+            'process_date' => 'nullable|date',
+            'destination' => 'nullable|string',
+            'user_remarks' => 'nullable|string',
+            'remarks_text' => 'nullable|string',
+            'yan_zun' => 'nullable|integer',
+            'yan_an' => 'nullable|integer',
+            'long_sheng' => 'nullable|integer',
+            'long_zhan' => 'nullable|integer',
+            'yan_jue' => 'nullable|integer',
+            'yan_ze' => 'nullable|integer',
+            'yan_di' => 'nullable|integer',
+            'yan_yuan' => 'nullable|integer',
+        ]);
+
+        $record->update($validated);
         return $record;
     }
 

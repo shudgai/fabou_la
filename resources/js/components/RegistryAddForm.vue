@@ -21,8 +21,8 @@
 
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
-                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
+                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 !text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 !text-white' : 'text-slate-400 hover:bg-slate-50']" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
             </div>
 
             <!-- Scrollable Content -->
@@ -52,7 +52,7 @@
                 <div class="space-y-2">
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[15px] font-bold text-red-600 uppercase tracking-wider">法寶名稱</label>
-                        <button @click="addTreasureNameRow" class="text-[12px] font-bold text-indigo-500 hover:text-indigo-600 active:scale-95 transition-all">
+                        <button @click="addTreasureNameRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm">
                             ＋ 增行
                         </button>
                     </div>
@@ -88,7 +88,7 @@
                 <div v-if="localMode === 'single'" class="space-y-4">
                         <div class="flex items-center justify-between ml-1">
                             <label class="text-[15px] font-bold text-red-600 uppercase tracking-tight">承接皇恩的師兄姐</label>
-                            <button @click="addPersonnelRow" class="text-[12px] font-bold text-indigo-500 hover:text-indigo-600 active:scale-95 transition-all">
+                            <button @click="addPersonnelRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm">
                                 ＋ 新增人員
                             </button>
                         </div>
@@ -156,9 +156,9 @@
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入清單內容</label>
                         <div class="flex items-center space-x-2">
-                            <button @click="$refs.fileInput.click()" class="text-[15px] font-bold text-slate-800 flex items-center">
+                            <button @click="$refs.fileInput.click()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[14px] font-bold flex items-center active:scale-95 transition-all shadow-sm">
                                 匯入檔案 (Excel/Word)
-                                <svg class="w-5 h-5 ml-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             <input type="file" ref="fileInput" @change="handleFileImport" accept=".xlsx, .xls" class="hidden">
                         </div>

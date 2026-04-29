@@ -211,17 +211,14 @@
                             <!-- Content column: date on top, name+status on bottom -->
                             <div class="flex flex-col flex-1 min-w-0 pr-8">
                                 <!-- Row 1: Date -->
-                                <div class="app-title font-bold mb-0.5">
+                                <div v-if="reg.obtained_date || reg.record_date || (currentFolder.id === 'unobtained' && reg.master_id)" class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
                                         登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.obtained_date) }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
                                         得知：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</span>
                                     </template>
-                                    <template v-else>
-                                        <span class="font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">未知日期</span>
-                                    </template>
-                                    <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="ml-2 app-title opacity-50">{{ getMasterName(reg.master_id) }}</span>
+                                    <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="app-title opacity-50" :class="{ 'ml-2': reg.obtained_date || reg.record_date }">{{ getMasterName(reg.master_id) }}</span>
                                 </div>
                                 <!-- Row 2: Name + Status -->
                                 <div class="flex items-center justify-between">
@@ -244,7 +241,7 @@
                         </div>
 
                         <!-- Independent Menu Button (Three Dots) for Collapsed State -->
-                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+10px)] z-[20] pr-2">
+                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+25px)] z-[20] pr-2">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
                                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -265,7 +262,7 @@
                         <!-- Expanded Detail (Read-Only Style) -->
                         <div v-if="expandedId === reg.id" class="animate-fade-in pt-[5px] pb-4 bg-white space-y-4 relative px-3 border-t border-slate-50">
                             <!-- Three dots menu in expanded view -->
-                            <div class="absolute right-2 top-2 z-[20]">
+                            <div class="absolute right-2 top-[-7px] z-[20]">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-3 text-slate-400 active:scale-90 transition-all">
                                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
@@ -329,7 +326,8 @@
 
     <mobile-navbar 
         :can-back="true"
-        :show-action="(currentFolder !== null || currentCategory === 'masters') && !addMode"
+        :show-action="!addMode"
+        :action-disabled="!currentFolder"
         :action-active="showAddMenu"
         :search-active="showSearch"
         :can-more="!!currentFolder && currentFolder.id !== 'unobtained'"
@@ -814,7 +812,12 @@ const saveSingle = async (resolutionOrData = null) => {
         return;
     }
 
-    // 移除重複名稱驗證，允許同名法寶重複載錄
+    // 重複名稱驗證：不可重覆
+    const isDuplicate = allRegistries.value.some(r => r.name.trim() === form.value.name.trim() && String(r.id) !== String(form.value.id || ''));
+    if (isDuplicate) {
+        persistentToast.value = { msg: `✖ 儲存失敗：法寶名稱「${form.value.name}」已存在於系統中。`, type: 'error' };
+        return;
+    }
     
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
         persistentToast.value = { msg: '錯誤：請輸入求得日期', type: 'error' };
@@ -959,7 +962,30 @@ const saveBatch = async (payload = null) => {
 
     if (!batchInput.value || !batchMasterId.value || isSaving.value) return;
     
-    // 移除批次新增時的重複名稱驗證，允許同名法寶重複載錄
+    // 批次新增時的重複名稱驗證：不可重覆
+    if (payload && payload.rows) {
+        const existingNames = new Set(allRegistries.value.map(r => r.name.trim()));
+        const incomingNames = payload.rows.map(r => r.name.trim());
+        
+        // 檢查是否有跟現有資料重覆
+        const duplicateInDb = incomingNames.find(name => existingNames.has(name));
+        if (duplicateInDb) {
+            persistentToast.value = { msg: `✖ 批次新增失敗：名稱「${duplicateInDb}」已存在於系統中。`, type: 'error' };
+            isSaving.value = false;
+            return;
+        }
+
+        // 檢查貼上的內容本身是否有重複名稱
+        const seenNames = new Set();
+        for (const name of incomingNames) {
+            if (seenNames.has(name)) {
+                persistentToast.value = { msg: `✖ 批次內容中包含重複名稱：「${name}」`, type: 'error' };
+                isSaving.value = false;
+                return;
+            }
+            seenNames.add(name);
+        }
+    }
 
     isSaving.value = true;
     try {

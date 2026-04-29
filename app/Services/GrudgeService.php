@@ -81,7 +81,7 @@ class GrudgeService
                     $item['process_date'] = null;
                 } else {
                     $item['status'] = '已處理';
-                    $item['process_date'] = $item['know_date'] ?? now()->toDateString();
+                    $item['process_date'] = $item['know_date'] ?? null;
                 }
 
                 // 4. Count Categorization

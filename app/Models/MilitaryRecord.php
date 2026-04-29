@@ -33,8 +33,8 @@ class MilitaryRecord extends Model
     ];
 
     protected $casts = [
-        'know_date' => 'date',
-        'process_date' => 'date',
+        'know_date' => 'date:Y-m-d',
+        'process_date' => 'date:Y-m-d',
         'quantity' => 'integer',
         'yan_zun' => 'integer',
         'yan_an' => 'integer',

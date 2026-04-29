@@ -64,9 +64,9 @@
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div v-if="currentFolder !== null && !addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 52px;">
-                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest whitespace-nowrap" style="color: #0f172a !important;">
-                        {{ currentFolder ? currentFolder.name : '開示資料專區' }}
+                <div class="flex-1 flex flex-col justify-center min-w-0 py-1 cursor-pointer" @click="resetToRoot">
+                    <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                        其他開示資料
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 mr-2">
@@ -87,7 +87,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">父皇仙師開示資料</h2>
+                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">其他開示資料</h2>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
             <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
                     <div class="flex-1">
-                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">父皇仙師開示資料</h1>
+                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">其他開示資料</h1>
                     </div>
                 </div>
                 
@@ -151,7 +151,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
                                 <span class="text-[42px] font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
-                                    開示記錄
+                                    其他開示記錄
                                 </span>
                             </div>
                         </div>
@@ -167,7 +167,7 @@
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900 pointer-events-none">開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900 pointer-events-none">其他開示資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
@@ -2997,7 +2997,7 @@ const fetchItems = async (page = 1) => {
         }
         // In Master folders, we don't pass is_daily so it fetches all records for that master
 
-        const res = await axios.get('/teachings', { params });
+        const res = await axios.get('/other-teachings', { params });
         if (page === 1) { 
             visibleItems.value = res.data.data;
         }
@@ -3050,7 +3050,7 @@ const editItem = (item) => {
     addMode.value = true; 
 };
 
-const deleteItem = async (id) => { if (!confirm('確定刪除？')) return; try { await axios.delete(`/teachings/${id}`); fetchItems(1); } catch (e) { alert('刪除失敗'); } };
+const deleteItem = async (id) => { if (!confirm('確定刪除？')) return; try { await axios.delete(`/other-teachings/${id}`); fetchItems(1); } catch (e) { alert('刪除失敗'); } };
 
 const duplicateItem = (item) => { 
     form.value = { ...item, id: null, date: new Date().toLocaleDateString('en-CA'), dharma_name_ids: item.dharma_names.map(dn => dn.id) }; 
@@ -3927,7 +3927,7 @@ const copyAllToLine = async () => {
             is_daily: isDaily ? 1 : 0,
             per_page: 500 // Batch fetch enough records
         };
-        const res = await axios.get('/teachings', { params });
+        const res = await axios.get('/other-teachings', { params });
         const allItems = res.data.data || res.data;
         const text = allItems.map((item, idx) => {
             return formatTeachingForExport(item, idx, allItems);
@@ -3942,11 +3942,11 @@ const clearTodayDaily = async () => {
     if (!confirm(`確定清空今日 (${form.value.date}) 的每日開示暫存區？\n此動作不會影響已分流至各仙師專區的原始紀錄。`)) return;
     loading.value = true;
     try {
-        const res = await axios.get('/teachings', { params: { master_id: 5, per_page: 200, is_daily: 1 } });
+        const res = await axios.get('/other-teachings', { params: { master_id: 5, per_page: 200, is_daily: 1 } });
         const items = (res.data.data || res.data).filter(i => i.date === form.value.date && i.is_daily);
         
         for (const item of items) {
-            await axios.delete(`/teachings/${item.id}`);
+            await axios.delete(`/other-teachings/${item.id}`);
         }
         
         alert('今日每日開示暫存區已清空 (仙師專區紀錄均已受保護)');
@@ -3979,7 +3979,7 @@ const exportListTxt = async () => {
             is_daily: isDaily ? 1 : 0,
             per_page: 500
         };
-        const res = await axios.get('/teachings', { params });
+        const res = await axios.get('/other-teachings', { params });
         const allItems = res.data.data || res.data;
         const text = allItems.map(item => {
             const dnText = item.dharma_names?.map(d => d.name).join(', ') || '全員';
@@ -4129,9 +4129,9 @@ const performActualSave = async () => {
         };
 
         if (editingId.value) {
-            await axios.put(`/teachings/${editingId.value}`, payload);
+            await axios.put(`/other-teachings/${editingId.value}`, payload);
         } else {
-            const res = await axios.post('/teachings', payload);
+            const res = await axios.post('/other-teachings', payload);
             if (res.data?.id) {
                 focusedId.value = res.data.id;
                 // Ensure the newly added item is scrolled into view
@@ -4284,7 +4284,7 @@ const executeDistributionSave = async (mode) => {
                 is_daily: (activeEntryTab.value === 'batch' || isDailyFolder) ? 1 : 0
             };
             
-            const res = await axios.post('/teachings', payload);
+            const res = await axios.post('/other-teachings', payload);
             if (res.data?.id) {
                 // Optimistic UI: Add to the beginning of the list to ensure visibility
                 visibleItems.value.unshift(res.data);

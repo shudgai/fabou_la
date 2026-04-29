@@ -28,7 +28,7 @@
                     :disabled="actionDisabled || !showAction"
                     :class="[
                         (!showAction || actionDisabled) ? 'bg-slate-100 text-slate-300 opacity-60 cursor-not-allowed' : 
-                        (actionActive ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-sm active:scale-95')
+                        (actionActive ? 'bg-slate-800 rotate-45 scale-90' : 'bg-red-600 text-white shadow-sm active:scale-95')
                     ]"
                     class="w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-300">
                     <svg class="h-[16px] w-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>

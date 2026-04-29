@@ -102,8 +102,11 @@
                             <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest ml-1">貼入清單內容</label>
                             <div class="flex items-center space-x-3">
                                 <button v-if="batchInput" @click="batchInput = ''" class="text-[11px] text-red-500 hover:underline">清除內容</button>
+                                <button @click="handleDirectPaste" class="text-[11px] text-emerald-600 font-bold hover:bg-emerald-50 px-2 py-[5px] rounded-lg transition-all">
+                                    貼上內容
+                                </button>
                                 <button @click="$refs.fileInput.click()" class="text-[11px] text-indigo-600 flex items-center hover:bg-white px-2 py-[5px] rounded-lg transition-all">
-                                    匯入檔案 (Excel/Word)
+                                    匯入檔案
                                 </button>
                             </div>
                         </div>
@@ -139,11 +142,15 @@
                             <table class="w-full text-[15px] text-left">
                                 <thead class="bg-white text-slate-500 sticky top-0 uppercase tracking-tighter border-b border-slate-100">
                                     <tr>
+                                        <th class="p-2 border-b border-slate-100">目標仙師</th>
                                         <th v-for="col in excelCols" :key="col.key" class="p-2 border-b border-slate-100">{{ col.label }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-white transition-colors">
+                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                        <td class="p-2 text-indigo-600 font-black text-xs whitespace-nowrap">
+                                            {{ getMasterName(row._master_id) }}
+                                        </td>
                                         <td v-for="col in excelCols" :key="col.key" class="p-2 text-slate-600 font-bold truncate max-w-[120px]">{{ row[col.key] }}</td>
                                     </tr>
                                 </tbody>
@@ -269,7 +276,25 @@ watch(batchInput, (newVal) => {
         sumKey.value = '';
         return;
     }
-    const lines = newVal.trim().split(/\r?\n/).map(line => line.split(/[\t]+/).map(c => c.trim()));
+    const lines = newVal.trim().split(/\r?\n/).map(line => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) return [];
+        // 優先嘗試 Tab 分隔
+        if (trimmedLine.includes('\t')) return trimmedLine.split(/[\t]+/).map(c => c.trim());
+        
+        // 若為「用意：」或「狀態：」開頭，不應在此處依逗號切分，否則內容會被截斷
+        if (trimmedLine.startsWith('用意') || trimmedLine.startsWith('狀態') || trimmedLine.startsWith('法寶')) {
+            return [trimmedLine];
+        }
+
+        // 其次嘗試多個空格、逗號或全形逗號
+        let parts = trimmedLine.split(/[\s]{2,}|[,，]/);
+        if (parts.length <= 1) {
+            // 最後才嘗試單個空格 (風險較高，但對於簡單列表很有效)
+            parts = trimmedLine.split(/\s+/);
+        }
+        return parts.map(c => c.trim());
+    }).filter(l => l.length > 0);
     processBatchLines(lines);
 });
 
@@ -280,7 +305,6 @@ const handleStatusChange = () => {
 const processBatchLines = (rawLines) => {
     if (!rawLines || rawLines.length === 0) return;
     
-    // 偵測日期行 (支援 民國 與 西元)
     const parseDateText = (str) => {
         if (!str) return null;
         const rocMatch = str.match(/(\d{2,3})[/-](\d{1,2})[/-](\d{1,2})/);
@@ -294,34 +318,80 @@ const processBatchLines = (rawLines) => {
     };
 
     let currentBlockDate = form.value.record_date || form.value.obtained_date || '';
+    let currentBlockMasterId = form.value.master_id;
     const filteredLines = [];
 
     for (const row of rawLines) {
         if (!row || row.length === 0) continue;
-        const firstCell = row[0] || '';
+        const firstCell = String(row[0] || '').trim();
+        if (!firstCell) continue;
+
+        // 1. 跳過雜訊行 (如：狀態：已登記, 分隔線)
+        if (firstCell.startsWith('狀態：') || firstCell.startsWith('狀態:') || firstCell.includes('---') || firstCell.match(/^[ \-\=_]+$/)) {
+            continue;
+        }
+
+        // 2. 偵測日期行
+        const parsedDate = parseDateText(firstCell);
+        if (parsedDate) {
+            currentBlockDate = parsedDate;
+            // 若整行只有日期，則跳過，不視為一筆資料
+            if (row.length === 1 || (row.length === 2 && !row[1].trim())) continue;
+        }
+
+        // 3. 偵測仙師分流
+        // 先嘗試完全匹配或包含匹配
+        let masterMatch = props.masters.find(m => {
+            const mName = m.name;
+            const shortName = mName.replace('仙師', '');
+            return firstCell === mName || firstCell === shortName || 
+                   firstCell.startsWith(mName + '：') || firstCell.startsWith(shortName + '：') ||
+                   firstCell.startsWith(mName + ':') || firstCell.startsWith(shortName + ':');
+        });
         
-        // 若此行包含日期
-        const parsed = parseDateText(firstCell);
-        if (parsed) {
-            currentBlockDate = parsed;
-            // 若此行只有一個欄位且幾乎全是日期，則跳過這行不當作法寶資料
-            if (row.length === 1 && firstCell.length < 12) {
+        // 若沒對到，嘗試更寬鬆的別名偵測
+        if (!masterMatch) {
+            const aliasMap = { '太子': '太子', '閻王': '閻王仙師', '父皇': '父皇' };
+            for (const [alias, targetName] of Object.entries(aliasMap)) {
+                if (firstCell.includes(alias)) {
+                    masterMatch = props.masters.find(m => m.name === targetName || m.name.includes(targetName));
+                    if (masterMatch) break;
+                }
+            }
+        }
+
+        if (masterMatch) {
+            currentBlockMasterId = masterMatch.id;
+            
+            // 更精準的「純標題行」判定：
+            // 1. 如果本來就是多欄位 (Tab 分隔)，且第二欄以後為空，則是標題行
+            // 2. 如果是單欄位，且文字內容「幾乎等於」仙師名稱 (允許有冒號或空格)，則是標題行
+            const isHeaderOnly = row.length > 1 ? !row.slice(1).some(c => c.trim()) : 
+                                 firstCell.length <= (masterMatch.name.length + 2);
+
+            if (isHeaderOnly) {
+                continue;
+            }
+        }
+        
+        // 4. 偵測「用意：」行
+        // 若此行以「用意：」開頭，則將其內容併入上一筆資料的第二欄 (用意)
+        if (firstCell.startsWith('用意：') || firstCell.startsWith('用意:')) {
+            if (filteredLines.length > 0) {
+                const prevRow = filteredLines[filteredLines.length - 1];
+                const purposeText = firstCell.replace(/^用意[：:]\s*/, '').trim();
+                // 併入第二欄 (index 1)
+                if (!prevRow[1]) prevRow[1] = purposeText;
+                else prevRow[1] += ' ' + purposeText;
                 continue;
             }
         }
         
         if (row.some(c => c.trim() !== '')) {
-            // 將當前日期注入到這筆資料中，如果該行沒有自定義日期
-            const rowData = [...row];
-            if (!parsed && rowData.length > 2) {
-                 // 可能在第三欄有日期，檢查看看
-                 const thirdCellDate = parseDateText(rowData[2]);
-                 if (thirdCellDate) rowData[2] = thirdCellDate;
-            }
-            
-            // 標記這行使用的日期
-            row._injectedDate = currentBlockDate;
-            filteredLines.push(row);
+            const newRow = [...row];
+            newRow._injectedDate = currentBlockDate;
+            newRow._injectedMasterId = currentBlockMasterId;
+            filteredLines.push(newRow);
         }
     }
 
@@ -330,11 +400,10 @@ const processBatchLines = (rawLines) => {
         return;
     }
 
-    // Auto-detect columns
     const maxCols = Math.max(...filteredLines.map(r => r.length));
     excelCols.value = Array.from({ length: maxCols }).map((_, i) => ({
         key: `c${i}`,
-        label: i === 0 ? '法門/法號' : (i === 1 ? '用意/數量' : `欄位 ${i + 1}`)
+        label: i === 0 ? '法寶名稱' : (i === 1 ? '用意/數量' : `欄位 ${i + 1}`)
     }));
 
     excelRows.value = filteredLines.map(row => {
@@ -342,9 +411,8 @@ const processBatchLines = (rawLines) => {
         for (let i = 0; i < maxCols; i++) {
             rowData[`c${i}`] = row[i] || '';
         }
-        if (row._injectedDate) {
-            rowData._record_date = row._injectedDate;
-        }
+        rowData._record_date = row._injectedDate;
+        rowData._master_id = row._injectedMasterId;
         return rowData;
     });
 
@@ -403,6 +471,23 @@ const handleFileUpload = (e) => {
     }
 };
 
+const getMasterName = (id) => {
+    const m = props.masters?.find(m => String(m.id) === String(id));
+    return m ? m.name : '預設';
+};
+
+const handleDirectPaste = async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+            batchInput.value = text;
+        }
+    } catch (err) {
+        console.error('Failed to read clipboard:', err);
+        alert('請手動在輸入框內點擊並使用 Ctrl+V 貼上');
+    }
+};
+
 const handleSubmit = () => {
     if (localMode.value === 'single') {
         emit('saveSingle', form.value);
@@ -414,9 +499,10 @@ const handleSubmit = () => {
             rows: excelRows.value.map(row => ({
                 name: row.c0,
                 purpose: row.c1,
+                master_id: row._master_id,
                 record_date: row._record_date || '', // 自動補上日期
                 count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
-                remarks: Object.keys(row).filter(k => !['c0', 'c1', '_record_date', sumKey.value].includes(k)).map(k => row[k]).join(' ')
+                remarks: Object.keys(row).filter(k => !['c0', 'c1', '_record_date', '_master_id', sumKey.value].includes(k)).map(k => row[k]).join(' ')
             })),
             total: batchTotalValue.value
         });

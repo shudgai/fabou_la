@@ -27,8 +27,8 @@ class Grudge extends Model
 
     protected $casts = [
         'remarks' => 'array',
-        'know_date' => 'string',
-        'process_date' => 'string',
+        'know_date' => 'date:Y-m-d',
+        'process_date' => 'date:Y-m-d',
         'record_date' => 'datetime',
     ];
 

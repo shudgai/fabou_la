@@ -17,16 +17,20 @@
 
             <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar bg-white">
                 <!-- Anchor Date Selection -->
-                <div @click="showDatePicker = true" class="flex items-center bg-slate-50 p-4 rounded-2xl border border-slate-100 shadow-sm cursor-pointer active:bg-slate-100 transition-all mb-2">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 mr-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="flex items-center bg-slate-50 p-4 rounded-2xl border border-slate-100 shadow-sm transition-all mb-2 relative">
+                    <div @click="showDatePicker = true" class="flex-1 flex items-center cursor-pointer">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 mr-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[17px] font-black text-slate-900 tracking-tight">基準日期 (無指定日期時使用)</p>
+                            <p class="text-[15px] font-bold text-indigo-600">{{ batchDate ? batchDate.replace(/-/g, '/') : '未設定 (首位顯示)' }}</p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-[17px] font-black text-slate-900 tracking-tight">基準日期 (無指定日期時使用)</p>
-                    </div>
-                    <div class="text-slate-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
+                    <!-- Clear Date Button -->
+                    <button v-if="batchDate" @click="batchDate = null" class="absolute right-4 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
 
                 <div class="space-y-1 relative">
@@ -199,6 +203,10 @@ const handleBatchSave = async () => {
             rawName = subject.replace(/[（\(].*?[）\)]/, '').trim();
             uRemarks = rMatch[1];
         }
+
+        // Smart cleanup: remove trailing digits and units from the name (e.g., "靈昡79位" -> "靈昡")
+        rawName = rawName.replace(/\d+.*$/, '').trim();
+        
         let finalName = translate(rawName);
 
         // 5. Status & Quantity

@@ -58,6 +58,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::post('teachings/reorder', [App\Http\Controllers\TeachingController::class, 'reorder']);
     Route::resource('teachings', App\Http\Controllers\TeachingController::class);
+    Route::post('other-teachings/reorder', [App\Http\Controllers\OtherTeachingController::class, 'reorder']);
+    Route::resource('other-teachings', App\Http\Controllers\OtherTeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
     Route::resource('groups', App\Http\Controllers\GroupController::class);
     Route::resource('users', App\Http\Controllers\UserController::class);
