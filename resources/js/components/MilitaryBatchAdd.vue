@@ -113,7 +113,8 @@ const parsedItems = computed(() => {
     if (!batchText.value.trim()) return [];
     
     const lines = batchText.value.split('\n');
-    let lastDate = batchDate.value; // Fallback to UI date
+    let currentDate = batchDate.value; 
+    const results = [];
     
     const nameAliasMap = {
         '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
@@ -125,107 +126,83 @@ const parsedItems = computed(() => {
     };
     const translateName = (n) => nameAliasMap[n] || n;
 
-    const results = [];
-    
+    const parseDateText = (str) => {
+        if (!str) return null;
+        // Priority 1: 4-digit CE
+        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+        // Priority 2: 2-3 digit ROC
+        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (rocMatch) {
+            const y = parseInt(rocMatch[1]) + 1911;
+            return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+        }
+        return null;
+    };
+
     lines.forEach(line => {
-        // 0. Normalize
-        let normLine = line.normalize('NFKC').trim();
+        const normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // NEW: Standalone Year detection (e.g., "113年" or "2024")
-        const standaloneYMatch = normLine.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
-        if (standaloneYMatch) {
-            let y = parseInt(standaloneYMatch[1]);
-            if (y < 1000) y += 1911;
-            lastDate = `${y}-01-01`; // Anchor to start of year
+        // 1. Detect Standalone Date Header
+        const dateHeader = parseDateText(normLine);
+        if (dateHeader && normLine.length < 20) {
+            currentDate = dateHeader;
             return;
         }
 
-        // 1. Detect date
-        const cleanDateStr = normLine.replace(/[年月]/g, '-').replace(/[日]/g, '');
-        const dateParts = cleanDateStr.split(/[.\/-]/).map(p => p.trim());
-
-        if (dateParts.length === 3 && !isNaN(parseInt(dateParts[0]))) {
-            let year = parseInt(dateParts[0]);
-            const month = dateParts[1].padStart(2, '0');
-            const day = dateParts[2].padStart(2, '0');
-            if (year < 1000) year += 1911;
-            lastDate = `${year}-${month}-${day}`;
-            return;
-        }
-        
-        // Detect Short Date (M/D) as a standalone line
-        if (dateParts.length === 2 && !isNaN(parseInt(dateParts[0])) && !isNaN(parseInt(dateParts[1])) && normLine.length < 10) {
-            const y = lastDate.split('-')[0];
-            const m = dateParts[0].padStart(2, '0');
-            const d = dateParts[1].padStart(2, '0');
-            lastDate = `${y}-${m}-${d}`;
+        // 2. Detect Attribute Keywords
+        const attrKeywords = ['備註', '處理日期', '結果', '用意'];
+        const firstWord = normLine.split(/[\s：:]/)[0];
+        if (attrKeywords.includes(firstWord) && results.length > 0) {
+            const prev = results[results.length - 1];
+            const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+            if (firstWord === '備註') prev.remarks_text = (prev.remarks_text ? prev.remarks_text + ' ' : '') + val;
+            else if (firstWord === '處理日期') prev.process_date = val;
+            else if (firstWord === '結果') prev.destination = val;
             return;
         }
 
-        // 2. Clear item numbers (Handle leading indices like "1. ", "3) ")
+        // 3. Name & Quantity Extraction
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
         if (!cleanLine) return;
 
-        // 3. Robust Name & Quantity Extraction
-        // Name is everything up to the first digit. 
-        // Quantity is the sum of all digits AFTER the name, excluding those in parentheses.
         let name = '';
         let qty = 0;
-
         const firstDigitIndex = cleanLine.replace(/[\(\（][^\)\）]*[\)\）]/g, m => ' '.repeat(m.length)).search(/\d/);
+        
         if (firstDigitIndex === -1) {
-            // No digits found, assume qty 1
             name = translateName(cleanLine);
             qty = 1;
         } else {
             name = translateName(cleanLine.substring(0, firstDigitIndex).trim());
-            let rest = cleanLine.substring(firstDigitIndex);
-            
-            // Remove parenthetical notes (e.g., "(2位歸於...)" ) to avoid double counting
-            // We handle both half-width and full-width parentheses
-            const restWithoutNotes = rest.replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
-            
-            // Extract all numbers and sum them
-            const numbers = restWithoutNotes.match(/\d+/g);
-            if (numbers) {
-                qty = numbers.reduce((sum, n) => sum + parseInt(n), 0);
-            } else {
-                qty = 1;
-            }
+            let rest = cleanLine.substring(firstDigitIndex).replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
+            const numbers = rest.match(/\d+/g);
+            qty = numbers ? numbers.reduce((sum, n) => sum + parseInt(n), 0) : 1;
         }
 
-        if (!name) return;
+        // Filter out headers
+        const skipKeywords = ['法號', '日期', '數量', '結果', '項次', '總計'];
+        if (skipKeywords.some(key => name === key)) return;
 
-        // Header & Summary Filter
-        const skipKeywords = ['法號', '日期', '數量', '備註', '處理', '項次', '結果', '總結', '總計', '總量', '小計'];
-        if (skipKeywords.some(key => name.includes(key))) return;
+        const item = {
+            user_name: name,
+            quantity: qty,
+            know_date: currentDate,
+            army_type: props.armyType,
+            destination: '未處理',
+            user_remarks: '',
+            remarks_text: '',
+            process_date: ''
+        };
+        
+        // Army-specific defaults
+        if (props.armyType === '黑曜軍') { item.yan_zun = Math.ceil(qty / 2); item.yan_an = Math.floor(qty / 2); }
+        else if (props.armyType === '耀紫軍') { item.long_sheng = Math.ceil(qty / 2); item.long_zhan = Math.floor(qty / 2); }
+        else if (props.armyType === '虎甲軍') { item.yan_jue = qty; item.yan_ze = 0; }
+        else if (props.armyType === '虎賁軍') { item.yan_di = qty; item.yan_yuan = 0; }
 
-            const item = {
-                user_name: name,
-                quantity: qty,
-                know_date: lastDate,
-                army_type: props.armyType,
-                destination: '未處理',
-                user_remarks: '',
-                remarks_text: ''
-            };
-            
-            // Specialized field handling
-            if (props.armyType === '黑曜軍') {
-                item.yan_zun = Math.ceil(qty / 2);
-                item.yan_an = Math.floor(qty / 2);
-            } else if (props.armyType === '耀紫軍') {
-                item.long_sheng = Math.ceil(qty / 2);
-                item.long_zhan = Math.floor(qty / 2);
-            } else if (props.armyType === '虎甲軍') {
-                item.yan_jue = qty;
-                item.yan_ze = 0;
-            } else if (props.armyType === '虎賁軍') {
-                item.yan_di = qty;
-                item.yan_yuan = 0;
-            }
-            results.push(item);
+        results.push(item);
     });
     
     return results;

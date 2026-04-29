@@ -159,30 +159,53 @@ const handleBatchSave = async () => {
     };
     const translate = (n) => nameMap[n] || n;
 
-    const finalItems = [];
-    let currentKnowDate = batchDate.value;
+    const results = [];
+    let currentDate = batchDate.value;
+
+    const parseDateText = (str) => {
+        if (!str) return null;
+        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (rocMatch) {
+            const y = parseInt(rocMatch[1]) + 1911;
+            return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+        }
+        return null;
+    };
 
     lines.forEach(line => {
-        let normLine = line.normalize('NFKC').trim();
+        const normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // 1. Date Detection
-        const dMatch = normLine.match(/^(\d{4}|\d{2,3})[-\/.](\d{1,2})[-\/.](\d{1,2})$/);
-        if (dMatch) {
-            let y = parseInt(dMatch[1]);
-            if (y < 1000) y += 1911;
-            currentKnowDate = `${y}-${String(dMatch[2]).padStart(2, '0')}-${String(dMatch[3]).padStart(2, '0')}`;
+        // 1. Detect Standalone Date Header
+        const dateHeader = parseDateText(normLine);
+        if (dateHeader && normLine.length < 20) {
+            currentDate = dateHeader;
             return;
         }
 
-        // 2. Clean Line (skip headers)
-        const skipKeywords = ['法號', '項目', '日期', '數量', '備註', '項次', '結果', '總結', '總計', '小計', '處理日期', '處理結果'];
-        if (skipKeywords.some(k => normLine.includes(k))) return;
+        // 2. Detect Attribute Keywords
+        const attrKeywords = ['備註', '處理日期', '結果', '法號備註'];
+        const firstWord = normLine.split(/[\s：:]/)[0];
+        if (attrKeywords.includes(firstWord) && results.length > 0) {
+            const prev = results[results.length - 1];
+            const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+            if (firstWord === '備註') prev.remarks_text = (prev.remarks_text ? prev.remarks_text + '\n' : '') + val;
+            else if (firstWord === '處理日期') prev.process_date = val;
+            else if (firstWord === '結果') prev.destination = val;
+            else if (firstWord === '法號備註') prev.user_remarks = val;
+            return;
+        }
 
+        // 3. Name and Content Split
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
         if (!cleanLine) return;
 
-        // 3. Split Name and Content
+        // Skip headers
+        const skipKeywords = ['法號', '日期', '數量', '結果', '項次', '總結', '總計', '處理日期'];
+        if (skipKeywords.some(k => cleanLine.startsWith(k))) return;
+
         let subject = cleanLine;
         let resultsPart = '';
         const separators = ['—', '–', '-', '―', ':', '：', ' '];
@@ -195,7 +218,6 @@ const handleBatchSave = async () => {
             }
         }
 
-        // 4. Translate Name
         let rawName = subject;
         let uRemarks = '';
         const rMatch = subject.match(/[（\(](.*?)[）\)]/);
@@ -204,36 +226,28 @@ const handleBatchSave = async () => {
             uRemarks = rMatch[1];
         }
 
-        // Smart cleanup: remove trailing digits and units from the name (e.g., "靈昡79位" -> "靈昡")
+        // Clean digits from name
         rawName = rawName.replace(/\d+.*$/, '').trim();
-        
         let finalName = translate(rawName);
 
-        // 5. Status & Quantity
         const isProcessed = resultsPart.includes('已處理') || (!resultsPart.includes('未處理') && !resultsPart.includes('尚未處理'));
         const globalNumMatch = cleanLine.match(/(\d+)/);
         const qty = globalNumMatch ? parseInt(globalNumMatch[1]) : 1;
 
-        let pDate = isProcessed ? currentKnowDate : null;
-        const pMatch = resultsPart.match(/(\d{1,2})[\/.-](\d{1,2})(?=.*已處理)/);
-        if (pMatch) {
-            const m = pMatch[1].padStart(2, '0');
-            const d = pMatch[2].padStart(2, '0');
-            pDate = `${currentKnowDate.split('-')[0]}-${m}-${d}`;
-        }
-
-        finalItems.push({
+        results.push({
             user_name: finalName,
             user_remarks: uRemarks,
-            know_date: currentKnowDate,
-            process_date: pDate,
+            know_date: currentDate,
+            process_date: isProcessed ? currentDate : null,
             destination: isProcessed ? '已處理' : '未處理',
             quantity: qty,
             remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },
             status: isProcessed ? '已處理' : '待處理',
-            remarks_text: resultsPart || cleanLine
+            remarks_text: resultsPart || ''
         });
     });
+
+    const finalItems = results;
 
     if (finalItems.length === 0) {
         alert('解析失敗，找不到任何有效法號資料。');

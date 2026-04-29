@@ -83,7 +83,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white border border-slate-200 rounded-2xl py-2.5 px-4 shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white border border-slate-200 rounded-2xl py-[15px] px-[12px] shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
@@ -206,7 +206,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white border border-slate-200 rounded-2xl py-2.5 px-4 shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white border border-slate-200 rounded-2xl py-[15px] px-[12px] shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">

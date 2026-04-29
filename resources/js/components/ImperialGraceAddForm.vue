@@ -291,45 +291,28 @@ watch(batchInput, (newVal) => {
     const lines = newVal.trim().split(/\r?\n/).map(line => {
         const trimmedLine = line.trim();
         if (!trimmedLine) return [];
-        // 優先嘗試 Tab 分隔
         if (trimmedLine.includes('\t')) return trimmedLine.split(/[\t]+/).map(c => c.trim());
-        
-        // 若為「用意：」或「狀態：」開頭，不應在此處依逗號切分，否則內容會被截斷
         if (trimmedLine.startsWith('用意') || trimmedLine.startsWith('狀態') || trimmedLine.startsWith('法寶')) {
             return [trimmedLine];
         }
-
-        // 其次嘗試多個空格、逗號或全形逗號
         let parts = trimmedLine.split(/[\s]{2,}|[,，]/);
-        if (parts.length <= 1) {
-            // 如果只有一欄，且沒有明顯分隔符，則視為一整欄，不要隨意切分空格 (除非包含明顯數字可能為數量)
-            const containsCount = / \d+$/.test(trimmedLine);
-            if (containsCount) {
-                parts = trimmedLine.split(/\s+/);
-            } else {
-                parts = [trimmedLine];
-            }
-        }
-        return parts.map(c => c.trim());
+        return (parts.length <= 1 && / \d+$/.test(trimmedLine)) ? trimmedLine.split(/\s+/) : parts.map(c => c.trim());
     }).filter(l => l.length > 0);
     processBatchLines(lines);
 });
-
-const handleStatusChange = () => {
-    if (form.value.status === '未求得') form.value.obtained_date = '';
-};
 
 const processBatchLines = (rawLines) => {
     if (!rawLines || rawLines.length === 0) return;
     
     const parseDateText = (str) => {
         if (!str) return null;
-        // Priority 1: Check for 4-digit year (Western/CE) first to avoid partial ROC matching
-        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        const normalized = str.normalize('NFKC').trim();
+        // Priority 1: 4-digit CE
+        const ceMatch = normalized.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
         if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
 
-        // Priority 2: Check for 2 or 3 digit year (ROC)
-        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        // Priority 2: 2-3 digit ROC
+        const rocMatch = normalized.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
         if (rocMatch) {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
@@ -337,36 +320,23 @@ const processBatchLines = (rawLines) => {
         return null;
     };
 
-    let currentBlockDate = form.value.record_date || form.value.obtained_date || '';
+    let currentBlockDate = form.value.record_date || '';
     let currentBlockMasterId = form.value.master_id;
     const filteredLines = [];
+    let pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null };
 
     for (const row of rawLines) {
         if (!row || row.length === 0) continue;
-        const firstCell = String(row[0] || '').trim();
-        if (!firstCell) continue;
+        const firstCell = String(row[0] || '').normalize('NFKC').trim();
+        if (!firstCell || firstCell.includes('---')) continue;
 
-        // 1. 跳過雜訊行 (如：狀態：已登記, 分隔線)
-        if (firstCell.startsWith('狀態：') || firstCell.startsWith('狀態:') || firstCell.includes('---') || firstCell.match(/^[ \-\=_]+$/)) {
-            continue;
-        }
-
-        // 2. 偵測日期行 (支援整行偵測內容，不只看第一個格子)
-        const fullLine = row.join(' ');
+        const fullLine = row.join(' ').normalize('NFKC').trim();
         const parsedDate = parseDateText(fullLine);
         if (parsedDate) {
             currentBlockDate = parsedDate;
-            // 若整行看起來只是個日期標題，則跳過，不視為一筆資料
-            if (fullLine.trim().length <= 15) continue;
+            if (fullLine.length <= 20) continue; 
         }
         
-        // 如果此時 currentBlockDate 還是空的，嘗試從 form 抓預設
-        if (!currentBlockDate) {
-            currentBlockDate = form.value.record_date || form.value.obtained_date || '';
-        }
-
-        // 3. 偵測仙師分流
-        // 先嘗試完全匹配或包含匹配
         let masterMatch = props.masters.find(m => {
             const mName = m.name;
             const shortName = mName.replace('仙師', '');
@@ -375,82 +345,69 @@ const processBatchLines = (rawLines) => {
                    firstCell.startsWith(mName + ':') || firstCell.startsWith(shortName + ':');
         });
         
-        // 若沒對到，嘗試更寬鬆的別名偵測
-        if (!masterMatch) {
-            const aliasMap = { '太子': '太子', '閻王': '閻王仙師', '父皇': '父皇' };
-            for (const [alias, targetName] of Object.entries(aliasMap)) {
-                if (firstCell.includes(alias)) {
-                    masterMatch = props.masters.find(m => m.name === targetName || m.name.includes(targetName));
-                    if (masterMatch) break;
-                }
-            }
-        }
-
         if (masterMatch) {
             currentBlockMasterId = masterMatch.id;
-            
-            // 更精準的「純標題行」判定：
-            // 1. 如果本來就是多欄位 (Tab 分隔)，且第二欄以後為空，則是標題行
-            // 2. 如果是單欄位，且文字內容「幾乎等於」仙師名稱 (允許有冒號或空格)，則是標題行
             const isHeaderOnly = row.length > 1 ? !row.slice(1).some(c => c.trim()) : 
                                  firstCell.length <= (masterMatch.name.length + 2);
-
-            if (isHeaderOnly) {
-                continue;
-            }
+            if (isHeaderOnly) continue;
         }
         
-        // 4. 偵測屬性行 (如「用意 打通任督二脈」或「狀態：已登記」)
         const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
-        const firstWord = firstCell.trim().split(/[\s：:]/)[0];
+        const firstWord = firstCell.split(/[\s：:]/)[0];
         
         if (attrKeywords.includes(firstWord)) {
-            if (filteredLines.length > 0) {
-                const prevRow = filteredLines[filteredLines.length - 1];
-                const attrVal = firstCell.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
-                
-                if (firstWord === '用意') {
-                    // 併入第二欄 (index 1)
-                    if (!prevRow[1]) prevRow[1] = attrVal;
-                    else prevRow[1] += ' ' + attrVal;
-                } else if (firstWord === '狀態') {
-                    // 支援多種輸入方式：已登記、已求得、未求得
-                    if (attrVal.includes('已求得')) prevRow._injectedStatus = '已求得';
-                    else if (attrVal.includes('已登記')) prevRow._injectedStatus = '已登記';
-                    else if (attrVal.includes('未求得')) prevRow._injectedStatus = '未求得';
-                    else prevRow._injectedStatus = attrVal;
-                } else if (['得知日期', '日期'].includes(firstWord)) {
-                    prevRow._injectedDate = attrVal;
-                } else if (['登記日期', '求得日期'].includes(firstWord)) {
-                    prevRow._injectedObtainedDate = attrVal;
-                    // 自動判定狀態：求得日期優先於登記日期
-                    const newStatus = (firstWord === '求得日期' ? '已求得' : '已登記');
-                    if (!prevRow._injectedStatus || prevRow._injectedStatus === '未求得' || (newStatus === '已求得' && prevRow._injectedStatus === '已登記')) {
-                        prevRow._injectedStatus = newStatus;
-                    }
+            const target = (filteredLines.length > 0) ? filteredLines[filteredLines.length - 1] : pendingAttrs;
+            const attrVal = firstCell.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+            
+            if (firstWord === '用意') {
+                if (target === pendingAttrs) target.purpose = (target.purpose ? target.purpose + '；' : '') + attrVal;
+                else target._injectedPurpose = (target._injectedPurpose ? target._injectedPurpose + '；' : '') + attrVal;
+            } else if (firstWord === '狀態') {
+                if (attrVal.includes('已登記')) {
+                    target._injectedStatus = '已登記';
+                    target._injectedObtainedDate = target._injectedDate || currentBlockDate;
+                    if (target === pendingAttrs) { target.status = '已登記'; target.obtained_date = currentBlockDate; }
+                } else if (attrVal.includes('已求得')) {
+                    target._injectedStatus = '已求得';
+                    target._injectedObtainedDate = target._injectedDate || currentBlockDate;
+                    if (target === pendingAttrs) { target.status = '已求得'; target.obtained_date = currentBlockDate; }
                 } else {
-                    // 其他屬性併入備註
-                    if (!prevRow[2]) prevRow[2] = firstWord + ': ' + attrVal;
-                    else prevRow[2] += '；' + firstWord + ': ' + attrVal;
+                    if (target === pendingAttrs) target.status = attrVal;
+                    else target._injectedStatus = attrVal;
                 }
-                continue;
+            } else if (['得知日期', '日期'].includes(firstWord)) {
+                if (target === pendingAttrs) target.record_date = parseDateText(attrVal) || attrVal;
+                else target._injectedDate = parseDateText(attrVal) || attrVal;
+            } else if (['登記日期', '求得日期'].includes(firstWord)) {
+                const d = parseDateText(attrVal) || attrVal;
+                if (target === pendingAttrs) { target.obtained_date = d; target.status = (firstWord === '求得日期' ? '已求得' : '已登記'); }
+                else { target._injectedObtainedDate = d; target._injectedStatus = (firstWord === '求得日期' ? '已求得' : '已登記'); }
+            } else if (firstWord === '備註') {
+                if (target === pendingAttrs) target.remarks = (target.remarks ? target.remarks + '\n' : '') + attrVal;
+                else target._injectedRemarks = (target._injectedRemarks ? target._injectedRemarks + '\n' : '') + attrVal;
             }
+            continue;
         }
         
         if (row.some(c => c.trim() !== '')) {
             const newRow = [...row];
             newRow._injectedDate = currentBlockDate;
             newRow._injectedMasterId = currentBlockMasterId;
+            
+            if (filteredLines.length === 0) {
+                if (pendingAttrs.purpose) newRow._injectedPurpose = pendingAttrs.purpose;
+                if (pendingAttrs.remarks) newRow._injectedRemarks = pendingAttrs.remarks;
+                if (pendingAttrs.record_date) newRow._injectedDate = pendingAttrs.record_date;
+                if (pendingAttrs.obtained_date) newRow._injectedObtainedDate = pendingAttrs.obtained_date;
+                if (pendingAttrs.status) newRow._injectedStatus = pendingAttrs.status;
+                pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null };
+            }
+            
             filteredLines.push(newRow);
         }
     }
 
-    if (filteredLines.length === 0) {
-        excelRows.value = [];
-        return;
-    }
-
-    const maxCols = Math.max(...filteredLines.map(r => r.length));
+    const maxCols = Math.max(...filteredLines.map(r => r.length), 2);
     excelCols.value = Array.from({ length: maxCols }).map((_, i) => ({
         key: `c${i}`,
         label: i === 0 ? '法寶名稱' : (i === 1 ? '用意/數量' : `欄位 ${i + 1}`)
@@ -461,11 +418,12 @@ const processBatchLines = (rawLines) => {
         for (let i = 0; i < maxCols; i++) {
             rowData[`c${i}`] = row[i] || '';
         }
-        // 預設日期繼承邏輯：若無明確指定的日期屬性行，則繼承上方標題行的日期
+        if (row._injectedPurpose) rowData.c1 = row._injectedPurpose;
         rowData._record_date = row._injectedDate || currentBlockDate;
-        rowData._obtained_date = row._injectedObtainedDate || currentBlockDate;
+        rowData._obtained_date = row._injectedObtainedDate || row._injectedDate || currentBlockDate;
         rowData._master_id = row._injectedMasterId;
         rowData._status = row._injectedStatus;
+        rowData._manualRemarks = row._injectedRemarks;
         return rowData;
     });
 
@@ -558,16 +516,28 @@ const handleSubmit = () => {
         emit('saveBatch', { 
             input: batchInput.value, 
             masterId: form.value.master_id,
-            rows: excelRows.value.map(row => ({
-                name: row.c0,
-                purpose: row.c1,
-                master_id: row._master_id || form.value.master_id,
-                record_date: row._record_date || form.value.record_date || '',
-                obtained_date: row._obtained_date || form.value.obtained_date || '',
-                status: row._status || form.value.status || '未求得',
-                count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
-                remarks: row._status ? `原始狀態: ${row._status}；` : '' + Object.keys(row).filter(k => !['c0', 'c1', '_record_date', '_obtained_date', '_master_id', '_status', sumKey.value].includes(k)).map(k => row[k]).filter(v => v).join(' ')
-            })),
+            rows: excelRows.value.map(row => {
+                let remarksArr = [];
+                if (row._manualRemarks) remarksArr.push(row._manualRemarks);
+                
+                // Add any other extra columns as remarks
+                const extra = Object.keys(row)
+                    .filter(k => !['c0', 'c1', '_record_date', '_obtained_date', '_master_id', '_status', '_manualRemarks', sumKey.value].includes(k))
+                    .map(k => row[k])
+                    .filter(v => v);
+                if (extra.length > 0) remarksArr.push(extra.join(' '));
+
+                return {
+                    name: row.c0,
+                    purpose: row.c1,
+                    master_id: row._master_id || form.value.master_id,
+                    record_date: row._record_date || form.value.record_date || '',
+                    obtained_date: row._obtained_date || form.value.obtained_date || '',
+                    status: row._status || form.value.status || '未求得',
+                    count: sumKey.value ? parseFloat(String(row[sumKey.value] || '1').replace(/[^\d.-]/g, '')) : 1,
+                    remarks: remarksArr.join('\n')
+                };
+            }),
             total: batchTotalValue.value
         });
     }

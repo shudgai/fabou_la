@@ -1111,62 +1111,47 @@ const triggerBatchSave = async (batchData) => {
         const translateName = (raw) => nameAliasMap[raw] || raw;
 
         let rawRecords = [];
-
         let blockMasterId = batchData.masterId || (currentFolder.value?.id);
         let blockDate = batchData.date || getTodayStr();
+
+        const parseDateStr = (str) => {
+            if (!str) return null;
+            // Priority 1: 4-digit CE
+            const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+            if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+            // Priority 2: 2-3 digit ROC
+            const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+            if (rocMatch) {
+                const y = parseInt(rocMatch[1]) + 1911;
+                return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+            }
+            // Fallback for year only
+            const standaloneYMatch = str.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+            if (standaloneYMatch) {
+                let y = parseInt(standaloneYMatch[1]);
+                if (y < 1000) y += 1911;
+                return `${y}-01-01`;
+            }
+            return null;
+        };
 
         blocks.forEach(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l => l);
             if (lines.length === 0) return;
 
-            let blockRecipient = '';
             let pendingTreasureName = '';
+            let pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
 
-            // Optimized Pass: Detect metadata and parse items simultaneously to support multiple date sessions
             for (let i = 0; i < lines.length; i++) {
-                let line = lines[i];
+                let line = lines[i].normalize('NFKC').trim();
 
-                // A. Metadata Detection (Master, Recipient, Date)
-                masterNames.forEach(mName => { if (line.includes(mName)) blockMasterId = masterMap[mName]; });
-                if (line.includes('開示給')) {
-                    const rMatch = line.split(/[：:]/)[1];
-                    if (rMatch) blockRecipient = rMatch.trim();
-                    continue;
-                }
-
-                const parseDateStr = (str) => {
-                    if (!str) return null;
-                    const clean = str.replace(/[年月]/g, '-').replace(/[日]/g, '');
-                    const parts = clean.split(/[.\/-]/).map(p => p.trim());
-                    if (parts.length === 3) {
-                        let y = parseInt(parts[0]);
-                        if (y < 1000) y += 1911;
-                        return `${y}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
-                    }
-                    return null;
-                };
-
-                // 1. Check for Full Date (Y/M/D)
+                // 1. Metadata Detection
+                masterNames.forEach(mName => { if (line.includes(mName) && line.length < 15) blockMasterId = masterMap[mName]; });
+                
                 const lineDateParsed = parseDateStr(line);
-                if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t')) {
+                if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && line.length < 20) {
                     blockDate = lineDateParsed;
-                    continue;
-                }
-
-                // 2. Check for Standalone Year (e.g., "113年" or "2024")
-                const standaloneYMatch = line.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
-                if (standaloneYMatch) {
-                    let y = parseInt(standaloneYMatch[1]);
-                    if (y < 1000) y += 1911;
-                    blockDate = `${y}-01-01`; // Anchor to start of year
-                    continue;
-                }
-
-                // 3. Check for Short Date (M/D)
-                const shortDMatch = line.match(/^(\d{1,2})[/-](\d{1,2})$/);
-                if (shortDMatch) {
-                    const currentYear = blockDate.split('-')[0];
-                    blockDate = `${currentYear}-${shortDMatch[1].padStart(2,'0')}-${shortDMatch[2].padStart(2,'0')}`;
+                    if (rawRecords.length === 0) pendingAttrs.record_date = lineDateParsed;
                     continue;
                 }
 
@@ -1176,188 +1161,145 @@ const triggerBatchSave = async (batchData) => {
                 let recipients = [];
                 let lineDate = blockDate;
                 let lineRemarks = '';
+                let lineObtainedDate = null;
 
-                // NEW: Highly Flexible Date Prefix Detection (Handles "113年 5/5", "113.5.5", "5/5" etc.)
-                const datePrefixMatch = line.match(/^(\d{2,4})[年./-](\d{1,2})[月./-](\d{1,2})[日]?\s*(.*)/) || 
-                                      line.match(/^(\d{2,4})[年./-]\s*(\d{1,2})[/-](\d{1,2})\s*(.*)/) ||
-                                      line.match(/^(\d{1,2})[/-](\d{1,2})\s+(.*)/);
-
-                if (datePrefixMatch) {
-                    if (datePrefixMatch.length === 5) {
-                        // Full date format (Y, M, D, Remaining)
-                        let y = parseInt(datePrefixMatch[1]);
-                        if (y < 1000) y += 1911;
-                        lineDate = `${y}-${datePrefixMatch[2].padStart(2,'0')}-${datePrefixMatch[3].padStart(2,'0')}`;
-                        line = datePrefixMatch[4].trim();
-                    } else {
-                        // Short date format (M, D, Remaining)
-                        const currentYear = blockDate.split('-')[0];
-                        lineDate = `${currentYear}-${datePrefixMatch[1].padStart(2,'0')}-${datePrefixMatch[2].padStart(2,'0')}`;
-                        line = datePrefixMatch[3].trim();
+                // 2. Attribute Detection
+                const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+                const firstWord = line.split(/[\s：:]/)[0];
+                if (attrKeywords.includes(firstWord)) {
+                    const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+                    const target = (rawRecords.length > 0) ? rawRecords[rawRecords.length - 1] : pendingAttrs;
+                    
+                    if (firstWord === '用意') target.purpose = (target.purpose ? target.purpose + '；' : '') + val;
+                    else if (firstWord === '狀態') {
+                        if (val.includes('已登記')) {
+                            target.obtained_date = target.record_date || blockDate;
+                            if (target === pendingAttrs) target.status = '已登記';
+                        }
                     }
-                    blockDate = lineDate;
-                }
-
-                // Pattern 1: "求寶/求寶方式/方式：..." -> Assign to previous record
-                if (line.match(/^\s*(求寶|求寶方式|方式)[：:]/)) {
-                    const method = line.split(/[：:]/)[1]?.trim();
-                    if (method && rawRecords.length > 0) {
-                        const lastRec = rawRecords[rawRecords.length - 1];
-                        lastRec.acquisition_method = lastRec.acquisition_method ? lastRec.acquisition_method + '；' + method : method;
+                    else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
+                        const d = parseDateStr(val) || val;
+                        target.record_date = d;
+                        if (firstWord === '登記日期' || firstWord === '求得日期') target.obtained_date = d;
                     }
-                    continue; 
-                }
-
-                // Pattern 2: "備註：..." -> Assign to previous record's remarks
-                if (line.match(/^\s*備註[：:]/)) {
-                    const rmk = line.substring(line.indexOf('：') > -1 ? line.indexOf('：') + 1 : line.indexOf(':') + 1).trim();
-                    if (rmk && rawRecords.length > 0) {
-                        const lastRec = rawRecords[rawRecords.length - 1];
-                        lastRec.remarks = lastRec.remarks ? lastRec.remarks + '\n' + rmk : rmk;
-                    }
+                    else if (firstWord === '求寶方式') target.acquisition_method = val;
+                    else if (firstWord === '備註') target.remarks = (target.remarks ? target.remarks + '\n' : '') + val;
                     continue;
                 }
 
-                // Pattern 3: "法寶用意/用意：..." -> Assign to previous record
-                if (line.match(/^\s*(法寶用意|用意)[：:]/)) {
-                    const purp = line.substring(line.indexOf('：') > -1 ? line.indexOf('：') + 1 : line.indexOf(':') + 1).trim();
-                    if (purp && rawRecords.length > 0) {
-                        const lastRec = rawRecords[rawRecords.length - 1];
-                        lastRec.purpose = lastRec.purpose ? lastRec.purpose + '；' + purp : purp;
-                    }
-                    continue;
-                }
-
-                // Pattern A: "(允求|賜降) 森羅戒：靈果" (Keyword is optional)
+                // 3. Main Parsing logic
                 const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
-                if (kwMatch && kwMatch[3] && kwMatch[3].trim()) {
+                if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
                     treasureName = kwMatch[3].trim();
                     const content = kwMatch[4].trim();
                     if (content) {
                         recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
-                        pendingTreasureName = ''; 
+                        if (content.includes('已登記')) lineObtainedDate = lineDate;
                     } else {
                         pendingTreasureName = treasureName;
                         continue;
                     }
                 } 
-                // Pattern B: "靈果求得森羅戒"
                 else if (line.includes('求得')) {
                     const parts = line.split('求得').map(p => p.trim());
                     if (parts.length >= 2) {
                         recipients = [parts[0]];
                         treasureName = parts[1];
-                        pendingTreasureName = '';
+                        lineObtainedDate = lineDate;
                     }
                 }
-                // Pattern C: "森羅戒 | 靈果 | 113/11/24"
                 else if (line.includes('|') || line.includes('│') || line.includes('\t')) {
                     const parts = line.split(/[|│\t]/).map(p => p.trim());
                     treasureName = parts[0];
                     if (parts[1]) recipients = [parts[1]];
                     if (parts[2]) {
                         const parsed = parseDateStr(parts[2]);
-                        if (parsed) lineDate = parsed;
-                        else lineDate = parts[2].replace(/\//g,'-');
+                        if (parsed) { lineDate = parsed; lineObtainedDate = parsed; }
+                        else { lineDate = parts[2].replace(/\//g,'-'); lineObtainedDate = lineDate; }
                     }
                     if (parts[3]) lineRemarks = parts[3];
-                    pendingTreasureName = '';
                 }
-                // Pattern D: "靈心、金振、金涓" (Recipient line)
                 else if (pendingTreasureName) {
                     treasureName = pendingTreasureName;
                     recipients = line.split(/[，、, \s]+/).filter(n => n.trim());
                     pendingTreasureName = '';
                 }
-                // Pattern E: "森羅戒 元續之夫" (Space separated)
                 else if (line.includes(' ') && !line.includes('：') && !line.includes(':')) {
                     const spaceParts = line.split(/\s+/);
-                    // Check if the second part looks like a name or relationship
                     if (spaceParts.length >= 2 && spaceParts[1].length <= 10) {
                         treasureName = spaceParts[0];
                         recipients = spaceParts.slice(1).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
                     } else {
-                        // Treat as a single treasure name if the second part is too long
                         treasureName = line.trim();
                     }
                 }
-                // Pattern F: Pure Text (Single word or short sentence)
-                else {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine.length > 0 && trimmedLine.length < 50) {
-                        // If it's a very short line and follows a treasure, it might be a remark
-                        if (rawRecords.length > 0 && trimmedLine.length > 10 && !trimmedLine.match(/^[A-Z0-9]/i)) {
-                             const lastRec = rawRecords[rawRecords.length - 1];
-                             lastRec.remarks = lastRec.remarks ? lastRec.remarks + '\n' + trimmedLine : trimmedLine;
-                             continue;
-                        }
-                        treasureName = trimmedLine;
-                    } else {
-                        continue;
-                    }
+                else if (line.length > 0 && line.length < 50) {
+                    treasureName = line;
                 }
 
                 if (treasureName) {
                     treasureName = treasureName.replace(/[：:。！？]$/, '').trim();
-                            const dnr = recipients.map(rawName => {
-                                let translated = translateName(rawName).trim();
-                                if (!translated) return null;
+                    const dnr = recipients.map(rawName => {
+                        let translated = translateName(rawName).trim();
+                        if (!translated) return null;
 
-                                // Handle relationship words: "元續之母" or "元續三姑" -> "元續"
-                                let relMatch = translated.match(/^(.*?)([之的].+)$/);
-                                if (!relMatch) {
-                                    // Try matching against known dharma names prefixes, longest first
-                                    const dnsList = dharmaNames.value || [];
-                                    const sortedDns = [...dnsList].sort((a, b) => (b.name?.length || 0) - (a.name?.length || 0));
-                                    const matchedDn = sortedDns.find(dn => dn.name && translated.startsWith(dn.name) && translated.length > dn.name.length);
-                                    if (matchedDn) {
-                                        relMatch = [translated, matchedDn.name, translated.substring(matchedDn.name.length)];
-                                    }
-                                }
+                        let relMatch = translated.match(/^(.*?)([之的].+)$/);
+                        if (!relMatch) {
+                            const dnsList = dharmaNames.value || [];
+                            const sortedDns = [...dnsList].sort((a, b) => (b.name?.length || 0) - (a.name?.length || 0));
+                            const matchedDn = sortedDns.find(dn => dn.name && translated.startsWith(dn.name) && translated.length > dn.name.length);
+                            if (matchedDn) relMatch = [translated, matchedDn.name, translated.substring(matchedDn.name.length)];
+                        }
 
-                                if (relMatch) {
-                                    const finalDate = lineDate || blockDate || getTodayStr();
-                                    const dParts = finalDate.split('-');
-                                    let rocY = parseInt(dParts[0]);
-                                    if (rocY > 1911) rocY -= 1911;
-                                    const dStr = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
-                                    return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: finalDate };
-                                }
-                                return { custom_name: translated, remarks: lineRemarks, obtained_date: lineDate || blockDate };
-                            }).filter(n => n !== null);
+                        if (relMatch) {
+                            const finalDate = lineDate || blockDate || getTodayStr();
+                            const dParts = finalDate.split('-');
+                            let rocY = parseInt(dParts[0]);
+                            if (rocY > 1911) rocY -= 1911;
+                            const dStr = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
+                            return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: finalDate };
+                        }
+                        return { custom_name: translated, remarks: lineRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
+                    }).filter(n => n !== null);
 
-                    rawRecords.push({
-                        name: treasureName, master_id: blockMasterId,
+                    const newRec = {
+                        name: treasureName, 
+                        master_id: blockMasterId,
                         category: batchData.category || currentCategory.value || 'major',
                         record_date: lineDate || blockDate, 
+                        obtained_date: lineObtainedDate,
                         acquisition_method: batchData.defaults?.acquisition_method || '',
                         purpose: batchData.defaults?.purpose || '',
                         remarks: batchData.defaults?.remarks || '',
                         dharma_name_registries: dnr
-                    });
+                    };
+
+                    // Apply pending attributes if this is the first record in the block
+                    if (rawRecords.length === 0) {
+                        if (pendingAttrs.purpose) newRec.purpose = pendingAttrs.purpose;
+                        if (pendingAttrs.remarks) newRec.remarks = pendingAttrs.remarks;
+                        if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
+                        if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
+                        if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
+                        // Reset pending for next use if needed (though usually blocks split records)
+                        pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
+                    }
+
+                    rawRecords.push(newRec);
                 }
             }
         });
 
-        // Debug: Log records to be sent
-        console.log('Processed Records:', rawRecords);
-
         // --- MERGE STAGE ---
         const mergedMap = new Map();
         rawRecords.forEach(rec => {
-            // Group ONLY by Name and Master (ignore date for merging records)
-            // Trim name to prevent duplication due to trailing spaces
             const cleanName = rec.name.trim();
             const key = `${cleanName}-${rec.master_id}`;
             if (mergedMap.has(key)) {
                 const existing = mergedMap.get(key);
-                
-                // Update the main record_date to the latest one found
-                if (new Date(rec.record_date) > new Date(existing.record_date)) {
-                    existing.record_date = rec.record_date;
-                }
+                if (new Date(rec.record_date) > new Date(existing.record_date)) existing.record_date = rec.record_date;
+                if (rec.obtained_date) existing.obtained_date = rec.obtained_date;
 
-                // Merge text fields if new ones are found
                 if (rec.acquisition_method && !existing.acquisition_method.includes(rec.acquisition_method)) {
                     existing.acquisition_method = existing.acquisition_method ? (existing.acquisition_method + '；' + rec.acquisition_method) : rec.acquisition_method;
                 }
@@ -1365,22 +1307,16 @@ const triggerBatchSave = async (batchData) => {
                     existing.purpose = existing.purpose ? (existing.purpose + '；' + rec.purpose) : rec.purpose;
                 }
                 if (rec.remarks && !existing.remarks.includes(rec.remarks)) {
-                    existing.remarks = existing.remarks ? (existing.remarks + '；' + rec.remarks) : rec.remarks;
+                    existing.remarks = existing.remarks ? (existing.remarks + '\n' + rec.remarks) : rec.remarks;
                 }
                 
-                // Merge registries (merge remarks if personnel already exists)
                 rec.dharma_name_registries.forEach(nr => {
-                    const existingDnr = existing.dharma_name_registries.find(er => {
-                        return (er.custom_name === nr.custom_name && er.obtained_date === nr.obtained_date);
-                    });
+                    const existingDnr = existing.dharma_name_registries.find(er => (er.custom_name === nr.custom_name && er.obtained_date === nr.obtained_date));
                     if (existingDnr) {
-                        // Merge remarks (JSON Array logic)
                         const currentRemarks = Array.isArray(existingDnr.remarks) ? existingDnr.remarks : (existingDnr.remarks ? [existingDnr.remarks] : []);
                         if (nr.remarks) {
                             const newRemarks = Array.isArray(nr.remarks) ? nr.remarks : [nr.remarks];
-                            newRemarks.forEach(r => {
-                                if (!currentRemarks.includes(r)) currentRemarks.push(r);
-                            });
+                            newRemarks.forEach(r => { if (!currentRemarks.includes(r)) currentRemarks.push(r); });
                             existingDnr.remarks = currentRemarks;
                         }
                     } else {

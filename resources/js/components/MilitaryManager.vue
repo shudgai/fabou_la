@@ -172,7 +172,7 @@
                                 v-show="focusedId === null || focusedId === item.id"
                                 @click="toggleExpand(item.id)"
                                 :class="[
-                                    'py-[16px] pl-2 pr-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                    'py-[15px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
                                     openMenuId === item.id ? 'z-[50]' : 'z-0',
                                     { 'border-b-0': focusedId === item.id }
                                 ]"

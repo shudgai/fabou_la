@@ -301,65 +301,102 @@ const cleanedTreasureNames = computed(() => treasureNames.value);
 const batchParsedRows = computed(() => {
     if (!batchInput.value.trim()) return [];
     
-    const lines = batchInput.value.split('\n').filter(l => l.trim());
+    const lines = batchInput.value.split('\n');
     const results = [];
     let currentMasterId = form.value.master_id;
-    let currentDate = form.value.record_date;
+    let currentDate = form.value.record_date || getTodayStr();
+
+    const parseDateText = (str) => {
+        if (!str) return null;
+        // Priority 1: 4-digit CE
+        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
+        // Priority 2: 2-3 digit ROC
+        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (rocMatch) {
+            const y = parseInt(rocMatch[1]) + 1911;
+            return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+        }
+        return null;
+    };
 
     lines.forEach(line => {
-        // Detect Date/Master Headers (Standard Pattern)
-        // Priority 1: Check for 4-digit year (Western/CE) first
-        const ceMatch = line.match(/\b(\d{4})[/\-\s]\d{1,2}[/\-\s]\d{1,2}\b/);
-        const dateMatch = ceMatch || line.match(/\b(\d{2,3}[/\-\s]\d{1,2}[/\-\s]\d{1,2})\b/);
-        
-        if (dateMatch && line.length < 25) {
-            let dStr = dateMatch[0];
-            // If it's a 2-3 digit year, convert it for internal storage if needed? 
-            // Actually, the current logic just uses dateMatch[0].
-            currentDate = dStr;
+        const normLine = line.normalize('NFKC').trim();
+        if (!normLine) return;
+
+        // 1. Detect Standalone Date Header
+        const dateHeader = parseDateText(normLine);
+        if (dateHeader && normLine.length < 20) {
+            currentDate = dateHeader;
             return;
         }
 
-        const masterMatch = props.masters?.find(m => line.includes(m.name) && line.length < 15);
+        // 2. Detect Master Header
+        const masterMatch = props.masters?.find(m => normLine.includes(m.name) && normLine.length < 15);
         if (masterMatch) {
             currentMasterId = masterMatch.id;
             return;
         }
 
-        // 3. Detect Attribute Lines (e.g., "用意 打通任督二脈" or "狀態：已登記")
+        // 3. Detect Attribute Keywords
         const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
-        const firstWord = line.trim().split(/[\s：:]/)[0];
+        const firstWord = normLine.split(/[\s：:]/)[0];
         
-        if (attrKeywords.includes(firstWord)) {
-            if (results.length > 0) {
-                const prevRecord = results[results.length - 1];
-                const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
-                if (firstWord === '用意') prevRecord.purpose = val;
-                else if (firstWord === '狀態') prevRecord.status = val;
-                else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) prevRecord.date = val;
-                else prevRecord.remarks = (prevRecord.remarks ? prevRecord.remarks + ' ' : '') + val;
-                return;
+        if (attrKeywords.includes(firstWord) && results.length > 0) {
+            const prev = results[results.length - 1];
+            const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+            if (firstWord === '用意') prev.purpose = val;
+            else if (firstWord === '狀態') {
+                prev.status = val;
+                if (val.includes('已登記')) prev.obtained_date = prev.date || currentDate;
             }
+            else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
+                const d = parseDateText(val) || val;
+                prev.date = d;
+                if (firstWord === '登記日期' || firstWord === '求得日期') prev.obtained_date = d;
+            }
+            else if (firstWord === '求寶方式') prev.acquisition_method = val;
+            else prev.remarks = (prev.remarks ? prev.remarks + ' ' : '') + val;
+            return;
         }
 
-        // 4. Parse Standard Record "Name: Value" or just "Name"
-        const kwMatch = line.match(/(.*)[：:](.*)/);
+        // 4. Parse Standard Record
+        const kwMatch = normLine.match(/(.*)[：:](.*)/);
         if (kwMatch) {
             const name = kwMatch[1].trim();
             const val = kwMatch[2].trim();
-            // Final safety check: if the "name" part is actually a keyword, handle it as attribute
-            if (attrKeywords.includes(name)) {
-                if (results.length > 0) {
-                    const prevRecord = results[results.length - 1];
-                    if (name === '用意') prevRecord.purpose = val;
-                    else if (name === '狀態') prevRecord.status = val;
-                    else prevRecord.remarks = (prevRecord.remarks ? prevRecord.remarks + ' ' : '') + val;
-                }
-                return;
+            if (attrKeywords.includes(name)) return; // Should have been caught by #3
+
+            const item = { 
+                name, 
+                remarks: val, 
+                master_id: currentMasterId, 
+                date: currentDate,
+                purpose: '',
+                acquisition_method: '',
+                obtained_date: null,
+                status: '未求得'
+            };
+            
+            // Smart auto-detection within value
+            if (val.includes('已登記')) {
+                item.status = '已登記';
+                item.obtained_date = currentDate;
             }
-            results.push({ name, remarks: val, master_id: currentMasterId, date: currentDate });
-        } else if (line.length < 50) {
-            results.push({ name: line.trim(), master_id: currentMasterId, date: currentDate });
+
+            results.push(item);
+        } else if (normLine.length < 50) {
+            const item = { 
+                name: normLine, 
+                remarks: '', 
+                master_id: currentMasterId, 
+                date: currentDate,
+                purpose: '',
+                acquisition_method: '',
+                obtained_date: null,
+                status: '未求得'
+            };
+            results.push(item);
         }
     });
     return results;
