@@ -1141,21 +1141,31 @@ const triggerBatchSave = async (batchData) => {
 
             let pendingTreasureName = '';
             let pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
+            let activeRecord = null;
 
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].normalize('NFKC').trim();
 
                 // 1. Metadata Detection
-                masterNames.forEach(mName => { if (line.includes(mName) && line.length < 15) blockMasterId = masterMap[mName]; });
+                masterNames.forEach(mName => { 
+                    if (line.includes(mName) && line.length < 15) {
+                        blockMasterId = masterMap[mName];
+                        activeRecord = null; // Clear context on new master
+                    }
+                });
                 
                 const lineDateParsed = parseDateStr(line);
                 if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && line.length < 20) {
                     blockDate = lineDateParsed;
-                    if (rawRecords.length === 0) pendingAttrs.record_date = lineDateParsed;
+                    activeRecord = null; // Clear context on new date header
+                    if (rawRecords.length === 0 || !activeRecord) pendingAttrs.record_date = lineDateParsed;
                     continue;
                 }
 
-                if (line.includes('完畢') || masterNames.some(m => line === m || line === m + '仙師')) continue;
+                if (line.includes('完畢') || masterNames.some(m => line === m || line === m + '仙師')) {
+                    activeRecord = null;
+                    continue;
+                }
                 
                 let treasureName = '';
                 let recipients = [];
@@ -1168,13 +1178,13 @@ const triggerBatchSave = async (batchData) => {
                 const firstWord = line.split(/[\s：:]/)[0];
                 if (attrKeywords.includes(firstWord)) {
                     const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
-                    const target = (rawRecords.length > 0) ? rawRecords[rawRecords.length - 1] : pendingAttrs;
+                    const target = activeRecord || pendingAttrs;
                     
                     if (firstWord === '用意') target.purpose = (target.purpose ? target.purpose + '；' : '') + val;
                     else if (firstWord === '狀態') {
                         if (val.includes('已登記')) {
-                            target.obtained_date = target.record_date || blockDate;
-                            if (target === pendingAttrs) target.status = '已登記';
+                            if (target === pendingAttrs) { target.status = '已登記'; target.obtained_date = target.record_date || blockDate; }
+                            else { target.obtained_date = target.record_date || blockDate; }
                         }
                     }
                     else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
@@ -1274,18 +1284,18 @@ const triggerBatchSave = async (batchData) => {
                         dharma_name_registries: dnr
                     };
 
-                    // Apply pending attributes if this is the first record in the block
-                    if (rawRecords.length === 0) {
-                        if (pendingAttrs.purpose) newRec.purpose = pendingAttrs.purpose;
-                        if (pendingAttrs.remarks) newRec.remarks = pendingAttrs.remarks;
-                        if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
-                        if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
-                        if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
-                        // Reset pending for next use if needed (though usually blocks split records)
-                        pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
-                    }
+                    // Apply pending attributes
+                    if (pendingAttrs.purpose) newRec.purpose = pendingAttrs.purpose;
+                    if (pendingAttrs.remarks) newRec.remarks = pendingAttrs.remarks;
+                    if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
+                    if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
+                    if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
+                    
+                    // Reset pending
+                    pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
 
                     rawRecords.push(newRec);
+                    activeRecord = newRec; // Set context
                 }
             }
         });

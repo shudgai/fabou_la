@@ -382,6 +382,7 @@ const batchParsedRows = computed(() => {
             if (val.includes('已登記')) {
                 item.status = '已登記';
                 item.obtained_date = currentDate;
+                item.remarks = val.replace('已登記', '').replace(/[，、, \s]+$/, '').trim();
             }
 
             results.push(item);

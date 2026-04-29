@@ -324,16 +324,25 @@ const processBatchLines = (rawLines) => {
     let currentBlockMasterId = form.value.master_id;
     const filteredLines = [];
     let pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null };
+    let activeRecord = null;
 
     for (const row of rawLines) {
-        if (!row || row.length === 0) continue;
+        if (!row || row.length === 0 || row.every(c => !c.trim())) {
+            activeRecord = null; // Clear context on empty line
+            continue;
+        }
+        
         const firstCell = String(row[0] || '').normalize('NFKC').trim();
-        if (!firstCell || firstCell.includes('---')) continue;
+        if (!firstCell || firstCell.includes('---')) {
+            activeRecord = null;
+            continue;
+        }
 
         const fullLine = row.join(' ').normalize('NFKC').trim();
         const parsedDate = parseDateText(fullLine);
         if (parsedDate) {
             currentBlockDate = parsedDate;
+            activeRecord = null; // Clear context on new date header
             if (fullLine.length <= 20) continue; 
         }
         
@@ -347,6 +356,7 @@ const processBatchLines = (rawLines) => {
         
         if (masterMatch) {
             currentBlockMasterId = masterMatch.id;
+            activeRecord = null; // Clear context on new master header
             const isHeaderOnly = row.length > 1 ? !row.slice(1).some(c => c.trim()) : 
                                  firstCell.length <= (masterMatch.name.length + 2);
             if (isHeaderOnly) continue;
@@ -356,7 +366,7 @@ const processBatchLines = (rawLines) => {
         const firstWord = firstCell.split(/[\s：:]/)[0];
         
         if (attrKeywords.includes(firstWord)) {
-            const target = (filteredLines.length > 0) ? filteredLines[filteredLines.length - 1] : pendingAttrs;
+            const target = activeRecord || pendingAttrs;
             const attrVal = firstCell.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
             
             if (firstWord === '用意') {
@@ -364,13 +374,11 @@ const processBatchLines = (rawLines) => {
                 else target._injectedPurpose = (target._injectedPurpose ? target._injectedPurpose + '；' : '') + attrVal;
             } else if (firstWord === '狀態') {
                 if (attrVal.includes('已登記')) {
-                    target._injectedStatus = '已登記';
-                    target._injectedObtainedDate = target._injectedDate || currentBlockDate;
-                    if (target === pendingAttrs) { target.status = '已登記'; target.obtained_date = currentBlockDate; }
+                    if (target === pendingAttrs) { target.status = '已登記'; target.obtained_date = target.record_date || currentBlockDate; }
+                    else { target._injectedStatus = '已登記'; target._injectedObtainedDate = target._injectedDate || currentBlockDate; }
                 } else if (attrVal.includes('已求得')) {
-                    target._injectedStatus = '已求得';
-                    target._injectedObtainedDate = target._injectedDate || currentBlockDate;
-                    if (target === pendingAttrs) { target.status = '已求得'; target.obtained_date = currentBlockDate; }
+                    if (target === pendingAttrs) { target.status = '已求得'; target.obtained_date = target.record_date || currentBlockDate; }
+                    else { target._injectedStatus = '已求得'; target._injectedObtainedDate = target._injectedDate || currentBlockDate; }
                 } else {
                     if (target === pendingAttrs) target.status = attrVal;
                     else target._injectedStatus = attrVal;
@@ -394,16 +402,18 @@ const processBatchLines = (rawLines) => {
             newRow._injectedDate = currentBlockDate;
             newRow._injectedMasterId = currentBlockMasterId;
             
-            if (filteredLines.length === 0) {
-                if (pendingAttrs.purpose) newRow._injectedPurpose = pendingAttrs.purpose;
-                if (pendingAttrs.remarks) newRow._injectedRemarks = pendingAttrs.remarks;
-                if (pendingAttrs.record_date) newRow._injectedDate = pendingAttrs.record_date;
-                if (pendingAttrs.obtained_date) newRow._injectedObtainedDate = pendingAttrs.obtained_date;
-                if (pendingAttrs.status) newRow._injectedStatus = pendingAttrs.status;
-                pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null };
-            }
+            // Apply pending attributes
+            if (pendingAttrs.purpose) newRow._injectedPurpose = pendingAttrs.purpose;
+            if (pendingAttrs.remarks) newRow._injectedRemarks = pendingAttrs.remarks;
+            if (pendingAttrs.record_date) newRow._injectedDate = pendingAttrs.record_date;
+            if (pendingAttrs.obtained_date) newRow._injectedObtainedDate = pendingAttrs.obtained_date;
+            if (pendingAttrs.status) newRow._injectedStatus = pendingAttrs.status;
+            
+            // Reset pending
+            pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null };
             
             filteredLines.push(newRow);
+            activeRecord = newRow; // This record is now the context for subsequent attributes
         }
     }
 
