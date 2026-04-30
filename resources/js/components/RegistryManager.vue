@@ -22,6 +22,11 @@
                 <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
+                <button @click="reorderMode = !reorderMode"
+                    :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
+                    class="px-3 py-1 rounded-lg text-[12px] font-black transition-all active:scale-95 shadow-sm">
+                    {{ reorderMode ? '確認排序' : '修改排序' }}
+                </button>
             </div>
         </div>
 
@@ -206,7 +211,7 @@
 
                             <!-- Card Header (Toggle Expansion) -->
                             <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
-                                <div class="flex items-center justify-between pr-12 mt-[10px]">
+                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="flex items-center justify-between pr-12 mt-[10px]">
                                     <div class="app-title font-outfit uppercase tracking-widest">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                 </div>
 
@@ -231,10 +236,10 @@
                                     <div v-if="expandedIds.has(item.id)" @click.stop class="mt-[10px] pt-[10px] border-t border-slate-50">
                                         <!-- Detailed Record View -->
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
-                                            <div class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit">日期</label>
-                                                <div class="app-title font-outfit">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
-                                            </div>
+                                        <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="space-y-1">
+                                            <label class="tracking-widest font-bold font-outfit">日期</label>
+                                            <div class="app-title font-outfit">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                                        </div>
                                                 <div class="space-y-1">
                                                     <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
                                                     <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
@@ -978,7 +983,7 @@ const openAdd = (mode = 'single') => {
         purpose: '',
         acquisition_method: '',
         remarks: '',
-        record_date: getTodayStr(),
+        record_date: mode === 'single' ? getTodayStr() : '',
         obtained_date: '',
         status: '已求得',
         dharma_name_registries: []
@@ -1090,7 +1095,7 @@ const triggerBatchSave = async (batchData) => {
 
         let rawRecords = [];
         let blockMasterId = batchData.masterId || (currentFolder.value?.id);
-        let blockDate = batchData.date || getTodayStr();
+        let blockDate = batchData.date || '';
         let currentContextYear = new Date().getFullYear();
 
         const parseDateStr = (str, ctxYear = null) => {

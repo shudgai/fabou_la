@@ -1393,32 +1393,32 @@
                                             </div>
                                         </div>
 
-                                        <div v-if="item.content?.trim()" class="app-body whitespace-pre-wrap">
+                                        <div v-if="item.content?.trim()" class="text-[17px] font-normal text-slate-800 leading-relaxed whitespace-pre-wrap">
                                             {{ item.content.trim() }}
                                         </div>
 
                                         <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="mt-2">
-                                            <div class="app-body font-bold mb-1">賜降：</div>
-                                            <div class="space-y-0.5">
+                                            <label class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
+                                            <div class="space-y-1">
                                                 <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
-                                                        <div class="text-[17px] font-bold text-black">
+                                                        <div class="text-[19px] font-normal text-slate-900 leading-tight">
                                                             {{ stripMasterPrefix(gName) }}
                                                             <template v-if="group.length === 1 && !group[0].name">
-                                                                <span v-if="group[0].details || group[0].remarks || group[0].sub_name" class="ml-1">: {{ group[0].details }} <span v-if="group[0].remarks || group[0].sub_name" class="opacity-60">({{ group[0].remarks || group[0].sub_name }})</span></span>
+                                                                <span v-if="group[0].details || group[0].remarks || group[0].sub_name" class="ml-1">: {{ group[0].details }} <span v-if="group[0].remarks || group[0].sub_name" class="text-[17px] font-normal text-slate-400">({{ group[0].remarks || group[0].sub_name }})</span></span>
                                                             </template>
                                                         </div>
                                                         <!-- Specialized Indented Layout: Show if multi-item or has name -->
-                                                        <div class="space-y-0.5" v-if="group.length > 1 || (group[0] && group[0].name)">
+                                                        <div class="space-y-1" v-if="group.length > 1 || (group[0] && group[0].name)">
                                                             <div v-if="group.length > 1 && getMainDetails(group)" 
-                                                                 class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                                 class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">
                                                                 {{ getMainDetails(group) }}
                                                             </div>
                                                             <div v-for="(m, midx) in group" :key="midx">
-                                                                <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] text-black font-bold opacity-80">
+                                                                <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">
                                                                     <template v-if="m.name">
                                                                         <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
-                                                                        <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[14px] text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
-                                                                        <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 opacity-80">{{ m.details }}</div>
+                                                                        <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[17px] font-normal text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
+                                                                        <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 text-[17px] font-normal text-slate-500">{{ m.details }}</div>
                                                                     </template>
                                                                 </div>
                                                             </div>
@@ -1427,12 +1427,12 @@
                                             </div>
                                         </div>
 
-                                        <div v-if="item.items_footer_remarks?.trim()" class="app-body pt-1">
+                                        <div v-if="item.items_footer_remarks?.trim()" class="text-[17px] font-normal text-slate-600 leading-relaxed pt-1">
                                             {{ item.items_footer_remarks.trim() }}
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item)">
-                                            <span class="font-bold" style="color: #0d0d0d !important; font-size: var(--fs-body);">完畢</span>
+                                            <span class="text-[17px] font-normal text-slate-700">完畢</span>
                                         </div>
 
                                     </div>

@@ -183,6 +183,7 @@
                                     <tr>
                                         <th class="p-2 border-b border-slate-100 font-bold">預計存入仙師</th>
                                         <th class="p-2 border-b border-slate-100 font-bold">法寶名稱</th>
+                                        <th v-if="batchParsedRows.some(r => r.date)" class="p-2 border-b border-slate-100 font-bold">記載日期</th>
                                         <th class="p-2 border-b border-slate-100 font-bold">內容摘要</th>
                                     </tr>
                                 </thead>
@@ -192,6 +193,7 @@
                                             {{ getMasterName(item.master_id) }}
                                         </td>
                                         <td class="py-3 px-2 text-slate-900 font-black truncate max-w-[100px]">{{ item.name }}</td>
+                                        <td v-if="batchParsedRows.some(r => r.date)" class="py-3 px-2 text-slate-500 font-medium whitespace-nowrap">{{ item.date ? item.date.replace(/-/g, '/') : '-' }}</td>
                                         <td class="py-3 px-2 text-slate-500 font-medium truncate max-w-[150px]">{{ item.remarks || item.purpose || '-' }}</td>
                                     </tr>
                                 </tbody>
@@ -304,7 +306,7 @@ const batchParsedRows = computed(() => {
     const lines = batchInput.value.split('\n');
     const results = [];
     let currentMasterId = form.value.master_id;
-    let currentDate = form.value.record_date || getTodayStr();
+    let currentDate = form.value.record_date || '';
     let currentContextYear = new Date().getFullYear();
 
     const parseDateText = (str, ctxYear = null) => {
