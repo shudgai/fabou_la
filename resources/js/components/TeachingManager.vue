@@ -1329,11 +1329,11 @@
                                             <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <div class="app-body font-bold leading-tight">
+                                            <div :class="isSessionFocused(item) ? 'text-[17px] font-normal' : 'text-[13px] font-bold'" class="text-slate-900 leading-tight">
                                                 {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Request 2: Content/Item Summary in List Header -->
-                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[17px] font-normal truncate font-outfit" style="color: #0f172a !important;">
+                                            <div v-if="!isSessionFocused(item)" class="mt-0.5 text-[15px] font-normal text-slate-500 truncate leading-tight">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
                                                 <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
