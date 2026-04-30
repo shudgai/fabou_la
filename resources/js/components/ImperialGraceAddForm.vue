@@ -45,7 +45,7 @@
                     <div class="space-y-1">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">載錄目標仙師</label>
                         <select v-model="form.master_id" style="font-size: 17px;" class="w-full py-[5px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 shadow-sm focus:ring-2 focus:ring-indigo-500/20 outline-none">
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
+                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -240,7 +240,10 @@ const sumKey = ref('');
 
 const selectedMasterName = computed(() => {
     const m = props.masters?.find(m => String(m.id) === String(form.value.master_id));
-    return m ? m.name : '';
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '';
 });
 
 const batchTotalValue = computed(() => {
@@ -295,7 +298,8 @@ watch(batchInput, (newVal) => {
         if (trimmedLine.startsWith('用意') || trimmedLine.startsWith('狀態') || trimmedLine.startsWith('法寶')) {
             return [trimmedLine];
         }
-        let parts = trimmedLine.split(/[\s]{2,}|[,，]/);
+        // Only split by multiple spaces. Commas are allowed inside the Treasure Name.
+        let parts = trimmedLine.split(/[\s]{2,}/);
         return (parts.length <= 1 && / \d+$/.test(trimmedLine)) ? trimmedLine.split(/\s+/) : parts.map(c => c.trim());
     }).filter(l => l.length > 0);
     processBatchLines(lines);
@@ -494,7 +498,10 @@ const handleFileUpload = (e) => {
 
 const getMasterName = (id) => {
     const m = props.masters?.find(m => String(m.id) === String(id));
-    return m ? m.name : '預設';
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '預設';
 };
 
 const handleDirectPaste = async () => {

@@ -13,7 +13,7 @@
                 <option value="元始仙師" />
                 <option value="道祖仙師" />
                 <option value="靈寶仙師" />
-                <option value="父皇仙師" />
+                <option value="父皇" />
                 <option value="太宰仙師" />
                 <option value="太子" />
                 <option value="閻王仙師" />
@@ -87,7 +87,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">父皇仙師開示資料</h2>
+                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">父皇開示資料</h2>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
             <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
                     <div class="flex-1">
-                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">父皇仙師開示資料</h1>
+                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">父皇開示資料</h1>
                     </div>
                 </div>
                 
@@ -228,7 +228,7 @@
                                             
                                             <!-- Custom Dropdown Menu -->
                                             <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
-                                                <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇仙師', '太宰仙師', '太子', '閻王仙師']" :key="m"
+                                                <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                                      @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
                                                      class="px-4 h-[38px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ m }}
@@ -339,7 +339,7 @@
                                     <div class="p-5 flex-1 flex flex-col">
                                         <textarea v-model="batchImportContent" 
                                                   @paste="handleBatchPaste"
-                                                  placeholder="整筆智慧錄入 (V2) (不可手動輸入文字，僅供貼上或匯入檔案)&#10;&#10;在此貼上資料...&#10;格式例：&#10;父皇仙師開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
+                                                  placeholder="整筆智慧錄入 (V2) (不可手動輸入文字，僅供貼上或匯入檔案)&#10;&#10;在此貼上資料...&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
                                                   class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
                                         
                                         <!-- Instructions -->
@@ -1387,7 +1387,7 @@
                                                 <div v-if="getFullRecipientList(item).names.length > 0" class="app-title !text-indigo-600/70 leading-snug">
                                                     {{ getFullRecipientList(item).names.join(', ') }}
                                                 </div>
-                                                <div v-if="item.target_remarks" class="app-title !text-indigo-400 pt-1">
+                                                <div v-if="getFullRecipientList(item)?.names.join(', ') !== item.target_remarks && getFullRecipientList(item)?.groupName && item.target_remarks" class="app-title !text-indigo-400 pt-1">
                                                     說明：{{ item.target_remarks }}
                                                 </div>
                                             </div>
@@ -1432,7 +1432,7 @@
                                         </div>
 
                                         <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item)">
-                                            <span class="tracking-widest font-bold" style="color: #0d0d0d !important; font-size: 17px;">完畢</span>
+                                            <span class="font-bold" style="color: #0d0d0d !important; font-size: var(--fs-body);">完畢</span>
                                         </div>
 
                                     </div>
@@ -1801,14 +1801,14 @@ const getMainDetails = (items) => {
 
 const getRecordHeaderPreview = (item, index, allRecords) => {
     let masterName = item.master?.name || item.master_name;
-    if (!masterName) masterName = '父皇仙師';
+    if (!masterName) masterName = '父皇';
     
     const recipient = getRecipientName(item);
     
     // Deduplication logic: 
     if (index > 0) {
         const prevItem = allRecords[index - 1];
-        const prevMasterName = prevItem.master?.name || prevItem.master_name || '父皇仙師';
+        const prevMasterName = prevItem.master?.name || prevItem.master_name || '父皇';
         const prevRecipient = getRecipientName(prevItem);
         
         // If everything matches (Date, Master, Recipient) -> HIDE HEADER COMPLETELY
@@ -1868,7 +1868,7 @@ const startInlineEdit = (item) => {
     inlineEditData.value = { 
         id: item.id,
         date: item.date || '',
-        master_name: item.master?.name || item.master_name || '父皇仙師',
+        master_name: item.master?.name || item.master_name || '父皇',
         target_name: getRecipientName(item),
         content: item.content || '',
         // Robust normalization to ensure pre-filling works regardless of property names (name vs treasure_name)
@@ -1997,8 +1997,13 @@ const groupedRecords = computed(() => {
     
     // Sort first
     list.sort((a, b) => {
-        const dA = new Date(a.date).getTime();
-        const dB = new Date(b.date).getTime();
+        const dA = a.date ? new Date(a.date).getTime() : NaN;
+        const dB = b.date ? new Date(b.date).getTime() : NaN;
+        
+        // Push "Historical Accumulation" (no date) to the end regardless of sort direction
+        if (isNaN(dA) && isNaN(dB)) return sortDesc.value ? b.id - a.id : a.id - b.id;
+        if (isNaN(dA)) return 1;
+        if (isNaN(dB)) return -1;
         
         // Group by date first
         if (sortDesc.value) {
@@ -2029,12 +2034,21 @@ const groupedRecords = computed(() => {
 const recordsByDate = computed(() => {
     const map = {};
     groupedRecords.value.forEach(item => {
-        if (!map[item.date]) map[item.date] = [];
-        map[item.date].push(item);
+        const d = item.date || '歷史累積';
+        if (!map[d]) map[d] = [];
+        map[d].push(item);
     });
     return Object.keys(map).sort((a,b) => {
+        // Always put "歷史累積" (Historical) at the very bottom
+        if (a === '歷史累積') return 1;
+        if (b === '歷史累積') return -1;
+        
         const dA = new Date(a).getTime();
         const dB = new Date(b).getTime();
+        
+        if (isNaN(dA)) return 1;
+        if (isNaN(dB)) return -1;
+        
         return sortDesc.value ? dB - dA : dA - dB;
     }).map(date => ({ date, items: map[date] }));
 });
@@ -2143,7 +2157,7 @@ const openBatchItemDetails = (index) => {
 
 const addBatchBlock = (startEditing = false) => {
     // Strict Inheritance: Always use the first master in the set
-    const firstMaster = batchRecords.value.length > 0 ? (batchRecords.value[0].master_name || masterNameInput.value) : (masterNameInput.value || '父皇仙師');
+    const firstMaster = batchRecords.value.length > 0 ? (batchRecords.value[0].master_name || masterNameInput.value) : (masterNameInput.value || '父皇');
     
     const newIndex = batchRecords.value.length;
     batchRecords.value.push({ 
@@ -2198,7 +2212,7 @@ const scrollToTreasureTop = () => {
 
 const stashAndContinue = () => {
     // Resolve Master Name robustly: Always prioritize the first master in the batch set for consistency
-    const firstMaster = batchRecords.value.length > 0 ? batchRecords.value[0].master_name : (masterNameInput.value || '父皇仙師');
+    const firstMaster = batchRecords.value.length > 0 ? batchRecords.value[0].master_name : (masterNameInput.value || '父皇');
 
     const newRecord = {
         dharma_name_ids: [...form.value.dharma_name_ids],
@@ -2635,7 +2649,7 @@ const detailModalFilteredDharmaNames = computed(() => {
 const folders_list = [
     { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
     { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇仙師每日開示' }
+    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇每日開示' }
 ];
 
 const filteredFolders = computed(() => {
@@ -2946,7 +2960,7 @@ const resolveMasterId = () => {
     form.value.master_name = name;
     const m = masters.value.find(x => x.name === name);
     if (m) { form.value.master_id = m.id; return; }
-    const hardcoded = { '老祖仙師': 1, '元始仙師': 2, '道祖仙師': 3, '靈寶仙師': 4, '父皇仙師': 5, '太宰仙師': 6, '太子': 7, '閻王仙師': 8 };
+    const hardcoded = { '老祖仙師': 1, '元始仙師': 2, '道祖仙師': 3, '靈寶仙師': 4, '父皇仙師': 5, '父皇': 5, '太宰仙師': 6, '太子': 7, '閻王仙師': 8 };
     if (hardcoded[name]) { form.value.master_id = hardcoded[name]; return; }
     const f = folders.value.find(x => x.name === name);
     if (f) { form.value.master_id = f.id; return; }
@@ -2998,12 +3012,20 @@ const fetchItems = async (page = 1) => {
         // In Master folders, we don't pass is_daily so it fetches all records for that master
 
         const res = await axios.get('/teachings', { params });
+        const parseItem = (i) => ({
+            ...i,
+            items: typeof i.items === 'string' ? JSON.parse(i.items) : (i.items || []),
+            dharma_name_ids: typeof i.dharma_name_ids === 'string' ? JSON.parse(i.dharma_name_ids) : (i.dharma_name_ids || [])
+        });
+
         if (page === 1) { 
-            visibleItems.value = res.data.data;
+            visibleItems.value = (res.data.data || res.data).map(parseItem);
         }
         else {
             const existing = new Set(visibleItems.value.map(i => i.id));
-            res.data.data.forEach(i => { if (!existing.has(i.id)) visibleItems.value.push(i); });
+            (res.data.data || res.data).forEach(i => { 
+                if (!existing.has(i.id)) visibleItems.value.push(parseItem(i)); 
+            });
         }
         itemPagination.value = { current_page: res.data.current_page, last_page: res.data.last_page };
     } catch (e) { console.error(e); } finally { loading.value = false; }
@@ -3050,7 +3072,18 @@ const editItem = (item) => {
     addMode.value = true; 
 };
 
-const deleteItem = async (id) => { if (!confirm('確定刪除？')) return; try { await axios.delete(`/teachings/${id}`); fetchItems(1); } catch (e) { alert('刪除失敗'); } };
+const deleteItem = async (id) => { 
+    if (!confirm('確定刪除？')) return; 
+    try { 
+        await axios.delete(`/teachings/${id}`); 
+        focusedId.value = null;
+        focusedDate.value = null;
+        openMenuId.value = null;
+        fetchItems(1); 
+    } catch (e) { 
+        alert('刪除失敗'); 
+    } 
+};
 
 const duplicateItem = (item) => { 
     form.value = { ...item, id: null, date: new Date().toLocaleDateString('en-CA'), dharma_name_ids: item.dharma_names.map(dn => dn.id) }; 
@@ -3340,7 +3373,20 @@ const updateGroupName = (oldName, newName) => {
 const groupItems = (items) => {
     const groups = {};
     if (!items) return groups;
-    items.forEach((item, index) => { 
+    
+    let itemsArr = items;
+    if (typeof items === 'string') {
+        try {
+            itemsArr = JSON.parse(items);
+        } catch (e) {
+            console.error('Failed to parse items JSON:', e);
+            return groups;
+        }
+    }
+    
+    if (!Array.isArray(itemsArr)) return groups;
+
+    itemsArr.forEach((item, index) => { 
         const key = item.treasure_name || '未命名法寶'; 
         if (!groups[key]) groups[key] = []; 
         groups[key].push({ ...item }); 
@@ -3373,9 +3419,12 @@ const getFirstItemNameOnly = (item) => {
 const formatTreasureName = (name) => name ? name.split(':').pop() : '';
 
 const getMasterName = (id) => {
-    if (!id || id == 0) return '父皇仙師';
+    if (!id || id == 0) return '父皇';
     const m = masters.value.find(x => x.id == id);
-    return m ? m.name : '未指定';
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '未指定';
 };
 
 const getItemCount = (id) => markings.value?.[id] || 0; // Simplified
@@ -3383,16 +3432,22 @@ const markings = ref({});
 
 const getRecipientName = (item) => {
     const listInfo = getFullRecipientList(item);
-    // Priority 1: Pasted name from batch import or manual target remarks
     const pastedName = item.dharmaSearchQuery || item.target_remarks;
     
-    // If no formal list found, return the pasted name or default to "All members"
     if (!listInfo) return (pastedName || '全體成員');
     
-    // Priority 2: If the pasted name exactly matches the detected group name, just use it
     if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) return pastedName;
     
-    const remarks = (item.target_remarks && item.target_remarks !== listInfo.groupName) ? ` (${item.target_remarks})` : '';
+    // Logic to prevent redundant parentheses (e.g., 鳳媓 (鳳媓))
+    let remarks = '';
+    const hasRemarks = item.target_remarks && item.target_remarks.trim() !== '';
+    if (hasRemarks) {
+        const isRedundant = (listInfo.groupName === item.target_remarks) || 
+                          (listInfo.names.length === 1 && listInfo.names[0] === item.target_remarks);
+        if (!isRedundant) {
+            remarks = ` (${item.target_remarks})`;
+        }
+    }
     
     if (listInfo.groupName) {
         return `${listInfo.groupName}${remarks}`;
@@ -3458,22 +3513,21 @@ const getFullRecipientList = (item) => {
 
 const getRecordHeader = (item, index, allRecords) => {
     let masterName = item.master?.name || item.master_name;
-    if (!masterName) {
-        masterName = '父皇仙師';
+    if (!masterName || masterName === '父皇仙師' || masterName === '父皇') {
+        masterName = '父皇';
     }
-    const remarks = item.target_remarks ? ` (${item.target_remarks})` : '';
     const recipient = getRecipientName(item);
 
     // User requested to always include master name even if deduplicated
-    return `${masterName}開示給：${recipient}${remarks}`;
+    return `${masterName}開示給：${recipient}`;
 };
 
 const isSameSessionAsNext = (item, index, allRecords) => {
     if (!allRecords || index >= allRecords.length - 1) return false;
     const next = allRecords[index + 1];
     
-    const masterName = item.master?.name || item.master_name || '父皇仙師';
-    const nextMaster = next.master?.name || next.master_name || '父皇仙師';
+    const masterName = (item.master?.name === '父皇仙師' || item.master?.name === '父皇' ? '父皇' : (item.master?.name || item.master_name || '父皇'));
+    const nextMaster = (next.master?.name === '父皇仙師' || next.master?.name === '父皇' ? '父皇' : (next.master?.name || next.master_name || '父皇'));
     
     return masterName === nextMaster && item.date === next.date;
 };
@@ -3487,8 +3541,8 @@ const isSessionFocused = (item) => {
     const focusedItem = visibleItems.value.find(i => i.id === focusedId.value);
     if (!focusedItem) return false;
     
-    const m1 = item.master?.name || item.master_name || '父皇仙師';
-    const m2 = focusedItem.master?.name || focusedItem.master_name || '父皇仙師';
+    const m1 = (item.master?.name === '父皇仙師' || item.master?.name === '父皇' ? '父皇' : (item.master?.name || item.master_name || '父皇'));
+    const m2 = (focusedItem.master?.name === '父皇仙師' || focusedItem.master?.name === '父皇' ? '父皇' : (focusedItem.master?.name || focusedItem.master_name || '父皇'));
     
     return item.date === focusedItem.date && m1 === m2;
 };
@@ -3505,9 +3559,12 @@ const toggleExpand = (id) => {
 };
 
 const isDateOfFocused = (date) => {
-    if (!focusedId.value) return true;
+    if (!focusedId.value) return false;
     const matchedItem = visibleItems.value.find(i => i.id == focusedId.value);
-    return matchedItem ? matchedItem.date === date : false;
+    // If focusedId is set but not found in current visible items, 
+    // don't filter out all dates (which causes a blank screen)
+    if (!matchedItem) return true; 
+    return matchedItem.date === date;
 };
 
 const handleBack = () => { 
@@ -3666,7 +3723,9 @@ const processBatchText = () => {
     const translateName = (n) => nameAliasMap[n] || n;
     
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
-    const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇仙師', '太宰仙師', '太子', '閻王仙師'];
+    const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師'];
+    
+    let currentActiveDate = null;
     
     rawBlocks.forEach(block => {
         let text = block.trim();
@@ -3695,16 +3754,19 @@ const processBatchText = () => {
                     }
                     const mm = String(dObj.getMonth() + 1).padStart(2, '0');
                     const dd = String(dObj.getDate()).padStart(2, '0');
-                    record.date = `${yyyy}-${mm}-${dd}`;
+                    currentActiveDate = `${yyyy}-${mm}-${dd}`;
                 }
             } catch(e) {}
         }
+        
+        // Apply the sticky date (either found in this block or remembered from previous blocks)
+        record.date = currentActiveDate;
         
         // 1. Master Detection
         let foundMaster = false;
         let matchedKeywordInText = '';
         masterNames.forEach((m, idx) => {
-            const keyword = (m === '太子' ? '太子' : m + '仙師');
+            const keyword = (m === '太子' || m === '父皇') ? m : m + '仙師';
             if (text.includes(keyword)) {
                 record.master_name = masterOptions[idx];
                 matchedKeywordInText = keyword;
@@ -4047,7 +4109,7 @@ const saveItem = async () => {
         currentMasterName = masters.value.find(m => m.id === form.value.master_id)?.name;
     }
     if (!currentMasterName) {
-        currentMasterName = (currentFolder.value?.name ? formatMasterName(currentFolder.value.name) : '父皇仙師');
+        currentMasterName = (currentFolder.value?.name ? formatMasterName(currentFolder.value.name) : '父皇');
     }
     // Validation
     // Validation: Allow all saves as per user request to "not show" the alert
@@ -4125,7 +4187,7 @@ const performActualSave = async () => {
         const payload = {
             ...form.value,
             master_id: form.value.master_id || currentFolder.value?.id,
-            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0
+            is_daily: 1 // Always set to 1 in TeachingManager to ensure visibility in main list
         };
 
         if (editingId.value) {
@@ -4146,9 +4208,16 @@ const performActualSave = async () => {
         
         saveConfirmModal.value.show = false;
         addMode.value = false;
+        
         // Navigation: Reliable return to Daily Teachings category and folder
         currentCategory.value = 'daily';
-        currentFolder.value = { id: 0, name: '父皇仙師每日開示' }; 
+        currentFolder.value = { id: 0, name: '父皇每日開示' }; 
+        
+        // After switching folder, ensure focus is on the new record
+        if (editingId.value || focusedId.value) {
+             // Already set or kept by watcher
+        }
+        
         fetchItems(1);
         alert('儲存成功');
     } catch (e) {
@@ -4281,7 +4350,7 @@ const executeDistributionSave = async (mode) => {
                 target_remarks: finalTargetRemarks,
                 items: items,
                 user_id: 1,
-                is_daily: (activeEntryTab.value === 'batch' || isDailyFolder) ? 1 : 0
+                is_daily: 1 // Always set to 1 in TeachingManager
             };
             
             const res = await axios.post('/teachings', payload);
@@ -4306,8 +4375,11 @@ const executeDistributionSave = async (mode) => {
         
         distributionModal.value.show = false;
         addMode.value = false;
+        
+        // Navigation: Return to Daily list
         currentCategory.value = 'daily';
-        currentFolder.value = { id: 0, name: '父皇仙師每日開示' }; 
+        currentFolder.value = { id: 0, name: '父皇每日開示' }; 
+        
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         fetchItems(1);
         alert('錄入成功');
@@ -4332,7 +4404,7 @@ const showAdd = () => {
 
     if (currentFolder.value) {
         const isDaily = currentFolder.value.id === 0 || currentFolder.value.id === '0';
-        const mName = isDaily ? '父皇仙師' : currentFolder.value.name;
+        const mName = isDaily ? '父皇' : currentFolder.value.name;
         const mId = isDaily ? 5 : currentFolder.value.id;
         
         form.value.master_id = mId;
@@ -4423,7 +4495,19 @@ watch(newItemSubName, (val) => {
     }
 });
 
-watch(currentFolder, (val) => { if (val) { visibleItems.value = []; fetchItems(1); syncRecords(); } });
+watch(currentFolder, (val) => { 
+    if (val) { 
+        // Only reset focus if we are NOT in the middle of saving/adding a record
+        // This allows newly added records to remain focused after redirecting to Daily list
+        if (!saving.value) {
+            focusedId.value = null; 
+            focusedDate.value = null; 
+            visibleItems.value = []; 
+        }
+        fetchItems(1); 
+        syncRecords(); 
+    } 
+});
 
 onMounted(syncRecords);
 </script>

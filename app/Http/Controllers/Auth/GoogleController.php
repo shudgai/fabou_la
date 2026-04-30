@@ -44,7 +44,7 @@ class GoogleController extends Controller
                     ]);
                 }
                 
-                Auth::login($user);
+                Auth::login($user, true);
                 return redirect('/home');
             } else {
                 // Create a new user if not found
@@ -55,7 +55,7 @@ class GoogleController extends Controller
                     'password' => Hash::make(Str::random(24)), // Random password for social login users
                 ]);
 
-                Auth::login($newUser);
+                Auth::login($newUser, true);
                 return redirect('/home');
             }
         } catch (Exception $e) {

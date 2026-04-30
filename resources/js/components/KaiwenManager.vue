@@ -48,8 +48,8 @@
 
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
-                <div class="flex items-center justify-between mb-8">
-                    <span class="text-[17px] font-black text-slate-900 leading-tight whitespace-nowrap tracking-widest">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
                     </span>
                     <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
@@ -353,7 +353,7 @@
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">仙師</label>
                             <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                             <datalist id="master-list">
-                                <option v-for="m in masters" :key="m.id" :value="m.name"></option>
+                                <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
                         </div>
 
@@ -417,7 +417,7 @@
                                 </div>
                             </div>
                             <datalist id="masterList">
-                                <option v-for="m in masters" :key="m.id" :value="m.name"></option>
+                                <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
                         </template>
                     </div>
@@ -772,7 +772,10 @@ const handleModifiedTabClick = () => {
 const getMasterName = (id) => {
     if (!id) return '-';
     const m = masters.value.find(x => String(x.id) === String(id));
-    return m ? m.name : '-';
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '-';
 };
 
 const openAddMode = (type) => {
@@ -957,6 +960,11 @@ const formatPostForFile = (post) => {
 };
 
 const openPostMode = (post, type) => {
+    if (type === 'weekly' && post.status !== '合格') {
+        persistentToast.value = { msg: '文章需合格方有機會貼上殿中修改之文', type: 'error' };
+        setTimeout(() => { persistentToast.value = null; }, 3000);
+        return;
+    }
     addMode.value = type;
     formTab.value = 'modified';
     form.value = { ...post };

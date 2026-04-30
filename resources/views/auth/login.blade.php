@@ -57,7 +57,7 @@
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" autocomplete="email"
                             class="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-300 @error('email') ring-2 ring-red-500/20 @enderror"
                             placeholder="example@mail.com">
                     </div>
@@ -98,7 +98,7 @@
 
                 <!-- Remember Me & Extra -->
                 <div class="flex items-center space-x-2 ml-1">
-                    <input class="w-5 h-5 rounded-lg border-none bg-slate-100 text-indigo-600 focus:ring-offset-0 focus:ring-indigo-500/20 transition-all cursor-pointer" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <input class="w-5 h-5 rounded-lg border-none bg-slate-100 text-indigo-600 focus:ring-offset-0 focus:ring-indigo-500/20 transition-all cursor-pointer" type="checkbox" name="remember" id="remember" {{ old('remember') || !old('_token') ? 'checked' : '' }}>
                     <label class="text-[13px] font-bold text-slate-500 cursor-pointer select-none" for="remember">
                         記住我
                     </label>
@@ -160,6 +160,33 @@ function togglePassword(id, el) {
         eyeClosed.classList.add('hidden');
     }
 }
+
+// Persistence logic
+document.addEventListener('DOMContentLoaded', function() {
+    const dharmaInput = document.getElementById('dharma_name');
+    const emailInput = document.getElementById('email');
+    const rememberCheckbox = document.getElementById('remember');
+    const loginForm = document.querySelector('form');
+
+    // Load from localStorage
+    if (localStorage.getItem('saved_dharma_name')) {
+        dharmaInput.value = localStorage.getItem('saved_dharma_name');
+    }
+    if (localStorage.getItem('saved_email')) {
+        emailInput.value = localStorage.getItem('saved_email');
+    }
+
+    // Save on submit
+    loginForm.addEventListener('submit', function() {
+        if (rememberCheckbox.checked) {
+            localStorage.setItem('saved_dharma_name', dharmaInput.value);
+            localStorage.setItem('saved_email', emailInput.value);
+        } else {
+            localStorage.removeItem('saved_dharma_name');
+            localStorage.removeItem('saved_email');
+        }
+    });
+});
 </script>
 @endpush
 

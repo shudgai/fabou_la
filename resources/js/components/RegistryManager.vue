@@ -119,7 +119,7 @@
             </div>
 
             <!-- Folder Contents -->
-            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[60px] overflow-y-auto' : '']">
+            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : '']">
                 <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
@@ -235,43 +235,10 @@
                                                 <label class="tracking-widest font-bold font-outfit">日期</label>
                                                 <div class="app-title font-outfit">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                             </div>
-                                            <div class="space-y-1">
-                                                <div class="flex items-center justify-between">
+                                                <div class="space-y-1">
                                                     <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
-                                                    <div class="relative translate-x-0">
-                                                        <button @click.stop="openMenuId = (openMenuId === item.id ? null : item.id)" 
-                                                                class="p-1 active:scale-90 transition-transform"
-                                                                style="color: rgb(220, 20, 40) !important;">
-                                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                                        </button>
-                                                        <!-- Expanded Item Menu -->
-                                                        <div v-if="openMenuId === item.id" @click.stop 
-                                                            class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[110] overflow-hidden animate-pop-in py-1">
-                                                            <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
-                                                            </button>
-                                                            <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                修改資料
-                                                            </button>
-                                                            <button @click.stop="copyAsTextFile(item); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                複製貼 LINE
-                                                            </button>
-                                                            <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                                                下載檔案
-                                                            </button>
-                                                            <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                                                    class="w-full text-left px-4 py-3 text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
-                                                                刪除資料
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                    <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
                                                 </div>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
-                                            </div>
                                             <div v-if="item.purpose" class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit text-red-600">法寶用意</label>
                                                 <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit">{{ item.purpose }}</div>
@@ -470,8 +437,8 @@
         <!-- Persistent Toasts/Picker -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
-                <div class="flex items-center justify-between mb-8">
-                    <span class="text-[17px] font-black text-slate-900 leading-tight whitespace-nowrap tracking-widest">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
                     </span>
                     <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
@@ -1059,10 +1026,21 @@ const saveSingle = async (data) => {
         const { relationship, ...rest } = p;
         let remarks = rest.remarks || '';
         if (relationship && relationship.trim()) {
-            const relEntry = (rest.custom_name || '') + relationship.trim();
+            let datePrefix = '';
+            if (rest.obtained_date) {
+                const dParts = rest.obtained_date.split('-');
+                if (dParts.length === 3) {
+                    let rocY = parseInt(dParts[0]);
+                    if (rocY > 1911) rocY -= 1911;
+                    datePrefix = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
+                }
+            }
+            const relEntry = datePrefix + (rest.custom_name || '') + relationship.trim();
             if (!remarks.includes(relEntry)) {
                 remarks = remarks ? remarks + '\n' + relEntry : relEntry;
             }
+            // Clear the obtained_date because the relationship person obtained it, not the dharma name holder
+            rest.obtained_date = null;
         }
         return {
             ...rest,
@@ -1113,9 +1091,17 @@ const triggerBatchSave = async (batchData) => {
         let rawRecords = [];
         let blockMasterId = batchData.masterId || (currentFolder.value?.id);
         let blockDate = batchData.date || getTodayStr();
+        let currentContextYear = new Date().getFullYear();
 
-        const parseDateStr = (str) => {
+        const parseDateStr = (str, ctxYear = null) => {
             if (!str) return null;
+            // Handle explicitly ROC prefixes like "民國113年" or "113年" or "113"
+            const rocYearMatch = str.match(/^(?:民國)?\s*(\d{2,3})\s*年?$/);
+            if (rocYearMatch) {
+                const y = parseInt(rocYearMatch[1]) + 1911;
+                return `${y}-01-01`;
+            }
+
             // Priority 1: 4-digit CE
             const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
             if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
@@ -1124,6 +1110,12 @@ const triggerBatchSave = async (batchData) => {
             if (rocMatch) {
                 const y = parseInt(rocMatch[1]) + 1911;
                 return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+            }
+            // Priority 3: Month/Day only (Uses contextYear or Current Year)
+            const mdMatch = str.match(/\b(\d{1,2})[/\-\s](\d{1,2})\b/);
+            if (mdMatch) {
+                const y = ctxYear || new Date().getFullYear();
+                return `${y}-${mdMatch[1].padStart(2,'0')}-${mdMatch[2].padStart(2,'0')}`;
             }
             // Fallback for year only
             const standaloneYMatch = str.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
@@ -1146,6 +1138,15 @@ const triggerBatchSave = async (batchData) => {
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].normalize('NFKC').trim();
 
+                // Inline Year Prefix (e.g. 民國113年 4/21 允求...)
+                const inlineYearMatch = line.match(/^(?:民國)?\s*(\d{2,4})\s*年?\s+/);
+                if (inlineYearMatch) {
+                    let y = parseInt(inlineYearMatch[1]);
+                    if (y < 1000) y += 1911;
+                    currentContextYear = y;
+                    line = line.replace(inlineYearMatch[0], '').trim();
+                }
+
                 // 1. Metadata Detection
                 masterNames.forEach(mName => { 
                     if (line.includes(mName) && line.length < 15) {
@@ -1153,9 +1154,19 @@ const triggerBatchSave = async (batchData) => {
                         activeRecord = null; // Clear context on new master
                     }
                 });
+
+                // Detect Standalone Year Line
+                const standaloneYearMatch = line.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
+                if (standaloneYearMatch) {
+                    let y = parseInt(standaloneYearMatch[1]);
+                    if (y < 1000) y += 1911;
+                    currentContextYear = y;
+                    continue; // Skip the rest, it's just setting the context year
+                }
                 
-                const lineDateParsed = parseDateStr(line);
-                if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && line.length < 20) {
+                const lineDateParsed = parseDateStr(line, currentContextYear);
+                const isPureDateStr = line.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
+                if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && isPureDateStr) {
                     blockDate = lineDateParsed;
                     activeRecord = null; // Clear context on new date header
                     if (rawRecords.length === 0 || !activeRecord) pendingAttrs.record_date = lineDateParsed;
@@ -1174,7 +1185,7 @@ const triggerBatchSave = async (batchData) => {
                 let lineObtainedDate = null;
 
                 // 2. Attribute Detection
-                const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+                const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
                 const firstWord = line.split(/[\s：:]/)[0];
                 if (attrKeywords.includes(firstWord)) {
                     const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
@@ -1188,16 +1199,29 @@ const triggerBatchSave = async (batchData) => {
                         }
                     }
                     else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
-                        const d = parseDateStr(val) || val;
+                        const d = parseDateStr(val, currentContextYear) || val;
                         target.record_date = d;
                         if (firstWord === '登記日期' || firstWord === '求得日期') target.obtained_date = d;
                     }
-                    else if (firstWord === '求寶方式') target.acquisition_method = val;
+                    else if (firstWord === '求寶方式' || firstWord === '求寶') target.acquisition_method = val;
                     else if (firstWord === '備註') target.remarks = (target.remarks ? target.remarks + '\n' : '') + val;
                     continue;
                 }
 
                 // 3. Main Parsing logic
+                // Extract date from start of line if present
+                const lineStartDateMatch = line.match(/^(\d{1,4}[/.-]\d{1,2}[/.-]\d{1,2}|\d{1,2}[/.-]\d{1,2})\s+/);
+                if (lineStartDateMatch) {
+                    const parsed = parseDateStr(lineStartDateMatch[1], currentContextYear);
+                    if (parsed) lineDate = parsed;
+                    else lineDate = lineStartDateMatch[1].replace(/\//g, '-');
+                    
+                    if (!blockDate || blockDate === getTodayStr()) {
+                        blockDate = lineDate;
+                    }
+                    line = line.replace(lineStartDateMatch[0], '').trim();
+                }
+
                 const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
                 if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
                     treasureName = kwMatch[3].trim();
@@ -1223,7 +1247,7 @@ const triggerBatchSave = async (batchData) => {
                     treasureName = parts[0];
                     if (parts[1]) recipients = [parts[1]];
                     if (parts[2]) {
-                        const parsed = parseDateStr(parts[2]);
+                        const parsed = parseDateStr(parts[2], currentContextYear);
                         if (parsed) { lineDate = parsed; lineObtainedDate = parsed; }
                         else { lineDate = parts[2].replace(/\//g,'-'); lineObtainedDate = lineDate; }
                     }
@@ -1267,7 +1291,7 @@ const triggerBatchSave = async (batchData) => {
                             let rocY = parseInt(dParts[0]);
                             if (rocY > 1911) rocY -= 1911;
                             const dStr = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
-                            return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: finalDate };
+                            return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: null };
                         }
                         return { custom_name: translated, remarks: lineRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
                     }).filter(n => n !== null);
@@ -1628,9 +1652,9 @@ const saveItemInPlace = async (item) => {
             if (data && (data.obtained_date || data.remarks || data.relationship || wasExisting)) {
                 registries.push({
                     dharma_name_id: dn.id,
-                    obtained_date: data.obtained_date ? data.obtained_date.replace(/\//g, '-') : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.obtained_date || null),
-                    remarks: data.remarks || (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks || ''),
-                    related_personnel: data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.related_personnel || [])
+                    obtained_date: (data && data.obtained_date) ? data.obtained_date.replace(/\//g, '-') : null,
+                    remarks: (data && data.remarks !== undefined) ? data.remarks : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks || ''),
+                    related_personnel: (data && data.relationship !== undefined) ? (data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : []) : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.related_personnel || [])
                 });
             }
         });
@@ -1641,9 +1665,9 @@ const saveItemInPlace = async (item) => {
                 const data = editMap.value[item.id + '-' + r.custom_name] || {};
                 registries.push({
                     custom_name: r.custom_name,
-                    obtained_date: data.obtained_date ? data.obtained_date.replace(/\//g, '-') : (r.obtained_date ? r.obtained_date.replace(/\//g, '-') : null),
-                    remarks: data.remarks || (r.remarks || ''),
-                    related_personnel: data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : (r.related_personnel || [])
+                    obtained_date: (data && data.obtained_date) ? data.obtained_date.replace(/\//g, '-') : null,
+                    remarks: (data && data.remarks !== undefined) ? data.remarks : (r.remarks || ''),
+                    related_personnel: (data && data.relationship !== undefined) ? (data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : []) : (r.related_personnel || [])
                 });
             }
         });

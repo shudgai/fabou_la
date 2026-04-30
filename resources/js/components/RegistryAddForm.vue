@@ -43,7 +43,7 @@
                     <div class="space-y-1.5">
                         <label class="text-[17px] font-bold text-slate-800 block ml-1">載錄目標仙師</label>
                         <select v-model="form.master_id" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
+                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -305,9 +305,17 @@ const batchParsedRows = computed(() => {
     const results = [];
     let currentMasterId = form.value.master_id;
     let currentDate = form.value.record_date || getTodayStr();
+    let currentContextYear = new Date().getFullYear();
 
-    const parseDateText = (str) => {
+    const parseDateText = (str, ctxYear = null) => {
         if (!str) return null;
+        // Handle explicitly ROC prefixes like "民國113年" or "113年"
+        const rocYearMatch = str.match(/^(?:民國)?\s*(\d{2,3})\s*年?$/);
+        if (rocYearMatch) {
+            const y = parseInt(rocYearMatch[1]) + 1911;
+            return `${y}-01-01`;
+        }
+
         // Priority 1: 4-digit CE
         const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
         if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
@@ -317,16 +325,48 @@ const batchParsedRows = computed(() => {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
         }
+        // Priority 3: Month/Day only (Uses contextYear or Current Year)
+        const mdMatch = str.match(/\b(\d{1,2})[/\-\s](\d{1,2})\b/);
+        if (mdMatch) {
+            const y = ctxYear || new Date().getFullYear();
+            return `${y}-${mdMatch[1].padStart(2,'0')}-${mdMatch[2].padStart(2,'0')}`;
+        }
+        // Fallback for year only
+        const standaloneYMatch = str.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
+        if (standaloneYMatch) {
+            let y = parseInt(standaloneYMatch[1]);
+            if (y < 1000) y += 1911;
+            return `${y}-01-01`;
+        }
         return null;
     };
 
     lines.forEach(line => {
-        const normLine = line.normalize('NFKC').trim();
+        let normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
+        // Inline Year Prefix
+        const inlineYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?\s+/);
+        if (inlineYearMatch) {
+            let y = parseInt(inlineYearMatch[1]);
+            if (y < 1000) y += 1911;
+            currentContextYear = y;
+            normLine = normLine.replace(inlineYearMatch[0], '').trim();
+        }
+
+        // Detect Standalone Year Line
+        const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
+        if (standaloneYearMatch) {
+            let y = parseInt(standaloneYearMatch[1]);
+            if (y < 1000) y += 1911;
+            currentContextYear = y;
+            return;
+        }
+
         // 1. Detect Standalone Date Header
-        const dateHeader = parseDateText(normLine);
-        if (dateHeader && normLine.length < 20) {
+        const dateHeader = parseDateText(normLine, currentContextYear);
+        const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
+        if (dateHeader && isPureDateStr) {
             currentDate = dateHeader;
             return;
         }
@@ -339,7 +379,7 @@ const batchParsedRows = computed(() => {
         }
 
         // 3. Detect Attribute Keywords
-        const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+        const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
         const firstWord = normLine.split(/[\s：:]/)[0];
         
         if (attrKeywords.includes(firstWord) && results.length > 0) {
@@ -351,20 +391,28 @@ const batchParsedRows = computed(() => {
                 if (val.includes('已登記')) prev.obtained_date = prev.date || currentDate;
             }
             else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
-                const d = parseDateText(val) || val;
+                const d = parseDateText(val, currentContextYear) || val;
                 prev.date = d;
                 if (firstWord === '登記日期' || firstWord === '求得日期') prev.obtained_date = d;
             }
-            else if (firstWord === '求寶方式') prev.acquisition_method = val;
+            else if (firstWord === '求寶方式' || firstWord === '求寶') prev.acquisition_method = val;
             else prev.remarks = (prev.remarks ? prev.remarks + ' ' : '') + val;
             return;
         }
 
         // 4. Parse Standard Record
-        const kwMatch = normLine.match(/(.*)[：:](.*)/);
+        // Extract date from start of line if present
+        const lineStartDateMatch = normLine.match(/^(\d{1,4}[/.-]\d{1,2}[/.-]\d{1,2}|\d{1,2}[/.-]\d{1,2})\s+/);
+        if (lineStartDateMatch) {
+            const parsed = parseDateText(lineStartDateMatch[1], currentContextYear);
+            if (parsed) currentDate = parsed;
+            normLine = normLine.replace(lineStartDateMatch[0], '').trim();
+        }
+
+        const kwMatch = normLine.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
         if (kwMatch) {
-            const name = kwMatch[1].trim();
-            const val = kwMatch[2].trim();
+            const name = kwMatch[3].trim();
+            const val = kwMatch[4].trim();
             if (attrKeywords.includes(name)) return; // Should have been caught by #3
 
             const item = { 
@@ -448,7 +496,10 @@ const movePersonnel = (idx, direction) => {
 
 const selectedMasterName = computed(() => {
     const m = props.masters?.find(m => String(m.id) === String(form.value.master_id));
-    return m ? m.name : '';
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '';
 });
 
 watch(() => props.initialData, (newVal) => {

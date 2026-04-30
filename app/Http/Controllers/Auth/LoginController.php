@@ -42,40 +42,54 @@ class LoginController extends Controller
     }
 
     /**
-     * 驗證登入請求，加入法號必填驗證。
+     * 驗證登入請求，加入法號必填驗證，電子郵件改為非必填（若法號可唯一識別）。
      */
     protected function validateLogin(Request $request)
     {
         $request->validate([
             'dharma_name' => ['required', 'string'],
-            'email'       => ['required', 'string'],
+            'email'       => ['nullable', 'string', 'email'],
             'password'    => ['required', 'string'],
         ], [
             'dharma_name.required' => '請輸入法號。',
-            'email.required'       => '請輸入電子郵件。',
             'password.required'    => '請輸入密碼。',
         ]);
     }
 
     /**
-     * 嘗試登入前，先驗證法號是否存在於 dharma_names 表中。
+     * 嘗試登入前，處理法號與 Email 的對應關係。
      */
     protected function attemptLogin(Request $request)
     {
-        $dharmaNameInput = trim($request->input('dharma_name'));
+        $dNameInput = trim($request->input('dharma_name'));
+        $emailInput = trim($request->input('email'));
+        $password = $request->input('password');
 
-        // 查詢 dharma_names 表中是否有這個法號
-        $exists = DharmaName::where('name', $dharmaNameInput)->exists();
+        // 如果有提供 Email，優先用 Email 找人
+        if ($emailInput) {
+            $user = \App\Models\User::where('email', $emailInput)->first();
+        } else {
+            // 如果沒提供 Email，嘗試用法號找人 (DharmaName 關聯或 User 自身的 name)
+            $user = \App\Models\User::whereHas('dharmaName', function($q) use ($dNameInput) {
+                $q->where('name', $dNameInput);
+            })->orWhere('name', $dNameInput)->first();
+        }
 
-        if (! $exists) {
+        if (! $user) {
+            return false;
+        }
+
+        // 驗證法號是否匹配 (雙重確認)
+        $userDName = trim($user->dharmaName ? $user->dharmaName->name : $user->name);
+        if ($userDName !== $dNameInput) {
             throw ValidationException::withMessages([
-                'dharma_name' => ['此法號不在法號表中，無法登入。'],
+                'dharma_name' => ['此法號與帳號資料不符。'],
             ]);
         }
 
-        // 法號驗證通過，繼續正常的 email + password 驗證
+        // 執行登入
         return $this->guard()->attempt(
-            $this->credentials($request),
+            ['email' => $user->email, 'password' => $password],
             $request->boolean('remember')
         );
     }

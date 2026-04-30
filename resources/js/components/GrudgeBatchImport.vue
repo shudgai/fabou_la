@@ -164,9 +164,10 @@ const handleBatchSave = async () => {
 
     const parseDateText = (str) => {
         if (!str) return null;
-        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        // Support YYYY.MM.DD, YYYY/MM/DD, YYYY-MM-DD
+        const ceMatch = str.match(/\b(\d{4})[\.\/\-\s](\d{1,2})[\.\/\-\s](\d{1,2})\b/);
         if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
-        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        const rocMatch = str.match(/\b(\d{2,3})[\.\/\-\s](\d{1,2})[\.\/\-\s](\d{1,2})\b/);
         if (rocMatch) {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
@@ -178,7 +179,7 @@ const handleBatchSave = async () => {
         const normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // 1. Detect Standalone Date Header
+        // 1. Detect Standalone Date Header (Check this BEFORE any cleaning)
         const dateHeader = parseDateText(normLine);
         if (dateHeader && normLine.length < 20) {
             currentDate = dateHeader;
@@ -199,7 +200,12 @@ const handleBatchSave = async () => {
         }
 
         // 3. Name and Content Split
+        // Refined cleaning to avoid eating up the entire line if it's just a name
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
+        if (!cleanLine && normLine.length > 0) {
+            // If cleaning ate everything but the original line had content, it might be a name that looks like a number (unlikely) or just a short name
+            cleanLine = normLine.trim();
+        }
         if (!cleanLine) return;
 
         // Skip headers
@@ -212,9 +218,13 @@ const handleBatchSave = async () => {
         for (const sep of separators) {
             if (cleanLine.includes(sep)) {
                 const idx = cleanLine.indexOf(sep);
-                subject = cleanLine.substring(0, idx).trim();
-                resultsPart = cleanLine.substring(idx + 1).trim();
-                break;
+                const sub = cleanLine.substring(0, idx).trim();
+                // Ensure the subject isn't just a number
+                if (sub && !/^\d+$/.test(sub)) {
+                    subject = sub;
+                    resultsPart = cleanLine.substring(idx + 1).trim();
+                    break;
+                }
             }
         }
 
@@ -226,24 +236,38 @@ const handleBatchSave = async () => {
             uRemarks = rMatch[1];
         }
 
-        // Clean digits from name
-        rawName = rawName.replace(/\d+.*$/, '').trim();
+        // Clean digits from name only if they are at the end
+        rawName = rawName.replace(/\d+$/, '').trim();
         let finalName = translate(rawName);
 
-        const isProcessed = resultsPart.includes('已處理') || (!resultsPart.includes('未處理') && !resultsPart.includes('尚未處理'));
-        const globalNumMatch = cleanLine.match(/(\d+)/);
-        const qty = globalNumMatch ? parseInt(globalNumMatch[1]) : 1;
+        // Extract quantity (Priority to "XX位")
+        const qtyMatch = cleanLine.match(/(\d+)\s*位/);
+        const qty = qtyMatch ? parseInt(qtyMatch[1]) : (cleanLine.match(/(\d+)/) ? parseInt(cleanLine.match(/(\d+)/)[1]) : 1);
+
+        // Determine Processed status (Always '已處理' unless '未處理' is specified)
+        const isProcessed = !resultsPart.includes('未處理') && !resultsPart.includes('尚未處理');
+        const dest = isProcessed ? '已處理' : '未處理';
+
+        // Extract remarks: Content inside parentheses ( )
+        let finalRemarksText = '';
+        const pMatch = normLine.match(/[（\(](.*)[）\)]/); // Use normLine to be more inclusive
+        if (pMatch) {
+            finalRemarksText = pMatch[1].trim();
+        } else if (resultsPart) {
+            // Fallback: Use resultsPart excluding the quantity
+            finalRemarksText = resultsPart.replace(/^\d+\s*位/, '').replace(/^[（\(]|[）\)]$/g, '').trim();
+        }
 
         results.push({
             user_name: finalName,
             user_remarks: uRemarks,
             know_date: currentDate,
             process_date: isProcessed ? currentDate : null,
-            destination: isProcessed ? '已處理' : '未處理',
+            destination: dest,
             quantity: qty,
             remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },
             status: isProcessed ? '已處理' : '待處理',
-            remarks_text: resultsPart || ''
+            remarks_text: finalRemarksText
         });
     });
 

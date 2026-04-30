@@ -116,6 +116,8 @@ class RegistryController extends Controller
                             if (!in_array($relationshipRemark, $remarks)) {
                                 $remarks[] = $relationshipRemark;
                             }
+                            // 元續之夫本身並未求得，所以元續本身的日期應為空白
+                            $obtained_date = null;
                         }
                     }
 
@@ -161,7 +163,11 @@ class RegistryController extends Controller
                             'related_personnel'=> is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [],
                         ]);
                     } else {
-                        // 若已存在，合併新備註（去除重複）
+                        // 若已存在，合併新備註（去除重複）與日期
+                        $updates = [];
+                        if ($obtained_date) {
+                            $updates['obtained_date'] = $obtained_date;
+                        }
                         if (!empty($remarks)) {
                             $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
                             $merged = false;
@@ -172,8 +178,11 @@ class RegistryController extends Controller
                                 }
                             }
                             if ($merged) {
-                                $existingDnr->update(['remarks' => array_values($existingRemarks)]);
+                                $updates['remarks'] = array_values($existingRemarks);
                             }
+                        }
+                        if (!empty($updates)) {
+                            $existingDnr->update($updates);
                         }
                     }
                 }
@@ -304,6 +313,8 @@ class RegistryController extends Controller
                                 if (!in_array($relationshipRemark, $remarks)) {
                                     $remarks[] = $relationshipRemark;
                                 }
+                                // 元續之夫本身並未求得，所以元續本身的日期應為空白
+                                $obtained_date = null;
                             }
                         }
 
@@ -348,6 +359,10 @@ class RegistryController extends Controller
                                 'related_personnel' => is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [],
                             ]);
                         } else {
+                            $updates = [];
+                            if ($obtained_date) {
+                                $updates['obtained_date'] = $obtained_date;
+                            }
                             if (!empty($remarks)) {
                                 $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
                                 $merged = false;
@@ -358,8 +373,11 @@ class RegistryController extends Controller
                                     }
                                 }
                                 if ($merged) {
-                                    $existingDnr->update(['remarks' => array_values($existingRemarks)]);
+                                    $updates['remarks'] = array_values($existingRemarks);
                                 }
+                            }
+                            if (!empty($updates)) {
+                                $existingDnr->update($updates);
                             }
                         }
                     }

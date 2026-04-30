@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
         <!-- Header (Only show in Folder-view, Item-view or Add-mode) -->
         <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
@@ -146,8 +146,7 @@
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                             <span :class="[
-                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all whitespace-nowrap',
-                                folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
                             ]" style="font-weight: 900 !important; font-size: 22px !important;">
                                 <template v-if="folder.id === 'unobtained'">
                                     未求得<br>重大皇恩
@@ -211,14 +210,19 @@
                             <!-- Content column: date on top, name+status on bottom -->
                             <div class="flex flex-col flex-1 min-w-0 pr-8">
                                 <!-- Row 1: Date -->
-                                <div v-if="reg.obtained_date || reg.record_date || (currentFolder.id === 'unobtained' && reg.master_id)" class="app-title font-bold mb-0.5">
+                                <div v-if="reg.obtained_date || reg.record_date" class="app-title font-bold mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
                                         登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.obtained_date) }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
                                         得知：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</span>
                                     </template>
-                                    <span v-if="currentFolder.id === 'unobtained' && reg.master_id" class="app-title opacity-50" :class="{ 'ml-2': reg.obtained_date || reg.record_date }">{{ getMasterName(reg.master_id) }}</span>
+                                </div>
+                                <!-- Row 1b: Master (Only for Unobtained folder) -->
+                                <div v-if="currentFolder.id === 'unobtained' && reg.master_id" 
+                                     class="app-title mb-0.5"
+                                     :class="getMasterName(reg.master_id) === '閻王仙師' ? 'text-black opacity-100 font-black' : 'opacity-50'">
+                                    {{ getMasterName(reg.master_id) }}
                                 </div>
                                 <!-- Row 2: Name + Status -->
                                 <div class="flex items-center justify-between">
@@ -295,9 +299,9 @@
                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
                             </div>
 
-                            <div class="space-y-1">
+                            <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
                                 <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose || '-' }}</div>
+                                <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
                             </div>
 
                              <div class="grid grid-cols-2 gap-4">
@@ -313,7 +317,7 @@
                                 </div>
                             </div>
 
-                            <div v-if="reg.remarks" class="space-y-1 pt-2 border-t border-slate-50">
+                            <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
                                 <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
                                 <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
                             </div>
@@ -434,7 +438,7 @@ const form = ref({
 });
 const inlineEditId = ref(null);
 const inlineEditData = ref({});
-const saving = ref(false);
+// Removed duplicate saving variable
 const activePicker = ref(null); // { id, field, title }
 
 const addActions = computed(() => [
@@ -490,15 +494,33 @@ watch(persistentToast, (newVal) => {
 });
 
 const folders = computed(() => {
-    const list = masters.value.map(m => ({
-        id: m.id,
-        name: m.name
-    }));
+    const list = [];
+    if (Array.isArray(masters.value)) {
+        masters.value.forEach(m => {
+            list.push({
+                id: m.id,
+                name: m.name === '父皇仙師' ? '父皇' : m.name
+            });
+        });
+    }
     list.push({ id: 'unobtained', name: '未求得重大皇恩' });
     return list;
 });
 
-const mastersFolders = computed(() => folders.value.filter(f => f.id !== 'unobtained'));
+const mastersFolders = computed(() => {
+    const list = [];
+    if (Array.isArray(masters.value)) {
+        masters.value.forEach(m => {
+            if (m.id !== 'unobtained') {
+                list.push({
+                    ...m,
+                    name: m.name === '父皇仙師' ? '父皇' : m.name
+                });
+            }
+        });
+    }
+    return list;
+});
 
 const loadData = async () => {
     loading.value = true;
@@ -522,18 +544,23 @@ const copyAsTextFile = (reg) => {
 };
 
 const formatRegistryForFile = (reg) => {
-    return `【重大皇恩】
-法寶：${reg.name}
-數據：${reg.count || 1}
-用意：${reg.purpose || '無'}
-狀態：${reg.status}
-求得日期：${reg.obtained_date || '-'}
-由來與備註：${reg.remarks || '無'}`;
+    let out = `【重大皇恩】\r\n`;
+    out += `得知日期：${reg.record_date || '-'}\r\n`;
+    out += `法寶：${reg.name}\r\n`;
+    if (reg.count && reg.count !== 1 && reg.count !== '1') out += `數據：${reg.count}\r\n`;
+    if (reg.purpose && reg.purpose !== '-' && reg.purpose !== '無') out += `用意：${reg.purpose}\r\n`;
+    out += `狀態：${reg.status || '未求得'}\r\n`;
+    if (reg.status !== '已登記') out += `求得日期：${reg.obtained_date || '-'}\r\n`;
+    if (reg.remarks && reg.remarks !== '-' && reg.remarks !== '無') out += `由來與備註：${reg.remarks}\r\n`;
+    return out.trim();
 };
 
 const getMasterName = (id) => {
-    const m = masters.value.find(m => m.id === id);
-    return m ? m.name : '未知仙師';
+    const m = masters.value.find(m => String(m.id) === String(id));
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '預設';
 };
 
 const toggleMenu = (id) => { 
@@ -573,8 +600,8 @@ const cancelInlineEdit = () => {
 };
 
 const saveInlineEdit = async () => {
-    if (saving.value) return;
-    saving.value = true;
+    if (isSaving.value) return;
+    isSaving.value = true;
     try {
         await axios.post(`/imperial-graces/registry/${inlineEditId.value}`, { ...inlineEditData.value, _method: 'PATCH' });
         persistentToast.value = { msg: '✓ 已更新載錄', type: 'success' };
@@ -585,7 +612,7 @@ const saveInlineEdit = async () => {
         console.error('Inline save failed', e);
         persistentToast.value = { msg: '✖ 更新失敗', type: 'error' };
     } finally {
-        saving.value = false;
+        isSaving.value = false;
     }
 };
 
@@ -656,7 +683,7 @@ const triggerSimpleDownload = (text, filename) => {
 
 // 1. 單筆複製
 const copyOnly = async (reg) => {
-    const text = `【重大皇恩】\r\n法寶：${reg.name}\r\n數據：${reg.count || 1}\r\n用意：${reg.purpose || '無'}\r\n狀態：${reg.status}\r\n求得日期：${reg.obtained_date || '-'}\r\n由來與備註：${reg.remarks || '無'}`;
+    const text = formatRegistryForFile(reg);
     try {
         await navigator.clipboard.writeText(text);
         persistentToast.value = { msg: '已複製資料,可至 LINE 貼上.', type: 'success' };
@@ -668,7 +695,7 @@ const copyOnly = async (reg) => {
 
 // 2. 單筆下載
 const downloadOnly = (reg) => {
-    const text = `【重大皇恩】\r\n法寶：${reg.name}\r\n數據：${reg.count || 1}\r\n用意：${reg.purpose || '無'}\r\n狀態：${reg.status}\r\n求得日期：${reg.obtained_date || '-'}\r\n由來與備註：${reg.remarks || '無'}`;
+    const text = formatRegistryForFile(reg);
     triggerSimpleDownload(text, `重大皇恩_${reg.name}.txt`);
     persistentToast.value = { msg: '已啟動檔案下載.', type: 'success' };
     openMenuId.value = null;
@@ -708,7 +735,7 @@ const handleReorder = async (reg, newOrderStr) => {
 const copyListOnly = async () => {
     if (!currentFolder.value) return;
     const contents = `【重大皇恩清單 - ${currentFolder.value.name}】\r\n\r\n` + 
-        filteredRegistries.value.map(r => `${r.name}\n  數據：${r.count || 1}\n  用意：${r.purpose || '無'}\n  狀態：${r.status}`).join('\r\n\r\n');
+        filteredRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
     try {
         await navigator.clipboard.writeText(contents);
         persistentToast.value = { msg: '已複製全部清單,可至 LINE 貼上.', type: 'success' };
@@ -722,7 +749,7 @@ const copyListOnly = async () => {
 const downloadListOnly = () => {
     if (!currentFolder.value) return;
     const contents = `【重大皇恩清單 - ${currentFolder.value.name}】\r\n\r\n` + 
-        filteredRegistries.value.map(r => `${r.name}\n  數據：${r.count || 1}\n  用意：${r.purpose || '無'}\n  狀態：${r.status}`).join('\r\n\r\n');
+        filteredRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
     triggerSimpleDownload(contents, `重大皇恩清單_${currentFolder.value.name}.txt`);
     persistentToast.value = { msg: '已啟動清單下載.', type: 'success' };
     openMenuId.value = null;
@@ -732,15 +759,7 @@ const downloadListOnly = () => {
 const exportListTxt = () => {
     if (!currentFolder.value || !filteredRegistries.value.length) return;
     
-    const contents = filteredRegistries.value.map(r => {
-        return `【重大皇恩】\r\n` +
-               `法寶：${r.name}\r\n` +
-               `數據：${r.count || 1}\r\n` +
-               `用意：${r.purpose || '無'}\r\n` +
-               `狀態：${r.status}\r\n` +
-               `求得日期：${r.obtained_date?.replace(/-/g, '/') || '-'}\r\n` +
-               `由來與備註：${(r.remarks || '無')}`;
-    }).join('\r\n\r\n--------------------------------\r\n\r\n');
+    const contents = filteredRegistries.value.map(r => formatRegistryForFile(r)).join('\r\n\r\n--------------------------------\r\n\r\n');
 
     try {
         const finalHeader = `【重大皇恩清單 - ${currentFolder.value.name} 完整清單】\r\n\r\n`;
@@ -1071,19 +1090,28 @@ const filteredRegistries = computed(() => {
         const orderB = statusOrder[b.status] || 99;
         if (orderA !== orderB) return orderA - orderB;
 
-        // Priority 2: Manual sort_order (within same status)
+        // Priority 2: Master Order (Only for Unobtained Folder)
+        if (currentFolder.value.id === 'unobtained') {
+            const masterOrderA = masters.value.findIndex(m => String(m.id) === String(a.master_id));
+            const masterOrderB = masters.value.findIndex(m => String(m.id) === String(b.master_id));
+            const ma = masterOrderA === -1 ? 999 : masterOrderA;
+            const mb = masterOrderB === -1 ? 999 : masterOrderB;
+            if (ma !== mb) return ma - mb;
+        }
+
+        // Priority 3: Manual sort_order (within same status)
         if ((a.sort_order || 9999) !== (b.sort_order || 9999)) {
             return (a.sort_order || 9999) - (b.sort_order || 9999);
         }
         
-        // Priority 3: Date (within same status & sort_order)
+        // Priority 4: Date (within same status & sort_order)
         const dateA = a.record_date || '';
         const dateB = b.record_date || '';
         if (dateA !== dateB) {
             return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
         }
         
-        // Priority 4: ID Fallback
+        // Priority 5: ID Fallback
         return sortDesc.value ? ((b.id || 0) - (a.id || 0)) : ((a.id || 0) - (b.id || 0));
     });
 

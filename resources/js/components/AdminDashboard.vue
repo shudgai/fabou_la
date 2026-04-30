@@ -1,11 +1,11 @@
 <template>
     <div class="flex flex-col md:flex-row h-[100vh] bg-slate-50 font-sans overflow-hidden">
         <!-- Sidebar / Top Nav Container -->
-        <div class="w-full md:w-72 bg-white border-r border-slate-100 flex-shrink-0 flex flex-col shadow-sm z-[50] h-auto md:h-full">
+        <div class="w-full md:w-64 bg-white border-r border-slate-100 flex-shrink-0 flex flex-col shadow-sm z-[50] h-auto md:h-full">
             <!-- Logo area -->
             <div class="p-4 md:p-6 border-b border-slate-50 flex items-center justify-between bg-white">
                 <div>
-                    <h1 class="text-xl md:text-[28px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
+                    <h1 class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="/note" class="p-2 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
@@ -29,7 +29,7 @@
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
-                    <span class="text-[13px] md:text-[20px] font-bold">{{ item.label }}</span>
+                    <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
                 </button>
 
                 <!-- Admin Section -->
@@ -45,7 +45,7 @@
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
-                    <span class="text-[13px] md:text-[20px] font-bold">{{ item.label }}</span>
+                    <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
                 </button>
             </div>
 
@@ -59,10 +59,10 @@
         </div>
 
         <!-- Main Content Area -->
-        <main class="flex-1 h-full overflow-y-auto bg-slate-50/30 custom-scrollbar relative">
+        <main :class="['flex-1 h-full bg-slate-50/30 custom-scrollbar relative', isNotebookView ? 'overflow-hidden' : 'overflow-y-auto']">
             <div :class="[
                 'max-w-7xl mx-auto w-full pb-32',
-                isNotebookView ? 'p-0' : 'p-4 md:p-10 lg:p-12'
+                isNotebookView ? 'p-0' : 'p-4 md:p-6 lg:p-8'
             ]">
                 <transition name="fade-slide" mode="out-in">
                     <div :key="currentTab">
@@ -130,7 +130,7 @@ const notebookItems = computed(() => {
     
     const items = [
         { id: 'grace', label: '重大皇恩專區' },
-        { id: 'teaching', label: '父皇仙師開示專區' },
+        { id: 'teaching', label: '父皇開示專區' },
         { id: 'kaiwen', label: '開文專區' },
         { id: 'grudge', label: '怨靈記錄專區' },
         { id: 'military', label: '軍隊記錄專區' },

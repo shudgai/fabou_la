@@ -178,24 +178,30 @@
                                 ]"
                             >
                                 <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
-                                    <!-- Row 1: Name & Quantity -->
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-start flex-1 min-w-0">
-                                            <div v-if="!currentFolder" class="mt-2 w-2 h-2 rounded-full mr-2 shrink-0" :class="[ item.army_type === '耀紫軍' ? 'bg-purple-500' : 'bg-slate-900' ]"></div>
-                                            <div class="flex-1 min-w-0 pr-4">
-                                                <div class="app-body leading-tight font-black text-slate-900" style="font-size: 24px !important;">
-                                                    {{ item.user_name }}
-                                                    <span v-if="item.user_remarks" class="block app-body text-slate-400 font-bold mt-1" style="font-size: 16px !important;">
-                                                        {{ item.user_remarks }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-none text-right pr-10">
-                                                <span class="app-body font-black text-slate-900 whitespace-nowrap" style="font-size: 24px !important;">{{ formatArmyTotal(item.quantity) }}</span>
+                                    <!-- Row 1: Date -->
+                                    <div class="military-field">
+                                        <label class="military-label">日期</label>
+                                        <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
+                                    </div>
+                                    
+                                    <!-- Row 2: Name & Quantity -->
+                                    <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
+                                        <div class="military-field min-w-0">
+                                            <label class="military-label">法號</label>
+                                            <div class="military-value-name truncate">
+                                                {{ item.user_name }}
+                                                <span v-if="item.user_remarks" class="block text-slate-400 opacity-70 font-medium" style="font-size: 0.85em;">
+                                                    {{ item.user_remarks }}
+                                                </span>
                                             </div>
                                         </div>
-                                        <!-- Menu Trigger -->
-                                        <div class="absolute right-0 top-0">
+                                        <div class="military-field">
+                                            <label class="military-label">數量</label>
+                                            <div class="military-value">{{ formatArmyTotal(item.quantity) }}</div>
+                                        </div>
+
+                                        <!-- Menu Trigger (Right side of Row 2) -->
+                                        <div class="absolute right-[-32px] top-0">
                                             <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
                                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
@@ -203,48 +209,51 @@
                                             <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
                                                 <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
                                                 <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                                <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                                <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                                                          <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Row 2: Grid Info -->
-                                    <div class="grid grid-cols-2 gap-x-4 gap-y-4">
-                                        <div class="space-y-1">
-                                            <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">處理日期</label>
-                                            <div class="app-body text-slate-800 font-medium" style="font-size: 20px !important;">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">處理結果</label>
-                                            <div class="app-body text-slate-800 font-medium" style="font-size: 20px !important;">{{ item.destination || '已處理' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Row 3: Remarks -->
-                                    <div v-if="item.remarks_text || ['黑曜軍','耀紫軍'].includes(item.army_type)" class="pt-4 border-t border-slate-50 space-y-3">
-                                        <label class="app-body font-black text-slate-900" style="font-size: 20px !important;">詳細內容 / 備註</label>
-                                        
+                                    <!-- Expanded Content (Show Remarks & Breakdown when focused) -->
+                                    <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
                                         <!-- Specialized breakdown for split armies -->
-                                        <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="flex items-center space-x-4 pb-1">
-                                            <template v-if="item.army_type === '黑曜軍'">
-                                                <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">閻尊: {{ formatArmyTotal(item.yan_zun) }}</span>
-                                                <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">閻闇: {{ formatArmyTotal(item.yan_an) }}</span>
-                                            </template>
-                                            <template v-else-if="item.army_type === '耀紫軍'">
-                                                <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">龍勝: {{ formatArmyTotal(item.long_sheng) }}</span>
-                                                <span class="app-body text-slate-500 font-bold" style="font-size: 16px !important;">龍戰: {{ formatArmyTotal(item.long_zhan) }}</span>
-                                            </template>
+                                        <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">
+                                            <label class="military-label">軍隊細目</label>
+                                            <div class="flex items-center space-x-6">
+                                                <template v-if="item.army_type === '黑曜軍'">
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                                                        <span class="military-value">閻尊: {{ formatArmyTotal(item.yan_zun) }}</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                        <span class="military-value">閻闇: {{ formatArmyTotal(item.yan_an) }}</span>
+                                                    </div>
+                                                </template>
+                                                <template v-else-if="item.army_type === '耀紫軍'">
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                                                        <span class="military-value">龍勝: {{ formatArmyTotal(item.long_sheng) }}</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                                        <span class="military-value">龍戰: {{ formatArmyTotal(item.long_zhan) }}</span>
+                                                    </div>
+                                                </template>
+                                            </div>
                                         </div>
 
-                                        <div v-if="item.remarks_text" class="app-body leading-relaxed whitespace-pre-wrap text-slate-700" style="font-size: 19px !important;">
-                                            {{ item.remarks_text }}
+                                        <div v-if="item.remarks_text" class="military-field">
+                                            <label class="military-label">詳細內容 / 備註</label>
+                                            <div class="military-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
+                                                {{ item.remarks_text }}
+                                            </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
+                </template>
                 </div>
             </div>
         </div>
@@ -387,9 +396,9 @@ const sortedItems = computed(() => {
     let result = [...filteredItems.value];
     
     result.sort((a, b) => {
-        // Records without know_date always go to the top
-        if (!a.know_date && b.know_date) return -1;
-        if (a.know_date && !b.know_date) return 1;
+        // Records without know_date (Historical Accumulation) always go to the bottom
+        if (!a.know_date && b.know_date) return 1;
+        if (a.know_date && !b.know_date) return -1;
         if (!a.know_date && !b.know_date) return a.id - b.id;
 
         const dateA = String(a.know_date || '');
@@ -796,6 +805,41 @@ onMounted(loadData);
 </script>
 
 <style scoped>
+.military-field { display: flex; flex-direction: column; gap: 4px; }
+.military-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.military-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: #0f172a;
+}
+.military-value-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #0f172a;
+}
+.military-date-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: #0f172a;
+}
+
+/* Custom Military Scaling Logic */
+:deep(body.font-small) .military-label, :deep(body.font-small) .military-date-value { font-size: 13px !important; }
+:deep(body.font-small) .military-value, :deep(body.font-small) .military-value-name { font-size: 15px !important; }
+
+:deep(body.font-medium) .military-label, :deep(body.font-medium) .military-date-value { font-size: 15px !important; }
+:deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
+
+:deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value { font-size: 15px !important; }
+:deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 19px !important; }
+
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 .animate-slide-up { animation: slideUp 0.15s ease-out; }

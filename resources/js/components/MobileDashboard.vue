@@ -58,7 +58,7 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
-    { id: 'teaching', label: '父皇仙師開示專區', icon: '🙏', color: 'bg-indigo-50' },
+    { id: 'teaching', label: '父皇開示專區', icon: '🙏', color: 'bg-indigo-50' },
     { id: 'kaiwen', label: '開文專區', icon: '📝', color: 'bg-purple-50' },
     { id: 'grudge', label: '怨靈記錄專區', icon: '👻', color: 'bg-rose-50' },
     { id: 'military', label: '軍隊記錄專區', icon: '🛡️', color: 'bg-emerald-50' },

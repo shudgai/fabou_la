@@ -59,15 +59,15 @@
                     <div v-if="lotteryMode === false && pendingNames.length > 0" class="bg-blue-50/40 border border-blue-100 rounded-2xl p-4 mx-2 mt-4 mb-2">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center space-x-2">
-                                <span class="text-[15px] font-black text-blue-800">{{ selectionMode === "fixed" ? "優先固定人員 (照點選順序)" : "已選定人員 (基礎名單)" }}</span>
-                                <span class="px-2 py-0.5 bg-blue-600 text-white text-[11px] font-black rounded-full" style="color: white !important;">{{ pendingNames.length }} 人</span>
+                                <span class="text-[15px] font-black text-blue-800">{{ selectionMode === "fixed" ? "優先固定人員 (照點選順序)" : "已選定人員 (包含固定人員)" }}</span>
+                                <span class="px-2 py-0.5 bg-blue-600 text-white text-[11px] font-black rounded-full" style="color: white !important;">{{ selectionMode === 'fixed' ? fixedParticipants.length : pendingNames.length }} 人</span>
                             </div>
                             <button @click="resetAll" class="text-blue-400 hover:text-rose-500 transition-colors p-1">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
                         <div class="flex flex-wrap gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
-                            <div v-for="(name, pidx) in pendingNames" :key="name" class="bg-white border border-blue-100 px-3 py-1.5 rounded-xl text-[15px] font-black text-blue-900 shadow-sm flex items-center group active:scale-95 transition-all">
+                            <div v-for="(name, pidx) in (selectionMode === 'fixed' ? fixedParticipants : pendingNames)" :key="name" class="bg-white border border-blue-100 px-3 py-1.5 rounded-xl text-[15px] font-black text-blue-900 shadow-sm flex items-center group active:scale-95 transition-all">
                                 
                                 {{ name }}
                                 <button @click="togglePending(name)" class="ml-1.5 text-blue-200 group-hover:text-rose-400 transition-colors">
@@ -80,21 +80,7 @@
 
                     
                 <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-6 max-w-lg mx-auto w-full no-scrollbar pb-64">
-                    <!-- MODE TOGGLE (Only for Direct Sort mode) -->
-                    <div v-if="lotteryMode === false" class="flex p-1 bg-slate-100 rounded-2xl sticky top-0 z-[10] shadow-sm">
-                        <button @click="selectionSubStep = 1" 
-                            class="flex-1 py-3 rounded-xl font-black text-[15px] transition-all flex items-center justify-center space-x-2"
-                            :class="selectionSubStep === 1 ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-400'">
-                            <span class="text-[18px]">📌</span>
-                            <span>選取固定</span>
-                        </button>
-                        <button @click="selectionSubStep = 2" 
-                            class="flex-1 py-3 rounded-xl font-black text-[15px] transition-all flex items-center justify-center space-x-2"
-                            :class="selectionSubStep === 2 ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'">
-                            <span class="text-[18px]">🎲</span>
-                            <span>選取抽籤</span>
-                        </button>
-                    </div>
+                    <!-- MODE TOGGLE REMOVED - NOW HANDLED BY NEXT BUTTON -->
 
                     <!-- GRID SELECTION -->
                     <div class="space-y-6">
@@ -155,10 +141,15 @@
                 <div class="space-y-2">
                     <button
                         @click="confirmSelection"
-                        :disabled="pendingNames.length === 0"
+                        :disabled="lotteryMode === false && selectionSubStep === 1 ? false : pendingNames.length === 0"
                         class="w-full py-[12px] rounded-2xl font-black text-[17px] bg-indigo-200 text-white shadow-sm active:scale-95 transition-all disabled:opacity-50"
                         style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                        確定名單 (共 {{ pendingNames.length }} 人) → 下一步
+                        <template v-if="lotteryMode === false && selectionSubStep === 1">
+                            確定固定名單 (共 {{ fixedParticipants.length }} 人) → 下一步
+                        </template>
+                        <template v-else>
+                            確定名單 (共 {{ pendingNames.length }} 人) → 下一步
+                        </template>
                     </button>
                     <button @click="handleBack" class="w-full py-1 text-[13px] font-bold text-slate-400 flex items-center justify-center">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -250,37 +241,9 @@
                         </div>
                     </div>
 
-                                        <!-- DIRECT MODE: Fixed Front Positions -->
+                    <!-- DIRECT MODE: Summary -->
                     <div v-else class="space-y-8">
-                        <!-- Section 1: Fixed People -->
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex flex-col">
-                                    <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest">1. 選擇優先固定人員</label>
-                                    <span class="text-[12px] text-slate-400 font-bold">點選變為紫色，將固定排在最前面</span>
-                                </div>
-                                <span class="text-[17px] font-black text-indigo-600">{{ fixedParticipants.length }} 人</span>
-                            </div>
-                                                                                                                <div class="grid grid-cols-4 gap-2">
-                                <button v-for="name in selectedNames" :key="'fixed'+name"
-                                    @click="toggleFixedParticipant(name)"
-                                    class="h-14 flex flex-col items-center justify-center rounded-xl border-2 font-black text-[15px] transition-all active:scale-95 leading-tight shadow-sm relative"
-                                    :style="getStep2DirectStyle(name)">
-                                    <span class="truncate leading-none pointer-events-none relative flex items-center">
-                                        <!-- Red Checkmark: ONLY for fixed personnel -->
-                                        <span v-if="fixedParticipants.includes(name.trim())" class="mr-1 text-rose-500">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                        </span>
-                                        {{ name }}
-                                        <!-- Order Label for fixed -->
-                                        <span v-if="fixedParticipants.includes(name.trim())" 
-                                            class="absolute -top-4 -right-4 w-5 h-5 rounded-full bg-rose-500 text-white text-[11px] flex items-center justify-center border-2 border-white shadow-md font-black z-10">
-                                            {{ fixedParticipants.indexOf(name.trim()) + 1 }}
-                                        </span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
+                        <!-- Section 1: Fixed People (Removed grid, only showing summary below) -->
 
                         <!-- Section 2: Summary of Lists -->
                         <div v-if="fixedParticipants.length > 0 || (selectedNames.length - fixedParticipants.length) > 0" class="pt-6 border-t border-slate-100 space-y-6">
@@ -762,6 +725,11 @@ const invertSelection = () => {
 };
 
 const confirmSelection = () => {
+    if (lotteryMode.value === false && selectionSubStep.value === 1) {
+        selectionSubStep.value = 2;
+        return;
+    }
+
     if (pendingNames.value.length === 0) return;
     
     selectedNames.value = [...pendingNames.value];
@@ -793,6 +761,13 @@ const handleBack = () => {
     }
     if (currentStep.value === 2) {
         currentStep.value = 1;
+        if (lotteryMode.value === false) {
+            selectionSubStep.value = 2; // Go back to pool selection
+        }
+        return;
+    }
+    if (currentStep.value === 1 && lotteryMode.value === false && selectionSubStep.value === 2) {
+        selectionSubStep.value = 1; // Go back to fixed selection
         return;
     }
 
