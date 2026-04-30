@@ -24,6 +24,8 @@ class Registry extends Model
         'category',
         'record_date',
         'obtained_date',
+        'status',
+        'is_multi',
     ];
 
     public function master()

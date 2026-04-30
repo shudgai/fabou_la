@@ -22,9 +22,15 @@ class ImperialGrace extends Model
         'purpose',
         'record_date',
         'obtained_date',
+        'is_multi',
         'status',
         'remarks',
     ];
+
+    public function dharmaNameRegistries()
+    {
+        return $this->hasMany(DharmaNameRegistry::class, 'imperial_grace_id');
+    }
 
     public function master()
     {

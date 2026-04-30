@@ -70,6 +70,7 @@ class RegistryController extends Controller
                     'record_date'        => $request->record_date,
                     'obtained_date'      => $request->obtained_date,
                     'status'             => $request->status ?? '已求得',
+                    'is_multi'           => $request->is_multi ?? false,
                     'sort_order'         => $request->sort_order ?? 0,
                 ]);
             } else {
@@ -159,6 +160,7 @@ class RegistryController extends Controller
                             'dharma_name_id'   => $dharma_name_id,
                             'custom_name'      => $custom_name,
                             'obtained_date'    => $obtained_date,
+                            'status'           => $dn['status'] ?? '已求得',
                             'remarks'          => $remarks,
                             'related_personnel'=> is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [],
                         ]);
@@ -218,7 +220,10 @@ class RegistryController extends Controller
                             'dharma_name_id' => $dharma_name_id,
                             'custom_name'    => $dn['custom_name'] ?? null,
                         ],
-                        ['obtained_date' => $dn['obtained_date'] ?? null]
+                        [
+                            'obtained_date' => $dn['obtained_date'] ?? null,
+                            'status'        => $dn['status'] ?? '已求得',
+                        ]
                     );
 
                     if (isset($dn['remarks'])) {

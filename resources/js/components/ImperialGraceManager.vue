@@ -294,32 +294,65 @@
                                 </div>
                             </div>
 
-                            <div class="space-y-1">
-                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                            <!-- IF MULTI-PERSON ASSOCIATION: Show Table Layout (Figure 2) -->
+                            <div v-if="reg.is_multi || (reg.dharma_name_registries && reg.dharma_name_registries.length > 0)" class="mt-4 animate-fade-in">
+                                <!-- Name Label above table -->
+                                <div class="mb-3">
+                                    <span class="text-[17px] font-black text-slate-900">法寶名稱：{{ reg.name }}</span>
+                                </div>
+
+                                <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+                                    <table class="w-full text-[14px] border-collapse bg-white">
+                                        <thead class="bg-slate-50/50">
+                                            <tr class="text-slate-600 font-bold border-b border-slate-200">
+                                                <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 55px;">法號</th>
+                                                <th class="p-2 text-left border-r border-slate-200" style="width: 100px;">日期</th>
+                                                <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 85px;">狀態</th>
+                                                <th class="p-2 text-left">備註</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                                                <td class="p-2 border-r border-slate-100 font-bold text-slate-900">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
+                                                <td class="p-2 border-r border-slate-100 font-medium text-slate-500 whitespace-nowrap">{{ formatDate(dnr.obtained_date) }}</td>
+                                                <td class="p-2 border-r border-slate-100 font-bold whitespace-nowrap" :style="dnr.status === '未求得' ? 'color: #dc2626;' : (dnr.status === '已求得' ? 'color: #2563eb;' : 'color: #059669;')">{{ dnr.status }}</td>
+                                                <td class="p-2 text-slate-500 text-[12px] leading-snug">
+                                                    {{ Array.isArray(dnr.remarks) ? dnr.remarks.join(' ') : (dnr.remarks || '-') }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
-                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
-                            </div>
-
-                             <div class="grid grid-cols-2 gap-4">
+                            <div v-else class="space-y-4 animate-fade-in">
                                 <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
-                                    <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                        {{ reg.status }}
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                    <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                                </div>
+
+                                <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                    <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
+                                </div>
+
+                                 <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                        <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                            {{ reg.status }}
+                                        </div>
+                                    </div>
+                                    <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                        <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
                                     </div>
                                 </div>
-                                <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                    <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
-                                </div>
-                            </div>
 
-                            <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
-                                <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                    <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>

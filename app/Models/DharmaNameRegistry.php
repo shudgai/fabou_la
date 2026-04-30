@@ -18,6 +18,8 @@ class DharmaNameRegistry extends Model
         'obtained_date',
         'remarks',
         'related_personnel',
+        'status',
+        'imperial_grace_id',
     ];
 
     protected $casts = [
@@ -28,6 +30,11 @@ class DharmaNameRegistry extends Model
     public function registry()
     {
         return $this->belongsTo(Registry::class);
+    }
+
+    public function imperialGrace()
+    {
+        return $this->belongsTo(ImperialGrace::class, 'imperial_grace_id');
     }
 
     public function dharmaName()
