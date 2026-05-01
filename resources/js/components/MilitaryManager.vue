@@ -261,9 +261,9 @@
 
     <!-- FAB Bottom Navigation -->
         <mobile-navbar 
+            is-absolute
             :can-back="true"
-            :show-action="true"
-            :action-disabled="false"
+            :show-action="!addMode"
             :action-active="showAddMenu"
             :search-active="showSearch"
             :can-search="true"

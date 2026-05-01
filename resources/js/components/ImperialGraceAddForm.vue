@@ -1,10 +1,10 @@
 <template>
     <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0 imperial-grace-module">
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100vh] md:max-w-4xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-[100vh] md:max-w-2xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 py-[5px] pr-6">
@@ -12,7 +12,7 @@
                         重大皇恩專區
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors py-[5px] absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors py-[5px] absolute right-4 top-1/2 -translate-y-1/2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -217,7 +217,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
+            <div class="absolute bottom-[7vh] left-0 right-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
                     class="w-full bg-indigo-600 py-[10px] rounded-2xl text-white font-bold text-[20px] active:scale-95 transition-all disabled:bg-slate-300"
                     style="color: white !important;">
@@ -225,7 +225,7 @@
                 </button>
             </div>
 
-            <mobile-navbar :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" />
+            <mobile-navbar :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
             
             <datalist id="dharma-names">
                 <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />

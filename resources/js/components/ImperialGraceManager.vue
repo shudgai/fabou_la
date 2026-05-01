@@ -475,6 +475,7 @@
     </div> <!-- End Scrollable Area -->
 
     <mobile-navbar 
+        is-absolute
         :can-back="true"
         :show-action="!addMode"
         :action-disabled="!currentFolder"

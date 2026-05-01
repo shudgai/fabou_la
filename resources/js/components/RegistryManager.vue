@@ -1,5 +1,20 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900">
+    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module">
+        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <linearGradient id="rm-goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="rm-redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(190, 10, 30);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(160, 0, 20);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
 
         <!-- Header 1: Module Level -->
         <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
@@ -63,15 +78,8 @@
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
                         <div class="mb-2">
                             <svg class="w-[180px] h-[180px]" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient id="rm-goldGradL1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGradL1)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGradL1)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
                         <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
@@ -91,18 +99,13 @@
                         
                         <div class="relative mb-1">
                              <svg class="w-[96px] h-[96px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                <linearGradient id="rm-folderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop v-if="currentCategory === 'major'" offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                                    <stop v-if="currentCategory === 'major'" offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                                    <stop v-if="currentCategory === 'major'" offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                                    <stop v-if="currentCategory !== 'major'" offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
-                                    <stop v-if="currentCategory !== 'major'" offset="50%" style="stop-color:rgb(190, 10, 30);stop-opacity:1" />
-                                    <stop v-if="currentCategory !== 'major'" offset="100%" style="stop-color:rgb(160, 0, 20);stop-opacity:1" />
-                                </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-folderGrad)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-folderGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
+                                    :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
+                                    :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
+                                    :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
+                                    :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" 
+                                    stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
                         <div class="text-center px-1">
@@ -503,6 +506,7 @@
         <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
 
         <mobile-navbar 
+            is-absolute
             :can-back="true"
             :can-home="true"
             :show-action="true"

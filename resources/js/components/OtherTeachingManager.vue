@@ -112,6 +112,7 @@
 
             <!-- Bottom Navbar -->
             <mobile-navbar 
+                is-absolute
                 active-tab="other_teaching" 
                 :show-action="true"
                 :action-active="showModal"
@@ -124,13 +125,17 @@
                 :can-back="true" />
 
             <!-- Add/Edit Modal -->
-            <div v-if="showModal" class="fixed inset-0 z-[1000] flex flex-col bg-white animate-slide-up overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
-                    <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
-                    <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round"/></svg>
-                    </button>
-                </div>
+            <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-end md:items-center justify-center px-0 bg-slate-900/20 backdrop-blur-sm">
+                <!-- Desktop Backdrop Click Area -->
+                <div class="absolute inset-0" @click="showModal = false"></div>
+                
+                <div class="relative w-full h-[100vh] md:h-auto md:max-h-[95vh] md:max-w-2xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+                        <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
+                        <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round"/></svg>
+                        </button>
+                    </div>
                 
                 <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-32">
                     <!-- Date Input -->
@@ -181,6 +186,7 @@
                     <button @click="saveRecord" :disabled="saving" class="flex-[2] py-4 rounded-2xl font-black text-[17px] bg-indigo-600 shadow-lg shadow-indigo-100 active:scale-95 disabled:opacity-50 transition-all" style="color: white !important;">
                         {{ saving ? '儲存中...' : (isEditing ? '確認修改' : '確認存檔') }}
                     </button>
+                </div>
                 </div>
             </div>
         </div>

@@ -1,8 +1,23 @@
 <template>
-    <div class="h-full bg-white flex flex-col">
+    <div class="h-full bg-white flex flex-col other-manager-module">
+        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <linearGradient id="om-redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="om-roundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(52, 211, 153);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(16, 185, 129);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(5, 150, 105);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
         <!-- Level 1: Folder Grid View -->
-        <div v-if="!activeFolderId" class="min-h-screen bg-white">
-            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10">
+        <div v-if="!activeFolderId" class="h-full bg-white flex flex-col relative overflow-hidden">
+            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0">
                 <div class="flex items-center">
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -12,22 +27,16 @@
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
 
-            <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
+            <div class="flex-1 overflow-y-auto custom-scrollbar">
+                <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
                     style="background-color: rgb(255, 250, 205);">
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <defs>
-                                <linearGradient :id="'otherGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#otherGrad' + idx + ')'" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#otherGrad' + idx + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
@@ -47,15 +56,8 @@
                     style="background-color: rgb(255, 250, 205);">
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <defs>
-                                <linearGradient id="luckyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#luckyGrad)" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#luckyGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
@@ -72,15 +74,8 @@
                     style="background-color: rgb(255, 250, 205);">
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <defs>
-                                <linearGradient id="roundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:rgb(52, 211, 153);stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:rgb(16, 185, 129);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:rgb(5, 150, 105);stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#roundGrad)" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#roundGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-roundGrad)" style="fill: #10b981;" opacity="0.8"/>
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-roundGrad)" style="fill: #10b981;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
@@ -89,11 +84,13 @@
                             </span>
                         </div>
                     </div>
-                </button>
-            </div>
+                </button> 
+                </div> <!-- end grid -->
+            </div> <!-- end scrollable flex-1 -->
 
             <!-- Dashboard Bottom Navbar -->
             <mobile-navbar 
+                is-absolute
                 :can-back="true"
                 :show-action="true"
                 :action-disabled="false"
@@ -104,8 +101,6 @@
                 @action="prepareAddFolder"
             />
         </div>
-
-        <!-- Level 2: Record List / Content View -->
         <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->

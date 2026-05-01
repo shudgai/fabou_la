@@ -109,7 +109,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="px-6 py-4 bg-white border-t border-slate-50">
+            <div class="absolute bottom-[7vh] left-0 right-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
                 <button 
                     @click="handleSave" 
                     class="w-full bg-indigo-600 text-white font-bold py-[10px] px-4 text-[20px] rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all"
@@ -124,6 +124,7 @@
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"
+                is-absolute
             />
 
 

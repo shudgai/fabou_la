@@ -73,6 +73,12 @@ app.component('trash-manager', TrashManager);
 import KaiwenManager from './components/KaiwenManager.vue';
 app.component('kaiwen-manager', KaiwenManager);
 
+import OtherTeachingManager from './components/OtherTeachingManager.vue';
+app.component('other-teaching-manager', OtherTeachingManager);
+
+import OtherRecordsManager from './components/OtherRecordsManager.vue';
+app.component('other-records-manager', OtherRecordsManager);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

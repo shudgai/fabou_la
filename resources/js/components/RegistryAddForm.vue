@@ -245,7 +245,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="p-4 bg-white border-t border-slate-50">
+            <div class="absolute bottom-[7vh] left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
                 <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px]" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : '儲存' }}
                 </button>
@@ -261,6 +261,7 @@
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"
+                is-absolute
             />
         </div>
 
