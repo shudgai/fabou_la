@@ -23,7 +23,7 @@
                     <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">筆記系統</span>
                 </div>
                 <button v-for="item in notebookItems" :key="item.id" 
-                    @click="currentTab = item.id"
+                    @click="selectTab(item.id)"
                     :class="[
                         'flex items-center px-4 md:px-6 py-2 md:py-3 transition-all duration-200 group relative whitespace-nowrap md:whitespace-normal',
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
@@ -39,7 +39,7 @@
                 <div v-if="notebookItems.length > 0 && adminItems.length > 0" class="md:h-px md:bg-slate-50 md:mx-4 md:my-2 md:hidden h-4 w-px bg-slate-200 mx-2"></div>
                 
                 <button v-for="item in adminItems" :key="item.id" 
-                    @click="currentTab = item.id"
+                    @click="selectTab(item.id)"
                     :class="[
                         'flex items-center px-4 md:px-6 py-2 md:py-3 transition-all duration-200 group relative whitespace-nowrap md:whitespace-normal',
                         currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
@@ -65,8 +65,8 @@
                 isNotebookView ? 'p-0' : 'p-4 md:p-6 lg:p-8'
             ]">
                 <transition name="fade-slide" mode="out-in">
-                    <div :key="currentTab">
-                        <component :is="currentComponent" :user="user" @go-home="currentTab = 'grace'" />
+                    <div :key="currentTab + '-' + resetKey">
+                        <component :is="currentComponent" :user="user" @go-home="forceResetGrace" />
                     </div>
                 </transition>
             </div>
@@ -118,6 +118,21 @@ const props = defineProps({
 });
 
 const currentTab = ref(props.initialTab);
+const resetKey = ref(0);
+
+const selectTab = (id) => {
+    if (currentTab.value === id) {
+        resetKey.value++;
+    } else {
+        currentTab.value = id;
+        resetKey.value = 0;
+    }
+};
+
+const forceResetGrace = () => {
+    currentTab.value = 'grace';
+    resetKey.value++;
+};
 
 const dashboardTitle = computed(() => {
     return isNotebookView.value ? '皇恩筆記簿' : '系統管理';

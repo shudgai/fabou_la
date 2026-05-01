@@ -57,20 +57,20 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-2 gap-4 mt-6 place-items-center">
+                <div class="px-6 pb-24 grid grid-cols-2 gap-4 mt-6 place-items-center max-w-2xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
                         <div class="relative w-[150px] h-[150px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
                                 <defs>
-                                    <linearGradient :id="'fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <linearGradient :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
                                         <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#fGrad' + folder.id + ')'" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#fGrad' + folder.id + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#mm-fGrad' + folder.id + ')'" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#mm-fGrad' + folder.id + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
                                 <span class="text-[20px] font-black text-white tracking-tight leading-tight text-center drop-shadow-sm">{{ folder.name }}</span>

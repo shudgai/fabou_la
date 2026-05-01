@@ -1,5 +1,25 @@
 <template>
     <div class="bg-white h-[100vh] flex justify-center text-slate-900 overflow-hidden">
+        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <linearGradient id="tm-dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="tm-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="tm-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
@@ -101,22 +121,15 @@
                     </div>
                 </div>
                 
-                <div class="px-[10px] pb-24 flex flex-col items-center space-y-[-10px] mt-[-30px]">
+                <div class="px-[10px] pb-24 flex flex-col items-center space-y-2 mt-6 max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px] md:mb-6">
                         <div class="relative w-[260px] h-[260px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient id="dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#dailyGrad)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#dailyGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-dailyGrad)" style="fill: #fbbf24;" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-dailyGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
@@ -130,18 +143,11 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button 
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-red-500 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px]">
                         <div class="relative w-[260px] h-[260px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient id="mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#mastersGrad)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#mastersGrad)" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-mastersGrad)" style="fill: #ef4444;" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-mastersGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-8 px-4">
@@ -157,7 +163,7 @@
             </div>
 
             <!-- Level 1.5: Subfolders for Masters -->
-            <div v-else-if="currentCategory === 'masters' && !currentFolder && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+            <div v-else-if="currentCategory === 'masters' && !currentFolder && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white max-w-2xl mx-auto">
                 <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-30">
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -167,18 +173,11 @@
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-red-500 md:rounded-2xl md:shadow-sm md:w-[180px] md:h-[180px]">
                         <div class="relative w-[148px] h-[148px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient :id="'fGrad' + idx" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                                        <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#fGrad' + idx + ')'" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#fGrad' + idx + ')'" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
