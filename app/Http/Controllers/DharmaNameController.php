@@ -10,9 +10,16 @@ class DharmaNameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = \App\Models\DharmaName::query();
+        
+        if ($request->has('with')) {
+            $with = explode(',', $request->input('with'));
+            $query->with($with);
+        }
+
+        return $query->orderBy('name')->get();
     }
 
     /**
