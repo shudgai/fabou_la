@@ -5,23 +5,23 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
         @php $perms = Auth::user()->getPermissions(); @endphp
         <!-- Dashboard Header -->
-        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold font-outfit text-slate-900 tracking-tight">皇恩筆記本總覽</h1>
-                <p class="text-slate-500 text-base mt-1">歡迎回來，{{ Auth::user()->name }}。目前系統已存儲以下紀錄：</p>
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pt-12">
+            <div class="text-center md:text-left">
+                <h1 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 tracking-tight mb-3">皇恩筆記本</h1>
+                <p class="text-slate-400 text-lg md:text-xl font-bold">歡迎回來，{{ Auth::user()->name }}</p>
             </div>
-            <div class="flex gap-3">
-                <a href="{{ route('note.index') }}" class="bg-indigo-600 text-white px-5 py-2.5 rounded-2xl text-base font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center">
+            <div class="flex justify-center">
+                <a href="{{ route('note.index') }}" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-5 rounded-[24px] text-xl font-black shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group">
                     進入皇恩筆記本
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-6 h-6 ml-3 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
             </div>
         </div>
 
 
 
-        <!-- Main Navigation Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-6 justify-center justify-items-center">
+        <!-- Main Navigation Grid Hidden for all versions -->
+        <div class="hidden">
             <!-- Major Grace Card -->
             @if($perms['can_see_grace'])
             <a href="{{ route('note.index') }}#grace" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
