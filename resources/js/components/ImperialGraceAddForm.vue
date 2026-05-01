@@ -28,7 +28,7 @@
                     :class="localMode === 'batch' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-400 border border-slate-200'"
                     class="flex-1 py-[8px] text-[16px] font-black rounded-xl transition-all whitespace-nowrap"
                     :style="localMode === 'batch' ? 'color: white !important;' : ''">
-                    文字/EXCEL 記載
+                    貼入法寶名稱明細
                 </button>
             </div>
 
@@ -181,11 +181,9 @@
                         <!-- Batch Mode Selection Removed (Automatic Parsing) -->
 
                         <div class="flex items-center justify-between">
-                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest ml-1">貼入清單內容</label>
+                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest ml-1">貼入法寶名稱明細</label>
                             <div class="flex items-center space-x-3">
                                 <button v-if="batchInput" @click="batchInput = ''" class="text-[11px] text-red-500 hover:underline">清除內容</button>
-                                <button @click="handleDirectPaste" class="text-[11px] text-emerald-600 font-bold px-2 py-[5px]">貼上內容</button>
-                                <button @click="$refs.fileInput.click()" class="text-[11px] text-indigo-600 px-2 py-[5px]">匯入檔案</button>
                             </div>
                         </div>
                         <textarea v-model="batchInput" rows="8" class="w-full rounded-xl border border-slate-400 p-4 font-mono text-[14px]" 

@@ -279,7 +279,7 @@ const newRecord = ref({ title: '', content: '', record_date: getTodayStr() });
 
 const sortedFolders = computed(() => {
     return [...folders.value]
-        .filter(f => f.name !== '__other_records_zone__')
+        .filter(f => f.name !== '__other_records_zone__' && f.name !== '抽籤紀錄')
         .sort((a, b) => {
             const isKaiwenA = a.name.includes('開文核定');
             const isKaiwenB = b.name.includes('開文核定');
@@ -327,10 +327,6 @@ const loadData = async () => {
     }
     if (randomFolders.length === 0) {
         await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
-        needReload = true;
-    }
-    if (!folders.value.some(f => f.name === '抽籤紀錄')) {
-        await axios.post('/other-folders', { name: '抽籤紀錄', color: '#8b5cf6' });
         needReload = true;
     }
 

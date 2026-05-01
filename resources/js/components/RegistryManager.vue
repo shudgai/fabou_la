@@ -16,24 +16,26 @@
             </defs>
         </svg>
 
-        <!-- Header 1: Module Level -->
+        <!-- Header 1: Module Level (Hide titles on Desktop, keep buttons) -->
         <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 15px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden">
+                    <div class="app-title text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                         新增法寶登記
                     </div>
                 </div>
             </div>
-            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden" @click="resetToRoot">
                 <div class="app-title text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
             </div>
-            <div v-if="currentFolder" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+            <!-- Standard Desktop Controls (Aligned Right) -->
+            <div class="flex-1 hidden md:block"></div>
+            <div v-if="currentFolder" class="flex items-center space-x-2">
                 <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
@@ -45,8 +47,8 @@
             </div>
         </div>
 
-        <!-- Header 2: Folder/Action Level -->
-        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px]">
+        <!-- Header 2: Folder/Action Level (Hide on Desktop) -->
+        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px] md:hidden">
             <div class="flex items-center flex-1 min-w-0">
                 <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -128,6 +130,21 @@
 
             <!-- Folder Contents -->
             <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto', focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : '']">
+                <!-- Desktop Centered Header Section (Matches Fig 2 style) -->
+                <div class="hidden md:flex flex-col items-center py-6 border-b border-slate-100 bg-white sticky top-0 z-[50]">
+                    <div class="flex items-center w-full px-4 mb-2">
+                        <button @click="handleBack" class="p-2 text-slate-400 active:scale-90 transition-all">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <div class="flex-1 text-center pr-12">
+                            <h1 class="text-[22px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
+                            <h2 class="text-[20px] font-black text-red-600 mt-1">
+                                {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
                 <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>

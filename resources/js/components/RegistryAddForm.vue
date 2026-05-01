@@ -189,13 +189,8 @@
                 <!-- Batch Mode Fields (Matching Mockup) -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
                     <div class="flex items-center justify-between ml-1">
-                        <label class="text-[17px] font-bold text-slate-800">貼入清單內容</label>
+                        <label class="text-[17px] font-bold text-slate-800">貼入法寶名稱明細</label>
                         <div class="flex items-center space-x-2">
-                            <button @click="$refs.fileInput.click()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[14px] font-bold flex items-center active:scale-95 transition-all shadow-sm" style="color: white !important;">
-                                匯入檔案 (Excel/Word)
-                                <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <input type="file" ref="fileInput" @change="handleFileImport" accept=".xlsx, .xls" class="hidden">
                         </div>
                     </div>
                     <textarea v-model="batchInput" rows="10" 
