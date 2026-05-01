@@ -245,8 +245,8 @@
                         </div>
 
                         <!-- Independent Menu Button (Three Dots) for Collapsed State -->
-                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+25px)] z-[20] pr-2">
-                            <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-500' : 'text-slate-400']">
+                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+30px)] z-[20] pr-2">
+                            <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-600' : 'text-red-500']">
                                 <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
                                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
@@ -264,10 +264,11 @@
                         </div>
 
                         <!-- Expanded Detail (Read-Only Style) -->
-                        <div v-if="expandedId === reg.id" class="animate-fade-in pt-[5px] pb-4 bg-white space-y-4 relative px-3 border-t border-slate-50">
+                        <div v-if="expandedId === reg.id" @click.stop 
+                             class="animate-fade-in pt-[10px] pb-5 bg-white space-y-4 relative mx-[-12px] px-[12px] border-t border-slate-100 shadow-inner overflow-y-auto max-h-[80vh]">
                             <!-- Three dots menu in expanded view -->
-                            <div class="absolute right-2 top-[-7px] z-[20]">
-                                <button @click.stop="toggleMenu(reg.id)" class="p-3 text-slate-400 active:scale-90 transition-all">
+                            <div class="absolute right-2 top-[-15px] z-[20]">
+                                <button @click.stop="toggleMenu(reg.id)" class="p-3 text-red-500 active:scale-90 transition-all">
                                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
@@ -275,83 +276,196 @@
                                     <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                     </button>
-                                    <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
                                     <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                     <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                     <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                 </div>
                             </div>
 
-                            <!-- Detail Content Grid (Read Only) -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                    <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</div>
-                                </div>
-                                <div class="space-y-1 text-right pr-8">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                    <div class="app-body font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
-                                </div>
-                            </div>
-
-                            <!-- IF MULTI-PERSON ASSOCIATION: Show Table Layout (Figure 2) -->
-                            <div v-if="reg.is_multi || (reg.dharma_name_registries && reg.dharma_name_registries.length > 0)" class="mt-4 animate-fade-in">
-                                <!-- Name Label above table -->
-                                <div class="mb-3">
-                                    <span class="text-[17px] font-black text-slate-900">法寶名稱：{{ reg.name }}</span>
-                                </div>
-
-                                <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
-                                    <table class="w-full text-[14px] border-collapse bg-white">
-                                        <thead class="bg-slate-50/50">
-                                            <tr class="text-slate-600 font-bold border-b border-slate-200">
-                                                <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 55px;">法號</th>
-                                                <th class="p-2 text-left border-r border-slate-200" style="width: 100px;">日期</th>
-                                                <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 85px;">狀態</th>
-                                                <th class="p-2 text-left">備註</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                                                <td class="p-2 border-r border-slate-100 font-bold text-slate-900">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
-                                                <td class="p-2 border-r border-slate-100 font-medium text-slate-500 whitespace-nowrap">{{ formatDate(dnr.obtained_date) }}</td>
-                                                <td class="p-2 border-r border-slate-100 font-bold whitespace-nowrap" :style="dnr.status === '未求得' ? 'color: #dc2626;' : (dnr.status === '已求得' ? 'color: #2563eb;' : 'color: #059669;')">{{ dnr.status }}</td>
-                                                <td class="p-2 text-slate-500 text-[12px] leading-snug">
-                                                    {{ Array.isArray(dnr.remarks) ? dnr.remarks.join(' ') : (dnr.remarks || '-') }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div v-else class="space-y-4 animate-fade-in">
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                    <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
-                                </div>
-
-                                <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                    <div class="app-body font-bold text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
-                                </div>
-
-                                 <div class="grid grid-cols-2 gap-4">
+                            <!-- INLINE EDITING FORM -->
+                            <div v-if="inlineEditId === reg.id" class="space-y-4 animate-fade-in pb-4">
+                                <div class="grid grid-cols-2 gap-3">
                                     <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
-                                        <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                            {{ reg.status }}
+                                        <label class="app-title tracking-wider block text-slate-400 font-bold">得知日期</label>
+                                        <div class="relative">
+                                            <input v-model="inlineEditData.record_date" type="text" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                        <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-400 font-bold">載錄目標仙師</label>
+                                        <select v-model="inlineEditData.master_id" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
-                                    <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                    <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                <div class="space-y-1">
+                                    <label class="app-title tracking-wider block text-slate-400 font-bold">法寶名稱</label>
+                                    <input v-model="inlineEditData.name" type="text" class="w-full p-2 border rounded-xl text-[17px] font-black text-indigo-700">
+                                </div>
+
+                                <div class="space-y-1">
+                                    <label class="app-title tracking-wider block text-slate-400 font-bold">法寶用意</label>
+                                    <textarea v-model="inlineEditData.purpose" rows="2" class="w-full p-2 border rounded-xl text-[15px] font-bold"></textarea>
+                                </div>
+
+                                <!-- Inline Personnel Editor (For Multi-person) -->
+                                <div v-if="inlineEditData.is_multi || (inlineEditData.dharma_name_registries && inlineEditData.dharma_name_registries.length > 0)" class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="app-title tracking-wider text-slate-400 font-bold">人員名單</label>
+                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 text-white px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95" style="color: white !important;">＋ 新增人員</button>
+                                    </div>
+                                    <div class="space-y-2 border-t pt-2">
+                                        <div v-for="(p, idx) in inlineEditData.dharma_name_registries" :key="idx" class="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-2">
+                                            <div class="flex items-center space-x-2">
+                                                <input v-model="p.custom_name" placeholder="法號" class="flex-1 p-2 border rounded-lg text-[14px] font-bold">
+                                                <select v-model="p.status" class="w-24 p-2 border rounded-lg text-[13px] font-bold">
+                                                    <option>已登記</option>
+                                                    <option>已求得</option>
+                                                    <option>未求得</option>
+                                                </select>
+                                                <button @click="inlineEditData.dharma_name_registries.splice(idx, 1)" class="text-red-400 p-1">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div class="relative">
+                                                    <input v-model="p.obtained_date" placeholder="求得日期" class="w-full p-2 border rounded-lg text-[12px] pr-8">
+                                                    <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '人員') + '求得日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 p-1">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </div>
+                                                <input v-model="p.remarks" placeholder="備註" class="w-full p-2 border rounded-lg text-[12px]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-else class="grid grid-cols-2 gap-3">
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-400 font-bold">目前狀態</label>
+                                        <select v-model="inlineEditData.status" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <option>已登記</option>
+                                            <option>已求得</option>
+                                            <option>未求得</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-400 font-bold">求得日期</label>
+                                        <div class="relative">
+                                            <input v-model="inlineEditData.obtained_date" type="text" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <button @click="activePicker = { field: 'obtained_date', title: '修改求得日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <label class="app-title tracking-wider block text-slate-400 font-bold">備註</label>
+                                    <textarea v-model="inlineEditData.remarks" rows="2" class="w-full p-2 border rounded-xl text-[14px]"></textarea>
+                                </div>
+
+                                <div class="flex space-x-2 pt-2">
+                                    <button @click="saveInlineEdit" :disabled="isSaving" 
+                                        class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all"
+                                        style="color: white !important;">
+                                        {{ isSaving ? '儲存中...' : '確認儲存' }}
+                                    </button>
+                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all"
+                                        style="color: white !important;">
+                                        取消
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Detail Content Grid (Read Only View) -->
+                            <div v-else class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                        <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</div>
+                                    </div>
+                                    <div class="space-y-1 text-right pr-8">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                        <div class="app-body font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- IF MULTI-PERSON ASSOCIATION: Show Table Layout (Figure 2) -->
+                                <div v-if="reg.is_multi || (reg.dharma_name_registries && reg.dharma_name_registries.length > 0)" class="mt-4 animate-fade-in">
+                                    <div class="mb-3">
+                                        <label class="app-title tracking-wider text-slate-500 font-bold mr-1">法寶名稱</label>
+                                        <span class="text-[17px] font-black text-slate-900">：{{ reg.name }}</span>
+                                    </div>
+
+                                    <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="mb-4">
+                                        <label class="app-title tracking-wider text-slate-500 font-bold mr-1">法寶用意</label>
+                                        <div class="mt-1 text-[17px] font-normal text-slate-900 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">{{ reg.purpose }}</div>
+                                    </div>
+
+                                    <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+                                        <table class="w-full text-[14px] border-collapse bg-white">
+                                            <thead class="bg-slate-50/50">
+                                                <tr class="text-slate-600 font-bold border-b border-slate-200">
+                                                    <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 55px;">法號</th>
+                                                    <th class="p-2 text-left border-r border-slate-200" style="width: 100px;">日期</th>
+                                                    <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 85px;">狀態</th>
+                                                    <th class="p-2 text-left">備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                                                    <td class="p-2 border-r border-slate-100 font-bold text-slate-900">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
+                                                    <td class="p-2 border-r border-slate-100 font-medium text-slate-500 whitespace-nowrap">{{ formatDate(dnr.obtained_date) }}</td>
+                                                    <td class="p-2 border-r border-slate-100 font-bold whitespace-nowrap" :style="dnr.status === '未求得' ? 'color: #dc2626 !important;' : (dnr.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">{{ dnr.status }}</td>
+                                                    <td class="p-2 text-slate-500 text-[12px] leading-snug">
+                                                        {{ Array.isArray(dnr.remarks) ? dnr.remarks.join(' ') : (dnr.remarks || '-') }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-4 border-t border-slate-50 mt-4">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                        <div class="app-body font-normal text-slate-900 leading-relaxed whitespace-pre-wrap text-[17px]">{{ reg.remarks }}</div>
+                                    </div>
+                                </div>
+
+                                <div v-else class="space-y-4 animate-fade-in">
+                                    <div class="space-y-1">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                        <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                                    </div>
+
+                                    <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                        <div class="app-body font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                            <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                            <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                                {{ reg.status }}
+                                            </div>
+                                        </div>
+                                        <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                            <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                            <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
+                                        <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                        <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -389,19 +503,22 @@
     />
 
     <imperial-grace-add-form 
+        v-if="addMode"
+        :key="'add-form-' + addSessionKey"
         :mode="addMode"
         :initialData="form"
         :masters="masters"
         :isSaving="isSaving"
         @saveSingle="saveSingle"
         @saveBatch="triggerBatchSave"
-        @cancel="addMode = null"
+        @open-global-picker="activePicker = { ...$event, isAddForm: true }"
+        @close="addMode = null"
         @fileUpload="handleFileUpload"
     />
 
     <compact-date-picker 
         v-if="activePicker"
-        v-model="inlineEditData[activePicker.field]"
+        v-model="activePickerValue"
         :title="activePicker.title"
         @close="activePicker = null"
     />
@@ -427,6 +544,8 @@ const resetToRoot = () => {
     reorderMode.value = false;
     addMode.value = null;
 };
+
+
 
 const formatDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr || '-';
@@ -465,6 +584,7 @@ const expandedId = ref(null); // 追蹤目前展開的 ID，單一變數最穩
 const focusedId = ref(null); // 追蹤正在「聚焦」的單筆紀錄
 const batchInput = ref('');
 const batchMasterId = ref(null);
+const addSessionKey = ref(0);
 const searchQuery = ref('');
 const form = ref({
     id: null, master_id: null, name: '', purpose: '', remarks: '', record_date: '', obtained_date: '', status: '未求得'
@@ -472,7 +592,31 @@ const form = ref({
 const inlineEditId = ref(null);
 const inlineEditData = ref({});
 // Removed duplicate saving variable
-const activePicker = ref(null); // { id, field, title }
+const activePicker = ref(null); // { idx, field, title }
+const activePickerValue = computed({
+    get: () => {
+        if (!activePicker.value) return '';
+        if (activePicker.value.isAddForm) {
+            return form.value[activePicker.value.field];
+        }
+        if (activePicker.value.idx !== undefined) {
+            return inlineEditData.value.dharma_name_registries[activePicker.value.idx][activePicker.value.field];
+        }
+        return inlineEditData.value[activePicker.value.field];
+    },
+    set: (val) => {
+        if (!activePicker.value) return;
+        if (activePicker.value.isAddForm) {
+            form.value[activePicker.value.field] = val;
+            return;
+        }
+        if (activePicker.value.idx !== undefined) {
+            inlineEditData.value.dharma_name_registries[activePicker.value.idx][activePicker.value.field] = val;
+        } else {
+            inlineEditData.value[activePicker.value.field] = val;
+        }
+    }
+});
 
 const addActions = computed(() => [
     { 
@@ -615,17 +759,10 @@ const toggleExpand = (id) => {
         expandedId.value = id;
         focusedId.value = id;
         openMenuId.value = null;
-        prepareInlineEdit(id);
     }
 };
 
-const prepareInlineEdit = (id) => {
-    const reg = allRegistries.value.find(r => r.id === id);
-    if (reg) {
-        inlineEditId.value = id;
-        inlineEditData.value = { ...reg };
-    }
-};
+
 
 const cancelInlineEdit = () => {
     inlineEditId.value = null;
@@ -680,7 +817,31 @@ watch(currentFolder, () => {
 
 const handleStatusChange = () => { if (form.value.status === '未求得') form.value.obtained_date = ''; };
 
-const editItem = (reg) => { form.value = { ...reg }; addMode.value = 'single'; openMenuId.value = null; };
+const editItem = (reg) => { 
+    inlineEditId.value = reg.id;
+    // Deep clone to avoid mutating original list until save
+    inlineEditData.value = JSON.parse(JSON.stringify(reg));
+    // Ensure dharma_name_registries is an array
+    if (!inlineEditData.value.dharma_name_registries) inlineEditData.value.dharma_name_registries = [];
+    
+    // Map existing registries to simple format
+    inlineEditData.value.dharma_name_registries = inlineEditData.value.dharma_name_registries.map(d => ({
+        ...d,
+        custom_name: d.dharma_name?.name || d.custom_name,
+        remarks: Array.isArray(d.remarks) ? d.remarks.join(' ') : (d.remarks || '')
+    }));
+
+    openMenuId.value = null; 
+};
+
+const addPersonnelInline = () => {
+    inlineEditData.value.dharma_name_registries.push({
+        custom_name: '',
+        status: '已登記',
+        obtained_date: '',
+        remarks: ''
+    });
+};
 
 const confirmDelete = (id) => {
     deleteConfirmId.value = id;
@@ -806,6 +967,7 @@ const exportListTxt = () => {
 
 const prepareAdd = (mode) => {
     const defaultMasterId = currentFolder.value && currentFolder.value.id !== 'unobtained' ? currentFolder.value.id : null;
+    // 重設單筆表單
     form.value = { 
         id: null, 
         master_id: defaultMasterId, 
@@ -816,10 +978,11 @@ const prepareAdd = (mode) => {
         obtained_date: '', 
         status: '未求得' 
     };
-    if (mode === 'batch') {
-        batchInput.value = '';
-        batchMasterId.value = defaultMasterId;
-    }
+    // 重設批次輸入
+    batchInput.value = '';
+    batchMasterId.value = defaultMasterId;
+    
+    addSessionKey.value++;
     addMode.value = mode;
     showAddMenu.value = false;
 };

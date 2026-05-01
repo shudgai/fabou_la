@@ -131,23 +131,56 @@ class ImperialGraceController extends Controller
 
     public function batchStoreRegistry(Request $request)
     {
-        // Keep simple for batch
         $items = $request->input('items', []);
         $masterId = $request->input('master_id');
         $userId = auth()->id();
-        $created = [];
+        $results = [];
 
-        foreach ($items as $item) {
-            $name = $item['name'] ?? '';
-            if (!$name || ImperialGrace::where('name', $name)->exists()) continue;
-            
-            $created[] = ImperialGrace::create(array_merge([
-                'user_id' => $userId,
-                'master_id' => $item['master_id'] ?? $masterId,
-                'status' => '已登記',
-            ], $item));
-        }
-        return response()->json($created, 201);
+        return DB::transaction(function() use ($items, $masterId, $userId) {
+            foreach ($items as $item) {
+                $name = $item['name'] ?? '';
+                if (!$name || ImperialGrace::where('name', $name)->exists()) continue;
+                
+                $grace = ImperialGrace::create([
+                    'user_id'       => $userId,
+                    'master_id'     => $item['master_id'] ?? $masterId,
+                    'name'          => $name,
+                    'purpose'       => $item['purpose'] ?? null,
+                    'record_date'   => $item['record_date'] ?? null,
+                    'obtained_date' => $item['obtained_date'] ?? null,
+                    'status'        => $item['status'] ?? '已登記',
+                    'is_multi'      => $item['is_multi'] ?? false,
+                    'remarks'       => $item['remarks'] ?? null,
+                ]);
+
+                if (!empty($item['dharma_name_registries'])) {
+                    foreach ($item['dharma_name_registries'] as $dn) {
+                        $dharma_name_id = $dn['dharma_name_id'] ?? null;
+                        $custom_name = $dn['custom_name'] ?? null;
+                        
+                        if (empty($dharma_name_id) && !empty($custom_name)) {
+                            $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
+                            if ($matched) {
+                                $dharma_name_id = $matched->id;
+                                $custom_name = null;
+                            }
+                        }
+
+                        DharmaNameRegistry::create([
+                            'imperial_grace_id' => $grace->id,
+                            'dharma_name_id'    => $dharma_name_id,
+                            'custom_name'       => $custom_name,
+                            'obtained_date'     => $dn['obtained_date'] ?? null,
+                            'status'            => $dn['status'] ?? '已登記',
+                            'remarks'           => $this->normalizeRemarks($dn['remarks'] ?? null),
+                            'related_personnel' => $dn['related_personnel'] ?? [],
+                        ]);
+                    }
+                }
+                $results[] = $grace;
+            }
+            return response()->json($results, 201);
+        });
     }
 
     public function reorder(Request $request)

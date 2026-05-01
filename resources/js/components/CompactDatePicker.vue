@@ -153,9 +153,10 @@ const isToday = (day, isCurrent) => {
 };
 
 const setToday = () => {
-    currentYear.value = today.getFullYear();
-    currentMonth.value = today.getMonth();
-    selectDay(today.getDate());
+    const now = new Date();
+    currentYear.value = now.getFullYear();
+    currentMonth.value = now.getMonth();
+    selectDay(now.getDate());
 };
 
 const clear = () => {
