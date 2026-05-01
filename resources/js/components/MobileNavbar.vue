@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-[1000] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]" style="height: 7vh;">
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-[3000] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]" style="height: 7vh;">
         <div class="grid grid-cols-5 h-full items-center px-2">
             <!-- BACK BUTTON -->
             <div class="flex justify-center">

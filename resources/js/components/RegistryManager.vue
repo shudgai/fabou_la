@@ -152,8 +152,9 @@
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
+                             @click="!expandedIds.has(item.id) ? toggleExpand(item.id) : null"
                              :class="[
-                                 'bg-white py-[15px] px-[12px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
+                                 'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
@@ -210,7 +211,7 @@
                             </div>
 
                             <!-- Card Header (Toggle Expansion) -->
-                            <div v-if="!expandedIds.has(item.id)" @click="toggleExpand(item.id)" class="space-y-2">
+                            <div v-if="!expandedIds.has(item.id)" class="space-y-2">
                                 <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="flex items-center justify-between pr-12 mt-[10px]">
                                     <div class="app-title font-outfit uppercase tracking-widest">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                 </div>
@@ -233,7 +234,7 @@
                              
 
 
-                                    <div v-if="expandedIds.has(item.id)" @click.stop class="mt-[10px] pt-[10px] border-t border-slate-50">
+                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50">
                                         <!-- Detailed Record View -->
                                         <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
                                         <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="space-y-1">
@@ -246,11 +247,11 @@
                                                 </div>
                                             <div v-if="item.purpose" class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit text-red-600">法寶用意</label>
-                                                <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit">{{ item.purpose }}</div>
+                                                <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit whitespace-pre-wrap">{{ item.purpose }}</div>
                                             </div>
                                             <div v-if="item.acquisition_method" class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit text-red-600">求寶方式</label>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.acquisition_method }}</div>
+                                                <div class="text-[17px] font-bold text-slate-900 font-outfit whitespace-pre-wrap">{{ item.acquisition_method }}</div>
                                             </div>
                                             <div v-if="item.remarks" class="space-y-1">
                                                 <label class="tracking-widest font-bold font-outfit text-red-600">備註</label>
@@ -277,11 +278,11 @@
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                    <input type="text" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
+                                                    <textarea rows="2" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit custom-scrollbar"></textarea>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                    <input type="text" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
+                                                    <textarea rows="2" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit custom-scrollbar"></textarea>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">備註</label>
@@ -295,36 +296,36 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
-                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-left font-black w-[60px] whitespace-nowrap">法號</th>
+                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-left font-black w-[60px] whitespace-nowrap">{{ isPalaceRecord(item) ? '宮名' : '法號/群組' }}</th>
                                                                 <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[130px] whitespace-nowrap">日期</th>
                                                                 <th class="border-b border-slate-100 px-3 py-[5px].5 text-center font-black">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="dn in dharmaNames" :key="dn.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ dn.name }}</td>
+                                                            <tr v-for="recipient in (isPalaceRecord(item) ? palaceSortOrder.map(name => ({ id: name, name })) : dharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors">
+                                                                <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ recipient.name }}</td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div class="flex items-center px-[2px] py-1 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id)" 
-                                                                            v-model="editMap[item.id + '-' + dn.id].obtained_date" 
+                                                                            v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
                                                                             type="text"
                                                                             class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none"
                                                                             style="color: rgb(220, 20, 40) !important;">
                                                                         <button v-if="editingIds.has(item.id)" 
-                                                                            @click.stop="activePicker = { id: item.id + '-' + dn.id, field: 'obtained_date', title: dn.name }"
+                                                                            @click.stop="activePicker = { id: item.id + '-' + (recipient.id), field: 'obtained_date', title: recipient.name }"
                                                                             class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                         </button>
-                                                                        <span v-else :class="editMap[item.id + '-' + dn.id].obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
-                                                                            {{ formatDisplayDate(editMap[item.id + '-' + dn.id].obtained_date) || '-' }}
+                                                                        <span v-else :class="(editMap[item.id + '-' + recipient.id]?.obtained_date || (typeof recipient.id === 'string' && editMap[item.id + '-' + recipient.id.replace('昇','升')]?.obtained_date)) ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
+                                                                            {{ formatDisplayDate(editMap[item.id + '-' + recipient.id]?.obtained_date || (typeof recipient.id === 'string' ? editMap[item.id + '-' + recipient.id.replace('昇','升')]?.obtained_date : null)) || '-' }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div @click.stop="triggerRemarksEdit(item, dn.id)" 
+                                                                    <div @click.stop="triggerRemarksEdit(item, recipient.id)" 
                                                                         class="w-full py-[5px] px-3 flex items-center justify-center transition-colors">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
-                                                                        <span v-else-if="item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
+                                                                        <span v-else-if="item.dharma_name_registries?.find(r => (getDharmaNameText(r).replace('升','昇') === (typeof recipient.name === 'string' ? recipient.name.replace('升','昇') : recipient.name)))?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
                                                                         <span v-else class="text-[15px] text-slate-200">-</span>
                                                                     </div>
                                                                 </td>
@@ -339,7 +340,7 @@
                                                         <thead>
                                                              <tr class="bg-amber-50/50 text-slate-900 font-outfit">
                                                                  <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[110px] whitespace-nowrap">日期</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[80px] whitespace-nowrap">法號</th>
+                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[80px] whitespace-nowrap">{{ isPalaceRecord(item) ? '宮名' : '法號' }}</th>
                                                                  <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[90px] whitespace-nowrap">親友</th>
                                                                  <th class="border-b border-slate-100 px-2 py-[5px].5 text-center font-black">備註</th>
                                                              </tr>
@@ -799,12 +800,20 @@ const folders = ref([
     { id: 1, name: '老祖仙師' },
     { id: 2, name: '元始仙師' },
     { id: 3, name: '道祖仙師' },
-    { id: 4, name: '靈寶仙師' },
-    { id: 5, name: '父皇' },
-    { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' },
     { id: 8, name: '閻王仙師' }
 ]);
+
+const palaceSortOrder = [
+    '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮',
+    '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
+];
+
+// Normalized check to handle variants like 升/昇
+const isPalaceRecord = (item) => {
+    if (!item.dharma_name_registries || item.dharma_name_registries.length === 0) return false;
+    const palaceRegex = /^玄(通|應|心|妙|昇|升|願|法|閻|窕|瑤|義)宮$/;
+    return item.dharma_name_registries.some(r => palaceRegex.test(getDharmaNameText(r)));
+};
 
 const loadData = async () => {
     loading.value = true;
@@ -849,12 +858,33 @@ const filteredTreasures = computed(() => {
             });
             return matchName || matchPurpose || matchRegistries;
         });
-    }
 
-    filtered.sort((a,b) => {
-        if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
-        return sortDesc.value ? (b.record_date||'').localeCompare(a.record_date||'') : (a.record_date||'').localeCompare(b.record_date||'');
-    });
+        // Matches move to top (Imperial Grace style)
+        filtered.sort((a, b) => {
+            const getMatchScore = (t) => {
+                if (t.name?.toLowerCase().includes(q)) return 3;
+                if ((t.dharma_name_registries || []).some(dnr => getDharmaNameText(dnr).toLowerCase().includes(q))) return 2;
+                if (t.purpose?.toLowerCase().includes(q)) return 1;
+                return 0;
+            };
+            const scoreA = getMatchScore(a);
+            const scoreB = getMatchScore(b);
+            if (scoreA !== scoreB) return scoreB - scoreA;
+            
+            // Secondary sort: keep original order within same score
+            if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+            const dateA = getEarliestDate(a);
+            const dateB = getEarliestDate(b);
+            return sortDesc.value ? (dateB||'').localeCompare(dateA||'') : (dateA||'').localeCompare(dateB||'');
+        });
+    } else {
+        filtered.sort((a,b) => {
+            if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+            const dateA = getEarliestDate(a);
+            const dateB = getEarliestDate(b);
+            return sortDesc.value ? (dateB||'').localeCompare(dateA||'') : (dateA||'').localeCompare(dateB||'');
+        });
+    }
     return filtered;
 });
 
@@ -877,6 +907,19 @@ const getDharmaNameText = (dnr) => {
 const getSortedRegistries = (item) => {
     let registries = [...(item.dharma_name_registries || [])];
     
+    if (isPalaceRecord(item)) {
+        return registries.sort((a, b) => {
+            const nameA = getDharmaNameText(a).replace('升', '昇');
+            const nameB = getDharmaNameText(b).replace('升', '昇');
+            const indexA = palaceSortOrder.indexOf(nameA);
+            const indexB = palaceSortOrder.indexOf(nameB);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return nameA.localeCompare(nameB, 'zh-Hant');
+        });
+    }
+
     return registries.sort((a, b) => {
         const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
         const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
@@ -1227,9 +1270,13 @@ const triggerBatchSave = async (batchData) => {
                     line = line.replace(lineStartDateMatch[0], '').trim();
                 }
 
-                const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
+                const kwMatch = line.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容|求得)\s*)?(.*?)[：:](.*)/);
                 if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
-                    treasureName = kwMatch[3].trim();
+                    let rawName = kwMatch[3].trim();
+                    // Strip common prefixes from name if they were accidentally caught
+                    rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
+                    treasureName = rawName;
+                    
                     const content = kwMatch[4].trim();
                     if (content) {
                         recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
@@ -1239,6 +1286,14 @@ const triggerBatchSave = async (batchData) => {
                         continue;
                     }
                 } 
+                else if (line.match(/^(允求|賜降|得知|賜予|賜|求得)\s+/)) {
+                    // Handle lines like "允求 森羅戒 金了、閻爵"
+                    const parts = line.split(/\s+/);
+                    const prefix = parts[0];
+                    treasureName = parts[1];
+                    recipients = parts.slice(2).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
+                    if (line.includes('已登記')) lineObtainedDate = lineDate;
+                }
                 else if (line.includes('求得')) {
                     const parts = line.split('求得').map(p => p.trim());
                     if (parts.length >= 2) {

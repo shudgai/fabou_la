@@ -1,5 +1,5 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
+    <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
@@ -61,14 +61,14 @@
                 <!-- Single Mode Fields -->
                 <div v-if="localMode === 'single'" class="space-y-5 animate-fade-in">
                     <!-- Purpose & Method Grid -->
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4">
                         <div class="space-y-1.5">
                             <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">法寶用意</label>
-                            <input v-model="form.purpose" type="text" placeholder="預設用意" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            <textarea v-model="form.purpose" rows="2" placeholder="預設用意" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none custom-scrollbar"></textarea>
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-[15px] font-bold text-slate-500 block ml-1 uppercase tracking-wider">求寶方式</label>
-                            <input v-model="form.acquisition_method" type="text" placeholder="預設方式" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            <textarea v-model="form.acquisition_method" rows="2" placeholder="預設方式" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-red-600 focus:ring-2 focus:ring-indigo-100 outline-none custom-scrollbar"></textarea>
                         </div>
                     </div>
                     <div class="space-y-1.5">
@@ -98,10 +98,10 @@
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 transition-colors p-1">✕</button>
                             </div>
                             
-                            <div class="grid grid-cols-3 gap-2">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                    <label class="text-[11px] text-red-400 ml-1 font-bold">法號/群組</label>
+                                    <input v-model="p.custom_name" type="text" placeholder="法號/群組" list="dharma-names"
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
@@ -126,15 +126,15 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
-                                <div @click="$emit('openRemarksEdit', { idx, remarks: p.remarks })"
-                                    class="w-full min-py-[10px] rounded-xl border border-slate-400 bg-white px-3 py-[10px] text-[15px] font-normal text-slate-900 cursor-pointer hover:border-indigo-300 transition-colors flex items-center justify-between group/rem">
-                                    <span :class="p.remarks ? 'text-slate-900' : 'text-slate-300'" class="truncate flex-1">
-                                        {{ p.remarks || '點此輸入詳細備註...' }}
-                                    </span>
-                                    <svg class="w-4 h-4 text-slate-200 group-hover/rem:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <div class="space-y-1">
+                                    <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
+                                    <div @click="$emit('openRemarksEdit', { idx, remarks: p.remarks })"
+                                        class="w-full h-[46px] rounded-xl border border-slate-400 bg-white px-3 py-[10px] text-[15px] font-normal text-slate-900 cursor-pointer hover:border-indigo-300 transition-colors flex items-center justify-between group/rem">
+                                        <span :class="p.remarks ? 'text-slate-900' : 'text-slate-300'" class="truncate flex-1 text-[13px]">
+                                            {{ p.remarks || '備註...' }}
+                                        </span>
+                                        <svg class="w-4 h-4 text-slate-200 group-hover/rem:text-indigo-400 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-[14px]">
                             <div class="flex items-start text-slate-600">
                                 <span class="text-indigo-400 font-bold mr-2">1.</span>
-                                <span><strong>法號翻譯：</strong>金開頭自動換為靈/龍/元字輩。</span>
+                                <span><strong>法號/群組翻譯：</strong>金開頭自動換為靈/龍/元字輩。</span>
                             </div>
                             <div class="flex items-start text-slate-600">
                                 <span class="text-indigo-400 font-bold mr-2">2.</span>
@@ -227,9 +227,20 @@
                         </div>
                     </div>
                 </div>
-                <!-- Dharma Names Auto-complete List -->
+                <!-- Dharma Names & Palaces Auto-complete List -->
                 <datalist id="dharma-names">
                     <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
+                    <option value="玄通宮" />
+                    <option value="玄應宮" />
+                    <option value="玄心宮" />
+                    <option value="玄妙宮" />
+                    <option value="玄昇宮" />
+                    <option value="玄願宮" />
+                    <option value="玄法宮" />
+                    <option value="玄閻宮" />
+                    <option value="玄窕宮" />
+                    <option value="玄瑤宮" />
+                    <option value="玄義宮" />
                 </datalist>
             </div>
 
@@ -394,8 +405,11 @@ const batchParsedRows = computed(() => {
             }
             else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
                 const d = parseDateText(val, currentContextYear) || val;
-                prev.date = d;
-                if (firstWord === '登記日期' || firstWord === '求得日期') prev.obtained_date = d;
+                if (firstWord === '得知日期') prev.date = d;
+                else {
+                    prev.obtained_date = d;
+                    prev.status = '已登記';
+                }
             }
             else if (firstWord === '求寶方式' || firstWord === '求寶') prev.acquisition_method = val;
             else prev.remarks = (prev.remarks ? prev.remarks + ' ' : '') + val;
@@ -411,41 +425,53 @@ const batchParsedRows = computed(() => {
             normLine = normLine.replace(lineStartDateMatch[0], '').trim();
         }
 
-        const kwMatch = normLine.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容)\s*)?(.*?)[：:](.*)/);
-        if (kwMatch) {
-            const name = kwMatch[3].trim();
+        const kwMatch = normLine.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容|求得)\s*)?(.*?)[：:](.*)/);
+        if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
+            let rawName = kwMatch[3].trim();
+            rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
+            const name = rawName;
             const val = kwMatch[4].trim();
-            if (attrKeywords.includes(name)) return; // Should have been caught by #3
-
+            
             const item = { 
                 name, 
                 remarks: val, 
                 master_id: currentMasterId, 
-                date: currentDate,
+                date: '', 
                 purpose: '',
                 acquisition_method: '',
-                obtained_date: null,
-                status: '未求得'
+                obtained_date: currentDate,
+                status: currentDate ? '已登記' : '未求得'
             };
             
-            // Smart auto-detection within value
             if (val.includes('已登記')) {
                 item.status = '已登記';
                 item.obtained_date = currentDate;
                 item.remarks = val.replace('已登記', '').replace(/[，、, \s]+$/, '').trim();
             }
-
+            results.push(item);
+        } else if (normLine.match(/^(允求|賜降|得知|賜予|賜|求得)\s+/)) {
+            const parts = normLine.split(/\s+/);
+            const item = { 
+                name: parts[1], 
+                remarks: parts.slice(2).join(' '), 
+                master_id: currentMasterId, 
+                date: '', 
+                purpose: '',
+                acquisition_method: '',
+                obtained_date: currentDate,
+                status: currentDate ? '已登記' : '未求得'
+            };
             results.push(item);
         } else if (normLine.length < 50) {
             const item = { 
                 name: normLine, 
                 remarks: '', 
                 master_id: currentMasterId, 
-                date: currentDate,
+                date: '', 
                 purpose: '',
                 acquisition_method: '',
-                obtained_date: null,
-                status: '未求得'
+                obtained_date: currentDate,
+                status: currentDate ? '已登記' : '未求得'
             };
             results.push(item);
         }

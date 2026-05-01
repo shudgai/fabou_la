@@ -81,20 +81,15 @@
                 </div>
             </div>
 
-            <!-- Header 3: Global Add Level -->
-            <div v-if="addMode && currentFolder === null" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full px-3 py-2" style="min-height: 52px;">
+            <!-- Header for Add Mode (Unified) -->
+            <div v-if="addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full px-3 py-2" style="min-height: 52px;">
                 <button @click="addMode = false" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">父皇開示資料</h2>
-                </div>
-            </div>
-
-            <!-- Header 2: Action Level (Minimized when in folder view as controls moved to Header 1) -->
-            <div v-if="currentFolder !== null && addMode" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full sticky top-0" style="padding: 10px 10px;">
-                <div class="flex items-center flex-1 min-w-0">
-                    <!-- Sub-title removed per user request -->
+                    <h2 class="text-[20px] font-black text-slate-900 tracking-tight truncate font-outfit">
+                        {{ currentFolder?.id === 0 ? '父皇仙師每日開示載錄' : (currentFolder ? currentFolder.name + '開示載錄' : '父皇開示資料') }}
+                    </h2>
                 </div>
             </div>
 
@@ -284,8 +279,8 @@
                                     <!-- Concise Group Display or Individual Tags -->
                                     <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生'" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
-                                            <!-- Group Mode -->
-                                            <template v-if="activeModalGroup || currentMatchedGroup">
+                                            <!-- Group Mode (Only if more than 1 person) -->
+                                            <template v-if="(activeModalGroup || currentMatchedGroup) && form.dharma_name_ids.length > 1">
                                                 <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
                                                      class="bg-indigo-50 border-2 border-indigo-100 text-indigo-700 px-4 py-[10px] rounded-2xl app-body flex items-center shadow-sm cursor-pointer hover:bg-indigo-100 transition-all">
                                                     <span class="mr-2 w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span>
@@ -1669,7 +1664,7 @@
             <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
             <mobile-navbar 
                 :can-back="currentFolder !== null || currentCategory !== null || addMode"
-                :show-action="(currentFolder !== null || (currentCategory === 'masters' && !currentFolder)) && !addMode"
+                :show-action="(currentFolder !== null || (currentCategory === 'masters' && !currentFolder) || (currentFolder === null && currentCategory === null)) && !addMode"
                 :action-active="showAddMenu"
                 :search-active="showSearch"
                 :can-more="!!currentFolder && !addMode"
@@ -2696,6 +2691,22 @@ const addActions = computed(() => {
     const isDaily = currentFolder.value?.id === 0 || currentFolder.value?.id === '0';
     const actions = [];
     
+    if (!isDaily && currentFolder.value === null) {
+        actions.push({ 
+            label: '父皇仙師每日開示載錄', 
+            description: '快速進入父皇每日開示錄入介面',
+            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            colorClass: 'bg-orange-50 text-orange-600',
+            handler: () => { 
+                currentFolder.value = folders_list.find(f => f.id === 0); 
+                currentCategory.value = 'daily';
+                showAdd(); 
+                activeEntryTab.value = 'single'; 
+                showAddMenu.value = false; 
+            } 
+        });
+    }
+
     if (isDaily) {
         actions.push({ 
             label: '逐筆新增', 
@@ -2706,7 +2717,7 @@ const addActions = computed(() => {
         });
     }
 
-    if (!isDaily) {
+    if (!isDaily && currentFolder.value !== null) {
         actions.push({ 
             label: '多筆新增 (Excel 貼上)', 
             description: '批次貼上文字清單匯入',
