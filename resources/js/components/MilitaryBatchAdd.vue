@@ -35,20 +35,11 @@
                 </button>
                 <input type="file" ref="fileInput" @change="handleFileImport" accept=".xlsx, .xls" class="hidden">
 
-                <!-- Save Button (Moved from Header) -->
-                <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
-                    :class="[
-                        'px-4 h-14 rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-lg',
-                        parsedItems.length === 0 ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 shadow-indigo-100'
-                    ]">
-                    <svg class="w-5 h-5 mb-0.5" style="color: white !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="text-[11px] font-bold" style="color: white !important;">{{ processing ? '存取中' : `儲存 (${parsedItems.length})` }}</span>
-                </button>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="flex-1 flex flex-col p-4 relative">
+        <div class="flex-1 flex flex-col p-4 relative pb-48">
             <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-red-500 bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all">
                 清空全部
             </button>
@@ -71,13 +62,18 @@
         <!-- MODALS -->
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
 
-        <!-- Global Mobile Navbar -->
-        <mobile-navbar 
-            @back="$emit('cancel', false)"
-            @home="$emit('cancel', false)"
-            :show-action="false"
-            :can-search="false"
-        />
+
+
+        <!-- Bottom Save Action Bar (Fixed at absolute bottom with safe area) -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
+                class="w-full bg-indigo-600 text-white font-black py-[14px] rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
+                style="color: white !important;"
+            >
+                <svg v-if="!processing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="text-[19px] tracking-widest">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -128,38 +124,66 @@ const parsedItems = computed(() => {
 
     const parseDateText = (str) => {
         if (!str) return null;
-        // Priority 1: 4-digit CE
-        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        const clean = str.replace(/[↓↓]/g, '').trim();
+        
+        // Priority 1: 4-digit CE (YYYY/MM/DD)
+        const ceMatch = clean.match(/\b(\d{4})[/\-\.\s](\d{1,2})[/\-\.\s](\d{1,2})\b/);
         if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
-        // Priority 2: 2-3 digit ROC
-        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+        
+        // Priority 2: 2-3 digit ROC (民國 YYY/MM/DD)
+        const rocMatch = clean.match(/\b(\d{2,3})[/\-\.\s](\d{1,2})[/\-\.\s](\d{1,2})\b/);
         if (rocMatch) {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
+        }
+
+        // Priority 3: 2-part dates (Y/M or M/D)
+        const twoPartMatch = clean.match(/\b(\d{2,4})[/\-\.\s](\d{1,2})\b/);
+        if (twoPartMatch) {
+            const p1 = parseInt(twoPartMatch[1]);
+            const p2 = parseInt(twoPartMatch[2]);
+            // Case A: ROC Year / Month (e.g., 110/05) -> First part 13-199
+            if (p1 > 12 && p1 < 200) {
+                return `${p1 + 1911}-${String(p2).padStart(2,'0')}-01`;
+            }
+            // Case B: CE Year / Month (e.g., 2021/05) -> First part >= 1900
+            if (p1 >= 1900) {
+                return `${p1}-${String(p2).padStart(2,'0')}-01`;
+            }
+            // Case C: Month / Day (e.g., 05/20) -> Use current year context
+            const y = new Date().getFullYear();
+            return `${y}-${String(p1).padStart(2,'0')}-${String(p2).padStart(2,'0')}`;
         }
         return null;
     };
 
     lines.forEach(line => {
-        const normLine = line.normalize('NFKC').trim();
+        let normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // 1. Detect Standalone Date Header
+        // 1. Detect Standalone Date Header (Ignoring symbols like ↓)
         const dateHeader = parseDateText(normLine);
-        if (dateHeader && normLine.length < 20) {
+        const isPureDateStr = normLine.replace(/[\d/.\-↓\s]/g, '').length === 0;
+        if (dateHeader && isPureDateStr) {
             currentDate = dateHeader;
             return;
         }
 
+        // 1.5 Detect Date at start of line (e.g. "110/05/01 靈奇 2262")
+        const startMatch = normLine.match(/^(\d{2,4}[/.-]\d{1,2}([/.-]\d{1,2})?)\s+/);
+        if (startMatch) {
+            const d = parseDateText(startMatch[1]);
+            if (d) currentDate = d;
+            normLine = normLine.replace(startMatch[1], '').trim();
+        }
+
         // 2. Detect Attribute Keywords
-        const attrKeywords = ['備註', '處理日期', '結果', '用意'];
+        const attrKeywords = ['備註', '用意'];
         const firstWord = normLine.split(/[\s：:]/)[0];
         if (attrKeywords.includes(firstWord) && results.length > 0) {
             const prev = results[results.length - 1];
             const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
             if (firstWord === '備註') prev.remarks_text = (prev.remarks_text ? prev.remarks_text + ' ' : '') + val;
-            else if (firstWord === '處理日期') prev.process_date = val;
-            else if (firstWord === '結果') prev.destination = val;
             return;
         }
 
@@ -190,10 +214,8 @@ const parsedItems = computed(() => {
             quantity: qty,
             know_date: currentDate,
             army_type: props.armyType,
-            destination: '未處理',
             user_remarks: '',
-            remarks_text: '',
-            process_date: ''
+            remarks_text: ''
         };
         
         // Army-specific defaults
@@ -282,4 +304,6 @@ const handleBatchSave = async () => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
 </style>

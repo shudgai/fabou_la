@@ -98,32 +98,7 @@
                         </div>
                     </div>
 
-                    <!-- Row 4: 處理日期 & 處理結果 -->
-                    <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
-                        <div class="space-y-1">
-                            <label class="app-title ml-1">處理日期</label>
-                            <div class="relative flex items-center">
-                                <input v-model="form.process_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                    class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
-                                <button @click="activeDate = 'process_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="space-y-1 relative">
-                            <label class="app-title ml-1">處理結果</label>
-                            <div class="relative">
-                                <input v-model="form.destination" 
-                                    type="text" 
-                                    placeholder="選擇或輸入結果..." 
-                                    @click.stop="showResultPicker = true"
-                                    class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-10 focus:ring-0 outline-none shadow-sm app-body font-bold text-slate-900">
-                                <button @click.stop="showResultPicker = !showResultPicker" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 p-1">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
@@ -151,52 +126,13 @@
                 :can-search="false"
             />
 
-            <!-- Result Picker Modal -->
-            <div v-if="showResultPicker" class="fixed inset-0 z-[2100] flex items-center justify-center px-4">
-                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showResultPicker = false"></div>
-                <div class="relative w-full max-w-sm bg-white rounded-[32px] shadow-2xl p-8 animate-slide-up">
-                    <div class="flex items-center justify-between mb-6">
-                        <span class="text-[14px] font-black text-slate-400 uppercase tracking-widest">請選取處理結果</span>
-                        <button @click="showResultPicker = false" class="text-slate-400 p-1 active:scale-90 transition-all">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-x-8">
-                        <!-- Left Column -->
-                        <div class="space-y-6">
-                            <div v-for="opt in ['未處理']" :key="opt"
-                                @click="form.destination = opt; showResultPicker = false"
-                                class="cursor-pointer font-normal text-[17px] leading-tight transition-all active:scale-95"
-                                :class="[
-                                    form.destination === opt ? 'text-indigo-600' : 'text-slate-900'
-                                ]"
-                            >
-                                {{ opt }}
-                            </div>
-                        </div>
-                        <!-- Right Column -->
-                        <div class="space-y-6">
-                            <div v-for="opt in ['九天', '黑曜軍', '虎賁軍', '虎甲軍', '耀紫軍']" :key="opt"
-                                @click="form.destination = opt; showResultPicker = false"
-                                class="cursor-pointer font-normal text-[17px] leading-tight transition-all active:scale-95"
-                                :class="[
-                                    form.destination === opt ? 'text-indigo-600' : 'text-slate-900',
-                                    opt === '九天' && form.destination !== opt ? 'text-red-600' : 
-                                    opt === '耀紫軍' && form.destination !== opt ? 'text-purple-600' : ''
-                                ]"
-                            >
-                                {{ opt }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <!-- Custom Date Picker -->
         <compact-date-picker 
             v-if="activeDate"
             v-model="form[activeDate]"
-            :title="activeDate === 'know_date' ? '日期' : '處理日期'"
+            :title="'日期'"
             @close="activeDate = null"
         />
     </div>
@@ -218,7 +154,7 @@ const props = defineProps({
 
 const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);
-const showResultPicker = ref(false);
+
 
 const form = ref({ 
     ...props.initialData,
