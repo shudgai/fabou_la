@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[25px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="app-title text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -52,8 +52,8 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[22px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
-                        {{ currentFolder.name + (addMode ? '-新增載錄' : '') }}
+                    <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
+                        {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}{{ addMode ? '-新增載錄' : '' }}
                     </span>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="text-[25px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
+                        <h1 class="text-[22px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[17px] text-slate-400">- {{ currentFolder.name }} -</span>
@@ -82,7 +82,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[23px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
                     </button>
 
 
@@ -155,7 +155,7 @@
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
-                             @click="!expandedIds.has(item.id) ? toggleExpand(item.id) : null"
+                         @click="toggleExpand(item.id)"
                              :class="[
                                  'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
@@ -309,12 +309,12 @@
                                                                 <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ recipient.name }}</td>
                                                                 <td class="border-b border-slate-50 p-0 text-black">
                                                                     <div class="flex items-center px-[2px] py-1 justify-center relative">
-                                                                        <input v-if="editingIds.has(item.id)" 
+                                                                        <input v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
                                                                             type="text"
                                                                             class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none"
                                                                             style="color: rgb(220, 20, 40) !important;">
-                                                                        <button v-if="editingIds.has(item.id)" 
+                                                                        <button v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             @click.stop="activePicker = { id: item.id + '-' + (recipient.id), field: 'obtained_date', title: recipient.name }"
                                                                             class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -757,6 +757,21 @@ watch(allTreasures, (newVal) => {
                 }
             }
         });
+
+        // 確保宮名紀錄的所有宮位都有 editMap 條目
+        if (isPalaceRecord(item)) {
+            palaceSortOrder.forEach(pName => {
+                const key = `${item.id}-${pName}`;
+                if (!editMap.value[key]) {
+                    editMap.value[key] = {
+                        obtained_date: '',
+                        remarks: '',
+                        relationship: '',
+                        related_personnel: []
+                    };
+                }
+            });
+        }
     });
 }, { immediate: true, deep: false });
 
@@ -800,12 +815,20 @@ const form = ref({
     dharma_name_registries: []
 });
 
-const folders = ref([
-    { id: 1, name: '老祖仙師' },
-    { id: 2, name: '元始仙師' },
-    { id: 3, name: '道祖仙師' },
-    { id: 8, name: '閻王仙師' }
-]);
+const folders = computed(() => {
+    if (!Array.isArray(masters.value) || masters.value.length === 0) {
+        return [
+            { id: 1, name: '老祖仙師' },
+            { id: 2, name: '元始仙師' },
+            { id: 3, name: '道祖仙師' },
+            { id: 8, name: '閻王仙師' }
+        ];
+    }
+    return masters.value.map(m => ({
+        ...m,
+        name: m.name === '父皇仙師' ? '父皇' : m.name
+    }));
+});
 
 const palaceSortOrder = [
     '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮',
@@ -1018,8 +1041,10 @@ const displayTitle = computed(() => {
 
 const expandedPersonNames = ref(new Set());
 const togglePerson = (name) => {
-    if (expandedPersonNames.value.has(name)) expandedPersonNames.value.delete(name);
-    else expandedPersonNames.value.add(name);
+    const next = new Set(expandedPersonNames.value);
+    if (next.has(name)) next.delete(name);
+    else next.add(name);
+    expandedPersonNames.value = next;
 };
 
 const openAdd = (mode = 'single') => {
@@ -1039,16 +1064,18 @@ const openAdd = (mode = 'single') => {
 };
 
 const toggleExpand = (id) => {
-    if (expandedIds.value.has(id)) {
-        expandedIds.value.delete(id);
+    const nextExpanded = new Set(expandedIds.value);
+    if (nextExpanded.has(id)) {
+        nextExpanded.delete(id);
         focusedId.value = null;
         showItemDetails.value = false;
     } else {
-        expandedIds.value.clear();
-        expandedIds.value.add(id);
+        nextExpanded.clear();
+        nextExpanded.add(id);
         focusedId.value = id;
         showItemDetails.value = false;
     }
+    expandedIds.value = nextExpanded;
 };
 
 const handleBack = () => {
@@ -1448,15 +1475,21 @@ const triggerBatchSave = async (batchData) => {
 };
 
 const openAndEdit = (id) => {
-    if (editingIds.value.has(id)) {
-        editingIds.value.delete(id);
+    const nextEditing = new Set(editingIds.value);
+    const nextExpanded = new Set(expandedIds.value);
+    
+    if (nextEditing.has(id)) {
+        nextEditing.delete(id);
     } else {
-        editingIds.value.add(id);
-        if (!expandedIds.value.has(id)) {
-            expandedIds.value.clear();
-            expandedIds.value.add(id);
+        nextEditing.add(id);
+        if (!nextExpanded.has(id)) {
+            nextExpanded.clear();
+            nextExpanded.add(id);
         }
     }
+    
+    editingIds.value = nextEditing;
+    expandedIds.value = nextExpanded;
     openMenuId.value = null;
 };
 
@@ -1536,7 +1569,7 @@ const deleteItem = async (id) => {
         // Reset states
         deleteConfirmId.value = null;
         focusedId.value = null;
-        expandedIds.value.clear();
+        expandedIds.value = new Set();
         openMenuId.value = null;
         
         await loadData();
@@ -1745,7 +1778,9 @@ const saveItemInPlace = async (item) => {
             _method: 'PATCH' 
         });
         
-        editingIds.value.delete(item.id);
+        const nextEditing = new Set(editingIds.value);
+        nextEditing.delete(item.id);
+        editingIds.value = nextEditing;
         persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
         await loadData();

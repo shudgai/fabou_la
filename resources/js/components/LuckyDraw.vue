@@ -372,9 +372,10 @@
                     </div>
                     <!-- ACTION BUTTONS ROW -->
                     <div class="px-4 pb-4 flex items-center justify-center space-x-2">
-                        <button v-if="lotteryMode === true" @click="handleNextRound" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-indigo-200 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">新回合</button>
-                        <button @click="handleReselect" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-rose-200 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重新選擇</button>
-                        <button @click="copyResults" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-emerald-200 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
+                        <button v-if="lotteryMode === true" @click="handleNextRound" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-emerald-600 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">新回合</button>
+                        <button @click="handleReselect" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-slate-500 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重選</button>
+                        <button @click="copyResults" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-blue-500 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
+                        <button v-if="folderId" @click="saveResults" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-indigo-600 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">儲存</button>
                     </div>
                 </div>
 
@@ -433,10 +434,11 @@ const props = defineProps({
     initialMode: {
         type: Boolean,
         default: null
-    }
+    },
+    folderId: Number
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'saved']);
 
 watch(() => props.show, (val) => {
     if (val) {
@@ -965,6 +967,32 @@ const performDraw = () => {
 const copyResults = () => {
     const text = results.value.map((n, i) => `${i + 1}. ${n}`).join('\n');
     navigator.clipboard.writeText(text).then(() => alert('已複製抽籤結果！'));
+};
+
+const saveResults = async () => {
+    if (!props.folderId) return;
+    try {
+        const title = `${lotteryMode.value ? '回合抽籤' : '直接排列'} - ${new Date().toLocaleString()}`;
+        const content = results.value.map((n, i) => `${i + 1}. ${n}`).join('\n');
+        
+        await axios.post(`/other-folders/${props.folderId}/records`, {
+            title: title,
+            content: content,
+            record_date: new Date().toISOString().split('T')[0],
+            extra_data: {
+                mode: lotteryMode.value ? 'round' : 'direct',
+                results: results.value,
+                participants: lotteryMode.value ? roundParticipants.value : selectedNames.value,
+                fixed: fixedParticipants.value
+            }
+        });
+        
+        alert('存檔已儲存至「抽籤紀錄」！');
+        emit('saved');
+    } catch (e) {
+        console.error(e);
+        alert('儲存失敗，請稍後再試');
+    }
 };
 
 const getStep2RoundStyle = (name) => {

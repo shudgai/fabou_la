@@ -78,7 +78,9 @@
                             </select>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">日期</label>
+                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block ml-1">
+                                {{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}
+                            </label>
                             <div class="relative">
                                 <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" style="font-size: 17px;" class="w-full py-[5px] rounded-xl bg-white px-3 font-bold text-slate-900 border border-slate-400 shadow-sm outline-none pr-10">
                                 <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 p-2 z-20 active:scale-90">
@@ -133,18 +135,6 @@
                                             class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
                                     </div>
                                     <div class="space-y-1">
-                                        <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
-                                        <div class="relative">
-                                            <input v-model="p.obtained_date" type="text" placeholder="日期" 
-                                                class="w-full py-[5px] rounded-xl bg-white px-2 font-bold text-slate-900 border border-slate-400 shadow-sm outline-none text-[13px] pr-8">
-                                            <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-300 p-1 z-20 active:scale-90">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="space-y-1">
                                         <label class="text-[11px] text-red-400 ml-1 font-bold">狀態</label>
                                         <select v-model="p.status" class="w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[15px] font-bold focus:ring-2 focus:ring-indigo-100 outline-none"
                                             :style="p.status === '未求得' ? 'color: #dc2626 !important;' : (p.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
@@ -152,6 +142,20 @@
                                             <option value="已求得">已求得</option>
                                             <option value="已登記">已登記</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="space-y-1" :class="{ 'opacity-50 pointer-events-none': p.status === '未求得' }">
+                                        <label class="text-[11px] text-red-400 ml-1 font-bold">
+                                            {{ p.status === '已登記' ? '登記日期' : (p.status === '已求得' ? '求得日期' : '日期') }}
+                                        </label>
+                                        <div class="relative">
+                                            <input v-model="p.obtained_date" type="text" placeholder="日期" 
+                                                class="w-full py-[10px] rounded-xl bg-white px-2 font-bold text-slate-900 border border-slate-400 shadow-sm outline-none text-[15px] pr-8">
+                                            <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-300 p-1 z-20 active:scale-90">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="space-y-1">
                                         <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
@@ -431,6 +435,21 @@ watch(() => props.initialData, (newVal) => {
         }));
     }
 }, { immediate: true });
+
+// Auto-fill date when status changes
+watch(() => form.value.status, (newStatus) => {
+    if ((newStatus === '已求得' || newStatus === '已登記') && !form.value.obtained_date) {
+        form.value.obtained_date = new Date().toISOString().split('T')[0];
+    }
+});
+
+watch(personnel, (newVal) => {
+    newVal.forEach(p => {
+        if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
+            p.obtained_date = new Date().toISOString().split('T')[0];
+        }
+    });
+}, { deep: true });
 
 const handleSubmit = () => {
     if (localMode.value === 'single') {

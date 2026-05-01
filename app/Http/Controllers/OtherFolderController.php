@@ -62,6 +62,7 @@ class OtherFolderController extends Controller
             'title' => 'nullable|string',
             'content' => 'nullable|string',
             'record_date' => 'nullable|date',
+            'extra_data' => 'nullable|array',
         ]);
 
         $validated['user_id'] = $user->id;

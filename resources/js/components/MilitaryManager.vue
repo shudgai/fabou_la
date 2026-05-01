@@ -190,7 +190,7 @@
                                             <label class="military-label">法號</label>
                                             <div class="military-value-name truncate">
                                                 {{ item.user_name }}
-                                                <span v-if="item.user_remarks" class="block text-slate-400 opacity-70 font-medium" style="font-size: 0.85em;">
+                                                <span v-if="item.user_remarks" class="block text-slate-900 font-black mt-0.5" style="font-size: 0.9em;">
                                                     {{ item.user_remarks }}
                                                 </span>
                                             </div>

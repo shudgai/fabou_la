@@ -408,22 +408,22 @@
                                         <div class="mt-1 text-[17px] font-normal text-slate-900 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">{{ reg.purpose }}</div>
                                     </div>
 
-                                    <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
-                                        <table class="w-full text-[14px] border-collapse bg-white">
+                                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
+                                        <table class="w-full text-[17px] border-collapse bg-white">
                                             <thead class="bg-slate-50/50">
-                                                <tr class="text-slate-600 font-bold border-b border-slate-200">
-                                                    <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 55px;">法號</th>
-                                                    <th class="p-2 text-left border-r border-slate-200" style="width: 100px;">日期</th>
-                                                    <th class="p-2 text-left border-r border-slate-200 whitespace-nowrap" style="width: 85px;">狀態</th>
-                                                    <th class="p-2 text-left">備註</th>
+                                                <tr class="text-slate-600 font-black border-b border-slate-200">
+                                                    <th class="p-3 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 70px;">法號</th>
+                                                    <th class="p-3 text-left border-r border-slate-200 text-[15px]" style="width: 120px;">日期</th>
+                                                    <th class="p-3 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 95px;">狀態</th>
+                                                    <th class="p-3 text-left text-[15px]">備註</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                                                    <td class="p-2 border-r border-slate-100 font-bold text-slate-900">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
-                                                    <td class="p-2 border-r border-slate-100 font-medium text-slate-500 whitespace-nowrap">{{ formatDate(dnr.obtained_date) }}</td>
-                                                    <td class="p-2 border-r border-slate-100 font-bold whitespace-nowrap" :style="dnr.status === '未求得' ? 'color: #dc2626 !important;' : (dnr.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">{{ dnr.status }}</td>
-                                                    <td class="p-2 text-slate-500 text-[12px] leading-snug">
+                                                    <td class="p-3 border-r border-slate-100 font-black text-slate-900 text-[17px]">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
+                                                    <td class="p-3 border-r border-slate-100 font-normal text-slate-500 whitespace-nowrap text-[15px]">{{ formatDate(dnr.obtained_date) }}</td>
+                                                    <td class="p-3 border-r border-slate-100 font-black whitespace-nowrap text-[15px]" :style="dnr.status === '未求得' ? 'color: #dc2626 !important;' : (dnr.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">{{ dnr.status }}</td>
+                                                    <td class="p-3 text-slate-900 font-bold leading-snug text-[15px]">
                                                         {{ Array.isArray(dnr.remarks) ? dnr.remarks.join(' ') : (dnr.remarks || '-') }}
                                                     </td>
                                                 </tr>

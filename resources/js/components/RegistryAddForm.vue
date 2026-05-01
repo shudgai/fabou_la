@@ -9,8 +9,8 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[25px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900">怨靈載錄專區</div>
-                    <div class="text-[22px] font-bold mt-2 truncate font-outfit text-slate-900">
+                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-slate-900">法寶登記專區</div>
+                    <div class="text-[20px] font-bold mt-2 truncate font-outfit text-slate-900">
                         {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
                     </div>
                 </div>
@@ -40,11 +40,44 @@
                             </button>
                         </div>
                     </div>
-                    <div class="space-y-1.5">
+                    <div class="space-y-1.5 relative">
                         <label class="text-[17px] font-bold text-slate-800 block ml-1">載錄目標仙師</label>
-                        <select v-model="form.master_id" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 text-[16px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
-                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
-                        </select>
+                        <!-- Custom Dropdown Button -->
+                        <div class="relative">
+                            <button @click="showMasterDropdown = true" 
+                                class="w-full py-[12px] rounded-2xl border border-slate-400 bg-white px-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none flex items-center justify-between active:bg-slate-50 transition-all shadow-sm">
+                                <span :class="form.master_id ? 'text-slate-900' : 'text-slate-400'">{{ selectedMasterName || '請選擇仙師' }}</span>
+                                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+
+                            <!-- Bottom Sheet Picker for Masters -->
+                            <teleport to="body">
+                                <div v-if="showMasterDropdown" class="fixed inset-0 z-[5000] flex items-end justify-center">
+                                    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] transition-opacity" @click="showMasterDropdown = false"></div>
+                                    <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80vh]">
+                                        <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between bg-white sticky top-0 z-10">
+                                            <span class="text-[20px] font-black text-slate-900">選擇載錄目標仙師</span>
+                                            <button @click="showMasterDropdown = false" class="p-2 text-slate-300 hover:text-slate-600 transition-colors">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
+                                        <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2 pb-10">
+                                            <button v-for="m in masters" :key="m.id"
+                                                @click="form.master_id = m.id; showMasterDropdown = false"
+                                                class="w-full p-5 text-left rounded-2xl transition-all flex items-center justify-between border-2"
+                                                :class="form.master_id === m.id ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50/50 border-transparent text-slate-700 hover:bg-slate-100'">
+                                                <span class="text-[18px] font-bold">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</span>
+                                                <div v-if="form.master_id === m.id" class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </teleport>
+                        </div>
                     </div>
                 </div>
 
@@ -142,6 +175,15 @@
                         <div v-if="personnel.length === 0" class="text-center py-6 bg-slate-50/30 rounded-2xl border border-dashed border-slate-400 text-slate-300 text-[13px]">
                             尚無人員紀錄
                         </div>
+
+                        <!-- Secondary Add Button at the Bottom -->
+                        <button @click="addPersonRow" 
+                            class="w-full py-4 mt-2 rounded-2xl border-2 border-dashed border-indigo-100 bg-indigo-50/30 flex items-center justify-center space-x-2 text-indigo-500 hover:bg-indigo-50 hover:border-indigo-200 active:scale-[0.98] transition-all group">
+                            <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <span class="text-[16px] font-black">新增人員</span>
+                        </button>
                     </div>
 
                 <!-- Batch Mode Fields (Matching Mockup) -->
@@ -300,6 +342,7 @@ const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
 const treasureNamesText = ref('');
 const batchInput = ref('');
+const showMasterDropdown = ref(false);
 const personnel = ref([]);
 const dharmaNames = ref([]);
 const activePicker = ref(null); // { idx: number | 'main', field: string, title: string }
@@ -707,46 +750,83 @@ const processExcelFile = (file) => {
     reader.readAsArrayBuffer(file);
 };
 
-const handleSubmit = () => {
-    if (!form.value.master_id) {
-        alert('請先選擇仙師');
-        return;
+const validateSingle = () => {
+    if (!form.value.master_id) return '請選擇仙師';
+    
+    // Auto-fill main record_date if empty but first personnel has a date
+    if (!form.value.record_date && personnel.value.length > 0 && personnel.value[0].obtained_date) {
+        form.value.record_date = personnel.value[0].obtained_date;
+    }
+    // Default to today if still empty
+    if (!form.value.record_date) {
+        form.value.record_date = new Date().toISOString().split('T')[0];
     }
 
+    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入法寶名稱';
+    if (!form.value.record_date) return '請輸入頂部的「得知日期」';
+    
+    // Multi-person mode check
+    const hasValidPersonnel = personnel.value.some(p => p.custom_name && p.custom_name.trim() !== '');
+    if (!hasValidPersonnel && !form.value.obtained_date) {
+        return '請至少輸入一位人員或取得日期';
+    }
+    
+    return null;
+};
+
+const handleSubmit = async () => {
     if (localMode.value === 'single') {
-        if (cleanedTreasureNames.value.length === 0) {
-            alert('請至少輸入一個法寶名稱');
+        const error = validateSingle();
+        if (error) {
+            alert(error);
             return;
         }
         
         // Clean up personnel: remove empty rows
         const cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
 
-        // Handle multiple treasure names by emitting multiple save events
-        cleanedTreasureNames.value.forEach(tn => {
-            let finalName = tn.trim();
-            let finalMethod = form.value.acquisition_method;
-            
-            // Smart extraction: "Treasure (求寶：Method)" or "Treasure 求寶:Method"
-            const methodMatch = finalName.match(/(.*)\s*(求寶|求寶方式)[：:](.*)/);
-            if (methodMatch) {
-                // 保留標點符號，不主動去除括號
-                finalName = methodMatch[1].trim();
-                finalMethod = methodMatch[3].trim();
-            }
+        // If multiple names entered in textarea, handle them
+        if (cleanedTreasureNames.value.length > 0) {
+            cleanedTreasureNames.value.forEach(tn => {
+                let finalName = tn.trim();
+                let finalMethod = form.value.acquisition_method;
+                
+                const methodMatch = finalName.match(/(.*)\s*(求寶|求寶方式)[：:](.*)/);
+                if (methodMatch) {
+                    finalName = methodMatch[1].trim();
+                    finalMethod = methodMatch[3].trim();
+                }
 
-            const payload = { 
-                ...form.value, 
-                name: finalName,
-                acquisition_method: finalMethod,
+                const payload = { 
+                    ...form.value, 
+                    name: finalName,
+                    acquisition_method: finalMethod,
+                    dharma_name_registries: cleanedPersonnel.map(p => ({
+                        ...p,
+                        remarks: p.remarks, // Backend normalizeRemarks handles string -> array
+                        related_personnel: p.relationship ? p.relationship.split(/[、, ]+/).filter(x => x) : []
+                    }))
+                };
+                emit('saveSingle', payload);
+            });
+        } else {
+            // Fallback for single name in form.name
+            const payload = {
+                ...form.value,
                 dharma_name_registries: cleanedPersonnel.map(p => ({
                     ...p,
+                    remarks: p.remarks,
                     related_personnel: p.relationship ? p.relationship.split(/[、, ]+/).filter(x => x) : []
                 }))
             };
             emit('saveSingle', payload);
-        });
+        }
     } else {
+        // Batch Save Logic
+        if (!form.value.master_id) {
+            alert('請選擇仙師');
+            return;
+        }
         if (batchParsedRows.value.length === 0) {
             alert('請貼上或輸入有效資料內容');
             return;
@@ -756,7 +836,7 @@ const handleSubmit = () => {
             masterId: form.value.master_id,
             rows: batchParsedRows.value.map(row => ({
                 name: row.name,
-                master_id: row.master_id,
+                master_id: row.master_id || form.value.master_id,
                 record_date: row.date || form.value.record_date || '',
                 remarks: row.remarks || form.value.remarks || ''
             }))
@@ -776,8 +856,14 @@ defineExpose({ updatePersonnelRemarks });
 <style scoped>
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-pop-in { animation: popIn 0.25s cubic-bezier(0.2, 1, 0.3, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.dropdown-enter-active, .dropdown-leave-active { transition: all 0.2s ease; }
+.dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

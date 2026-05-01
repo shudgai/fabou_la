@@ -145,7 +145,12 @@
 
             <div v-if="activeFolder || showLuckyDraw" class="h-full">
                 <!-- Special View: 抽籤工具 (LuckyDraw) -->
-                <lucky-draw v-if="showLuckyDraw" ref="luckyDrawRef" :show="showLuckyDraw" :initial-mode="luckyDrawInitialMode" @close="showLuckyDraw = false" />
+                <lucky-draw v-if="showLuckyDraw" ref="luckyDrawRef" 
+                    :show="showLuckyDraw" 
+                    :initial-mode="luckyDrawInitialMode" 
+                    :folder-id="lotteryFolderId"
+                    @close="showLuckyDraw = false" 
+                    @saved="loadData" />
                 
                 <!-- Special View: 開文核定表 -->
                 <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" />
@@ -166,7 +171,7 @@
                             </div>
 
                             <h3 v-if="record.title" class="text-lg font-bold text-slate-800 mb-2">{{ record.title }}</h3>
-                            <p class="text-slate-600 whitespace-pre-wrap leading-relaxed">{{ record.content }}</p>
+                            <p class="text-slate-900 whitespace-pre-wrap leading-relaxed font-medium">{{ record.content }}</p>
                         </div>
 
                         <div v-if="!activeFolder.other_records?.length" class="text-center py-20 bg-white rounded-[32px] border border-dashed border-slate-200">
@@ -290,6 +295,7 @@ const sortedFolders = computed(() => {
 });
 
 const activeFolder = computed(() => folders.value.find(f => f.id === activeFolderId.value));
+const lotteryFolderId = computed(() => folders.value.find(f => f.name === '抽籤紀錄')?.id);
 
 const loadData = async () => {
     const res = await axios.get('/other-folders');
@@ -321,6 +327,10 @@ const loadData = async () => {
     }
     if (randomFolders.length === 0) {
         await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
+        needReload = true;
+    }
+    if (!folders.value.some(f => f.name === '抽籤紀錄')) {
+        await axios.post('/other-folders', { name: '抽籤紀錄', color: '#8b5cf6' });
         needReload = true;
     }
 
