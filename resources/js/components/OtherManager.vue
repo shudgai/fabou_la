@@ -278,18 +278,20 @@ const newFolderColor = ref('#6366f1');
 const newRecord = ref({ title: '', content: '', record_date: getTodayStr() });
 
 const sortedFolders = computed(() => {
-    return [...folders.value].sort((a, b) => {
-        const isKaiwenA = a.name.includes('開文核定');
-        const isKaiwenB = b.name.includes('開文核定');
-        const isRandomA = a.name.includes('隨機分組');
-        const isRandomB = b.name.includes('隨機分組');
+    return [...folders.value]
+        .filter(f => f.name !== '__other_records_zone__')
+        .sort((a, b) => {
+            const isKaiwenA = a.name.includes('開文核定');
+            const isKaiwenB = b.name.includes('開文核定');
+            const isRandomA = a.name.includes('隨機分組');
+            const isRandomB = b.name.includes('隨機分組');
 
-        if (isKaiwenA && !isKaiwenB) return -1;
-        if (!isKaiwenA && isKaiwenB) return 1;
-        if (isRandomA && !isRandomB && !isKaiwenB) return -1;
-        if (!isRandomA && isRandomB && !isKaiwenA) return 1;
-        return 0;
-    });
+            if (isKaiwenA && !isKaiwenB) return -1;
+            if (!isKaiwenA && isKaiwenB) return 1;
+            if (isRandomA && !isRandomB && !isKaiwenB) return -1;
+            if (!isRandomA && isRandomB && !isKaiwenA) return 1;
+            return 0;
+        });
 });
 
 const activeFolder = computed(() => folders.value.find(f => f.id === activeFolderId.value));
