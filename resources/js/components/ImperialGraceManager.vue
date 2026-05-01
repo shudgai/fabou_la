@@ -127,7 +127,7 @@
         </div>
 
         <!-- Level 1: Folder Selection (Masters Grid) -->
-        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white group-fade-in max-w-2xl mx-auto">
+        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white group-fade-in max-w-xl mx-auto">
             <!-- Header Title -->
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
                 <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
@@ -170,9 +170,9 @@
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen">
+        <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen w-full md:max-w-xl md:mx-auto">
             <!-- Header for Level 2 -->
-            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50">
+            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50 w-full">
                 <div class="flex items-center space-x-1">
                     <span class="text-[20px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ displayTitle }}</span>
                 </div>

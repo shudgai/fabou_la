@@ -19,7 +19,7 @@
             </datalist>
 
             <!-- Header -->
-            <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 52px;">
+            <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto shrink-0" style="padding: 8px 10px; min-height: 52px;">
                 <button @click="$emit('goHome')" class="text-slate-400 p-2 mr-1 active:scale-90 transition-transform shrink-0">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
@@ -49,7 +49,7 @@
             </div>
 
             <!-- Record List -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 px-4 py-6">
+            <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 px-4 py-6 w-full md:max-w-xl md:mx-auto">
                 <div class="max-w-4xl mx-auto space-y-4 pb-32">
                     <div v-for="item in filteredRecords" :key="item.id" 
                          class="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 relative group animate-fade-in">
@@ -100,7 +100,7 @@
                     </div>
 
                     <!-- Empty State -->
-                    <div v-if="filteredRecords.length === 0" class="py-20 flex flex-col items-center justify-center text-slate-300">
+                    <div v-if="filteredRecords.length === 0" class="py-20 md:pt-10 flex flex-col items-center justify-center text-slate-300">
                         <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm">
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" /></svg>
                         </div>
@@ -129,7 +129,7 @@
                 <!-- Desktop Backdrop Click Area -->
                 <div class="absolute inset-0" @click="showModal = false"></div>
                 
-                <div class="relative w-full h-[100vh] md:h-auto md:max-h-[95vh] md:max-w-2xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
+                <div class="relative w-full h-[100vh] md:h-auto md:max-h-[95vh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
                         <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
                         <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">

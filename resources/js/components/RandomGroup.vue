@@ -5,9 +5,9 @@
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
 
             <!-- Main scrollable selection grid -->
-            <div class="flex-1 overflow-y-auto no-scrollbar pb-20">
+            <div class="flex-1 overflow-y-auto custom-scrollbar pb-40">
                 <!-- Header bar -->
-                <div class="flex items-center justify-between px-3 py-1.5">
+                <div class="flex items-center justify-between px-3 py-1.5 md:pt-[60px]">
                     <div class="flex items-center space-x-2 flex-1 mr-4">
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -50,18 +50,19 @@
             </div>
 
             <!-- Confirm button — FIXED above mobile nav -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-3 pb-2 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
-                    class="w-full py-[12px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white shadow-sm disabled:opacity-50"
+                    class="w-full py-[15px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
                     :style="{
-                        background: pendingNames.length === 0 ? '#93c5fd' : (selectionFiltered ? '#a7f3d0' : '#c7d2fe'),
+                        background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
                         color: '#ffffff !important',
-                        textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                        textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
                     }"
                 >
-                    <span v-if="!selectionFiltered" style="color: #ffffff !important;">確定 (已選 {{ pendingNames.length }} 人)</span>
+                    <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
                     <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
                 </button>
             </div>
@@ -74,7 +75,7 @@
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
             <!-- Navigation Header -->
-            <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10">
+            <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
                 <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
@@ -285,9 +286,9 @@
                 </div>
             </div>
             
-            <!-- Fixed Bottom Action Area -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
-                <div class="max-w-2xl mx-auto">
+            <!-- Fixed Bottom Action Area aligned with desktop container -->
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+                <div class="w-full">
                     <button
                         @click="doGrouping"
                         :disabled="selectedNames.length < 1 || isDrawing"
@@ -1049,6 +1050,33 @@ defineExpose({
 @keyframes namePulse {
     from { opacity: 0.2; transform: scale(0.9); }
     to   { opacity: 1;   transform: scale(1); }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+@media (min-width: 768px) {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 10px;
+    }
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+@media (min-width: 768px) {
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
 }
 </style>
 

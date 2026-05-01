@@ -1,14 +1,14 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[500] bg-white overflow-hidden animate-fade-in font-sans">
+    <div v-if="show" class="fixed inset-0 md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
         
         <!-- STEP 1: PERSONNEL SELECTION -->
-        <div v-if="currentStep === 1" class="fixed inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <div v-if="currentStep === 1" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <!-- Header bar -->
-                <div class="border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0 px-2 py-2">
+                <div class="border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0 px-2 py-2 w-full md:pt-[60px]">
                     <div class="flex flex-col w-full gap-1">
                         <!-- First Row: Main Title -->
-                        <div class="flex items-center">
+                        <div class="flex items-center md:hidden">
                             <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
@@ -17,43 +17,38 @@
                             </div>
                         </div>
                         
-                                                <!-- Second Row: Subtitle -->
-                        <div class="flex items-center justify-between w-full mt-1 px-1">
-                            <span class="text-slate-700 font-black shrink-0 mr-2" style="font-size: 22px !important;">
+                                                <!-- Second Row: Subtitle + Action Button -->
+                        <div class="flex items-center justify-between w-full mt-1 px-1 md:pb-2">
+                            <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[24px]" style="font-size: 22px !important;">
                                 {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}{{ lotteryMode === false ? ' - 直接排列' : '' }}
                             </span>
-                            <button @click="resetAll" class="p-2 text-slate-400 hover:text-rose-500 transition-colors bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+                            <div class="flex items-center space-x-2">
+                                <button @click="invertSelection()" 
+                                    class="px-4 py-1.5 text-[17px] rounded-xl shadow-sm border transition-colors duration-150 bg-white border-slate-300 text-slate-700 font-bold active:bg-blue-600 active:text-white active:border-blue-600"
+                                >反選</button>
+                                <button @click="resetAll" class="p-2 text-slate-400 hover:text-rose-500 transition-colors bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Third Row: Main Actions (Horizontal Row) -->
-                        <div class="flex items-center space-x-2 mt-1 px-1 overflow-x-auto no-scrollbar pb-1">
-                            <button ontouchstart="" @click="invertSelection(); activeAction = 'invert'" 
-                                :class="[
-                                    'whitespace-nowrap px-4 py-2 text-[15px] rounded-xl shadow-sm border transition-all duration-150 font-black flex items-center justify-center',
-                                    activeAction === 'invert' ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-200 text-black active:bg-slate-100'
-                                ]" :style="{ color: activeAction === 'invert' ? '#ffffff !important' : '#000000' }">
-                                反選
-                            </button>
-                            <div v-if="lotteryMode === false" class="flex items-center space-x-2">
-                                <div v-if="selectionSubStep === 1" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[13px] font-black border border-rose-100 flex items-center shadow-sm">
-                                    <span class="w-2 h-2 bg-rose-500 rounded-full mr-2 animate-pulse"></span>
-                                    步驟 1：選取固定人員
-                                </div>
-                                <div v-else class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[13px] font-black border border-blue-100 flex items-center shadow-sm">
-                                    <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
-                                    步驟 2：選取抽籤人員
-                                </div>
+                        <!-- Third Row: Step Badge -->
+                        <div v-if="lotteryMode === false" class="flex items-center mt-1 px-1">
+                            <div v-if="selectionSubStep === 1" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[13px] font-black border border-rose-100 flex items-center shadow-sm">
+                                <span class="w-2 h-2 bg-rose-500 rounded-full mr-2 animate-pulse"></span>
+                                步驟 1：選取固定人員
                             </div>
-
+                            <div v-else class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[13px] font-black border border-blue-100 flex items-center shadow-sm">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
+                                步驟 2：選取抽籤人員
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 
                 <!-- Main scrollable selection grid -->
-                <div class="flex-1 overflow-y-auto no-scrollbar pb-64 animate-fade-in">
+                <div class="flex-1 overflow-y-auto custom-scrollbar pb-64 animate-fade-in w-full">
                     
                     <!-- Selected Pool (Persistent Display) -->
                     <div v-if="lotteryMode === false && pendingNames.length > 0" class="bg-blue-50/40 border border-blue-100 rounded-2xl p-4 mx-2 mt-4 mb-2">
@@ -79,7 +74,7 @@
                     </div>
 
                     
-                <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-6 max-w-lg mx-auto w-full no-scrollbar pb-64">
+                <div class="p-4 flex-1 flex flex-col gap-6 w-full custom-scrollbar pb-64">
                     <!-- MODE TOGGLE REMOVED - NOW HANDLED BY NEXT BUTTON -->
 
                     <!-- GRID SELECTION -->
@@ -105,7 +100,7 @@
 
 
                         <!-- Main Selection Grid -->
-                        <div class="grid grid-cols-4 gap-2 relative touch-none"
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 relative touch-none"
                             @mouseleave="stopDrag"
                             @touchmove.prevent="handleTouchMove">
                             <button v-for="user in displayUsers" :key="user.id"
@@ -136,14 +131,18 @@
                 </div>
 
 
-            <!-- Confirm button -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-1 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200]">
-                <div class="space-y-2">
+            <!-- Confirm button aligned with desktop container -->
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-1 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+                <div class="w-full space-y-2">
                     <button
                         @click="confirmSelection"
                         :disabled="lotteryMode === false && selectionSubStep === 1 ? false : pendingNames.length === 0"
-                        class="w-full py-[12px] rounded-2xl font-black text-[17px] bg-indigo-200 text-white shadow-sm active:scale-95 transition-all disabled:opacity-50"
-                        style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                        class="w-full py-[12px] rounded-2xl font-black text-[17px] shadow-sm active:scale-95 transition-all disabled:opacity-50"
+                        :style="{
+                            background: (lotteryMode === false && selectionSubStep === 1) || pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8',
+                            color: '#ffffff !important',
+                            textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                        }">
                         <template v-if="lotteryMode === false && selectionSubStep === 1">
                             確定固定名單 (共 {{ fixedParticipants.length }} 人) → 下一步
                         </template>
@@ -161,29 +160,29 @@
     </div>
 
         <!-- STEP 2: DRAW CONFIGURATION / ROUND SELECTION -->
-        <div v-if="currentStep === 2" class="fixed inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <div v-if="currentStep === 2" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 p-3 flex flex-col sticky top-0 z-10">
+                <div class="bg-white border-b border-slate-100 p-3 flex flex-col sticky top-0 z-10 w-full md:pt-[60px]">
                     <div class="flex flex-col w-full gap-1">
-                        <div class="flex items-center">
+                        <div class="flex items-center md:hidden">
                             <div class="w-1"></div>
                             <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
                                 其他專區
                             </div>
                         </div>
                         <!-- Second Row: Subtitle + Back -->
-                        <div class="flex items-center justify-between w-full mt-1 px-1">
+                        <div class="flex items-center justify-between w-full mt-1 px-1 md:pb-2">
                             <div class="flex items-center">
-                                <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1">
+                                <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1 md:hidden">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
-                                <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '直接排列 - 抽籤設定' }}</span>
+                                <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[24px]" style="font-size: 22px !important;">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '直接排列 - 抽籤設定' }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-6 max-w-lg mx-auto w-full no-scrollbar pb-72">
+                <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-6 w-full custom-scrollbar pb-72">
                     <!-- Total Summary Badge -->
                     <div class="flex items-center justify-center">
                         <div class="bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-2 flex flex-col items-center shadow-sm">
@@ -204,7 +203,7 @@
                             </div>
                             <span class="text-[17px] font-black text-emerald-600">{{ roundParticipants.length }} 人</span>
                         </div>
-                        <div class="grid grid-cols-4 gap-2" @mouseleave="stopDrag" @touchmove.prevent="handleTouchMoveStep2">
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2" @mouseleave="stopDrag" @touchmove.prevent="handleTouchMoveStep2">
                             <button v-for="name in selectedNames" :key="'round'+name"
                                 @mousedown="startDragStep2(name)"
                                 @mouseenter="onDragEnterStep2(name)"
@@ -274,9 +273,9 @@
                 </div>
             </div>
 
-            <!-- Fixed Bottom Action Area -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 pb-2 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200]">
-                <div class="max-w-lg mx-auto space-y-4">
+            <!-- Fixed Bottom Action Area aligned with desktop container -->
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-2 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full">
+                <div class="w-full space-y-4">
                     <!-- Config Row for Direct Mode -->
                     <div class="flex items-center justify-between px-1">
                         <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider">抽取人數</label>
@@ -361,9 +360,9 @@
         </div>
 
         <!-- STEP 3: RESULTS -->
-        <div v-if="currentStep === 3" class="fixed inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
+        <div v-if="currentStep === 3" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                <div class="bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm w-full">
                     <div class="p-4 flex items-center">
                         <button @click="currentStep = 2" class="flex items-center text-slate-400 p-1 active:scale-95 transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -380,7 +379,7 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-4 no-scrollbar">
-                    <div class="max-w-lg mx-auto space-y-4 pb-32 pt-2">
+                    <div class="w-full space-y-4 pb-32 pt-2">
                         <!-- SINGLE RESULT: CROWN & CENTERED -->
                         <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 animate-scale-in pt-4">
                             <div class="relative">
@@ -463,8 +462,8 @@ const isDrawing = ref(false);
 const hasResult = ref(false);
 const results = ref([]);
 const activeAction = ref('');
-const lotteryMode = ref(null);
-const selectionSubStep = ref(1); // 1: Fixed mode, 2: Pool mode
+const lotteryMode = ref(props.initialMode);
+const selectionSubStep = ref(props.initialMode === true ? 2 : 1); // 1: Fixed mode, 2: Pool mode
 const selectionMode = computed(() => selectionSubStep.value === 1 ? 'fixed' : 'pool');
 
 watch(lotteryMode, (val) => {

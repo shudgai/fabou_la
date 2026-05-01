@@ -6,7 +6,7 @@
             @close="showAddMenu = false"
         />
         <!-- Header (Shared) -->
-        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[25px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
                     每周開文記錄
@@ -69,9 +69,9 @@
 
 
         <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1]">
+        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1] w-full md:max-w-xl md:mx-auto">
             <!-- Weekly Post View -->
-            <div v-if="currentTab === 'weekly'" class="space-y-3 max-w-2xl mx-auto">
+            <div v-if="currentTab === 'weekly'" class="space-y-3 w-full">
                 <!-- Removed top add button -->
 
                 <!-- Weekly List -->

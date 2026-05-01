@@ -17,7 +17,7 @@
         </svg>
 
         <!-- Header 1: Module Level -->
-        <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 15px; min-height: 52px;">
+        <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 15px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Header 2: Folder/Action Level -->
-        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full px-3 py-[5px]">
+        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px]">
             <div class="flex items-center flex-1 min-w-0">
                 <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -89,7 +89,7 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 gap-[20px] p-2 place-items-center max-w-2xl mx-auto">
+                <div v-else class="grid grid-cols-2 gap-[20px] p-2 place-items-center max-w-xl mx-auto">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
@@ -127,7 +127,7 @@
             </div>
 
             <!-- Folder Contents -->
-            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300', focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : '']">
+            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto', focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : '']">
                 <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>

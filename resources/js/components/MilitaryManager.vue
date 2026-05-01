@@ -2,7 +2,7 @@
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
-        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 4px 10px; min-height: 32px;">
+        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
                     軍隊記錄專區
@@ -16,7 +16,7 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full px-[10px] py-1" style="min-height: 32px;">
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto px-[10px] py-1" style="min-height: 32px;">
             <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
@@ -36,7 +36,7 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group">
+        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-xl md:mx-auto w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -57,7 +57,7 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-2 gap-4 mt-6 place-items-center max-w-2xl mx-auto">
+                <div class="px-6 pb-24 grid grid-cols-2 gap-4 mt-6 place-items-center max-w-xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
@@ -81,7 +81,7 @@
             </div>
 
             <!-- LEDGER VIEW -->
-            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24">
+            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-xl md:mx-auto w-full">
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>

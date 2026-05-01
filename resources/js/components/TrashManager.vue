@@ -1,5 +1,5 @@
 <template>
-    <div class="h-full bg-slate-50 flex flex-col pt-6 px-4 md:px-10 pb-20">
+    <div class="h-full bg-slate-50 flex flex-col pt-6 px-4 pb-20 w-full md:max-w-xl md:mx-auto">
         <!-- Header -->
         <div class="flex items-center justify-between mb-8">
             <div>

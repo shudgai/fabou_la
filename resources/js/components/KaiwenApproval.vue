@@ -4,9 +4,9 @@
         <!-- Step 1: Selection Page -->
         <div v-if="step === 1" class="flex flex-col h-full overflow-hidden relative">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-24" style="padding-left: 10px; padding-right: 10px;">
+                <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-40 w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
                     <!-- Selection Grid matched to RandomGroup -->
-                    <div class="flex items-center justify-between px-3 py-3">
+                    <div class="flex items-center justify-between px-3 py-3 md:pt-[32px]">
                         <div class="flex items-center">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -45,13 +45,13 @@
             </div>
             
             <!-- Confirm Action -->
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-2 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full">
                 <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
                     :disabled="selectionList.length === 0" 
-                    class="w-full max-w-lg font-black text-[17px] py-3.5 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center" 
+                    class="w-full font-black text-[17px] py-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center shadow-lg" 
                     :style="{ 
                         backgroundColor: !selectionFiltered ? '#1d4ed8' : '#16a34a',
-                        boxShadow: 'none'
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
                     }"
                 >
                     <span style="color: #ffffff !important;">{{ !selectionFiltered ? '完成人員選取 (進入排列)' : '確定順序 (進入核定表)' }}</span>
@@ -62,7 +62,7 @@
         <!-- Step 2: Approval Table Page -->
         <div v-if="step === 2" class="flex flex-col h-full bg-white overflow-hidden relative">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 py-2 px-3 flex items-center justify-between shrink-0 shadow-sm z-10">
+                <div class="bg-white border-b border-slate-100 py-2 px-3 flex items-center justify-between shrink-0 shadow-sm z-10 w-full md:max-w-xl md:mx-auto md:mt-[60px]">
                     <div class="flex items-center space-x-2">
                         <button @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto py-4 flex flex-col custom-scrollbar" style="padding-left: 10px; padding-right: 10px;">
+                <div class="flex-1 overflow-y-auto py-4 flex flex-col custom-scrollbar w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
                     
                     <!-- Instruction Text -->
                     <div class="px-2 pb-4 mb-2 flex flex-col space-y-1">
@@ -133,8 +133,9 @@
                 </div>
             </div>
 
-            <div class="fixed bottom-[7vh] left-0 right-0 px-4 py-2 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center">
-                <button @click="copyToLine" class="w-full max-w-lg bg-emerald-600 h-14 rounded-2xl font-black transition-all active:scale-[0.98] text-[17px] tracking-widest flex items-center justify-center space-x-2" style="box-shadow: none;">
+            <!-- Bottom Action Button aligned with desktop container -->
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full">
+                <button @click="copyToLine" class="w-full bg-emerald-600 h-14 rounded-2xl font-black transition-all active:scale-[0.98] text-[17px] tracking-widest flex items-center justify-center space-x-2 shadow-lg" style="box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     <span style="color: #ffffff !important;">複製貼 LINE</span>
                 </button>
@@ -319,12 +320,29 @@ onMounted(loadUsers);
     width: 4px;
     height: 4px;
 }
+@media (min-width: 768px) {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 10px;
+    }
+}
 .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #e2e8f0;
     border-radius: 10px;
+}
+@media (min-width: 768px) {
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
 }
 
 .animate-fade-in {

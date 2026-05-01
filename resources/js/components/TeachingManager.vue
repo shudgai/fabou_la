@@ -83,7 +83,7 @@
             <!-- Header with Back Button (Persistent) -->
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
-            <div v-if="currentFolder !== null && !addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 52px;">
+            <div v-if="currentFolder !== null && !addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                     <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest whitespace-nowrap" style="color: #0f172a !important;">
                         {{ currentFolder ? currentFolder.name : '開示資料專區' }}
@@ -102,7 +102,7 @@
             </div>
 
             <!-- Header for Add Mode (Unified) -->
-            <div v-if="addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full px-3 py-2" style="min-height: 52px;">
+            <div v-if="addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto px-3 py-2" style="min-height: 52px;">
                 <button @click="addMode = false" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
@@ -114,7 +114,7 @@
             </div>
 
             <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
-            <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
+            <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
                 <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
                     <div class="flex-1">
                         <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap">父皇開示資料</h1>
@@ -198,9 +198,17 @@
             <!-- Level 2: List & Add View -->
             <template v-else>
                 <!-- Add View -->
-                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                    <div class="bg-white w-full h-full relative flex flex-col">
-                        <div class="space-y-4 pb-32 flex-1 p-4">
+                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
+                    <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
+                    <div class="bg-white w-full h-full relative flex flex-col md:max-w-xl md:h-auto md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:overflow-hidden animate-slide-up">
+                        <!-- Desktop Header -->
+                        <div class="hidden md:flex px-6 py-5 border-b border-slate-100 items-center justify-between shrink-0 bg-slate-50/30">
+                            <h3 class="text-[22px] font-black text-slate-900 tracking-tight">父皇仙師每日開示載錄</h3>
+                            <button @click="addMode = false" class="text-slate-300 hover:text-red-500 transition-colors p-2 active:scale-90">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="space-y-4 pb-32 flex-1 p-4 md:overflow-y-auto custom-scrollbar">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div class="space-y-0.5">
                                         <label class="app-title ml-1 opacity-0">日期</label>
@@ -451,7 +459,7 @@
                             </div>
                             
                             <!-- Empty State -->
-                            <div v-else class="py-20 flex flex-col items-center justify-center text-slate-300">
+                            <div v-else class="py-20 md:pt-10 flex flex-col items-center justify-center text-slate-300">
                                 <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
@@ -477,7 +485,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[7vh] left-0 right-0 p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[10px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
@@ -495,7 +503,7 @@
                 </div>
 
                 <!-- Magic Items Detail View -->
-                <div v-if="itemsDetailMode" class="items-detail-container fixed inset-0 z-[500] bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-in">
+                <div v-if="itemsDetailMode" class="items-detail-container fixed inset-0 md:max-w-xl md:left-1/2 md:-translate-x-1/2 z-[1100] bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-in border-x border-slate-200 shadow-2xl">
                     <div class="bg-white px-6 pt-4 pb-4 border-b border-slate-100 sticky top-0 z-[510] flex items-center justify-between shadow-sm">
                         <div class="flex items-center">
                             <button @click.prevent="handleItemsDetailClose" class="text-slate-400 mr-3 p-2 active:scale-90 transition-transform">
@@ -1079,7 +1087,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-2 pb-1 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-2 pb-1 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <div class="grid grid-cols-2 gap-3">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-[10px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
                                         <span>完成並新增</span>
@@ -1282,8 +1290,8 @@
                 </div>
 
                 <!-- Main List View -->
-                <div v-show="!addMode" 
-                     class="pb-32 flex-1 overflow-y-auto bg-white" 
+                <div :class="[!addMode ? 'block' : 'hidden md:block']" 
+                     class="pb-32 flex-1 overflow-y-auto bg-white w-full md:max-w-xl md:mx-auto" 
                      @click="focusedId = null; focusedDate = null; activeDropdownId = null" 
                      @scroll="handleScroll">
                     <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
@@ -1647,7 +1655,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[7vh] left-0 right-0 px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
+                    <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
                         <button @click="saveConfirmModal.show = false" class="px-10 py-[10px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>

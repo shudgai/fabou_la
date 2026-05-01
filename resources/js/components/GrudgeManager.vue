@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px]">
+        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
             <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
                 <h1 class="text-[25px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important;">{{ displayTitle }}</h1>
             </div>
@@ -16,7 +16,7 @@
         </div>
         
         <!-- Search Component (Enhanced with persistent X) -->
-        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group">
+        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full md:max-w-xl md:mx-auto">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -69,7 +69,7 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full" style="padding-bottom: 80px;">
+        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full md:max-w-xl md:mx-auto" style="padding-bottom: 80px;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
             <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">

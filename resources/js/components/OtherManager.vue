@@ -1,5 +1,5 @@
 <template>
-    <div class="h-full bg-white flex flex-col other-manager-module">
+    <div class="h-full bg-white flex flex-col other-manager-module relative">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -16,8 +16,8 @@
             </defs>
         </svg>
         <!-- Level 1: Folder Grid View -->
-        <div v-if="!activeFolderId" class="h-full bg-white flex flex-col relative overflow-hidden">
-            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0">
+        <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-white flex flex-col relative overflow-hidden">
+            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full md:max-w-xl md:mx-auto">
                 <div class="flex items-center">
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -27,7 +27,7 @@
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scrollbar">
+            <div class="flex-1 overflow-y-auto custom-scrollbar w-full md:max-w-xl md:mx-auto">
                 <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
@@ -101,7 +101,7 @@
                 @action="prepareAddFolder"
             />
         </div>
-        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden">
+        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden w-full md:max-w-xl md:mx-auto relative md:h-[90vh]">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 48px;">
@@ -118,7 +118,8 @@
                     
                     <!-- Second Row: Subtitle + Quick Controls -->
                     <div v-if="activeFolder" class="flex items-center justify-between w-full mt-1">
-                        <span class="text-slate-700 font-normal shrink-0 mr-2" style="font-size: 22px !important;">{{ activeFolder.name }}</span>
+                        <span class="text-slate-700 font-normal shrink-0 mr-2" 
+                              style="font-size: 22px !important;">{{ activeFolder.name }}</span>
                         
                         <div class="flex items-center justify-end flex-1">
                             <template v-if="activeFolder.name.includes('隨機分組')">
@@ -142,14 +143,17 @@
             </div>
 
 
-            <div v-if="activeFolder" class="h-full">
+            <div v-if="activeFolder || showLuckyDraw" class="h-full">
+                <!-- Special View: 抽籤工具 (LuckyDraw) -->
+                <lucky-draw v-if="showLuckyDraw" ref="luckyDrawRef" :show="showLuckyDraw" :initial-mode="luckyDrawInitialMode" @close="showLuckyDraw = false" />
+                
                 <!-- Special View: 開文核定表 -->
-                <kaiwen-approval v-if="activeFolder.name.includes('開文核定')" ref="kaiwenRef" />
+                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" />
                 <!-- Special View: 隨機分組 -->
-                <random-group v-else-if="activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
+                <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
                 
                 <!-- Default View: Standard Records -->
-                <div v-else class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
+                <div v-else-if="activeFolder" class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
                     <div class="space-y-4">
                         <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
                             <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
@@ -225,7 +229,7 @@
                 </div>
             </div>
         </div>
-        <lucky-draw :show="showLuckyDraw" :initial-mode="luckyDrawInitialMode" @close="showLuckyDraw = false" />
+        <!-- LuckyDraw moved inside content area -->
     </div>
 </template>
 
@@ -246,11 +250,7 @@ const emit = defineEmits(['goHome']);
 
 const resetToRoot = () => {
     activeFolderId.value = null;
-    showRandomGroup.value = false;
     showLuckyDraw.value = false;
-    searchQuery.value = '';
-    focusedId.value = null;
-    addMode.value = false;
     activeAction.value = '';
 };
 
