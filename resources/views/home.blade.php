@@ -21,7 +21,10 @@
 
 
         <!-- Main Navigation Grid: Show for Admins, Hidden for regular users -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 @if(!Auth::user()->isAdmin()) hidden @endif">
+        @php 
+            $isAdvancedOrAdmin = Auth::user()->isAdmin() || $perms['can_see_teaching_folders'] || $perms['can_see_treasures'] || $perms['can_see_military'] || $perms['can_see_other_folders'];
+        @endphp
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 @if(!$isAdvancedOrAdmin) hidden @endif">
             <!-- Major Grace Card -->
             @if($perms['can_see_grace'])
             <a href="{{ route('note.index') }}#grace" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">

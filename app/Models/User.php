@@ -29,6 +29,13 @@ class User extends Authenticatable
         'google_id',
     ];
 
+    protected $appends = [
+        'display_name',
+        'is_admin',
+        'is_chijue',
+        'permissions'
+    ];
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
@@ -40,6 +47,16 @@ class User extends Authenticatable
         return $this->role === 'admin' || 
                in_array($dName, ['元續', '赤峰', '閻闇']) ||
                $this->roles()->where('name', '管理員')->exists();
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->isAdmin();
+    }
+
+    public function getIsChijueAttribute()
+    {
+        return $this->isChijue();
     }
 
     public function group()
@@ -129,7 +146,7 @@ class User extends Authenticatable
             
             // 3. 其他專區與法寶登記
             'can_see_other_folders' => $isFullAdmin || $isAdvanced,
-            'can_see_treasures' => $isFullAdmin || in_array($dName, ['赤覺']),
+            'can_see_treasures' => $isFullAdmin || $this->isChijue(),
             
             // 4. 軍隊專區
             'can_see_military' => $isFullAdmin || in_array($dName, [
@@ -149,5 +166,10 @@ class User extends Authenticatable
         }
 
         return $permissions;
+    }
+
+    public function getPermissionsAttribute()
+    {
+        return $this->getPermissions();
     }
 }

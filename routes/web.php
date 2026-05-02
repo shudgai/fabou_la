@@ -118,6 +118,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/user-profile', function () {
         $user = auth()->user()->load('dharmaName');
         $user->is_admin = $user->isAdmin();
+        $user->is_chijue = $user->isChijue();
         $user->permissions = $user->getPermissions();
         return $user;
     });

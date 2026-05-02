@@ -42,8 +42,8 @@ import TrashManager from './TrashManager.vue';
 const user = ref(null);
 const currentView = ref('menu');
 
-const isChijue = computed(() => user.value?.dharma_name?.name === '赤覺' || isAdmin.value);
-const isAdmin = computed(() => user.value?.is_admin || user.value?.role === 'admin' || user.value?.role === '管理員');
+const isAdmin = computed(() => !!user.value?.is_admin);
+const isChijue = computed(() => !!user.value?.is_chijue);
 
 const syncHash = () => {
     if (!user.value) return; 
@@ -58,28 +58,41 @@ const syncHash = () => {
         'military': 'military',
         'other': 'other',
         'other_teaching': 'other_teaching',
-        'kaiwen': 'kaiwen'
+        'kaiwen': 'kaiwen',
+        'trash': 'trash'
     };
     
     let targetView = viewMap[hash] || 'menu';
     
-    // Security Check: Unauthorized hash access (Relaxed for Admins)
+    // Security Check: Unauthorized hash access
     if (isAdmin.value) {
         currentView.value = targetView;
         return;
     }
 
-    if (targetView === 'treasure' && !isChijue.value) {
+    const perms = user.value.permissions || {};
+
+    if (targetView === 'treasure' && !perms.can_see_treasures && !isChijue.value) {
         targetView = 'menu';
         window.location.hash = '';
     }
 
-    if (targetView === 'military' && !user.value?.permissions?.can_see_military) {
+    if (targetView === 'teaching' && !perms.can_see_teaching_folders && !perms.can_see_daily_teachings) {
         targetView = 'menu';
         window.location.hash = '';
     }
 
-    if (targetView === 'other' && !user.value?.permissions?.can_see_other_folders) {
+    if (targetView === 'military' && !perms.can_see_military) {
+        targetView = 'menu';
+        window.location.hash = '';
+    }
+
+    if (targetView === 'other' && !perms.can_see_other_folders) {
+        targetView = 'menu';
+        window.location.hash = '';
+    }
+
+    if (targetView === 'trash' && !perms.can_see_trash) {
         targetView = 'menu';
         window.location.hash = '';
     }
@@ -88,13 +101,20 @@ const syncHash = () => {
 };
 
 const handleNavigate = (view) => {
-    if (view === 'treasure' && !isChijue.value && !isAdmin.value) return;
-    if (view === 'military' && !user.value?.permissions?.can_see_military) return;
-    if (view === 'other' && !user.value?.permissions?.can_see_other_folders) return;
+    const perms = user.value?.permissions || {};
+    if (view === 'treasure' && !perms.can_see_treasures && !isAdmin.value) return;
+    if (view === 'military' && !perms.can_see_military && !isAdmin.value) return;
+    if (view === 'other' && !perms.can_see_other_folders && !isAdmin.value) return;
+    if (view === 'trash' && !perms.can_see_trash && !isAdmin.value) return;
 
     currentView.value = view;
     // Optionally update hash as well
-    const reverseMap = { 'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 'grudge': '#grudge', 'military': '#military', 'other': '#other', 'other_teaching': '#other_teaching', 'kaiwen': '#kaiwen', 'menu': '' };
+    const reverseMap = { 
+        'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 
+        'grudge': '#grudge', 'military': '#military', 'other': '#other', 
+        'other_teaching': '#other_teaching', 'kaiwen': '#kaiwen', 
+        'trash': '#trash', 'menu': '' 
+    };
     window.location.hash = reverseMap[view] || '';
 };
 

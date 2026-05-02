@@ -15,6 +15,7 @@ class RegistryController extends Controller
         $user = auth()->user();
         $query = Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc');
  
+        // Strict isolation: Everyone only sees their own data
         $query->where('user_id', $user->id);
         
         return $query->get();

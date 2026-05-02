@@ -73,8 +73,8 @@
                         </svg>
 
                         <!-- Premium Desktop Shield Badge (Only on Desktop) -->
-                        <div class="hidden md:flex absolute inset-6 items-center justify-center overflow-hidden transition-transform group-hover:scale-105 duration-300">
-                            <svg class="w-full h-full drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)]" viewBox="0 0 24 24" fill="none">
+                        <div class="hidden md:flex absolute inset-8 items-center justify-center transition-transform group-hover:scale-105 duration-300">
+                            <svg class="w-full h-full drop-shadow-2xl" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
                                       :fill="'url(#mm-fGrad' + folder.id + ')'" 
                                       stroke="white" stroke-width="0.2"/>
@@ -83,7 +83,7 @@
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center px-6">
-                                <span class="text-[52px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
+                                <span class="text-[48px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
                                 </span>
                             </div>
