@@ -175,13 +175,13 @@
                          @click="toggleExpand(item.id)"
                              :class="[
                                  'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] border-transparent shadow-none !mb-0 !rounded-none -mx-4 z-[60]' : '',
+                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
                             <!-- Sequence Number / Reorder Input -->
-                            <div class="mr-4 shrink-0 flex items-center justify-center pt-1">
-                                <div v-if="!reorderMode" class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-[14px] font-black text-slate-500">
+                            <div class="mr-4 shrink-0 flex items-center justify-center pt-1 md:pt-2">
+                                <div v-if="!reorderMode" class="w-8 h-8 md:w-12 md:h-12 bg-slate-50 md:bg-slate-100/60 rounded-xl flex items-center justify-center text-[14px] md:text-[18px] font-black text-slate-400 md:text-slate-500 transition-all">
                                     {{ idx + 1 }}
                                 </div>
                                 <input v-else 
@@ -231,19 +231,21 @@
                             </div>
 
                             <!-- Card Header (Toggle Expansion) -->
-                            <div v-if="!expandedIds.has(item.id)" class="space-y-2">
-                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="flex items-center justify-between pr-12 mt-[10px]">
-                                    <div class="app-title font-outfit uppercase tracking-widest">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                            <div v-if="!expandedIds.has(item.id)" class="space-y-1 md:space-y-1.5 py-1 md:py-2">
+                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="flex items-center justify-between pr-12">
+                                    <div class="app-title font-outfit uppercase tracking-widest md:tracking-normal md:text-[18px] md:font-black md:text-slate-800">
+                                        {{ formatDisplayDate(getEarliestDate(item)) }}
+                                    </div>
                                 </div>
 
                                 <div class="flex items-center justify-between group/title pr-12">
                                     <div class="flex flex-col">
-                                        <div class="text-[17px] font-normal text-slate-900 leading-tight truncate font-outfit flex items-center">
+                                        <div class="text-[17px] md:text-[20px] font-normal md:font-black text-slate-900 leading-tight truncate font-outfit flex items-center">
                                             {{ item.name }}
                                         </div>
                                     </div>
-                                    <div class="ml-2 text-slate-300 group-hover/title:text-indigo-400 transition-colors">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="ml-2 text-slate-300 md:text-slate-200 group-hover/title:text-indigo-400 transition-colors">
+                                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </div>
@@ -254,28 +256,51 @@
                              
 
 
-                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50">
-                                        <!-- Detailed Record View -->
-                                        <div v-if="!editingIds.has(item.id)" class="space-y-[10px] px-0 mb-4">
-                                        <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="space-y-1">
-                                            <label class="tracking-widest font-bold font-outfit">日期</label>
-                                            <div class="app-title font-outfit">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:bg-slate-50/20 md:p-6 md:rounded-b-3xl relative">
+                                        <!-- Three dots menu in expanded view (Desktop) -->
+                                        <div class="hidden md:block absolute right-4 top-4 z-[20]">
+                                            <button @click.stop="toggleMenu(item.id)" class="p-2 text-red-500 hover:bg-red-50 rounded-full transition-all">
+                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                            </button>
+                                            <div v-if="openMenuId === item.id" @click.stop 
+                                                 class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起清單</button>
+                                                <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                <button @click.stop="copyAsTextFile(item); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製內容</button>
+                                                <button @click.stop="confirmDelete(item.id)" class="w-full p-3 text-left text-[15px] font-black text-red-600 hover:bg-red-50">刪除紀錄</button>
+                                            </div>
                                         </div>
+                                        <!-- Detailed Record View -->
+                                        <div v-if="!editingIds.has(item.id)" class="space-y-4 px-0 mb-4 animate-fade-in">
+                                            <!-- Row 1: Date and Master -->
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div class="space-y-1">
-                                                    <label class="tracking-widest font-bold font-outfit">法寶名稱</label>
-                                                    <div class="text-[17px] font-bold text-slate-900 font-outfit">{{ item.name }}</div>
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
+                                                    <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                                 </div>
-                                            <div v-if="item.purpose" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">法寶用意</label>
-                                                <div class="text-[17px] font-bold text-slate-900 leading-relaxed font-outfit whitespace-pre-wrap">{{ item.purpose }}</div>
+                                                <div class="space-y-1 md:text-right md:pr-8">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                                    <div class="app-body font-bold text-slate-900">{{ getMasterName(item.master_id) }}</div>
+                                                </div>
                                             </div>
-                                            <div v-if="item.acquisition_method" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">求寶方式</label>
-                                                <div class="text-[17px] font-bold text-slate-900 font-outfit whitespace-pre-wrap">{{ item.acquisition_method }}</div>
+                                            
+                                            <!-- Row 2: Name -->
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                                <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
-                                            <div v-if="item.remarks" class="space-y-1">
-                                                <label class="tracking-widest font-bold font-outfit text-red-600">備註</label>
-                                                <div @click.stop="openRemarks(item.remarks)" class="text-[17px] font-bold text-slate-900 font-outfit cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
+
+                                            <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.purpose }}</div>
+                                            </div>
+                                            <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶方式</label>
+                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.acquisition_method }}</div>
+                                            </div>
+                                            <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                                <div @click.stop="openRemarks(item.remarks)" class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                             </div>
                                         </div>
 
@@ -310,22 +335,22 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px]">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border-y border-slate-100 shadow-sm mb-20 -mx-4 md:-mx-4 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 -mx-4 md:mx-0 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
-                                                            <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
-                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-left font-black w-[60px] whitespace-nowrap">{{ isPalaceRecord(item) ? '宮名' : '法號/群組' }}</th>
-                                                                <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[130px] whitespace-nowrap">日期</th>
-                                                                <th class="border-b border-slate-100 px-3 py-[5px].5 text-center font-black">備註</th>
+                                                            <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                                <th class="px-3 py-3 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">{{ isPalaceRecord(item) ? '宮名' : '法號/群組' }}</th>
+                                                                <th class="px-3 py-3 text-center font-black w-[130px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="px-3 py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="recipient in (isPalaceRecord(item) ? palaceSortOrder.map(name => ({ id: name, name })) : dharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ recipient.name }}</td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 justify-center relative">
+                                                            <tr v-for="recipient in (isPalaceRecord(item) ? palaceSortOrder.map(name => ({ id: name, name })) : dharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                                <td class="px-3 py-3 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ recipient.name }}</td>
+                                                                <td class="p-0 text-black border-r border-slate-50">
+                                                                    <div class="flex items-center px-3 py-3 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
                                                                             type="text"
@@ -341,9 +366,9 @@
                                                                         </span>
                                                                     </div>
                                                                 </td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
+                                                                <td class="p-0 text-black">
                                                                     <div @click.stop="triggerRemarksEdit(item, recipient.id)" 
-                                                                        class="w-full py-[5px] px-3 flex items-center justify-center transition-colors">
+                                                                        class="w-full py-3 px-3 flex items-center justify-center transition-colors">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="item.dharma_name_registries?.find(r => (getDharmaNameText(r).replace('升','昇') === (typeof recipient.name === 'string' ? recipient.name.replace('升','昇') : recipient.name)))?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
                                                                         <span v-else class="text-[15px] text-slate-200">-</span>
@@ -355,20 +380,20 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto border-y border-slate-100 shadow-sm mb-20 -mx-4 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 -mx-4 md:mx-0 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
-                                                             <tr class="bg-amber-50/50 text-slate-900 font-outfit">
-                                                                 <th class="border-b border-slate-100 px-[2px] py-[5px].5 text-center font-black w-[110px] whitespace-nowrap">日期</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[80px] whitespace-nowrap">{{ isPalaceRecord(item) ? '宮名' : '法號' }}</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-left font-black w-[90px] whitespace-nowrap">親友</th>
-                                                                 <th class="border-b border-slate-100 px-2 py-[5px].5 text-center font-black">備註</th>
+                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                                 <th class="px-3 py-3 text-center font-black w-[110px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
+                                                                 <th class="px-3 py-3 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">{{ isPalaceRecord(item) ? '宮名' : '法號' }}</th>
+                                                                 <th class="px-3 py-3 text-left font-black w-[90px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
+                                                                 <th class="px-3 py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                              </tr>
                                                          </thead>
                                                         <tbody>
-                                                            <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors">
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="flex items-center px-[2px] py-1 justify-center relative">
+                                                            <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
+                                                                <td class="p-0 text-black border-r border-slate-200">
+                                                                    <div class="flex items-center px-3 py-3 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + dnr.dharma_name_id].obtained_date" 
                                                                             type="text"
@@ -382,27 +407,27 @@
                                                                         <span v-else class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
-                                                                <td @click="openRemarks(dnr)" class="border-b border-slate-50 px-3 py-[5px] font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
-                                                                    <div class="w-full py-[5px] px-2 flex items-center">
+                                                                <td @click="openRemarks(dnr)" class="px-3 py-3 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
+                                                                <td class="p-0 text-black border-r border-slate-200">
+                                                                    <div class="w-full py-3 px-3 flex items-center">
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + (dnr.dharma_name_id || dnr.custom_name)].relationship"
                                                                             class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
                                                                             placeholder="親友">
-                                                                        <span v-else class="text-[14px] text-slate-600 font-bold">
+                                                                        <span v-else class="text-[14px] text-slate-600 font-bold font-outfit">
                                                                             {{ translateRelList(dnr.related_personnel) }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
-                                                                <td class="border-b border-slate-50 p-0 text-black">
+                                                                <td class="p-0 text-black">
                                                                     <div @click.stop="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full py-[5px] px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
-                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
+                                                                        class="w-full py-3 px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400 font-outfit">...</span>
                                                                         <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
-                                                                             :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black' : 'text-[18px] text-amber-500 animate-pulse'">
+                                                                             :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black font-outfit' : 'text-[18px] text-amber-500 animate-pulse font-outfit'">
                                                                              {{ (Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? '多重' : '●' }}
                                                                          </span>
-                                                                        <span v-else class="text-[14px] text-slate-300">
+                                                                        <span v-else class="text-[14px] text-slate-300 font-outfit">
                                                                             <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                                         </span>
                                                                     </div>
@@ -411,17 +436,17 @@
                                                             <tr v-if="editingIds.has(item.id)" class="bg-indigo-50/20 border-t-2 border-indigo-100/50">
                                                                 <td class="p-0 border-b border-indigo-100">
                                                                     <div @click.stop="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
-                                                                        <span class="text-[14px] font-black" style="color: #1e293b !important;">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
+                                                                        <span class="text-[14px] font-black font-outfit" style="color: #1e293b !important;">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-2 border-b border-indigo-100">
-                                                                    <select @change="addPersonRowFromSelect(item.id, $event)" class="w-full h-9 rounded-xl border border-indigo-200">
+                                                                    <select @change="addPersonRowFromSelect(item.id, $event)" class="w-full h-9 rounded-xl border border-indigo-200 font-outfit">
                                                                         <option value="">＋ 點此加入人員</option>
                                                                         <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.id">{{ dn.name }}</option>
                                                                     </select>
                                                                 </td>
                                                                 <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click="triggerRemarksEdit(item, 'new')" class="w-full h-[46px] px-3 flex items-center text-[14px] text-slate-300 font-bold truncate">
+                                                                    <div @click="triggerRemarksEdit(item, 'new')" class="w-full h-[46px] px-3 flex items-center text-[14px] text-slate-300 font-black truncate font-outfit">
                                                                         {{ editMap[item.id + '-new']?.remarks || '輸入備註...' }}
                                                                     </div>
                                                                 </td>
@@ -1096,6 +1121,14 @@ const openAdd = (mode = 'single') => {
         dharma_name_registries: []
     };
     addMode.value = mode;
+};
+
+const getMasterName = (id) => {
+    const m = masters.value.find(m => String(m.id) === String(id));
+    if (m) {
+        return m.name === '父皇仙師' ? '父皇' : m.name;
+    }
+    return '未設定';
 };
 
 const toggleExpand = (id) => {

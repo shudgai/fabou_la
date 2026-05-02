@@ -109,7 +109,7 @@
                                     </div>
                                 </div>
 
-                                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pr-8">
+                                <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
                                     <!-- Date -->
                                     <div class="grudge-field flex flex-row items-center space-x-1.5">
                                         <label class="grudge-label">日期:</label>
