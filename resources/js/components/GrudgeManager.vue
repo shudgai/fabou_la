@@ -357,7 +357,29 @@ const sortedItems = computed(() => {
 });
 
 const groupedItems = computed(() => {
-    const sorted = sortedItems.value;
+    let sorted = sortedItems.value;
+    
+    // Solo Mode: Focus on a specific item
+    if (focusedId.value) {
+        const item = sorted.find(i => i.id === focusedId.value);
+        if (item) {
+            const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
+            return [{ date: dateStr, items: [item] }];
+        }
+    }
+
+    // Isolation Mode: Focus on a specific date group
+    if (activeDateGroup.value) {
+        const filtered = sorted.filter(item => {
+            const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
+            return dateStr === activeDateGroup.value;
+        });
+        if (filtered.length > 0) {
+            return [{ date: activeDateGroup.value, items: filtered }];
+        }
+    }
+
+    // Default: Group all items by date
     const groups = [];
     let currentGroup = null;
     sorted.forEach(item => {

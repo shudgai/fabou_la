@@ -17,7 +17,9 @@
         </svg>
 
         <!-- Header 1: Module Level (Hide titles on Desktop, keep buttons) -->
-        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
+        <div v-if="currentFolder || addMode" 
+            class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto transition-all duration-300"
+            style="padding: 4px 4px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -48,7 +50,8 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Hide on Desktop) -->
-        <div v-if="currentFolder" class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px] md:hidden">
+        <div v-if="currentFolder" 
+            class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px] md:hidden transition-all duration-300">
             <div class="flex items-center flex-1 min-w-0">
                 <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -129,8 +132,12 @@
             </div>
 
             <!-- Folder Contents -->
-            <div v-else-if="currentFolder && !addMode" :class="['px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto', focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : '']">
-                <!-- Desktop Centered Header Section (Matches Fig 2 style) -->
+            <div v-else-if="currentFolder && !addMode" 
+                :class="[
+                    'px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto',
+                    focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : ''
+                ]">
+                <!-- Desktop Centered Header Section within Col-7 (Updated per user request) -->
                 <div class="hidden md:flex flex-col items-center py-6 border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <div class="flex items-center w-full px-4 mb-2">
                         <button @click="handleBack" class="p-2 text-slate-400 active:scale-90 transition-all">
@@ -138,9 +145,9 @@
                         </button>
                         <div class="flex-1 text-center pr-12">
                             <h1 class="text-[24px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
-                            <h2 class="text-[24px] font-black text-red-600 mt-1">
+                            <div class="text-[20px] text-red-600 font-black tracking-widest mt-1">
                                 {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}
-                            </h2>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -230,22 +237,18 @@
                                 </div>
                             </div>
 
-                            <!-- Card Header (Toggle Expansion) -->
-                            <div v-if="!expandedIds.has(item.id)" class="space-y-1 md:space-y-1.5 py-1 md:py-2">
-                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="flex items-center justify-between pr-12">
-                                    <div class="app-title font-outfit uppercase tracking-widest md:tracking-normal md:text-[18px] md:font-black md:text-slate-800">
-                                        {{ formatDisplayDate(getEarliestDate(item)) }}
-                                    </div>
+                            <!-- Card Header (Toggle Expansion) - Standardized to Imperial Grace Style -->
+                            <div v-if="!expandedIds.has(item.id)" class="mt-0 flex flex-col flex-1 min-w-0 pr-8 py-1">
+                                <!-- Row 1: Date -->
+                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="app-title font-bold mb-0.5">
+                                    登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
                                 </div>
 
-                                <div class="flex items-center justify-between group/title pr-12">
-                                    <div class="flex flex-col">
-                                        <div class="text-[17px] md:text-[20px] font-normal md:font-black text-slate-900 leading-tight truncate font-outfit flex items-center">
-                                            {{ item.name }}
-                                        </div>
-                                    </div>
-                                    <div class="ml-2 text-slate-300 md:text-slate-200 group-hover/title:text-indigo-400 transition-colors">
-                                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <!-- Row 2: Name + (Expansion Indicator) -->
+                                <div class="flex items-center justify-between">
+                                    <div class="app-body font-bold text-slate-900 leading-tight truncate">{{ item.name }}</div>
+                                    <div v-if="!expandedIds.has(item.id)" class="ml-2 text-slate-300 transition-colors md:hidden">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </div>
@@ -571,7 +574,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 
 const getTodayStr = () => {
@@ -584,6 +587,16 @@ import RegistryAddForm from './RegistryAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import LuckyDraw from './LuckyDraw.vue';
 import RemarksViewer from './RemarksViewer.vue';
+
+const isDesktop = ref(window.innerWidth >= 768);
+const handleResize = () => { isDesktop.value = window.innerWidth >= 768; };
+onMounted(() => {
+    window.addEventListener('resize', handleResize);
+    loadData();
+});
+onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+});
 
 const resetToRoot = () => {
     currentCategory.value = null;
@@ -916,7 +929,7 @@ const loadData = async () => {
     } catch (e) {} finally { loading.value = false; }
 };
 
-onMounted(loadData);
+
 
 const filteredTreasures = computed(() => {
     if (!currentFolder.value) return [];
