@@ -453,11 +453,32 @@ const sortedItems = computed(() => {
 });
 
 const groupedItems = computed(() => {
-    const sorted = sortedItems.value;
+    let list = sortedItems.value;
+
+    // Solo Mode: Focus on a specific record (hide other dates and other records)
+    if (focusedId.value) {
+        const item = list.find(i => i.id === focusedId.value);
+        if (item) {
+            const dateStr = item.know_date ? formatDate(item.know_date) : '原始數量';
+            return [{ date: dateStr, items: [item] }];
+        }
+    }
+
+    // Isolation Mode: Focus on a specific date (hide other dates)
+    if (expandedDate.value) {
+        const dateItems = list.filter(item => {
+            const dateStr = item.know_date ? formatDate(item.know_date) : '原始數量';
+            return dateStr === expandedDate.value;
+        });
+        if (dateItems.length > 0) {
+            return [{ date: expandedDate.value, items: dateItems }];
+        }
+    }
+
     const groups = [];
     let currentGroup = null;
 
-    sorted.forEach(item => {
+    list.forEach(item => {
         const dateStr = item.know_date ? formatDate(item.know_date) : '原始數量';
         if (!currentGroup || currentGroup.date !== dateStr) {
             currentGroup = {

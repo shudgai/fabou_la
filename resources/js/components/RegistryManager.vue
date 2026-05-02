@@ -160,7 +160,7 @@
 
                     <template v-else>
                         <!-- Search Bar -->
-                        <div v-if="showSearch" class="mb-4 sticky top-0 z-40 bg-white/80 backdrop-blur-md pb-2 px-1 animate-fade-in">
+                        <div v-if="showSearch && !focusedId" class="mb-4 sticky top-0 z-40 bg-white/80 backdrop-blur-md pb-2 px-1 animate-fade-in">
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -350,7 +350,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="recipient in (isPalaceRecord(item) ? palaceSortOrder.map(name => ({ id: name, name })) : dharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                            <tr v-for="recipient in (isPalaceRecord(item) ? getFilteredPalaces : getFilteredDharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
                                                                 <td class="px-3 py-3 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ recipient.name }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-50">
                                                                     <div class="flex items-center px-3 py-3 justify-center relative">
@@ -394,7 +394,7 @@
                                                              </tr>
                                                          </thead>
                                                         <tbody>
-                                                            <tr v-for="dnr in getSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
+                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="flex items-center px-3 py-3 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id)" 
@@ -748,6 +748,13 @@ const addActions = computed(() => {
 });
 const showSearch = ref(false);
 const searchQuery = ref('');
+
+watch(searchQuery, (newVal) => {
+    if (newVal?.trim() && focusedId.value) {
+        focusedId.value = null;
+        expandedIds.value.clear();
+    }
+});
 const showExportMenu = ref(false);
 const deleteConfirmId = ref(null);
 const activePicker = ref(null); // { id, field, title }
@@ -929,13 +936,11 @@ const loadData = async () => {
     } catch (e) {} finally { loading.value = false; }
 };
 
-
-
 const filteredTreasures = computed(() => {
     if (!currentFolder.value) return [];
     
-    // Solo Mode: If an item is focused, only show that one
-    if (focusedId.value) {
+    // Solo Mode: If an item is focused AND we are not searching, only show that one
+    if (focusedId.value && !searchQuery.value?.trim()) {
         const item = allTreasures.value.find(t => t.id === focusedId.value);
         return item ? [item] : [];
     }
@@ -953,7 +958,9 @@ const filteredTreasures = computed(() => {
             const matchPurpose = t.purpose?.toLowerCase().includes(q);
             const matchRegistries = (t.dharma_name_registries || []).some(dnr => {
                 const dnText = getDharmaNameText(dnr).toLowerCase();
-                const remarkMatch = (dnr.remarks || '').toLowerCase().includes(q);
+                const rawRemarks = dnr.remarks;
+                const remarksStr = Array.isArray(rawRemarks) ? rawRemarks.join(' ') : (rawRemarks || '');
+                const remarkMatch = remarksStr.toLowerCase().includes(q);
                 return dnText.includes(q) || remarkMatch;
             });
             return matchName || matchPurpose || matchRegistries;
@@ -1025,6 +1032,31 @@ const getSortedRegistries = (item) => {
         const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
         return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
+    });
+};
+
+const getFilteredDharmaNames = computed(() => {
+    const q = searchQuery.value?.toLowerCase().trim();
+    if (!q) return dharmaNames.value;
+    return dharmaNames.value.filter(dn => dn.name?.toLowerCase().includes(q));
+});
+
+const getFilteredPalaces = computed(() => {
+    const q = searchQuery.value?.toLowerCase().trim();
+    const list = palaceSortOrder.map(name => ({ id: name, name }));
+    if (!q) return list;
+    return list.filter(p => p.name.toLowerCase().includes(q));
+});
+
+const getFilteredSortedRegistries = (item) => {
+    let list = getSortedRegistries(item);
+    const q = searchQuery.value?.toLowerCase().trim();
+    if (!q) return list;
+    return list.filter(dnr => {
+        const dnText = getDharmaNameText(dnr).toLowerCase();
+        const rawRemarks = dnr.remarks;
+        const remarksStr = Array.isArray(rawRemarks) ? rawRemarks.join(' ') : (rawRemarks || '');
+        return dnText.includes(q) || remarksStr.toLowerCase().includes(q);
     });
 };
 

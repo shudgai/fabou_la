@@ -2143,8 +2143,28 @@ const groupedRecords = computed(() => {
 });
 
 const recordsByDate = computed(() => {
+    let list = groupedRecords.value;
+
+    // Solo Mode: Focus on a specific record (hide other dates and other records)
+    if (focusedId.value) {
+        const item = list.find(i => i.id === focusedId.value);
+        if (item) {
+            const d = item.date || '歷史累積';
+            return [{ date: d, items: [item] }];
+        }
+    }
+
+    // Isolation Mode: Focus on a specific date (hide other dates)
+    if (focusedDate.value) {
+        const items = list.filter(item => (item.date || '歷史累積') === focusedDate.value);
+        if (items.length > 0) {
+            return [{ date: focusedDate.value, items }];
+        }
+    }
+
+    // Default: Group and return all records
     const map = {};
-    groupedRecords.value.forEach(item => {
+    list.forEach(item => {
         const d = item.date || '歷史累積';
         if (!map[d]) map[d] = [];
         map[d].push(item);
@@ -4276,9 +4296,15 @@ const saveItem = async () => {
     if (!currentMasterName) {
         currentMasterName = (currentFolder.value?.name ? formatMasterName(currentFolder.value.name) : '父皇');
     }
-    // Validation
-    // Validation: Allow all saves as per user request to "not show" the alert
-    // The previous block checked for empty content/items and alerted.
+    // Validation: Prevent saving if no data is present
+    const hasCurrentData = form.value.content?.trim() || form.value.items?.length > 0 || form.value.dharma_name_ids?.length > 0;
+    const hasBatchData = batchRecords.value?.some(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
+    const hasImportData = activeEntryTab.value === 'batch' && batchImportContent.value?.trim();
+
+    if (!hasCurrentData && !hasBatchData && !hasImportData) {
+        alert('請先輸入開示內容或賜降項目後再儲存。');
+        return;
+    }
 
     if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1 || (batchRecords.value.length === 1 && (batchRecords.value[0].content || batchRecords.value[0].items.length > 0))) {
         // Requirement: If user hasn't clicked "Smart Parse" yet but has content in the textarea, do it now
