@@ -158,8 +158,22 @@
                                         </div>
                                     </div>
                                     <div class="space-y-1">
-                                        <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
-                                        <input v-model="p.remarks" placeholder="輸入個人備註..." class="w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[15px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                                        <label class="text-[11px] text-slate-400 ml-1 font-bold">備註對象</label>
+                                        <div class="relative flex items-center border border-slate-400 rounded-xl bg-white overflow-visible min-h-[44px]">
+                                            <input v-model="p.relationship" placeholder="備註對象 (例如：母親)..." 
+                                                @focus="activeRelDropdownIdx = idx"
+                                                class="w-full bg-transparent border-none px-3 text-[15px] font-normal text-slate-900 focus:ring-0 outline-none">
+                                            <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-1.5 text-indigo-500 hover:text-indigo-700 transition-all">
+                                                <svg class="w-5 h-5" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeRelDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="opt in relationshipOptions" :key="opt"
+                                                     @click.stop="p.relationship = opt; activeRelDropdownIdx = null"
+                                                     class="px-3 py-1.5 flex items-center rounded-lg hover:bg-indigo-50 font-bold text-[13px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ opt }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -262,6 +276,8 @@ const localMode = ref(props.mode || 'single');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
+const activeRelDropdownIdx = ref(null);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
 const activePickerValue = computed({
     get: () => {
@@ -450,24 +466,14 @@ watch(personnel, (newVal) => {
 
         // Relationship Rule: "Name之Relative" split
         if (p.custom_name && p.custom_name.trim()) {
-            const relSplitMatch = p.custom_name.match(/^(.*?)[之的](.+)$/);
+            const relSplitMatch = p.custom_name.match(/^(.*?)([之的])(.+)$/);
             if (relSplitMatch) {
                 const namePart = relSplitMatch[1].trim();
-                let relPart = relSplitMatch[2].trim();
-                if (relPart === '母') relPart = '母親';
-                if (relPart === '父') relPart = '父親';
+                let connector = relSplitMatch[2];
+                let relPart = relSplitMatch[3].trim();
+                
                 p.custom_name = namePart;
-                p.relationship = relPart;
-            }
-        }
-
-        // Terminology Normalization
-        if (p.relationship) {
-            let rel = p.relationship.trim();
-            if (rel === '之母' || rel === '母') p.relationship = '母親';
-            else if (rel === '之父' || rel === '父') p.relationship = '父親';
-            else if (rel.startsWith('之') || rel.startsWith('的')) {
-                p.relationship = rel.substring(1);
+                p.relationship = connector + relPart;
             }
         }
     });

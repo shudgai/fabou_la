@@ -44,8 +44,23 @@
                             </datalist>
                         </div>
                         <div class="space-y-0.5">
-                            <label class="app-title ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" @click.stop class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body">
+                            <label class="app-title ml-1">備註對象</label>
+                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm">
+                                <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
+                                    @focus="activeRemarksDropdown = true"
+                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body">
+                                <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
+                                    <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                
+                                <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
+                                    <div v-for="opt in relationshipOptions" :key="opt"
+                                        @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
+                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        {{ opt }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -207,6 +222,8 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);
 const showResultPicker = ref(false);
+const activeRemarksDropdown = ref(false);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
 const form = ref({ 
     ...props.initialData,
@@ -250,16 +267,18 @@ const onDestinationChange = () => {
     }
 };
 
-// Auto-correct terminology for relatives
-watch(() => form.value.user_remarks, (newVal) => {
+// Auto-correct terminology for relatives removed to preserve original terms
+/*
+watch(() => form.user_remarks, (newVal) => {
     if (!newVal) return;
     let rel = newVal.trim();
-    if (rel === '之母' || rel === '母') form.value.user_remarks = '母親';
-    else if (rel === '之父' || rel === '父') form.value.user_remarks = '父親';
+    if (rel === '之母' || rel === '母') form.user_remarks = '母親';
+    else if (rel === '之父' || rel === '父') form.user_remarks = '父親';
     else if (rel.startsWith('之') || rel.startsWith('的')) {
-        form.value.user_remarks = rel.substring(1);
+        form.user_remarks = rel.substring(1);
     }
 });
+*/
 
 const handleSave = () => {
     // Validation Rules

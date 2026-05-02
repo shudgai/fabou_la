@@ -296,10 +296,12 @@ const getTodayStr = () => {
 
 const translateRel = (rel) => {
     if (!rel) return '';
-    let result = rel.trim().replace(/^[之的]/, '');
-    if (result === '母') return '母親';
-    if (result === '父') return '父親';
-    return result;
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
 };
 
 

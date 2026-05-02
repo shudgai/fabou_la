@@ -110,12 +110,13 @@
             </div>
 
             <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
-            <div v-if="currentCategory === null && currentFolder === null && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
-                <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
-                    <div class="flex-1">
-                        <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+            <template v-if="currentCategory === null && currentFolder === null && !addMode">
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
+                    <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
+                        <div class="flex-1">
+                            <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+                        </div>
                     </div>
-                </div>
                 
                 <div class="px-[10px] pb-24 flex flex-col items-center space-y-2 mt-6 max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
@@ -154,12 +155,12 @@
                         </div>
                     </button>
                 </div>
-
-
             </div>
-
+        </template>
+            
             <!-- Level 1.5: Subfolders for Masters -->
-            <div v-else-if="currentCategory === 'masters' && !currentFolder && !addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white max-w-2xl mx-auto">
+            <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white max-w-2xl mx-auto">
                 <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-30">
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -189,7 +190,8 @@
                 </div>
                 
 
-            </div>
+                </div>
+            </template>
 
             <!-- Level 2: List & Add View -->
             <template v-else>
@@ -273,8 +275,21 @@
                                     </div>
                                     <div class="col-span-4 space-y-0.5">
                                         <label class="text-[13px] text-slate-400 font-bold px-1">備註對象</label>
-                                        <div class="border border-slate-400 rounded-2xl bg-slate-50/50 overflow-hidden min-h-[52px]">
-                                            <textarea v-model="form.target_remarks" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="備註對象..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[12px] font-black placeholder-blue-300 placeholder:text-[17px] resize-none overflow-hidden leading-tight"></textarea>
+                                        <div class="border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
+                                            <input v-model="form.target_remarks" 
+                                                   @focus="activeTargetRemarksDropdown = true"
+                                                   placeholder="備註對象..." 
+                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-blue-300 placeholder:text-[17px]">
+                                            <button @click.stop="activeTargetRemarksDropdown = !activeTargetRemarksDropdown" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeTargetRemarksDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="opt in relationshipOptions" :key="opt"
+                                                     @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ opt }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -381,6 +396,25 @@
                                             <div class="font-black text-slate-900 text-[17px] whitespace-pre-wrap">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
                                             <div v-if="record.date" class="text-[12px] font-bold text-slate-400 flex items-center">
                                                 <span class="mr-1">📅</span> {{ record.date }}
+                                            </div>
+                                        </div>
+                                        <!-- Batch Record Target Remarks Dropdown -->
+                                        <div class="space-y-0.5 mt-1">
+                                            <div class="relative flex items-center border border-slate-300 rounded-xl bg-slate-50/30 overflow-visible min-h-[44px]">
+                                                <input v-model="record.target_remarks" 
+                                                       @focus="activeBatchTargetRemarksIdx = index"
+                                                       placeholder="備註對象..." 
+                                                       class="w-full bg-transparent border-none text-[15px] text-slate-700 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold">
+                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-indigo-400 hover:text-indigo-600 transition-all">
+                                                    <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                                <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="opt in relationshipOptions" :key="opt"
+                                                         @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
+                                                         class="px-4 h-[36px] flex items-center rounded-xl hover:bg-indigo-50 font-bold text-[15px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ opt }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="text-slate-600 text-[16px] font-bold leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
@@ -522,6 +556,27 @@
                                             (<span class="text-blue-600">{{ getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks}) }}</span>)
                                         </span>
                                     </div>
+                                    
+                                    <!-- Detail Mode Target Remarks Dropdown -->
+                                    <div class="flex-1 max-w-[120px] ml-2">
+                                        <div class="relative flex items-center border border-slate-300 rounded-xl bg-slate-50/50 overflow-visible h-[38px]">
+                                            <input v-model="form.target_remarks" 
+                                                   @focus="activeTargetRemarksDropdown = true"
+                                                   placeholder="對象..." 
+                                                   class="w-full bg-transparent border-none text-[13px] text-slate-900 focus:ring-0 outline-none pl-[8px] pr-[2px] py-[4px] font-black">
+                                            <button @click.stop="activeTargetRemarksDropdown = !activeTargetRemarksDropdown" class="p-1 text-indigo-400">
+                                                <svg class="w-4 h-4" :class="activeTargetRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeTargetRemarksDropdown" class="absolute right-0 top-full mt-1 w-[160px] bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[620] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="opt in relationshipOptions" :key="opt"
+                                                     @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
+                                                     class="px-3 py-2 flex items-center rounded-xl hover:bg-indigo-50 font-bold text-[14px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ opt }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <button v-if="newItemName" @click="addNewItemQuickly" 
                                             :class="isAddingFlash ? 'text-emerald-500 scale-125' : 'text-red-500'"
                                             class="text-[36px] font-light leading-none active:scale-95 transition-all duration-300"> + </button>
@@ -1123,19 +1178,13 @@
 
 
                     <!-- Bottom Navbar in Detail Mode for consistency -->
-                    <mobile-navbar 
-                        :can-back="true"
-                        :show-action="false"
-                        :action-active="false"
-                        :search-active="false"
-                        :can-more="false"
-                        @back="itemsDetailMode = false"
-                        @home="$emit('goHome')"
-                        @action="() => {}"
-                        @search="() => {}"
-                        @more="() => {}"
-                    />
-                </div>
+                        <mobile-navbar 
+                            :can-back="true"
+                            :show-action="false"
+                            @back="itemsDetailMode = false"
+                            @home="$emit('goHome')"
+                        />
+                    </div>
 
                 <!-- Dharma Picker Modal -->
                 <div v-if="showDharmaPicker" class="fixed inset-0 z-[400] bg-[#FFB266]/40 flex items-end justify-center sm:items-center animate-fade-in">
@@ -1998,6 +2047,9 @@ const getMergedContent = (details, remark) => {
 };
 
 const activePractitionerDropdownId = ref(null);
+const activeTargetRemarksDropdown = ref(false);
+const activeBatchTargetRemarksIdx = ref(null);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const treasureInput = ref(null);
 const activeSubPractitionerDropdownId = ref(null);
 
@@ -4568,6 +4620,8 @@ watch(batchRecords, (newVal) => {
             let rel = block.target_remarks.trim();
             if (rel === '之母' || rel === '母') block.target_remarks = '母親';
             else if (rel === '之父' || rel === '父') block.target_remarks = '父親';
+            else if (rel === '之嬤' || rel === '嬤') block.target_remarks = '奶奶';
+            else if (rel === '之夫' || rel === '夫') block.target_remarks = '先生';
             else if (rel.startsWith('之') || rel.startsWith('的')) {
                 block.target_remarks = rel.substring(1);
             }

@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -43,8 +43,23 @@
                             </datalist>
                         </div>
                         <div class="space-y-1">
-                            <label class="app-title ml-1">備註</label>
-                            <input v-model="form.user_remarks" type="text" placeholder="親友/信眾" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                            <label class="app-title ml-1">備註對象</label>
+                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm">
+                                <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
+                                    @focus="activeRemarksDropdown = true"
+                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
+                                <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
+                                    <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                
+                                <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
+                                    <div v-for="opt in relationshipOptions" :key="opt"
+                                        @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
+                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        {{ opt }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -155,6 +170,8 @@ const props = defineProps({
 
 const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);
+const activeRemarksDropdown = ref(false);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
 
 const form = ref({ 
@@ -186,6 +203,8 @@ const formatArmyTotal = (num) => {
     return res;
 };
 
+// Auto-detect and parse Name/Relationship pattern removed to prioritize exact input preservation
+/*
 watch(() => form.value.user_name, (newVal) => {
     if (!newVal) return;
     const relSplitMatch = newVal.match(/^(.*?)[之的](.+)$/);
@@ -198,7 +217,10 @@ watch(() => form.value.user_name, (newVal) => {
         form.value.user_remarks = relPart;
     }
 });
+*/
 
+// Auto-correct terminology for relatives removed to preserve original terms as requested
+/*
 watch(() => form.value.user_remarks, (newVal) => {
     if (!newVal) return;
     let rel = newVal.trim();
@@ -208,6 +230,7 @@ watch(() => form.value.user_remarks, (newVal) => {
         form.value.user_remarks = rel.substring(1);
     }
 });
+*/
 
 const handleSave = () => {
     if (!props.isCumulative && !form.value.user_name) {

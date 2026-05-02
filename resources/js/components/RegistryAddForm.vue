@@ -140,9 +140,22 @@
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[18px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none font-outfit">
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-red-400 ml-1 font-bold">親友</label>
-                                    <input v-model="p.relationship" type="text" placeholder="親友"
-                                        class="w-full py-[10px] rounded-xl border border-slate-400 bg-white px-3 text-[16px] font-normal text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                                    <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
+                                    <div class="relative flex items-center border border-slate-400 rounded-xl bg-white overflow-visible min-h-[46px]">
+                                        <input v-model="p.relationship" type="text" placeholder="備註對象 (例如：母親)" 
+                                            @focus="activeRelationshipDropdownIdx = idx"
+                                            class="w-full bg-transparent border-none px-3 text-[16px] font-normal text-slate-900 focus:ring-0 outline-none">
+                                        <button @click.stop="activeRelationshipDropdownIdx = (activeRelationshipDropdownIdx === idx ? null : idx)" class="p-2 mr-1 text-indigo-500 hover:text-indigo-700 transition-all active:scale-90">
+                                            <svg class="w-6 h-6" :class="activeRelationshipDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <div v-if="activeRelationshipDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                            <div v-for="opt in relationshipOptions" :key="opt"
+                                                 @click.stop="p.relationship = opt; activeRelationshipDropdownIdx = null"
+                                                 class="px-4 h-[36px] flex items-center rounded-xl hover:bg-indigo-50 font-bold text-[15px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                {{ opt }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
@@ -401,6 +414,8 @@ const showMasterDropdown = ref(false);
 const personnel = ref([]);
 const dharmaNames = ref([]);
 const activePicker = ref(null); // { idx: number | 'main', field: string, title: string }
+const activeRelationshipDropdownIdx = ref(null);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const fileInput = ref(null);
 
 const treasureNames = computed(() => {
@@ -717,10 +732,10 @@ watch(personnel, (newVal) => {
     newVal.forEach((p, idx) => {
         if (p.relationship) {
             let rel = p.relationship.trim();
-            if (rel === '之母' || rel === '母') p.relationship = '母親';
-            else if (rel === '之父' || rel === '父') p.relationship = '父親';
-            else if (rel.startsWith('之') || rel.startsWith('的')) {
-                p.relationship = rel.substring(1);
+            // Keep the '之' if present, and don't force convert to 母親/父親
+            if (!rel.startsWith('之') && !rel.startsWith('的')) {
+                // Optional: add '之' if it's a known relative term? 
+                // The user said "之字不顯示的規則去掉", implying they want it to show up.
             }
         }
     });
@@ -741,12 +756,11 @@ const handlePersonnelNameInput = (idx, event) => {
         const namePart = relSplitMatch[1].trim();
         let relPart = relSplitMatch[2].trim();
         
-        // Terminology Translation
-        if (relPart === '母') relPart = '母親';
-        if (relPart === '父') relPart = '父親';
+        // Keep the '之' or '的' as part of the relationship
+        const connector = val.includes('之') ? '之' : '的';
         
         personnel.value[idx].custom_name = namePart;
-        personnel.value[idx].relationship = relPart;
+        personnel.value[idx].relationship = connector + relPart;
         return;
     }
 

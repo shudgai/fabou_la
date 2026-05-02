@@ -53,7 +53,7 @@
                 <p class="text-[13px] text-[#aeb4be] font-normal">預計匯入：{{ parsedItems.length }} 筆資料</p>
                 <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[60px]">
                     <span v-for="(item, idx) in parsedItems.slice(0, 15)" :key="idx" class="text-[11px] bg-white px-2 py-0.5 rounded-full border border-indigo-100 text-slate-600">
-                        [{{ item.know_date?.replace(/-/g, '/') }}] {{ item.user_name }} ({{ item.quantity }})
+                        [{{ item.know_date?.replace(/-/g, '/') }}] {{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }} ({{ item.quantity }})
                     </span>
                     <span v-if="parsedItems.length > 10" class="text-[11px] text-slate-400 self-center">...及其他 {{ parsedItems.length - 10 }} 筆</span>
                 </div>
@@ -104,6 +104,16 @@ const batchDate = ref(getTodayStr());
 const batchText = ref('');
 const processing = ref(false);
 const showDatePicker = ref(false);
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
+};
 
 const parsedItems = computed(() => {
     if (!batchText.value.trim()) return [];
@@ -209,12 +219,23 @@ const parsedItems = computed(() => {
         const skipKeywords = ['法號', '日期', '數量', '結果', '項次', '總計'];
         if (skipKeywords.some(key => name === key)) return;
 
+        // Split name and relationship if pattern exists (e.g. 元續之母)
+        let finalName = name;
+        let uRemarks = '';
+        const relSplitMatch = name.match(/^(.*?)([之的])(.+)$/);
+        if (relSplitMatch) {
+            finalName = relSplitMatch[1].trim();
+            const connector = relSplitMatch[2];
+            const relPart = relSplitMatch[3].trim();
+            uRemarks = connector + relPart;
+        }
+
         const item = {
-            user_name: name,
+            user_name: finalName,
             quantity: qty,
             know_date: currentDate,
             army_type: props.armyType,
-            user_remarks: '',
+            user_remarks: uRemarks,
             remarks_text: ''
         };
         

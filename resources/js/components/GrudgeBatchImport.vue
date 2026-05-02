@@ -106,6 +106,16 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel', 'success']);
 const batchText = ref('');
 const loading = ref(false);
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
+};
 const showDatePicker = ref(false);
 
 const getTodayStr = () => {
@@ -242,20 +252,15 @@ const handleBatchSave = async () => {
         const rMatch = subject.match(/[（\(](.*?)[）\)]/);
         if (rMatch) {
             rawName = subject.replace(/[（\(].*?[）\)]/, '').trim();
-            let rel = rMatch[1].trim();
-            if (rel === '母' || rel === '之母') rel = '母親';
-            if (rel === '父' || rel === '之父') rel = '父親';
-            if (rel.startsWith('之') || rel.startsWith('的')) rel = rel.substring(1);
-            uRemarks = rel;
+            uRemarks = rMatch[1].trim();
         } else {
             // Handle "Name 之/的 Relative" pattern (e.g. "元續之母")
-            const relMatch = subject.match(/^(.*?)[之的](.+)$/);
+            const relMatch = subject.match(/^(.*?)([之的])(.+)$/);
             if (relMatch) {
                 rawName = relMatch[1].trim();
-                let rel = relMatch[2].trim();
-                if (rel === '母') rel = '母親';
-                if (rel === '父') rel = '父親';
-                uRemarks = rel;
+                let connector = relMatch[2];
+                let relPart = relMatch[3].trim();
+                uRemarks = connector + relPart;
             }
         }
 
@@ -272,11 +277,15 @@ const handleBatchSave = async () => {
         const dest = isProcessed ? '已處理' : '未處理';
 
         // Extract remarks: Content inside parentheses ( )
+        // 注意：若 rMatch 已從括號擷取了關係詞 (uRemarks)，就不再重複存入 remarks_text
         let finalRemarksText = '';
-        const pMatch = normLine.match(/[（\(](.*)[）\)]/); // Use normLine to be more inclusive
-        if (pMatch) {
-            finalRemarksText = pMatch[1].trim();
-        } else if (resultsPart) {
+        if (!rMatch) {
+            const pMatch = normLine.match(/[（\(](.*)[）\)]/);
+            if (pMatch) {
+                finalRemarksText = pMatch[1].trim();
+            }
+        }
+        if (!finalRemarksText && resultsPart) {
             // Fallback: Use resultsPart excluding the quantity
             finalRemarksText = resultsPart.replace(/^\d+\s*位/, '').replace(/^[（\(]|[）\)]$/g, '').trim();
         }
@@ -303,7 +312,7 @@ const handleBatchSave = async () => {
 
     // --- Detailed Preview ---
     const first = finalItems[0];
-    const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}\n\n是否繼續？`;
+    const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}${first.user_remarks ? '(' + translateRel(first.user_remarks) + ')' : ''}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}\n\n是否繼續？`;
     
     if (!confirm(preview)) return;
 

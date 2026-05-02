@@ -2,7 +2,7 @@
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
-        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
+        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
                     軍隊記錄專區
@@ -16,7 +16,7 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto px-[10px] py-1" style="min-height: 32px;">
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto px-[10px] py-1" style="min-height: 32px;">
             <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
@@ -36,7 +36,7 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-xl md:mx-auto w-full">
+        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-[633px] md:mx-auto w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -57,10 +57,10 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-xl mx-auto">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-[633px] mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[320px] md:h-[320px]">
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[352px] md:h-[352px]">
                         
                         <!-- Shared Definitions for Gradients -->
                         <svg class="absolute w-0 h-0" aria-hidden="true">
@@ -83,21 +83,21 @@
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center px-6">
-                                <span class="text-[48px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
+                                <span class="text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important; font-size: 53px !important;">
                                     {{ folder.name }}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Mobile Shield Badge -->
-                        <div class="relative w-[280px] h-[280px] md:hidden">
+                        <div class="relative w-[308px] h-[308px] md:hidden">
                             <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
                                       :fill="'url(#mm-fGrad' + folder.id + ')'" 
                                       stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center px-4">
-                                <span class="text-[42px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 42px !important; font-weight: 900 !important;">{{ folder.name }}</span>
+                                <span class="text-[46px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 46px !important; font-weight: 900 !important;">{{ folder.name }}</span>
                             </div>
                         </div>
                     </button>
@@ -105,7 +105,7 @@
             </div>
 
             <!-- LEDGER VIEW -->
-            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-xl md:mx-auto w-full">
+            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-[633px] md:mx-auto w-full">
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
@@ -319,10 +319,12 @@ const getTodayStr = () => {
 
 const translateRel = (rel) => {
     if (!rel) return '';
-    let result = rel.trim().replace(/^[之的]/, '');
-    if (result === '母') return '母親';
-    if (result === '父') return '父親';
-    return result;
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
 };
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);

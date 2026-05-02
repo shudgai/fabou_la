@@ -99,18 +99,18 @@ class RegistryController extends Controller
                             $relationshipMatch = $matches;
                             $custom_name = $matches[1];
                             $relPart = trim($matches[3]);
-                            if ($relPart === '母') $relPart = '母親';
-                            if ($relPart === '父') $relPart = '父親';
-                            $relationshipMatch[0] = $custom_name . $relPart; // Cleaned version for display
+                            if ($relPart === '母') $relPart = '母';
+                            if ($relPart === '父') $relPart = '父';
+                            $relationshipMatch[0] = $custom_name . '之' . $relPart; // Keep the '之'
                         } else {
                             $dnNames = DharmaName::pluck('name')->toArray();
                             usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
                             foreach ($dnNames as $dnName) {
                                 if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
                                     $relPart = mb_substr($custom_name, mb_strlen($dnName));
-                                    if ($relPart === '母') $relPart = '母親';
-                                    if ($relPart === '父') $relPart = '父親';
-                                    $relationshipMatch = [$custom_name . $relPart, $dnName, $relPart];
+                                    if ($relPart === '母') $relPart = '母';
+                                    if ($relPart === '父') $relPart = '父';
+                                    $relationshipMatch = [$dnName . '之' . $relPart, $dnName, $relPart];
                                     break;
                                 }
                             }
@@ -138,17 +138,8 @@ class RegistryController extends Controller
                         }
                     }
 
-                    // 4. 合併親友欄位到備註（Mirrored Logic）
-                    $relatedArr = is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [];
-                    if (!empty($relatedArr)) {
-                        $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
-                        foreach ($relatedArr as $rel) {
-                            $relRemark = $datePrefix . ($custom_name ?: '') . $rel;
-                            if (!in_array($relRemark, $remarks)) {
-                                $remarks[] = $relRemark;
-                            }
-                        }
-                    }
+                    // 4. 親友欄位：前端 saveSingle 已將關係詞組合進 remarks，
+                    // 此處不再重複寫入，避免產生重複條目（如 ["2026/05/02  靈昡父親", "父親"]）
 
                     // 5. 查找是否已存在相同人員紀錄（移除日期限制，確保跨日期備註能正確合併到同一格）
                     $existingDnr = DharmaNameRegistry::where('registry_id', $registry->id)
@@ -319,13 +310,24 @@ class RegistryController extends Controller
                             }
 
                             if ($relationshipMatch) {
-                                $custom_name        = $relationshipMatch[1];
-                                $datePrefix         = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
-                                $relationshipRemark = $datePrefix . $relationshipMatch[0];
-                                if (!in_array($relationshipRemark, $remarks)) {
-                                    $remarks[] = $relationshipRemark;
+                                $custom_name = $relationshipMatch[1];
+                                $relRaw      = trim($relationshipMatch[2] ?? '');
+                                // 關係詞翻譯（與怨靈模組相同）
+                                $relTranslated = match(true) {
+                                    $relRaw === '之父' || $relRaw === '父' => '父親',
+                                    $relRaw === '之母' || $relRaw === '母' => '母親',
+                                    $relRaw === '之嬤' || $relRaw === '嬤' => '奶奶',
+                                    $relRaw === '之夫' || $relRaw === '夫' => '先生',
+                                    default                                  => preg_replace('/^[之的]/u', '', $relRaw),
+                                };
+                                // 日期格式：西元年  法號關係詞（雙空格）
+                                $datePrefix = $obtained_date ? date('Y/m/d', strtotime($obtained_date)) : '';
+                                $nameOnly   = trim($custom_name);
+                                $relEntry   = $datePrefix ? "{$datePrefix}  {$nameOnly}{$relTranslated}" : "{$nameOnly}{$relTranslated}";
+                                if (!in_array($relEntry, $remarks)) {
+                                    $remarks[] = $relEntry;
                                 }
-                                // 元續之夫本身並未求得，所以元續本身的日期應為空白
+                                // 本人未直接求得，清空日期
                                 $obtained_date = null;
                             }
                         }
@@ -339,17 +341,7 @@ class RegistryController extends Controller
                             }
                         }
 
-                        // 4. 合併親友欄位到備註（Mirrored Logic）
-                        $relatedArr = is_array($dn['related_personnel'] ?? null) ? $dn['related_personnel'] : [];
-                        if (!empty($relatedArr)) {
-                            $datePrefix = $obtained_date ? (date('Y', strtotime($obtained_date)) - 1911) . date('/m/d', strtotime($obtained_date)) : '';
-                            foreach ($relatedArr as $rel) {
-                                $relRemark = $datePrefix . ($custom_name ?: '') . $rel;
-                                if (!in_array($relRemark, $remarks)) {
-                                    $remarks[] = $relRemark;
-                                }
-                            }
-                        }
+                        // 4. 親友欄位：前端已處理好關係詞進 remarks，此處不重複寫入
 
                         // 5. 查找是否已存在相同人員紀錄（移除日期限制，確保跨日期備註能正確合併到同一格）
                         $existingDnr = DharmaNameRegistry::where('registry_id', $registry->id)

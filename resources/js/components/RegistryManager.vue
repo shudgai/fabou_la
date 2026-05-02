@@ -587,10 +587,12 @@ const getEarliestDate = (item) => {
 
 const translateRel = (rel) => {
     if (!rel) return '';
-    let result = rel.trim().replace(/^[之的]/, '');
-    if (result === '母') return '母親';
-    if (result === '父') return '父親';
-    return result;
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
 };
 
 const translateRelList = (relList) => {
@@ -1142,12 +1144,14 @@ const saveSingle = async (data) => {
             if (rest.obtained_date) {
                 const dParts = rest.obtained_date.split('-');
                 if (dParts.length === 3) {
-                    let rocY = parseInt(dParts[0]);
-                    if (rocY > 1911) rocY -= 1911;
-                    datePrefix = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
+                    datePrefix = `${dParts[0]}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
                 }
             }
-            const relEntry = datePrefix + (rest.custom_name || '') + relationship.trim();
+            // 格式：日期  法號關係詞（例如：2026-05-02  靈昡父親）
+            const namePart = rest.custom_name ? rest.custom_name.trim() : '';
+            const relEntry = datePrefix
+                ? `${datePrefix}  ${namePart}${relationship.trim()}`
+                : `${namePart}${relationship.trim()}`;
             if (!remarks.includes(relEntry)) {
                 remarks = remarks ? remarks + '\n' + relEntry : relEntry;
             }
@@ -1169,6 +1173,8 @@ const saveSingle = async (data) => {
         if (data.id) await axios.post(`/registries/${data.id}`, { ...payload, _method: 'PATCH' });
         else await axios.post('/registries', payload);
         addMode.value = null;
+        expandedIds.value.clear();
+        focusedId.value = null;
         loadData();
         persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
@@ -1412,10 +1418,25 @@ const triggerBatchSave = async (batchData) => {
                         if (relMatch) {
                             const finalDate = lineDate || blockDate || getTodayStr();
                             const dParts = finalDate.split('-');
-                            let rocY = parseInt(dParts[0]);
-                            if (rocY > 1911) rocY -= 1911;
-                            const dStr = `${rocY}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
-                            return { custom_name: relMatch[1], remarks: `${dStr}${translated}`, obtained_date: null };
+                            // 使用西元年格式，與逐筆新增一致
+                            const dStr = `${dParts[0]}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
+                            
+                            // 關係詞翻譯規則（與怨靈模組相同）
+                            const translateRel = (rel) => {
+                                if (!rel) return rel;
+                                const r = rel.trim();
+                                if (r === '之父' || r === '父') return '父親';
+                                if (r === '之母' || r === '母') return '母親';
+                                if (r === '之嬤' || r === '嬤') return '奶奶';
+                                if (r === '之夫' || r === '夫') return '先生';
+                                return r.replace(/^[之的]/, '');
+                            };
+                            
+                            const nameOnly = relMatch[1].trim();
+                            const relPart = translateRel(relMatch[2]);
+                            // 格式：日期  法號關係詞（雙空格）
+                            const relEntry = `${dStr}  ${nameOnly}${relPart}`;
+                            return { custom_name: nameOnly, remarks: relEntry, obtained_date: null };
                         }
                         return { custom_name: translated, remarks: lineRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
                     }).filter(n => n !== null);
@@ -1495,6 +1516,8 @@ const triggerBatchSave = async (batchData) => {
 
         await axios.post('/registries/batch', records);
         addMode.value = null;
+        expandedIds.value.clear();
+        focusedId.value = null;
         loadData();
         persistentToast.value = { msg: `✓ 批量新增成功 (${records.length} 筆)`, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);

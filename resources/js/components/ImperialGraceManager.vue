@@ -339,7 +339,21 @@
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
                                                 </div>
-                                                <input v-model="p.remarks" placeholder="備註" class="w-full p-2 border rounded-lg text-[12px]">
+                                                <div class="relative flex items-center border rounded-lg bg-white overflow-visible">
+                                                    <input v-model="p.remarks" placeholder="備註" 
+                                                        @focus="activeRelDropdownIdx = idx"
+                                                        class="w-full bg-transparent border-none p-2 text-[12px] focus:ring-0 outline-none">
+                                                    <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-1 text-slate-400 hover:text-indigo-500 transition-all">
+                                                        <svg class="w-4 h-4" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                    <div v-if="activeRelDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                        <div v-for="opt in relationshipOptions" :key="opt"
+                                                             @click.stop="p.remarks = opt; activeRelDropdownIdx = null"
+                                                             class="px-3 py-2 flex items-center rounded-lg hover:bg-indigo-50 font-bold text-[12px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                            {{ opt }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -413,7 +427,7 @@
                                             <thead class="bg-slate-50/50">
                                                 <tr class="text-slate-600 font-black border-b border-slate-200">
                                                     <th class="p-3 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 70px;">法號</th>
-                                                    <th class="p-3 text-left border-r border-slate-200 text-[15px]" style="width: 120px;">日期</th>
+                                                    <th class="p-3 text-left border-r border-slate-200 text-[15px]" style="width: 80px;">日期</th>
                                                     <th class="p-3 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 95px;">狀態</th>
                                                     <th class="p-3 text-left text-[15px]">備註</th>
                                                 </tr>
@@ -551,10 +565,12 @@ const resetToRoot = () => {
 
 const translateRel = (rel) => {
     if (!rel) return '';
-    let result = rel.trim().replace(/^[之的]/, '');
-    if (result === '母') return '母親';
-    if (result === '父') return '父親';
-    return result;
+    let result = rel.trim();
+    if (result === '之父' || result === '父') return '父親';
+    if (result === '之母' || result === '母') return '母親';
+    if (result === '之嬤' || result === '嬤') return '奶奶';
+    if (result === '之夫' || result === '夫') return '先生';
+    return result.replace(/^[之的]/, '');
 };
 
 const translateRelList = (relList) => {
@@ -587,6 +603,8 @@ const currentFolder = ref(null);
 const addMode = ref(null);
 const allRegistries = ref([]);
 const masters = ref([]);
+const activeRelDropdownIdx = ref(null);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const loading = ref(false);
 const isSaving = ref(false);
 const persistentToast = ref(null); 
