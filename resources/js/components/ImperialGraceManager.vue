@@ -21,25 +21,25 @@
             </defs>
         </svg>
         <!-- Header (Only show in Folder-view, Item-view or Add-mode) -->
-        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110]" style="padding: 8px 10px; min-height: 52px;">
+        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
                         新增重大皇恩
                     </div>
                 </div>
             </div>
             <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important;">
+                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
                     重大皇恩專區
                 </div>
             </div>
 
-            <div class="absolute right-4 top-1/2 -translate-y-1/2">
-                <button @click="toggleSort" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+            <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                <button @click="toggleSort" class="px-2.5 py-1 text-[14px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 14px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -78,7 +78,7 @@
         <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-slate-50/30">
             <div class="px-2 py-4 flex items-center bg-white border-b border-slate-50 relative min-h-[80px]">
                 <div class="flex-1 pr-12 cursor-pointer" @click="resetToRoot">
-                    <h1 class="text-[30px] font-black text-slate-900 tracking-tight text-center">重大皇恩專區</h1>
+                    <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center" style="font-size: 28px !important;">重大皇恩專區</h1>
                 </div>
             </div>
             
@@ -130,7 +130,7 @@
         <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white group-fade-in max-w-xl mx-auto">
             <!-- Header Title -->
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
-                <h1 class="absolute inset-x-0 text-[30px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
+                <h1 class="absolute inset-x-0 text-[32px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
@@ -172,13 +172,13 @@
         <!-- Level 2: Folder Contents -->
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen w-full md:max-w-xl md:mx-auto">
             <!-- Header for Level 2 -->
-            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50 w-full">
+            <div class="flex items-center justify-between px-[4px] py-2 border-b border-slate-50 w-full">
                 <div class="flex items-center space-x-1">
-                    <span class="text-[20px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ displayTitle }}</span>
+                    <span class="text-[20px] font-normal font-outfit tracking-tight" style="color: #0d0d0d !important; font-weight: 400 !important; font-size: 20px !important;">{{ displayTitle }}</span>
                 </div>
                 <button @click="reorderMode = !reorderMode" 
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                    class="px-4 py-2 rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-sm">
+                    class="px-2.5 py-1 rounded-lg text-[14px] font-black transition-all active:scale-95 shadow-sm" style="font-size: 14px !important;">
                     {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
             </div>
@@ -420,11 +420,13 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                                                    <td class="p-3 border-r border-slate-100 font-black text-slate-900 text-[17px]">{{ dnr.dharma_name?.name || dnr.custom_name }}</td>
+                                                    <td class="p-3 border-r border-slate-100 font-black text-slate-900 text-[17px]">
+                                                        {{ dnr.dharma_name?.name || dnr.custom_name }}{{ dnr.related_personnel && dnr.related_personnel.length > 0 ? '(' + translateRelList(dnr.related_personnel) + ')' : '' }}
+                                                    </td>
                                                     <td class="p-3 border-r border-slate-100 font-normal text-slate-500 whitespace-nowrap text-[15px]">{{ formatDate(dnr.obtained_date) }}</td>
                                                     <td class="p-3 border-r border-slate-100 font-black whitespace-nowrap text-[15px]" :style="dnr.status === '未求得' ? 'color: #dc2626 !important;' : (dnr.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">{{ dnr.status }}</td>
                                                     <td class="p-3 text-slate-900 font-bold leading-snug text-[15px]">
-                                                        {{ Array.isArray(dnr.remarks) ? dnr.remarks.join(' ') : (dnr.remarks || '-') }}
+                                                        {{ translateRelList(dnr.remarks) }}
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -546,6 +548,22 @@ const resetToRoot = () => {
 };
 
 
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim().replace(/^[之的]/, '');
+    if (result === '母') return '母親';
+    if (result === '父') return '父親';
+    return result;
+};
+
+const translateRelList = (relList) => {
+    if (!relList) return '-';
+    if (Array.isArray(relList)) {
+        return relList.map(translateRel).filter(x => x).join('、') || '-';
+    }
+    return translateRel(relList) || '-';
+};
 
 const formatDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr || '-';

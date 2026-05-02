@@ -11,6 +11,7 @@ class WeeklyPost extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'date',
         'status',
         'title',

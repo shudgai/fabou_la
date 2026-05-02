@@ -186,6 +186,29 @@ const formatArmyTotal = (num) => {
     return res;
 };
 
+watch(() => form.value.user_name, (newVal) => {
+    if (!newVal) return;
+    const relSplitMatch = newVal.match(/^(.*?)[之的](.+)$/);
+    if (relSplitMatch) {
+        const namePart = relSplitMatch[1].trim();
+        let relPart = relSplitMatch[2].trim();
+        if (relPart === '母') relPart = '母親';
+        if (relPart === '父') relPart = '父親';
+        form.value.user_name = namePart;
+        form.value.user_remarks = relPart;
+    }
+});
+
+watch(() => form.value.user_remarks, (newVal) => {
+    if (!newVal) return;
+    let rel = newVal.trim();
+    if (rel === '之母' || rel === '母') form.value.user_remarks = '母親';
+    else if (rel === '之父' || rel === '父') form.value.user_remarks = '父親';
+    else if (rel.startsWith('之') || rel.startsWith('的')) {
+        form.value.user_remarks = rel.substring(1);
+    }
+});
+
 const handleSave = () => {
     if (!props.isCumulative && !form.value.user_name) {
         alert('請選擇或輸入「法號」，不可留空。');

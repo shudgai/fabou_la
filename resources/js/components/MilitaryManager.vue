@@ -4,12 +4,12 @@
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[20px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900">
+                <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
                     軍隊記錄專區
                 </div>
             </div>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+            <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                <button @click="sortDesc = !sortDesc" class="px-1 py-0.5 text-[10px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -21,7 +21,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="text-[22px] font-black text-slate-900 truncate tracking-tight font-outfit">
+                <h2 class="text-[28px] font-black text-slate-900 truncate tracking-tight font-outfit">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
             </div>
@@ -57,23 +57,47 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-2 gap-4 mt-6 place-items-center max-w-xl mx-auto">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative">
-                        <div class="relative w-[150px] h-[150px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
-                                <defs>
-                                    <linearGradient :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
-                                        <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" :fill="'url(#mm-fGrad' + folder.id + ')'" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" :fill="'url(#mm-fGrad' + folder.id + ')'" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[320px] md:h-[320px]">
+                        
+                        <!-- Shared Definitions for Gradients -->
+                        <svg class="absolute w-0 h-0" aria-hidden="true">
+                            <defs>
+                                <linearGradient :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
+                                    <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+
+                        <!-- Premium Desktop Shield Badge (Only on Desktop) -->
+                        <div class="hidden md:flex absolute inset-6 items-center justify-center overflow-hidden transition-transform group-hover:scale-105 duration-300">
+                            <svg class="w-full h-full drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)]" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
+                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
+                                      stroke="white" stroke-width="0.2"/>
+                                <!-- Inner Bevel Effect -->
+                                <path d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
+                                      fill="rgba(255,255,255,0.05)" />
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                                <span class="text-[20px] font-black text-white tracking-tight leading-tight text-center drop-shadow-sm">{{ folder.name }}</span>
+                            <div class="absolute inset-0 flex items-center justify-center px-6">
+                                <span class="text-[52px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
+                                    {{ folder.name }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Shield Badge -->
+                        <div class="relative w-[280px] h-[280px] md:hidden">
+                            <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
+                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
+                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center px-4">
+                                <span class="text-[42px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 42px !important; font-weight: 900 !important;">{{ folder.name }}</span>
                             </div>
                         </div>
                     </button>
@@ -188,11 +212,8 @@
                                     <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
                                         <div class="military-field min-w-0">
                                             <label class="military-label">法號</label>
-                                            <div class="military-value-name truncate">
-                                                {{ item.user_name }}
-                                                <span v-if="item.user_remarks" class="block text-slate-900 font-black mt-0.5" style="font-size: 0.9em;">
-                                                    {{ item.user_remarks }}
-                                                </span>
+                                            <div class="military-value-name">
+                                                {{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}
                                             </div>
                                         </div>
                                         <div class="military-field">
@@ -294,6 +315,14 @@ import MobileNavbar from './MobileNavbar.vue';
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim().replace(/^[之的]/, '');
+    if (result === '母') return '母親';
+    if (result === '父') return '父親';
+    return result;
 };
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);

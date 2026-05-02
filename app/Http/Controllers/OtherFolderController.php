@@ -12,20 +12,16 @@ class OtherFolderController extends Controller
     public function index()
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
+        if (!$user->getPermissions()['can_see_other_folders']) {
             return response()->json([]);
         }
 
-        $query = OtherFolder::with(['otherRecords' => function($sq) use ($user) {
-            $sq->orderBy('record_date', 'desc')->orderBy('created_at', 'desc');
-            if (!$user->isAdmin()) {
-                $sq->where('user_id', $user->id);
-            }
-        }]);
-
-        if (!$user->isAdmin()) {
-            $query->where('user_id', $user->id);
-        }
+        $query = OtherFolder::where('user_id', $user->id)
+            ->with(['otherRecords' => function($sq) use ($user) {
+                $sq->where('user_id', $user->id)
+                  ->orderBy('record_date', 'desc')
+                  ->orderBy('created_at', 'desc');
+            }]);
 
         return $query->get();
     }
@@ -33,7 +29,7 @@ class OtherFolderController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
+        if (!$user->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -49,12 +45,12 @@ class OtherFolderController extends Controller
     public function storeRecord(Request $request, $folderId)
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->getPermissions()['can_see_other_folders']) {
+        if (!$user->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $folder = OtherFolder::findOrFail($folderId);
-        if (!$user->isAdmin() && $folder->user_id !== $user->id) {
+        if ($folder->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -71,32 +67,43 @@ class OtherFolderController extends Controller
 
     public function updateRecord(Request $request, $id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        if (!auth()->user()->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $record = OtherRecord::findOrFail($id);
+        if ($record->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $record->update($request->all());
         return $record;
     }
 
     public function destroyRecord($id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        if (!auth()->user()->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        OtherRecord::findOrFail($id)->delete();
+        $record = OtherRecord::findOrFail($id);
+        if ($record->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $record->delete();
         return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->getPermissions()['can_see_other_folders']) {
+        if (!auth()->user()->getPermissions()['can_see_other_folders']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        OtherFolder::findOrFail($id)->delete();
+        $folder = OtherFolder::findOrFail($id);
+        if ($folder->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $folder->delete();
         return response()->json(['success' => true]);
     }
 }

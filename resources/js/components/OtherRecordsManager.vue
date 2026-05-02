@@ -5,7 +5,7 @@
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <h1 style="font-size: 22px; font-weight: 900; color: #0f172a;">其他記錄專區</h1>
+            <h1 style="font-size: 28px; font-weight: 900; color: #0f172a;">其他記錄專區</h1>
         </div>
 
         <!-- Document List -->
@@ -105,7 +105,7 @@
                 <button @click="closeModal" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h1 style="font-size: 22px; font-weight: 900; color: #0f172a;">{{ editingRecordId ? '修改文件記錄' : '新增文件記錄' }}</h1>
+                <h1 style="font-size: 28px; font-weight: 900; color: #0f172a;">{{ editingRecordId ? '修改文件記錄' : '新增文件記錄' }}</h1>
             </div>
             
             <div class="flex-1 overflow-y-auto p-6 space-y-5">

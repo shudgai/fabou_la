@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/debug-user', function() {
+    $user = auth()->user();
+    if (!$user) return "未登入";
+    
+    $myRegistries = \App\Models\Registry::where('user_id', $user->id)->count();
+    $allRegistries = \App\Models\Registry::count();
+    
+    return [
+        '目前登入使用者ID' => $user->id,
+        '目前使用者姓名' => $user->name,
+        '目前使用者法號' => $user->dharmaName ? $user->dharmaName->name : '無',
+        '資料庫總資料筆數' => $allRegistries,
+        '目前使用者應看見筆數' => $myRegistries,
+        '是否為管理員' => $user->isAdmin() ? '是' : '否'
+    ];
+});
+
 Route::get('/', function () {
     return view('welcome');
 });

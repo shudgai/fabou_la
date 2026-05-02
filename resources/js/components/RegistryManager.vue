@@ -17,31 +17,31 @@
         </svg>
 
         <!-- Header 1: Module Level (Hide titles on Desktop, keep buttons) -->
-        <div v-if="currentFolder || currentCategory || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 15px; min-height: 52px;">
+        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden">
-                    <div class="app-title text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important; font-size: 24px !important;">
                         新增法寶登記
                     </div>
                 </div>
             </div>
             <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden" @click="resetToRoot">
-                <div class="app-title text-[22px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                     法寶登記專區
                 </div>
             </div>
             <!-- Standard Desktop Controls (Aligned Right) -->
             <div class="flex-1 hidden md:block"></div>
-            <div v-if="currentFolder" class="flex items-center space-x-2">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[12px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[14px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 14px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button @click="reorderMode = !reorderMode"
                     :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                    class="px-3 py-1 rounded-lg text-[12px] font-black transition-all active:scale-95 shadow-sm">
+                    class="px-3 py-1 rounded-lg text-[14px] font-black transition-all active:scale-95 shadow-sm" style="font-size: 14px !important;">
                     {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
             </div>
@@ -54,7 +54,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex flex-col min-w-0">
-                    <span class="text-[20px] font-normal truncate tracking-tight font-outfit" style="color: rgb(220, 20, 40) !important; font-weight: 400 !important;">
+                    <span class="text-[1.4rem] font-normal tracking-tight font-outfit leading-tight break-words" style="color: #0d0d0d !important; font-weight: 400 !important; font-size: 1.4rem !important;">
                         {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}{{ addMode ? '-新增載錄' : '' }}
                     </span>
                 </div>
@@ -67,10 +67,10 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="text-[22px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight">
+                        <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 28px !important;">
                             {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
-                            <span v-if="currentCategory && currentFolder" class="text-[17px] text-slate-400">- {{ currentFolder.name }} -</span>
+                            <span v-if="currentCategory && currentFolder" class="text-[24px] text-slate-400 font-black">- {{ currentFolder.name }} -</span>
                         </h1>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[22px] font-black text-red-700 leading-tight drop-shadow-sm text-center">重大皇恩<br>登記簿</div>
+                        <div class="text-[24px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 24px !important;">重大皇恩<br>登記簿</div>
                     </button>
 
 
@@ -114,7 +114,7 @@
                             <div :class="[
                                 'font-black tracking-tight leading-tight text-center transition-all whitespace-nowrap',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
-                            ]" style="font-weight: 900 !important; font-size: 22px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 24px !important;">{{ folder.name }}</div>
                         </div>
                     </button>
 
@@ -137,8 +137,8 @@
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="flex-1 text-center pr-12">
-                            <h1 class="text-[22px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
-                            <h2 class="text-[20px] font-black text-red-600 mt-1">
+                            <h1 class="text-[24px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
+                            <h2 class="text-[24px] font-black text-red-600 mt-1">
                                 {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}
                             </h2>
                         </div>
@@ -390,7 +390,7 @@
                                                                             class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
                                                                             placeholder="親友">
                                                                         <span v-else class="text-[14px] text-slate-600 font-bold">
-                                                                            {{ Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '-') }}
+                                                                            {{ translateRelList(dnr.related_personnel) }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
@@ -583,6 +583,22 @@ const getEarliestDate = (item) => {
         .filter(d => d)
         .sort();
     return dates.length > 0 ? dates[0] : (item.record_date || '-');
+};
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim().replace(/^[之的]/, '');
+    if (result === '母') return '母親';
+    if (result === '父') return '父親';
+    return result;
+};
+
+const translateRelList = (relList) => {
+    if (!relList) return '-';
+    if (Array.isArray(relList)) {
+        return relList.map(translateRel).join('、') || '-';
+    }
+    return translateRel(relList) || '-';
 };
 
 const formatDisplayDate = (dateStr) => {
@@ -1176,7 +1192,7 @@ const triggerBatchSave = async (batchData) => {
 
         const nameAliasMap = {
             '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
             '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
             '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
             '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',

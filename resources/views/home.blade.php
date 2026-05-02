@@ -8,7 +8,7 @@
         <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pt-12">
             <div class="text-center md:text-left">
                 <h1 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 tracking-tight mb-3">皇恩筆記本</h1>
-                <p class="text-slate-400 text-lg md:text-xl font-bold">歡迎回來，{{ Auth::user()->name }}</p>
+                <p class="text-slate-400 text-lg md:text-xl font-bold">歡迎回來，{{ Auth::user()->display_name }}</p>
             </div>
             <div class="flex justify-center">
                 <a href="{{ route('note.index') }}" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-5 rounded-[24px] text-xl font-black shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group">
@@ -20,14 +20,12 @@
 
 
 
-        <!-- Main Navigation Grid Hidden for all versions -->
-        <div class="hidden">
+        <!-- Main Navigation Grid: Show for Admins, Hidden for regular users -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 @if(!Auth::user()->isAdmin()) hidden @endif">
             <!-- Major Grace Card -->
             @if($perms['can_see_grace'])
             <a href="{{ route('note.index') }}#grace" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">重大皇恩專區</h3>
             </a>
             @endif
@@ -35,9 +33,7 @@
             <!-- Imperial Teaching Card -->
             @if($perms['can_see_teaching_folders'])
             <a href="{{ route('note.index') }}#teaching" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">父皇仙師開示專區</h3>
             </a>
             @endif
@@ -45,9 +41,7 @@
             <!-- Kaiwen Card -->
             @if($perms['can_see_kaiwen'])
             <a href="{{ route('note.index') }}#kaiwen" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">開文專區</h3>
             </a>
             @endif
@@ -55,9 +49,7 @@
             <!-- Grudge Card -->
             @if($perms['can_see_grudge'])
             <a href="{{ route('note.index') }}#grudge" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">怨靈紀錄專區</h3>
             </a>
             @endif
@@ -65,9 +57,7 @@
             <!-- Military Card -->
             @if($perms['can_see_military'])
             <a href="{{ route('note.index') }}#military" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">軍隊紀錄專區</h3>
             </a>
             @endif
@@ -75,9 +65,7 @@
             <!-- Treasure Card -->
             @if($perms['can_see_treasures'])
             <a href="{{ route('note.index') }}#treasure" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">法寶登記專區</h3>
             </a>
             @endif
@@ -85,9 +73,7 @@
             <!-- Other Card -->
             @if($perms['can_see_other_folders'])
             <a href="{{ route('note.index') }}#other" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">其他專區</h3>
             </a>
             @endif
@@ -95,9 +81,7 @@
             <!-- Trash Card -->
             @if($perms['can_see_trash'])
             <a href="{{ route('note.index') }}#trash" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
+
                 <h3 class="text-base font-bold font-outfit text-slate-800">回收桶</h3>
             </a>
             @endif

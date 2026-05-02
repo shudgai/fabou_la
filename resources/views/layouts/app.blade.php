@@ -178,11 +178,11 @@
                     @auth
                         <div class="flex items-center" :class="{ 'justify-center': sidebarCollapsed, 'space-x-3': !sidebarCollapsed }">
                             <div class="w-9 h-9 border-2 border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-xs shrink-0">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                                {{ mb_substr(Auth::user()->display_name, 0, 1) }}
                             </div>
                             <div x-show="!sidebarCollapsed" class="min-w-0 flex-1 overflow-hidden" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                                 <span class="font-outfit font-bold text-slate-800">皇恩筆記本</span>
-                                <p class="text-xs text-slate-500 truncate">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-slate-500 truncate">{{ Auth::user()->display_name }}</p>
                                 <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-[10px] text-red-500 font-medium hover:underline">登出</button>
                             </div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
@@ -228,7 +228,7 @@
                     <div class="flex items-center gap-2">
                         @auth
                             <div class="w-8 h-8 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[10px]">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                                {{ mb_substr(Auth::user()->display_name, 0, 1) }}
                             </div>
                         @endauth
                     </div>

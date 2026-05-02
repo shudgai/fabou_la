@@ -12,7 +12,7 @@
                             <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
-                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
+                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 32px !important;">
                                 其他專區
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex items-center md:hidden">
                             <div class="w-1"></div>
-                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 25px !important;">
+                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 28px !important;">
                                 其他專區
                             </div>
                         </div>
@@ -176,7 +176,7 @@
                                 <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1 md:hidden">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
-                                <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[24px]" style="font-size: 22px !important;">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '直接排列 - 抽籤設定' }}</span>
+                                <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[28px]" style="font-size: 28px !important;">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '直接排列 - 抽籤設定' }}</span>
                             </div>
                         </div>
                     </div>

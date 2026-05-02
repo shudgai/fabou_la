@@ -11,6 +11,7 @@ class SelfPost extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'date',
         'message_type',
         'master_id',

@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->hasMany(OtherRecord::class);
     }
 
+    public function getDisplayNameAttribute()
+    {
+        return $this->dharmaName ? $this->dharmaName->name : $this->name;
+    }
+
     public function isChijue()
     {
         $dName = trim($this->dharmaName ? $this->dharmaName->name : $this->name);

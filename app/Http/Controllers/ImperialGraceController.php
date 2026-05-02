@@ -15,11 +15,9 @@ class ImperialGraceController extends Controller
     {
         $user = auth()->user();
         $query = ImperialGrace::with('dharmaNameRegistries.dharmaName');
-
-        if (!$user->isAdmin()) {
-            $query->where('user_id', $user->id);
-        }
-
+ 
+        $query->where('user_id', $user->id);
+ 
         return response()->json([
             'registries' => $query->get(),
             'userGraces' => UserImperialGrace::where('user_id', $user->id)->get()
@@ -40,7 +38,7 @@ class ImperialGraceController extends Controller
     public function storeRegistry(Request $request)
     {
         $user = auth()->user();
-        if (ImperialGrace::where('name', $request->name)->exists()) {
+        if (ImperialGrace::where('user_id', $user->id)->where('name', $request->name)->exists()) {
             return response()->json(['error' => 'duplicate', 'message' => '此法寶名稱「' . $request->name . '」已存在於系統中。'], 422);
         }
 
@@ -63,6 +61,13 @@ class ImperialGraceController extends Controller
                     $custom_name = $dn['custom_name'] ?? null;
                     
                     if (empty($dharma_name_id) && !empty($custom_name)) {
+                        // Split name and relative if needed (e.g. "元續之母")
+                        if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
+                            $custom_name = trim($matches[1]);
+                            $rel = $this->normalizeRelationshipTerm($matches[2]);
+                            $dn['remarks'] = ($dn['remarks'] ?? '') . ($dn['remarks'] ? "\n" : "") . $rel;
+                        }
+
                         $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
                         if ($matched) {
                             $dharma_name_id = $matched->id;
@@ -88,10 +93,14 @@ class ImperialGraceController extends Controller
 
     public function updateRegistry(Request $request, $id)
     {
+        $user = auth()->user();
         $grace = ImperialGrace::findOrFail($id);
+        if ($grace->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         
         if ($request->has('name') && $request->name !== $grace->name) {
-            if (ImperialGrace::where('name', $request->name)->where('id', '!=', $id)->exists()) {
+            if (ImperialGrace::where('user_id', $user->id)->where('name', $request->name)->where('id', '!=', $id)->exists()) {
                 return response()->json(['error' => 'duplicate', 'message' => '名稱已存在'], 422);
             }
         }
@@ -139,7 +148,7 @@ class ImperialGraceController extends Controller
         return DB::transaction(function() use ($items, $masterId, $userId) {
             foreach ($items as $item) {
                 $name = $item['name'] ?? '';
-                if (!$name || ImperialGrace::where('name', $name)->exists()) continue;
+                if (!$name || ImperialGrace::where('user_id', $userId)->where('name', $name)->exists()) continue;
                 
                 $grace = ImperialGrace::create([
                     'user_id'       => $userId,
@@ -159,6 +168,13 @@ class ImperialGraceController extends Controller
                         $custom_name = $dn['custom_name'] ?? null;
                         
                         if (empty($dharma_name_id) && !empty($custom_name)) {
+                            // Split name and relative if needed (e.g. "元續之母")
+                            if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
+                                $custom_name = trim($matches[1]);
+                                $rel = $this->normalizeRelationshipTerm($matches[2]);
+                                $dn['remarks'] = ($dn['remarks'] ?? '') . ($dn['remarks'] ? "\n" : "") . $rel;
+                            }
+
                             $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
                             if ($matched) {
                                 $dharma_name_id = $matched->id;
@@ -185,16 +201,24 @@ class ImperialGraceController extends Controller
 
     public function reorder(Request $request)
     {
+        $user = auth()->user();
         $orders = $request->input('orders', []);
         foreach ($orders as $item) {
-            ImperialGrace::where('id', $item['id'])->update(['sort_order' => $item['sort_order']]);
+            ImperialGrace::where('id', $item['id'])
+                ->where('user_id', $user->id)
+                ->update(['sort_order' => $item['sort_order']]);
         }
         return response()->json(['message' => 'Reordered']);
     }
 
     public function destroyRegistry($id)
     {
-        ImperialGrace::destroy($id);
+        $user = auth()->user();
+        $grace = ImperialGrace::findOrFail($id);
+        if ($grace->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $grace->delete();
         return response()->json(['message' => 'Deleted']);
     }
 }

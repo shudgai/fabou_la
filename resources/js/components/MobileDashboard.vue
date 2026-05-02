@@ -2,7 +2,7 @@
     <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
         <div style="padding: 16px 20px 8px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[60px] shrink-0">
-            <h1 style="font-size: 24px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
+            <h1 style="font-size: 34px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>
             <!-- Logged-in User Box with Logout -->
             <div class="flex items-center space-x-3">
                 <div class="flex flex-col items-end">
@@ -58,7 +58,7 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
-    { id: 'teaching', label: '父皇開示專區', icon: '🙏', color: 'bg-indigo-50' },
+    { id: 'teaching', label: '父皇仙師開示專區', icon: '🙏', color: 'bg-indigo-50' },
     { id: 'kaiwen', label: '開文專區', icon: '📝', color: 'bg-purple-50' },
     { id: 'grudge', label: '怨靈記錄專區', icon: '👻', color: 'bg-rose-50' },
     { id: 'military', label: '軍隊記錄專區', icon: '🛡️', color: 'bg-emerald-50' },

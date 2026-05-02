@@ -14,12 +14,8 @@ class RegistryController extends Controller
     {
         $user = auth()->user();
         $query = Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc');
-
-        if (!$user->isAdmin()) {
-            // Strict isolation: only own records. No linkage via dharma_name_id.
-            // This also handles "赤覺的資料只有赤覺本人可以看到"
-            $query->where('user_id', $user->id);
-        }
+ 
+        $query->where('user_id', $user->id);
         
         return $query->get();
     }
@@ -46,14 +42,15 @@ class RegistryController extends Controller
 
         $nameAliasMap = [
             '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
-            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熙' => '靈情', '金吉' => '靈奇',
+            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
             '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
         ];
 
         return DB::transaction(function () use ($request, $nameAliasMap, $user) {
             $cleanName = trim($request->name);
 
-            $registry = Registry::where('name', $cleanName)
+            $registry = Registry::where('user_id', $user->id)
+                ->where('name', $cleanName)
                 ->where('master_id', $request->master_id)
                 ->where('category', $request->category)
                 ->first();
@@ -97,14 +94,22 @@ class RegistryController extends Controller
                     // 2. 親友關係轉備註規則（例如：元續之母 或 元續三姑）
                     if ($custom_name) {
                         $relationshipMatch = null;
-                        if (preg_match('/^(.*?)([之的].+)$/u', $custom_name, $matches)) {
+                        if (preg_match('/^(.*?)([之的])(.+)$/u', $custom_name, $matches)) {
                             $relationshipMatch = $matches;
+                            $custom_name = $matches[1];
+                            $relPart = trim($matches[3]);
+                            if ($relPart === '母') $relPart = '母親';
+                            if ($relPart === '父') $relPart = '父親';
+                            $relationshipMatch[0] = $custom_name . $relPart; // Cleaned version for display
                         } else {
                             $dnNames = DharmaName::pluck('name')->toArray();
                             usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
                             foreach ($dnNames as $dnName) {
                                 if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
-                                    $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
+                                    $relPart = mb_substr($custom_name, mb_strlen($dnName));
+                                    if ($relPart === '母') $relPart = '母親';
+                                    if ($relPart === '父') $relPart = '父親';
+                                    $relationshipMatch = [$custom_name . $relPart, $dnName, $relPart];
                                     break;
                                 }
                             }
@@ -197,7 +202,7 @@ class RegistryController extends Controller
     public function update(Request $request, Registry $registry)
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->isChijue() && $registry->user_id !== $user->id) {
+        if ($registry->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         return DB::transaction(function () use ($request, $registry) {
@@ -251,7 +256,7 @@ class RegistryController extends Controller
 
         $nameAliasMap = [
             '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
-            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熙' => '靈情', '金吉' => '靈奇',
+            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
             '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
         ];
 
@@ -262,7 +267,8 @@ class RegistryController extends Controller
                     continue;
 
                 $cleanName = trim($recordData['name']);
-                $registry  = Registry::where('name', $cleanName)
+                $registry  = Registry::where('user_id', $user->id)
+                    ->where('name', $cleanName)
                     ->where('master_id', $recordData['master_id'])
                     ->where('category', $recordData['category'] ?? 'major')
                     ->first();
@@ -396,7 +402,7 @@ class RegistryController extends Controller
     public function destroy(Registry $registry)
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->isChijue() && $registry->user_id !== $user->id) {
+        if ($registry->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $registry->delete();
@@ -405,13 +411,13 @@ class RegistryController extends Controller
 
     public function reorder(Request $request)
     {
-        if (!auth()->user()->isChijue() && !auth()->user()->isAdmin()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $user = auth()->user();
         $orders = $request->input('orders', []);
         foreach ($orders as $order) {
             if (isset($order['id']) && isset($order['sort_order'])) {
-                Registry::where('id', $order['id'])->update(['sort_order' => $order['sort_order']]);
+                Registry::where('id', $order['id'])
+                    ->where('user_id', $user->id)
+                    ->update(['sort_order' => $order['sort_order']]);
             }
         }
         return response()->json(['message' => 'Reordered']);

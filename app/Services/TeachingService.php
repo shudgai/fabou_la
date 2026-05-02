@@ -18,16 +18,8 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
 
-        if (!$user->isAdmin()) {
-            $query->where(function($q) use ($user) {
-                $q->where('user_id', $user->id);
-                if ($user->dharma_name_id) {
-                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
-                        $sq->where('dharma_names.id', $user->dharma_name_id);
-                    });
-                }
-            });
-        }
+        $this->applyVisibilityFilter($query, $user);
+
         
         return $query->latest('date')->orderBy('sort_order', 'desc')->latest('id')->paginate($perPage);
     }
@@ -43,21 +35,12 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
 
-        if (!$user->isAdmin()) {
-            $query->where(function($q) use ($user) {
-                $q->where('user_id', $user->id);
-                if ($user->dharma_name_id) {
-                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
-                        $sq->where('dharma_names.id', $user->dharma_name_id);
-                    });
-                }
-            });
-        }
+        $this->applyVisibilityFilter($query, $user);
+
         
-        return $query->leftJoin('teaching_dharma_name', 'teachings.id', '=', 'teaching_dharma_name.teaching_id')
-            ->selectRaw('teachings.date, count(*) as count')
-            ->groupBy('teachings.date')
-            ->orderBy('teachings.date', 'desc')
+        return $query->selectRaw('date, count(*) as count')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
             ->paginate($perPage);
     }
 
@@ -73,25 +56,31 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
 
-        if (!$user->isAdmin()) {
-            $query->where(function($q) use ($user) {
-                $q->where('user_id', $user->id);
-                if ($user->dharma_name_id) {
-                    $q->orWhereHas('dharmaNames', function($sq) use ($user) {
-                        $sq->where('dharma_names.id', $user->dharma_name_id);
-                    });
-                }
-            });
-        }
+        $this->applyVisibilityFilter($query, $user);
+
         
         return $query->orderBy('sort_order', 'desc')->latest()->get();
     }
 
     public function create(array $data): Teaching
     {
-        $dnIds = $data['dharma_name_ids'] ?? [];
         $data = $this->resolveRelations($data);
+        $dnIds = $data['dharma_name_ids'] ?? [];
         
+        // Auto-resolve Dharma Name IDs from target_remarks if empty
+        if (empty($dnIds) && !empty($data['target_remarks'])) {
+            $matched = \App\Models\DharmaName::where('name', trim($data['target_remarks']))->first();
+            if ($matched) {
+                $dnIds = [$matched->id];
+            } else {
+                // Check if it's a group name
+                $group = \App\Models\Group::where('name', trim($data['target_remarks']))->with('dharmaNames')->first();
+                if ($group) {
+                    $dnIds = $group->dharmaNames->pluck('id')->toArray();
+                }
+            }
+        }
+
         // Force set user_id to current authenticated user
         $data['user_id'] = auth()->id();
         
@@ -106,7 +95,12 @@ class TeachingService
 
     public function findById(int $id): ?Teaching
     {
-        return Teaching::with(['master', 'dharmaNames', 'user'])->find($id);
+        $user = auth()->user();
+        return Teaching::with(['master', 'dharmaNames', 'user'])
+            ->where(function($q) use ($user) {
+                $this->applyVisibilityFilter($q, $user);
+            })
+            ->find($id);
     }
 
     public function update(int $id, array $data): bool
@@ -160,12 +154,6 @@ class TeachingService
         $teaching = Teaching::find($id);
         if (!$teaching) return false;
         
-        // Admins can modify everything (optional but standard)
-        // If the user wants STRICT only-owner, I'll stick to that.
-        // Let's check user isAdmin() if exists. 
-        $user = \App\Models\User::find($userId);
-        if ($user && $user->isAdmin()) return true;
-
         return $teaching->user_id === $userId;
     }
 
@@ -240,9 +228,6 @@ class TeachingService
         ];
     }
 
-    /**
-     * Helper to check if an item name matches any specialized rule.
-     */
     public function isSpecializedItem(string $name): bool
     {
         foreach ($this->getSpecializedRules() as $rule) {
@@ -253,6 +238,56 @@ class TeachingService
             }
         }
         return false;
+    }
+
+    protected function applyVisibilityFilter($query, $user)
+    {
+        $user->load(['dharmaName', 'group']);
+        
+        $query->where(function($q) use ($user) {
+            // 2. Creator
+            $q->where('user_id', $user->id);
+            
+            // 3. Targeted via Pivot Table
+            if ($user->dharma_name_id) {
+                $q->orWhereHas('dharmaNames', function($sq) use ($user) {
+                    $sq->where('dharma_names.id', $user->dharma_name_id);
+                });
+            }
+            
+            // 4. Targeted via target_remarks (String Matching)
+            $searchableNames = [];
+            if ($user->dharmaName) {
+                $searchableNames[] = $user->dharmaName->name;
+                
+                // Add aliases (Jin <-> Ling/Long/Yuan)
+                $aliasMap = [
+                    '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
+                    '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
+                    '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰',
+                    '金律' => '閻㻇', '金欣' => '閻闇', '閰琉' => '閻尊', '金剛' => '閻帝', '金頓' => '閻爵',
+                    '金虹' => '赤覺', '金湘' => '紫元', '金雍' => '道妙', '金無' => '閻澤', '金真' => '閻願',
+                    '金翎' => '鳳尊', '金妙' => '鳳媓', '金嘉' => '金嘉'
+                ];
+                
+                // Find if current name is an alias of something or vice versa
+                foreach ($aliasMap as $old => $new) {
+                    if ($user->dharmaName->name === $old) { $searchableNames[] = $new; break; }
+                    if ($user->dharmaName->name === $new) { $searchableNames[] = $old; break; }
+                }
+            }
+            
+            // 5. Targeted via Group Name
+            if ($user->group) {
+                $searchableNames[] = $user->group->name;
+            }
+            
+            // Apply OR LIKE for all searchable names
+            foreach (array_unique($searchableNames) as $name) {
+                if (empty($name)) continue;
+                $q->orWhere('target_remarks', 'like', '%' . $name . '%');
+            }
+        });
     }
 
     protected function applyMasterGroupFilter($query, $masterId)

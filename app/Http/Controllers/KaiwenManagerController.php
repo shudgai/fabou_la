@@ -11,16 +11,22 @@ class KaiwenManagerController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $weeklyQuery = WeeklyPost::where('user_id', $user->id)->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
+        $selfQuery = SelfPost::where('user_id', $user->id)->with('master')->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
+
         return response()->json([
-            'weeklyPosts' => WeeklyPost::orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get(),
-            'selfPosts' => SelfPost::with('master')->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get(),
+            'weeklyPosts' => $weeklyQuery->get(),
+            'selfPosts' => $selfQuery->get(),
         ]);
     }
 
     public function storeWeekly(Request $request)
     {
         try {
-            $post = WeeklyPost::create($request->all());
+            $data = $request->all();
+            $data['user_id'] = auth()->id();
+            $post = WeeklyPost::create($data);
             return response()->json($post, 201);
         } catch (\Exception $e) {
             Log::error('Store Weekly Error: ' . $e->getMessage());
@@ -31,7 +37,11 @@ class KaiwenManagerController extends Controller
     public function updateWeekly(Request $request, $id)
     {
         try {
+            $user = auth()->user();
             $post = WeeklyPost::findOrFail($id);
+            if ($post->user_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
             $post->update($request->all());
             return response()->json($post);
         } catch (\Exception $e) {
@@ -42,7 +52,12 @@ class KaiwenManagerController extends Controller
 
     public function destroyWeekly($id)
     {
-        WeeklyPost::destroy($id);
+        $user = auth()->user();
+        $post = WeeklyPost::findOrFail($id);
+        if ($post->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $post->delete();
         return response()->json(['message' => 'Deleted']);
     }
 
@@ -50,6 +65,7 @@ class KaiwenManagerController extends Controller
     {
         try {
             $data = $request->all();
+            $data['user_id'] = auth()->id();
             if (isset($data['master_name']) && !empty($data['master_name'])) {
                 $master = \App\Models\Master::where('name', $data['master_name'])->first();
                 if ($master) {
@@ -67,7 +83,11 @@ class KaiwenManagerController extends Controller
     public function updateSelf(Request $request, $id)
     {
         try {
+            $user = auth()->user();
             $post = SelfPost::findOrFail($id);
+            if ($post->user_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
             $data = $request->all();
             if (isset($data['master_name']) && !empty($data['master_name'])) {
                 $master = \App\Models\Master::where('name', $data['master_name'])->first();
@@ -85,22 +105,33 @@ class KaiwenManagerController extends Controller
 
     public function destroySelf($id)
     {
-        SelfPost::destroy($id);
+        $user = auth()->user();
+        $post = SelfPost::findOrFail($id);
+        if ($post->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $post->delete();
         return response()->json(['message' => 'Deleted']);
     }
 
     public function reorderWeekly(Request $request)
     {
+        $user = auth()->user();
         foreach ($request->input('orders', []) as $item) {
-            WeeklyPost::where('id', $item['id'])->update(['sort_order' => $item['sort_order']]);
+            $query = WeeklyPost::where('id', $item['id']);
+            $query->where('user_id', $user->id);
+            $query->update(['sort_order' => $item['sort_order']]);
         }
         return response()->json(['message' => 'Reordered']);
     }
 
     public function reorderSelf(Request $request)
     {
+        $user = auth()->user();
         foreach ($request->input('orders', []) as $item) {
-            SelfPost::where('id', $item['id'])->update(['sort_order' => $item['sort_order']]);
+            $query = SelfPost::where('id', $item['id']);
+            $query->where('user_id', $user->id);
+            $query->update(['sort_order' => $item['sort_order']]);
         }
         return response()->json(['message' => 'Reordered']);
     }

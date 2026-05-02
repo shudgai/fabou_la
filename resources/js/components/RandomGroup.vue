@@ -12,7 +12,7 @@
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <span class="font-black shrink-0" style="font-size: 22px !important; color: #0f172a !important;">
+                        <span class="font-black shrink-0" style="font-size: 28px !important; color: #0f172a !important;">
                             {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                         </span>
                         <!-- Manual Add Input -->
@@ -369,7 +369,7 @@
                 <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h2 class="flex-1 font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 22px !important;">分組結果</h2>
+                <h2 class="flex-1 font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 24px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
                     <button @click="handleNextRound" class="text-[17px] font-black text-white bg-indigo-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">下一輪</button>
                     <button @click="redrawAll" class="text-[17px] font-black text-white bg-rose-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重抽</button>

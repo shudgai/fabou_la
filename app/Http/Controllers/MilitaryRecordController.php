@@ -10,16 +10,9 @@ class MilitaryRecordController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $permissions = $user->getPermissions();
-        $query = MilitaryRecord::orderBy('know_date', 'desc');
+        $displayName = $user->displayName;
         
-        if (!$user->isAdmin()) {
-            $allowedArmies = $permissions['allowed_armies'] ?? [];
-            $query->where(function($q) use ($user, $allowedArmies) {
-                $q->where('user_id', $user->id)
-                  ->orWhereIn('army_type', $allowedArmies);
-            });
-        }
+        $query = MilitaryRecord::where('user_id', $user->id)->orderBy('know_date', 'desc');
         
         return $query->get();
     }
@@ -68,12 +61,15 @@ class MilitaryRecordController extends Controller
     {
         $record = MilitaryRecord::findOrFail($id);
         $permissions = auth()->user()->getPermissions();
-
-        if (!auth()->user()->isAdmin() && !in_array($record->army_type, $permissions['allowed_armies'])) {
+        if ($record->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        if ($request->has('army_type') && !auth()->user()->isAdmin() && !in_array($request->army_type, $permissions['allowed_armies'])) {
+        if (!in_array($record->army_type, $permissions['allowed_armies'])) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($request->has('army_type') && !in_array($request->army_type, $permissions['allowed_armies'])) {
             return response()->json(['error' => 'Unauthorized army type change'], 403);
         }
 
@@ -105,7 +101,11 @@ class MilitaryRecordController extends Controller
         $record = MilitaryRecord::findOrFail($id);
         $permissions = auth()->user()->getPermissions();
 
-        if (!auth()->user()->isAdmin() && !in_array($record->army_type, $permissions['allowed_armies'])) {
+        if ($record->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if (!in_array($record->army_type, $permissions['allowed_armies'])) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

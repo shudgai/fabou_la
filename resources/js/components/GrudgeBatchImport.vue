@@ -33,25 +33,32 @@
                     </button>
                 </div>
 
-                <div class="space-y-1 relative">
+                <div class="space-y-1 relative group/textarea">
                     <div class="flex items-center justify-between mb-2 ml-1">
                         <label class="app-title">貼上資料</label>
                         <div class="flex items-center space-x-2">
-                            <button v-if="batchText" @click="batchText = ''" class="text-[14px] font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all">
-                                清空
-                            </button>
                             <button @click.stop="triggerFileUpload" class="text-[16px] font-black text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
                                 <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 <span>載入他檔</span>
                             </button>
                         </div>
                     </div>
-                    <textarea 
-                        v-model="batchText" 
-                        rows="15"
-                        @click.stop
-                        class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[450px] leading-relaxed"
-                    ></textarea>
+                    <div class="relative">
+                        <textarea 
+                            v-model="batchText" 
+                            rows="15"
+                            @click.stop
+                            class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[450px] leading-relaxed pr-12"
+                            placeholder="在此貼上法號資料清單..."
+                        ></textarea>
+                        <!-- Floating Clear Cross Button -->
+                        <button v-if="batchText" @click="batchText = ''" 
+                            class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur shadow-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white active:scale-90 transition-all border border-slate-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -134,7 +141,7 @@ const triggerFileUpload = () => {
 
 const nameAliasMap = {
     '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-    '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
     '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
     '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
     '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
@@ -151,7 +158,7 @@ const handleBatchSave = async () => {
 
     const nameMap = {
         '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熙': '靈情', '金吉': '靈奇',
+            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
         '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
         '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
         '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
@@ -230,10 +237,26 @@ const handleBatchSave = async () => {
 
         let rawName = subject;
         let uRemarks = '';
+
+        // Handle parenthesis first (e.g. "靈奇 (靈情之友)")
         const rMatch = subject.match(/[（\(](.*?)[）\)]/);
         if (rMatch) {
             rawName = subject.replace(/[（\(].*?[）\)]/, '').trim();
-            uRemarks = rMatch[1];
+            let rel = rMatch[1].trim();
+            if (rel === '母' || rel === '之母') rel = '母親';
+            if (rel === '父' || rel === '之父') rel = '父親';
+            if (rel.startsWith('之') || rel.startsWith('的')) rel = rel.substring(1);
+            uRemarks = rel;
+        } else {
+            // Handle "Name 之/的 Relative" pattern (e.g. "元續之母")
+            const relMatch = subject.match(/^(.*?)[之的](.+)$/);
+            if (relMatch) {
+                rawName = relMatch[1].trim();
+                let rel = relMatch[2].trim();
+                if (rel === '母') rel = '母親';
+                if (rel === '父') rel = '父親';
+                uRemarks = rel;
+            }
         }
 
         // Clean digits from name only if they are at the end

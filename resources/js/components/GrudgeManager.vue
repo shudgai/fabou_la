@@ -3,10 +3,10 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
             <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-[25px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important;">{{ displayTitle }}</h1>
+                <h1 class="text-[28px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 28px !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
-                <button @click="sortDesc = !sortDesc" class="text-[11px] text-indigo-500 font-black bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100">
+                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 font-black bg-indigo-50 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100" style="font-size: 12px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
@@ -109,38 +109,33 @@
                                     </div>
                                 </div>
 
-                                <div class="flex flex-col space-y-4 pr-8">
-                                    <!-- Row 1: Date -->
-                                    <div class="grudge-field">
-                                        <label class="grudge-label">日期</label>
+                                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pr-8">
+                                    <!-- Date -->
+                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                        <label class="grudge-label">日期:</label>
                                         <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
                                     </div>
-                                    <!-- Row 2: Grid for Name, Quantity, Result -->
-                                    <div class="grid grid-cols-3 gap-x-4">
-                                        <div class="grudge-field min-w-0">
-                                            <label class="grudge-label">法號</label>
-                                            <div class="grudge-value-name truncate">{{ item.user_name || '-' }}</div>
-                                        </div>
-                                        <div class="grudge-field">
-                                            <label class="grudge-label">數量</label>
-                                            <div class="grudge-value">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
-                                        </div>
-                                        <div class="grudge-field">
-                                            <label class="grudge-label">處理結果</label>
-                                            <div class="grudge-value" :style="{ color: (item.destination === '未處理' ? '#ef4444' : '#0f172a') }">
-                                                {{ item.destination || '已處理' }}
-                                            </div>
+                                    <!-- Dharma Name -->
+                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                        <label class="grudge-label">法號:</label>
+                                        <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                    </div>
+                                    <!-- Quantity -->
+                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                        <label class="grudge-label">數量:</label>
+                                        <div class="grudge-value">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
+                                    </div>
+                                    <!-- Result -->
+                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                        <label class="grudge-label">結果:</label>
+                                        <div class="grudge-value" :style="{ color: (item.destination === '未處理' ? '#ef4444' : '#0f172a') }">
+                                            {{ item.destination || '已處理' }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Expanded Content (Show Everything when focused) -->
                                 <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in">
-                                    <!-- User Remarks -->
-                                    <div v-if="item.user_remarks" class="space-y-1">
-                                        <label class="app-title uppercase tracking-widest">法號註記</label>
-                                        <div class="app-body font-bold text-[18px]">{{ item.user_remarks }}</div>
-                                    </div>
 
                                     <!-- Army Breakdown (if applicable) -->
                                     <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
@@ -297,6 +292,14 @@ const formatDate = (dateStr) => {
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+const translateRel = (rel) => {
+    if (!rel) return '';
+    let result = rel.trim().replace(/^[之的]/, '');
+    if (result === '母') return '母親';
+    if (result === '父') return '父親';
+    return result;
 };
 
 

@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">回收桶</h1>
+                <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 28px !important;">回收站專區</h1>
                 <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Recycle Bin</p>
             </div>
             <div class="flex items-center space-x-3">

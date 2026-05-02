@@ -8,8 +8,8 @@
         <!-- Header (Shared) -->
         <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[25px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247);">
-                    每周開文記錄
+                <div class="app-title text-[28px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 28px !important;">
+                    開文專區
                 </div>
             </div>
             

@@ -24,7 +24,7 @@
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[22px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase">其他記錄專區</h2>
+                    <h2 class="text-[28px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase" style="font-size: 28px !important;">其他記錄專區</h2>
                 </div>
                 <div class="flex items-center space-x-2 mr-2">
                     <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[13px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-xl active:scale-95 transition-all font-black">

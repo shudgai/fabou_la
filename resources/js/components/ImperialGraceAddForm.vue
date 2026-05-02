@@ -443,8 +443,32 @@ watch(() => form.value.status, (newStatus) => {
 
 watch(personnel, (newVal) => {
     newVal.forEach(p => {
+        // Auto-fill date
         if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
             p.obtained_date = new Date().toISOString().split('T')[0];
+        }
+
+        // Relationship Rule: "Name之Relative" split
+        if (p.custom_name && p.custom_name.trim()) {
+            const relSplitMatch = p.custom_name.match(/^(.*?)[之的](.+)$/);
+            if (relSplitMatch) {
+                const namePart = relSplitMatch[1].trim();
+                let relPart = relSplitMatch[2].trim();
+                if (relPart === '母') relPart = '母親';
+                if (relPart === '父') relPart = '父親';
+                p.custom_name = namePart;
+                p.relationship = relPart;
+            }
+        }
+
+        // Terminology Normalization
+        if (p.relationship) {
+            let rel = p.relationship.trim();
+            if (rel === '之母' || rel === '母') p.relationship = '母親';
+            else if (rel === '之父' || rel === '父') p.relationship = '父親';
+            else if (rel.startsWith('之') || rel.startsWith('的')) {
+                p.relationship = rel.substring(1);
+            }
         }
     });
 }, { deep: true });

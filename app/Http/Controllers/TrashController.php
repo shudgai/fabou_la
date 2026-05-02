@@ -19,14 +19,9 @@ class TrashController extends Controller
         $this->cleanup();
 
         $user = auth()->user();
-        $isAdmin = $user->isAdmin();
 
-        $queryFn = function($modelClass) use ($user, $isAdmin) {
-            $q = $modelClass::onlyTrashed();
-            if (!$isAdmin) {
-                $q->where('user_id', $user->id);
-            }
-            return $q;
+        $queryFn = function($modelClass) use ($user) {
+            return $modelClass::onlyTrashed()->where('user_id', $user->id);
         };
 
         // Fetch all soft deleted items
@@ -51,7 +46,7 @@ class TrashController extends Controller
 
         $item = $model::onlyTrashed()->find($id);
         if ($item) {
-            if (!$user->isAdmin() && $item->user_id !== $user->id) {
+            if ($item->user_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
             $item->restore();
@@ -71,7 +66,7 @@ class TrashController extends Controller
 
         $item = $model::onlyTrashed()->find($id);
         if ($item) {
-            if (!$user->isAdmin() && $item->user_id !== $user->id) {
+            if ($item->user_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
             $item->forceDelete();

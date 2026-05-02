@@ -10,7 +10,7 @@
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
                     <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-slate-900">法寶登記專區</div>
-                    <div class="text-[20px] font-bold mt-2 truncate font-outfit text-slate-900">
+                    <div class="text-[1.4rem] font-bold mt-2 font-outfit text-slate-900 leading-tight break-words" style="font-size: 1.4rem !important;">
                         {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
                     </div>
                 </div>
@@ -634,6 +634,19 @@ const handlePersonnelEnter = (idx) => {
     });
 };
 
+watch(personnel, (newVal) => {
+    newVal.forEach((p, idx) => {
+        if (p.relationship) {
+            let rel = p.relationship.trim();
+            if (rel === '之母' || rel === '母') p.relationship = '母親';
+            else if (rel === '之父' || rel === '父') p.relationship = '父親';
+            else if (rel.startsWith('之') || rel.startsWith('的')) {
+                p.relationship = rel.substring(1);
+            }
+        }
+    });
+}, { deep: true });
+
 // handleTreasureNameInput removed
 const getMasterName = (id) => {
     const m = props.masters?.find(m => String(m.id) === String(id));
@@ -641,7 +654,23 @@ const getMasterName = (id) => {
 };
 
 const handlePersonnelNameInput = (idx, event) => {
-    const val = event.target.value;
+    let val = event.target.value;
+    
+    // Rule: "Name之Relative" split
+    const relSplitMatch = val.match(/^(.*?)[之的](.+)$/);
+    if (relSplitMatch) {
+        const namePart = relSplitMatch[1].trim();
+        let relPart = relSplitMatch[2].trim();
+        
+        // Terminology Translation
+        if (relPart === '母') relPart = '母親';
+        if (relPart === '父') relPart = '父親';
+        
+        personnel.value[idx].custom_name = namePart;
+        personnel.value[idx].relationship = relPart;
+        return;
+    }
+
     const splitters = /[，、, \s]+/;
     
     // Check for multi-name input (e.g., "A B C" or "A,B,C")

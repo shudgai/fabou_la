@@ -250,6 +250,17 @@ const onDestinationChange = () => {
     }
 };
 
+// Auto-correct terminology for relatives
+watch(() => form.value.user_remarks, (newVal) => {
+    if (!newVal) return;
+    let rel = newVal.trim();
+    if (rel === '之母' || rel === '母') form.value.user_remarks = '母親';
+    else if (rel === '之父' || rel === '父') form.value.user_remarks = '父親';
+    else if (rel.startsWith('之') || rel.startsWith('的')) {
+        form.value.user_remarks = rel.substring(1);
+    }
+});
+
 const handleSave = () => {
     // Validation Rules
     if (!form.value.user_name) {
