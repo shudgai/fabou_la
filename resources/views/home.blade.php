@@ -5,90 +5,60 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
         @php $perms = Auth::user()->getPermissions(); @endphp
         <!-- Dashboard Header -->
-        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pt-12">
-            <div class="text-center md:text-left">
-                <h1 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 tracking-tight mb-3">皇恩筆記本</h1>
-                <p class="text-slate-400 text-lg md:text-xl font-bold">歡迎回來，{{ Auth::user()->display_name }}</p>
-            </div>
-            <div class="flex justify-center">
-                <a href="{{ route('note.index') }}" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-5 rounded-[24px] text-xl font-black shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group">
+    <!-- Sophisticated Background -->
+    <div class="fixed inset-0 z-0 bg-slate-50 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-yellow-100/40 rounded-full blur-[120px] opacity-60"></div>
+        <div class="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-indigo-100/30 rounded-full blur-[100px] opacity-40"></div>
+        <div class="absolute -bottom-[10%] left-[20%] w-[60%] h-[50%] bg-red-50/30 rounded-full blur-[120px] opacity-50"></div>
+    </div>
+
+    <div class="max-w-md mx-auto px-6 pt-12 pb-32 relative z-10">
+        <!-- Main Entry Button (Premium Style) -->
+        <div class="mb-12 animate-fade-in-down">
+            <a href="{{ route('note.index') }}" class="w-full relative group">
+                <div class="absolute inset-0 bg-yellow-400 rounded-[36px] blur-md opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                <div class="relative bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 text-red-700 py-6 rounded-[32px] text-[26px] font-black shadow-[0_10px_25px_-5px_rgba(251,191,36,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(251,191,36,0.4)] active:scale-95 transition-all flex items-center justify-center border-b-2 border-amber-600/20"
+                     style="text-shadow: 0 1px 0 rgba(255,255,255,0.4), 0 2px 2px rgba(0,0,0,0.1), 0 3px 3px rgba(0,0,0,0.1);">
                     進入皇恩筆記本
-                    <svg class="w-6 h-6 ml-3 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </a>
+        </div>
+
+        <!-- Compact Module Grid (No Icons) -->
+        <div class="grid grid-cols-2 gap-4">
+            @php 
+                $modules = [
+                    ['id' => 'grace', 'label' => '重大皇恩', 'perm' => 'can_see_grace'],
+                    ['id' => 'teaching', 'label' => '仙師開示', 'perm' => 'can_see_teaching_folders'],
+                    ['id' => 'kaiwen', 'label' => '開文紀錄', 'perm' => 'can_see_kaiwen'],
+                    ['id' => 'grudge', 'label' => '怨靈紀錄', 'perm' => 'can_see_grudge'],
+                    ['id' => 'military', 'label' => '軍隊紀錄', 'perm' => 'can_see_military'],
+                    ['id' => 'treasure', 'label' => '法寶登記', 'perm' => 'can_see_treasures'],
+                ];
+            @endphp
+
+            @foreach($modules as $mod)
+                @if($perms[$mod['perm']] ?? true)
+                <a href="{{ route('note.index') }}#{{ $mod['id'] }}" 
+                   class="bg-white/70 backdrop-blur-md rounded-[24px] border border-white shadow-[0_4px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_25px_rgb(0,0,0,0.06)] active:scale-95 transition-all flex items-center justify-center py-6 px-4 group">
+                    <span class="text-[19px] font-black text-slate-800 leading-tight">
+                        {{ $mod['label'] }}
+                    </span>
                 </a>
-            </div>
+                @endif
+            @endforeach
         </div>
 
-
-
-        <!-- Main Navigation Grid: Show for Admins, Hidden for regular users -->
-        @php 
-            $isAdvancedOrAdmin = Auth::user()->isAdmin() || $perms['can_see_teaching_folders'] || $perms['can_see_treasures'] || $perms['can_see_military'] || $perms['can_see_other_folders'];
-        @endphp
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 @if(!$isAdvancedOrAdmin) hidden @endif">
-            <!-- Major Grace Card -->
-            @if($perms['can_see_grace'])
-            <a href="{{ route('note.index') }}#grace" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">重大皇恩專區</h3>
-            </a>
+        <!-- Secondary Items (Refined) -->
+        <div class="mt-10 grid grid-cols-2 gap-4">
+            @if($perms['can_see_other_folders'] ?? true)
+            <a href="{{ route('note.index') }}#other" class="bg-white/50 backdrop-blur-sm text-slate-500 py-4 rounded-2xl text-center font-bold text-sm border border-slate-200/50 hover:bg-white transition-colors">其他管理專區</a>
             @endif
-
-            <!-- Imperial Teaching Card -->
-            @if($perms['can_see_teaching_folders'])
-            <a href="{{ route('note.index') }}#teaching" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">父皇仙師開示專區</h3>
-            </a>
-            @endif
-
-            <!-- Kaiwen Card -->
-            @if($perms['can_see_kaiwen'])
-            <a href="{{ route('note.index') }}#kaiwen" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">開文專區</h3>
-            </a>
-            @endif
-
-            <!-- Grudge Card -->
-            @if($perms['can_see_grudge'])
-            <a href="{{ route('note.index') }}#grudge" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">怨靈紀錄專區</h3>
-            </a>
-            @endif
-
-            <!-- Military Card -->
-            @if($perms['can_see_military'])
-            <a href="{{ route('note.index') }}#military" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">軍隊紀錄專區</h3>
-            </a>
-            @endif
-
-            <!-- Treasure Card -->
-            @if($perms['can_see_treasures'])
-            <a href="{{ route('note.index') }}#treasure" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">法寶登記專區</h3>
-            </a>
-            @endif
-
-            <!-- Other Card -->
-            @if($perms['can_see_other_folders'])
-            <a href="{{ route('note.index') }}#other" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">其他專區</h3>
-            </a>
-            @endif
-
-            <!-- Trash Card -->
-            @if($perms['can_see_trash'])
-            <a href="{{ route('note.index') }}#trash" class="group bg-white rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col items-center justify-center text-center shrink-0 mx-auto" style="width: 110px; height: 110px;">
-
-                <h3 class="text-base font-bold font-outfit text-slate-800">回收桶</h3>
-            </a>
+            @if($perms['can_see_trash'] ?? true)
+            <a href="{{ route('note.index') }}#trash" class="bg-white/50 backdrop-blur-sm text-slate-500 py-4 rounded-2xl text-center font-bold text-sm border border-slate-200/50 hover:bg-white transition-colors">資源回收桶</a>
             @endif
         </div>
+    </div>
 
 
 

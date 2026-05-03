@@ -80,30 +80,30 @@
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full max-w-lg mx-auto">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[24px] border-2 border-yellow-400 p-3 w-[260px] h-[260px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[32px] border-2 border-yellow-400 p-3 w-[320px] h-[320px] relative transition-all shadow-sm">
                         <div class="mb-2">
-                            <svg class="w-[180px] h-[180px]" viewBox="0 0 64 64" fill="none">
+                            <svg class="w-[240px] h-[240px]" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="text-[24px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 24px !important;">重大皇恩<br>登記簿</div>
+                        <div class="text-[32px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 32px !important;">重大皇恩<br>登記簿</div>
                     </button>
 
 
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 gap-[20px] p-2 place-items-center max-w-xl mx-auto">
+                <div v-else class="grid grid-cols-2 gap-[10px] p-2 place-items-center max-w-xl mx-auto">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[148px] h-[148px] relative bg-white shadow-sm',
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[160px] h-[160px] relative bg-white shadow-sm',
                             currentCategory === 'major' ? 'border-yellow-400' : 'border-red-600'
                         ]">
                         
                         <div class="relative mb-1">
-                             <svg class="w-[96px] h-[96px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
+                             <svg class="w-[130px] h-[130px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
                                     :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" />
@@ -117,7 +117,7 @@
                             <div :class="[
                                 'font-black tracking-tight leading-tight text-center transition-all whitespace-nowrap',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
-                            ]" style="font-weight: 900 !important; font-size: 24px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 20px !important;">{{ folder.name }}</div>
                         </div>
                     </button>
 

@@ -177,8 +177,8 @@
                 <div class="p-4 border-t border-slate-100 space-y-4">
                     @auth
                         <div class="flex items-center" :class="{ 'justify-center': sidebarCollapsed, 'space-x-3': !sidebarCollapsed }">
-                            <div class="w-9 h-9 border-2 border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-xs shrink-0">
-                                {{ mb_substr(Auth::user()->display_name, 0, 1) }}
+                            <div class="px-2 py-1 min-w-[36px] min-h-[36px] border-2 border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[12px] shrink-0">
+                                {{ Auth::user()->display_name }}
                             </div>
                             <div x-show="!sidebarCollapsed" class="min-w-0 flex-1 overflow-hidden" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                                 <span class="font-outfit font-bold text-slate-800">皇恩筆記本</span>
@@ -212,7 +212,7 @@
                         </svg>
                     </button>
                     
-                    <div class="absolute left-1/2 -translate-x-1/2">
+                    <div class="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
                         <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
                             <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="50" cy="50" r="50" fill="white"/>
@@ -224,13 +224,15 @@
                                 <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
-                    <!-- 行動版：user (最右側) -->
-                    <div class="flex items-center gap-2">
                         @auth
-                            <div class="w-8 h-8 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[10px]">
-                                {{ mb_substr(Auth::user()->display_name, 0, 1) }}
+                            <div class="px-2 py-0.5 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-black text-[12px] whitespace-nowrap shadow-sm">
+                                {{ Auth::user()->display_name }}
                             </div>
                         @endauth
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- Placeholder to maintain flex layout -->
                     </div>
                 </header>
                 @endif
