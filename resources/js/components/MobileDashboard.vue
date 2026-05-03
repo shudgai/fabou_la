@@ -121,22 +121,25 @@ const loadStats = async () => {
             axios.get('/other-teachings')
         ]);
         
-        if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.length || 0;
-        if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.length || 0;
+        if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.total || gre.value.data.registries?.length || 0;
+        if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.total || tre.value.data?.length || 0;
         if (teach.status === 'fulfilled') {
             const res = teach.value.data;
-            counts.value['teaching'] = res.data ? (res.total || res.data.length || 0) : (res.length || 0);
+            counts.value['teaching'] = res.total !== undefined ? res.total : (res.data ? res.data.length : res.length || 0);
         }
-        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.length || 0;
-        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.length || 0;
+        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.total || grud.value.data?.length || 0;
+        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.total || mil.value.data?.length || 0;
         if (kai.status === 'fulfilled') {
             const kData = kai.value.data || {};
             counts.value['kaiwen'] = (kData.weeklyPosts?.length || 0) + (kData.selfPosts?.length || 0);
         }
-        if (othTeach.status === 'fulfilled') counts.value['other_teaching'] = othTeach.value.data?.length || 0;
+        if (othTeach.status === 'fulfilled') counts.value['other_teaching'] = othTeach.value.data?.total || othTeach.value.data?.length || 0;
         
         stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
-        if (grud.status === 'fulfilled') stats.value.todoGrudges = grud.value.data?.filter(i => i.status === '待處理').length || 0;
+        if (grud.status === 'fulfilled') {
+            const grudgeData = grud.value.data.data || grud.value.data;
+            stats.value.todoGrudges = Array.isArray(grudgeData) ? grudgeData.filter(i => i.status === '待處理').length : 0;
+        }
     } catch (e) { 
         if (e.response?.status !== 403) console.error(e); 
     }

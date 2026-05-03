@@ -181,6 +181,9 @@
                             </div>
                         </div>
 
+                        <!-- Pagination (Top) -->
+                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" />
+
                         <!-- Empty State -->
                         <div v-if="filteredTreasures.length === 0" class="flex flex-col items-center justify-center py-24 px-6 text-center">
                             <h3 class="text-[17px] font-black text-slate-300 font-outfit uppercase tracking-widest">尚無資料</h3>
@@ -209,7 +212,7 @@
 
                             <div class="flex-1 min-w-0 pr-[10px]">
                             <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-[6px] right-4 z-30 translate-x-0">
+                            <div class="absolute top-[24px] right-4 z-30 translate-x-0">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
                                         class="p-2 active:scale-90 transition-all rounded-full bg-slate-50/50"
                                         style="color: rgb(220, 20, 40) !important;">
@@ -464,6 +467,10 @@
                             </div>
                         </div>
                     </template>
+                    
+                    <div class="mt-8">
+                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -582,6 +589,7 @@ import RegistryAddForm from './RegistryAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import LuckyDraw from './LuckyDraw.vue';
 import RemarksViewer from './RemarksViewer.vue';
+import PaginationButtons from './PaginationButtons.vue';
 
 const isDesktop = ref(window.innerWidth >= 768);
 const handleResize = () => { isDesktop.value = window.innerWidth >= 768; };
@@ -758,8 +766,18 @@ const activeRemarks = ref('');
 const currentRemarksKey = ref(null);
 const currentDnrId = ref(null);
 const showItemDetails = ref(false);
+const reorderMode = ref(false);
+const paginationMeta = ref(null);
+const currentPage = ref(1);
+
+const handlePageChange = (page) => {
+    currentPage.value = page;
+    loadData(page);
+};
+
 const editMap = ref({}); // { 'itemId-dnId': { obtained_date, remarks } }
 
+// Sync editMap for existing records to enable inline editing
 watch(allTreasures, (newVal) => {
     // Sync editMap with fresh data
     newVal.forEach(item => {
@@ -917,77 +935,52 @@ const isPalaceRecord = (item) => {
     return item.dharma_name_registries.some(r => palaceRegex.test(getDharmaNameText(r)));
 };
 
-const loadData = async () => {
+const loadData = async (page = 1) => {
     loading.value = true;
     try {
+        const ts = new Date().getTime();
+        const params = {
+            page,
+            t: ts
+        };
+        if (searchQuery.value) params.search = searchQuery.value;
+        if (currentFolder.value) params.master_id = currentFolder.value.id;
+        if (currentCategory.value) params.category = currentCategory.value;
+
         const [res, mres, dres] = await Promise.all([
-            axios.get('/registries'),
+            axios.get('/registries', { params }),
             axios.get('/api/masters-list'),
             axios.get('/api/dharma-names-list')
         ]);
-        allTreasures.value = res.data;
+        allTreasures.value = res.data.data || [];
+        paginationMeta.value = {
+            current_page: res.data.current_page,
+            last_page: res.data.last_page,
+            total: res.data.total
+        };
         masters.value = mres.data;
         dharmaNames.value = dres.data;
-    } catch (e) {} finally { loading.value = false; }
+    } catch (e) {
+        console.error('Load data failed:', e);
+        allTreasures.value = [];
+    } finally { 
+        loading.value = false; 
+    }
 };
 
+watch(searchQuery, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
+watch([currentFolder, currentCategory], () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
 const filteredTreasures = computed(() => {
-    if (!currentFolder.value) return [];
-    
-    // Solo Mode: If an item is focused AND we are not searching, only show that one
-    if (focusedId.value && !searchQuery.value?.trim()) {
-        const item = allTreasures.value.find(t => t.id === focusedId.value);
-        return item ? [item] : [];
-    }
-
-    let filtered = allTreasures.value.filter(t => 
-        t.master_id === currentFolder.value?.id && 
-        (t.category === currentCategory.value || (!t.category && currentCategory.value === 'major'))
-    );
-
-    // Apply Search Filter
-    if (searchQuery.value?.trim()) {
-        const q = searchQuery.value.toLowerCase().trim();
-        filtered = filtered.filter(t => {
-            const matchName = t.name?.toLowerCase().includes(q);
-            const matchPurpose = t.purpose?.toLowerCase().includes(q);
-            const matchRegistries = (t.dharma_name_registries || []).some(dnr => {
-                const dnText = getDharmaNameText(dnr).toLowerCase();
-                const rawRemarks = dnr.remarks;
-                const remarksStr = Array.isArray(rawRemarks) ? rawRemarks.join(' ') : (rawRemarks || '');
-                const remarkMatch = remarksStr.toLowerCase().includes(q);
-                return dnText.includes(q) || remarkMatch;
-            });
-            return matchName || matchPurpose || matchRegistries;
-        });
-
-        // Matches move to top (Imperial Grace style)
-        filtered.sort((a, b) => {
-            const getMatchScore = (t) => {
-                if (t.name?.toLowerCase().includes(q)) return 3;
-                if ((t.dharma_name_registries || []).some(dnr => getDharmaNameText(dnr).toLowerCase().includes(q))) return 2;
-                if (t.purpose?.toLowerCase().includes(q)) return 1;
-                return 0;
-            };
-            const scoreA = getMatchScore(a);
-            const scoreB = getMatchScore(b);
-            if (scoreA !== scoreB) return scoreB - scoreA;
-            
-            // Secondary sort: keep original order within same score
-            if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
-            const dateA = getEarliestDate(a);
-            const dateB = getEarliestDate(b);
-            return sortDesc.value ? (dateB||'').localeCompare(dateA||'') : (dateA||'').localeCompare(dateB||'');
-        });
-    } else {
-        filtered.sort((a,b) => {
-            if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
-            const dateA = getEarliestDate(a);
-            const dateB = getEarliestDate(b);
-            return sortDesc.value ? (dateB||'').localeCompare(dateA||'') : (dateA||'').localeCompare(dateB||'');
-        });
-    }
-    return filtered;
+    // With server-side pagination, allTreasures.value already contains filtered data
+    return allTreasures.value;
 });
 
 const dynamicHeaderTitle = computed(() => {
@@ -1716,7 +1709,7 @@ const deleteItem = async (id) => {
 const toggleMenu = (id) => openMenuId.value = openMenuId.value === id ? null : id;
 const toggleSort = () => sortDesc.value = !sortDesc.value;
 
-const reorderMode = ref(false);
+
 
 const handleReorder = async (item, newOrder) => {
     const targetOrder = parseInt(newOrder);

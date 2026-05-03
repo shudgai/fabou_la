@@ -79,6 +79,9 @@ app.component('other-teaching-manager', OtherTeachingManager);
 import OtherRecordsManager from './components/OtherRecordsManager.vue';
 app.component('other-records-manager', OtherRecordsManager);
 
+import PaginationButtons from './components/PaginationButtons.vue';
+app.component('pagination-buttons', PaginationButtons);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

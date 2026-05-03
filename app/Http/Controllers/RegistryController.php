@@ -10,15 +10,35 @@ use Illuminate\Support\Facades\DB;
 
 class RegistryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $query = Registry::with('dharmaNameRegistries')->orderBy('sort_order', 'asc');
- 
+        $query = Registry::with('dharmaNameRegistries');
+
         // Strict isolation: Everyone only sees their own data
         $query->where('user_id', $user->id);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('dharmaNameRegistries', function($sq) use ($search) {
+                      $sq->where('custom_name', 'like', "%{$search}%")
+                        ->orWhereHas('dharmaName', function($ssq) use ($search) {
+                            $ssq->where('name', 'like', "%{$search}%")
+                                ->orWhere('alias', 'like', "%{$search}%");
+                        });
+                  });
+            });
+        }
+
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
+        }
+
+        $query->orderBy('sort_order', 'asc');
         
-        return $query->get();
+        return $query->paginate(20);
     }
 
     /**

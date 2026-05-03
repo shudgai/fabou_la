@@ -37,34 +37,16 @@
         <!-- Total Simple Overlay (Updated with Breakdowns) -->
         <div v-if="showTotal" class="fixed inset-x-0 top-[80px] z-[60] px-4 animate-fade-in pointer-events-none">
             <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex flex-col pointer-events-auto border border-slate-100 relative w-auto min-w-[280px] max-w-md mx-auto">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between" :class="{ 'mb-4': !searchQuery }">
                     <div class="flex flex-col">
-                        <span class="app-body text-slate-400" style="font-weight: 400 !important;">怨靈紀錄總數</span>
-                        <span class="app-body text-slate-900 mt-1 font-bold" style="font-size: 22px !important;">{{ totalGrudgeQuantity }}</span>
+                        <span class="app-body text-slate-400" style="font-weight: 400 !important;">{{ searchQuery ? '搜尋結果總數' : '怨靈紀錄總數' }}</span>
+                        <span class="app-body text-slate-900 mt-1 font-bold" style="font-size: 22px !important;">{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
                     </div>
                     <button @click="showTotal = false" class="p-2 text-slate-300 active:scale-90 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-x-8 gap-y-4 pt-4 border-t border-slate-50">
-                    <div class="flex flex-col">
-                        <span class="text-[13px] text-slate-400">閻爵總數</span>
-                        <span class="app-body text-slate-900 font-bold">{{ breakdownTotals.yan_jue }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[13px] text-slate-400">閻則總數</span>
-                        <span class="app-body text-slate-900 font-bold">{{ breakdownTotals.yan_ze }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[13px] text-slate-400">閻帝總數</span>
-                        <span class="app-body text-slate-900 font-bold">{{ breakdownTotals.yan_di }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[13px] text-slate-400">閻元總數</span>
-                        <span class="app-body text-slate-900 font-bold">{{ breakdownTotals.yan_yuan }}</span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -176,6 +158,10 @@
                         </div>
                     </div>
                 </template>
+                
+                <div class="mt-8 mb-20 px-2">
+                    <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
+                </div>
             </div>
         </div>
 
@@ -205,6 +191,7 @@ import GrudgeAddForm from './GrudgeAddForm.vue';
 import GrudgeBatchImport from './GrudgeBatchImport.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import PaginationButtons from './PaginationButtons.vue';
 
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
@@ -227,6 +214,13 @@ const showTotal = ref(false);
 const showBatchImport = ref(false);
 const markings = ref({});
 const saving = ref(false);
+const paginationMeta = ref(null);
+const currentPage = ref(1);
+
+const handlePageChange = (page) => {
+    currentPage.value = page;
+    loadData(page);
+};
 
 const resetToRoot = () => {
     searchQuery.value = '';
@@ -318,15 +312,7 @@ const toggleShowTotal = () => {
 
 
 const filteredItems = computed(() => {
-    let filtered = items.value;
-    if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase();
-        filtered = filtered.filter(i => 
-            (i.destination?.toLowerCase().includes(q)) || 
-            (i.user_name?.toLowerCase().includes(q))
-        );
-    }
-    return filtered;
+    return items.value;
 });
 
 const sortedItems = computed(() => {
@@ -516,16 +502,35 @@ const performExcelExport = () => {
 
 const form = ref({ user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: getTodayStr(), process_date: '', remarks_text: '', remarks: {} });
 
-const loadData = async () => {
+const loadData = async (page = 1) => {
     loading.value = true;
     try {
-        const [res, dres] = await Promise.all([ axios.get('/grudges'), axios.get('/api/dharma-names-list') ]);
-        items.value = res.data;
-        users.value = dres.data;
-    } catch (e) { console.error(e); } finally { 
+        const ts = new Date().getTime();
+        const params = {
+            page,
+            t: ts
+        };
+        if (searchQuery.value) params.search = searchQuery.value;
+
+        const res = await axios.get('/grudges', { params });
+        items.value = res.data.data || [];
+        paginationMeta.value = {
+            current_page: res.data.current_page,
+            last_page: res.data.last_page,
+            total: res.data.total
+        };
+    } catch (e) { 
+        console.error('Load data failed:', e);
+        items.value = [];
+    } finally { 
         loading.value = false; 
     }
 };
+
+watch(searchQuery, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
 
 const saveItem = async (formData) => {
     try {

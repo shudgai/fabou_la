@@ -11,15 +11,35 @@ use Illuminate\Support\Facades\DB;
 
 class ImperialGraceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         $query = ImperialGrace::with('dharmaNameRegistries.dharmaName');
  
         $query->where('user_id', $user->id);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('purpose', 'like', "%{$search}%")
+                  ->orWhereHas('dharmaNameRegistries', function($sq) use ($search) {
+                      $sq->where('custom_name', 'like', "%{$search}%")
+                        ->orWhereHas('dharmaName', function($ssq) use ($search) {
+                            $ssq->where('name', 'like', "%{$search}%");
+                        });
+                  });
+            });
+        }
+
+        if ($request->has('master_id')) {
+            $query->where('master_id', $request->master_id);
+        }
+
+        $query->orderBy('sort_order', 'asc');
  
         return response()->json([
-            'registries' => $query->get(),
+            'registries' => $query->paginate(20),
             'userGraces' => UserImperialGrace::where('user_id', $user->id)->get()
         ]);
     }

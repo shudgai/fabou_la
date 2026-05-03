@@ -21,6 +21,7 @@ class TeachingController extends Controller
         $date = $request->query('date');
         $mode = $request->query('mode'); // 'dates' or 'items'
         $perPage = $request->query('per_page', 15);
+        $search = $request->query('search');
         
         $permissions = auth()->user()->getPermissions();
         // Block general users from accessing daily teachings (master_id explicitly = 0)
@@ -40,7 +41,7 @@ class TeachingController extends Controller
             return response()->json($this->teachingService->getByDate($date, $masterId));
         }
 
-        return response()->json($this->teachingService->getAll($masterId, $perPage));
+        return response()->json($this->teachingService->getAll($masterId, $perPage, $search));
     }
 
     public function store(Request $request)

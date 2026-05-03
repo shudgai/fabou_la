@@ -222,8 +222,8 @@
                                         </div>
 
                                         <!-- Menu Trigger (Right side of Row 2) -->
-                                        <div class="absolute right-[-32px] top-0">
-                                            <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
+                                        <div class="absolute right-1 top-0">
+                                            <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
                                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
                                             <!-- Dropdown Menu -->
@@ -275,6 +275,9 @@
                         </div>
                     </div>
                 </template>
+
+                <!-- Pagination Buttons -->
+                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
                 </div>
             </div>
         </div>
@@ -312,6 +315,7 @@ import MilitaryAddForm from './MilitaryAddForm.vue';
 import MilitaryBatchAdd from './MilitaryBatchAdd.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import PaginationButtons from './PaginationButtons.vue';
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -382,7 +386,14 @@ const deleteConfirmId = ref(null);
 const sortDesc = ref(true);
 const openStatusId = ref(null);
 const showFullTotal = ref(false);
+const paginationMeta = ref(null);
+const currentPage = ref(1);
 let fullTotalTimer = null;
+
+const handlePageChange = (page) => {
+    currentPage.value = page;
+    loadData(page);
+};
 
 const formatArmyTotal = (num) => {
     num = Number(num) || 0;
@@ -404,24 +415,8 @@ const toggleFullTotal = () => {
 };
 
 const filteredItems = computed(() => {
-    const allowed = props.user?.permissions?.allowed_armies || [];
-    const isAdmin = props.user?.is_admin || props.user?.role === 'admin' || props.user?.role === '管理員';
-    let filtered = items.value.filter(i => isAdmin || allowed.includes(i.army_type) || i.user_id === props.user?.id);
-
-    if (currentFolder.value) {
-        const target = currentFolder.value.name;
-        filtered = filtered.filter(i => i.army_type === target);
-    }
-    
-    if (searchQuery.value) {
-        const q = searchQuery.value.trim().toLowerCase();
-        filtered = filtered.filter(i => 
-            i.user_name?.toLowerCase().includes(q) || 
-            i.user_remarks?.toLowerCase().includes(q) ||
-            i.remarks_text?.toLowerCase().includes(q)
-        );
-    }
-    return filtered;
+    // With server-side pagination, items.value already contains the filtered/paged data
+    return items.value;
 });
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
@@ -762,24 +757,47 @@ const downloadSingleRecord = (item) => {
 
 const form = ref({});
 
-const loadData = async () => {
+const loadData = async (page = 1) => {
     loading.value = true;
     try {
         const ts = new Date().getTime();
+        const params = {
+            page,
+            t: ts
+        };
+        
+        if (searchQuery.value) params.search = searchQuery.value;
+        if (currentFolder.value) params.army_type = currentFolder.value.name;
+
         const [res, dres] = await Promise.all([ 
-            axios.get(`/military-records?t=${ts}`), 
+            axios.get('/military-records', { params }), 
             axios.get(`/api/dharma-names-list?t=${ts}`) 
         ]);
-        items.value = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        
+        items.value = res.data.data || [];
+        paginationMeta.value = {
+            current_page: res.data.current_page,
+            last_page: res.data.last_page,
+            total: res.data.total
+        };
         users.value = dres.data;
     } catch (e) { 
         console.error('Load data failed:', e);
         items.value = []; 
     } finally { 
         loading.value = false;
-        // All groups are expanded by default as collapsedGroups starts empty
     }
 };
+
+watch(searchQuery, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
+watch(currentFolder, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
 
 const saveItem = async (formData) => {
     try {

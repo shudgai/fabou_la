@@ -613,6 +613,8 @@ const currentCategory = ref(null);
 const currentFolder = ref(null);
 const addMode = ref(null);
 const allRegistries = ref([]);
+const userGraces = ref([]);
+const dharmaNames = ref([]);
 const masters = ref([]);
 const activeRelDropdownIdx = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
@@ -622,13 +624,21 @@ const persistentToast = ref(null);
 const sortDesc = ref(true);
 const toggleSort = () => { sortDesc.value = !sortDesc.value; };
 const openMenuId = ref(null);
+const paginationMeta = ref(null);
+const currentPage = ref(1);
+
+const handlePageChange = (page) => {
+    currentPage.value = page;
+    loadData(page);
+};
+
 const fileInput = ref(null);
-const showAddMenu = ref(false); // 控制底部新增選單
+const showAddMenu = ref(false); 
 const showSearch = ref(false);
 const reorderMode = ref(false);
-const deleteConfirmId = ref(null); // 追蹤正在準備刪除的物件
-const expandedId = ref(null); // 追蹤目前展開的 ID，單一變數最穩
-const focusedId = ref(null); // 追蹤正在「聚焦」的單筆紀錄
+const deleteConfirmId = ref(null); 
+const expandedId = ref(null); 
+const focusedId = ref(null); 
 const batchInput = ref('');
 const batchMasterId = ref(null);
 const addSessionKey = ref(0);
@@ -638,8 +648,7 @@ const form = ref({
 });
 const inlineEditId = ref(null);
 const inlineEditData = ref({});
-// Removed duplicate saving variable
-const activePicker = ref(null); // { idx, field, title }
+const activePicker = ref(null); 
 const activePickerValue = computed({
     get: () => {
         if (!activePicker.value) return '';
@@ -703,13 +712,55 @@ const triggerBatchSave = (data) => {
     saveBatch(data);
 };
 
-// 當關閉提示框時，重設紅點狀態；加入自動消失邏輯
+const loadData = async (page = 1) => {
+    loading.value = true;
+    try {
+        const ts = new Date().getTime();
+        const params = {
+            page,
+            t: ts
+        };
+        if (searchQuery.value) params.search = searchQuery.value;
+        if (currentFolder.value) params.master_id = currentFolder.value.id;
+
+        const [res, mres, dres] = await Promise.all([
+            axios.get('/imperial-graces', { params }),
+            axios.get('/api/masters-list'),
+            axios.get('/api/dharma-names-list')
+        ]);
+        
+        allRegistries.value = res.data.registries.data || [];
+        paginationMeta.value = {
+            current_page: res.data.registries.current_page,
+            last_page: res.data.registries.last_page,
+            total: res.data.registries.total
+        };
+        userGraces.value = res.data.userGraces;
+        masters.value = mres.data;
+        dharmaNames.value = dres.data;
+    } catch (e) {
+        console.error('Load data failed:', e);
+        allRegistries.value = [];
+    } finally { 
+        loading.value = false; 
+    }
+};
+
+watch(searchQuery, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
+watch(currentFolder, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
 watch(persistentToast, (newVal) => {
     if (!newVal) {
         deleteConfirmId.value = null;
         return;
     }
-    // 如果不是需要等待使用者決策的類型，則預設 3 秒後自動消失 (支援自訂 duration)
     if (!['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(newVal.type)) {
         setTimeout(() => {
             if (persistentToast.value === newVal) persistentToast.value = null;
@@ -745,16 +796,6 @@ const mastersFolders = computed(() => {
     }
     return list;
 });
-
-const loadData = async () => {
-    loading.value = true;
-    try {
-        const [res, mres] = await Promise.all([ axios.get('/imperial-graces'), axios.get('/api/masters-list') ]);
-        allRegistries.value = res.data.registries || [];
-        masters.value = mres.data || [];
-    } catch (e) { console.error(e); }
-    finally { loading.value = false; }
-};
 
 const copyAsTextFile = (reg) => {
     try {
@@ -809,8 +850,6 @@ const toggleExpand = (id) => {
     }
 };
 
-
-
 const cancelInlineEdit = () => {
     inlineEditId.value = null;
     expandedId.value = null;
@@ -824,7 +863,7 @@ const saveInlineEdit = async () => {
         persistentToast.value = { msg: '✓ 已更新載錄', type: 'success' };
         inlineEditId.value = null;
         expandedId.value = null;
-        await loadData();
+        await loadData(currentPage.value);
     } catch (e) {
         console.error('Inline save failed', e);
         persistentToast.value = { msg: '✖ 更新失敗', type: 'error' };
@@ -844,7 +883,6 @@ const handleBack = () => {
         reorderMode.value = false;
         searchQuery.value = '';
         expandedId.value = null;
-        // If we came directly from unobtained to level 0
         if (currentCategory.value === 'unobtained') {
             currentCategory.value = null;
         }
@@ -855,29 +893,17 @@ const handleBack = () => {
     }
 };
 
-watch(currentFolder, () => {
-    focusedId.value = null;
-    expandedId.value = null;
-    openMenuId.value = null;
-    searchQuery.value = '';
-});
-
 const handleStatusChange = () => { if (form.value.status === '未求得') form.value.obtained_date = ''; };
 
 const editItem = (reg) => { 
     inlineEditId.value = reg.id;
-    // Deep clone to avoid mutating original list until save
     inlineEditData.value = JSON.parse(JSON.stringify(reg));
-    // Ensure dharma_name_registries is an array
     if (!inlineEditData.value.dharma_name_registries) inlineEditData.value.dharma_name_registries = [];
-    
-    // Map existing registries to simple format
     inlineEditData.value.dharma_name_registries = inlineEditData.value.dharma_name_registries.map(d => ({
         ...d,
         custom_name: d.dharma_name?.name || d.custom_name,
         remarks: Array.isArray(d.remarks) ? d.remarks.join(' ') : (d.remarks || '')
     }));
-
     openMenuId.value = null; 
 };
 
@@ -903,13 +929,12 @@ const executeDelete = async () => {
         persistentToast.value = { msg: '✓ 已成功刪除', type: 'success' };
         focusedId.value = null;
         expandedId.value = null;
-        loadData(); 
+        loadData(currentPage.value); 
     }
     catch (e) { alert('刪除失敗'); }
     deleteConfirmId.value = null;
 };
 
-// 🌟 核心下載：最穩定的同步 Blob 下載 (確保 Chrome 不攔截)
 const triggerSimpleDownload = (text, filename) => {
     const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
@@ -922,7 +947,6 @@ const triggerSimpleDownload = (text, filename) => {
     window.URL.revokeObjectURL(url);
 };
 
-// 1. 單筆複製
 const copyOnly = async (reg) => {
     const text = formatRegistryForFile(reg);
     try {
@@ -934,7 +958,6 @@ const copyOnly = async (reg) => {
     openMenuId.value = null;
 };
 
-// 2. 單筆下載
 const downloadOnly = (reg) => {
     const text = formatRegistryForFile(reg);
     triggerSimpleDownload(text, `重大皇恩_${reg.name}.txt`);
@@ -944,7 +967,7 @@ const downloadOnly = (reg) => {
 
 const handleReorder = async (reg, newOrderStr) => {
     const newOrder = parseInt(newOrderStr);
-    const currentList = [...filteredRegistries.value];
+    const currentList = [...allRegistries.value];
     const oldIndex = currentList.findIndex(item => item.id === reg.id);
     const newIndex = newOrder - 1;
     
@@ -953,11 +976,8 @@ const handleReorder = async (reg, newOrderStr) => {
         return;
     }
     
-    // Move item in array
     const [movedItem] = currentList.splice(oldIndex, 1);
     currentList.splice(newIndex, 0, movedItem);
-    
-    // Assign new sort_order to everyone in this filtered list
     const updates = currentList.map((item, idx) => ({
         id: item.id,
         sort_order: idx + 1
@@ -966,17 +986,16 @@ const handleReorder = async (reg, newOrderStr) => {
     try {
         await axios.post('/imperial-graces/registry/reorder', { orders: updates });
         persistentToast.value = { msg: '✓ 順序更新成功', type: 'success' };
-        await loadData();
+        await loadData(currentPage.value);
     } catch (e) {
         persistentToast.value = { msg: '✖ 順序更新失敗', type: 'error' };
     }
 };
 
-// 3. 全部複製
 const copyListOnly = async () => {
     if (!currentFolder.value) return;
     const contents = `【重大皇恩清單 - ${currentFolder.value.name}】\r\n\r\n` + 
-        filteredRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
+        allRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
     try {
         await navigator.clipboard.writeText(contents);
         persistentToast.value = { msg: '已複製全部清單,可至 LINE 貼上.', type: 'success' };
@@ -986,22 +1005,18 @@ const copyListOnly = async () => {
     openMenuId.value = null;
 };
 
-// 4. 全部下載
 const downloadListOnly = () => {
     if (!currentFolder.value) return;
     const contents = `【重大皇恩清單 - ${currentFolder.value.name}】\r\n\r\n` + 
-        filteredRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
+        allRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
     triggerSimpleDownload(contents, `重大皇恩清單_${currentFolder.value.name}.txt`);
     persistentToast.value = { msg: '已啟動清單下載.', type: 'success' };
     openMenuId.value = null;
 };
 
-// 5. 文字檔匯出 (全部清單 - 一筆一筆格式)
 const exportListTxt = () => {
-    if (!currentFolder.value || !filteredRegistries.value.length) return;
-    
-    const contents = filteredRegistries.value.map(r => formatRegistryForFile(r)).join('\r\n\r\n--------------------------------\r\n\r\n');
-
+    if (!currentFolder.value || !allRegistries.value.length) return;
+    const contents = allRegistries.value.map(r => formatRegistryForFile(r)).join('\r\n\r\n--------------------------------\r\n\r\n');
     try {
         const finalHeader = `【重大皇恩清單 - ${currentFolder.value.name} 完整清單】\r\n\r\n`;
         triggerSimpleDownload(finalHeader + contents, `重大皇恩清單_${currentFolder.value.name}_一筆一筆資料.txt`);
@@ -1014,7 +1029,6 @@ const exportListTxt = () => {
 
 const prepareAdd = (mode) => {
     const defaultMasterId = currentFolder.value && currentFolder.value.id !== 'unobtained' ? currentFolder.value.id : null;
-    // 重設單筆表單
     form.value = { 
         id: null, 
         master_id: defaultMasterId, 
@@ -1025,10 +1039,8 @@ const prepareAdd = (mode) => {
         obtained_date: '', 
         status: '未求得' 
     };
-    // 重設批次輸入
     batchInput.value = '';
     batchMasterId.value = defaultMasterId;
-    
     addSessionKey.value++;
     addMode.value = mode;
     showAddMenu.value = false;
@@ -1036,19 +1048,15 @@ const prepareAdd = (mode) => {
 
 const saveSingle = async (resolutionOrData = null) => {
     if (isSaving.value) return;
-
     let resolution = null;
     if (typeof resolutionOrData === 'string') {
         resolution = resolutionOrData;
     } else if (resolutionOrData && typeof resolutionOrData === 'object' && !resolutionOrData.target) {
         form.value = { ...resolutionOrData };
     }
-    
     let formMid = form.value.master_id ? String(form.value.master_id) : '';
     const folderId = currentFolder.value ? String(currentFolder.value.id) : '';
     const isFromUnobtained = folderId === 'unobtained';
-
-    // 核心判定：是否發生預期外的資料夾分流 (未求得區改為已求得時，改為自動分流不再提示)
     const isActuallyMismatched = folderId !== 'unobtained' && folderId !== '' && formMid !== folderId;
 
     if (isActuallyMismatched && !resolution) {
@@ -1074,13 +1082,6 @@ const saveSingle = async (resolutionOrData = null) => {
         return;
     }
 
-    // 重複名稱驗證：不可重覆
-    const isDuplicate = allRegistries.value.some(r => r.name.trim() === form.value.name.trim() && String(r.id) !== String(form.value.id || ''));
-    if (isDuplicate) {
-        persistentToast.value = { msg: `✖ 儲存失敗：法寶名稱「${form.value.name}」已存在於系統中。`, type: 'error' };
-        return;
-    }
-    
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
         persistentToast.value = { msg: '錯誤：請輸入求得日期', type: 'error' };
         return;
@@ -1103,27 +1104,17 @@ const saveSingle = async (resolutionOrData = null) => {
             persistentToast.value = { msg: '✓ 新增成功', type: 'success' };
         }
         
-        // 智慧導向：不論從哪裡新增，完成後都跳回該筆資料所屬的仙師資料夾
         if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
             if (matchedFolder) {
                 currentCategory.value = 'masters';
                 currentFolder.value = matchedFolder;
-                setTimeout(() => {
-                    focusedId.value = res?.data?.id || form.value.id;
-                    expandedId.value = res?.data?.id || form.value.id;
-                }, 50);
             }
         } else if (!finalMid || String(finalMid) === 'unobtained') {
             currentCategory.value = 'unobtained';
             currentFolder.value = { id: 'unobtained', name: '未求得' };
-            setTimeout(() => {
-                focusedId.value = res?.data?.id || form.value.id;
-                expandedId.value = res?.data?.id || form.value.id;
-            }, 50);
         }
         
-        // 彈出成功訊息
         if (resolution === 'shunt' || isFromUnobtained) {
             persistentToast.value = { 
                 msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
@@ -1133,7 +1124,7 @@ const saveSingle = async (resolutionOrData = null) => {
         }
         
         addMode.value = null;
-        await loadData();
+        await loadData(currentPage.value);
     } catch (e) {
         console.error('儲存失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '資料驗證失敗';
@@ -1146,14 +1137,12 @@ const saveSingle = async (resolutionOrData = null) => {
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    
     const reader = new FileReader();
     reader.onload = (e) => {
         batchInput.value = e.target.result;
         persistentToast.value = { msg: '✓ 檔案內容已載入', type: 'success' };
     };
     reader.readAsText(file);
-    // 重設 input 以便下次選擇同一個檔案也能觸發
     event.target.value = '';
 };
 
@@ -1182,24 +1171,18 @@ const changeStatus = async (reg, nextStatus) => {
             remarks: reg.remarks,
             status: nextStatus 
         };
-        // Auto-fix date if moving to Obtained or Registered (both require obtained_date in backend)
         if (['已求得', '已登記'].includes(nextStatus) && !payload.obtained_date) {
             payload.obtained_date = new Date().toLocaleDateString('sv-SE');
         }
-        const res = await axios.put(`/imperial-graces/registry/${reg.id}`, payload);
-        await loadData();
-
-        // 🌟 分流邏輯：如果在「未求得」專區改為其他狀態，自動跳轉回該仙師位子
+        await axios.put(`/imperial-graces/registry/${reg.id}`, payload);
+        await loadData(currentPage.value);
         if (String(currentFolder.value?.id) === 'unobtained' && nextStatus !== '未求得') {
             const targetMaster = masters.value.find(m => String(m.id) === String(reg.master_id));
             if (targetMaster) {
-                // 優先從資料夾清單中找到完整的 folder 物件以確保導航狀態同步
                 const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
                 if (matchedFolder) {
                     currentCategory.value = 'masters';
                     currentFolder.value = matchedFolder;
-                    focusedId.value = reg.id;
-                    expandedId.value = reg.id;
                     persistentToast.value = { 
                         msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, 
                         type: 'success',
@@ -1216,54 +1199,19 @@ const changeStatus = async (reg, nextStatus) => {
 };
 
 const saveBatch = async (payload = null) => {
-    // Sync data if coming from the component event
     if (payload && typeof payload === 'object') {
         batchInput.value = payload.input || '';
         batchMasterId.value = payload.masterId || null;
     }
-
     if (!batchInput.value || !batchMasterId.value || isSaving.value) return;
-    
-    // 批次新增時的重複名稱驗證：不可重覆
-    if (payload && payload.rows) {
-        const existingNames = new Set(allRegistries.value.map(r => r.name.trim()));
-        const incomingNames = payload.rows.map(r => r.name.trim());
-        
-        // 檢查是否有跟現有資料重覆
-        const duplicateInDb = incomingNames.find(name => existingNames.has(name));
-        if (duplicateInDb) {
-            persistentToast.value = { msg: `✖ 批次新增失敗：名稱「${duplicateInDb}」已存在於系統中。`, type: 'error' };
-            isSaving.value = false;
-            return;
-        }
-
-        // 檢查貼上的內容本身是否有重複名稱
-        const seenNames = new Set();
-        for (const name of incomingNames) {
-            if (seenNames.has(name)) {
-                persistentToast.value = { msg: `✖ 批次內容中包含重複名稱：「${name}」`, type: 'error' };
-                isSaving.value = false;
-                return;
-            }
-            seenNames.add(name);
-        }
-    }
-
     isSaving.value = true;
     try {
         const finalMasterId = batchMasterId.value === 'unobtained' ? null : batchMasterId.value;
-
-        // If payload has pre-processed rows, send them directly as 'items'
-        const dataToSend = {
-            master_id: finalMasterId
-        };
-        
+        const dataToSend = { master_id: finalMasterId };
         if (payload && payload.rows) {
             dataToSend.items = payload.rows;
         } else {
-            const lines = batchInput.value.split('\n')
-                .map(l => l.trim())
-                .filter(l => l && !l.startsWith('【')); 
+            const lines = batchInput.value.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('【')); 
             if (lines.length === 0) {
                 persistentToast.value = { msg: '✖ 內容格式不正確', type: 'error' };
                 isSaving.value = false;
@@ -1271,12 +1219,8 @@ const saveBatch = async (payload = null) => {
             }
             dataToSend.lines = lines;
         }
-
         await axios.post('/imperial-graces/registry/batch', dataToSend);
-        
         persistentToast.value = { msg: '✓ 多筆新增成功', type: 'success' };
-        
-        // 智慧導向：多筆新增完成後，自動跳回該仙師的資料夾
         const targetMaster = masters.value.find(m => String(m.id) === String(finalMasterId));
         if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
@@ -1288,9 +1232,8 @@ const saveBatch = async (payload = null) => {
             currentCategory.value = 'unobtained';
             currentFolder.value = { id: 'unobtained', name: '未求得' };
         }
-        
         addMode.value = null;
-        loadData();
+        loadData(1);
     } catch (e) { 
         console.error('批次失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '格式解析錯誤或伺服器連線失敗';

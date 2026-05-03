@@ -1352,12 +1352,18 @@
                 </div>
 
                 <!-- Main List View -->
-                <div :class="[!addMode ? 'block' : 'hidden md:block']" 
-                     class="pb-32 flex-1 overflow-y-auto bg-white w-full md:max-w-xl md:mx-auto" 
-                     @click="focusedId = null; focusedDate = null; activeDropdownId = null" 
-                     @scroll="handleScroll">
-                    <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
-                    <div v-else class="space-y-0 mt-0 min-h-full">
+                 <div :class="[!addMode ? 'block' : 'hidden md:block']" 
+                      class="pb-32 flex-1 overflow-y-auto bg-white w-full md:max-w-xl md:mx-auto" 
+                      @click="focusedId = null; focusedDate = null; activeDropdownId = null">
+                     <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
+                     <div v-else class="space-y-0 mt-0 min-h-full">
+                         <!-- Search Component -->
+                         <search-component 
+                             v-model="searchQuery" 
+                             :show="showSearch" 
+                             placeholder="搜尋內容、法號或法寶..."
+                             @close="showSearch = false"
+                         />
                         <!-- Date-Based Accordion: Grouping by Daily sessions -->
                         <template v-for="dateGroup in recordsByDate" :key="dateGroup.date">
                             <!-- Date Header: Collapsed by Default -->
@@ -1529,10 +1535,16 @@
                                     <!-- Read-Only View: Actions are tucked in the top right menu -->
                                 </div>
                             </div>
-                                </template>
-                            </div>
-                        </template>
-                    </div>
+                                 </template>
+                             </div>
+                         </template>
+                         
+                         <!-- Pagination -->
+                         <pagination-buttons 
+                             :meta="itemPagination" 
+                             @page-change="fetchItems"
+                         />
+                     </div>
                 </div>
 
 
@@ -1736,6 +1748,7 @@ import SearchComponent from './SearchComponent.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
+import PaginationButtons from './PaginationButtons.vue';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -2136,17 +2149,9 @@ const togglePreviewRecipients = (idx) => {
 
 const toggleSort = () => { sortDesc.value = !sortDesc.value; };
 const groupedRecords = computed(() => {
-    const search = (searchQuery.value || '').toLowerCase().trim();
     let list = visibleItems.value;
-    if (search) {
-        list = list.filter(i => {
-            const m = (i.master?.name || i.master_name || '').toLowerCase();
-            const c = (i.content || '').toLowerCase();
-            const r = getRecipientName(i).toLowerCase();
-            const tr = (i.items || []).some(t => (t.treasure_name || '').toLowerCase().includes(search));
-            return m.includes(search) || c.includes(search) || r.includes(search) || tr;
-        });
-    }
+    // Server-side filtering is now used, so we don't need client-side filter here.
+    // However, we keep the sorting logic.
     
     // Sort first
     list.sort((a, b) => {
@@ -3221,14 +3226,16 @@ const fetchItems = async (page = 1) => {
     try {
         const params = { 
             master_id: currentFolder.value?.id, 
-            page: page 
+            page: page,
+            search: searchQuery.value
         };
         const isDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         if (isDaily) {
             params.is_daily = 1;
-            params.per_page = 100;
+            params.per_page = 20;
+        } else {
+            params.per_page = 20;
         }
-        // In Master folders, we don't pass is_daily so it fetches all records for that master
 
         const res = await axios.get('/teachings', { params });
         const parseItem = (i) => ({
@@ -3237,27 +3244,27 @@ const fetchItems = async (page = 1) => {
             dharma_name_ids: typeof i.dharma_name_ids === 'string' ? JSON.parse(i.dharma_name_ids) : (i.dharma_name_ids || [])
         });
 
-        if (page === 1) { 
-            visibleItems.value = (res.data.data || res.data).map(parseItem);
-        }
-        else {
-            const existing = new Set(visibleItems.value.map(i => i.id));
-            (res.data.data || res.data).forEach(i => { 
-                if (!existing.has(i.id)) visibleItems.value.push(parseItem(i)); 
-            });
-        }
-        itemPagination.value = { current_page: res.data.current_page, last_page: res.data.last_page };
+        visibleItems.value = (res.data.data || res.data).map(parseItem);
+        itemPagination.value = { 
+            current_page: res.data.current_page || 1, 
+            last_page: res.data.last_page || 1,
+            total: res.data.total || visibleItems.value.length
+        };
+        
+        // Scroll to top when page changes
+        const container = document.querySelector('.overflow-y-auto.flex-1');
+        if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+
     } catch (e) { console.error(e); } finally { loading.value = false; }
 };
 
-const handleScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-    if (scrollTop + clientHeight >= scrollHeight - 100) {
-        if (!loading.value && itemPagination.value.current_page < itemPagination.value.last_page) {
-            fetchItems(itemPagination.value.current_page + 1);
-        }
+watch(searchQuery, () => {
+    if (currentFolder.value || currentCategory.value) {
+        fetchItems(1);
     }
-};
+});
+
+
 
 const syncRecords = async () => {
     try {

@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class TeachingService
 {
-    public function getAll($masterId = null, $perPage = 15)
+    public function getAll($masterId = null, $perPage = 15, $search = null)
     {
         $user = auth()->user();
         $query = Teaching::with(['master', 'dharmaNames', 'user']);
@@ -18,9 +18,19 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
 
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('remarks', 'like', "%{$search}%")
+                  ->orWhere('target_remarks', 'like', "%{$search}%")
+                  ->orWhereHas('dharmaNames', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         $this->applyVisibilityFilter($query, $user);
 
-        
         return $query->latest('date')->orderBy('sort_order', 'desc')->latest('id')->paginate($perPage);
     }
 

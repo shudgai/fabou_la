@@ -228,8 +228,8 @@
                                         </div>
 
                                         <!-- Menu Trigger (Right side of Row 2) -->
-                                        <div class="absolute right-[-32px] top-0">
-                                            <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
+                                        <div class="absolute right-[-4px] top-0">
+                                            <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
                                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
                                             <!-- Dropdown Menu -->

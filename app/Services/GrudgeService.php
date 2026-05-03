@@ -7,15 +7,24 @@ use Illuminate\Support\Collection;
 
 class GrudgeService
 {
-    public function getAll(): Collection
+    public function getAll(array $filters = [])
     {
         $user = auth()->user();
-        $displayName = $user->displayName;
         $query = Grudge::with(['user'])
-            ->where('user_id', $user->id)
-            ->latest();
+            ->where('user_id', $user->id);
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('user_name', 'like', "%{$search}%")
+                  ->orWhere('user_remarks', 'like', "%{$search}%")
+                  ->orWhere('remarks_text', 'like', "%{$search}%");
+            });
+        }
+
+        $query->latest();
  
-        return $query->get();
+        return $query->paginate(20);
     }
 
     public function create(array $data): Grudge

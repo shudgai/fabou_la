@@ -7,14 +7,27 @@ use Illuminate\Http\Request;
 
 class MilitaryRecordController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $displayName = $user->displayName;
+        $query = MilitaryRecord::where('user_id', $user->id);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('user_name', 'like', "%{$search}%")
+                  ->orWhere('user_remarks', 'like', "%{$search}%")
+                  ->orWhere('remarks_text', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('army_type')) {
+            $query->where('army_type', $request->army_type);
+        }
+
+        $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
-        $query = MilitaryRecord::where('user_id', $user->id)->orderBy('know_date', 'desc');
-        
-        return $query->get();
+        return $query->paginate(20);
     }
 
     public function store(Request $request)

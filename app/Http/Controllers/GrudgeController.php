@@ -15,9 +15,9 @@ class GrudgeController extends Controller
         $this->grudgeService = $grudgeService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $grudges = $this->grudgeService->getAll();
+        $grudges = $this->grudgeService->getAll($request->all());
         return response()->json($grudges);
     }
 
