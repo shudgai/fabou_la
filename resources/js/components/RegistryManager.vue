@@ -81,13 +81,15 @@
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full max-w-lg mx-auto">
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[32px] border-2 border-yellow-400 p-3 w-[320px] h-[320px] relative transition-all shadow-sm">
-                        <div class="mb-2">
-                            <svg class="w-[240px] h-[240px]" viewBox="0 0 64 64" fill="none">
+                        <div class="relative w-full h-full">
+                            <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none pt-4">
+                                <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 36px !important;">重大皇恩<br>登記簿</div>
+                            </div>
                         </div>
-                        <div class="text-[32px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 32px !important;">重大皇恩<br>登記簿</div>
                     </button>
 
 
@@ -247,7 +249,7 @@
                             <div :class="[!expandedIds.has(item.id) ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
                                 <!-- Row 1: Date -->
                                 <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="app-title font-bold mb-0.5">
-                                    登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
+                                    日期：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
                                 </div>
 
                                 <!-- Row 2: Name + (Expansion Indicator) -->

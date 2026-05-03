@@ -111,11 +111,14 @@ const counts = ref({});
 
 const loadStats = async () => {
     try {
-        const [gre, tre, teach, grud] = await Promise.allSettled([
+        const [gre, tre, teach, grud, mil, kai, othTeach] = await Promise.allSettled([
             axios.get('/imperial-graces'),
             axios.get('/registries'),
             axios.get('/teachings'),
-            axios.get('/grudges')
+            axios.get('/grudges'),
+            axios.get('/military-records'),
+            axios.get('/kaiwen'),
+            axios.get('/other-teachings')
         ]);
         
         if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.length || 0;
@@ -125,6 +128,12 @@ const loadStats = async () => {
             counts.value['teaching'] = res.data ? (res.total || res.data.length || 0) : (res.length || 0);
         }
         if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.length || 0;
+        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.length || 0;
+        if (kai.status === 'fulfilled') {
+            const kData = kai.value.data || {};
+            counts.value['kaiwen'] = (kData.weeklyPosts?.length || 0) + (kData.selfPosts?.length || 0);
+        }
+        if (othTeach.status === 'fulfilled') counts.value['other_teaching'] = othTeach.value.data?.length || 0;
         
         stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
         if (grud.status === 'fulfilled') stats.value.todoGrudges = grud.value.data?.filter(i => i.status === '待處理').length || 0;
