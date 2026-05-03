@@ -51,7 +51,7 @@ class ForgotPasswordController extends Controller
         $user = User::where('email', $request->email)->first();
 
         // 驗證法號是否匹配
-        if (!$user->dharmaName || $user->dharmaName->name !== trim($request->dharma_name)) {
+        if ($user->display_name !== trim($request->dharma_name)) {
             throw ValidationException::withMessages([
                 'dharma_name' => ['法號與此電子郵件不匹配，無法重設。'],
             ]);
