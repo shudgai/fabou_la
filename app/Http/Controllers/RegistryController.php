@@ -38,7 +38,16 @@ class RegistryController extends Controller
 
         $query->orderBy('sort_order', 'asc');
         
-        return $query->paginate(20);
+        $categoryCounts = Registry::select('category', DB::raw('count(*) as total'))
+            ->where('user_id', $user->id)
+            ->groupBy('category')
+            ->get()
+            ->pluck('total', 'category');
+
+        return response()->json([
+            'registries' => $query->paginate($request->input('per_page', 20)),
+            'categoryCounts' => $categoryCounts
+        ]);
     }
 
     /**

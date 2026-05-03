@@ -497,6 +497,8 @@
                         </div>
                     </div>
                 </div>
+                <!-- Pagination Buttons -->
+                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
             </div>
         </div>
     </div> <!-- End Scrollable Area -->
@@ -560,6 +562,7 @@ import SearchComponent from './SearchComponent.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import ImperialGraceAddForm from './ImperialGraceAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
+import PaginationButtons from './PaginationButtons.vue';
 
 const resetToRoot = () => {
     currentCategory.value = null;
@@ -615,6 +618,8 @@ const addMode = ref(null);
 const allRegistries = ref([]);
 const userGraces = ref([]);
 const dharmaNames = ref([]);
+const folderCounts = ref({});
+const unobtainedTotal = ref(0);
 const masters = ref([]);
 const activeRelDropdownIdx = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
@@ -736,6 +741,8 @@ const loadData = async (page = 1) => {
             total: res.data.registries.total
         };
         userGraces.value = res.data.userGraces;
+        folderCounts.value = res.data.folderCounts || {};
+        unobtainedTotal.value = res.data.unobtainedCount || 0;
         masters.value = mres.data;
         dharmaNames.value = dres.data;
     } catch (e) {
@@ -1263,7 +1270,7 @@ const filteredRegistries = computed(() => {
     if (currentFolder.value.id === 'unobtained') {
         filtered = allRegistries.value.filter(r => !r.master_id || r.status === '未求得');
     } else {
-        filtered = allRegistries.value.filter(r => r.master_id === currentFolder.value.id);
+        filtered = allRegistries.value.filter(r => String(r.master_id) === String(currentFolder.value.id));
     }
 
 
@@ -1331,13 +1338,8 @@ const globalTotalCount = computed(() => {
 });
 
 const getFolderSum = (id) => {
-    let filtered = [];
-    if (id === 'unobtained') {
-        filtered = allRegistries.value.filter(r => !r.master_id || r.status === '未求得');
-    } else {
-        filtered = allRegistries.value.filter(r => String(r.master_id) === String(id));
-    }
-    return filtered.reduce((sum, r) => sum + (Number(r.count) || 1), 0);
+    if (id === 'unobtained') return unobtainedTotal.value;
+    return folderCounts.value[id] || 0;
 };
 </script>
 

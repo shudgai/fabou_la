@@ -15,32 +15,53 @@ class ImperialGraceController extends Controller
     {
         $user = auth()->user();
         $query = ImperialGrace::with('dharmaNameRegistries.dharmaName');
- 
+
         $query->where('user_id', $user->id);
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('purpose', 'like', "%{$search}%")
-                  ->orWhereHas('dharmaNameRegistries', function($sq) use ($search) {
-                      $sq->where('custom_name', 'like', "%{$search}%")
-                        ->orWhereHas('dharmaName', function($ssq) use ($search) {
-                            $ssq->where('name', 'like', "%{$search}%");
-                        });
-                  });
+                    ->orWhere('purpose', 'like', "%{$search}%")
+                    ->orWhereHas('dharmaNameRegistries', function ($sq) use ($search) {
+                        $sq->where('custom_name', 'like', "%{$search}%")
+                            ->orWhereHas('dharmaName', function ($ssq) use ($search) {
+                                $ssq->where('name', 'like', "%{$search}%");
+                            });
+                    });
             });
         }
 
         if ($request->has('master_id')) {
-            $query->where('master_id', $request->master_id);
+            if ($request->master_id === 'unobtained') {
+                $query->where(function ($q) {
+                    $q->whereNull('master_id')
+                        ->orWhere('status', '未求得');
+                });
+            } else {
+                $query->where('master_id', $request->master_id);
+            }
         }
 
         $query->orderBy('sort_order', 'asc');
- 
+
+        $folderCounts = ImperialGrace::select('master_id', DB::raw('count(*) as total'))
+            ->where('user_id', $user->id)
+            ->groupBy('master_id')
+            ->get()
+            ->pluck('total', 'master_id');
+
+        $unobtainedCount = ImperialGrace::where('user_id', $user->id)
+            ->where(function ($q) {
+                $q->whereNull('master_id')
+                    ->orWhere('status', '未求得');
+            })->count();
+
         return response()->json([
-            'registries' => $query->paginate(20),
-            'userGraces' => UserImperialGrace::where('user_id', $user->id)->get()
+            'registries' => $query->paginate($request->input('per_page', 10)),
+            'userGraces' => UserImperialGrace::where('user_id', $user->id)->get(),
+            'folderCounts' => $folderCounts,
+            'unobtainedCount' => $unobtainedCount
         ]);
     }
 
@@ -62,24 +83,24 @@ class ImperialGraceController extends Controller
             return response()->json(['error' => 'duplicate', 'message' => '此法寶名稱「' . $request->name . '」已存在於系統中。'], 422);
         }
 
-        return DB::transaction(function() use ($request, $user) {
+        return DB::transaction(function () use ($request, $user) {
             $grace = ImperialGrace::create([
-                'user_id'       => $user->id,
-                'name'          => $request->name,
-                'master_id'     => $request->master_id,
-                'purpose'       => $request->purpose,
-                'record_date'   => $request->record_date,
+                'user_id' => $user->id,
+                'name' => $request->name,
+                'master_id' => $request->master_id,
+                'purpose' => $request->purpose,
+                'record_date' => $request->record_date,
                 'obtained_date' => $request->obtained_date,
-                'status'        => $request->status ?? '未求得',
-                'is_multi'      => $request->is_multi ?? false,
-                'remarks'       => $request->remarks,
+                'status' => $request->status ?? '未求得',
+                'is_multi' => $request->is_multi ?? false,
+                'remarks' => $request->remarks,
             ]);
 
             if ($request->has('dharma_name_registries')) {
                 foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     $custom_name = $dn['custom_name'] ?? null;
-                    
+
                     if (empty($dharma_name_id) && !empty($custom_name)) {
                         // Split name and relative if needed (e.g. "元續之母")
                         if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
@@ -97,11 +118,11 @@ class ImperialGraceController extends Controller
 
                     DharmaNameRegistry::create([
                         'imperial_grace_id' => $grace->id,
-                        'dharma_name_id'    => $dharma_name_id,
-                        'custom_name'       => $custom_name,
-                        'obtained_date'     => $dn['obtained_date'] ?? null,
-                        'status'            => $dn['status'] ?? '已求得',
-                        'remarks'           => $this->normalizeRemarks($dn['remarks'] ?? null),
+                        'dharma_name_id' => $dharma_name_id,
+                        'custom_name' => $custom_name,
+                        'obtained_date' => $dn['obtained_date'] ?? null,
+                        'status' => $dn['status'] ?? '已求得',
+                        'remarks' => $this->normalizeRemarks($dn['remarks'] ?? null),
                         'related_personnel' => $dn['related_personnel'] ?? [],
                     ]);
                 }
@@ -118,14 +139,14 @@ class ImperialGraceController extends Controller
         if ($grace->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        
+
         if ($request->has('name') && $request->name !== $grace->name) {
             if (ImperialGrace::where('user_id', $user->id)->where('name', $request->name)->where('id', '!=', $id)->exists()) {
                 return response()->json(['error' => 'duplicate', 'message' => '名稱已存在'], 422);
             }
         }
 
-        return DB::transaction(function() use ($request, $grace) {
+        return DB::transaction(function () use ($request, $grace) {
             $grace->update($request->all());
 
             if ($request->has('dharma_name_registries')) {
@@ -133,7 +154,7 @@ class ImperialGraceController extends Controller
                 foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     $custom_name = $dn['custom_name'] ?? null;
-                    
+
                     if (empty($dharma_name_id) && !empty($custom_name)) {
                         $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
                         if ($matched) {
@@ -144,11 +165,11 @@ class ImperialGraceController extends Controller
 
                     DharmaNameRegistry::create([
                         'imperial_grace_id' => $grace->id,
-                        'dharma_name_id'    => $dharma_name_id,
-                        'custom_name'       => $custom_name,
-                        'obtained_date'     => $dn['obtained_date'] ?? null,
-                        'status'            => $dn['status'] ?? '已求得',
-                        'remarks'           => $this->normalizeRemarks($dn['remarks'] ?? null),
+                        'dharma_name_id' => $dharma_name_id,
+                        'custom_name' => $custom_name,
+                        'obtained_date' => $dn['obtained_date'] ?? null,
+                        'status' => $dn['status'] ?? '已求得',
+                        'remarks' => $this->normalizeRemarks($dn['remarks'] ?? null),
                         'related_personnel' => $dn['related_personnel'] ?? [],
                     ]);
                 }
@@ -165,28 +186,29 @@ class ImperialGraceController extends Controller
         $userId = auth()->id();
         $results = [];
 
-        return DB::transaction(function() use ($items, $masterId, $userId) {
+        return DB::transaction(function () use ($items, $masterId, $userId) {
             foreach ($items as $item) {
                 $name = $item['name'] ?? '';
-                if (!$name || ImperialGrace::where('user_id', $userId)->where('name', $name)->exists()) continue;
-                
+                if (!$name || ImperialGrace::where('user_id', $userId)->where('name', $name)->exists())
+                    continue;
+
                 $grace = ImperialGrace::create([
-                    'user_id'       => $userId,
-                    'master_id'     => $item['master_id'] ?? $masterId,
-                    'name'          => $name,
-                    'purpose'       => $item['purpose'] ?? null,
-                    'record_date'   => $item['record_date'] ?? null,
+                    'user_id' => $userId,
+                    'master_id' => $item['master_id'] ?? $masterId,
+                    'name' => $name,
+                    'purpose' => $item['purpose'] ?? null,
+                    'record_date' => $item['record_date'] ?? null,
                     'obtained_date' => $item['obtained_date'] ?? null,
-                    'status'        => $item['status'] ?? '已登記',
-                    'is_multi'      => $item['is_multi'] ?? false,
-                    'remarks'       => $item['remarks'] ?? null,
+                    'status' => $item['status'] ?? '已登記',
+                    'is_multi' => $item['is_multi'] ?? false,
+                    'remarks' => $item['remarks'] ?? null,
                 ]);
 
                 if (!empty($item['dharma_name_registries'])) {
                     foreach ($item['dharma_name_registries'] as $dn) {
                         $dharma_name_id = $dn['dharma_name_id'] ?? null;
                         $custom_name = $dn['custom_name'] ?? null;
-                        
+
                         if (empty($dharma_name_id) && !empty($custom_name)) {
                             // Split name and relative if needed (e.g. "元續之母")
                             if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
@@ -204,11 +226,11 @@ class ImperialGraceController extends Controller
 
                         DharmaNameRegistry::create([
                             'imperial_grace_id' => $grace->id,
-                            'dharma_name_id'    => $dharma_name_id,
-                            'custom_name'       => $custom_name,
-                            'obtained_date'     => $dn['obtained_date'] ?? null,
-                            'status'            => $dn['status'] ?? '已登記',
-                            'remarks'           => $this->normalizeRemarks($dn['remarks'] ?? null),
+                            'dharma_name_id' => $dharma_name_id,
+                            'custom_name' => $custom_name,
+                            'obtained_date' => $dn['obtained_date'] ?? null,
+                            'status' => $dn['status'] ?? '已登記',
+                            'remarks' => $this->normalizeRemarks($dn['remarks'] ?? null),
                             'related_personnel' => $dn['related_personnel'] ?? [],
                         ]);
                     }
