@@ -97,9 +97,12 @@
                                 <path class="hidden md:block" d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center px-6">
+                            <div class="flex flex-col items-center">
                                 <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
+                                </span>
+                                <span class="text-[14px] font-bold text-black mt-1">
+                                    共 {{ getFolderSum(folder.name) }} 筆
                                 </span>
                             </div>
                         </div>
@@ -191,7 +194,7 @@
                                     <svg :class="{'rotate-[-90deg]': expandedDate !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
                                 </div>
-                                <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
+                                <span class="text-[12px] font-bold text-black">共 {{ group.items.length }} 筆</span>
                             </div>
 
                         <div v-if="expandedDate === group.date" class="bg-white">
@@ -853,6 +856,10 @@ watch(currentFolder, (newVal) => {
         expandedDate.value = null;
     }
 });
+
+const getFolderSum = (armyName) => {
+    return items.value.filter(r => r.army_type === armyName).length;
+};
 
 onMounted(loadData);
 </script>

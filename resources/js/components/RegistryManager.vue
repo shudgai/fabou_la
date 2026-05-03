@@ -71,7 +71,7 @@
                 <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1 cursor-pointer" @click="resetToRoot">
                         <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 28px !important;">
-                            {{ currentCategory ? (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') : '法寶登記專區' }}
+                            {{ currentCategory ? (currentCategory === 'major' ? '法寶登記專區' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[24px] text-slate-400 font-black">- {{ currentFolder.name }} -</span>
                         </h1>
@@ -102,8 +102,8 @@
                             currentCategory === 'major' ? 'border-yellow-400' : 'border-red-600'
                         ]">
                         
-                        <div class="relative mb-1">
-                             <svg class="w-[130px] h-[130px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
+                        <div class="relative mb-0.5">
+                             <svg class="w-[104px] h-[104px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
                                     :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" />
@@ -112,12 +112,18 @@
                                     :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" 
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
+                            <div v-if="currentCategory === 'major'" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="text-red-600 font-black text-[15px] drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)] mt-3">重大皇恩</div>
+                            </div>
                         </div>
                         <div class="text-center px-1">
                             <div :class="[
                                 'font-black tracking-tight leading-tight text-center transition-all whitespace-nowrap',
                                 folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
                             ]" style="font-weight: 900 !important; font-size: 20px !important;">{{ folder.name }}</div>
+                            <div class="text-[12px] font-bold mt-0.5 text-black">
+                                共 {{ getFolderSum(folder.id) }} 筆
+                            </div>
                         </div>
                     </button>
 
@@ -145,7 +151,7 @@
                         </button>
                         <div class="flex-1 text-center pr-12">
                             <h1 class="text-[24px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
-                            <div class="text-[20px] text-red-600 font-black tracking-widest mt-1">
+                            <div class="text-[20px] font-black tracking-widest mt-1" :class="currentFolder.name === '閻王仙師' ? 'text-black' : 'text-red-600'">
                                 {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}
                             </div>
                         </div>
@@ -1973,6 +1979,10 @@ const saveRemarksInline = async () => {
     } finally {
         isSaving.value = false;
     }
+};
+
+const getFolderSum = (id) => {
+    return allTreasures.value.filter(r => String(r.master_id) === String(id)).length;
 };
 </script>
 

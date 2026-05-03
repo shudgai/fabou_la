@@ -92,9 +92,12 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-mastersGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <!-- Label Inside -->
-                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-4">
                             <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 重大皇恩<br>專區
+                            </span>
+                            <span class="text-[16px] font-bold text-black mt-1">
+                                共 {{ globalTotalCount }} 筆
                             </span>
                         </div>
                     </div>
@@ -109,9 +112,12 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-unobtainedGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <!-- Label Inside -->
-                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-4">
                             <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                 未求得<br>重大皇恩
+                            </span>
+                            <span class="text-[16px] font-bold text-black mt-1">
+                                共 {{ getFolderSum('unobtained') }} 筆
                             </span>
                         </div>
                     </div>
@@ -151,7 +157,12 @@
                                     未求得<br>重大皇恩
                                 </template>
                                 <template v-else>
-                                    {{ folder.name }}
+                                    <div class="text-[22px] font-black leading-tight text-center transition-all whitespace-nowrap">
+                                        {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
+                                    </div>
+                                    <div class="text-[14px] font-bold text-black mt-0.5">
+                                        共 {{ getFolderSum(folder.id) }} 筆
+                                    </div>
                                 </template>
                             </span>
                         </div>

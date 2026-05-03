@@ -217,13 +217,31 @@
                                     <tr class="text-[12px] text-slate-500 uppercase">
                                         <th class="px-4 py-2 border-b font-black w-32">法寶名稱 / 用意</th>
                                         <th class="px-4 py-2 border-b font-black">承接人員詳情</th>
+                                        <th class="px-4 py-2 border-b font-black w-24 text-center">日期</th>
                                         <th class="px-4 py-2 border-b font-black w-24 text-center">狀態</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50">
-                                        <td class="p-2 text-indigo-500 font-black">{{ getMasterName(row._master_id) }}</td>
-                                        <td v-for="col in excelCols" :key="col.key" class="p-2 text-slate-600">{{ row[col.key] }}</td>
+                                        <td class="p-2 text-indigo-500 font-black">
+                                            <div class="text-[14px]">{{ row.c0 }}</div>
+                                            <div class="text-[11px] text-slate-400 font-normal">{{ row.c1 }}</div>
+                                        </td>
+                                        <td class="p-2">
+                                            <div v-for="(p, pIdx) in row._dharma_name_registries" :key="pIdx" class="text-[12px] text-slate-600">
+                                                {{ p.custom_name }} ({{ p.status }})
+                                            </div>
+                                            <div v-if="row._manualRemarks" class="text-[11px] text-amber-600 italic">
+                                                {{ row._manualRemarks }}
+                                            </div>
+                                        </td>
+                                        <td class="p-2 text-center text-[12px] text-slate-400">{{ row._record_date || '-' }}</td>
+                                        <td class="p-2 text-center">
+                                            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+                                                :class="row._status === '未求得' ? 'bg-red-50 text-red-500' : (row._status === '已求得' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500')">
+                                                {{ row._status }}
+                                            </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -315,6 +333,7 @@ const excelRows = computed(() => {
     const records = [];
     let currentRec = null;
     let currentMasterId = form.value.master_id;
+    let currentDateInText = null;
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -331,7 +350,7 @@ const excelRows = computed(() => {
         }
 
         const isStatus = line.match(/(已登記|已求得|未求得)/);
-        const isDate = line.match(/\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}/);
+        const isDate = line.match(/\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/) || line.match(/\b\d{1,2}[\/\-]\d{1,2}\b/);
         const isPurpose = line.includes('用意') || line.includes('用法') || line.includes('用途');
         const looksLikeName = !line.includes('：') && !line.includes(':') && !isStatus && !isDate && !isPurpose;
 
@@ -343,7 +362,7 @@ const excelRows = computed(() => {
             }
 
             if (!currentRec) {
-                currentRec = { name: line, purpose: '-', personnel: [], remarks: [], status: '未求得', master_id: currentMasterId, date: '' };
+                currentRec = { name: line, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
             } else {
                 // If it's a multi-person block, names after the first one are personnel
                 // BUT only if the record already has some structure (purpose or status)
@@ -369,8 +388,12 @@ const excelRows = computed(() => {
                     currentRec.status = statusStr;
                     if (isDate) currentRec.date = isDate[0];
                 }
+            } else if (line.includes('未求得')) {
+                currentRec.status = '未求得';
+                if (!line.includes('以上沒有資料')) currentRec.remarks.push(line);
             } else if (isDate) {
                 currentRec.date = isDate[0];
+                currentDateInText = isDate[0];
             } else if (!line.includes('以上沒有資料')) {
                 currentRec.remarks.push(line);
             }
@@ -516,11 +539,16 @@ const handleSubmit = () => {
                 master_id: row._master_id || form.value.master_id,
                 record_date: row._record_date || '', 
                 obtained_date: row._record_date || '',
-                status: row._status || '未求得', 
+                status: row._status || '已登記', 
                 count: 1, 
                 remarks: row._manualRemarks || '',
                 is_multi: row._is_multi || false,
-                dharma_name_registries: row._dharma_name_registries || []
+                dharma_name_registries: (row._dharma_name_registries || []).map(p => ({
+                    ...p,
+                    obtained_date: (p.status === '已登記' || p.status === '已求得') && !p.obtained_date 
+                        ? (row._record_date || new Date().toLocaleDateString('sv-SE')) 
+                        : p.obtained_date
+                }))
             }))
         });
     }

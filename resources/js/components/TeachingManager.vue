@@ -178,12 +178,10 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                                <span :class="[
-                                    'font-black tracking-tight leading-tight text-center transition-all text-[22px] whitespace-nowrap',
-                                    folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                                ]" style="font-weight: 900 !important;">
-                                    {{ folder.name }}
-                                </span>
+                                <div class="flex flex-col items-center">
+                                    <div class="text-[22px] font-black leading-tight" :class="folder.name === '閻王仙師' ? 'text-black' : 'text-white'">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
+                                    <div class="text-[13px] font-bold mt-0.5 text-black">共 {{ getFolderSum(folder.id) }} 筆</div>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -208,7 +206,7 @@
                         </div>
                         <div class="space-y-4 pb-32 flex-1 p-4 md:overflow-y-auto custom-scrollbar">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
-                                    <div class="space-y-0.5">
+                                    <div v-if="activeEntryTab === 'single'" class="space-y-0.5">
                                         <label class="app-title ml-1 opacity-0">日期</label>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
@@ -3263,16 +3261,21 @@ const handleScroll = (e) => {
 
 const syncRecords = async () => {
     try {
-        const [dnRes, groupRes, masterRes, treasureRes] = await Promise.allSettled([
+        const [dnRes, groupRes, masterRes, treasureRes, teachRes] = await Promise.allSettled([
             axios.get('/api/dharma-names-list'), 
             axios.get('/api/groups-list'),
             axios.get('/api/masters-list'), 
-            axios.get('/api/treasures-list', { params: { type: ['teaching', 'content'] } })
+            axios.get('/api/treasures-list', { params: { type: ['teaching', 'content'] } }),
+            axios.get('/teachings', { params: { per_page: 2000 } })
         ]);
         if (dnRes.status === 'fulfilled') dharmaNames.value = dnRes.value.data;
         if (groupRes.status === 'fulfilled') groups.value = groupRes.value.data || [];
         if (masterRes.status === 'fulfilled') masters.value = masterRes.value.data || [];
         if (treasureRes.status === 'fulfilled') treasures.value = (treasureRes.value.data || []).filter(t => t.name !== '清煞法寶');
+        if (teachRes.status === 'fulfilled') {
+            const data = teachRes.value.data;
+            teachings.value = Array.isArray(data) ? data : (data.data || []);
+        }
     } catch (e) { console.error(e); }
 };
 
@@ -4489,23 +4492,31 @@ const performActualSave = async () => {
         } else {
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
+                const newRecord = {
+                    ...res.data,
+                    items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
+                    dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
+                };
+                // Optimistic UI: Add to top of list immediately
+                visibleItems.value.unshift(newRecord);
                 focusedId.value = res.data.id;
+                focusedDate.value = res.data.date;
+                
                 // Ensure the newly added item is scrolled into view
-                setTimeout(() => {
+                nextTick(() => {
                     const element = document.getElementById(`teaching-row-${res.data.id}`);
                     if (element) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-                }, 600);
+                });
             }
         }
         
         saveConfirmModal.value.show = false;
         addMode.value = false;
         
-        // Stay in current folder so user can see the newly saved record
+        // Refresh in background to ensure total consistency (sorting, etc)
         fetchItems(1);
-        alert('儲存成功');
     } catch (e) {
         console.error(e);
         alert('儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'));
@@ -4653,8 +4664,13 @@ const executeDistributionSave = async (mode) => {
             
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
+                const newRecord = {
+                    ...res.data,
+                    items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
+                    dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
+                };
                 // Optimistic UI: Add to the beginning of the list to ensure visibility
-                visibleItems.value.unshift(res.data);
+                visibleItems.value.unshift(newRecord);
                 if (!focusedId.value) {
                     focusedId.value = res.data.id;
                     focusedDate.value = res.data.date;
@@ -4663,12 +4679,12 @@ const executeDistributionSave = async (mode) => {
         }
         
         if (focusedId.value) {
-            setTimeout(() => {
+            nextTick(() => {
                 const element = document.getElementById(`teaching-row-${focusedId.value}`);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-            }, 600);
+            });
         }
         
         distributionModal.value.show = false;
@@ -4678,7 +4694,6 @@ const executeDistributionSave = async (mode) => {
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         batchImportContent.value = '';
         fetchItems(1);
-        alert('錄入成功');
     } catch (e) {
         addMode.value = false; // Also close form on error
         alert('存檔過程中發生錯誤');
@@ -4820,6 +4835,13 @@ watch(currentFolder, (val) => {
         syncRecords(); 
     } 
 });
+
+const getFolderSum = (id) => {
+    if (id === 0 || id === '0') {
+        return teachings.value.filter(t => t.is_daily).length;
+    }
+    return teachings.value.filter(t => t.master_id === id).length;
+};
 
 onMounted(syncRecords);
 </script>

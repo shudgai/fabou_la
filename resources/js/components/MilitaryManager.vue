@@ -188,7 +188,7 @@
                                     <svg :class="{'rotate-[-90deg]': expandedDate !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
                                 </div>
-                                <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
+                                <span class="text-[12px] font-bold text-black">共 {{ group.items.length }} 筆</span>
                             </div>
 
                         <div v-if="expandedDate === group.date" class="bg-white">

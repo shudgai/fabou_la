@@ -134,7 +134,7 @@ const getTodayStr = () => {
     
     return `${year}-${month}-${day}`;
 };
-const batchDate = ref(getTodayStr());
+const batchDate = ref(null);
 
 const triggerFileUpload = () => {
     const input = document.createElement('input');
@@ -177,7 +177,7 @@ const handleBatchSave = async () => {
     const translate = (n) => nameMap[n] || n;
 
     const results = [];
-    let currentDate = batchDate.value;
+    let currentDateFromText = null;
 
     const parseDateText = (str) => {
         if (!str) return null;
@@ -199,7 +199,7 @@ const handleBatchSave = async () => {
         // 1. Detect Standalone Date Header (Check this BEFORE any cleaning)
         const dateHeader = parseDateText(normLine);
         if (dateHeader && normLine.length < 20) {
-            currentDate = dateHeader;
+            currentDateFromText = dateHeader;
             return;
         }
 
@@ -290,11 +290,13 @@ const handleBatchSave = async () => {
             finalRemarksText = resultsPart.replace(/^\d+\s*位/, '').replace(/^[（\(]|[）\)]$/g, '').trim();
         }
 
+        const finalDate = currentDateFromText || batchDate.value;
+
         results.push({
             user_name: finalName,
             user_remarks: uRemarks,
-            know_date: currentDate,
-            process_date: isProcessed ? currentDate : null,
+            know_date: finalDate,
+            process_date: isProcessed ? finalDate : null,
             destination: dest,
             quantity: qty,
             remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },

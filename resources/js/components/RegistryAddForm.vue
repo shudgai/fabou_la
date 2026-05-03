@@ -22,7 +22,7 @@
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
                 <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'single' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">文字/EXCEL 記載</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">多筆載錄</button>
             </div>
 
             <!-- Scrollable Content -->
@@ -305,31 +305,7 @@
                         </div>
                     </div>
 
-                    <!-- Rules Reference Section -->
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100/50 space-y-3 mt-4">
-                        <h4 class="text-[12px] font-bold text-indigo-600 uppercase tracking-widest flex items-center">
-                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            行政規則說明
-                        </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-[14px]">
-                            <div class="flex items-start text-slate-600">
-                                <span class="text-indigo-400 font-bold mr-2">1.</span>
-                                <span><strong>法號/群組翻譯：</strong>金開頭自動換為靈/龍/元字輩。</span>
-                            </div>
-                            <div class="flex items-start text-slate-600">
-                                <span class="text-indigo-400 font-bold mr-2">2.</span>
-                                <span><strong>關係識別：</strong>「元續之母」自動拆解為元續+備註。</span>
-                            </div>
-                            <div class="flex items-start text-slate-600">
-                                <span class="text-indigo-400 font-bold mr-2">3.</span>
-                                <span><strong>日期與求寶：</strong>支援獨立年份、短日期與「求寶：」識別。</span>
-                            </div>
-                            <div class="flex items-start text-slate-600">
-                                <span class="text-indigo-400 font-bold mr-2">4.</span>
-                                <span><strong>跨日合併：</strong>同紀錄自動合併人員，不重複建立。</span>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <!-- Dharma Names & Palaces Auto-complete List -->
                 <datalist id="dharma-names">
@@ -450,7 +426,7 @@ const batchParsedRows = computed(() => {
     const lines = batchInput.value.split('\n');
     const results = [];
     let currentMasterId = form.value.master_id;
-    let currentDate = form.value.record_date || '';
+    let currentDateInText = null; // Changed from currentDate = form.value.record_date to null
     let currentContextYear = new Date().getFullYear();
 
     const parseDateText = (str, ctxYear = null) => {
@@ -513,7 +489,7 @@ const batchParsedRows = computed(() => {
         const dateHeader = parseDateText(normLine, currentContextYear);
         const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
         if (dateHeader && isPureDateStr) {
-            currentDate = dateHeader;
+            currentDateInText = dateHeader;
             return;
         }
 
@@ -538,10 +514,13 @@ const batchParsedRows = computed(() => {
             }
             else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
                 const d = parseDateText(val, currentContextYear) || val;
-                if (firstWord === '得知日期') prev.date = d;
-                else {
+                if (firstWord === '得知日期') {
+                    prev.date = d;
+                    currentDateInText = d;
+                } else {
                     prev.obtained_date = d;
                     prev.status = '已登記';
+                    currentDateInText = d;
                 }
             }
             else if (firstWord === '求寶方式' || firstWord === '求寶') prev.acquisition_method = val;
@@ -554,7 +533,7 @@ const batchParsedRows = computed(() => {
         const lineStartDateMatch = normLine.match(/^(\d{1,4}[/.-]\d{1,2}[/.-]\d{1,2}|\d{1,2}[/.-]\d{1,2})\s+/);
         if (lineStartDateMatch) {
             const parsed = parseDateText(lineStartDateMatch[1], currentContextYear);
-            if (parsed) currentDate = parsed;
+            if (parsed) currentDateInText = parsed;
             normLine = normLine.replace(lineStartDateMatch[0], '').trim();
         }
 
@@ -569,11 +548,11 @@ const batchParsedRows = computed(() => {
                 name, 
                 remarks: val, 
                 master_id: currentMasterId, 
-                date: '', 
+                date: currentDateInText || '', 
                 purpose: '',
                 acquisition_method: '',
-                obtained_date: currentDate,
-                status: currentDate ? '已登記' : '未求得'
+                obtained_date: currentDateInText || form.value.record_date || '',
+                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
             };
             
             if (val.includes('已登記')) {
@@ -588,11 +567,11 @@ const batchParsedRows = computed(() => {
                 name: parts[1], 
                 remarks: parts.slice(2).join(' '), 
                 master_id: currentMasterId, 
-                date: '', 
+                date: currentDateInText || '', 
                 purpose: '',
                 acquisition_method: '',
-                obtained_date: currentDate,
-                status: currentDate ? '已登記' : '未求得'
+                obtained_date: currentDateInText || form.value.record_date || '',
+                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
             };
             results.push(item);
         } else if (normLine.length < 50) {
@@ -600,11 +579,11 @@ const batchParsedRows = computed(() => {
                 name: normLine, 
                 remarks: '', 
                 master_id: currentMasterId, 
-                date: '', 
+                date: currentDateInText || '', 
                 purpose: '',
                 acquisition_method: '',
-                obtained_date: currentDate,
-                status: currentDate ? '已登記' : '未求得'
+                obtained_date: currentDateInText || form.value.record_date || '',
+                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
             };
             results.push(item);
         }

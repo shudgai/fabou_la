@@ -81,7 +81,7 @@
                             <svg :class="{'rotate-[-90deg]': activeDateGroup !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
                         </div>
-                        <span class="text-[12px] font-bold text-slate-400">共 {{ group.items.length }} 筆</span>
+                        <span class="text-[12px] font-bold text-black">共 {{ group.items.length }} 筆</span>
                     </div>
 
                     <div v-show="activeDateGroup === group.date || focusedId !== null">
@@ -524,9 +524,6 @@ const loadData = async () => {
         users.value = dres.data;
     } catch (e) { console.error(e); } finally { 
         loading.value = false; 
-        if (groupedItems.value.length > 0 && !activeDateGroup.value) {
-            activeDateGroup.value = groupedItems.value[0].date;
-        }
     }
 };
 
@@ -626,13 +623,7 @@ const filteredTotal = computed(() => filteredItems.value.reduce((sum, i) => sum 
 const displayTitle = computed(() => '怨靈記錄專區');
 
 watch(currentFolder, (newVal) => {
-    if (newVal) {
-        setTimeout(() => {
-            if (groupedItems.value.length > 0) {
-                activeDateGroup.value = groupedItems.value[0].date;
-            }
-        }, 50);
-    }
+    // Auto-expansion disabled per user request
 });
 
 onMounted(() => {

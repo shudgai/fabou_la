@@ -100,7 +100,7 @@ const getTodayStr = () => {
     return `${y}-${m}-${d}`;
 };
 
-const batchDate = ref(getTodayStr());
+const batchDate = ref(null);
 const batchText = ref('');
 const processing = ref(false);
 const showDatePicker = ref(false);
