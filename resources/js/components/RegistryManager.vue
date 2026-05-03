@@ -152,7 +152,7 @@
                     </div>
                 </div>
 
-                <div :style="focusedId ? 'padding: 0px 0px 120px 0px;' : 'padding: 10px 10px 10px 10px;'" class="mt-0">
+                <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'p-[10px]']" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
                         <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">載入中...</p>
@@ -182,7 +182,7 @@
                          @click="toggleExpand(item.id)"
                              :class="[
                                  'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
+                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 md:!mb-4 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
@@ -238,7 +238,7 @@
                             </div>
 
                             <!-- Card Header (Toggle Expansion) - Standardized to Imperial Grace Style -->
-                            <div v-if="!expandedIds.has(item.id)" class="mt-0 flex flex-col flex-1 min-w-0 pr-8 py-1">
+                            <div :class="[!expandedIds.has(item.id) ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
                                 <!-- Row 1: Date -->
                                 <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="app-title font-bold mb-0.5">
                                     登記：<span class="app-title font-bold" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
@@ -259,36 +259,23 @@
                              
 
 
-                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:bg-slate-50/20 md:p-6 md:rounded-b-3xl relative">
-                                        <!-- Three dots menu in expanded view (Desktop) -->
-                                        <div class="hidden md:block absolute right-4 top-4 z-[20]">
-                                            <button @click.stop="toggleMenu(item.id)" class="p-2 text-red-500 hover:bg-red-50 rounded-full transition-all">
-                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                            </button>
-                                            <div v-if="openMenuId === item.id" @click.stop 
-                                                 class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起清單</button>
-                                                <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                                <button @click.stop="copyAsTextFile(item); openMenuId = null" class="w-full p-3 text-left text-[15px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製內容</button>
-                                                <button @click.stop="confirmDelete(item.id)" class="w-full p-3 text-left text-[15px] font-black text-red-600 hover:bg-red-50">刪除紀錄</button>
-                                            </div>
-                                        </div>
+                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative">
                                         <!-- Detailed Record View -->
                                         <div v-if="!editingIds.has(item.id)" class="space-y-4 px-0 mb-4 animate-fade-in">
                                             <!-- Row 1: Date and Master -->
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div class="space-y-1">
+                                                <div class="space-y-1 md:hidden">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
                                                     <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                                 </div>
-                                                <div class="space-y-1 md:text-right md:pr-8">
+                                                <div class="space-y-1 md:col-span-2 md:text-left">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
                                                     <div class="app-body font-bold text-slate-900">{{ getMasterName(item.master_id) }}</div>
                                                 </div>
                                             </div>
                                             
                                             <!-- Row 2: Name -->
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 md:hidden">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
                                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
@@ -1185,7 +1172,10 @@ const toggleExpand = (id) => {
     } else {
         nextExpanded.clear();
         nextExpanded.add(id);
-        focusedId.value = id;
+        // 電腦版不進入 Solo Mode (focusedId)，僅在原位展開
+        if (!isDesktop.value) {
+            focusedId.value = id;
+        }
         showItemDetails.value = false;
     }
     expandedIds.value = nextExpanded;

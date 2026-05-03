@@ -139,10 +139,10 @@ class User extends Authenticatable
             'can_see_trash' => true,
             
             // 2. 父皇仙師專區連動
-            // 基礎用戶僅能看「父皇仙師每日開示」(can_see_daily_teachings)
-            // 管理員及高級用戶可看「八位仙師專區」(can_see_teaching_folders)
-            'can_see_daily_teachings' => true, 
-            'can_see_teaching_folders' => $isFullAdmin || $isAdvanced,
+            // 管理員及高級用戶可看「父皇仙師每日開示」與「仙師載錄」
+            // 其他使用者只有「仙師載錄」的權限
+            'can_see_daily_teachings' => $isFullAdmin || $isAdvanced, 
+            'can_see_teaching_folders' => true,
             
             // 3. 其他專區與法寶登記
             'can_see_other_folders' => $isFullAdmin || $isAdvanced,

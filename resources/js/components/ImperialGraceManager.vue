@@ -1,8 +1,27 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module">
+        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <linearGradient id="ig-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="ig-unobtainedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="ig-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
         <!-- Header (Only show in Folder-view, Item-view or Add-mode) -->
         <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
-
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -66,21 +85,35 @@
             <div class="px-6 pb-24 flex flex-col items-center space-y-2 max-w-lg mx-auto">
                 <button 
                     @click="currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center p-2 bg-white rounded-[32px] border-2 border-slate-200 active:scale-95 transition-all shadow-sm hover:shadow-md hover:border-indigo-400 group md:w-[320px] md:h-[320px]">
-                    <div class="flex items-center justify-center w-full h-full">
-                        <span class="text-[32px] md:text-[42px] font-black text-slate-900 leading-tight text-center">
-                            重大皇恩<br>專區
-                        </span>
+                    class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px] md:mt-4">
+                    <div class="relative w-[260px] h-[260px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-mastersGrad)" style="fill: #fbbf24;" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-mastersGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                            <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                重大皇恩<br>專區
+                            </span>
+                        </div>
                     </div>
                 </button>
 
                 <button 
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'unobtained'"
-                    class="flex flex-col items-center justify-center p-2 bg-white rounded-[32px] border-2 border-slate-200 active:scale-95 transition-all shadow-sm hover:shadow-md hover:border-indigo-400 group md:w-[320px] md:h-[320px]">
-                    <div class="flex items-center justify-center w-full h-full">
-                        <span class="text-[32px] md:text-[42px] font-black text-slate-900 leading-tight text-center">
-                            未求得<br>重大皇恩
-                        </span>
+                    class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px] md:mt-6">
+                    <div class="relative w-[260px] h-[260px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-2xl" viewBox="0 0 64 64" fill="none">
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-unobtainedGrad)" style="fill: #fbbf24;" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-unobtainedGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
+                            <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                                未求得<br>重大皇恩
+                            </span>
+                        </div>
                     </div>
                 </button>
             </div>
@@ -100,14 +133,28 @@
                 <h1 class="absolute inset-x-0 text-[32px] font-black tracking-tight text-center text-slate-900">重大皇恩專區</h1>
             </div>
 
-            <div class="grid grid-cols-2 gap-[12px] p-4 place-items-center">
+            <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                 <button v-for="(folder, idx) in mastersFolders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center p-4 bg-white rounded-[24px] border-2 border-slate-100 active:scale-95 transition-all shadow-sm hover:shadow-md hover:border-indigo-400 group w-full aspect-square md:aspect-auto md:h-[180px]">
-                    <div class="flex items-center justify-center w-full h-full">
-                        <span class="text-[19px] md:text-[24px] font-black text-slate-900 leading-tight text-center">
-                            {{ folder.name }}
-                        </span>
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-2xl md:shadow-sm md:w-[180px] md:h-[180px]">
+                    <div class="relative w-[148px] h-[148px]">
+                        <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-lg" viewBox="0 0 64 64" fill="none">
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <!-- Label Inside -->
+                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                            <span :class="[
+                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                            ]" style="font-weight: 900 !important; font-size: 22px !important;">
+                                <template v-if="folder.id === 'unobtained'">
+                                    未求得<br>重大皇恩
+                                </template>
+                                <template v-else>
+                                    {{ folder.name }}
+                                </template>
+                            </span>
+                        </div>
                     </div>
                 </button>
             </div>

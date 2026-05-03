@@ -1,21 +1,36 @@
 <template>
     <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+        <!-- Global SVG Definitions for Army Gradients -->
+        <svg class="absolute w-0 h-0" aria-hidden="true">
             <defs>
-                <linearGradient v-for="folder in folders_list" :key="'def-'+folder.id" :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
-                    <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
+                <!-- Tiger Armor (armor) -->
+                <linearGradient id="mm-fGrad-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#475569" />
+                    <stop offset="100%" stop-color="#0f172a" />
+                </linearGradient>
+                <!-- Tiger Brave (brave) -->
+                <linearGradient id="mm-fGrad-brave" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#334155" />
+                    <stop offset="100%" stop-color="#020617" />
+                </linearGradient>
+                <!-- Obsidian (obsidian) -->
+                <linearGradient id="mm-fGrad-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#64748b" />
+                    <stop offset="100%" stop-color="#1e293b" />
+                </linearGradient>
+                <!-- Purple (purple) -->
+                <linearGradient id="mm-fGrad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#d8b4fe" />
+                    <stop offset="100%" stop-color="#a855f7" />
                 </linearGradient>
             </defs>
         </svg>
-
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
-                    軍隊記錄專區
+                    軍隊記錄專區 (已更新)
                 </div>
             </div>
             <div class="absolute right-2 top-1/2 -translate-y-1/2">
@@ -70,34 +85,22 @@
                 <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-[633px] mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[352px] md:h-[352px]">
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative w-[308px] h-[308px] md:w-[352px] md:h-[352px]">
                         
-                        <!-- Premium Desktop Shield Badge (Only on Desktop) -->
-                        <div class="absolute inset-8 flex items-center justify-center transition-transform group-hover:scale-105 duration-300 opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto">
+                        <!-- Unified Responsive Shield Badge -->
+                        <div class="relative w-full h-full flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
                             <svg class="w-full h-full drop-shadow-2xl" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
-                                      stroke="white" stroke-width="0.2"/>
-                                <!-- Inner Bevel Effect -->
-                                <path d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
+                                      :fill="'url(#mm-fGrad-' + folder.id + ')'" 
+                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                                <!-- Inner Bevel Effect (Desktop Only) -->
+                                <path class="hidden md:block" d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center px-6">
-                                <span class="text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important; font-size: 53px !important;">
+                                <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
                                     {{ folder.name }}
                                 </span>
-                            </div>
-                        </div>
-
-                        <!-- Mobile Shield Badge -->
-                        <div class="relative w-[308px] h-[308px] opacity-100 pointer-events-auto md:opacity-0 md:pointer-events-none md:absolute">
-                            <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
-                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                            </svg>
-                            <div class="absolute inset-0 flex items-center justify-center px-4">
-                                <span class="text-[46px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 46px !important; font-weight: 900 !important;">{{ folder.name }}</span>
                             </div>
                         </div>
                     </button>
@@ -278,8 +281,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
     <!-- FAB Bottom Navigation -->
         <mobile-navbar 
             is-absolute

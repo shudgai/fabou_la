@@ -23,9 +23,14 @@ class TeachingController extends Controller
         $perPage = $request->query('per_page', 15);
         
         $permissions = auth()->user()->getPermissions();
-        if ($masterId == 0 && !$permissions['can_see_daily_teachings']) {
+        // Block general users from accessing daily teachings (master_id explicitly = 0)
+        // Use strict check: PHP's null == 0 is true (loose), which incorrectly blocks requests
+        // from MobileDashboard that send no master_id at all.
+        $isRequestingDaily = ($masterId === '0' || $masterId === 0 || (is_numeric($masterId) && (int)$masterId === 0 && $masterId !== null));
+        if ($isRequestingDaily && !$permissions['can_see_daily_teachings']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
 
         if ($mode === 'dates') {
             return response()->json($this->teachingService->getPaginatedDates($masterId, $perPage));
@@ -40,6 +45,13 @@ class TeachingController extends Controller
 
     public function store(Request $request)
     {
+        $permissions = auth()->user()->getPermissions();
+        $isDaily = $request->input('is_daily') == 1 || $request->input('master_id') == 0 || $request->input('master_id') === '0';
+        
+        if ($isDaily && empty($permissions['can_see_daily_teachings'])) {
+            return response()->json(['error' => '您無權新增每日開示紀錄'], 403);
+        }
+
         $teaching = $this->teachingService->create($request->all());
         return response()->json($teaching, 201);
     }

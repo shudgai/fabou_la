@@ -138,7 +138,7 @@
                     </button>
 
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
-                    <button 
+                    <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px]">
                         <div class="relative w-[260px] h-[260px]">
@@ -148,8 +148,8 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[52px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 52px !important;">
-                                    仙師<br>載錄
+                                <span class="text-[52px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                                    仙師開示<br>載錄
                                 </span>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
                     <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="absolute inset-x-0 text-[24px] font-black tracking-tight text-center text-slate-900 pointer-events-none">開示資料夾</h2>
+                    <h2 class="absolute inset-x-0 text-[24px] font-black tracking-tight text-center text-slate-900 pointer-events-none">仙師開示載錄資料夾</h2>
                 </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
@@ -1570,8 +1570,45 @@
                     </div>
                 </div>
                 
+                <!-- Master Mismatch Warning Modal -->
+                <div v-if="masterMismatchModal.show" class="fixed inset-0 z-[1300] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.55);backdrop-filter:blur(4px)">
+                    <div class="bg-white rounded-[28px] shadow-2xl w-full max-w-sm mx-auto p-6 animate-fade-in text-left">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-[17px] font-black text-slate-900">仙師不符提示</h3>
+                                <p class="text-[12px] text-slate-400 font-bold">貼上資料偵測到不同仙師</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-4 mb-5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[13px] text-slate-400 font-bold">目前資料夾</span>
+                                <span class="text-[15px] font-black text-indigo-600">{{ masterMismatchModal.currentMasterName }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[13px] text-slate-400 font-bold">貼上資料偵測到</span>
+                                <span class="text-[15px] font-black text-orange-500">{{ masterMismatchModal.detectedMasterName }}</span>
+                            </div>
+                        </div>
+                        <p class="text-[13px] text-slate-500 font-bold mb-4 text-center">請選擇要使用哪位仙師儲存這筆資料：</p>
+                        <div class="flex flex-col space-y-2">
+                            <button @click="chooseMasterAndProceed(false)" class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
+                                使用目前資料夾：{{ masterMismatchModal.currentMasterName }}
+                            </button>
+                            <button @click="chooseMasterAndProceed(true)" class="w-full py-3 bg-orange-100 text-orange-600 rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
+                                使用貼上資料：{{ masterMismatchModal.detectedMasterName }}
+                            </button>
+                            <button @click="masterMismatchModal.show = false" class="w-full py-3 bg-slate-100 text-slate-500 rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
+                                取消
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Full Page Save Confirmation Overlay -->
-                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[600] bg-white animate-fade-in flex flex-col font-sans text-left">
+                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[1200] bg-white animate-fade-in flex flex-col font-sans text-left">
                     <!-- High-Density Header -->
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
                         <div class="flex items-center space-x-3">
@@ -1656,7 +1693,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[610]">
+                    <div class="fixed bottom-[7vh] left-0 right-0 md:fixed md:bottom-[72px] md:left-0 md:right-0 px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[1210]">
                         <button @click="saveConfirmModal.show = false" class="px-10 py-[10px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
@@ -1742,11 +1779,7 @@ const isAddingFlash = ref(false);
 const currentFolder = ref(null);
 const currentCategory = ref(null);
 
-watch(() => props.user, (newVal) => {
-    if (newVal?.permissions && !newVal.permissions.can_see_daily_teachings && currentCategory.value === null && !currentFolder.value) {
-        currentCategory.value = 'masters';
-    }
-}, { immediate: true });
+// Removed auto-redirect to masters for general users per request to show category folder first.
 
 const addMode = ref(false);
 const activeDate = ref(null);
@@ -1838,6 +1871,17 @@ const saveConfirmModal = ref({
     show: false,
     records: []
 });
+const masterMismatchModal = ref({
+    show: false,
+    detectedMasterName: '',
+    detectedMasterId: null,
+    currentMasterName: '',
+    currentMasterId: null
+});
+// null = default (use folder master if in specific folder, else auto-detect)
+// 'auto' = user explicitly chose auto-detect from text
+// number = user explicitly chose specific master ID
+const pendingMasterId = ref(null);
 const masters = ref([]);
 const loading = ref(false);
 const saving = ref(false);
@@ -4339,8 +4383,47 @@ const saveItem = async () => {
             form.value.items = [];
         }
 
-        const blocksToProcess = batchRecords.value.filter(r => r.content.trim() || r.items.length > 0 || r.dharma_name_ids.length > 0);
+        const blocksToProcess = batchRecords.value.filter(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
         if (blocksToProcess.length > 0) {
+            // ── Master Mismatch Detection ────────────────────────────────────
+            const mIdMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
+            const isInSpecificFolder = currentFolder.value &&
+                currentFolder.value.id !== 0 && currentFolder.value.id !== '0' && currentFolder.value.id !== null;
+            
+            if (isInSpecificFolder) {
+                const folderMasterId = Number(currentFolder.value.id);
+                let mismatchName = null;
+                let mismatchId = null;
+                for (const record of blocksToProcess) {
+                    if (record.master_name) {
+                        const mClean = record.master_name.replace(/仙師$/,'').trim();
+                        const did = mIdMap[mClean];
+                        if (did && did !== folderMasterId) {
+                            mismatchName = record.master_name;
+                            mismatchId = did;
+                            break;
+                        }
+                    }
+                }
+                if (mismatchId) {
+                    // Store blocks for use after user choice
+                    saveConfirmModal.value.records = blocksToProcess.map(r => ({
+                        ...r, items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
+                    }));
+                    masterMismatchModal.value = {
+                        show: true,
+                        detectedMasterName: mismatchName,
+                        detectedMasterId: mismatchId,
+                        currentMasterName: currentFolder.value.name,
+                        currentMasterId: folderMasterId
+                    };
+                    pendingMasterId.value = null; // reset
+                    itemsDetailMode.value = false;
+                    return; // Wait for user choice
+                }
+            }
+            // ── No mismatch: reset pendingMasterId and proceed ───────────────
+            pendingMasterId.value = null;
             saveConfirmModal.value.records = blocksToProcess.map(r => ({
                 ...r,
                 items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
@@ -4367,6 +4450,21 @@ const saveItem = async () => {
     }
 };
 
+// Called after user makes a choice in the master mismatch modal
+const chooseMasterAndProceed = (useDetected) => {
+    masterMismatchModal.value.show = false;
+    if (useDetected) {
+        // User wants to use the master detected from the pasted text
+        pendingMasterId.value = 'auto';
+    } else {
+        // User wants to use the current folder's master
+        pendingMasterId.value = masterMismatchModal.value.currentMasterId;
+    }
+    // Show save confirmation with the already-prepared records
+    saveConfirmModal.value.show = true;
+    itemsDetailMode.value = false;
+};
+
 const performActualSave = async () => {
     if (saving.value) return;
     
@@ -4383,7 +4481,7 @@ const performActualSave = async () => {
         const payload = {
             ...form.value,
             master_id: form.value.master_id || currentFolder.value?.id,
-            is_daily: 1 // Always set to 1 in TeachingManager to ensure visibility in main list
+            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
         };
 
         if (editingId.value) {
@@ -4405,15 +4503,7 @@ const performActualSave = async () => {
         saveConfirmModal.value.show = false;
         addMode.value = false;
         
-        // Navigation: Reliable return to Daily Teachings category and folder
-        currentCategory.value = 'daily';
-        currentFolder.value = { id: 0, name: '父皇仙師每日開示' }; 
-        
-        // After switching folder, ensure focus is on the new record
-        if (editingId.value || focusedId.value) {
-             // Already set or kept by watcher
-        }
-        
+        // Stay in current folder so user can see the newly saved record
         fetchItems(1);
         alert('儲存成功');
     } catch (e) {
@@ -4490,16 +4580,26 @@ const executeDistributionSave = async (mode) => {
 
             let blockMasterId = currentMasterId;
             
-            // Auto-detect Master/Folder if in distribute mode
-            if (mode === 'distribute') {
-                // Priority 1: Check specifically detected master_name from parsing
+            // Master ID Resolution:
+            // 1. pendingMasterId = number → user explicitly chose this master (folder's master)
+            // 2. pendingMasterId = 'auto' → user chose text auto-detection
+            // 3. pendingMasterId = null, isInSpecificFolder → use folder's master silently
+            // 4. pendingMasterId = null, not in specific folder → auto-detect from text
+            const isInSpecificMasterFolder = currentFolder.value && 
+                currentFolder.value.id !== 0 && 
+                currentFolder.value.id !== '0' && 
+                currentFolder.value.id !== null;
+
+            if (typeof pendingMasterId.value === 'number') {
+                // User explicitly chose the folder's master via mismatch dialog
+                blockMasterId = pendingMasterId.value;
+            } else if (pendingMasterId.value === 'auto' || (mode === 'distribute' && !isInSpecificMasterFolder)) {
+                // Auto-detect from pasted text
                 let detectedId = null;
                 if (record.master_name) {
                     const mClean = record.master_name.replace('仙師', '').trim();
                     if (masterMap[mClean]) detectedId = masterMap[mClean];
                 }
-                
-                // Priority 2: Scan content if priority 1 failed or to confirm
                 if (!detectedId) {
                     for (const [key, id] of Object.entries(masterMap)) {
                         if (content.includes(key)) {
@@ -4508,14 +4608,14 @@ const executeDistributionSave = async (mode) => {
                         }
                     }
                 }
-
                 if (detectedId) {
                     blockMasterId = detectedId;
                 } else {
-                    // Fallback to current folder if no master was mentioned at all
-                    blockMasterId = currentMasterId || 5; 
+                    blockMasterId = currentMasterId || 5;
                 }
             }
+            // else: isInSpecificMasterFolder && pendingMasterId===null → blockMasterId = currentMasterId (folder's master)
+
 
             const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
             
@@ -4548,7 +4648,7 @@ const executeDistributionSave = async (mode) => {
                 items_footer_remarks: record.items_footer_remarks || form.value.items_footer_remarks || '',
                 items: items,
                 user_id: props.user?.id || 1,
-                is_daily: 1 // Always set to 1 in TeachingManager
+                is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
             };
             
             const res = await axios.post('/teachings', payload);
@@ -4574,14 +4674,13 @@ const executeDistributionSave = async (mode) => {
         distributionModal.value.show = false;
         addMode.value = false;
         
-        // Navigation: Return to Daily list
-        currentCategory.value = 'daily';
-        currentFolder.value = { id: 0, name: '父皇仙師每日開示' }; 
-        
+        // Stay in current folder to allow user to see the newly added data
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
+        batchImportContent.value = '';
         fetchItems(1);
         alert('錄入成功');
     } catch (e) {
+        addMode.value = false; // Also close form on error
         alert('存檔過程中發生錯誤');
     } finally {
         saving.value = false;

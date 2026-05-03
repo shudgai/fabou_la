@@ -242,52 +242,7 @@ class TeachingService
 
     protected function applyVisibilityFilter($query, $user)
     {
-        $user->load(['dharmaName', 'group']);
-        
-        $query->where(function($q) use ($user) {
-            // 2. Creator
-            $q->where('user_id', $user->id);
-            
-            // 3. Targeted via Pivot Table
-            if ($user->dharma_name_id) {
-                $q->orWhereHas('dharmaNames', function($sq) use ($user) {
-                    $sq->where('dharma_names.id', $user->dharma_name_id);
-                });
-            }
-            
-            // 4. Targeted via target_remarks (String Matching)
-            $searchableNames = [];
-            if ($user->dharmaName) {
-                $searchableNames[] = $user->dharmaName->name;
-                
-                // Add aliases (Jin <-> Ling/Long/Yuan)
-                $aliasMap = [
-                    '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
-                    '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
-                    '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰',
-                    '金律' => '閻㻇', '金欣' => '閻闇', '閰琉' => '閻尊', '金剛' => '閻帝', '金頓' => '閻爵',
-                    '金虹' => '赤覺', '金湘' => '紫元', '金雍' => '道妙', '金無' => '閻澤', '金真' => '閻願',
-                    '金翎' => '鳳尊', '金妙' => '鳳媓', '金嘉' => '金嘉'
-                ];
-                
-                // Find if current name is an alias of something or vice versa
-                foreach ($aliasMap as $old => $new) {
-                    if ($user->dharmaName->name === $old) { $searchableNames[] = $new; break; }
-                    if ($user->dharmaName->name === $new) { $searchableNames[] = $old; break; }
-                }
-            }
-            
-            // 5. Targeted via Group Name
-            if ($user->group) {
-                $searchableNames[] = $user->group->name;
-            }
-            
-            // Apply OR LIKE for all searchable names
-            foreach (array_unique($searchableNames) as $name) {
-                if (empty($name)) continue;
-                $q->orWhere('target_remarks', 'like', '%' . $name . '%');
-            }
-        });
+        $query->where('user_id', $user->id);
     }
 
     protected function applyMasterGroupFilter($query, $masterId)
