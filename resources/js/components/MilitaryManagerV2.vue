@@ -284,6 +284,7 @@
                 </div>
             </div>
         </div>
+    </div>
     <!-- FAB Bottom Navigation -->
         <mobile-navbar 
             is-absolute

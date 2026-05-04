@@ -22,7 +22,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="font-black tracking-tight cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 25px !important;">其他專區資料夾</h2>
+                    <h2 class="font-black tracking-tight cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 32px !important;">其他專區資料夾</h2>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -105,25 +105,31 @@
                 <div class="flex flex-col w-full gap-1">
                     <!-- First Row: Main Title -->
                     <div class="flex items-center">
-                        <button @click="resetToRoot" class="p-2 text-slate-400 mr-1 -ml-1">
+                        <button @click="handleBack" class="p-2 text-slate-400 mr-1 -ml-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 28px !important;">
-                            其他專區
+                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer flex-1" @click="resetToRoot" style="color: #0f172a !important; font-size: 32px !important;">
+                            其他記錄專區
                         </div>
+                        <button v-if="activeFolder && !activeFolder.name.includes('開文核定') && !activeFolder.name.includes('隨機分組')" 
+                            @click.stop="sortDesc = !sortDesc" 
+                            class="px-3 py-1.5 text-[16px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500" 
+                            style="font-size: 16px !important; color: white !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
                     </div>
                     
                     <!-- Second Row: Subtitle + Quick Controls -->
                     <div v-if="activeFolder" class="flex items-center justify-between w-full mt-2 px-2">
                         <span class="text-slate-800 font-black shrink-0 mr-2" 
-                              style="font-size: 24px !important;">{{ activeFolder.name }}</span>
+                              style="font-size: 25px !important;">{{ activeFolder.name }}</span>
                         
                         <div class="flex items-center justify-end flex-1">
                             <template v-if="activeFolder.name.includes('隨機分組')">
                                 <div class="flex items-center space-x-2 flex-1 max-w-[100px]">
                                     <button @click="randomGroupRef?.invertSelection()" 
                                         class="flex-1 h-[42px] text-[16px] rounded-xl shadow-sm transition-all bg-indigo-600 text-white font-black active:scale-95"
-                                        style="color: white !important;">反選</button>
+                                        style="color: white !important; font-size: 16px !important;">反選</button>
                                 </div>
                                 <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 ml-2 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -157,10 +163,30 @@
                 <!-- Default View: Standard Records -->
                 <div v-else-if="activeFolder" class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
                     <div class="space-y-4">
-                        <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
-                            <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+                        <div v-for="record in sortedRecords" :key="record.id" 
+                            v-show="focusedId === null || focusedId === record.id"
+                            @click="toggleExpand(record.id)"
+                            :class="[
+                                focusedId === record.id 
+                                    ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
+                                    : 'bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
+                            ]">
+                            
+                            <!-- Menu & Close Trigger -->
+                            <div class="absolute right-4 top-4 z-20 flex items-center space-x-1">
+                                <button v-if="focusedId === record.id" @click.stop="focusedId = null" class="p-1 text-slate-300 hover:text-slate-500 active:scale-90 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <button v-else @click.stop="toggleMenu(record.id)" class="p-1 text-slate-400 hover:text-slate-600 active:scale-95 transition-all">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <!-- Action Menu Dropdown -->
+                                <div v-if="openMenuId === record.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                    <button @click.stop="editRecord(record); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copyRecord(record); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="deleteRecord(record.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                </div>
+                            </div>
                             
                             <div class="flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -168,7 +194,9 @@
                             </div>
 
                             <h3 v-if="record.title" class="text-lg font-bold text-slate-800 mb-2">{{ record.title }}</h3>
-                            <p class="text-slate-900 whitespace-pre-wrap leading-relaxed font-medium">{{ record.content }}</p>
+                            <p class="text-slate-900 whitespace-pre-wrap leading-relaxed font-medium">
+                                {{ focusedId === record.id ? record.content : (record.content || '').split('\n')[0].substring(0, 7) + (record.content && record.content.length > 7 ? '...' : '') }}
+                            </p>
                         </div>
 
                         <div v-if="!activeFolder.other_records?.length" class="text-center py-20 bg-white rounded-[32px] border border-dashed border-slate-200">
@@ -191,7 +219,7 @@
                 :action-disabled="false"
                 :can-search="false"
                 :can-more="!!activeFolder"
-                @back="resetToRoot"
+                @back="handleBack"
                 @home="$emit('goHome')"
                 @action="prepareAddRecord"
                 @more="handleMore"
@@ -254,6 +282,17 @@ const resetToRoot = () => {
     activeFolderId.value = null;
     showLuckyDraw.value = false;
     activeAction.value = '';
+    focusedId.value = null;
+    openMenuId.value = null;
+};
+
+const handleBack = () => {
+    if (showAddFolder.value) showAddFolder.value = false;
+    else if (showAddRecord.value) showAddRecord.value = false;
+    else if (focusedId.value) focusedId.value = null;
+    else if (activeFolderId.value) resetToRoot();
+    else if (showLuckyDraw.value) showLuckyDraw.value = false;
+    else emit('goHome');
 };
 
 const props = defineProps({
@@ -269,6 +308,10 @@ const showAddFolder = ref(false);
 const showAddRecord = ref(false);
 const randomGroupRef = ref(null);
 const activeAction = ref('');
+const focusedId = ref(null);
+const openMenuId = ref(null);
+const editingRecordId = ref(null);
+const sortDesc = ref(true);
 
 const newFolderName = ref('');
 const newFolderColor = ref('#6366f1');
@@ -292,6 +335,16 @@ const sortedFolders = computed(() => {
 });
 
 const activeFolder = computed(() => folders.value.find(f => f.id === activeFolderId.value));
+
+const sortedRecords = computed(() => {
+    if (!activeFolder.value?.other_records) return [];
+    return [...activeFolder.value.other_records].sort((a, b) => {
+        const dateA = a.record_date || a.created_at || '';
+        const dateB = b.record_date || b.created_at || '';
+        return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+    });
+});
+
 const lotteryFolderId = computed(() => folders.value.find(f => f.name === '抽籤紀錄')?.id);
 
 const loadData = async () => {
@@ -349,8 +402,13 @@ const deleteFolder = async (id) => {
 
 const saveRecord = async () => {
     if (!newRecord.value.content) return;
-    await axios.post(`/other-folders/${activeFolderId.value}/records`, newRecord.value);
+    if (editingRecordId.value) {
+        await axios.put(`/other-records/${editingRecordId.value}`, newRecord.value);
+    } else {
+        await axios.post(`/other-folders/${activeFolderId.value}/records`, newRecord.value);
+    }
     newRecord.value = { title: '', content: '', record_date: getTodayStr() };
+    editingRecordId.value = null;
     showAddRecord.value = false;
     await loadData();
 };
@@ -392,6 +450,26 @@ const handleMore = () => {
 const getFolderSum = (id) => {
     const folder = folders.value.find(f => String(f.id) === String(id));
     return folder?.other_records?.length || 0;
+};
+
+const toggleExpand = (id) => {
+    focusedId.value = focusedId.value === id ? null : id;
+    openMenuId.value = null;
+};
+
+const toggleMenu = (id) => {
+    openMenuId.value = openMenuId.value === id ? null : id;
+};
+
+const copyRecord = (record) => {
+    const text = `【${activeFolder.value.name}】\n日期：${formatDate(record.record_date)}\n標題：${record.title || '無'}\n內容：\n${record.content}`;
+    navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿'));
+};
+
+const editRecord = (record) => {
+    editingRecordId.value = record.id;
+    newRecord.value = { ...record };
+    showAddRecord.value = true;
 };
 
 onMounted(loadData);
