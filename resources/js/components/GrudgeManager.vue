@@ -25,13 +25,16 @@
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
             <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
                 <h1 class="text-[28px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 28px !important;">{{ displayTitle }}</h1>
-            </div>
-            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
-                <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[14px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 14px !important; color: white !important;">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-3 py-1.5 text-[14px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 14px !important; color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
+            </div>
+            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
                 <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
-                    總數<span v-if="showTotal || searchQuery" class="ml-0.5 font-mono text-[18px]" :class="{'text-indigo-600': searchQuery}">:{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
+                    總數
+                </button>
+                <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
         </div>
@@ -101,7 +104,7 @@
                             <div class="animate-fade-in py-1 bg-white relative px-1.5">
                                 <!-- Menu Trigger (Persistent) -->
                                 <div class="absolute right-0 top-0 z-10">
-                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
+                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
                                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                     </button>
                                     <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">

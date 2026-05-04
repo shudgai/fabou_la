@@ -45,17 +45,14 @@ class ImperialGraceController extends Controller
 
         $query->orderBy('sort_order', 'asc');
 
-        $folderCounts = ImperialGrace::select('master_id', DB::raw('count(*) as total'))
-            ->where('user_id', $user->id)
-            ->groupBy('master_id')
-            ->get()
-            ->pluck('total', 'master_id');
+        // Single query: get per-master counts AND unobtained count at once
+        $allCounts = ImperialGrace::where('user_id', $user->id)
+            ->selectRaw('master_id, status, count(*) as total')
+            ->groupBy('master_id', 'status')
+            ->get();
 
-        $unobtainedCount = ImperialGrace::where('user_id', $user->id)
-            ->where(function ($q) {
-                $q->whereNull('master_id')
-                    ->orWhere('status', '未求得');
-            })->count();
+        $folderCounts = $allCounts->groupBy('master_id')->map(fn($g) => $g->sum('total'));
+        $unobtainedCount = $allCounts->filter(fn($r) => is_null($r->master_id) || $r->status === '未求得')->sum('total');
 
         return response()->json([
             'registries' => $query->paginate($request->input('per_page', 10)),

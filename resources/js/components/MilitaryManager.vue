@@ -55,13 +55,16 @@
                 <h2 class="text-[28px] font-black text-slate-900 truncate tracking-tight font-outfit">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
-            </div>
-            <div class="ml-2 flex items-center space-x-2">
-                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2.5 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
+            </div>
+            <div class="ml-2 flex items-center space-x-2">
                 <button @click="toggleFullTotal" class="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important;">
                     總數
+                </button>
+                <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
         </div>
@@ -253,7 +256,8 @@
                                             <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
                                                 <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
                                                 <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                                                          <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                                <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                                <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                                             </div>
                                         </div>
                                     </div>
@@ -773,20 +777,19 @@ const form = ref({});
 const loadData = async (page = 1) => {
     loading.value = true;
     try {
-        const ts = new Date().getTime();
-        const params = {
-            page,
-            t: ts
-        };
-        
+        const params = { page };
         if (searchQuery.value) params.search = searchQuery.value;
         if (currentFolder.value) params.army_type = currentFolder.value.name;
 
-        const [res, dres] = await Promise.all([ 
-            axios.get('/military-records', { params }), 
-            axios.get(`/api/dharma-names-list?t=${ts}`) 
-        ]);
-        
+        // Only fetch dharma names once (static data, does not change on pagination)
+        const requests = [axios.get('/military-records', { params })];
+        const isFirstLoad = users.value.length === 0;
+        if (isFirstLoad) {
+            requests.push(axios.get('/api/dharma-names-list'));
+        }
+
+        const [res, dres] = await Promise.all(requests);
+
         const recData = res.data.records;
         items.value = recData.data || [];
         paginationMeta.value = {
@@ -794,9 +797,12 @@ const loadData = async (page = 1) => {
             last_page: recData.last_page,
             total: recData.total
         };
-        armyCounts.value = res.data.armyCounts || {};
-        breakdownTotals.value = res.data.breakdownTotals || { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
-        users.value = dres.data;
+        // Only update counts on page 1 (avoid unnecessary re-renders on pagination)
+        if (page === 1) {
+            armyCounts.value = res.data.armyCounts || {};
+            breakdownTotals.value = res.data.breakdownTotals || { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
+        }
+        if (dres) users.value = dres.data;
     } catch (e) { 
         console.error('Load data failed:', e);
         items.value = []; 

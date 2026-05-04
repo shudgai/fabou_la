@@ -94,14 +94,17 @@
                             父皇仙師開示專區
                         </h2>
                     </div>
-                    <div v-if="currentFolder !== null && !addMode" class="flex items-center shrink-0 ml-2">
-                        <button @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
+                    <div class="flex items-center space-x-2 shrink-0 ml-2">
+                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-[#dc1428] rounded-xl active:scale-90 transition-all border border-red-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
+                        <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
                     </div>
-                    <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform shrink-0">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
@@ -1564,7 +1567,7 @@
                                     </div>
                                     <div class="flex items-center shrink-0 pl-2 -mr-2">
                                         <div class="relative">
-                                            <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-rose-500 hover:text-rose-600 active:scale-95 transition-transform">
+                                            <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-[#dc1428] hover:text-red-700 active:scale-95 transition-transform">
                                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
                                             <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-50 overflow-hidden p-1.5 focus:outline-none">
@@ -1605,6 +1608,9 @@
                                                 <div class="flex-1">
                                                     <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important;">父皇仙師開示專區</h1>
                                                 </div>
+                                                <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all absolute right-3">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                </button>
                                             </div>
 
                                             <!-- Sub-folder Title (Added for consistency) -->
@@ -1622,7 +1628,7 @@
                                                 </div>
                                                 <div class="flex items-center space-x-1">
                                                     <div class="relative">
-                                                        <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-rose-500 active:scale-95 transition-transform">
+                                                        <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-[#dc1428] active:scale-95 transition-transform">
                                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                                         </button>
                                                         <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] overflow-hidden p-1.5 focus:outline-none">
@@ -1640,13 +1646,10 @@
                                                                     <span class="text-[17px] font-black">刪除</span>
                                                                 </button>
                                                             </div>
-                                                        </div>
                                                     </div>
-                                                    <button @click="toggleExpand(item.id)" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
                                                 </div>
                                             </div>
+                                        </div>
 
                                             <!-- Scrollable Content -->
                                             <div class="flex-1 overflow-y-auto px-5 pt-5 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
@@ -3426,7 +3429,7 @@ const fetchItems = async (page = 1) => {
         const recordsObj = res.data.records || res.data;
         const itemsArray = recordsObj.data || recordsObj;
 
-        if (res.data.folderCounts) {
+        if (res.data.folderCounts && page === 1) {
             folderCounts.value = res.data.folderCounts;
         }
 

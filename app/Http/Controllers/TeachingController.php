@@ -31,14 +31,14 @@ class TeachingController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $folderCounts = Teaching::where('user_id', $user->id)
-            ->select('master_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+        // Single query: get per-master counts AND daily count at once
+        $allCounts = Teaching::where('user_id', $user->id)
+            ->selectRaw('master_id, count(*) as total, SUM(CASE WHEN is_daily = 1 THEN 1 ELSE 0 END) as daily_total')
             ->groupBy('master_id')
-            ->get()
-            ->pluck('total', 'master_id');
-        
-        $dailyCount = Teaching::where('user_id', $user->id)->where('is_daily', 1)->count();
-        $folderCounts['daily'] = $dailyCount;
+            ->get();
+
+        $folderCounts = $allCounts->pluck('total', 'master_id');
+        $folderCounts['daily'] = $allCounts->sum('daily_total');
 
         if ($mode === 'dates') {
             $data = $this->teachingService->getPaginatedDates($masterId, $perPage);

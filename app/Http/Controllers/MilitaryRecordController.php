@@ -28,19 +28,23 @@ class MilitaryRecordController extends Controller
 
         $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
-        $armyCounts = MilitaryRecord::select('army_type', DB::raw('count(*) as total'))
-            ->where('user_id', $user->id)
+        // Single query: get per-army counts AND column sums at once
+        $armyStats = MilitaryRecord::where('user_id', $user->id)
+            ->selectRaw('army_type, count(*) as total, SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan')
             ->groupBy('army_type')
-            ->get()
-            ->pluck('total', 'army_type');
-        
-        $breakdownTotals = MilitaryRecord::where('user_id', $user->id)
-            ->selectRaw('SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan')
-            ->first();
+            ->get();
+
+        $armyCounts = $armyStats->pluck('total', 'army_type');
+        $breakdownTotals = (object)[
+            'yan_zun'    => $armyStats->sum('yan_zun'),
+            'yan_an'     => $armyStats->sum('yan_an'),
+            'long_sheng' => $armyStats->sum('long_sheng'),
+            'long_zhan'  => $armyStats->sum('long_zhan'),
+        ];
 
         return response()->json([
-            'records' => $query->paginate($request->input('per_page', 10)),
-            'armyCounts' => $armyCounts,
+            'records'         => $query->paginate($request->input('per_page', 10)),
+            'armyCounts'      => $armyCounts,
             'breakdownTotals' => $breakdownTotals
         ]);
     }
