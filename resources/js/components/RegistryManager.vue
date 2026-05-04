@@ -38,12 +38,13 @@
             <!-- Standard Desktop Controls (Aligned Right) -->
             <div class="flex-1 hidden md:block"></div>
             <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[14px] text-white bg-indigo-600 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 14px !important;">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button @click="reorderMode = !reorderMode"
-                    :class="reorderMode ? 'bg-white text-emerald-600 border-2 border-emerald-500' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                    class="px-3 py-1 rounded-lg text-[14px] font-black transition-all active:scale-95 shadow-sm" style="font-size: 14px !important;">
+                    :class="reorderMode ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-slate-900 text-white shadow-sm'"
+                    class="px-3 py-1 rounded-lg text-[13px] font-black transition-all active:scale-95 flex items-center" 
+                    style="color: white !important;">
                     {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
             </div>
@@ -459,8 +460,8 @@
                                         </div>
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[7vh] left-0 right-0 p-2 pb-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.15)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md py-[5px] bg-blue-600 text-white rounded-2xl font-black text-[18px]" style="color: white !important;">儲存</button>
+                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[7vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[52px] bg-blue-600 text-white rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important;">儲存修改</button>
                                         </div>
                                     </div>
 
@@ -501,12 +502,12 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <div v-if="persistentToast.type === 'confirm'" class="flex space-x-4">
-                    <button v-for="a in persistentToast.actions" :key="a.label" @click="a.handler" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">{{ a.label }}</button>
-                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                <div v-if="persistentToast.type === 'confirm' || persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button v-for="a in persistentToast.actions" :key="a.label" @click="a.handler" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">{{ a.label }}</button>
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all" style="color: white !important;">知道了</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">知道了</button>
                 </div>
             </div>
         </div>
@@ -520,7 +521,7 @@
                 <h3 class="text-[22px] font-black text-center mb-2 font-outfit text-slate-800">確定要刪除嗎？</h3>
                 <p class="text-slate-500 text-center mb-6 font-black font-outfit leading-relaxed">此操作將永久刪除此筆載錄，且無法復原。請確認身分後再執行。</p>
                 <div class="flex flex-col space-y-3">
-                    <button @click="deleteItem(deleteConfirmId)" class="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit" style="color: white !important;">
+                    <button @click="executeDelete" class="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit" style="color: white !important;">
                         是的，確認刪除
                     </button>
                     <button @click="deleteConfirmId = null" class="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
@@ -1984,6 +1985,7 @@ const getFolderSum = (id) => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

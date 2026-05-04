@@ -37,8 +37,8 @@
                     <div class="flex items-center justify-between mb-2 ml-1">
                         <label class="app-title">貼上資料</label>
                         <div class="flex items-center space-x-2">
-                            <button @click.stop="triggerFileUpload" class="text-[16px] font-black text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center space-x-1 active:scale-95 transition-all">
-                                <svg class="w-[14px] h-[14px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <button @click.stop="triggerFileUpload" class="text-[15px] font-black text-white bg-indigo-600 px-4 py-2 rounded-xl shadow-sm border border-indigo-500 flex items-center space-x-1 active:scale-95 transition-all" style="color: white !important;">
+                                <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 <span>載入他檔</span>
                             </button>
                         </div>
@@ -62,15 +62,14 @@
                 </div>
             </div>
 
-            <!-- Footer Action -->
-            <div class="px-4 pb-24 bg-white border-t border-slate-100">
+            <div class="px-4 pb-24 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
-                    class="w-full bg-indigo-600 disabled:bg-slate-300 py-[12px] rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
+                    class="w-full bg-indigo-600 disabled:bg-slate-300 h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 >
                     <span v-if="loading" class="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full"></span>
-                    <span class="text-[18px] tracking-widest font-black" style="color: white !important;">{{ loading ? '正在處理中...' : '確認批量載錄' }}</span>
+                    <span class="text-[20px] tracking-widest font-black" style="color: white !important;">{{ loading ? '正在處理中...' : '確認批量載錄' }}</span>
                 </button>
             </div>
 
@@ -344,7 +343,8 @@ const handleBatchSave = async () => {
     from { opacity: 0; transform: translateY(100%); }
     to { opacity: 1; transform: translateY(0); }
 }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

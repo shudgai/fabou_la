@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100vh] flex justify-center text-slate-900 overflow-hidden">
+    <div class="bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -88,12 +88,13 @@
                     </div>
                 </div>
                 <div v-if="currentFolder !== null && !addMode" class="flex items-center space-x-1.5 mr-1 ml-auto">
-                    <button @click="toggleSort" class="px-2 py-1 text-[14px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 14px !important;">
+                    <button @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                     <button @click="reorderMode = !reorderMode" 
-                            :class="reorderMode ? 'bg-white border-green-500 text-green-600 ring-2 ring-green-100' : 'bg-slate-100 text-slate-600 border border-transparent'"
-                            class="px-2 py-1 rounded-lg text-[14px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap" style="font-size: 14px !important;">
+                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
+                            class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                            :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
@@ -298,11 +299,11 @@
                                             <!-- Group Mode (Only if more than 1 person) -->
                                             <template v-if="(activeModalGroup || currentMatchedGroup) && form.dharma_name_ids.length > 1">
                                                 <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
-                                                     class="bg-indigo-50 border-2 border-indigo-100 text-indigo-700 px-4 py-[10px] rounded-2xl app-body flex items-center shadow-sm cursor-pointer hover:bg-indigo-100 transition-all">
-                                                    <span class="mr-2 w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span>
+                                                     class="bg-indigo-600 border border-indigo-500 text-white px-4 py-3 rounded-2xl app-body flex items-center shadow-md cursor-pointer active:scale-95 transition-all" style="color: white !important;">
+                                                    <span class="mr-2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
                                                     <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name) }} ({{ form.dharma_name_ids.length }}人)</span>
-                                                    <span class="ml-2 text-[12px] opacity-60 underline font-bold tracking-tight">查看明細</span>
-                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-indigo-300 hover:text-red-500 transition-colors">
+                                                    <span class="ml-2 text-[12px] opacity-80 underline font-bold tracking-tight">查看明細</span>
+                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-white/60 hover:text-white transition-colors">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
                                                 </div>
@@ -311,12 +312,12 @@
                                             <!-- Individual Mode -->
                                             <template v-else>
                                                 <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
-                                                     class="bg-white border-2 border-slate-100 text-slate-900 px-3 py-[10px] rounded-2xl app-body flex items-center shadow-sm hover:border-indigo-200 transition-colors">
-                                                    <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-slate-300 hover:text-red-500 transition-colors">
+                                                     class="bg-indigo-600 border border-indigo-500 text-white px-3 py-3 rounded-2xl app-body flex items-center shadow-md active:scale-95 transition-all" style="color: white !important;">
+                                                    <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-white/60 hover:text-white transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
-                                                    <span class="mr-2 w-2 h-2 bg-indigo-400 rounded-full shrink-0"></span>
-                                                    {{ getDharmaNameText(id) }}
+                                                    <span class="mr-2 w-2 h-2 bg-white rounded-full shrink-0"></span>
+                                                    <span class="font-black">{{ getDharmaNameText(id) }}</span>
                                                 </div>
                                             </template>
                                         </div>
@@ -506,9 +507,9 @@
                                     </div>
                                 </div>
                                 <!-- Input + Add button -->
-                                <div class="flex items-center border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm">
+                                <div class="flex items-center border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm h-[52px]">
                                     <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
-                                    <button @click="addFooterRemark" class="px-4 py-3 text-indigo-500 font-black text-[22px] leading-none hover:text-indigo-700 transition-all">+</button>
+                                    <button @click="addFooterRemark" class="w-[44px] h-[44px] bg-indigo-600 text-white rounded-xl flex items-center justify-center font-black text-[28px] mr-1 active:scale-90 transition-all shadow-sm" style="color: white !important;">+</button>
                                 </div>
                             </div>
 
@@ -516,11 +517,11 @@
                             <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
-                                    class="w-[45%] bg-slate-100 text-slate-600 rounded-2xl py-[10px] shadow-md border border-slate-200 active:scale-95 transition-all text-[16px] font-bold">
+                                    class="w-[45%] bg-indigo-600 text-white rounded-2xl py-[12px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
                                     <span>降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-[#FFB266] text-white rounded-2xl py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-slate-900/20">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-amber-500 text-white rounded-2xl py-[12px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-amber-200/40" style="color: white !important;">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -576,8 +577,8 @@
                                     </div>
 
                                     <button v-if="newItemName" @click="addNewItemQuickly" 
-                                            :class="isAddingFlash ? 'text-emerald-500 scale-125' : 'text-red-500'"
-                                            class="text-[36px] font-light leading-none active:scale-95 transition-all duration-300"> + </button>
+                                            :class="isAddingFlash ? 'bg-emerald-500 scale-110 shadow-emerald-200' : 'bg-red-500 shadow-red-200'"
+                                            class="w-[40px] h-[40px] rounded-xl flex items-center justify-center text-white text-[28px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
                                 </div>
                                 <div class="grid grid-cols-12 gap-2.5 items-end">
                                     <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('由')) ? 'col-span-10' : 'col-span-9'" class="space-y-1 relative">
@@ -1155,13 +1156,13 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-2 pb-1 bg-white/90 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-blue-50/50 text-blue-600 border border-blue-100 rounded-[24px] py-[10px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center">
+                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-2 pb-1 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-indigo-600 text-white border border-indigo-500 rounded-[24px] py-[12px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg" style="color: white !important;">
                                         <span>完成並新增</span>
-                                        <span class="text-[11px] opacity-60">下一位人員</span>
+                                        <span class="text-[11px] opacity-80">下一位人員</span>
                                     </button>
-                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-[#FFB266] text-white rounded-[24px] py-[10px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-xl shadow-slate-900/20">
+                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-amber-500 text-white rounded-[24px] py-[12px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-xl shadow-amber-200/40" style="color: white !important;">
                                         確認存檔
                                     </button>
                                 </div>
@@ -1262,9 +1263,9 @@
                             </div>
                         </div>
 
-                        <div class="p-6 border-t border-slate-100 flex items-center space-x-3 shrink-0 bg-white">
-                            <button @click.prevent="form.dharma_name_ids = []" class="flex-1 py-4 bg-slate-200 text-slate-700 rounded-2xl font-bold active:scale-95 transition-all text-[17px]">全部清除</button>
-                            <button @click.prevent="showDharmaPicker = false" class="flex-1 py-4 bg-[#4A3728] text-white rounded-2xl font-bold active:scale-95 transition-all text-[17px] shadow-lg shadow-slate-200/50">確認選擇</button>
+                        <div class="p-6 border-t border-slate-100 flex items-center space-x-4 shrink-0 bg-white">
+                            <button @click.prevent="form.dharma_name_ids = []" class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black active:scale-95 transition-all text-[17px]">全部清除</button>
+                            <button @click.prevent="showDharmaPicker = false" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-black active:scale-95 transition-all text-[17px] shadow-lg shadow-indigo-200" style="color: white !important;">確認選擇</button>
                         </div>
                     </div>
                 </div>
@@ -1310,7 +1311,7 @@
                             </div>
                         </div>
                         <div class="p-6 border-t border-slate-100 bg-white">
-                            <button @click.prevent="showGroupMembersModal = false" class="w-full py-[10px] bg-amber-100 text-amber-900 border border-amber-200 rounded-2xl font-bold text-[18px] active:scale-95 transition-all shadow-sm">
+                            <button @click.prevent="showGroupMembersModal = false" class="w-full py-3.5 bg-indigo-600 text-white border border-indigo-500 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg" style="color: white !important;">
                                 關閉預覽
                             </button>
                         </div>
@@ -1342,7 +1343,7 @@
                         </div>
                         <div class="p-8 bg-slate-50/50 border-t border-slate-100">
                             <button @click="selectPalaceGroup('各宮')" 
-                                    class="w-full py-5 bg-indigo-600 text-white rounded-[24px] text-[20px] font-black shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center group">
+                                    class="w-full py-5 bg-indigo-600 text-white rounded-[24px] text-[20px] font-black shadow-xl shadow-indigo-200 active:scale-[0.98] transition-all flex items-center justify-center group" style="color: white !important;">
                                 <span class="mr-2">✨</span>
                                 選擇全部 (各宮)
                                 <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1558,21 +1559,21 @@
                                 <p class="text-[15px] text-slate-500 font-bold">內容包含：{{ distributionModal.detectedNames.join('、') }}</p>
                             </div>
                             
-                            <div class="flex flex-col space-y-3 pt-2">
+                            <div class="flex flex-col space-y-4 pt-2">
                                 <!-- Primary Action: Distribute -->
                                 <button @click="executeDistributionSave('distribute')" 
-                                        class="w-full py-4 bg-[#FFB266] text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg">
+                                        class="w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg" style="color: white !important;">
                                     {{ distributionModal.detectedNames.length === 1 ? '存入「' + distributionModal.detectedNames[0] + '」資料夾' : '依內容自動分流儲存' }}
                                 </button>
                                 
                                 <!-- Secondary Action: Keep in Current -->
                                 <button @click="executeDistributionSave('keep')" 
-                                        class="w-full py-4 bg-[#F1F5F9] text-black rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all border border-slate-200">
+                                        class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg" style="color: white !important;">
                                     維持存入「{{ currentFolder?.name || '目前' }}」資料夾
                                 </button>
                                 
                                 <button @click="distributionModal.show = false" 
-                                        class="w-full py-3 text-slate-400 font-bold text-[15px] hover:text-slate-600 transition-colors">
+                                        class="w-full py-3 text-slate-400 font-bold text-[15px] active:scale-95 transition-all">
                                     取消錄入
                                 </button>
                             </div>
@@ -1603,11 +1604,11 @@
                             </div>
                         </div>
                         <p class="text-[13px] text-slate-500 font-bold mb-4 text-center">請選擇要使用哪位仙師儲存這筆資料：</p>
-                        <div class="flex flex-col space-y-2">
-                            <button @click="chooseMasterAndProceed(false)" class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
+                        <div class="flex flex-col space-y-3">
+                            <button @click="chooseMasterAndProceed(false)" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[16px] active:scale-[0.98] transition-all shadow-md" style="color: white !important;">
                                 使用目前資料夾：{{ masterMismatchModal.currentMasterName }}
                             </button>
-                            <button @click="chooseMasterAndProceed(true)" class="w-full py-3 bg-orange-100 text-orange-600 rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
+                            <button @click="chooseMasterAndProceed(true)" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-[16px] active:scale-[0.98] transition-all shadow-md" style="color: white !important;">
                                 使用貼上資料：{{ masterMismatchModal.detectedMasterName }}
                             </button>
                             <button @click="masterMismatchModal.show = false" class="w-full py-3 bg-slate-100 text-slate-500 rounded-2xl font-black text-[15px] active:scale-[0.98] transition-all">
@@ -1703,11 +1704,11 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[7vh] left-0 right-0 md:fixed md:bottom-[72px] md:left-0 md:right-0 px-6 py-2 pb-1 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-3 z-[1210]">
-                        <button @click="saveConfirmModal.show = false" class="px-10 py-[10px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
+                    <div class="fixed bottom-[7vh] left-0 right-0 md:fixed md:bottom-[72px] md:left-0 md:right-0 px-6 py-3 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
+                        <button @click="saveConfirmModal.show = false" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
-                        <button @click="performActualSave" class="flex-1 py-[10px] bg-[#FFB266] text-white rounded-2xl font-black text-[19px] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center">
+                        <button @click="performActualSave" class="flex-1 py-[12px] bg-amber-500 text-white rounded-2xl font-black text-[19px] shadow-lg shadow-amber-200/40 active:scale-[0.98] transition-all flex items-center justify-center" style="color: white !important;">
                             {{ saving ? '錄入中...' : '確認存檔' }}
                         </button>
                     </div>
@@ -1902,6 +1903,9 @@ const focusedDate = ref(null);
 const activeDropdownId = ref(null);
 const allExpanded = ref(false);
 const sortDesc = ref(true);
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
+const toastActionContext = ref(null);
 const reorderMode = ref(false);
 const inlineEditingId = ref(null);
 const inlineEditData = ref({
@@ -3303,17 +3307,40 @@ const editItem = (item) => {
     addMode.value = true; 
 };
 
-const deleteItem = async (id) => { 
-    if (!confirm('確定刪除？')) return; 
-    try { 
-        await axios.delete(`/teachings/${id}`); 
+const deleteItem = (id) => { 
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除這筆教導紀錄嗎？', type: 'deleteConfirm' };
+    openMenuId.value = null;
+};
+
+const executeToastAction = async () => {
+    if (!persistentToast.value) return;
+    const type = persistentToast.value.type;
+    
+    if (type === 'deleteConfirm') {
+        try { 
+            await axios.delete(`/teachings/${deleteConfirmId.value}`); 
+            persistentToast.value = { msg: '✓ 已成功刪除紀錄', type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+            focusedId.value = null;
+            focusedDate.value = null;
+            fetchItems(1); 
+        } catch (e) { 
+            persistentToast.value = { msg: '✖ 刪除失敗', type: 'error' };
+        }
+    } else if (type === 'clearConfirm') {
+        await executeClearTodayDaily();
+    } else if (type === 'switchConfirm') {
+        const date = toastActionContext.value;
+        focusedDate.value = date;
         focusedId.value = null;
-        focusedDate.value = null;
-        openMenuId.value = null;
-        fetchItems(1); 
-    } catch (e) { 
-        alert('刪除失敗'); 
-    } 
+        const newSet = new Set(collapsedDates.value);
+        newSet.delete(date);
+        collapsedDates.value = newSet;
+        persistentToast.value = null;
+    }
+    deleteConfirmId.value = null;
+    toastActionContext.value = null;
 };
 
 const duplicateItem = (item) => { 
@@ -4173,16 +4200,15 @@ const toggleDateCollapse = (date) => {
         const newSet = new Set(collapsedDates.value);
         newSet.add(date);
         collapsedDates.value = newSet;
-    } else if (focusedDate.value !== null) {
-        // Trying to switch focus -> show prompt
-        const oldDate = focusedDate.value.replace(/-/g, '/');
-        const newDate = date.replace(/-/g, '/');
-        if (confirm(`目前正在切閱「${oldDate}」的紀錄，是否關閉並改為查看「${newDate}」的開示內容？`)) {
-            focusedDate.value = date;
-            focusedId.value = null;
-            const newSet = new Set(collapsedDates.value);
-            newSet.delete(date); // Ensure it's expanded in focus mode
-            collapsedDates.value = newSet;
+        if (focusedDate.value !== null) {
+            // Trying to switch focus -> show prompt
+            const oldDate = focusedDate.value.replace(/-/g, '/');
+            const newDate = date.replace(/-/g, '/');
+            toastActionContext.value = date;
+            persistentToast.value = { 
+                msg: `目前正在切閱「${oldDate}」的紀錄，是否關閉並改為查看「${newDate}」的開示內容？`, 
+                type: 'switchConfirm' 
+            };
         }
     } else {
         // Fresh focus: Hide others (focusedDate handles this) and ensure this one is expanded
@@ -4237,8 +4263,14 @@ const copyAllToLine = async () => {
     } catch (e) { alert('複製失敗'); } finally { loading.value = false; }
 };
 
-const clearTodayDaily = async () => {
-    if (!confirm(`確定清空今日 (${form.value.date}) 的每日開示暫存區？\n此動作不會影響已分流至各仙師專區的原始紀錄。`)) return;
+const clearTodayDaily = () => {
+    persistentToast.value = { 
+        msg: `確定清空今日 (${form.value.date}) 的每日開示暫存區？\n此動作不會影響已分流至各仙師專區的原始紀錄。`, 
+        type: 'clearConfirm' 
+    };
+};
+
+const executeClearTodayDaily = async () => {
     loading.value = true;
     try {
         const res = await axios.get('/teachings', { params: { master_id: 5, per_page: 200, is_daily: 1 } });
@@ -4854,6 +4886,7 @@ onMounted(syncRecords);
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

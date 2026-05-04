@@ -24,24 +24,40 @@ class TeachingController extends Controller
         $search = $request->query('search');
         
         $permissions = auth()->user()->getPermissions();
-        // Block general users from accessing daily teachings (master_id explicitly = 0)
-        // Use strict check: PHP's null == 0 is true (loose), which incorrectly blocks requests
-        // from MobileDashboard that send no master_id at all.
         $isRequestingDaily = ($masterId === '0' || $masterId === 0 || (is_numeric($masterId) && (int)$masterId === 0 && $masterId !== null));
         if ($isRequestingDaily && !$permissions['can_see_daily_teachings']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        $folderCounts = Teaching::select('master_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('master_id')
+            ->get()
+            ->pluck('total', 'master_id');
+        
+        $dailyCount = Teaching::where('is_daily', 1)->count();
+        $folderCounts['daily'] = $dailyCount;
 
         if ($mode === 'dates') {
-            return response()->json($this->teachingService->getPaginatedDates($masterId, $perPage));
+            $data = $this->teachingService->getPaginatedDates($masterId, $perPage);
+            return response()->json([
+                'data' => $data,
+                'folderCounts' => $folderCounts
+            ]);
         }
 
         if ($date) {
-            return response()->json($this->teachingService->getByDate($date, $masterId));
+            $records = $this->teachingService->getByDate($date, $masterId);
+            return response()->json([
+                'records' => $records,
+                'folderCounts' => $folderCounts
+            ]);
         }
 
-        return response()->json($this->teachingService->getAll($masterId, $perPage, $search));
+        $records = $this->teachingService->getAll($masterId, $perPage, $search);
+        return response()->json([
+            'records' => $records,
+            'folderCounts' => $folderCounts
+        ]);
     }
 
     public function store(Request $request)

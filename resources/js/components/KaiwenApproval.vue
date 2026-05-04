@@ -285,20 +285,27 @@ const copyToLine = () => {
         return;
     }
 
-    let text = `✓代表合格×代表不合格\n`;
+    let text = `✓ 代表合格 × 代表不合格\n`;
     text += `開文結果請示如下：\n`;
     
     selectionList.value.forEach(item => {
-        // Output active slots for this specific item
         const count = item.slotCount || 3;
-        let slots = item.slots.slice(0, count).map(s => {
-            if (s === 'v') return '✓';
-            if (s === 'x') return '× ';
-            return '　'; // full-width ideographic space
-        });
+        const symbols = item.slots.slice(0, count)
+            .filter(s => s === 'v' || s === 'x')
+            .map(s => s === 'v' ? '✓' : '×');
         
-        // Full-width semicolon as separator
-        const results = slots.join('；');
+        if (symbols.length === 0) return;
+
+        let results = '';
+        if (symbols.length > 0) {
+            results = symbols[0];
+            if (symbols.length > 1) {
+                results += ' ; ' + symbols[1];
+                for (let i = 2; i < symbols.length; i++) {
+                    results += '、' + symbols[i];
+                }
+            }
+        }
         
         text += `${item.name}：${results}\n`;
     });

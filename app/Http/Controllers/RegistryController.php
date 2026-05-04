@@ -38,6 +38,12 @@ class RegistryController extends Controller
 
         $query->orderBy('sort_order', 'asc');
         
+        $folderCounts = Registry::select('master_id', DB::raw('count(*) as total'))
+            ->where('user_id', $user->id)
+            ->groupBy('master_id')
+            ->get()
+            ->pluck('total', 'master_id');
+
         $categoryCounts = Registry::select('category', DB::raw('count(*) as total'))
             ->where('user_id', $user->id)
             ->groupBy('category')
@@ -45,7 +51,8 @@ class RegistryController extends Controller
             ->pluck('total', 'category');
 
         return response()->json([
-            'registries' => $query->paginate($request->input('per_page', 20)),
+            'registries' => $query->paginate($request->input('per_page', 10)),
+            'folderCounts' => $folderCounts,
             'categoryCounts' => $categoryCounts
         ]);
     }

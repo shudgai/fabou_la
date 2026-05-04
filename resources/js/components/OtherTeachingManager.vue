@@ -1,5 +1,26 @@
 <template>
-    <div class="h-[100vh] bg-white flex justify-center text-slate-900 overflow-hidden">
+    <div class="h-[100dvh] bg-white flex flex-col text-slate-900 overflow-hidden">
+        <!-- Delete Confirmation / Status Toast -->
+        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
+                        {{ persistentToast.msg }}
+                    </span>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">確定刪除</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-indigo-50 text-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">確定</button>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <datalist id="target-datalist">
                 <option v-for="dn in dharmaNames" :key="'dn'+dn.id" :value="dn.name" />
@@ -220,6 +241,8 @@ const showMasterDropdown = ref(false);
 const showTargetDropdown = ref(false);
 const masterNameInput = ref('');
 const targetRemarksInput = ref('');
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
 
 const staticMasters = [
     { name: '老祖仙師' }, { name: '元始仙師' }, { name: '道祖仙師' }, { name: '靈寶仙師' },
@@ -393,15 +416,24 @@ const saveRecord = async () => {
     }
 };
 
-const deleteRecord = async (id) => {
-    if (!confirm('確定要刪除此筆記錄嗎？')) return;
+const deleteRecord = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除此筆記錄嗎？', type: 'deleteConfirm' };
+    activeActionMenuId.value = null;
+};
+
+const executeDelete = async () => {
+    if (!deleteConfirmId.value) return;
     try {
-        await axios.delete(`/other-teachings/${id}`);
+        await axios.delete(`/other-teachings/${deleteConfirmId.value}`);
+        persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 1500);
         await loadData();
-        activeActionMenuId.value = null;
     } catch (e) {
-        console.error('Failed to delete record', e);
-        alert('刪除失敗');
+        console.error('Delete failed:', e);
+        persistentToast.value = { msg: '刪除失敗', type: 'error' };
+    } finally {
+        deleteConfirmId.value = null;
     }
 };
 

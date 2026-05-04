@@ -124,10 +124,11 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
+            <div class="absolute bottom-[7vh] left-0 right-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 text-white font-bold py-[10px] px-4 text-[20px] rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all"
+                    class="w-full bg-indigo-600 text-white font-black h-[52px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
+                    style="color: white !important;"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
@@ -257,6 +258,7 @@ const handleSave = () => {
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up {
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }

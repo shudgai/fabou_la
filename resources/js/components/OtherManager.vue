@@ -1,5 +1,5 @@
 <template>
-    <div class="h-full bg-white flex flex-col other-manager-module relative">
+    <div class="h-[100dvh] bg-white flex flex-col other-manager-module relative overflow-hidden">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>

@@ -29,9 +29,9 @@
                 </div>
                 
                 <!-- Import Button -->
-                <button @click="$refs.fileInput.click()" class="bg-emerald-50 border border-emerald-100 text-emerald-600 px-3 h-14 rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all">
+                <button @click="$refs.fileInput.click()" class="bg-emerald-600 text-white px-4 h-[52px] rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-md border border-emerald-500" style="color: white !important;">
                     <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    <span class="text-[11px] font-bold">匯入他檔</span>
+                    <span class="text-[11px] font-black">匯入他檔</span>
                 </button>
                 <input type="file" ref="fileInput" @change="handleFileImport" accept=".xlsx, .xls" class="hidden">
 
@@ -65,13 +65,13 @@
 
 
         <!-- Bottom Save Action Bar (Fixed at absolute bottom with safe area) -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
-                class="w-full bg-indigo-600 text-white font-black py-[14px] rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
+                class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"
             >
                 <svg v-if="!processing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span class="text-[19px] tracking-widest">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
+                <span class="text-[20px] tracking-widest">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
             </button>
         </div>
     </div>
@@ -323,6 +323,7 @@ const handleBatchSave = async () => {
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 

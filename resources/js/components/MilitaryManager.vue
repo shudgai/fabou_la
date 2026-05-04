@@ -1,5 +1,26 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+        <!-- Delete Confirmation / Status Toast -->
+        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
+                        {{ persistentToast.msg }}
+                    </span>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -19,7 +40,7 @@
                 </div>
             </div>
             <div class="absolute right-2 top-1/2 -translate-y-1/2">
-                <button @click="sortDesc = !sortDesc" class="px-1 py-0.5 text-[10px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -36,10 +57,10 @@
                 </h2>
             </div>
             <div class="ml-2 flex items-center space-x-2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[13px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
+                <button @click="toggleFullTotal" class="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important;">
                     總數
                 </button>
             </div>
@@ -82,10 +103,11 @@
                                 <path d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center px-6">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center px-6">
                                 <span class="text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important; font-size: 53px !important;">
                                     {{ folder.name }}
                                 </span>
+                                <div class="text-[18px] font-bold text-white/80 mt-2">共 {{ armyCounts[folder.name] || 0 }} 筆</div>
                             </div>
                         </div>
 
@@ -96,8 +118,9 @@
                                       :fill="'url(#mm-fGrad' + folder.id + ')'" 
                                       stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center px-4">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="text-[46px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 46px !important; font-weight: 900 !important;">{{ folder.name }}</span>
+                                <div class="text-[14px] font-bold text-white/80 mt-1">共 {{ armyCounts[folder.name] || 0 }} 筆</div>
                             </div>
                         </div>
                     </button>
@@ -378,15 +401,17 @@ const hideCumulativeAction = () => {
 const searchQuery = ref('');
 const openMenuId = ref(null);
 const items = ref([]);
+const armyCounts = ref({});
+const breakdownTotals = ref({ yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 });
 const users = ref([]);
 const loading = ref(true);
 const editingId = ref(null);
 const focusedId = ref(null);
-const deleteConfirmId = ref(null);
-const sortDesc = ref(true);
 const openStatusId = ref(null);
 const showFullTotal = ref(false);
 const paginationMeta = ref(null);
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
 const currentPage = ref(1);
 let fullTotalTimer = null;
 
@@ -489,21 +514,9 @@ const groupedItems = computed(() => {
 });
 
 const totalQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
-const currentFolderTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const currentFolderTotal = computed(() => paginationMeta.value?.total || 0);
 
-const breakdownTotals = computed(() => {
-    return filteredItems.value.reduce((acc, i) => {
-        acc.yan_zun += (Number(i.yan_zun) || 0);
-        acc.yan_an += (Number(i.yan_an) || 0);
-        acc.long_sheng += (Number(i.long_sheng) || 0);
-        acc.long_zhan += (Number(i.long_zhan) || 0);
-        acc.yan_jue += (Number(i.yan_jue) || 0);
-        acc.yan_ze += (Number(i.yan_ze) || 0);
-        acc.yan_di += (Number(i.yan_di) || 0);
-        acc.yan_yuan += (Number(i.yan_yuan) || 0);
-        return acc;
-    }, { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0, yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0 });
-});
+// breakdownTotals is now a ref populated from server
 
 const toggleMenu = (id) => { openMenuId.value = openMenuId.value === id ? null : id; };
 const toggleStatusMenu = (id) => { openStatusId.value = openStatusId.value === id ? null : id; };
@@ -774,12 +787,15 @@ const loadData = async (page = 1) => {
             axios.get(`/api/dharma-names-list?t=${ts}`) 
         ]);
         
-        items.value = res.data.data || [];
+        const recData = res.data.records;
+        items.value = recData.data || [];
         paginationMeta.value = {
-            current_page: res.data.current_page,
-            last_page: res.data.last_page,
-            total: res.data.total
+            current_page: recData.current_page,
+            last_page: recData.last_page,
+            total: recData.total
         };
+        armyCounts.value = res.data.armyCounts || {};
+        breakdownTotals.value = res.data.breakdownTotals || { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
         users.value = dres.data;
     } catch (e) { 
         console.error('Load data failed:', e);
@@ -834,12 +850,26 @@ const editItem = (item) => {
     openMenuId.value = null;
 };
 
-const deleteItem = async (id) => {
-    if (!confirm('刪除？')) return;
-    await axios.delete(`/military-records/${id}`);
-    focusedId.value = null;
+const deleteItem = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除此筆軍隊紀錄嗎？', type: 'deleteConfirm' };
     openMenuId.value = null;
-    loadData();
+};
+
+const executeDelete = async () => {
+    if (!deleteConfirmId.value) return;
+    try {
+        await axios.delete(`/military-records/${deleteConfirmId.value}`);
+        persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 1500);
+        focusedId.value = null;
+        loadData(currentPage.value);
+    } catch (e) {
+        console.error('Delete failed:', e);
+        persistentToast.value = { msg: '刪除失敗，請稍後再試', type: 'error' };
+    } finally {
+        deleteConfirmId.value = null;
+    }
 };
 
 const formatDate = (dateStr) => {
@@ -912,6 +942,12 @@ onMounted(loadData);
 
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
 .animate-slide-up { animation: slideUp 0.15s ease-out; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>

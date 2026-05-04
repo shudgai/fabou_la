@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-50 h-[100vh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
         <AddActionMenu 
             :show="showAddMenu" 
             :actions="addActions" 
@@ -24,13 +24,15 @@
             <!-- Tab Switcher (Only in main list view, hide when expanded or in add mode) -->
             <div v-if="!addMode && !hasAnyExpanded && !showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
-                    :class="currentTab === 'weekly' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
-                    class="px-3 py-1.5 app-body text-[17px] font-bold rounded-lg transition-all whitespace-nowrap">
+                    :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
+                    class="px-4 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap"
+                    :style="{ color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
                     每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
-                    :class="currentTab === 'self' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-400'"
-                    class="px-3 py-1.5 app-body text-[17px] font-bold rounded-lg transition-all whitespace-nowrap">
+                    :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
+                    class="px-4 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap"
+                    :style="{ color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
                     自行開文
                 </button>
             </div>
@@ -57,11 +59,11 @@
                     </button>
                 </div>
                 <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
-                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                    <button @click="executeDelete" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">確定刪除</button>
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-purple-50 text-purple-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">確定</button>
+                    <button @click="persistentToast = null" class="bg-purple-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-purple-100" style="color: white !important;">確定</button>
                 </div>
             </div>
         </div>
@@ -94,9 +96,9 @@
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ (post.title || '').replace(/\s+/g, '').substring(7, 14) }}</span>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
-                                <span v-if="post.status === '合格'" style="color: #16a34a !important;" class="text-[17px] font-black tracking-widest">合格</span>
-                                <span v-else-if="post.status === '不合格'" style="color: #dc2626 !important;" class="text-[17px] font-black tracking-widest">不合格</span>
-                                <span v-else class="text-[17px] font-black tracking-widest text-slate-400">待定</span>
+                                <span v-if="post.status === '合格'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg">合格</span>
+                                <span v-else-if="post.status === '不合格'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-lg">不合格</span>
+                                <span v-else class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
@@ -184,7 +186,7 @@
                                 <p v-else class="text-[18px] font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
                             <div v-else-if="post.status === '合格'" class="pt-4">
-                                <button @click.stop="openPostMode(post, 'weekly')" class="w-full py-4 bg-purple-50 text-purple-600 rounded-2xl border border-purple-100 font-black text-[17px] tracking-widest hover:bg-purple-100 transition-all flex items-center justify-center">
+                                <button @click.stop="openPostMode(post, 'weekly')" class="w-full py-4 bg-purple-600 text-white rounded-2xl border border-purple-500 font-black text-[17px] tracking-widest shadow-lg shadow-purple-100 active:scale-95 transition-all flex items-center justify-center" style="color: white !important;">
                                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     上傳殿中貼文圖片
                                 </button>
@@ -217,10 +219,9 @@
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ getSelfPreview(post.original_content) }}</span>
                             </div>
                              <div class="flex items-center space-x-2 self-start">
-                                <span :style="`color: ${post.message_type === '玄訊' ? '#16a34a' : post.message_type === '非玄訊' ? '#92400e' : '#94a3b8'} !important`"
-                                    class="app-body !font-bold shrink-0 tracking-widest">
-                                    {{ post.message_type || '待定' }}
-                                </span>
+                                <span v-if="post.message_type === '玄訊'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg">玄訊</span>
+                                <span v-else-if="post.message_type === '非玄訊'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg">非玄訊</span>
+                                <span v-else class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg">待定</span>
                                 
                                 <template v-if="!expandedIds[post.id]">
                                     <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
@@ -329,18 +330,21 @@
                             </select>
                         </div>
 
-                        <div v-if="addMode === 'weekly'" class="space-y-1">
+                        <div v-if="addMode === 'weekly'" class="space-y-1.5">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">審核狀態</label>
-                            <div class="flex items-center space-x-5 h-[36px] px-2">
+                            <div class="flex items-center space-x-2 h-[44px]">
                                 <button @click="form.status = null" 
-                                    :class="!form.status ? 'text-slate-900 opacity-100' : 'text-slate-400 opacity-40'" 
-                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">待定</button>
+                                    :class="!form.status ? 'bg-slate-500 text-white border-slate-600 shadow-md' : 'bg-slate-50 text-slate-400 border-slate-100'" 
+                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :style="{ color: !form.status ? 'white !important' : '#94a3b8 !important' }">待定</button>
                                 <button @click="form.status = '合格'" 
-                                    :class="form.status === '合格' ? 'text-[#16a34a] opacity-100' : 'text-slate-400 opacity-40'" 
-                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">合格</button>
+                                    :class="form.status === '合格' ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-400 border-slate-100'" 
+                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :style="{ color: form.status === '合格' ? 'white !important' : '#94a3b8 !important' }">合格</button>
                                 <button @click="form.status = '不合格'" 
-                                    :class="form.status === '不合格' ? 'text-[#dc2626] opacity-100' : 'text-slate-400 opacity-40'" 
-                                    class="transition-all active:scale-95 tracking-widest text-[17px] font-black">不合格</button>
+                                    :class="form.status === '不合格' ? 'bg-rose-600 text-white border-rose-500 shadow-lg' : 'bg-slate-50 text-slate-400 border-slate-100'" 
+                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :style="{ color: form.status === '不合格' ? 'white !important' : '#94a3b8 !important' }">不合格</button>
                             </div>
                         </div>
 
@@ -410,8 +414,8 @@
                                     <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                                 </div>
                                 <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
-                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-6 py-3 bg-white border border-purple-200 rounded-2xl text-purple-600 font-black shadow-sm hover:bg-purple-50 transition-all active:scale-95">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 py-4 bg-purple-600 text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="color: white !important;">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                         <span class="app-body">上傳圖片檔案</span>
                                     </button>
                                 </div>
@@ -428,10 +432,10 @@
             <!-- Form Footer (Fixed at bottom) -->
             <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky bottom-0 z-[110]">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 h-[44px] rounded-xl font-black text-[16px] text-slate-500 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-all active:scale-[0.98] tracking-widest">取消返回</button>
+                    <button @click="addMode = null" class="flex-1 h-[52px] rounded-2xl font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
                         style="color: #ffffff !important;"
-                        class="flex-[2] bg-purple-600 h-[44px] rounded-xl font-black text-[18px] shadow-lg shadow-purple-100 hover:bg-purple-700 active:scale-[0.98] transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
+                        class="flex-[2] bg-purple-600 h-[52px] rounded-2xl font-black text-[19px] shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>
@@ -1119,6 +1123,7 @@ const executeDelete = async () => {
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }

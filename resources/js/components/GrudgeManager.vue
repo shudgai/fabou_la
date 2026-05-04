@@ -1,12 +1,33 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+        <!-- Delete Confirmation / Status Toast -->
+        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
+                        {{ persistentToast.msg }}
+                    </span>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
             <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
                 <h1 class="text-[28px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 28px !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 font-black bg-indigo-50 rounded-lg active:scale-95 transition-all opacity-90 tracking-tighter border border-indigo-100" style="font-size: 12px !important;">
+                <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[14px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 14px !important; color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
@@ -204,6 +225,8 @@ const addMode = ref(false);
 const activeDateGroup = ref(null);
 const showAddMenu = ref(false);
 const openMenuId = ref(null);
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
 const items = ref([]);
 const users = ref([]);
 const loading = ref(true);
@@ -562,12 +585,26 @@ const editItem = (item) => {
     openMenuId.value = null;
 };
 
-const deleteItem = async (id) => {
-    if (!confirm('確定要刪除這筆資料嗎？')) return;
-    await axios.delete(`/grudges/${id}`);
-    focusedId.value = null;
+const deleteItem = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除這筆資料嗎？', type: 'deleteConfirm' };
     openMenuId.value = null;
-    loadData();
+};
+
+const executeDelete = async () => {
+    if (!deleteConfirmId.value) return;
+    try {
+        await axios.delete(`/grudges/${deleteConfirmId.value}`);
+        persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 1500);
+        focusedId.value = null;
+        loadData();
+    } catch (e) {
+        console.error('Delete failed:', e);
+        persistentToast.value = { msg: '刪除失敗', type: 'error' };
+    } finally {
+        deleteConfirmId.value = null;
+    }
 };
 
 const copyItem = async (item) => {
@@ -679,7 +716,8 @@ onMounted(() => {
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.3s ease-in; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

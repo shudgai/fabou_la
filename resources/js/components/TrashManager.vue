@@ -1,7 +1,7 @@
 <template>
-    <div class="h-full bg-slate-50 flex flex-col pt-6 px-4 pb-20 w-full md:max-w-xl md:mx-auto">
+    <div class="h-[100dvh] bg-slate-50 flex flex-col overflow-hidden w-full md:max-w-xl md:mx-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-8 pt-6 px-4 shrink-0">
             <div>
                 <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 28px !important;">回收站專區</h1>
                 <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Recycle Bin</p>
@@ -14,7 +14,7 @@
         </div>
 
         <!-- System Message -->
-        <div class="bg-indigo-50 border border-indigo-100/50 rounded-2xl p-4 mb-8 flex items-start space-x-3">
+        <div class="bg-indigo-50 border border-indigo-100/50 rounded-2xl p-4 mb-8 flex items-start space-x-3 mx-4 shrink-0">
             <div class="p-2 bg-indigo-100 rounded-xl text-indigo-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Trash List -->
-        <div v-else-if="items.length > 0" class="space-y-3">
+        <div v-else-if="items.length > 0" class="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-3 pb-32">
             <div v-for="item in items" :key="item.type + item.id" 
                 class="bg-white p-5 rounded-[28px] border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group overflow-hidden relative">
                 

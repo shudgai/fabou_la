@@ -138,10 +138,11 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="p-4 bg-white border-t border-slate-50">
+            <div class="p-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 text-white font-bold py-[10px] text-[20px] rounded-xl hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center"
+                    class="w-full bg-indigo-600 text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
+                    style="color: white !important;"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
@@ -170,10 +171,11 @@
                         <div class="space-y-6">
                             <div v-for="opt in ['未處理']" :key="opt"
                                 @click="form.destination = opt; onDestinationChange(); showResultPicker = false"
-                                class="cursor-pointer font-normal text-[17px] leading-tight transition-all active:scale-95"
+                                class="h-[48px] flex items-center px-4 rounded-xl border font-black text-[17px] leading-tight transition-all active:scale-95 cursor-pointer"
                                 :class="[
-                                    form.destination === opt ? 'text-indigo-600' : 'text-slate-900'
+                                    form.destination === opt ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-slate-50 text-slate-900 border-slate-100'
                                 ]"
+                                :style="{ color: form.destination === opt ? 'white !important' : '#0f172a !important' }"
                             >
                                 {{ opt }}
                             </div>
@@ -182,12 +184,14 @@
                         <div class="space-y-6">
                             <div v-for="opt in ['九天', '黑曜軍', '虎賁軍', '虎甲軍', '耀紫軍']" :key="opt"
                                 @click="form.destination = opt; onDestinationChange(); showResultPicker = false"
-                                class="cursor-pointer font-normal text-[17px] leading-tight transition-all active:scale-95"
+                                class="h-[48px] flex items-center px-4 rounded-xl border font-black text-[17px] leading-tight transition-all active:scale-95 cursor-pointer"
                                 :class="[
-                                    form.destination === opt ? 'text-indigo-600' : 'text-slate-900',
-                                    opt === '九天' && form.destination !== opt ? 'text-red-600' : 
-                                    opt === '耀紫軍' && form.destination !== opt ? 'text-purple-600' : ''
+                                    form.destination === opt ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-slate-50 border-slate-100',
+                                    (opt === '九天' && form.destination !== opt) ? 'text-rose-600' : 
+                                    (opt === '耀紫軍' && form.destination !== opt) ? 'text-purple-600' : 
+                                    (form.destination !== opt) ? 'text-slate-900' : ''
                                 ]"
+                                :style="{ color: form.destination === opt ? 'white !important' : '' }"
                             >
                                 {{ opt }}
                             </div>
@@ -299,6 +303,7 @@ const handleSave = () => {
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up {
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }

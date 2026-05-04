@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="h-[100dvh] overflow-hidden overscroll-none">
         <!-- MOBILE VIEW -->
         <div class="block md:hidden">
             <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate"></mobile-dashboard>

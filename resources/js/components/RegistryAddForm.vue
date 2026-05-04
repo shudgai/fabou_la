@@ -10,9 +10,6 @@
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
                     <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-red-600">法寶登記專區</div>
-                    <div class="text-[1.4rem] font-bold mt-2 font-outfit text-slate-900 leading-tight break-words" style="font-size: 1.4rem !important;">
-                        {{ (form.category === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ selectedMasterName || '請選擇仙師' }}
-                    </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -21,8 +18,8 @@
 
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
-                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'single' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-50']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[10px] rounded-xl text-[16px] font-bold transition-all whitespace-nowrap">多筆載錄</button>
+                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" :style="localMode === 'single' ? 'color: white !important;' : ''" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">逐筆登錄</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">多筆載錄</button>
             </div>
 
             <!-- Scrollable Content -->
@@ -114,7 +111,7 @@
                 <div v-if="localMode === 'single'" class="space-y-6">
                         <div class="flex items-center justify-between ml-1">
                             <label class="text-[15px] font-bold text-red-600 uppercase tracking-tight">承接皇恩的師兄姐</label>
-                            <button @click="addPersonnelRow" class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-[12px] font-bold active:scale-95 transition-all shadow-sm" style="color: white !important;">
+                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-indigo-600 text-white rounded-xl text-[13px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">
                                 ＋ 新增人員
                             </button>
                         </div>
@@ -200,13 +197,6 @@
 
                         <!-- Palace Logic Notice & Table -->
                         <div v-if="isPalaceMode" class="mt-6 space-y-4">
-                            <div v-if="!hasPalaceName" class="p-6 bg-red-50 border-2 border-red-100 rounded-[24px] text-center space-y-2 animate-fade-in">
-                                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </div>
-                                <div class="text-[17px] font-black text-red-600">若是各宮載錄</div>
-                                <div class="text-[15px] font-bold text-red-400 leading-relaxed">請至少於上方輸入一個宮名<br>（如：玄通宮）<br>系統將自動開啟各宮列表</div>
-                            </div>
 
                             <div v-if="hasPalaceName" class="overflow-x-auto rounded-[24px] border border-slate-100 shadow-sm bg-white animate-fade-in">
                                 <table class="w-full border-collapse bg-white text-[16px]">
@@ -325,13 +315,13 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10]">
-                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px]" style="color: white !important;">
-                    {{ isSaving ? '儲存中...' : '儲存' }}
+            <div class="absolute bottom-[7vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white h-[52px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important;">
+                    {{ isSaving ? '儲存中...' : '確認載錄' }}
                 </button>
                 <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0" 
-                    class="w-full bg-blue-600 text-white rounded-2xl font-bold text-[20px] py-[10px] transition-all disabled:opacity-50" style="color: white !important;">
-                    {{ isSaving ? '儲存中...' : `儲存這 ${parsedItemsCount} 筆資料` }}
+                    class="w-full bg-blue-600 text-white h-[52px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest disabled:opacity-50" style="color: white !important;">
+                    {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
                 </button>
             </div>
 
@@ -966,6 +956,11 @@ defineExpose({ updatePersonnelRemarks });
 </script>
 
 <style scoped>
+.tab-button.active { background-color: #2563eb !important; color: white !important; }
+.save-button { background-color: #2563eb !important; color: white !important; height: 52px; font-size: 18px; }
+.add-personnel-button { background-color: #4f46e5 !important; color: white !important; font-size: 18px; }
+.btn { font-size: 18px; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 .animate-pop-in { animation: popIn 0.25s cubic-bezier(0.2, 1, 0.3, 1); }

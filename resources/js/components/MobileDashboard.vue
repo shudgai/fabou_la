@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
+    <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
         <div style="padding: 16px 20px 8px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[60px] shrink-0">
             <h1 style="font-size: 34px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.025em;">皇恩筆記本</h1>

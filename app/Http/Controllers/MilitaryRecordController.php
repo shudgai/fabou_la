@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MilitaryRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MilitaryRecordController extends Controller
 {
@@ -27,7 +28,21 @@ class MilitaryRecordController extends Controller
 
         $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
-        return $query->paginate(20);
+        $armyCounts = MilitaryRecord::select('army_type', DB::raw('count(*) as total'))
+            ->where('user_id', $user->id)
+            ->groupBy('army_type')
+            ->get()
+            ->pluck('total', 'army_type');
+        
+        $breakdownTotals = MilitaryRecord::where('user_id', $user->id)
+            ->selectRaw('SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan')
+            ->first();
+
+        return response()->json([
+            'records' => $query->paginate($request->input('per_page', 10)),
+            'armyCounts' => $armyCounts,
+            'breakdownTotals' => $breakdownTotals
+        ]);
     }
 
     public function store(Request $request)
