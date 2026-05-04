@@ -125,7 +125,8 @@ const loadStats = async () => {
         if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.total || tre.value.data?.length || 0;
         if (teach.status === 'fulfilled') {
             const res = teach.value.data;
-            counts.value['teaching'] = res.total !== undefined ? res.total : (res.data ? res.data.length : res.length || 0);
+            const recordsObj = res.records || res;
+            counts.value['teaching'] = recordsObj.total !== undefined ? recordsObj.total : (recordsObj.data ? recordsObj.data.length : recordsObj.length || 0);
         }
         if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.total || grud.value.data?.length || 0;
         if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.total || mil.value.data?.length || 0;

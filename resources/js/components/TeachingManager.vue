@@ -80,8 +80,13 @@
                 <option value="前身三大穴" />
                 <option value="後身二大穴" />
             </datalist>
-
-            <div v-if="currentCategory !== null || currentFolder !== null || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
+            <!-- Global Main Title -->
+            <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full md:max-w-xl md:mx-auto z-[120]" @click="resetToRoot">
+                <div class="flex-1">
+                    <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+                </div>
+            </div>
+            <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
                 <div v-if="currentFolder !== null && !addMode" class="flex-1 flex flex-col justify-center min-w-0 pl-1">
                     <div class="text-[24px] font-black text-slate-900 tracking-tight truncate font-outfit" style="font-size: 24px !important;">
                         {{ currentFolder ? currentFolder.name : '父皇仙師開示專區' }}
@@ -110,29 +115,22 @@
                 </div>
             </div>
 
-            <!-- Level 1: Two Major Categories (Refined Aesthetic) -->
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
-                    <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px] cursor-pointer" @click="resetToRoot">
-                        <div class="flex-1">
-                            <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
-                        </div>
-                    </div>
-                
-                <div class="px-[10px] pb-24 flex flex-col items-center space-y-2 mt-6 max-w-lg mx-auto">
+                    <div class="px-[10px] pb-24 flex flex-col items-center space-y-2 mt-6 max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px] md:mb-6">
-                        <div class="relative w-[260px] h-[260px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[360px] md:h-[360px] md:mb-6">
+                        <div class="relative w-[300px] h-[300px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[52px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 52px !important;">
-                                    每日<br>開示
+                                <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                                    父皇仙師<br>每日開示
                                 </span>
                             </div>
                         </div>
@@ -141,8 +139,8 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[320px] md:h-[320px]">
-                        <div class="relative w-[260px] h-[260px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[360px] md:h-[360px]">
+                        <div class="relative w-[300px] h-[300px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#818cf8" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
@@ -150,7 +148,7 @@
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
                                 <span class="text-[52px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
-                                    仙師開示<br>載錄
+                                    父皇仙師<br>開示載錄
                                 </span>
                             </div>
                         </div>
@@ -159,15 +157,16 @@
             </div>
         </template>
             
-            <!-- Level 1.5: Subfolders for Masters -->
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white max-w-2xl mx-auto">
-                <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] border-b border-slate-50 sticky top-0 bg-white z-30">
-                    <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <h2 class="absolute inset-x-0 text-[24px] font-black tracking-tight text-center text-slate-900 pointer-events-none">仙師開示載錄資料夾</h2>
-                </div>
+                    <div class="pt-[5px] pb-2 flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
+                        <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
+                        <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
+                            <span class="text-[24px] font-black text-slate-900">父皇仙師開示載錄</span>
+                        </div>
+                    </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
@@ -277,14 +276,14 @@
                                         <label class="text-[13px] text-slate-400 font-bold px-1">備註對象</label>
                                         <div class="border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
                                             <input v-model="form.target_remarks" 
-                                                   @focus="activeTargetRemarksDropdown = true"
+                                                   @focus="activeTargetRemarksDropdown = 'single'"
                                                    autocomplete="off"
                                                    placeholder="備註對象..." 
                                                    class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-blue-300 placeholder:text-[17px]">
-                                            <button @click.stop="activeTargetRemarksDropdown = !activeTargetRemarksDropdown" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
-                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <button @click.stop="activeTargetRemarksDropdown = (activeTargetRemarksDropdown === 'single' ? null : 'single')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown === 'single' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activeTargetRemarksDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activeTargetRemarksDropdown === 'single'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="opt in relationshipOptions" :key="opt"
                                                      @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
                                                      class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -344,6 +343,70 @@
                                         <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-xl text-[12px] font-black active:scale-95 transition-all">
                                             智慧解析
                                         </button>
+                                    </div>
+                                </div>
+
+                                <!-- Batch Recipient Picker (Added per user request) -->
+                                <div class="grid grid-cols-12 gap-3 mb-4 bg-slate-50/50 p-4 rounded-[28px] border border-slate-100">
+                                    <div class="col-span-7 space-y-0.5">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-[13px] text-slate-400 font-bold px-1">批次指定對象</label>
+                                            <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
+                                        </div>
+                                        <div class="border border-slate-400 rounded-2xl bg-white pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative shadow-sm">
+                                            <input type="text" 
+                                                   @input="e => { activePractitionerDropdownId = 'batchPract'; handleDharmaSearchInput(e) }" 
+                                                   @focus="activePractitionerDropdownId = 'batchPract'"
+                                                   v-model="dharmaSearchQuery"
+                                                   placeholder="搜尋法號或群組..." 
+                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
+                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'batchPract' ? null : 'batchPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'batchPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activePractitionerDropdownId === 'batchPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
+                                                <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn_batch'+dn.id"
+                                                     @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ dn.name }}
+                                                </div>
+                                                <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
+                                                <div v-for="g in mainSearchFilteredGroups" :key="'g_batch'+g.id"
+                                                     @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ formatGroupName(g.name) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-5 space-y-0.5">
+                                        <label class="text-[13px] text-slate-400 font-bold px-1">批次備註</label>
+                                        <div class="border border-slate-400 rounded-2xl bg-white pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative shadow-sm">
+                                            <input v-model="form.target_remarks" 
+                                                   @focus="activeTargetRemarksDropdown = 'batch'"
+                                                   placeholder="備註對象..." 
+                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-blue-300">
+                                            <button @click.stop="activeTargetRemarksDropdown = (activeTargetRemarksDropdown === 'batch' ? null : 'batch')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown === 'batch' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeTargetRemarksDropdown === 'batch'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="opt in relationshipOptions" :key="opt"
+                                                     @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = null"
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ opt }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="form.dharma_name_ids.length > 0" class="col-span-12 mt-2">
+                                        <div class="flex flex-wrap gap-2">
+                                            <span v-for="id in form.dharma_name_ids" :key="id" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[13px] font-black flex items-center">
+                                                {{ getDharmaNameText(id) }}
+                                                <button @click="form.dharma_name_ids = form.dharma_name_ids.filter(x => x !== id)" class="ml-1.5 text-indigo-300 hover:text-red-500">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
@@ -1477,11 +1540,11 @@
                                             <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <div class="text-[13px] font-bold text-slate-900 leading-none">
+                                            <div class="text-[17px] font-bold text-slate-900 leading-none">
                                                 {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                             </div>
                                             <!-- Content/Item Summary in List Header -->
-                                            <div class="mt-[3px] text-[12px] font-normal text-slate-400 truncate leading-none">
+                                            <div class="mt-[3px] text-[17px] font-normal text-slate-400 truncate leading-none">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
                                                 <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
@@ -1523,19 +1586,54 @@
                                         <!-- Backdrop (click to close) -->
                                         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(item.id)"></div>
                                         <!-- Content Panel -->
-                                        <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
-                                        <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
-                                            <!-- Header -->
+                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
+                                            <!-- Global Main Title (Added) -->
+                                            <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
+                                                <div class="flex-1">
+                                                    <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+                                                </div>
+                                            </div>
+
+                                            <!-- Sub-folder Title (Added for consistency) -->
+                                            <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px]">
+                                                <span class="text-[24px] font-normal text-slate-900 tracking-tight">{{ (item.master?.name || item.master_name || '父皇').replace('仙師', '') }}仙師開示載錄</span>
+                                            </div>
+
+                                            <!-- Header (Sub-title Style) -->
                                             <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
                                                 <div class="flex flex-col">
-                                                    <div class="text-[15px] font-black text-slate-900 leading-tight">
+                                                    <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
+                                                    <div class="text-[17px] font-black text-slate-900 leading-tight">
                                                         {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                                     </div>
-                                                    <div class="text-[13px] font-bold text-slate-400 mt-0.5">{{ (item.date || '').replace(/-/g, '/') }}</div>
                                                 </div>
-                                                <button @click="toggleExpand(item.id)" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </button>
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="relative">
+                                                        <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-rose-500 active:scale-95 transition-transform">
+                                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                        </button>
+                                                        <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] overflow-hidden p-1.5 focus:outline-none">
+                                                            <div class="flex flex-col space-y-1">
+                                                                <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                                    <span class="text-[17px] font-black text-slate-900">修改</span>
+                                                                </button>
+                                                                <button @click.stop="copyAsTextFile(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                                    <span class="text-[17px] font-black text-slate-900">複製貼 LINE</span>
+                                                                </button>
+                                                                <button @click.stop="downloadTeaching(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
+                                                                    <span class="text-[17px] font-black text-slate-900">下載檔案</span>
+                                                                </button>
+                                                                <button @click.stop="deleteItem(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-rose-50 rounded-2xl transition-all text-rose-500">
+                                                                    <span class="text-[17px] font-black">刪除</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button @click="toggleExpand(item.id)" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <!-- Scrollable Content -->
@@ -1721,7 +1819,7 @@
                              class="bg-white rounded-[28px] p-5 border border-slate-100 shadow-sm space-y-4 animate-fade-in text-left">
                             <div class="flex items-center justify-between mb-1">
                                 <span v-if="saveConfirmModal.records.length > 1" class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-black text-[14px] shadow-lg shadow-indigo-100">{{ bIdx + 1 }}</span>
-                                <span class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">{{ (item.date || form.date || '').replace(/-/g, '/') }}</span>
+                                <span v-if="item.date || form.date" class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">{{ (item.date || form.date || '').replace(/-/g, '/') }}</span>
                             </div>
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
@@ -1869,6 +1967,7 @@ const batchImportContent = ref('');
 const isAddingFlash = ref(false);
 const currentFolder = ref(null);
 const currentCategory = ref(null);
+const folderCounts = ref({});
 
 // Removed auto-redirect to masters for general users per request to show category folder first.
 
@@ -2185,7 +2284,7 @@ const getMergedContent = (details, remark) => {
 };
 
 const activePractitionerDropdownId = ref(null);
-const activeTargetRemarksDropdown = ref(false);
+const activeTargetRemarksDropdown = ref(null);
 const activeBatchTargetRemarksIdx = ref(null);
 const relationshipOptions = ['長輩', '母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const treasureInput = ref(null);
@@ -3006,15 +3105,15 @@ const addActions = computed(() => {
     
     if (!isDaily && currentFolder.value === null) {
         actions.push({ 
-            label: '父皇仙師每日開示載錄', 
-            description: '快速進入父皇仙師每日開示錄入介面',
+            label: '多筆新增', 
+            description: '快速進入多筆資料智慧錄入介面',
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-orange-50 text-orange-600',
             handler: () => { 
                 currentFolder.value = folders_list.find(f => f.id === 0); 
                 currentCategory.value = 'daily';
                 showAdd(); 
-                activeEntryTab.value = 'single'; 
+                activeEntryTab.value = 'batch'; 
                 showAddMenu.value = false; 
             } 
         });
@@ -3332,9 +3431,9 @@ const fetchItems = async (page = 1) => {
         const isDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         if (isDaily) {
             params.is_daily = 1;
-            params.per_page = 20;
+            params.per_page = 10;
         } else {
-            params.per_page = 20;
+            params.per_page = 10;
         }
 
         const res = await axios.get('/teachings', { params });
@@ -3344,11 +3443,18 @@ const fetchItems = async (page = 1) => {
             dharma_name_ids: typeof i.dharma_name_ids === 'string' ? JSON.parse(i.dharma_name_ids) : (i.dharma_name_ids || [])
         });
 
-        visibleItems.value = (res.data.data || res.data).map(parseItem);
+        const recordsObj = res.data.records || res.data;
+        const itemsArray = recordsObj.data || recordsObj;
+
+        if (res.data.folderCounts) {
+            folderCounts.value = res.data.folderCounts;
+        }
+
+        visibleItems.value = itemsArray.map(parseItem);
         itemPagination.value = { 
-            current_page: res.data.current_page || 1, 
-            last_page: res.data.last_page || 1,
-            total: res.data.total || visibleItems.value.length
+            current_page: recordsObj.current_page || 1, 
+            last_page: recordsObj.last_page || 1,
+            total: recordsObj.total || itemsArray.length
         };
         
         // Scroll to top when page changes
@@ -3381,7 +3487,11 @@ const syncRecords = async () => {
         if (treasureRes.status === 'fulfilled') treasures.value = (treasureRes.value.data || []).filter(t => t.name !== '清煞法寶');
         if (teachRes.status === 'fulfilled') {
             const data = teachRes.value.data;
-            teachings.value = Array.isArray(data) ? data : (data.data || []);
+            const recordsObj = data.records || data;
+            teachings.value = Array.isArray(recordsObj) ? recordsObj : (recordsObj.data || []);
+            if (data.folderCounts) {
+                folderCounts.value = data.folderCounts;
+            }
         }
     } catch (e) { console.error(e); }
 };
@@ -4090,8 +4200,14 @@ const processBatchText = () => {
         if (!text || text.length < 5) return;
         
         const record = { 
-            dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
-            target_remarks: '', items: [], master_name: '', date: null,
+            // Apply global picker defaults (Added per user request)
+            dharma_name_ids: [...(form.value.dharma_name_ids || [])],
+            dharmaSearchQuery: dharmaSearchQuery.value || '',
+            target_remarks: form.value.target_remarks || '',
+            content: '', 
+            items: [], 
+            master_name: '', 
+            date: null,
             items_footer_remarks: form.value.items_footer_remarks || ''
         };
         
@@ -4348,7 +4464,8 @@ const copyAllToLine = async () => {
             per_page: 500 // Batch fetch enough records
         };
         const res = await axios.get('/teachings', { params });
-        const allItems = res.data.data || res.data;
+        const recordsObj = res.data.records || res.data;
+        const allItems = recordsObj.data || recordsObj;
         const text = allItems.map((item, idx) => {
             return formatTeachingForExport(item, idx, allItems);
         }).join('\n\n\n');
@@ -4369,7 +4486,9 @@ const executeClearTodayDaily = async () => {
     loading.value = true;
     try {
         const res = await axios.get('/teachings', { params: { master_id: 5, per_page: 200, is_daily: 1 } });
-        const items = (res.data.data || res.data).filter(i => i.date === form.value.date && i.is_daily);
+        const recordsObj = res.data.records || res.data;
+        const itemsArray = recordsObj.data || recordsObj;
+        const items = itemsArray.filter(i => i.date === form.value.date && i.is_daily);
         
         for (const item of items) {
             await axios.delete(`/teachings/${item.id}`);
@@ -4406,7 +4525,8 @@ const exportListTxt = async () => {
             per_page: 500
         };
         const res = await axios.get('/teachings', { params });
-        const allItems = res.data.data || res.data;
+        const recordsObj = res.data.records || res.data;
+        const allItems = recordsObj.data || recordsObj;
         const text = allItems.map(item => {
             const dnText = item.dharma_names?.map(d => d.name).join(', ') || '全員';
             const grouped = groupItems(item.items);
@@ -4970,9 +5090,9 @@ watch(currentFolder, (val) => {
 
 const getFolderSum = (id) => {
     if (id === 0 || id === '0') {
-        return teachings.value.filter(t => t.is_daily).length;
+        return folderCounts.value['daily'] || 0;
     }
-    return teachings.value.filter(t => t.master_id === id).length;
+    return folderCounts.value[id] || 0;
 };
 
 onMounted(() => {

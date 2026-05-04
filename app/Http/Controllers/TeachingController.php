@@ -24,18 +24,20 @@ class TeachingController extends Controller
         $perPage = $request->query('per_page', 15);
         $search = $request->query('search');
         
-        $permissions = auth()->user()->getPermissions();
+        $user = auth()->user();
+        $permissions = $user->getPermissions();
         $isRequestingDaily = ($masterId === '0' || $masterId === 0 || (is_numeric($masterId) && (int)$masterId === 0 && $masterId !== null));
         if ($isRequestingDaily && !$permissions['can_see_daily_teachings']) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $folderCounts = Teaching::select('master_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+        $folderCounts = Teaching::where('user_id', $user->id)
+            ->select('master_id', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
             ->groupBy('master_id')
             ->get()
             ->pluck('total', 'master_id');
         
-        $dailyCount = Teaching::where('is_daily', 1)->count();
+        $dailyCount = Teaching::where('user_id', $user->id)->where('is_daily', 1)->count();
         $folderCounts['daily'] = $dailyCount;
 
         if ($mode === 'dates') {
