@@ -104,9 +104,22 @@ class TeachingController extends Controller
 
     public function reorder(Request $request)
     {
-        $orders = $request->input('orders', []);
-        $this->teachingService->reorder($orders);
-        return response()->json(['message' => 'Reordered']);
+        try {
+            $orders = $request->input('orders', []);
+            if (empty($orders)) {
+                return response()->json(['message' => '無效的排序數據'], 400);
+            }
+            
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            $this->teachingService->reorder($orders);
+            \Illuminate\Support\Facades\DB::commit();
+            
+            return response()->json(['message' => 'Reordered']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Log::error('Teaching Reorder Error: ' . $e->getMessage());
+            return response()->json(['message' => '伺服器排序錯誤: ' . $e->getMessage()], 500);
+        }
     }
 
     public function rules()

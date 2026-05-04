@@ -21,19 +21,14 @@
             </defs>
         </svg>
         <!-- Header (Only show in Folder-view, Item-view or Add-mode) -->
-        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
-            <div v-if="addMode && !currentFolder" class="flex items-center w-full">
+        <div v-if="currentFolder || addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 10px 4px; min-height: 70px;">
+            <div v-if="addMode && !currentFolder" class="flex items-center">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
-                        新增重大皇恩
-                    </div>
-                </div>
             </div>
-            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
+            <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                <div class="app-title text-[32px] font-black text-red-600 leading-tight font-outfit tracking-widest break-words" style="color: #dc2626 !important; font-size: 32px !important;">
                     重大皇恩專區
                 </div>
             </div>
@@ -79,49 +74,70 @@
         <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-white flex flex-col items-center">
             <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                 <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                    <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 28px !important;">
+                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 32px !important; color: #dc2626 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
             </div>
             
-            <div class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full max-w-lg mx-auto">
+            <div class="flex-1 flex flex-col items-center justify-center -space-y-6 pb-20 w-full max-w-lg mx-auto">
+                <!-- 第一個按鈕：父皇仙師重大皇恩 (進入仙師列表) -->
                 <button 
                     @click="currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[32px] border-2 border-yellow-400 p-3 w-[320px] h-[320px] relative transition-all shadow-sm">
-                    <div class="relative w-full h-full">
+                    class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[40px] p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
+                    <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-mastersGrad)" style="fill: #fbbf24;" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-mastersGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none pt-4">
-                            <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 36px !important;">重大皇恩<br>專區</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6">
+                            <div class="text-[36px] font-black text-white leading-tight drop-shadow-sm text-center" style="font-size: 36px !important; color: white !important; font-weight: 900 !important;">父皇仙師<br>重大皇恩</div>
+                            <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="font-size: 19px !important; color: red !important;">
+                                共 {{ totalCount }} 筆
+                            </div>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- 第二個按鈕：未求得重大皇恩 (直接進入內容) -->
+                <button 
+                    @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
+                    class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[40px] p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
+                    <div class="relative w-[280px] h-[280px]">
+                        <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6">
+                            <div class="text-[36px] font-black text-white leading-tight drop-shadow-sm text-center" style="font-size: 36px !important; color: white !important; font-weight: 900 !important;">未求得<br>重大皇恩</div>
+                            <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="font-size: 19px !important; color: red !important;">
+                                共 {{ unobtainedTotal }} 筆
+                            </div>
                         </div>
                     </div>
                 </button>
             </div>
         </div>
 
-        <!-- Level 1: Folder Selection (Masters Grid) -->
         <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white max-w-xl mx-auto">
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
-                <h1 class="absolute inset-x-0 text-[32px] font-black tracking-tight text-center text-red-600 uppercase tracking-widest" style="font-size: 32px !important;">重大皇恩</h1>
+                <h1 class="absolute inset-x-0 text-[32px] font-black text-red-600 uppercase tracking-widest text-center font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">重大皇恩專區</h1>
             </div>
 
             <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
                 <button v-for="(folder, idx) in mastersFolders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all bg-white border-2 border-yellow-400 rounded-2xl p-2 w-[165px] h-[165px] relative shadow-sm">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all bg-white rounded-2xl p-2 w-[165px] h-[165px] relative shadow-sm">
                     <div class="relative w-full h-full">
                         <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" />
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-4">
-                            <div class="text-[20px] font-black text-white drop-shadow-sm text-center leading-tight mb-1" style="font-size: 20px !important;">
+                            <div class="text-[17px] font-black text-white drop-shadow-sm text-center leading-tight mb-1" style="font-size: 17px !important; color: white !important; font-weight: 900 !important;">
                                 {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>
-                            <div class="text-[13px] font-bold text-red-700 bg-white/80 px-2 py-0.5 rounded-full shadow-inner" style="font-size: 13px !important;">
+                            <div class="text-[11px] font-bold bg-white/80 px-2 py-0.5 rounded-full shadow-inner" style="font-size: 11px !important; color: red !important;">
                                 共 {{ getFolderSum(folder.id) }} 筆
                             </div>
                         </div>
@@ -142,16 +158,16 @@
         <!-- Level 2: Folder Contents -->
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen w-full md:max-w-xl md:mx-auto">
             <!-- Header for Level 2 -->
-            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-50 w-full bg-white sticky top-0 z-[40]">
-                <div class="flex items-center space-x-1">
-                    <span class="text-[20px] font-normal font-outfit tracking-tight text-slate-900" style="font-weight: 400 !important; font-size: 20px !important;">{{ displayTitle }}</span>
+            <div class="flex flex-col border-b border-slate-50 w-full bg-white">
+                <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between">
+                    <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                    <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
+                            class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                            :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
+                    </button>
                 </div>
-                <button @click="reorderMode = !reorderMode" 
-                    :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                    class="px-4 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95" 
-                    :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
-                </button>
             </div>
             
             <!-- List Display Area -->
@@ -183,7 +199,7 @@
                                 <div v-if="reg.obtained_date || reg.record_date" class="mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
                                         <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit" style="font-size: 11px !important;">日期：</span>
-                                        <span class="text-[15px] font-bold text-slate-900 font-outfit" style="font-weight: 400 !important; font-size: 15px !important;">{{ formatDate(reg.obtained_date) }}</span>
+                                        <span class="text-[17px] font-bold text-slate-400 font-outfit" style="font-size: 15px !important;">{{ formatDate(reg.obtained_date) }}</span>
                                     </template>
                                     <template v-else-if="reg.record_date">
                                         <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit" style="font-size: 11px !important;">得知：</span>
@@ -199,14 +215,14 @@
                                 </div>
                                 <!-- Row 2: Name + Status -->
                                 <div class="flex items-center justify-between">
-                                    <div class="text-[19px] font-black text-slate-900 leading-tight truncate font-outfit" style="font-size: 19px !important;">{{ reg.name }}</div>
+                                    <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit" style="font-size: 17px !important;">{{ reg.name }}</div>
                                     <span :class="[
-                                        'px-3 py-0.5 rounded-full text-[12px] font-black tracking-widest select-none whitespace-nowrap shrink-0 ml-2 border',
+                                        'px-3 py-0.5 rounded-full text-[17px] font-black tracking-widest select-none whitespace-nowrap shrink-0 ml-2 border',
                                         reg.status === '已求得' ? 'bg-blue-50 border-blue-200 text-blue-600' : 
                                         reg.status === '已登記' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 
                                         'bg-rose-50 border-rose-200 text-rose-600'
                                     ]" 
-                                    style="font-size: 12px !important;">
+                                    style="font-size: 17px !important;">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -242,28 +258,27 @@
                             <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
-                                    <!-- Added Title Box from Figure 1 -->
-                                    <div class="px-5 pt-5 pb-3 border-b border-slate-50 flex items-center justify-between">
-                                        <div class="flex flex-col space-y-2">
-                                            <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
-                                                重大皇恩專區
-                                            </div>
-                                            <div class="text-[20px] font-normal font-outfit tracking-tight text-slate-900" style="font-weight: 400 !important; font-size: 20px !important;">
-                                                {{ displayTitle }}
-                                            </div>
+                                    <!-- Global Main Title -->
+                                    <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
+                                        <div class="flex-1">
+                                            <h1 class="text-[32px] font-black text-red-600 tracking-widest text-center whitespace-nowrap font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">重大皇恩專區</h1>
                                         </div>
-                                        
-                                        <!-- Close Button moved to top right -->
-                                        <button @click="toggleExpand(reg.id)" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all self-start mt-[-4px]">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
                                     </div>
+                                    <!-- Sub-folder Title -->
+                                    <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px]">
+                                        <span class="text-[26px] font-bold text-slate-900 tracking-tight" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                                    </div>
+                                    
+                                    <!-- Close Button moved to top right absolute -->
+                                    <button @click="toggleExpand(reg.id)" class="absolute right-3 top-3 z-[100] w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
                                     
                                     <!-- Item Info & Actions -->
                                     <div class="px-5 py-3 flex items-center justify-between bg-slate-50/50">
                                         <div class="flex flex-col min-w-0 flex-1 pr-2">
+                                            <div class="text-[15px] font-bold text-slate-400 mb-1">{{ formatDate(reg.record_date) }}</div>
                                             <div class="text-[17px] font-black text-slate-900 leading-tight truncate">{{ reg.name }}</div>
-                                            <div class="text-[13px] font-bold text-slate-400 mt-0.5">{{ formatDate(reg.record_date) }}</div>
                                         </div>
                                         <div class="flex items-center space-x-1 shrink-0">
                                             <!-- Three dots menu in expanded view -->
@@ -287,7 +302,7 @@
                                     </div>
                                 </div>
                                 <!-- Scrollable Content -->
-                                <div class="flex-1 overflow-y-auto p-5 custom-scrollbar">
+                                <div class="flex-1 overflow-y-auto px-5 pt-5 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
                         <div class="animate-fade-in bg-white space-y-4 relative">
 
                             <!-- INLINE EDITING FORM -->
@@ -710,9 +725,7 @@ const addActions = computed(() => [
 ]);
 
 const displayTitle = computed(() => {
-    if (currentFolder.value) {
-        return currentFolder.value.name;
-    }
+    if (currentFolder.value) return currentFolder.value.name;
     return '重大皇恩專區';
 });
 
@@ -792,6 +805,10 @@ const folders = computed(() => {
     return list;
 });
 
+const totalCount = computed(() => {
+    return Object.values(folderCounts.value || {}).reduce((acc, cur) => acc + Number(cur), 0);
+});
+
 const mastersFolders = computed(() => {
     const list = [];
     if (Array.isArray(masters.value)) {
@@ -819,14 +836,14 @@ const copyAsTextFile = (reg) => {
 };
 
 const formatRegistryForFile = (reg) => {
-    let out = `【重大皇恩】\r\n`;
-    out += `得知日期：${reg.record_date || '-'}\r\n`;
-    out += `法寶：${reg.name}\r\n`;
-    if (reg.count && reg.count !== 1 && reg.count !== '1') out += `數據：${reg.count}\r\n`;
-    if (reg.purpose && reg.purpose !== '-' && reg.purpose !== '無') out += `用意：${reg.purpose}\r\n`;
-    out += `狀態：${reg.status || '未求得'}\r\n`;
-    if (reg.status !== '已登記') out += `求得日期：${reg.obtained_date || '-'}\r\n`;
-    if (reg.remarks && reg.remarks !== '-' && reg.remarks !== '無') out += `由來與備註：${reg.remarks}\r\n`;
+    let out = `【重大皇恩】\n`;
+    out += `得知日期：${reg.record_date || '-'}\n`;
+    out += `法寶：${reg.name}\n`;
+    if (reg.count && reg.count !== 1 && reg.count !== '1') out += `數據：${reg.count}\n`;
+    if (reg.purpose && reg.purpose !== '-' && reg.purpose !== '無') out += `用意：${reg.purpose}\n`;
+    out += `狀態：${reg.status || '未求得'}\n`;
+    if (reg.status !== '已登記') out += `求得日期：${reg.obtained_date || '-'}\n`;
+    if (reg.remarks && reg.remarks !== '-' && reg.remarks !== '無') out += `\n由來與備註：${reg.remarks}\n`;
     return out.trim();
 };
 

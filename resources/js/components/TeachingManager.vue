@@ -80,56 +80,58 @@
                 <option value="前身三大穴" />
                 <option value="後身二大穴" />
             </datalist>
-            <!-- Global Main Title -->
-            <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full md:max-w-xl md:mx-auto z-[120]" @click="resetToRoot">
+            <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
+            <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full md:max-w-xl md:mx-auto z-[120]" @click="resetToRoot">
                 <div class="flex-1">
-                    <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important;">父皇仙師開示專區</h1>
                 </div>
             </div>
-            <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 4px 4px; min-height: 52px;">
-                <div v-if="currentFolder !== null && !addMode" class="flex-1 flex flex-col justify-center min-w-0 pl-1">
-                    <div class="text-[24px] font-black text-slate-900 tracking-tight truncate font-outfit" style="font-size: 24px !important;">
-                        {{ currentFolder ? currentFolder.name : '父皇仙師開示專區' }}
+            <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto">
+                <!-- Header Row -->
+                <div class="flex items-center justify-between px-3 py-2">
+                    <div class="flex-1 cursor-pointer" @click="resetToRoot">
+                        <h2 class="text-[32px] font-black text-red-600 tracking-tight font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">
+                            父皇仙師開示專區
+                        </h2>
                     </div>
-                </div>
-                <div v-if="currentFolder !== null && !addMode" class="flex items-center space-x-1.5 mr-1 ml-auto">
-                    <button @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
-                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    <div v-if="currentFolder !== null && !addMode" class="flex items-center shrink-0 ml-2">
+                        <button @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
+                    </div>
+                    <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform shrink-0">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <button @click="reorderMode = !reorderMode" 
+                </div>
+                <!-- Sub-header Row -->
+                <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
+                    <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">
+                        每日開示載錄
+                    </span>
+                    <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
                             :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
                             class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
                             :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
-                <div v-if="addMode" class="flex items-center w-full">
-                    <button @click="addMode = false" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="text-[24px] font-black text-slate-900 tracking-tight truncate font-outfit" style="font-size: 24px !important;">
-                            {{ currentFolder?.id === 0 ? '父皇仙師每日開示載錄' : (currentFolder ? currentFolder.name + '開示載錄' : '父皇仙師開示專區') }}
-                        </h2>
-                    </div>
-                </div>
             </div>
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
-                    <div class="px-[10px] pb-24 flex flex-col items-center space-y-2 mt-6 max-w-lg mx-auto">
+                    <div class="px-[10px] pb-24 flex flex-col items-center -space-y-6 mt-6 max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[360px] md:h-[360px] md:mb-6">
-                        <div class="relative w-[300px] h-[300px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[350px] md:h-[350px] md:mb-6">
+                        <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[42px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 36px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
                             </div>
@@ -139,15 +141,15 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[360px] md:h-[360px]">
-                        <div class="relative w-[300px] h-[300px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[350px] md:h-[350px]">
+                        <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#818cf8" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[52px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 36px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
                             </div>
@@ -1533,7 +1535,17 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
-
+                                        <div class="mr-3 shrink-0 flex items-center justify-center">
+                                            <div v-if="!reorderMode" class="w-8 h-8 bg-slate-50 rounded-xl flex items-center justify-center text-[15px] font-black text-slate-400">
+                                                {{ String(index + 1).padStart(2, '0') }}
+                                            </div>
+                                            <input v-else 
+                                                   type="number" 
+                                                   :value="index + 1"
+                                                   @click.stop
+                                                   @change="e => handleReorder(item, e.target.value)"
+                                                   class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
+                                        </div>
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
@@ -1587,17 +1599,17 @@
                                         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(item.id)"></div>
                                         <!-- Content Panel -->
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
+                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform;">
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
-                                                    <h1 class="text-[28px] font-black text-slate-900 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important;">父皇仙師開示專區</h1>
+                                                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important;">父皇仙師開示專區</h1>
                                                 </div>
                                             </div>
 
                                             <!-- Sub-folder Title (Added for consistency) -->
                                             <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px]">
-                                                <span class="text-[24px] font-normal text-slate-900 tracking-tight">{{ (item.master?.name || item.master_name || '父皇').replace('仙師', '') }}仙師開示載錄</span>
+                                                <span class="text-[26px] font-bold text-slate-900 tracking-tight" style="font-size: 26px !important;">每日開示載錄</span>
                                             </div>
 
                                             <!-- Header (Sub-title Style) -->
@@ -1637,7 +1649,7 @@
                                             </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto p-5 custom-scrollbar">
+                                            <div class="flex-1 overflow-y-auto px-5 pt-5 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2">
@@ -2290,38 +2302,6 @@ const relationshipOptions = ['長輩', '母親', '父親', '公公', '婆婆', '
 const treasureInput = ref(null);
 const activeSubPractitionerDropdownId = ref(null);
 
-const handleReorder = async (item, newOrder, currentList) => {
-    const targetOrder = parseInt(newOrder);
-    if (isNaN(targetOrder)) return;
-
-    const list = [...currentList];
-    const oldIndex = list.findIndex(r => r.id === item.id);
-    if (oldIndex === -1) return;
-
-    const [movedItem] = list.splice(oldIndex, 1);
-    list.splice(Math.max(0, targetOrder - 1), 0, movedItem);
-
-    // Prepare API orders. Note: Each "item" in currentList might represent multiple merged records (ids)
-    const orders = [];
-    list.forEach((block, idx) => {
-        const newSortOrder = sortDesc.value ? (list.length - idx) : (idx + 1);
-        // Update all records that belong to this block
-        const idsToUpdate = block.ids || [block.id];
-        idsToUpdate.forEach(id => {
-            orders.push({ id, sort_order: newSortOrder });
-            
-            // Update local state for immediate feedback
-            const orig = visibleItems.value.find(v => v.id === id);
-            if (orig) orig.sort_order = newSortOrder;
-        });
-    });
-
-    try {
-        await axios.post('/teachings/reorder', { orders });
-    } catch (err) {
-        console.error('Reorder failed:', err);
-    }
-};
 
 const showPreviewRecipients = ref(new Set());
 const togglePreviewRecipients = (idx) => {
@@ -4031,6 +4011,46 @@ const isDateOfFocused = (date) => {
     return matchedItem.date === date;
 };
 
+const handleReorder = async (item, newOrderStr) => {
+    const newOrder = parseInt(newOrderStr);
+    const dateGroup = recordsByDate.value.find(g => g.date === item.date);
+    if (!dateGroup || isNaN(newOrder)) return;
+    
+    // Create a copy of the current group's items
+    const list = [...dateGroup.items];
+    const oldIndex = list.findIndex(i => i.id === item.id);
+    if (oldIndex === -1) return;
+    
+    // Bounds check
+    const targetIndex = Math.max(0, Math.min(newOrder - 1, list.length - 1));
+    
+    // Move the item in memory
+    const [movedItem] = list.splice(oldIndex, 1);
+    list.splice(targetIndex, 0, movedItem);
+    
+    // Calculate new sort_orders for everyone in this group
+    // In our system, usually sortDesc=true means higher sort_order is on top.
+    // However, the display index (1, 2, 3...) is relative to the current view.
+    // We update everyone in this date group to have sequential sort_orders.
+    const orders = [];
+    list.forEach((entry, idx) => {
+        // If sortDesc is true, the first item (idx=0) should have the highest order
+        const calculatedOrder = sortDesc.value ? (list.length - idx) : (idx + 1);
+        orders.push({
+            id: entry.id,
+            sort_order: calculatedOrder
+        });
+    });
+    
+    try {
+        await axios.post('/teachings/reorder', { orders });
+        fetchItems(itemPagination.value.current_page);
+    } catch (e) {
+        const msg = e.response?.data?.message || e.message || '連線錯誤';
+        alert('排序更新失敗: ' + msg);
+    }
+};
+
 const handleBack = () => { 
     if (addMode.value) { 
         addMode.value = false; 
@@ -4092,6 +4112,10 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
     
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
+    if (!hasFinishedSuffix(item)) {
+        footer += (footer ? '\n\n' : '\n\n') + '完畢';
+    }
+    
     let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
     return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
 };
@@ -4136,6 +4160,14 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
                 footer = '';
             }
         }
+    }
+
+    if (footer && !hasFinishedSuffix(item) && footer.length > 0) {
+        // If we have other footer remarks but no "finished" suffix, add it
+        if (!footer.includes('完畢')) footer += '\n\n完畢';
+    } else if (!footer && !hasFinishedSuffix(item)) {
+        // If no footer at all and no suffix in content, add it
+        footer = '\n\n完畢';
     }
 
     let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';

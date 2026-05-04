@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden" @click="resetToRoot">
-                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #dc2626 !important; font-size: 32px !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -52,16 +52,15 @@
 
         <!-- Header 2: Folder/Action Level (Hide on Desktop) -->
         <div v-if="currentFolder" 
-            class="border-b border-slate-50 flex items-center bg-white z-[105] w-full md:max-w-xl md:mx-auto px-3 py-[5px] md:hidden transition-all duration-300">
-            <div class="flex items-center flex-1 min-w-0">
-                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            class="border-b border-slate-50 flex flex-col bg-white z-[105] w-full md:max-w-xl md:mx-auto md:hidden transition-all duration-300">
+            <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between">
+                <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">{{ currentFolder.name }}</span>
+                <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                        :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
+                        class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                        :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                    {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
-                <div class="flex flex-col min-w-0">
-                    <span class="text-[1.4rem] font-normal tracking-tight font-outfit leading-tight break-words" style="color: #0d0d0d !important; font-weight: 400 !important; font-size: 1.4rem !important;">
-                        {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}{{ addMode ? '-新增載錄' : '' }}
-                    </span>
-                </div>
             </div>
         </div>
 
@@ -147,16 +146,19 @@
                     focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : ''
                 ]">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request) -->
-                <div class="hidden md:flex flex-col items-center py-6 border-b border-slate-100 bg-white sticky top-0 z-[50]">
-                    <div class="flex items-center w-full px-4 mb-2">
-                        <button @click="handleBack" class="p-2 text-slate-400 active:scale-90 transition-all">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-                        <div class="flex-1 text-center pr-12">
-                            <h1 class="text-[24px] font-black text-red-600 tracking-tight uppercase tracking-widest leading-tight">法寶登記專區</h1>
-                            <div class="text-[20px] font-black tracking-widest mt-1" :class="currentFolder.name === '閻王仙師' ? 'text-black' : 'text-red-600'">
-                                {{ (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }} - {{ currentFolder.name }}
-                            </div>
+                <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
+                    <div class="flex flex-col items-center bg-white border-b border-slate-300 w-full py-2">
+                        <h1 class="text-[32px] font-black text-red-600 uppercase tracking-widest text-center font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">法寶登記專區</h1>
+                    </div>
+                    <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full">
+                        <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">{{ currentFolder.name }}</span>
+                        <div class="flex items-center space-x-2">
+                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                                    :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
+                                    class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                                    :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                                {{ reorderMode ? '確認排序' : '修改排序' }}
+                            </button>
                         </div>
                     </div>
                 </div>
