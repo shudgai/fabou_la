@@ -35,9 +35,10 @@ class RegistryController extends Controller
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
+        $direction = filter_var($request->input('sortDesc', true), FILTER_VALIDATE_BOOLEAN) ? 'desc' : 'asc';
+        $query->orderBy('sort_order', $direction)
+              ->orderBy('id', $direction);
 
-        $query->orderBy('sort_order', 'asc');
-        
         // Single query: get per-master AND per-category counts at once
         $allCounts = Registry::where('user_id', $user->id)
             ->selectRaw('master_id, category, count(*) as total')
@@ -47,11 +48,14 @@ class RegistryController extends Controller
         $folderCounts = $allCounts->groupBy('master_id')->map(fn($g) => $g->sum('total'));
         $categoryCounts = $allCounts->groupBy('category')->map(fn($g) => $g->sum('total'));
 
-        return response()->json([
-            'registries' => $query->paginate($request->input('per_page', 10)),
-            'folderCounts' => $folderCounts,
-            'categoryCounts' => $categoryCounts
-        ]);
+        // Paginate and inject count metadata into the same response object
+        $paginated = $query->paginate($request->input('per_page', 10));
+        $result = $paginated->toArray();
+        $result['folderCounts']   = $folderCounts;
+        $result['categoryCounts'] = $categoryCounts;
+
+        // Return as top-level paginated object (frontend reads res.data.data, res.data.current_page, etc.)
+        return response()->json($result);
     }
 
     /**

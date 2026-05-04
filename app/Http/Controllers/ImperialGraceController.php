@@ -43,7 +43,9 @@ class ImperialGraceController extends Controller
             }
         }
 
-        $query->orderBy('sort_order', 'asc');
+        $direction = filter_var($request->input('sortDesc', true), FILTER_VALIDATE_BOOLEAN) ? 'desc' : 'asc';
+        $query->orderBy('sort_order', $direction)
+              ->orderBy('id', $direction);
 
         // Single query: get per-master counts AND unobtained count at once
         $allCounts = ImperialGrace::where('user_id', $user->id)

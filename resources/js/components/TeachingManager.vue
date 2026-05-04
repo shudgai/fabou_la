@@ -83,14 +83,14 @@
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
             <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full md:max-w-xl md:mx-auto z-[120]" @click="resetToRoot">
                 <div class="flex-1">
-                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important;">父皇仙師開示專區</h1>
+                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important;">父皇仙師開示專區</h1>
                 </div>
             </div>
             <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto">
                 <!-- Header Row -->
                 <div class="flex items-center justify-between px-3 py-2">
                     <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h2 class="text-[32px] font-black text-red-600 tracking-tight font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">
+                        <h2 class="text-[32px] font-black text-red-600 tracking-tight font-outfit" style="color: #dc2626 !important; font-size: 32px !important;">
                             父皇仙師開示專區
                         </h2>
                     </div>
@@ -98,7 +98,7 @@
                         <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-[#dc1428] rounded-xl active:scale-90 transition-all border border-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-3 py-1.5 text-[14px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="font-size: 14px !important; color: white !important;">
+                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-3 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
@@ -108,13 +108,13 @@
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
-                    <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">
+                    <span class="text-[25px] font-bold text-slate-900 font-outfit" style="font-size: 25px !important;">
                         每日開示載錄
                     </span>
                     <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
                             :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                            class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
-                            :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                            class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                            :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
@@ -133,10 +133,13 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 36px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4">
+                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     父皇仙師<br>每日開示
                                 </span>
+                                <div class="mt-4 bg-[#fef3c7] px-5 py-1.5 rounded-full shadow-sm flex items-center justify-center">
+                                    <span class="text-[20px] font-black text-[#dc2626]" style="font-weight: 900 !important;">共 {{ getFolderSum(0) }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -151,10 +154,13 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex items-center justify-center pt-6 px-4">
-                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 36px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4">
+                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
+                                <div class="mt-4 bg-[#e0e7ff] px-5 py-1.5 rounded-full shadow-sm flex items-center justify-center">
+                                    <span class="text-[20px] font-black text-[#4338ca]" style="font-weight: 900 !important;">共 {{ getMastersTotalCount() }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -181,11 +187,17 @@
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <!-- Label Inside -->
-                            <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                                <div class="flex flex-col items-center">
-                                    <div class="text-[22px] font-black leading-tight" :class="folder.name === '閻王仙師' ? 'text-black' : 'text-white'">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
-                                    <div class="text-[13px] font-bold mt-0.5 text-black">共 {{ getFolderSum(folder.id) }} 筆</div>
+                            <!-- Label & Pill Inside -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none">
+                                <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] whitespace-nowrap mb-2"
+                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
+                                     style="font-weight: 900 !important; font-size: 24px !important;">
+                                     {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
+                                </div>
+                                <div class="bg-[#fef3c7] px-3 py-1 rounded-full shadow-sm pointer-events-auto">
+                                    <div class="font-black text-[#dc2626] whitespace-nowrap" style="font-size: 14px !important;">
+                                        共 {{ getFolderSum(folder.id) }} 筆
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -5128,6 +5140,13 @@ const getFolderSum = (id) => {
         return folderCounts.value['daily'] || 0;
     }
     return folderCounts.value[id] || 0;
+};
+
+const getMastersTotalCount = () => {
+    return Object.entries(folderCounts.value).reduce((total, [key, count]) => {
+        if (key !== 'daily') return total + count;
+        return total;
+    }, 0);
 };
 
 onMounted(() => {

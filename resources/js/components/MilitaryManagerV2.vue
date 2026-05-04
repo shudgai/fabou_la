@@ -29,12 +29,12 @@
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
-                    軍隊記錄專區 (已更新)
+                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 32px !important;">
+                    軍隊記錄專區
                 </div>
             </div>
             <div class="absolute right-2 top-1/2 -translate-y-1/2">
-                <button @click="sortDesc = !sortDesc" class="px-1 py-0.5 text-[10px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[16px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -46,15 +46,15 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="text-[28px] font-black text-slate-900 truncate tracking-tight font-outfit">
+                <h2 class="text-[25px] font-black text-slate-900 truncate tracking-tight font-outfit" style="font-size: 25px !important;">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
             </div>
             <div class="ml-2 flex items-center space-x-2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[12px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black">
+                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[16px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[13px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap">
+                <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[16px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap" style="font-size: 16px !important;">
                     總數
                 </button>
             </div>

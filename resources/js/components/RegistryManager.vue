@@ -25,7 +25,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important; font-size: 24px !important;">
+                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                         新增法寶登記
                     </div>
                 </div>
@@ -35,17 +35,13 @@
                     法寶登記專區
                 </div>
             </div>
-            <!-- Standard Desktop Controls (Aligned Right) -->
             <div class="flex-1 hidden md:block"></div>
-            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto md:hidden pr-2">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="reorderMode = !reorderMode"
-                    :class="reorderMode ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-slate-900 text-white shadow-sm'"
-                    class="px-3 py-1 rounded-lg text-[13px] font-black transition-all active:scale-95 flex items-center" 
-                    style="color: white !important;">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
+                <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-slate-200" title="回到清單">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
@@ -53,24 +49,34 @@
         <!-- Header 2: Folder/Action Level (Hide on Desktop) -->
         <div v-if="currentFolder" 
             class="border-b border-slate-50 flex flex-col bg-white z-[105] w-full md:max-w-xl md:mx-auto md:hidden transition-all duration-300">
-            <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between">
-                <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">{{ currentFolder.name }}</span>
-                <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                        :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                        class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
-                        :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
-                </button>
+            <div class="px-2 py-2 bg-slate-50/50 flex items-center justify-between relative">
+                <!-- Left: Folder Name -->
+                <span class="text-[25px] font-bold text-slate-900 font-outfit shrink-0 w-[110px]" style="font-size: 25px !important;">{{ currentFolder.name }}</span>
+                
+                <!-- Center: Pagination -->
+                <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
+                    <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+                </div>
+
+                <!-- Right: Reorder Button -->
+                <div class="flex items-center justify-end shrink-0 w-[110px]">
+                    <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
+                            class="px-2 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
+                            :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Main Scrollable Area -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                     <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 28px !important;">
+                        <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 32px !important;">
                             {{ currentCategory ? (currentCategory === 'major' ? '法寶登記專區' : '其他皇恩登記簿') : '法寶登記專區' }}
                             <br v-if="currentCategory">
                             <span v-if="currentCategory && currentFolder" class="text-[24px] text-slate-400 font-black">- {{ currentFolder.name }} -</span>
@@ -79,20 +85,21 @@
                 </div>
 
                 <!-- Root Categories -->
-                <div v-if="!currentCategory" class="flex flex-col items-center space-y-6 mt-6 pb-20 w-full max-w-lg mx-auto">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[32px] border-2 border-yellow-400 p-3 w-[320px] h-[320px] relative transition-all shadow-sm">
-                        <div class="relative w-full h-full">
+                <div v-if="!currentCategory" class="flex flex-col items-center justify-center -space-y-6 pb-20 w-full max-w-lg mx-auto h-full">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[40px] p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
+                        <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none pt-4">
-                                <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-sm text-center" style="font-size: 36px !important;">重大皇恩<br>登記簿</div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
+                                <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
+                                <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="color: red !important;">
+                                    共 {{ getCategorySum('major') }} 筆
+                                </div>
                             </div>
                         </div>
                     </button>
-
-
                 </div>
 
                 <!-- Masters Grid -->
@@ -100,12 +107,12 @@
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[160px] h-[160px] relative bg-white shadow-sm',
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[180px] h-[180px] relative bg-white shadow-sm',
                             currentCategory === 'major' ? 'border-yellow-400' : 'border-red-600'
                         ]">
                         
-                        <div class="relative mb-0.5">
-                             <svg class="w-[104px] h-[104px] transition-transform group-hover:scale-110" viewBox="0 0 64 64" fill="none">
+                        <div class="relative w-[150px] h-[150px]">
+                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
                                     :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" />
@@ -114,17 +121,18 @@
                                     :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" 
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <div v-if="currentCategory === 'major'" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div class="text-red-600 font-black text-[15px] drop-shadow-[0_1px_2px_rgba(255,255,255,0.5)] mt-3">重大皇恩</div>
-                            </div>
-                        </div>
-                        <div class="text-center px-1">
-                            <div :class="[
-                                'font-black tracking-tight leading-tight text-center transition-all whitespace-nowrap',
-                                folder.name === '閻王仙師' ? 'text-black' : (currentCategory === 'major' ? 'text-red-700' : 'text-yellow-400')
-                            ]" style="font-weight: 900 !important; font-size: 20px !important;">{{ folder.name }}</div>
-                            <div class="text-[12px] font-bold mt-0.5 text-black">
-                                共 {{ getFolderSum(folder.id) }} 筆
+                            
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none">
+                                <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] whitespace-nowrap mb-2"
+                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-700'"
+                                     style="font-weight: 900 !important; font-size: 24px !important;">
+                                     {{ folder.name }}
+                                </div>
+                                <div class="bg-[#fef3c7] px-3 py-1 rounded-full shadow-sm">
+                                    <div class="font-black text-[#dc2626] whitespace-nowrap" style="font-size: 14px !important;">
+                                        共 {{ getFolderSum(folder.id) }} 筆
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -145,18 +153,31 @@
                     'px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto',
                     focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : ''
                 ]">
-                <!-- Desktop Centered Header Section within Col-7 (Updated per user request) -->
+                <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
-                    <div class="flex flex-col items-center bg-white border-b border-slate-300 w-full py-2">
-                        <h1 class="text-[32px] font-black text-red-600 uppercase tracking-widest text-center font-outfit" style="font-size: 32px !important; color: #dc2626 !important;">法寶登記專區</h1>
+                    <!-- Top Row: Title + Sort Button -->
+                    <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
+                        <h1 class="text-[32px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 32px !important;">法寶登記專區</h1>
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
                     </div>
-                    <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full">
-                        <span class="text-[26px] font-bold text-slate-900 font-outfit" style="font-size: 26px !important;">{{ currentFolder.name }}</span>
-                        <div class="flex items-center space-x-2">
+                    <!-- Bottom Row: Folder Name + Pagination + Reorder Button -->
+                    <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full relative">
+                        <!-- Left: Folder Name -->
+                        <span class="text-[25px] font-bold text-slate-900 font-outfit shrink-0 w-[120px]" style="font-size: 25px !important;">{{ currentFolder.name }}</span>
+                        
+                        <!-- Center: Pagination -->
+                        <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center">
+                            <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+                        </div>
+
+                        <!-- Right: Reorder Button -->
+                        <div class="flex items-center space-x-2 shrink-0 w-[120px] justify-end">
                              <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
                                     :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                                    class="px-3 py-1.5 rounded-xl text-[14px] font-black transition-all active:scale-95 whitespace-nowrap" 
-                                    :style="{ fontSize: '14px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                                    class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
+                                    :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
                         </div>
@@ -184,8 +205,7 @@
                             </div>
                         </div>
 
-                        <!-- Pagination (Top) -->
-                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" />
+                        <!-- Pagination (Moved to headers for both mobile and desktop) -->
 
                         <!-- Empty State -->
                         <div v-if="filteredTreasures.length === 0" class="flex flex-col items-center justify-center py-24 px-6 text-center">
@@ -196,7 +216,7 @@
                          @click="toggleExpand(item.id)"
                              :class="[
                                  'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100vh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 md:!mb-4 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
+                                 focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 md:!mb-4 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
@@ -470,10 +490,6 @@
                             </div>
                         </div>
                     </template>
-                    
-                    <div class="mt-8">
-                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" />
-                    </div>
                 </div>
             </div>
         </div>
@@ -614,6 +630,9 @@ const resetToRoot = () => {
     expandedIds.value = new Set();
     editingIds.value = new Set();
     reorderMode.value = false;
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
 };
 
 const emit = defineEmits(['goHome']);
@@ -693,6 +712,8 @@ const formatRegistryForFile = (item) => {
 // States
 const currentCategory = ref(null); 
 const currentFolder = ref(null);
+const folderCounts = ref({});
+const categoryCounts = ref({});
 const addMode = ref(null);
 const showLuckyDraw = ref(false);
 const currentAddFormIdx = ref(null);
@@ -708,6 +729,7 @@ const openMenuId = ref(null);
 const expandedIds = ref(new Set());
 const editingIds = ref(new Set());
 const focusedId = ref(null);
+const scrollContainer = ref(null);
 const showAddMenu = ref(false);
 const addActions = computed(() => {
     const actions = [
@@ -949,6 +971,7 @@ const loadData = async (page = 1) => {
         if (searchQuery.value) params.search = searchQuery.value;
         if (currentFolder.value) params.master_id = currentFolder.value.id;
         if (currentCategory.value) params.category = currentCategory.value;
+        params.sortDesc = sortDesc.value ? 1 : 0;
 
         const [res, mres, dres] = await Promise.all([
             axios.get('/registries', { params }),
@@ -961,6 +984,10 @@ const loadData = async (page = 1) => {
             last_page: res.data.last_page,
             total: res.data.total
         };
+        if (res.data.folderCounts && page === 1) {
+            folderCounts.value = res.data.folderCounts;
+            categoryCounts.value = res.data.categoryCounts || {};
+        }
         masters.value = mres.data;
         dharmaNames.value = dres.data;
     } catch (e) {
@@ -974,11 +1001,17 @@ const loadData = async (page = 1) => {
 watch(searchQuery, () => {
     currentPage.value = 1;
     loadData(1);
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
 });
 
-watch([currentFolder, currentCategory], () => {
+watch([sortDesc, currentFolder, currentCategory], () => {
     currentPage.value = 1;
     loadData(1);
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
 });
 
 const filteredTreasures = computed(() => {
@@ -1980,7 +2013,10 @@ const saveRemarksInline = async () => {
 };
 
 const getFolderSum = (id) => {
-    return allTreasures.value.filter(r => String(r.master_id) === String(id)).length;
+    return folderCounts.value[id] || 0;
+};
+const getCategorySum = (category) => {
+    return categoryCounts.value[category] || 0;
 };
 </script>
 

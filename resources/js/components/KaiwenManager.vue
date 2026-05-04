@@ -8,7 +8,7 @@
         <!-- Header (Shared) -->
         <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[28px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 28px !important;">
+                <div class="app-title text-[32px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 32px !important;">
                     開文專區
                 </div>
             </div>
@@ -25,14 +25,14 @@
             <div v-if="!addMode && !hasAnyExpanded && !showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-4 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap"
-                    :style="{ color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
+                    class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    :style="{ fontSize: '16px !important', color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
                     每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-4 py-1.5 app-body text-[17px] font-black rounded-lg transition-all whitespace-nowrap"
-                    :style="{ color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
+                    class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    :style="{ fontSize: '16px !important', color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
                     自行開文
                 </button>
             </div>

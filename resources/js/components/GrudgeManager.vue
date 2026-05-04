@@ -24,13 +24,13 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
             <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-[28px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 28px !important;">{{ displayTitle }}</h1>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-3 py-1.5 text-[14px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 14px !important; color: white !important;">
+                <h1 class="text-[32px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 32px !important;">{{ displayTitle }}</h1>
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-3 py-1.5 text-[16px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 16px !important; color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
-                <button @click="toggleShowTotal" class="text-[17px] text-slate-900 font-black active:scale-95 transition-all">
+                <button @click="toggleShowTotal" class="text-[16px] text-slate-900 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
                     總數
                 </button>
                 <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
