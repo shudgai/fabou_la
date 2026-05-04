@@ -41,15 +41,15 @@
 
             <!-- Header -->
             <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto shrink-0" style="padding: 8px 10px; min-height: 52px;">
-                <button @click="$emit('goHome')" class="text-slate-400 p-2 mr-1 active:scale-90 transition-transform shrink-0">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[28px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase" style="font-size: 28px !important;">其他記錄專區</h2>
+                    <h2 class="text-[32px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase" style="font-size: 32px !important;">其他記錄專區</h2>
                 </div>
                 <div class="flex items-center space-x-2 mr-2">
-                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                    <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                 </div>
             </div>
@@ -70,28 +70,29 @@
             </div>
 
             <!-- Record List -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 px-4 py-6 w-full md:max-w-xl md:mx-auto">
-                <div class="max-w-4xl mx-auto space-y-4 pb-32">
+            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full md:max-w-xl md:mx-auto', focusedId ? 'px-0 py-0' : 'px-4 py-6']">
+                <div :class="['max-w-4xl mx-auto space-y-4 pb-32', focusedId ? 'space-y-0' : 'space-y-4']">
                     <div v-for="item in filteredRecords" :key="item.id" 
-                         class="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 relative group animate-fade-in">
+                         v-show="focusedId === null || focusedId === item.id"
+                         @click="toggleExpand(item.id)"
+                         :class="[
+                             'bg-white shadow-sm transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
+                             focusedId === item.id ? 'min-h-[80vh] rounded-none p-8' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
+                         ]">
                         
                         <!-- Action Menu Button -->
                         <button @click.stop="toggleActionMenu(item.id)" 
-                                class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-slate-300 hover:text-indigo-500 active:scale-90 transition-all z-10">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-[#dc1428] hover:text-red-700 active:scale-90 transition-all z-10">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         </button>
 
-                        <!-- Action Menu Dropdown -->
+                        <!-- Action Menu Dropdown (Matched with Grudge) -->
                         <div v-if="activeActionMenuId === item.id" v-click-outside="() => activeActionMenuId = null"
-                             class="absolute top-14 right-4 w-36 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 p-1.5 animate-scale-in origin-top-right">
-                            <button @click="startEdit(item)" class="w-full flex items-center px-4 h-11 rounded-xl hover:bg-slate-50 text-slate-700 font-bold text-[15px] transition-colors">
-                                <svg class="w-4 h-4 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5"/></svg>
-                                編輯
-                            </button>
-                            <button @click="deleteRecord(item.id)" class="w-full flex items-center px-4 h-11 rounded-xl hover:bg-rose-50 text-rose-500 font-bold text-[15px] transition-colors">
-                                <svg class="w-4 h-4 mr-3 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                刪除
-                            </button>
+                             class="absolute top-14 right-4 w-24 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 p-1 animate-scale-in origin-top-right overflow-hidden">
+                            <button @click.stop="startEdit(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改</button>
+                            <button @click.stop="copyItem(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製</button>
+                            <button @click.stop="downloadItem(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載</button>
+                            <button @click.stop="deleteRecord(item.id)" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
                         </div>
 
                         <!-- Content -->
@@ -109,7 +110,10 @@
                             </div>
                             
                             <!-- Content Body -->
-                            <div class="pt-3 text-[18px] font-bold text-slate-800 leading-relaxed whitespace-pre-wrap font-outfit">
+                            <div :class="[
+                                'pt-3 text-[18px] font-bold text-slate-800 leading-relaxed font-outfit',
+                                focusedId === item.id ? 'whitespace-pre-wrap' : 'line-clamp-1'
+                            ]">
                                 {{ item.content }}
                             </div>
 
@@ -243,6 +247,7 @@ const masterNameInput = ref('');
 const targetRemarksInput = ref('');
 const persistentToast = ref(null);
 const deleteConfirmId = ref(null);
+const focusedId = ref(null);
 
 const staticMasters = [
     { name: '老祖仙師' }, { name: '元始仙師' }, { name: '道祖仙師' }, { name: '靈寶仙師' },
@@ -428,6 +433,7 @@ const executeDelete = async () => {
         await axios.delete(`/other-teachings/${deleteConfirmId.value}`);
         persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 1500);
+        focusedId.value = null;
         await loadData();
     } catch (e) {
         console.error('Delete failed:', e);
@@ -435,6 +441,31 @@ const executeDelete = async () => {
     } finally {
         deleteConfirmId.value = null;
     }
+};
+
+const toggleExpand = (id) => {
+    focusedId.value = focusedId.value === id ? null : id;
+};
+
+const copyItem = async (item) => {
+    const text = `【其他記錄】${formatDate(item.date)}\n${item.master?.name || ''} ${item.target_remarks || ''}\n${item.content}${item.remarks ? '\n備註：' + item.remarks : ''}`;
+    try {
+        await navigator.clipboard.writeText(text);
+        alert('已複製');
+    } catch (e) {
+        alert('複製失敗');
+    }
+};
+
+const downloadItem = (item) => {
+    const text = `【其他記錄】\n日期：${formatDate(item.date)}\n仙師：${item.master?.name || '無'}\n對象：${item.target_remarks || '無'}\n內容：\n${item.content}\n備註：${item.remarks || '無'}`;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `其他記錄_${item.date || '無日期'}_${item.master?.name || ''}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
 };
 
 const formatDate = (d) => {
