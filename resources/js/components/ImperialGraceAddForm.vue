@@ -193,6 +193,20 @@
 
                 <!-- BATCH MODE -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
+                    <!-- Batch Type Toggle -->
+                    <div class="px-1 py-1 bg-slate-100 rounded-xl flex space-x-1 mb-2">
+                        <button @click="batchType = 'single'" 
+                            :class="batchType === 'single' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'"
+                            class="flex-1 py-2 rounded-lg text-[15px] font-black transition-all">
+                            單人承接
+                        </button>
+                        <button @click="batchType = 'multi'" 
+                            :class="batchType === 'multi' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'"
+                            class="flex-1 py-2 rounded-lg text-[15px] font-black transition-all">
+                            多人承接
+                        </button>
+                    </div>
+
                     <div class="bg-white rounded-[24px] p-5 space-y-4 shadow-sm border border-slate-100 relative">
                         <div class="flex items-center justify-between">
                             <label class="text-[13px] font-black text-slate-400 uppercase tracking-widest ml-1" style="font-size: 13px !important;">貼入法寶名稱明細</label>
@@ -202,7 +216,9 @@
                         </div>
                         <textarea v-model="batchInput" rows="10" class="w-full rounded-2xl border border-slate-200 p-4 font-mono text-[14px] bg-slate-50/30 focus:ring-2 focus:ring-indigo-100 outline-none shadow-inner" 
                             style="font-size: 14px !important;"
-                            placeholder="單人承接&#10;法寶名稱&#10;用意：用途說明&#10;狀態(未求得/已求得/已登記)&#10;日期(yyyy/mm/dd)&#10;&#10;多人承接&#10;法寶名稱&#10;用意：用途說明&#10;法號/狀態/日期&#10;法號/狀態/日期">
+                            :placeholder="batchType === 'single' 
+                                ? '單人承接請貼上或輸入\n法寶名稱\n用意:\n法寶名稱\n用意:\n以此類推' 
+                                : '多人承接請貼上或輸入\n法寶名稱:\n用意:\n法號\n法號\n法寶名稱:\n用意:\n法號\n法號\n以此類推'">
                         </textarea>
                         <input type="file" ref="fileInput" class="hidden" @change="handleFileUpload" accept=".txt,.xlsx,.xls,.docx">
                     </div>
@@ -225,7 +241,7 @@
                                     <tr v-for="(row, idx) in excelRows" :key="idx" class="border-b border-slate-50 last:border-0">
                                         <td class="px-4 py-3 align-top">
                                             <div class="text-[15px] font-black text-indigo-600 leading-tight mb-1" style="font-size: 15px !important;">{{ row.c0 }}</div>
-                                            <div class="text-[11px] text-slate-400 font-bold leading-tight" style="font-size: 11px !important;">{{ row.c1 }}</div>
+                                            <div v-if="row.c1 && row.c1 !== '-'" class="text-[11px] text-slate-400 font-bold leading-tight" style="font-size: 11px !important;">{{ row.c1 }}</div>
                                         </td>
                                         <td class="px-4 py-3 align-top">
                                             <div v-for="(p, pIdx) in row._dharma_name_registries" :key="pIdx" class="text-[13px] font-black text-slate-700 mb-1" style="font-size: 13px !important;">
@@ -291,6 +307,7 @@ const props = defineProps({
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'close']);
 const localMode = ref(props.mode || 'single');
+const batchType = ref('multi');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
@@ -349,51 +366,62 @@ const excelRows = computed(() => {
             continue;
         }
 
+        const isNewItemTrigger = line.startsWith('法寶名稱:') || line.startsWith('法寶名稱：');
         const isStatus = line.match(/(已登記|已求得|未求得)/);
         const isDate = line.match(/\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/) || line.match(/\b\d{1,2}[\/\-]\d{1,2}\b/);
-        const isPurpose = line.includes('用意') || line.includes('用法') || line.includes('用途');
-        const looksLikeName = !line.includes('：') && !line.includes(':') && !isStatus && !isDate && !isPurpose;
+        const isPurpose = line.startsWith('用意') || line.startsWith('用法') || line.startsWith('用途');
+        const looksLikePlainName = !line.includes('：') && !line.includes(':') && !isStatus && !isDate && !isPurpose && !isNewItemTrigger;
 
-        if (looksLikeName) {
-            // STRONGER FINALIZE: If we see a new name and current record is "substantial", finalize it
-            if (currentRec && (currentRec.purpose !== '-' || currentRec.status !== '未求得' || currentRec.personnel.length > 0 || currentRec.remarks.length > 0)) {
+        if (isNewItemTrigger) {
+            if (currentRec) {
                 records.push(currentRec);
-                currentRec = null;
             }
-
+            let name = line.replace(/^法寶名稱[:：]\s*/, '').trim();
+            currentRec = { name: name, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
+        } else if (looksLikePlainName) {
             if (!currentRec) {
                 currentRec = { name: line, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
             } else {
-                // If it's a multi-person block, names after the first one are personnel
-                // BUT only if the record already has some structure (purpose or status)
-                if (currentRec.purpose !== '-' || currentRec.status !== '未求得' || currentRec.personnel.length > 0) {
-                    currentRec.personnel.push({ custom_name: line, status: '已登記', obtained_date: '', remarks: '' });
-                } else {
-                    // Otherwise, just update the name (rare case)
+                if (!currentRec.name) {
                     currentRec.name = line;
+                } else {
+                    if (batchType.value === 'single') {
+                        records.push(currentRec);
+                        currentRec = { name: line, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
+                    } else {
+                        currentRec.personnel.push({ custom_name: line, status: '已登記', obtained_date: '', remarks: '' });
+                    }
                 }
             }
         } else if (currentRec) {
             if (isPurpose) {
-                currentRec.purpose = line.replace(/.*(用意|用法|用途)[:：]?/, '').trim() || '-';
+                currentRec.purpose = line.replace(/.*(用意|用法|用途)[:：]?\s*/, '').trim() || '-';
             } else if (isStatus) {
                 const statusStr = isStatus[0];
-                // Try to find a name before the status keyword or colon
                 const namePart = line.split(statusStr)[0].replace(/狀態[:：]?/, '').trim();
                 
                 if (namePart) {
                     const pDate = isDate ? isDate[0].replace(/\//g, '-') : '';
                     currentRec.personnel.push({ custom_name: namePart, status: statusStr, obtained_date: pDate, remarks: '' });
                 } else {
-                    currentRec.status = statusStr;
-                    if (isDate) currentRec.date = isDate[0];
+                    if (currentRec.personnel.length > 0) {
+                        currentRec.personnel[currentRec.personnel.length - 1].status = statusStr;
+                        if (isDate) currentRec.personnel[currentRec.personnel.length - 1].obtained_date = isDate[0];
+                    } else {
+                        currentRec.status = statusStr;
+                        if (isDate) currentRec.date = isDate[0];
+                    }
                 }
             } else if (line.includes('未求得')) {
                 currentRec.status = '未求得';
                 if (!line.includes('以上沒有資料')) currentRec.remarks.push(line);
             } else if (isDate) {
-                currentRec.date = isDate[0];
-                currentDateInText = isDate[0];
+                if (currentRec.personnel.length > 0) {
+                     currentRec.personnel[currentRec.personnel.length - 1].obtained_date = isDate[0];
+                } else {
+                     currentRec.date = isDate[0];
+                     currentDateInText = isDate[0];
+                }
             } else if (!line.includes('以上沒有資料')) {
                 currentRec.remarks.push(line);
             }
@@ -545,9 +573,7 @@ const handleSubmit = () => {
                 is_multi: row._is_multi || false,
                 dharma_name_registries: (row._dharma_name_registries || []).map(p => ({
                     ...p,
-                    obtained_date: (p.status === '已登記' || p.status === '已求得') && !p.obtained_date 
-                        ? (row._record_date || new Date().toLocaleDateString('sv-SE')) 
-                        : p.obtained_date
+                    obtained_date: p.obtained_date || row._record_date || ''
                 }))
             }))
         });

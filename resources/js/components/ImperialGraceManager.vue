@@ -178,7 +178,7 @@
                             </div>
 
                             <!-- Content column: date on top, name+status on bottom -->
-                            <div class="flex flex-col flex-1 min-w-0 pr-8">
+                            <div class="flex flex-col flex-1 min-w-0 pr-10">
                                 <!-- Row 1: Date -->
                                 <div v-if="reg.obtained_date || reg.record_date" class="mb-0.5">
                                     <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
@@ -214,9 +214,9 @@
                         </div>
 
                         <!-- Independent Menu Button (Three Dots) for Collapsed State -->
-                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-[calc(50%+30px)] z-[20] pr-2">
+                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-1">
                             <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-600' : 'text-red-500']">
-                                <button @click.stop="toggleMenu(reg.id)" class="p-2 -mr-1">
+                                <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center -mr-2">
                                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
                                 <div v-if="openMenuId === reg.id" @click.stop 
@@ -232,26 +232,63 @@
                             </div>
                         </div>
 
-                        <!-- Expanded Detail (Read-Only Style) -->
-                        <div v-if="expandedId === reg.id" @click.stop 
-                             class="animate-fade-in pt-[10px] pb-5 bg-white space-y-4 relative mx-[-12px] px-[12px] border-t border-slate-100 shadow-inner overflow-y-auto max-h-[80vh] overscroll-contain" style="-webkit-overflow-scrolling: touch;">
-                            <!-- Three dots menu in expanded view -->
-                            <div class="absolute right-2 top-[-15px] z-[20]">
-                                <button @click.stop="toggleMenu(reg.id)" class="p-3 text-red-500 active:scale-90 transition-all">
-                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <div v-if="openMenuId === reg.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
-                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
-                                    </button>
-                                    <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
-                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                        <!-- Full-page Expanded Overlay -->
+                        <teleport to="body">
+                        <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
+                            <!-- Backdrop -->
+                            <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
+                            <!-- Content Panel -->
+                            <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
+                            <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
+                                <!-- Header -->
+                                <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
+                                    <!-- Added Title Box from Figure 1 -->
+                                    <div class="px-5 pt-5 pb-3 border-b border-slate-50 flex items-center justify-between">
+                                        <div class="flex flex-col space-y-2">
+                                            <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #0f172a !important; font-size: 24px !important;">
+                                                重大皇恩專區
+                                            </div>
+                                            <div class="text-[20px] font-normal font-outfit tracking-tight text-slate-900" style="font-weight: 400 !important; font-size: 20px !important;">
+                                                {{ displayTitle }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Close Button moved to top right -->
+                                        <button @click="toggleExpand(reg.id)" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all self-start mt-[-4px]">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Item Info & Actions -->
+                                    <div class="px-5 py-3 flex items-center justify-between bg-slate-50/50">
+                                        <div class="flex flex-col min-w-0 flex-1 pr-2">
+                                            <div class="text-[17px] font-black text-slate-900 leading-tight truncate">{{ reg.name }}</div>
+                                            <div class="text-[13px] font-bold text-slate-400 mt-0.5">{{ formatDate(reg.record_date) }}</div>
+                                        </div>
+                                        <div class="flex items-center space-x-1 shrink-0">
+                                            <!-- Three dots menu in expanded view -->
+                                            <div class="relative z-[20]">
+                                                <button @click.stop="toggleMenu(reg.id)" class="w-9 h-9 flex items-center justify-center text-red-500 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                </button>
+                                                <div v-if="openMenuId === reg.id" @click.stop 
+                                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
+                                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
+                                                    </button>
+                                                    <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                    <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
+                                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                <!-- Scrollable Content -->
+                                <div class="flex-1 overflow-y-auto p-5 custom-scrollbar">
+                        <div class="animate-fade-in bg-white space-y-4 relative">
 
                             <!-- INLINE EDITING FORM -->
                             <div v-if="inlineEditId === reg.id" class="space-y-4 animate-fade-in pb-4">
@@ -453,7 +490,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div><!-- /animate-fade-in content -->
+                                </div><!-- /scrollable content area -->
+
+                                <!-- Action bar removed, using header 3-dots menu instead -->
+                            </div><!-- /white panel -->
+                            </div><!-- /pointer-events-none wrapper -->
+                        </div><!-- /overlay root -->
+                        </teleport>
                     </div>
                 </div>
                 <!-- Pagination Buttons -->
