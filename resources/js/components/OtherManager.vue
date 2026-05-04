@@ -101,36 +101,36 @@
         <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden w-full md:max-w-xl md:mx-auto relative md:h-[90vh]">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
-            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 10px; min-height: 48px;">
+            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 12px 10px; min-height: 52px;">
                 <div class="flex flex-col w-full gap-1">
                     <!-- First Row: Main Title -->
                     <div class="flex items-center">
                         <button @click="resetToRoot" class="p-2 text-slate-400 mr-1 -ml-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 25px !important;">
+                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 28px !important;">
                             其他專區
                         </div>
                     </div>
                     
                     <!-- Second Row: Subtitle + Quick Controls -->
-                    <div v-if="activeFolder" class="flex items-center justify-between w-full mt-1">
-                        <span class="text-slate-700 font-normal shrink-0 mr-2" 
-                              style="font-size: 22px !important;">{{ activeFolder.name }}</span>
+                    <div v-if="activeFolder" class="flex items-center justify-between w-full mt-2 px-2">
+                        <span class="text-slate-800 font-black shrink-0 mr-2" 
+                              style="font-size: 24px !important;">{{ activeFolder.name }}</span>
                         
                         <div class="flex items-center justify-end flex-1">
                             <template v-if="activeFolder.name.includes('隨機分組')">
-                                <div class="flex items-center space-x-1 flex-1 max-w-[80px]" style="transform: translateY(-10px);">
+                                <div class="flex items-center space-x-2 flex-1 max-w-[100px]">
                                     <button @click="randomGroupRef?.invertSelection()" 
-                                        class="flex-1 py-[6px] text-[17px] rounded-lg shadow-sm border transition-colors duration-150 bg-white border-slate-300 text-slate-700 font-bold active:bg-blue-600 active:text-white active:border-blue-600"
-                                        >反選</button>
+                                        class="flex-1 h-[42px] text-[16px] rounded-xl shadow-sm transition-all bg-indigo-600 text-white font-black active:scale-95"
+                                        style="color: white !important;">反選</button>
                                 </div>
-                                <button @click="randomGroupRef?.resetAll()" class="p-1 ml-1 text-slate-400 hover:text-red-500 shrink-0">
+                                <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 ml-2 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </template>
                             <template v-else-if="activeFolder.name.includes('開文核定')">
-                                <button @click="kaiwenRef?.clearAll()" class="p-1 ml-1 text-slate-400 hover:text-red-500 shrink-0">
+                                <button @click="kaiwenRef?.clearAll()" class="w-10 h-10 ml-2 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </template>
@@ -212,9 +212,9 @@
                         :class="['w-8 h-8 rounded-full border-4', newFolderColor === c ? 'border-indigo-100' : 'border-transparent']"
                         :style="{ backgroundColor: c }"></button>
                 </div>
-                <div class="flex space-x-3">
-                    <button @click="showAddFolder = false" class="flex-grow py-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors">取消</button>
-                    <button @click="saveFolder" class="flex-grow py-4 rounded-2xl font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">建立</button>
+                <div class="flex space-x-3 mt-4">
+                    <button @click="showAddFolder = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                    <button @click="saveFolder" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">建立資料夾</button>
                 </div>
             </div>
         </div>
@@ -225,9 +225,9 @@
                 <h3 class="text-xl font-bold mb-6">新增記事</h3>
                 <input v-model="newRecord.title" placeholder="標題 (選填)" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-4 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
                 <textarea v-model="newRecord.content" rows="6" placeholder="內容..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium resize-none"></textarea>
-                <div class="flex space-x-3">
-                    <button @click="showAddRecord = false" class="flex-grow py-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors">取消</button>
-                    <button @click="saveRecord" class="flex-grow py-4 rounded-2xl font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">儲存記事</button>
+                <div class="flex space-x-3 mt-4">
+                    <button @click="showAddRecord = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                    <button @click="saveRecord" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">儲存記事</button>
                 </div>
             </div>
         </div>
@@ -396,3 +396,9 @@ const getFolderSum = (id) => {
 
 onMounted(loadData);
 </script>
+
+<style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+</style>

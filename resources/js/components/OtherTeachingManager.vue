@@ -12,11 +12,11 @@
                     </button>
                 </div>
                 <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
-                    <button @click="persistentToast = null" class="flex-1 bg-slate-50 text-slate-600 h-[48px] rounded-2xl border border-slate-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                    <button @click="executeDelete" class="flex-1 bg-red-50 text-red-600 h-[48px] rounded-2xl border border-red-100 text-[17px] font-black tracking-widest active:scale-95 transition-all">確定刪除</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-50 text-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all">確定</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                     <h2 class="text-[28px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase" style="font-size: 28px !important;">其他記錄專區</h2>
                 </div>
                 <div class="flex items-center space-x-2 mr-2">
-                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[13px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-xl active:scale-95 transition-all font-black">
+                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </div>
@@ -202,9 +202,9 @@
                 </div>
 
                 <!-- Footer Actions -->
-                <div class="p-6 border-t border-slate-50 bg-white sticky bottom-0 flex space-x-4 shrink-0">
-                    <button @click="showModal = false" class="flex-1 py-4 rounded-2xl font-black text-[17px] bg-slate-400 active:bg-slate-500 transition-all shadow-md" style="color: white !important;">取消</button>
-                    <button @click="saveRecord" :disabled="saving" class="flex-[2] py-4 rounded-2xl font-black text-[17px] bg-indigo-600 shadow-lg shadow-indigo-100 active:scale-95 disabled:opacity-50 transition-all" style="color: white !important;">
+                <div class="p-6 border-t border-slate-50 bg-white sticky bottom-0 flex space-x-4 shrink-0 pb-8">
+                    <button @click="showModal = false" class="flex-1 h-[52px] rounded-2xl font-black text-[18px] bg-slate-100 text-slate-500 active:bg-slate-200 transition-all">取消</button>
+                    <button @click="saveRecord" :disabled="saving" class="flex-[2] h-[52px] rounded-2xl font-black text-[18px] bg-blue-600 shadow-lg shadow-blue-100 active:scale-95 disabled:opacity-50 transition-all" style="color: white !important;">
                         {{ saving ? '儲存中...' : (isEditing ? '確認修改' : '確認存檔') }}
                     </button>
                 </div>
@@ -488,6 +488,7 @@ onMounted(loadData);
     to { opacity: 1; transform: scale(1); }
 }
 
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
 }

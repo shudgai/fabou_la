@@ -1,11 +1,11 @@
 <template>
     <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
         <!-- Header -->
-        <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full md:max-w-xl md:mx-auto" style="padding: 8px 12px; min-height: 52px;">
+        <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full md:max-w-xl md:mx-auto" style="padding: 12px 12px; min-height: 52px;">
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <h1 style="font-size: 28px; font-weight: 900; color: #0f172a;">其他記錄專區</h1>
+            <h1 class="font-black tracking-widest font-outfit" style="font-size: 28px !important; color: #0f172a !important;">其他記錄專區</h1>
         </div>
 
         <!-- Document List -->
@@ -134,12 +134,12 @@
                 </div>
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-white">
+            <div class="p-6 border-t border-slate-100 bg-white pb-8">
                 <div class="flex space-x-3">
                     <button @click="closeModal"
-                        class="flex-1 py-4 rounded-2xl font-bold text-slate-400 bg-slate-50 active:scale-95 transition-all">取消</button>
+                        class="flex-1 h-[52px] rounded-2xl font-black text-[18px] text-slate-500 bg-slate-100 active:bg-slate-200 transition-all">取消</button>
                     <button @click="saveRecord" :disabled="saving"
-                        class="flex-1 py-4 rounded-2xl font-black bg-indigo-600 text-white shadow-lg active:scale-95 transition-all disabled:opacity-50">
+                        class="flex-[2] h-[52px] rounded-2xl font-black text-[18px] bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all disabled:opacity-50" style="color: white !important;">
                         {{ saving ? '儲存中...' : (editingRecordId ? '確認修改' : '確認儲存') }}
                     </button>
                 </div>
@@ -313,4 +313,7 @@ onMounted(() => {
     100% { transform: translate(-50%, -20px); opacity: 0; }
 }
 .animate-toast { animation: toast 2s forwards; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>
