@@ -111,6 +111,13 @@
                         <!-- Subtitle (Active Folder) moved behind Main Title -->
                         <div v-if="activeFolder" class="flex items-center ml-3 min-w-0">
                             <span class="text-slate-500 font-black truncate" style="font-size: 25px !important;">{{ activeFolder.name }}</span>
+                            <!-- Invert Selection Button for Random Group -->
+                            <button v-if="activeFolder.name.includes('隨機分組')" 
+                                @click="randomGroupRef?.invertSelection()" 
+                                class="ml-4 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
+                                style="font-size: 16px !important;">
+                                反選
+                            </button>
                         </div>
                     </div>
 
@@ -390,7 +397,9 @@ onMounted(loadData);
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+* { -webkit-tap-highlight-color: transparent; }
 </style>

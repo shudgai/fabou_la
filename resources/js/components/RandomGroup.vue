@@ -12,12 +12,12 @@
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <span class="font-black shrink-0" style="font-size: 28px !important; color: #0f172a !important;">
+                        <span class="font-black shrink-0" style="font-size: 20px !important; color: #0f172a !important;">
                             {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                         </span>
                         <!-- Manual Add Input -->
                         <div v-if="!selectionFiltered" class="flex items-center bg-slate-100 rounded-lg px-2 py-1 flex-1 max-w-[150px]">
-                            <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="手動輸入..." class="bg-transparent border-none outline-none text-[13px] font-bold w-full">
+                            <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="手動輸入..." class="bg-transparent border-none outline-none text-[10px] font-bold w-full">
                             <button @click="addManualName" class="text-blue-500 font-black text-xl ml-1">+</button>
                         </div>
                     </div>
@@ -271,9 +271,9 @@
                         <div class="flex items-center justify-between py-3">
                             <h4 class="text-[13px] font-black text-slate-400 tracking-wider uppercase">分組名冊</h4>
                             <div class="flex items-center space-x-2">
-                                <button @click="redrawAll" class="text-[11px] font-black text-white bg-rose-200 px-2 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"><span>重抽</span></button>
-                                <button @click="copyResult" class="text-[11px] font-black text-white bg-emerald-200 flex items-center space-x-1 shadow-sm border-none px-2 py-[10px] rounded-full transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"><span>複製名單</span></button>
-                                <button @click="groups = []" class="text-[11px] font-black text-white bg-slate-300 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">隱藏</button>
+                                <button @click="redrawAll" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">重抽</button>
+                                <button @click="copyResult" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">複製名單</button>
+                                <button @click="groups = []" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-slate-300 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">隱藏</button>
                             </div>
                         </div>
                         <div class="grid gap-1">
@@ -371,9 +371,9 @@
                 </button>
                 <h2 class="flex-1 font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 24px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
-                    <button @click="handleNextRound" class="text-[17px] font-black text-white bg-indigo-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">下一輪</button>
-                    <button @click="redrawAll" class="text-[17px] font-black text-white bg-rose-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重抽</button>
-                    <button @click="copyResult" class="text-[17px] font-black text-white bg-emerald-200 px-3 py-[10px] rounded-full shadow-sm border-none transition-all active:scale-95" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
+                    <button @click="handleNextRound" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-indigo-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">下一輪</button>
+                    <button @click="redrawAll" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重抽</button>
+                    <button @click="copyResult" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-24">
@@ -824,6 +824,7 @@ const redrawAll = () => {
     groups.value = [];
     isDrawing.value = false;
     currentType.value = '';
+    currentStep.value = 2; // Return to grouping configuration interface
 };
 
 const copyResult = () => {
@@ -1052,6 +1053,10 @@ defineExpose({
     to   { opacity: 1;   transform: scale(1); }
 }
 
+.custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -1078,5 +1083,6 @@ defineExpose({
         background: #94a3b8;
     }
 }
+* { -webkit-tap-highlight-color: transparent; }
 </style>
 

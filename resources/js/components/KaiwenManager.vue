@@ -6,23 +6,30 @@
             @close="showAddMenu = false"
         />
         <!-- Header (Shared) -->
-        <div v-if="!hasAnyExpanded" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
+        <div v-if="!addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[32px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 32px !important;">
                     開文專區
                 </div>
             </div>
             
+            <!-- Close button for expanded view -->
+            <div v-if="hasAnyExpanded" class="flex items-center space-x-2 mr-2">
+                <button @click="collapseAll" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90">
+                    <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
             <!-- Search Icon (Only in main list view) -->
-            <div v-if="!addMode && !hasAnyExpanded" class="flex items-center space-x-2 mr-2">
+            <div v-if="!hasAnyExpanded" class="flex items-center space-x-2 mr-2">
                 <button @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all">
                     <svg v-if="!showSearch" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <svg v-else class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <!-- Tab Switcher (Only in main list view, hide when expanded or in add mode) -->
-            <div v-if="!addMode && !hasAnyExpanded && !showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
+            <!-- Tab Switcher -->
+            <div v-if="!showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in" :class="{'mr-12': hasAnyExpanded}">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
                     class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
@@ -37,8 +44,8 @@
                 </button>
             </div>
 
-            <!-- Search Input (Only when showSearch is active) -->
-            <div v-if="showSearch && !addMode && !hasAnyExpanded" class="absolute right-12 top-1/2 -translate-y-1/2 flex items-center animate-fade-in" style="width: calc(100% - 150px);">
+            <!-- Search Input -->
+            <div v-if="showSearch && !hasAnyExpanded" class="absolute right-12 top-1/2 -translate-y-1/2 flex items-center animate-fade-in" style="width: calc(100% - 150px);">
                 <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
                     class="w-full h-[36px] bg-slate-50 border border-slate-200 rounded-xl px-4 text-[16px] outline-none focus:border-purple-300 transition-all shadow-inner">
             </div>
@@ -102,8 +109,8 @@
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
-                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                                        <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1">
+                                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                             <circle cx="5" cy="12" r="2" />
                                             <circle cx="12" cy="12" r="2" />
                                             <circle cx="19" cy="12" r="2" />
@@ -123,13 +130,10 @@
                                         <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
                                 </template>
-                                <button v-else @click.stop="toggleExpand(post.id)" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
                             </div>
                         </div>
                         
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
                                 <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest block mb-2">抬頭</span>
@@ -142,8 +146,8 @@
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="app-title block uppercase tracking-widest">開文內容</span>
                                     <div class="relative">
-                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                                            <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1">
+                                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                                 <circle cx="5" cy="12" r="2" />
                                                 <circle cx="12" cy="12" r="2" />
                                                 <circle cx="19" cy="12" r="2" />
@@ -224,8 +228,8 @@
                                 <span v-else class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg">待定</span>
                                 
                                 <template v-if="!expandedIds[post.id]">
-                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                                        <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1">
+                                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                             <circle cx="5" cy="12" r="2" />
                                             <circle cx="12" cy="12" r="2" />
                                             <circle cx="19" cy="12" r="2" />
@@ -246,21 +250,18 @@
                                         <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
                                     </div>
                                 </template>
-                                <button v-else @click.stop="toggleExpand(post.id)" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
                             </div>
                         </div>
                         
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-6 pb-6 pt-3 rounded-2xl border border-slate-100 space-y-4 mt-2 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
 
                             
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="app-title block uppercase tracking-widest">開文內容</span>
                                     <div class="relative">
-                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                                            <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1">
+                                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                                 <circle cx="5" cy="12" r="2" />
                                                 <circle cx="12" cy="12" r="2" />
                                                 <circle cx="19" cy="12" r="2" />
@@ -446,7 +447,6 @@
                 </div>
             </div>
 
-            
             <!-- Shared Date Picker -->
             <compact-date-picker 
                 v-if="activeDate"
@@ -456,37 +456,36 @@
             />
         </div>
 
-
         <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport -->
         <div v-if="!addMode" class="absolute bottom-0 left-0 right-0 h-[7vh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
             <button @click="$emit('goHome')" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <!-- Center Add Button -->
             <button @click.stop="showAddMenu = true" 
-                class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 text-purple-600 bg-purple-50/50">
+                class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 text-blue-600 bg-blue-50/50">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-purple-600 bg-purple-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <!-- Font Gear Menu -->
             <div class="flex justify-center relative">
                 <button @click="showFontMenu = !showFontMenu" 
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all text-purple-600 bg-purple-50/50 active:scale-95">
-                    <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all text-blue-600 bg-blue-50/50 active:scale-95">
+                    <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
                     <div class="h-44 flex flex-col items-center justify-between py-2 relative">
-                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Large</span>
-                        <div class="relative w-1.5 h-32 bg-slate-100 rounded-full overflow-hidden">
+                        <span class="text-[14px] font-black text-slate-400">大</span>
+                        <div class="relative w-1.5 h-24 bg-slate-100 rounded-full flex items-center justify-center">
                             <input 
                                 type="range" 
                                 min="0" 
@@ -494,10 +493,10 @@
                                 step="1" 
                                 :value="fontSizeValue"
                                 @input="handleFontSizeSlider"
-                                class="absolute w-32 h-1.5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-90 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600"
+                                class="vertical-slider w-24 h-8 bg-transparent appearance-none cursor-pointer"
                             >
                         </div>
-                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Small</span>
+                        <span class="text-[14px] font-black text-slate-400">小</span>
                     </div>
                 </div>
             </div>
@@ -1123,7 +1122,7 @@ const executeDelete = async () => {
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -1131,4 +1130,37 @@ const executeDelete = async () => {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Vertical Slider Styles */
+.vertical-slider {
+    transform: rotate(-90deg);
+    -webkit-appearance: none;
+    appearance: none;
+}
+.vertical-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: transparent;
+}
+.vertical-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2563eb; /* blue-600 */
+    cursor: pointer;
+    margin-top: -10px;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+    border: 2px solid white;
+}
+.vertical-slider::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2563eb;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
 </style>

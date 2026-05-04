@@ -247,26 +247,26 @@
                                 </button>
                                 
                                 <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-auto min-w-[140px] bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
+                                     class="absolute right-0 mt-2 w-24 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        {{ expandedIds.has(item.id) ? '收起清單' : '展開清單' }}
+                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        {{ expandedIds.has(item.id) ? '收起' : '展開' }}
                                     </button>
                                     <button @click.stop="openAndEdit(item.id); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        修改資料
+                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        修改
                                     </button>
                                     <button @click.stop="copyAsTextFile(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        複製貼 LINE
+                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        複製
                                     </button>
                                     <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        下載檔案
+                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                        下載
                                     </button>
                                     <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                            class="w-full text-left px-4 py-3 text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
-                                        刪除資料
+                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
+                                        刪除
                                     </button>
                                 </div>
                             </div>
@@ -2023,7 +2023,9 @@ const getCategorySum = (category) => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+* { -webkit-tap-highlight-color: transparent; }
 </style>

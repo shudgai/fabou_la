@@ -5164,7 +5164,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
@@ -5173,5 +5173,6 @@ onMounted(() => {
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
+* { -webkit-tap-highlight-color: transparent; }
 </style>
  

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="show" class="fixed inset-0 md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
+    <div v-if="show" class="fixed inset-0 h-[100dvh] md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
         
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-if="currentStep === 1" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
@@ -30,17 +30,11 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </div>
-                        </div>
-
-                        <!-- Third Row: Step Badge -->
-                        <div v-if="lotteryMode === false" class="flex items-center mt-1 px-1">
-                            <div v-if="selectionSubStep === 1" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[13px] font-black border border-rose-100 flex items-center shadow-sm">
-                                <span class="w-2 h-2 bg-rose-500 rounded-full mr-2 animate-pulse"></span>
-                                步驟 1：選取固定人員
-                            </div>
-                            <div v-else class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[13px] font-black border border-blue-100 flex items-center shadow-sm">
-                                <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
-                                步驟 2：選取抽籤人員
+                        <!-- Third Row: Step Badge (Simplified) -->
+                        <div class="flex items-center mt-1 px-1">
+                            <div class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[13px] font-black border border-indigo-100 flex items-center shadow-sm">
+                                <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2 animate-pulse"></span>
+                                步驟 1：名單選取
                             </div>
                         </div>
                     </div>
@@ -82,10 +76,13 @@
                         <div class="flex items-center justify-between py-2 border-b border-slate-50">
                             <div class="flex flex-col">
                                 <label class="text-[17px] font-black text-slate-800">
-                                    {{ lotteryMode === true ? '抽籤名單選取' : (selectionSubStep === 1 ? '1. 固定人員設定' : '2. 抽籤人員設定') }}
+                                    {{ lotteryMode === true ? '抽籤名單選取' : '人員名單選取' }}
                                 </label>
-                                <span class="text-[12px] font-bold text-slate-400">
-                                    {{ lotteryMode === true ? '請選取參與本輪抽籤的人員' : (selectionSubStep === 1 ? '選中的人將優先排在最前面' : '選中的人將進入隨機抽籤池') }}
+                                <span v-if="lotteryMode === false" class="text-[11px] font-bold text-slate-400">
+                                    點擊次數切換：白色(不選) → <span class="text-indigo-500">靛色(抽籤)</span> → <span class="text-blue-500">藍色(固定)</span>
+                                </span>
+                                <span v-else class="text-[12px] font-bold text-slate-400">
+                                    請選取參與本輪抽籤的人員
                                 </span>
                             </div>
                             <div class="flex items-center space-x-2">
@@ -134,22 +131,17 @@
             <!-- Confirm button aligned with desktop container -->
             <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-1 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
                 <div class="w-full space-y-2">
-                    <button
-                        @click="confirmSelection"
-                        :disabled="lotteryMode === false && selectionSubStep === 1 ? false : pendingNames.length === 0"
-                        class="w-full py-[12px] rounded-2xl font-black text-[17px] shadow-sm active:scale-95 transition-all disabled:opacity-50"
-                        :style="{
-                            background: (lotteryMode === false && selectionSubStep === 1) || pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8',
-                            color: '#ffffff !important',
-                            textShadow: '0 1px 3px rgba(0,0,0,0.3)'
-                        }">
-                        <template v-if="lotteryMode === false && selectionSubStep === 1">
-                            確定固定名單 (共 {{ fixedParticipants.length }} 人) → 下一步
-                        </template>
-                        <template v-else>
+                        <button
+                            @click="confirmSelection"
+                            :disabled="pendingNames.length === 0"
+                            class="w-full py-[12px] rounded-2xl font-black text-[17px] shadow-sm active:scale-95 transition-all disabled:opacity-50"
+                            :style="{
+                                background: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8',
+                                color: '#ffffff !important',
+                                textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                            }">
                             確定名單 (共 {{ pendingNames.length }} 人) → 下一步
-                        </template>
-                    </button>
+                        </button>
                     <button @click="handleBack" class="w-full py-1 text-[13px] font-bold text-slate-400 flex items-center justify-center">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         返回上一步
@@ -422,6 +414,7 @@
                 class="z-[2000]"
             />
         </div>
+    </div>
 </template>
 
 <script setup>
@@ -698,20 +691,27 @@ const togglePending = (name) => {
     const isPool = pendingNames.value.includes(name);
     const isFixed = fixedParticipants.value.includes(name);
     
-    if (isPool || isFixed) {
-        // Already selected (either blue or indigo), so UNSELECT completely (white)
-        const pIdx = pendingNames.value.indexOf(name);
-        if (pIdx > -1) pendingNames.value.splice(pIdx, 1);
-        
-        const fIdx = fixedParticipants.value.indexOf(name);
-        if (fIdx > -1) fixedParticipants.value.splice(fIdx, 1);
-    } else {
-        // Not selected, add according to current mode
-        if (selectionMode.value === 'fixed') {
-            fixedParticipants.value.push(name);
-            pendingNames.value.push(name);
+    if (lotteryMode.value === true) {
+        // Simple Toggle for Round Lottery
+        if (isPool) {
+            pendingNames.value.splice(pendingNames.value.indexOf(name), 1);
         } else {
             pendingNames.value.push(name);
+        }
+    } else {
+        // Cyclic Toggle for Direct Ordering: Unselected -> Normal -> Fixed -> Unselected
+        if (!isPool && !isFixed) {
+            // White -> Normal (Indigo)
+            pendingNames.value.push(name);
+        } else if (isPool && !isFixed) {
+            // Normal -> Fixed (Blue)
+            fixedParticipants.value.push(name);
+        } else {
+            // Fixed -> Unselected
+            const pIdx = pendingNames.value.indexOf(name);
+            if (pIdx > -1) pendingNames.value.splice(pIdx, 1);
+            const fIdx = fixedParticipants.value.indexOf(name);
+            if (fIdx > -1) fixedParticipants.value.splice(fIdx, 1);
         }
     }
 };
@@ -726,11 +726,6 @@ const invertSelection = () => {
 };
 
 const confirmSelection = () => {
-    if (lotteryMode.value === false && selectionSubStep.value === 1) {
-        selectionSubStep.value = 2;
-        return;
-    }
-
     if (pendingNames.value.length === 0) return;
     
     selectedNames.value = [...pendingNames.value];
