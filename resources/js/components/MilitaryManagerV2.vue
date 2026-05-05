@@ -21,19 +21,11 @@
             </div>
         </div>
 
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
-            <defs>
-                <linearGradient v-for="folder in folders_list" :key="'def-'+folder.id" :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
-                    <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
-                </linearGradient>
-            </defs>
-        </svg>
+
 
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
-        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
+        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-5xl md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
                     軍隊記錄專區
@@ -47,7 +39,7 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto px-[10px] py-1" style="min-height: 32px;">
+        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-5xl md:mx-auto px-[10px] py-1" style="min-height: 32px;">
             <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
@@ -70,7 +62,7 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-[633px] md:mx-auto w-full">
+        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-5xl md:mx-auto w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -91,18 +83,39 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-[25px] max-w-[633px] mx-auto">
+                <div class="px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center justify-center mt-[25px] max-w-5xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
                         
                         <!-- Unified Shield Badge (Matches Mobile Style) -->
                         <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
-                            <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
+                            <!-- MOBILE VERSION SVG -->
+                            <svg class="block md:hidden w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
+                                <defs>
+                                    <linearGradient :id="'mm-fGrad-m-' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
+                                        <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
+                                    </linearGradient>
+                                </defs>
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
-                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                                      :fill="'url(#mm-fGrad-m-' + folder.id + ')'" 
+                                      stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
                             </svg>
+
+                            <!-- DESKTOP VERSION SVG -->
+                            <svg class="hidden md:block w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
+                                <defs>
+                                    <linearGradient :id="'mm-fGrad-d-' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" :stop-color="getDesktopGradientColor(folder.color).start" />
+                                        <stop offset="100%" :stop-color="getDesktopGradientColor(folder.color).end" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
+                                      :fill="'url(#mm-fGrad-d-' + folder.id + ')'" 
+                                      stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+                            </svg>
+
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" 
                                     style="font-weight: 900 !important;">{{ folder.name }}</span>
@@ -116,7 +129,7 @@
             </div>
 
             <!-- LEDGER VIEW -->
-            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-[633px] md:mx-auto w-full">
+            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-5xl md:mx-auto w-full">
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
@@ -928,12 +941,21 @@ const formatDate = (dateStr) => {
 
 const getGradientColor = (colorClass) => {
     const map = {
-        'bg-indigo-500': { start: '#475569', end: '#0f172a' }, // Tiger Armor -> Black
-        'bg-blue-500':   { start: '#334155', end: '#020617' }, // Tiger Brave -> Black
-        'bg-slate-700':  { start: '#64748b', end: '#1e293b' }, // Obsidian -> Dark Slate
-        'bg-purple-500': { start: '#d8b4fe', end: '#a855f7' }  // Purple -> Purple
+        'bg-indigo-500': { start: '#1e293b', end: '#020617' }, // Tiger Armor -> Very Dark
+        'bg-blue-500':   { start: '#334155', end: '#0f172a' }, // Tiger Brave -> Dark Blue
+        'bg-slate-700':  { start: '#1e293b', end: '#020617' }, // Obsidian -> Very Dark
+        'bg-purple-500': { start: '#7e22ce', end: '#4c1d95' }  // Purple -> Rich Purple
     };
-    return map[colorClass] || { start: '#cbd5e1', end: '#64748b' };
+    return map[colorClass] || { start: '#334155', end: '#0f172a' };
+};
+
+const getDesktopGradientColor = (colorClass) => {
+    // Desktop: Only Purple is Purple, others are Black
+    if (colorClass === 'bg-purple-500') {
+        return { start: '#7e22ce', end: '#4c1d95' };
+    }
+    // Deep Black for all other folders on Desktop
+    return { start: '#1e293b', end: '#020617' };
 };
 
 watch(currentFolder, (newVal) => {

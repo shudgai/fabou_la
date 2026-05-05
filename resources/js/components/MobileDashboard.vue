@@ -156,8 +156,8 @@ const loadStats = async () => {
             const recordsObj = res.records || res;
             counts.value['teaching'] = recordsObj.total !== undefined ? recordsObj.total : (recordsObj.data ? recordsObj.data.length : recordsObj.length || 0);
         }
-        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.total || grud.value.data?.length || 0;
-        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.total || mil.value.data?.length || 0;
+        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.paginator?.total || grud.value.data?.total || grud.value.data?.length || 0;
+        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.records?.total || mil.value.data?.total || mil.value.data?.length || 0;
         if (kai.status === 'fulfilled') {
             const kData = kai.value.data || {};
             counts.value['kaiwen'] = (kData.weeklyPosts?.length || 0) + (kData.selfPosts?.length || 0);

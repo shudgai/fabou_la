@@ -1,27 +1,27 @@
 <template>
-    <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900">
+    <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 kaiwen-module">
         <AddActionMenu 
             :show="showAddMenu" 
             :actions="addActions" 
             @close="showAddMenu = false"
         />
         <!-- Header (Shared) -->
-        <div v-if="!addMode" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full md:max-w-xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
+        <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full md:max-w-2xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[32px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 32px !important;">
+                <div class="app-title text-[28px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 28px !important;">
                     開文專區
                 </div>
             </div>
             
             <!-- Close button for expanded view -->
-            <div v-if="hasAnyExpanded" class="flex items-center space-x-2 mr-2">
+            <div v-if="hasAnyExpanded && !addMode" class="flex items-center space-x-2 mr-2">
                 <button @click="collapseAll" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- Search Icon (Only in main list view) -->
-            <div v-if="!hasAnyExpanded" class="flex items-center space-x-2 mr-2">
+            <div v-if="!hasAnyExpanded && !addMode" class="flex items-center space-x-2 mr-2">
                 <button @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all">
                     <svg v-if="!showSearch" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <svg v-else class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -29,7 +29,7 @@
             </div>
             
             <!-- Tab Switcher -->
-            <div v-if="!showSearch" class="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in" :class="{'mr-12': hasAnyExpanded}">
+            <div v-if="!showSearch" class="absolute right-0 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
                     class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
@@ -351,7 +351,11 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                            <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white border border-slate-200 px-3 py-1 outline-none shadow-sm focus:border-purple-300 transition-all resize-none overflow-hidden" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important; line-height: 1.4;"></textarea>
+                        </div>
+                        <div v-else-if="addMode === 'weekly_manual'" class="space-y-1">
+                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
+                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
@@ -917,6 +921,18 @@ const handleGlobalPaste = (e) => {
     }
 };
 
+const handleTitlePaste = (e) => {
+    if (addMode.value !== 'weekly') return;
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    const clean = text.replace(/\s+/g, '').substring(0, 14);
+    if (clean.length > 7) {
+        form.value.title = clean.substring(0, 7) + '\n' + clean.substring(7);
+    } else {
+        form.value.title = clean;
+    }
+};
+
 onMounted(() => {
     loadData();
     window.addEventListener('paste', handleGlobalPaste);
@@ -1161,6 +1177,17 @@ const executeDelete = async () => {
     background: #2563eb;
     cursor: pointer;
     border: 2px solid white;
+}
+
+/* Kaiwen Specific Font Size Overrides */
+:global(body.font-small) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 16px !important;
+}
+:global(body.font-medium) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 18px !important;
+}
+:global(body.font-large) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 21px !important;
 }
 
 </style>
