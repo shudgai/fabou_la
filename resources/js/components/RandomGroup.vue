@@ -12,9 +12,14 @@
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <span class="font-black shrink-0" style="font-size: 20px !important; color: #0f172a !important;">
-                            {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
-                        </span>
+                        <div class="flex flex-col">
+                            <span class="font-black shrink-0 leading-tight" style="font-size: 20px !important; color: #0f172a !important;">
+                                {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
+                            </span>
+                            <span v-if="!selectionFiltered" class="text-[12px] font-bold text-slate-400 -mt-0.5">
+                                滑動游標選取人員
+                            </span>
+                        </div>
                         <!-- Manual Add Input -->
                         <div v-if="!selectionFiltered" class="flex items-center bg-slate-100 rounded-lg px-2 py-1 flex-1 max-w-[150px]">
                             <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="手動輸入..." class="bg-transparent border-none outline-none text-[10px] font-bold w-full">
@@ -311,7 +316,7 @@
             </div>
 
             <!-- Bamboo cup + Flying Sticks Container -->
-            <div class="lottery-cup-container" style="transform: translateY(10vh);">
+            <div class="lottery-cup-container" style="transform: translateY(10vh) scale(0.8);">
                 <!-- Flying sticks (multiple, staggered) -->
                 <div class="absolute inset-0 pointer-events-none">
                     <div v-for="stick in flyingSticks" :key="stick.id"

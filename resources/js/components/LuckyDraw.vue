@@ -163,7 +163,7 @@
             </div>
 
             <!-- Bamboo cup + Flying Sticks Container -->
-            <div class="lottery-cup-container" style="transform: translateY(18vh);">
+            <div class="lottery-cup-container" style="transform: translateY(10vh) scale(0.8);">
                 <div class="absolute inset-0 pointer-events-none">
                     <div v-for="stick in flyingSticks" :key="stick.id"
                         class="lottery-stick"
@@ -191,7 +191,17 @@
                     <div class="cup-base"></div>
                 </div>
                 <div class="flying-name-display">
-                    <div v-if="lotteryDisplayNames.length" class="flying-name-text">{{ lotteryDisplayNames[0] }}</div>
+                    <span v-if="lotteryDisplayNames.length" class="flying-name-text">{{ lotteryDisplayNames[0] }}</span>
+                </div>
+            </div>
+
+            <!-- Status text (Added to match RandomGroup) -->
+            <div class="absolute top-[3vh] left-0 right-0 flex flex-col items-center space-y-2">
+                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <div class="flex gap-2">
+                    <span class="dot-lg w-3 h-3 rounded-full" style="background:#b45309;"></span>
+                    <span class="dot-lg w-3 h-3 rounded-full" style="background:#d97706;"></span>
+                    <span class="dot-lg w-3 h-3 rounded-full" style="background:#f59e0b;"></span>
                 </div>
             </div>
         </div>
@@ -686,7 +696,7 @@ onMounted(loadUsers);
 
 .flying-name-display { margin-top: 24px; height: 50px; display: flex; align-items: center; justify-content: center; }
 .flying-name-text {
-    font-size: 48px; font-weight: 900; color: #92400e; letter-spacing: 6px;
+    font-size: 36px; font-weight: 900; color: #92400e; letter-spacing: 6px;
     text-shadow: 0 4px 20px rgba(217,119,6,0.4); animation: namePulse 0.1s ease-in-out;
 }
 @keyframes namePulse { from { opacity: 0.2; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
