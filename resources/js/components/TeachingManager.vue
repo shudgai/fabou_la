@@ -137,9 +137,7 @@
                                 <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     父皇仙師<br>每日開示
                                 </span>
-                                <div class="mt-4 bg-[#fef3c7] px-5 py-1.5 rounded-full shadow-sm flex items-center justify-center">
-                                    <span class="text-[20px] font-black text-[#dc2626]" style="font-weight: 900 !important;">共 {{ getFolderSum(0) }} 筆</span>
-                                </div>
+
                             </div>
                         </div>
                     </button>
@@ -158,9 +156,7 @@
                                 <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
-                                <div class="mt-4 bg-[#e0e7ff] px-5 py-1.5 rounded-full shadow-sm flex items-center justify-center">
-                                    <span class="text-[20px] font-black text-[#4338ca]" style="font-weight: 900 !important;">共 {{ getMastersTotalCount() }} 筆</span>
-                                </div>
+
                             </div>
                         </div>
                     </button>
@@ -194,11 +190,7 @@
                                      style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="bg-[#fef3c7] px-3 py-1 rounded-full shadow-sm pointer-events-auto">
-                                    <div class="font-black text-[#dc2626] whitespace-nowrap" style="font-size: 14px !important;">
-                                        共 {{ getFolderSum(folder.id) }} 筆
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </button>
@@ -1941,6 +1933,41 @@
                 title="選擇日期"
                 @close="activeDate = null"
             />
+
+            <!-- Global Action Confirm / Toast (Critical for iOS deletion) -->
+            <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+                <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                    <div class="p-8 text-center space-y-6">
+                        <div class="flex flex-col items-center">
+                            <div v-if="persistentToast.type === 'deleteConfirm'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </div>
+                            <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div v-else class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                        </div>
+
+                        <div class="flex flex-col space-y-3">
+                            <button v-if="persistentToast.type === 'deleteConfirm' || persistentToast.type === 'clearConfirm' || persistentToast.type === 'switchConfirm'" 
+                                    @click="executeToastAction" 
+                                    class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg shadow-rose-200/50" 
+                                    style="color: white !important;">
+                                {{ persistentToast.type === 'deleteConfirm' ? '確認刪除' : (persistentToast.type === 'switchConfirm' ? '確認切換' : '確認執行') }}
+                            </button>
+                            <button @click="persistentToast = null" 
+                                    :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                    class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                    :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                                {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Floating Login Info Removed per user request -->
         </div>
     </div>
@@ -2184,7 +2211,7 @@ const saveInlineEdit = async () => {
         cancelInlineEdit();
     } catch (err) {
         console.error('Failed to save inline edit:', err);
-        alert('存檔失敗，請稍後再試');
+        persistentToast.value = { msg: '✖ 存檔失敗，請稍後再試', type: 'error' };
     } finally {
         saving.value = false;
     }
@@ -4062,7 +4089,7 @@ const handleReorder = async (item, newOrderStr) => {
         fetchItems(itemPagination.value.current_page);
     } catch (e) {
         const msg = e.response?.data?.message || e.message || '連線錯誤';
-        alert('排序更新失敗: ' + msg);
+        persistentToast.value = { msg: '✖ 排序更新失敗: ' + msg, type: 'error' };
     }
 };
 
@@ -4091,7 +4118,8 @@ const copyAsTextFile = (item) => {
     try {
         const text = formatTeachingForFile(item);
         navigator.clipboard.writeText(text);
-        alert('內容已複製到剪貼簿');
+        persistentToast.value = { msg: '✓ 內容已複製到剪貼簿', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
     } catch (err) {
         console.error('Copy failed:', err);
     }
@@ -4205,7 +4233,8 @@ const copyToLine = (item, index = null, allRecords = []) => {
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-            alert('內容已複製');
+            persistentToast.value = { msg: '✓ 內容已複製', type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         }).catch(err => {
             console.error('Copy failed', err);
         });
@@ -4216,7 +4245,8 @@ const copyToLine = (item, index = null, allRecords = []) => {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('內容已複製 (相容模式)');
+        persistentToast.value = { msg: '✓ 內容已複製 (相容模式)', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
     }
 };
 
@@ -4518,8 +4548,11 @@ const copyAllToLine = async () => {
         }).join('\n\n\n');
         
         await navigator.clipboard.writeText(text);
-        alert('已複製完整清單至剪貼簿');
-    } catch (e) { alert('複製失敗'); } finally { loading.value = false; }
+        persistentToast.value = { msg: '✓ 已複製完整清單至剪貼簿', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+    } catch (e) { 
+        persistentToast.value = { msg: '✖ 複製失敗', type: 'error' };
+    } finally { loading.value = false; }
 };
 
 const clearTodayDaily = () => {
@@ -4541,10 +4574,11 @@ const executeClearTodayDaily = async () => {
             await axios.delete(`/teachings/${item.id}`);
         }
         
-        alert('今日每日開示暫存區已清空 (仙師專區紀錄均已受保護)');
+        persistentToast.value = { msg: '✓ 今日每日開示暫存區已清空\n(仙師專區紀錄均已受保護)', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 3000);
         fetchItems(1);
     } catch (e) {
-        alert('清空失敗');
+        persistentToast.value = { msg: '✖ 清空失敗', type: 'error' };
     } finally {
         loading.value = false;
     }
@@ -4605,7 +4639,7 @@ const exportListTxt = async () => {
         triggerSimpleDownload(text, fileName);
     } catch (e) { 
         console.error(e);
-        alert('匯出失敗'); 
+        persistentToast.value = { msg: '✖ 匯出失敗', type: 'error' };
     } finally { 
         loading.value = false; 
     }
@@ -4650,7 +4684,7 @@ const saveItem = async () => {
     const hasImportData = activeEntryTab.value === 'batch' && batchImportContent.value?.trim();
 
     if (!hasCurrentData && !hasBatchData && !hasImportData) {
-        alert('請先輸入開示內容或賜降項目後再儲存。');
+        persistentToast.value = { msg: '✖ 請先輸入開示內容或賜降項目後再儲存。', type: 'error' };
         return;
     }
 
@@ -4820,7 +4854,7 @@ const performActualSave = async () => {
         fetchItems(1);
     } catch (e) {
         console.error(e);
-        alert('儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'));
+        persistentToast.value = { msg: '✖ 儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'), type: 'error' };
     } finally {
         saving.value = false;
     }
@@ -4997,7 +5031,7 @@ const executeDistributionSave = async (mode) => {
         fetchItems(1);
     } catch (e) {
         addMode.value = false; // Also close form on error
-        alert('存檔過程中發生錯誤');
+        persistentToast.value = { msg: '✖ 存檔過程中發生錯誤', type: 'error' };
     } finally {
         saving.value = false;
     }

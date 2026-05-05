@@ -33,6 +33,14 @@
                     @click="activeFolderId = folder.id"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
                     style="background-color: rgb(255, 250, 205);">
+                    
+                    <!-- Folder Delete Button (Top Right) -->
+                    <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
+                        @click.stop="deleteFolder(folder.id)"
+                        class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 z-20 border border-rose-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
@@ -156,8 +164,8 @@
                 <div v-else-if="activeFolder" class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
                     <div class="space-y-4">
                         <div v-for="record in activeFolder.other_records" :key="record.id" class="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group">
-                            <button @click="deleteRecord(record.id)" class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <button @click.stop="deleteRecord(record.id)" class="absolute top-4 right-4 text-slate-300 active:text-red-500 transition-colors p-2 z-20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             
                             <div class="flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">
@@ -229,6 +237,41 @@
                 </div>
             </div>
         </div>
+
+        <!-- Global Action Confirm / Toast (Critical for iOS deletion) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'deleteConfirm'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </div>
+                        <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button v-if="persistentToast.type === 'deleteRecord' || persistentToast.type === 'deleteFolder'" 
+                                @click="executeToastAction" 
+                                class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg shadow-rose-200/50" 
+                                style="color: white !important;">
+                            確認刪除
+                        </button>
+                        <button @click="persistentToast = null" 
+                                :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                            {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- LuckyDraw moved inside content area -->
     </div>
 </template>
@@ -271,6 +314,8 @@ const activeAction = ref('');
 const newFolderName = ref('');
 const newFolderColor = ref('#6366f1');
 const newRecord = ref({ title: '', content: '', record_date: getTodayStr() });
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
 
 const sortedFolders = computed(() => {
     return [...folders.value]
@@ -338,25 +383,39 @@ const saveFolder = async () => {
     await loadData();
 };
 
-const deleteFolder = async (id) => {
-    if (!confirm('確定要刪除整個資料夾嗎？內容也會被刪除。')) return;
-    await axios.delete(`/other-folders/${id}`);
-    if (activeFolderId.value === id) activeFolderId.value = null;
-    await loadData();
+const deleteFolder = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除整個資料夾嗎？\n內容也會被一併刪除。', type: 'deleteFolder' };
 };
 
-const saveRecord = async () => {
-    if (!newRecord.value.content) return;
-    await axios.post(`/other-folders/${activeFolderId.value}/records`, newRecord.value);
-    newRecord.value = { title: '', content: '', record_date: getTodayStr() };
-    showAddRecord.value = false;
-    await loadData();
+const deleteRecord = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除此記事嗎？', type: 'deleteRecord' };
 };
 
-const deleteRecord = async (id) => {
-    if (!confirm('確定要刪除此記事嗎？')) return;
-    await axios.delete(`/other-records/${id}`);
-    await loadData();
+const executeToastAction = async () => {
+    if (!persistentToast.value) return;
+    const type = persistentToast.value.type;
+    const id = deleteConfirmId.value;
+    
+    try {
+        if (type === 'deleteRecord') {
+            await axios.delete(`/other-records/${id}`);
+            persistentToast.value = { msg: '✓ 已成功刪除記事', type: 'success' };
+        } else if (type === 'deleteFolder') {
+            await axios.delete(`/other-folders/${id}`);
+            if (activeFolderId.value === id) activeFolderId.value = null;
+            persistentToast.value = { msg: '✓ 已成功刪除資料夾', type: 'success' };
+        }
+        
+        if (persistentToast.value?.type === 'success') {
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+        }
+        await loadData();
+    } catch (e) {
+        persistentToast.value = { msg: '✖ 操作失敗', type: 'error' };
+    }
+    deleteConfirmId.value = null;
 };
 
 const formatDate = (dateString) => {
@@ -383,8 +442,7 @@ const prepareAddRecord = () => {
 };
 
 const handleMore = () => {
-    // Current placeholder for export or more actions
-    alert('此資料夾暫不支援匯出功能');
+    persistentToast.value = { msg: '✖ 此資料夾暫不支援匯出功能', type: 'error' };
 };
 
 const getFolderSum = (id) => {

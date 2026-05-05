@@ -1,40 +1,46 @@
 <template>
-    <div class="bg-white h-[100vh] flex flex-col relative overflow-hidden">
-        <!-- Global SVG Definitions for Army Gradients -->
-        <svg class="absolute w-0 h-0" aria-hidden="true">
+    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+        <!-- Delete Confirmation / Status Toast -->
+        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="flex items-start justify-between mb-8">
+                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
+                        {{ persistentToast.msg }}
+                    </span>
+                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
+                    <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                </div>
+                <div v-else class="flex justify-end mt-2">
+                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
-                <!-- Tiger Armor (armor) -->
-                <linearGradient id="mm-fGrad-armor" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#475569" />
-                    <stop offset="100%" stop-color="#0f172a" />
-                </linearGradient>
-                <!-- Tiger Brave (brave) -->
-                <linearGradient id="mm-fGrad-brave" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#334155" />
-                    <stop offset="100%" stop-color="#020617" />
-                </linearGradient>
-                <!-- Obsidian (obsidian) -->
-                <linearGradient id="mm-fGrad-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#64748b" />
-                    <stop offset="100%" stop-color="#1e293b" />
-                </linearGradient>
-                <!-- Purple (purple) -->
-                <linearGradient id="mm-fGrad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#d8b4fe" />
-                    <stop offset="100%" stop-color="#a855f7" />
+                <linearGradient v-for="folder in folders_list" :key="'def-'+folder.id" :id="'mm-fGrad' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
+                    <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
                 </linearGradient>
             </defs>
         </svg>
+
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-[633px] md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 32px !important;">
+                <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
                     軍隊記錄專區
                 </div>
             </div>
             <div class="absolute right-2 top-1/2 -translate-y-1/2">
-                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[16px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 16px !important;">
+                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -46,16 +52,19 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="text-[25px] font-black text-slate-900 truncate tracking-tight font-outfit" style="font-size: 25px !important;">
+                <h2 class="text-[28px] font-black text-slate-900 truncate tracking-tight font-outfit">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
-            </div>
-            <div class="ml-2 flex items-center space-x-2">
-                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[16px] text-indigo-500 bg-indigo-50 border border-indigo-100 rounded-lg active:scale-95 transition-all font-black" style="font-size: 16px !important;">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2.5 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[16px] font-black transition-all active:scale-95 shadow-sm whitespace-nowrap" style="font-size: 16px !important;">
+            </div>
+            <div class="ml-2 flex items-center space-x-2">
+                <button @click="toggleFullTotal" class="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important;">
                     總數
+                </button>
+                <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
         </div>
@@ -85,25 +94,36 @@
                 <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-[633px] mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative w-[308px] h-[308px] md:w-[352px] md:h-[352px]">
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[352px] md:h-[352px]">
                         
-                        <!-- Unified Responsive Shield Badge -->
-                        <div class="relative w-full h-full flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
+                        <!-- Premium Desktop Shield Badge (Only on Desktop) -->
+                        <div class="absolute inset-8 flex items-center justify-center transition-transform group-hover:scale-105 duration-300 opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto">
                             <svg class="w-full h-full drop-shadow-2xl" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad-' + folder.id + ')'" 
-                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                                <!-- Inner Bevel Effect (Desktop Only) -->
-                                <path class="hidden md:block" d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
+                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
+                                      stroke="white" stroke-width="0.2"/>
+                                <!-- Inner Bevel Effect -->
+                                <path d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
                                       fill="rgba(255,255,255,0.05)" />
                             </svg>
-                            <div class="flex flex-col items-center">
-                                <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center px-6">
+                                <span class="text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important; font-size: 53px !important;">
                                     {{ folder.name }}
                                 </span>
-                                <span class="text-[14px] font-bold text-black mt-1">
-                                    共 {{ getFolderSum(folder.name) }} 筆
-                                </span>
+
+                            </div>
+                        </div>
+
+                        <!-- Mobile Shield Badge -->
+                        <div class="relative w-[308px] h-[308px] opacity-100 pointer-events-auto md:opacity-0 md:pointer-events-none md:absolute">
+                            <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
+                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
+                                      stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
+                                <span class="text-[46px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 46px !important; font-weight: 900 !important;">{{ folder.name }}</span>
+
                             </div>
                         </div>
                     </button>
@@ -131,30 +151,21 @@
                                 </div>
                             </div>
 
-                            <div v-if="['黑曜軍', '耀紫軍'].includes(currentFolder.name)" class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100">
-                                <template v-if="currentFolder.name === '黑曜軍'">
+                            <div v-if="['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'].includes(currentFolder.name)" class="grid grid-cols-2 gap-y-4 gap-x-2 pt-6 border-t border-slate-100">
+                                <template v-for="(val, label) in {
+                                    '黑曜軍': { '閻尊': breakdownTotals.yan_zun, '閻闇': breakdownTotals.yan_an },
+                                    '耀紫軍': { '龍勝': breakdownTotals.long_sheng, '龍戰': breakdownTotals.long_zhan },
+                                    '虎甲軍': { '閻決': breakdownTotals.yan_jue, '閻澤': breakdownTotals.yan_ze },
+                                    '虎賁軍': { '閻地': breakdownTotals.yan_di, '閻源': breakdownTotals.yan_yuan }
+                                }[currentFolder.name]" :key="label">
                                     <div class="flex flex-col items-center">
-                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">閻尊</span>
-                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(breakdownTotals.yan_zun) }}</span>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">閻闇</span>
-                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(breakdownTotals.yan_an) }}</span>
-                                    </div>
-                                </template>
-                                <template v-else-if="currentFolder.name === '耀紫軍'">
-                                    <div class="flex flex-col items-center">
-                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">龍勝</span>
-                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(breakdownTotals.long_sheng) }}</span>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">龍戰</span>
-                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(breakdownTotals.long_zhan) }}</span>
+                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">{{ label }}</span>
+                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(val) }}</span>
                                     </div>
                                 </template>
                             </div>
 
-                            <button @click="showFullTotal = false" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all mt-4">
+                            <button @click="showFullTotal = false" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all mt-4" style="color: white !important;">
                                 關閉視窗
                             </button>
                         </div>
@@ -164,127 +175,113 @@
                 <!-- List Content -->
                 <div v-if="!showFullTotal" class="flex flex-col flex-1">
                     <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
-                    <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light px-6">
+                    <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light px-6">
                         目前尚無{{ currentFolder?.id !== 'all' ? currentFolder?.name : '' }}載錄資料。
+                        <div v-if="!expandedDate && !focusedId" class="text-[10px] mt-2 opacity-50">
+                            (日期分組模式: {{ dateGroupsData.length }} 筆)
+                        </div>
                     </div>
                     <div v-else class="flex flex-col flex-1 px-1">
-                        <!-- Cumulative Quantity Prompt Card -->
-                        <div v-if="showCumulativePrompt && currentFolder && !showSearch && !addMode && !focusedId" 
-                            class="mx-1 mt-2 mb-4 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl relative animate-fade-in">
-                            <button @click.stop="dismissCumulativePrompt" class="absolute right-3 top-3 text-indigo-300 hover:text-indigo-600 transition-colors p-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-indigo-600 p-2 rounded-xl text-white shrink-0">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </div>
-                                <div class="flex-1 pr-6">
-                                    <h3 class="text-[17px] font-black text-indigo-900 leading-tight">軍隊數量統計</h3>
-                                    <p class="text-[14px] text-indigo-700/70 mt-1 font-medium">系統已準備就緒，點擊導覽列「新增」即可開始登錄軍隊資訊。</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <template v-for="group in groupedItems" :key="group.date">
-                            <!-- Date Header -->
-                            <div v-if="focusedId === null" 
-                                @click="toggleDateGroup(group.date)"
-                                class="px-3 py-1.5 bg-slate-50 border-y border-slate-100 flex items-center justify-between sticky top-0 z-20 cursor-pointer active:bg-slate-100 transition-colors">
-                                <div class="flex items-center">
-                                    <svg :class="{'rotate-[-90deg]': expandedDate !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                    <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
-                                </div>
-                                <span class="text-[12px] font-bold text-black">共 {{ group.items.length }} 筆</span>
-                            </div>
-
-                        <div v-if="expandedDate === group.date" class="bg-white">
-                            <div v-for="item in group.items" :key="item.id" 
-                                v-show="focusedId === null || focusedId === item.id"
-                                @click="toggleExpand(item.id)"
-                                :class="[
-                                    'py-[15px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
-                                    openMenuId === item.id ? 'z-[50]' : 'z-0',
-                                    { 'border-b-0': focusedId === item.id }
-                                ]"
-                            >
-                                <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
-                                    <!-- Row 1: Date -->
-                                    <div class="military-field">
-                                        <label class="military-label">日期</label>
-                                        <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
+                        <!-- Level 1: 日期清單 -->
+                        <template v-if="!expandedDate && !focusedId && !searchQuery">
+                            <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
+                                @click.stop="toggleDateGroup(group.know_date ? formatDate(group.know_date) : '原始數量')"
+                                class="mx-1 mb-3 bg-white p-5 rounded-[24px] shadow-sm border border-slate-100 flex items-center justify-between active:scale-[0.98] transition-all group overflow-hidden relative">
+                                <div class="flex items-center space-x-4 z-10">
+                                    <div class="bg-slate-100 p-3 rounded-2xl group-hover:bg-slate-800 group-hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </div>
-                                    
-                                    <!-- Row 2: Name & Quantity -->
-                                    <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
-                                        <div class="military-field min-w-0">
-                                            <label class="military-label">法號</label>
-                                            <div class="military-value-name">
-                                                {{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}
-                                            </div>
-                                        </div>
+                                    <div class="flex flex-col">
+                                        <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
+                                        <span class="text-xs text-slate-400 font-bold mt-0.5 tracking-tight">共計 {{ group.count || 0 }} 筆載錄</span>
+                                    </div>
+                                </div>
+                                <div class="z-10 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                                    <svg class="w-5 h-5 -rotate-90 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Level 2: 特定日期的記錄 或 搜尋結果 -->
+                        <template v-else>
+                            <!-- 返回按鈕 (僅在日期展開時顯示) -->
+                            <div v-if="expandedDate && focusedId === null && !searchQuery"
+                                @click.stop="expandedDate = null"
+                                class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors mb-4 rounded-xl">
+                                <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                <span class="app-title font-outfit tracking-wider text-slate-800">{{ expandedDate }}</span>
+                            </div>
+
+                            <template v-for="group in groupedItems" :key="group.date">
+                                <div v-for="item in group.items" :key="item.id" 
+                                    v-show="focusedId === null || focusedId === item.id"
+                                    @click="toggleExpand(item.id)"
+                                    :class="[
+                                        'py-[15px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                        openMenuId === item.id ? 'z-[50]' : 'z-0',
+                                        { 'border-b-0': focusedId === item.id }
+                                    ]"
+                                >
+                                    <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
                                         <div class="military-field">
-                                            <label class="military-label">數量</label>
-                                            <div class="military-value">{{ formatArmyTotal(item.quantity) }}</div>
+                                            <label class="military-label">日期</label>
+                                            <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
                                         </div>
-
-                                        <!-- Menu Trigger (Right side of Row 2) -->
-                                        <div class="absolute right-[-4px] top-0">
-                                            <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
-                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                            </button>
-                                            <!-- Dropdown Menu -->
-                                            <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
-                                                <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                                <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                                                          <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                        <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
+                                            <div class="military-field min-w-0">
+                                                <label class="military-label">法號</label>
+                                                <div class="military-value-name">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                            </div>
+                                            <div class="military-field">
+                                                <label class="military-label">數量</label>
+                                                <div class="military-value">{{ formatArmyTotal(item.quantity) }}</div>
+                                            </div>
+                                            <div class="absolute right-1 top-0">
+                                                <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
+                                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 114 0z" /></svg>
+                                                </button>
+                                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                    <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                                    <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
+                                            <div v-if="['黑曜軍','耀紫軍','虎甲軍','虎賁軍'].includes(item.army_type)" class="military-field">
+                                                <label class="military-label">軍隊細目</label>
+                                                <div class="flex items-center space-x-6 flex-wrap gap-y-2">
+                                                    <template v-for="(val, label) in {
+                                                        '黑曜軍': { 'yan_zun': item.yan_zun, 'yan_an': item.yan_an },
+                                                        '耀紫軍': { 'long_sheng': item.long_sheng, 'long_zhan': item.long_zhan },
+                                                        '虎甲軍': { 'yan_jue': item.yan_jue, 'yan_ze': item.yan_ze },
+                                                        '虎賁軍': { 'yan_di': item.yan_di, 'yan_yuan': item.yan_yuan }
+                                                    }[item.army_type]" :key="label">
+                                                        <div class="flex items-center space-x-2" v-if="val > 0">
+                                                            <span class="w-2 h-2 rounded-full" :class="getBulletColor(label)"></span>
+                                                            <span class="military-value">{{ {yan_zun:'閻尊', yan_an:'閻闇', long_sheng:'龍勝', long_zhan:'龍戰', yan_jue:'閻決', yan_ze:'閻澤', yan_di:'閻地', yan_yuan:'閻源'}[label] }}: {{ formatArmyTotal(val) }}</span>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div v-if="item.remarks_text" class="military-field">
+                                                <label class="military-label">詳細內容 / 備註</label>
+                                                <div class="military-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">{{ item.remarks_text }}</div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Expanded Content (Show Remarks & Breakdown when focused) -->
-                                    <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
-                                        <!-- Specialized breakdown for split armies -->
-                                        <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">
-                                            <label class="military-label">軍隊細目</label>
-                                            <div class="flex items-center space-x-6">
-                                                <template v-if="item.army_type === '黑曜軍'">
-                                                    <div class="flex items-center space-x-2">
-                                                        <span class="w-2 h-2 rounded-full bg-slate-900"></span>
-                                                        <span class="military-value">閻尊: {{ formatArmyTotal(item.yan_zun) }}</span>
-                                                    </div>
-                                                    <div class="flex items-center space-x-2">
-                                                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                                                        <span class="military-value">閻闇: {{ formatArmyTotal(item.yan_an) }}</span>
-                                                    </div>
-                                                </template>
-                                                <template v-else-if="item.army_type === '耀紫軍'">
-                                                    <div class="flex items-center space-x-2">
-                                                        <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                                                        <span class="military-value">龍勝: {{ formatArmyTotal(item.long_sheng) }}</span>
-                                                    </div>
-                                                    <div class="flex items-center space-x-2">
-                                                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                                        <span class="military-value">龍戰: {{ formatArmyTotal(item.long_zhan) }}</span>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-
-                                        <div v-if="item.remarks_text" class="military-field">
-                                            <label class="military-label">詳細內容 / 備註</label>
-                                            <div class="military-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
-                                                {{ item.remarks_text }}
-                                            </div>
-                                        </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                            </template>
+                        </template>
+
+                <!-- Pagination Buttons -->
+                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
                 </div>
             </div>
         </div>
     </div>
+
     <!-- FAB Bottom Navigation -->
         <mobile-navbar 
             is-absolute
@@ -317,6 +314,7 @@ import MilitaryAddForm from './MilitaryAddForm.vue';
 import MilitaryBatchAdd from './MilitaryBatchAdd.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import PaginationButtons from './PaginationButtons.vue';
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -379,15 +377,56 @@ const hideCumulativeAction = () => {
 const searchQuery = ref('');
 const openMenuId = ref(null);
 const items = ref([]);
+const armyCounts = ref({});
+const breakdownTotals = ref({ 
+    yan_zun: 0, yan_an: 0, 
+    long_sheng: 0, long_zhan: 0,
+    yan_jue: 0, yan_ze: 0,
+    yan_di: 0, yan_yuan: 0
+});
+const getBulletColor = (key) => {
+    const colors = {
+        'yan_zun': 'bg-slate-900', 'yan_an': 'bg-slate-400',
+        'long_sheng': 'bg-purple-600', 'long_zhan': 'bg-blue-600',
+        'yan_jue': 'bg-emerald-600', 'yan_ze': 'bg-teal-600',
+        'yan_di': 'bg-amber-700', 'yan_yuan': 'bg-stone-500'
+    };
+    return colors[key] || 'bg-slate-300';
+};
+
 const users = ref([]);
 const loading = ref(true);
 const editingId = ref(null);
 const focusedId = ref(null);
-const deleteConfirmId = ref(null);
-const sortDesc = ref(true);
 const openStatusId = ref(null);
 const showFullTotal = ref(false);
+const paginationMeta = ref(null);
+const datePaginationMeta = ref(null);
+const dateGroupsData = ref([]);
+const persistentToast = ref(null);
+const deleteConfirmId = ref(null);
+const currentPage = ref(1);
+const sortDesc = ref(true);
 let fullTotalTimer = null;
+
+const activePaginationMeta = computed(() => {
+    if (!expandedDate.value && !focusedId.value && !searchQuery.value) {
+        return datePaginationMeta.value;
+    }
+    return paginationMeta.value;
+});
+
+const isEmptyState = computed(() => {
+    if (!expandedDate.value && !focusedId.value && !searchQuery.value) {
+        return (dateGroupsData.value || []).length === 0;
+    }
+    return (items.value || []).length === 0;
+});
+
+const handlePageChange = (page) => {
+    currentPage.value = page;
+    loadData(page);
+};
 
 const formatArmyTotal = (num) => {
     num = Number(num) || 0;
@@ -409,24 +448,8 @@ const toggleFullTotal = () => {
 };
 
 const filteredItems = computed(() => {
-    const allowed = props.user?.permissions?.allowed_armies || [];
-    const isAdmin = props.user?.is_admin || props.user?.role === 'admin' || props.user?.role === '管理員';
-    let filtered = items.value.filter(i => isAdmin || allowed.includes(i.army_type) || i.user_id === props.user?.id);
-
-    if (currentFolder.value) {
-        const target = currentFolder.value.name;
-        filtered = filtered.filter(i => i.army_type === target);
-    }
-    
-    if (searchQuery.value) {
-        const q = searchQuery.value.trim().toLowerCase();
-        filtered = filtered.filter(i => 
-            i.user_name?.toLowerCase().includes(q) || 
-            i.user_remarks?.toLowerCase().includes(q) ||
-            i.remarks_text?.toLowerCase().includes(q)
-        );
-    }
-    return filtered;
+    // With server-side pagination, items.value already contains the filtered/paged data
+    return items.value;
 });
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
@@ -499,21 +522,9 @@ const groupedItems = computed(() => {
 });
 
 const totalQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
-const currentFolderTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const currentFolderTotal = computed(() => paginationMeta.value?.total || 0);
 
-const breakdownTotals = computed(() => {
-    return filteredItems.value.reduce((acc, i) => {
-        acc.yan_zun += (Number(i.yan_zun) || 0);
-        acc.yan_an += (Number(i.yan_an) || 0);
-        acc.long_sheng += (Number(i.long_sheng) || 0);
-        acc.long_zhan += (Number(i.long_zhan) || 0);
-        acc.yan_jue += (Number(i.yan_jue) || 0);
-        acc.yan_ze += (Number(i.yan_ze) || 0);
-        acc.yan_di += (Number(i.yan_di) || 0);
-        acc.yan_yuan += (Number(i.yan_yuan) || 0);
-        return acc;
-    }, { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0, yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0 });
-});
+// breakdownTotals is now a ref populated from server
 
 const toggleMenu = (id) => { openMenuId.value = openMenuId.value === id ? null : id; };
 const toggleStatusMenu = (id) => { openStatusId.value = openStatusId.value === id ? null : id; };
@@ -767,24 +778,97 @@ const downloadSingleRecord = (item) => {
 
 const form = ref({});
 
-const loadData = async () => {
+const loadData = async (page = 1) => {
     loading.value = true;
     try {
         const ts = new Date().getTime();
-        const [res, dres] = await Promise.all([ 
-            axios.get(`/military-records?t=${ts}`), 
-            axios.get(`/api/dharma-names-list?t=${ts}`) 
-        ]);
-        items.value = Array.isArray(res.data) ? res.data : (res.data.data || []);
-        users.value = dres.data;
+        
+        if (!expandedDate.value) {
+            // Level 1: fetch date groups
+            const params = { page, per_page: 20, t: ts };
+            if (searchQuery.value) params.search = searchQuery.value;
+            if (currentFolder.value) params.army_type = currentFolder.value.name;
+
+            const requests = [axios.get('/military-records/date-groups', { params })];
+            if (users.value.length === 0) {
+                requests.push(axios.get(`/api/dharma-names-list?t=${ts}`));
+            }
+            const [res, dres] = await Promise.all(requests);
+            dateGroupsData.value = res.data.data || [];
+            datePaginationMeta.value = {
+                current_page: res.data.current_page,
+                last_page: res.data.last_page,
+                total: res.data.total
+            };
+            items.value = [];
+            if (dres) users.value = dres.data;
+
+            // Also refresh army counts
+            const statsRes = await axios.get('/military-records', { params: { ...params, page: 1, per_page: 1 } });
+            if (page === 1) {
+                armyCounts.value = statsRes.data.armyCounts || {};
+                breakdownTotals.value = statsRes.data.breakdownTotals || { 
+                    yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0,
+                    yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0
+                };
+            }
+        } else {
+            // Level 2: fetch records for selected date
+            const params = { page, per_page: 10, t: ts };
+            if (searchQuery.value) params.search = searchQuery.value;
+            if (currentFolder.value) params.army_type = currentFolder.value.name;
+            if (expandedDate.value === '原始數量') {
+                params.know_date = 'null';
+            } else {
+                params.know_date = expandedDate.value.replace(/\//g, '-');
+            }
+
+            const requests = [axios.get('/military-records', { params })];
+            if (users.value.length === 0) {
+                requests.push(axios.get(`/api/dharma-names-list?t=${ts}`));
+            }
+            const [res, dres] = await Promise.all(requests);
+
+            const recData = res.data.records;
+            items.value = recData.data || [];
+            paginationMeta.value = {
+                current_page: recData.current_page,
+                last_page: recData.last_page,
+                total: recData.total
+            };
+            if (page === 1) {
+                armyCounts.value = res.data.armyCounts || {};
+                breakdownTotals.value = res.data.breakdownTotals || { 
+                    yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0,
+                    yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0
+                };
+            }
+            if (dres) users.value = dres.data;
+        }
     } catch (e) { 
         console.error('Load data failed:', e);
-        items.value = []; 
+        items.value = [];
+        dateGroupsData.value = [];
     } finally { 
         loading.value = false;
-        // All groups are expanded by default as collapsedGroups starts empty
     }
 };
+
+watch(searchQuery, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
+
+watch(currentFolder, () => {
+    currentPage.value = 1;
+    expandedDate.value = null;
+    loadData(1);
+});
+
+watch(expandedDate, () => {
+    currentPage.value = 1;
+    loadData(1);
+});
 
 const saveItem = async (formData) => {
     try {
@@ -810,6 +894,7 @@ const handleBack = () => {
     if (addMode.value) addMode.value = false;
     else if (batchMode.value) batchMode.value = false;
     else if (focusedId.value) focusedId.value = null;
+    else if (expandedDate.value) expandedDate.value = null;
     else if (currentFolder.value) currentFolder.value = null;
     else emit('goHome');
 };
@@ -821,12 +906,26 @@ const editItem = (item) => {
     openMenuId.value = null;
 };
 
-const deleteItem = async (id) => {
-    if (!confirm('刪除？')) return;
-    await axios.delete(`/military-records/${id}`);
-    focusedId.value = null;
+const deleteItem = (id) => {
+    deleteConfirmId.value = id;
+    persistentToast.value = { msg: '確定要刪除此筆軍隊紀錄嗎？', type: 'deleteConfirm' };
     openMenuId.value = null;
-    loadData();
+};
+
+const executeDelete = async () => {
+    if (!deleteConfirmId.value) return;
+    try {
+        await axios.delete(`/military-records/${deleteConfirmId.value}`);
+        persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 1500);
+        focusedId.value = null;
+        loadData(currentPage.value);
+    } catch (e) {
+        console.error('Delete failed:', e);
+        persistentToast.value = { msg: '刪除失敗，請稍後再試', type: 'error' };
+    } finally {
+        deleteConfirmId.value = null;
+    }
 };
 
 const formatDate = (dateStr) => {
@@ -857,10 +956,6 @@ watch(currentFolder, (newVal) => {
         expandedDate.value = null;
     }
 });
-
-const getFolderSum = (armyName) => {
-    return items.value.filter(r => r.army_type === armyName).length;
-};
 
 onMounted(loadData);
 </script>
@@ -903,6 +998,12 @@ onMounted(loadData);
 
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
 .animate-slide-up { animation: slideUp 0.15s ease-out; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>

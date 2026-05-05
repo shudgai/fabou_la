@@ -22,9 +22,68 @@ class GrudgeService
             });
         }
 
-        $query->latest();
- 
-        return $query->paginate(20);
+        if (isset($filters['know_date'])) {
+            if (empty($filters['know_date']) || $filters['know_date'] === 'null') {
+                $query->whereNull('know_date');
+            } else {
+                $query->where('know_date', $filters['know_date']);
+            }
+        }
+
+        // Calculate global totals
+        $globalTotalQuantity = (int)$query->sum('quantity');
+        
+        // Sum JSON fields (Breakdowns) globally
+        // Since it's JSON, we can use JSON_EXTRACT or just fetch and sum in PHP
+        // For performance and precision with our specific logic (legacy fallbacks), PHP is safer for now
+        $allRecords = $query->get(['remarks', 'destination', 'quantity']);
+        $globalBreakdowns = $allRecords->reduce(function($acc, $i) {
+            $r = is_string($i->remarks) ? json_decode($i->remarks, true) : $i->remarks;
+            if (!is_array($r)) $r = [];
+            
+            $acc['yan_zun'] += (int)($r['yan_zun'] ?? 0);
+            $acc['yan_an'] += (int)($r['yan_an'] ?? 0);
+            $acc['long_sheng'] += (int)($r['long_sheng'] ?? 0);
+            $acc['long_zhan'] += (int)($r['long_zhan'] ?? 0);
+            $acc['yan_jue'] += (int)($r['yan_jue'] ?? 0);
+            $acc['yan_ze'] += (int)($r['yan_ze'] ?? 0);
+            $acc['yan_di'] += (int)($r['yan_di'] ?? 0);
+            $acc['yan_yuan'] += (int)($r['yan_yuan'] ?? 0);
+            
+            // Legacy fallbacks
+            if ($i->destination === '虎甲軍') $acc['yan_jue'] += (int)$i->quantity;
+            if ($i->destination === '虎賁軍') $acc['yan_di'] += (int)$i->quantity;
+            
+            return $acc;
+        }, ['yan_zun'=>0,'yan_an'=>0,'long_sheng'=>0,'long_zhan'=>0,'yan_jue'=>0,'yan_ze'=>0,'yan_di'=>0,'yan_yuan'=>0]);
+
+        $results = $query->latest()->paginate(10);
+        
+        return [
+            'paginator' => $results,
+            'global_total_quantity' => $globalTotalQuantity,
+            'global_breakdowns' => $globalBreakdowns
+        ];
+    }
+
+    public function dateGroups(array $filters = [])
+    {
+        $user = auth()->user();
+        $query = Grudge::where('user_id', $user->id);
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('user_name', 'like', "%{$search}%")
+                  ->orWhere('user_remarks', 'like', "%{$search}%")
+                  ->orWhere('remarks_text', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->select('know_date', \Illuminate\Support\Facades\DB::raw('count(*) as count'), \Illuminate\Support\Facades\DB::raw('sum(quantity) as total_qty'))
+            ->groupBy('know_date')
+            ->orderByRaw('know_date IS NULL ASC, know_date DESC')
+            ->paginate($filters['per_page'] ?? 20);
     }
 
     public function create(array $data): Grudge

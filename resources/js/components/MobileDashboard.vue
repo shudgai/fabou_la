@@ -48,6 +48,32 @@
             :can-more="false"
             @home="navigate('menu')"
         />
+
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button @click="executeLogout" 
+                                class="w-full py-4 bg-red-500 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg shadow-red-200/50" 
+                                style="color: white !important;">
+                            確認登出
+                        </button>
+                        <button @click="persistentToast = null" 
+                                class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg bg-slate-100 text-slate-500">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -55,6 +81,8 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+
+const persistentToast = ref(null);
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
@@ -146,8 +174,11 @@ const loadStats = async () => {
     }
 };
 
-const handleLogout = async () => {
-    if (!confirm('確定要登出嗎？')) return;
+const handleLogout = () => {
+    persistentToast.value = { msg: '確定要登出系統嗎？' };
+};
+
+const executeLogout = async () => {
     try {
         await axios.post('/logout');
         window.location.href = '/login';

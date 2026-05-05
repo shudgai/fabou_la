@@ -77,6 +77,42 @@
             :can-back="true"
             @back="$emit('go-home')"
         />
+
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'delete' || persistentToast.type === 'cleanup'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </div>
+                        <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button v-if="persistentToast.type !== 'success' && persistentToast.type !== 'error'" 
+                                @click="executeToastAction" 
+                                :class="persistentToast.type === 'delete' || persistentToast.type === 'cleanup' ? 'bg-rose-500 shadow-rose-200/50' : 'bg-indigo-600 shadow-indigo-200/50'"
+                                class="w-full py-4 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg" 
+                                style="color: white !important;">
+                            {{ persistentToast.type === 'delete' ? '確認刪除' : (persistentToast.type === 'restore' ? '確認回復' : '確認執行') }}
+                        </button>
+                        <button @click="persistentToast = null" 
+                                :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                            {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -87,6 +123,8 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const items = ref([]);
 const loading = ref(true);
+const persistentToast = ref(null);
+const toastContext = ref(null);
 
 const loadItems = async () => {
     loading.value = true;
@@ -100,22 +138,45 @@ const loadItems = async () => {
     }
 };
 
-const restore = async (item) => {
-    if (!confirm(`確定要回復「${getTitle(item)}」嗎？`)) return;
-    await axios.post('/api/trash/restore', { id: item.id, type: item.type });
-    await loadItems();
+const restore = (item) => {
+    toastContext.value = item;
+    persistentToast.value = { msg: `確定要回復「${getTitle(item)}」嗎？`, type: 'restore' };
 };
 
-const forceDelete = async (item) => {
-    if (!confirm(`警告：這將永久刪除「${getTitle(item)}」，無法復原。確定嗎？`)) return;
-    await axios.post('/api/trash/force-delete', { id: item.id, type: item.type });
-    await loadItems();
+const forceDelete = (item) => {
+    toastContext.value = item;
+    persistentToast.value = { msg: `警告：這將永久刪除「${getTitle(item)}」，無法復原。確定嗎？`, type: 'delete' };
 };
 
-const cleanup = async () => {
-    if (!confirm('執行系統清理？這將清空所有已過期 (5公鐘) 的紀錄。')) return;
-    await axios.post('/api/trash/cleanup');
-    await loadItems();
+const cleanup = () => {
+    persistentToast.value = { msg: '執行系統清理？這將清空所有已過期 (5公鐘) 的紀錄。', type: 'cleanup' };
+};
+
+const executeToastAction = async () => {
+    if (!persistentToast.value) return;
+    const type = persistentToast.value.type;
+    const item = toastContext.value;
+    
+    try {
+        if (type === 'restore') {
+            await axios.post('/api/trash/restore', { id: item.id, type: item.type });
+            persistentToast.value = { msg: '✓ 已成功復原', type: 'success' };
+        } else if (type === 'delete') {
+            await axios.post('/api/trash/force-delete', { id: item.id, type: item.type });
+            persistentToast.value = { msg: '✓ 已永久刪除', type: 'success' };
+        } else if (type === 'cleanup') {
+            await axios.post('/api/trash/cleanup');
+            persistentToast.value = { msg: '✓ 系統清理完成', type: 'success' };
+        }
+        
+        if (persistentToast.value?.type === 'success') {
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+        }
+        await loadItems();
+    } catch (e) {
+        persistentToast.value = { msg: '✖ 操作失敗', type: 'error' };
+    }
+    toastContext.value = null;
 };
 
 const getTitle = (item) => {

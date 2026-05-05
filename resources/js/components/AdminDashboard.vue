@@ -85,7 +85,7 @@ import TreasureCrud from './admin/TreasureCrud.vue';
 // Notebook Managers
 import TeachingManager from './TeachingManager.vue';
 import GrudgeManager from './GrudgeManager.vue';
-import MilitaryManager from './MilitaryManager.vue';
+import MilitaryManager from './MilitaryManagerV2.vue';
 import RegistryManager from './RegistryManager.vue';
 import ImperialGraceManager from './ImperialGraceManager.vue';
 import OtherManager from './OtherManager.vue';

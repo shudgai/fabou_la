@@ -208,6 +208,30 @@
             :title="activeDate === 'know_date' ? '得知日期' : '處理日期'"
             @close="activeDate = null"
         />
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'error'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button @click="persistentToast = null" 
+                                class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                style="color: white !important;">
+                            確認
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -227,6 +251,7 @@ const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);
 const showResultPicker = ref(false);
 const activeRemarksDropdown = ref(false);
+const persistentToast = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
 const form = ref({ 
@@ -287,14 +312,10 @@ watch(() => form.user_remarks, (newVal) => {
 const handleSave = () => {
     // Validation Rules
     if (!form.value.user_name) {
-        alert('請選擇或輸入「法號」，不可留空。');
+        persistentToast.value = { msg: '✖ 請選擇或輸入「法號」，不可留空。', type: 'error' };
         return;
     }
 
-    if (form.value.destination !== '未處理' && !form.value.process_date) {
-        alert('處理結果為軍隊時，必須填寫處理日期，不可直接存檔。');
-        return;
-    }
 
     // Ensure we emit a clean object clone to avoid reference issues
     const finalData = JSON.parse(JSON.stringify(form.value));

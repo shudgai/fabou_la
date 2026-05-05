@@ -63,8 +63,8 @@
             <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex flex-col pointer-events-auto border border-slate-100 relative w-auto min-w-[280px] max-w-md mx-auto">
                 <div class="flex items-center justify-between" :class="{ 'mb-4': !searchQuery }">
                     <div class="flex flex-col">
-                        <span class="app-body text-slate-400" style="font-weight: 400 !important;">{{ searchQuery ? '搜尋結果總數' : '怨靈紀錄總數' }}</span>
-                        <span class="app-body text-slate-900 mt-1 font-bold" style="font-size: 22px !important;">{{ searchQuery ? filteredTotal : totalGrudgeQuantity }}</span>
+                        <span class="app-body text-slate-400" style="font-weight: 400 !important;">{{ searchQuery ? '搜尋結果總量' : '怨靈載錄總量' }}</span>
+                        <span class="app-body text-slate-900 mt-1 font-bold" style="font-size: 22px !important;">{{ formatArmyTotal(totalGrudgeQuantity) }}</span>
                     </div>
                     <button @click="showTotal = false" class="p-2 text-slate-300 active:scale-90 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -77,105 +77,117 @@
         <!-- Scrollable Content -->
         <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full md:max-w-xl md:mx-auto" style="padding-bottom: 80px;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
-            <div v-else-if="filteredItems.length === 0" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
+            <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
-                <template v-for="group in groupedItems" :key="group.date">
-                    <!-- Date Header -->
-                    <div @click.stop="activeDateGroup = (activeDateGroup === group.date ? null : group.date)" 
-                        class="px-3 py-2 bg-slate-50 border-y border-slate-100 flex items-center justify-between sticky top-0 z-20 cursor-pointer active:bg-slate-100 transition-colors">
+                <!-- Drill-down: Date Groups List (Level 1) -->
+                <template v-if="!activeDateGroup && !focusedId">
+                    <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
+                        @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
+                        class="px-4 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
                         <div class="flex items-center">
-                            <svg :class="{'rotate-[-90deg]': activeDateGroup !== group.date}" class="w-4 h-4 text-slate-400 mr-2 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                            <span class="app-title font-outfit uppercase tracking-wider">{{ group.date }}</span>
+                            <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
                         </div>
-                        <span class="text-[12px] font-bold text-black">共 {{ group.items.length }} 筆</span>
+                        <div class="flex items-center text-slate-400">
+                            <span class="app-body font-medium mr-3" style="font-size: 15px !important;">共 {{ group.count }} 筆</span>
+                            <svg class="w-5 h-5 -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Drill-down: Specific Date Records List (Level 2) -->
+                <template v-else>
+                    <!-- Date Header Back Button -->
+                    <div v-if="activeDateGroup && focusedId === null" 
+                        @click.stop="activeDateGroup = null" 
+                        class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
+                        <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        <span class="app-title font-outfit tracking-wider text-slate-800">{{ activeDateGroup }}</span>
                     </div>
 
-                    <div v-show="activeDateGroup === group.date || focusedId !== null">
-                        <div v-for="item in group.items" :key="item.id" 
-                            v-show="focusedId === null || focusedId === item.id"
-                            @click.stop="toggleExpand(item.id)"
-                            :class="[
-                                'py-[15px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
-                                { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
-                                { 'border-b-0': focusedId === item.id }
-                            ]"
-                        >
-                            <!-- List Item Detail (Simplified per user request) -->
-                            <div class="animate-fade-in py-1 bg-white relative px-1.5">
-                                <!-- Menu Trigger (Persistent) -->
-                                <div class="absolute right-0 top-0 z-10">
-                                    <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
-                                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    </button>
-                                    <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
-                                        <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                        <button @click.stop="copyItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                        <button @click.stop="downloadItem(item, 'txt'); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                        <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                    <div v-for="item in sortedItems" :key="item.id" 
+                        v-show="focusedId === null || focusedId === item.id"
+                        @click.stop="toggleExpand(item.id)"
+                        :class="[
+                            'py-[9px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                            { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
+                            { 'border-b-0': focusedId === item.id }
+                        ]"
+                    >
+                        <!-- List Item Detail (Simplified per user request) -->
+                        <div class="animate-fade-in py-0 bg-white relative px-1.5">
+                            <!-- Menu Trigger (Persistent) -->
+                            <div class="absolute right-0 top-0 z-10">
+                                <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
+                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copyItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadItem(item, 'txt'); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
+                                <!-- Date -->
+                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                    <label class="grudge-label">日期:</label>
+                                    <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
+                                </div>
+                                <!-- Dharma Name -->
+                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                    <label class="grudge-label">法號:</label>
+                                    <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                </div>
+                                <!-- Quantity -->
+                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                    <label class="grudge-label">數量:</label>
+                                    <div class="grudge-value">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
+                                </div>
+                                <!-- Result -->
+                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                    <label class="grudge-label">結果:</label>
+                                    <div class="grudge-value" :style="{ color: (item.destination === '未處理' ? '#ef4444' : '#0f172a') }">
+                                        {{ item.destination || '已處理' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Expanded Content (Show Everything when focused) -->
+                            <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in">
+
+                                <!-- Army Breakdown (if applicable) -->
+                                <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
+                                    <label class="app-title uppercase tracking-widest">軍隊細目</label>
+                                    <div class="flex items-center space-x-6">
+                                        <template v-if="item.destination === '黑曜軍'">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                                                <span class="app-body font-bold text-[17px]">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                <span class="app-body font-bold text-[17px]">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
+                                            </div>
+                                        </template>
+                                        <template v-else-if="item.destination === '耀紫軍'">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                                                <span class="app-body font-bold text-[17px]">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                                <span class="app-body font-bold text-[17px]">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
-                                    <!-- Date -->
-                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                        <label class="grudge-label">日期:</label>
-                                        <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
-                                    </div>
-                                    <!-- Dharma Name -->
-                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                        <label class="grudge-label">法號:</label>
-                                        <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
-                                    </div>
-                                    <!-- Quantity -->
-                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                        <label class="grudge-label">數量:</label>
-                                        <div class="grudge-value">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
-                                    </div>
-                                    <!-- Result -->
-                                    <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                        <label class="grudge-label">結果:</label>
-                                        <div class="grudge-value" :style="{ color: (item.destination === '未處理' ? '#ef4444' : '#0f172a') }">
-                                            {{ item.destination || '已處理' }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Expanded Content (Show Everything when focused) -->
-                                <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in">
-
-                                    <!-- Army Breakdown (if applicable) -->
-                                    <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
-                                        <label class="app-title uppercase tracking-widest">軍隊細目</label>
-                                        <div class="flex items-center space-x-6">
-                                            <template v-if="item.destination === '黑曜軍'">
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-2 h-2 rounded-full bg-slate-900"></span>
-                                                    <span class="app-body font-bold text-[17px]">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
-                                                </div>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                                                    <span class="app-body font-bold text-[17px]">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
-                                                </div>
-                                            </template>
-                                            <template v-else-if="item.destination === '耀紫軍'">
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                                                    <span class="app-body font-bold text-[17px]">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
-                                                </div>
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                                    <span class="app-body font-bold text-[17px]">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </div>
-
-                                    <!-- Detailed Remarks / Remarks Text -->
-                                    <div v-if="item.remarks_text" class="space-y-2">
-                                        <label class="app-title uppercase tracking-widest">詳細備註</label>
-                                        <div class="app-body font-medium leading-relaxed whitespace-pre-wrap text-[18px] bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
-                                            {{ item.remarks_text }}
-                                        </div>
+                                <!-- Detailed Remarks / Remarks Text -->
+                                <div v-if="item.remarks_text" class="space-y-2">
+                                    <label class="app-title uppercase tracking-widest">詳細備註</label>
+                                    <div class="app-body font-medium leading-relaxed whitespace-pre-wrap text-[18px] bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
+                                        {{ item.remarks_text }}
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +196,7 @@
                 </template>
                 
                 <div class="mt-8 mb-20 px-2">
-                    <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
+                    <pagination-buttons :meta="activePaginationMeta" @page-change="handlePageChange" />
                 </div>
             </div>
         </div>
@@ -203,7 +215,7 @@
         />
 
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
-        <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="loadData" />
+        <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="onBatchSuccess" />
         <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
     </div>
 </template>
@@ -242,6 +254,13 @@ const markings = ref({});
 const saving = ref(false);
 const paginationMeta = ref(null);
 const currentPage = ref(1);
+const dateGroupsData = ref([]);
+const datePaginationMeta = ref(null);
+const globalTotals = ref({ quantity: 0, breakdowns: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0, yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0 } });
+
+const activePaginationMeta = computed(() => {
+    return (!activeDateGroup.value && !focusedId.value) ? datePaginationMeta.value : paginationMeta.value;
+});
 
 const handlePageChange = (page) => {
     currentPage.value = page;
@@ -309,6 +328,21 @@ const formatDate = (dateStr) => {
     return s.replace(/-/g, '/');
 };
 
+const formatArmyTotal = (num) => {
+    num = Number(num) || 0;
+    if (num < 1000000) return `${num.toLocaleString()} 位`;
+    const troops = Math.floor(num / 1000000);
+    const remaining = num % 1000000;
+    if (remaining === 0) return `${troops}隊`;
+    const wan = Math.floor(remaining / 10000);
+    const rest = remaining % 10000;
+    let res = `${troops}隊`;
+    if (wan > 0) res += `${wan}萬`;
+    if (rest > 0) res += `${rest}位`;
+    else if (wan === 0) res += `0位`;
+    return res;
+};
+
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -341,6 +375,21 @@ const filteredItems = computed(() => {
     return items.value;
 });
 
+// Empty state check: at Level 1 check date groups, at Level 2 check items
+const isEmptyState = computed(() => {
+    if (!activeDateGroup.value && !focusedId.value) {
+        return dateGroupsData.value.length === 0;
+    }
+    return filteredItems.value.length === 0;
+});
+
+const onBatchSuccess = () => {
+    activeDateGroup.value = null;
+    focusedId.value = null;
+    currentPage.value = 1;
+    loadData(1);
+};
+
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
     result.sort((a, b) => {
@@ -366,43 +415,6 @@ const sortedItems = computed(() => {
         return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
     return result;
-});
-
-const groupedItems = computed(() => {
-    let sorted = sortedItems.value;
-    
-    // Solo Mode: Focus on a specific item
-    if (focusedId.value) {
-        const item = sorted.find(i => i.id === focusedId.value);
-        if (item) {
-            const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
-            return [{ date: dateStr, items: [item] }];
-        }
-    }
-
-    // Isolation Mode: Focus on a specific date group
-    if (activeDateGroup.value) {
-        const filtered = sorted.filter(item => {
-            const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
-            return dateStr === activeDateGroup.value;
-        });
-        if (filtered.length > 0) {
-            return [{ date: activeDateGroup.value, items: filtered }];
-        }
-    }
-
-    // Default: Group all items by date
-    const groups = [];
-    let currentGroup = null;
-    sorted.forEach(item => {
-        const dateStr = item.know_date ? formatDate(item.know_date) : '歷史累積';
-        if (!currentGroup || currentGroup.date !== dateStr) {
-            currentGroup = { date: dateStr, items: [] };
-            groups.push(currentGroup);
-        }
-        currentGroup.items.push(item);
-    });
-    return groups;
 });
 
 const toggleMenu = (id) => { openMenuId.value = openMenuId.value === id ? null : id; };
@@ -487,7 +499,8 @@ const copyAllToLine = () => {
     const footerQty   = padToWidthPrecise(total.toString(), 4, true);
     text += `${footerLabel} | ${footerQty}\n`;
     navigator.clipboard.writeText(text).then(() => {
-        alert('已複製到剪貼簿，快去 LINE 貼上吧！');
+        persistentToast.value = { msg: '✓ 已複製到剪貼簿，快去 LINE 貼上吧！', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 3000);
     });
 };
 
@@ -532,28 +545,50 @@ const loadData = async (page = 1) => {
     loading.value = true;
     try {
         const ts = new Date().getTime();
-        const params = {
-            page,
-            t: ts
-        };
-        if (searchQuery.value) params.search = searchQuery.value;
-
-        const res = await axios.get('/grudges', { params });
-        items.value = res.data.data || [];
-        paginationMeta.value = {
-            current_page: res.data.current_page,
-            last_page: res.data.last_page,
-            total: res.data.total
-        };
+        
+        if (!activeDateGroup.value) {
+            // Fetch Date Groups
+            const params = { page, search: searchQuery.value, t: ts };
+            const res = await axios.get('/grudges/date-groups', { params });
+            dateGroupsData.value = res.data.data || [];
+            datePaginationMeta.value = {
+                current_page: res.data.current_page,
+                last_page: res.data.last_page,
+                total: res.data.total
+            };
+            items.value = [];
+            // Assuming global totals are fetched separately, or we just keep existing ones
+        } else {
+            // Fetch Records for specific date
+            const params = { page, search: searchQuery.value, t: ts };
+            if (activeDateGroup.value === '歷史累積') {
+                params.know_date = 'null';
+            } else {
+                params.know_date = activeDateGroup.value.replace(/\//g, '-');
+            }
+            const res = await axios.get('/grudges', { params });
+            const paginator = res.data.paginator;
+            items.value = paginator.data || [];
+            paginationMeta.value = {
+                current_page: paginator.current_page,
+                last_page: paginator.last_page,
+                total: paginator.total
+            };
+            globalTotals.value = {
+                quantity: res.data.global_total_quantity,
+                breakdowns: res.data.global_breakdowns
+            };
+        }
     } catch (e) { 
         console.error('Load data failed:', e);
         items.value = [];
+        dateGroupsData.value = [];
     } finally { 
         loading.value = false; 
     }
 };
 
-watch(searchQuery, () => {
+watch([searchQuery, activeDateGroup], () => {
     currentPage.value = 1;
     loadData(1);
 });
@@ -576,6 +611,7 @@ const saveItem = async (formData) => {
 const handleBack = () => {
     if (addMode.value) { addMode.value = false; editingId.value = null; }
     else if (focusedId.value) { focusedId.value = null; }
+    else if (activeDateGroup.value) { activeDateGroup.value = null; }
     else { emit('goHome'); }
 };
 
@@ -613,7 +649,8 @@ const executeDelete = async () => {
 const copyItem = async (item) => {
     const text = `【怨靈結果】${item.user_name}: ${item.destination} (${item.quantity})`;
     await navigator.clipboard.writeText(text);
-    alert('已複製');
+    persistentToast.value = { msg: '✓ 已複製', type: 'success' };
+    setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
     openMenuId.value = null;
 };
 
@@ -643,28 +680,9 @@ const downloadList = () => {
     window.URL.revokeObjectURL(url);
 };
 
-const breakdownTotals = computed(() => {
-    return items.value.reduce((acc, i) => {
-        const r = parseRemarks(i.remarks);
-        acc.yan_zun += (Number(r.yan_zun) || 0);
-        acc.yan_an += (Number(r.yan_an) || 0);
-        acc.long_sheng += (Number(r.long_sheng) || 0);
-        acc.long_zhan += (Number(r.long_zhan) || 0);
-        acc.yan_jue += (Number(r.yan_jue) || 0);
-        acc.yan_ze += (Number(r.yan_ze) || 0);
-        acc.yan_di += (Number(r.yan_di) || 0);
-        acc.yan_yuan += (Number(r.yan_yuan) || 0);
-        
-        // Also handle legacy fields if destination is direct
-        if (i.destination === '虎甲軍') acc.yan_jue += (Number(i.quantity) || 0);
-        if (i.destination === '虎賁軍') acc.yan_di += (Number(i.quantity) || 0);
-        
-        return acc;
-    }, { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0, yan_jue: 0, yan_ze: 0, yan_di: 0, yan_yuan: 0 });
-});
-
-const totalGrudgeQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
-const filteredTotal = computed(() => filteredItems.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
+const breakdownTotals = computed(() => globalTotals.value.breakdowns);
+const totalGrudgeQuantity = computed(() => globalTotals.value.quantity);
+const filteredTotal = computed(() => globalTotals.value.quantity);
 const displayTitle = computed(() => '怨靈記錄專區');
 
 watch(currentFolder, (newVal) => {

@@ -21,6 +21,12 @@ class GrudgeController extends Controller
         return response()->json($grudges);
     }
 
+    public function dateGroups(Request $request)
+    {
+        $dates = $this->grudgeService->dateGroups($request->all());
+        return response()->json($dates);
+    }
+
     public function store(Request $request)
     {
         $grudge = $this->grudgeService->create($request->all());

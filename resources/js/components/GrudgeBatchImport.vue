@@ -82,13 +82,48 @@
             />
         </div>
 
-        <!-- Custom Date Picker -->
         <compact-date-picker 
             v-if="showDatePicker" 
             v-model="batchDate" 
             title="基準日期"
             @close="showDatePicker = false" 
         />
+
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'preview'" class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        </div>
+                        <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <h3 class="text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-4 rounded-2xl border border-slate-100 overflow-y-auto max-h-[30vh] custom-scrollbar">{{ persistentToast.msg }}</h3>
+                        <p v-if="persistentToast.type === 'preview'" class="mt-4 text-[15px] font-bold text-slate-400 uppercase tracking-widest">確定繼續匯入嗎？</p>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button v-if="persistentToast.type === 'preview'" 
+                                @click="executeBatchSave" 
+                                class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg" 
+                                style="color: white !important;">
+                            確認匯入
+                        </button>
+                        <button @click="persistentToast = null" 
+                                :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                            {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -105,6 +140,7 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel', 'success']);
 const batchText = ref('');
 const loading = ref(false);
+const persistentToast = ref(null);
 
 const translateRel = (rel) => {
     if (!rel) return '';
@@ -142,7 +178,8 @@ const triggerFileUpload = () => {
     input.onchange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            alert(`已讀取檔案「${file.name}」，解析功能串接中。`);
+            persistentToast.value = { msg: `✓ 已讀取檔案「${file.name}」\n(解析功能串接中)`, type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
         }
     };
     input.click();
@@ -161,7 +198,7 @@ const translateName = (n) => nameAliasMap[n] || null;
 const handleBatchSave = async () => {
     const lines = batchText.value.split('\n').map(l => l.trim()).filter(l => l !== '');
     if (lines.length === 0) {
-        alert('請先輸入或貼上法號內容。');
+        persistentToast.value = { msg: '✖ 請先輸入或貼上法號內容。', type: 'error' };
         return;
     }
 
@@ -307,28 +344,45 @@ const handleBatchSave = async () => {
     const finalItems = results;
 
     if (finalItems.length === 0) {
-        alert('解析失敗，找不到任何有效法號資料。');
+        persistentToast.value = { msg: '✖ 解析失敗，找不到任何有效法號資料。', type: 'error' };
         return;
     }
 
     // --- Detailed Preview ---
     const first = finalItems[0];
-    const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}${first.user_remarks ? '(' + translateRel(first.user_remarks) + ')' : ''}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}\n\n是否繼續？`;
+    const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}${first.user_remarks ? '(' + translateRel(first.user_remarks) + ')' : ''}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}`;
     
-    if (!confirm(preview)) return;
+    persistentToast.value = { msg: preview, type: 'preview', data: finalItems };
+};
 
+const executeBatchSave = async () => {
+    if (!persistentToast.value || !persistentToast.value.data) return;
+    const finalItems = persistentToast.value.data;
+    
     loading.value = true;
+    persistentToast.value = null; // Close preview
     try {
         const response = await axios.post('/grudges/batch', { items: finalItems });
         const saved = response.data;
         const pending = saved.filter(i => i.status === '待處理').length;
-        alert(`匯入成功！\n共新增/更新 ${saved.length} 筆紀錄\n- 已處理：${saved.length - pending} 筆\n- 待處理：${pending} 筆`);
+        
+        persistentToast.value = { 
+            msg: `匯入成功！\n共新增/更新 ${saved.length} 筆紀錄\n- 已處理：${saved.length - pending} 筆\n- 待處理：${pending} 筆`, 
+            type: 'success' 
+        };
+        
         batchText.value = '';
         emit('success');
-        emit('cancel');
+        // Close form after a delay or let user see the success toast
+        setTimeout(() => {
+            if (persistentToast.value?.type === 'success') {
+                persistentToast.value = null;
+                emit('cancel');
+            }
+        }, 3000);
     } catch (error) {
         console.error('Batch import failed:', error);
-        alert('匯入失敗：' + (error.response?.data?.message || error.message));
+        persistentToast.value = { msg: '匯入失敗：' + (error.response?.data?.message || error.message), type: 'error' };
     } finally {
         loading.value = false;
     }

@@ -142,7 +142,41 @@
             </div>
         </div>
 
+        </div>
 
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'clear'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </div>
+                        <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button v-if="persistentToast.type === 'clear'" 
+                                @click="executeClearAll" 
+                                class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg shadow-rose-200/50" 
+                                style="color: white !important;">
+                            確認清空
+                        </button>
+                        <button @click="persistentToast = null" 
+                                :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                            {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
     </div>
 </template>
 
@@ -155,6 +189,7 @@ const users = ref([]);
 const selectionList = ref([]);
 const step = ref(1);
 const selectionFiltered = ref(false);
+const persistentToast = ref(null);
 
 // Storage Keys removed for clean state on load
 
@@ -233,11 +268,15 @@ const removeItem = (idx) => {
 };
 
 const clearAll = () => {
-    if (confirm('確定要清空整份名單與表格嗎？')) {
-        selectionList.value = [];
-        step.value = 1;
-        selectionFiltered.value = false;
-    }
+    persistentToast.value = { msg: '確定要清空整份名單與表格嗎？', type: 'clear' };
+};
+
+const executeClearAll = () => {
+    selectionList.value = [];
+    step.value = 1;
+    selectionFiltered.value = false;
+    persistentToast.value = { msg: '✓ 已清空', type: 'success' };
+    setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
 };
 
 const invertSelection = () => {
@@ -273,7 +312,7 @@ defineExpose({
 
 const goToStep2 = () => {
     if (selectionList.value.length === 0) {
-        alert('請先加入至少一位待定法號。');
+        persistentToast.value = { msg: '請先加入至少一位待定法號。', type: 'error' };
         return;
     }
     step.value = 2;
@@ -311,10 +350,11 @@ const copyToLine = () => {
     });
 
     navigator.clipboard.writeText(text).then(() => {
-        alert('已複製到剪貼簿，快前往 LINE 貼上吧！');
+        persistentToast.value = { msg: '✓ 已複製到剪貼簿，快前往 LINE 貼上吧！', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     }).catch(err => {
         console.error('Copy failed', err);
-        alert('複製失敗，請手動選取文字。');
+        persistentToast.value = { msg: '✖ 複製失敗，請手動選取文字。', type: 'error' };
     });
 };
 

@@ -39,19 +39,20 @@
         </div>
 
         <!-- Input Area -->
-        <div class="flex-1 flex flex-col p-4 relative pb-48">
+        <div class="flex-1 flex flex-col p-4 relative min-h-0">
             <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-red-500 bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all">
                 清空全部
             </button>
             <textarea 
                 v-model="batchText" 
+                :placeholder="placeholderText"
                 class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner"
             ></textarea>
 
             <!-- Preview Counter -->
-            <div v-if="parsedItems.length > 0" class="mt-4 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50">
+            <div v-if="parsedItems.length > 0" class="mt-4 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 shrink-0">
                 <p class="text-[13px] text-[#aeb4be] font-normal">預計匯入：{{ parsedItems.length }} 筆資料</p>
-                <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[60px]">
+                <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[100px]">
                     <span v-for="(item, idx) in parsedItems.slice(0, 15)" :key="idx" class="text-[11px] bg-white px-2 py-0.5 rounded-full border border-indigo-100 text-slate-600">
                         [{{ item.know_date?.replace(/-/g, '/') }}] {{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }} ({{ item.quantity }})
                     </span>
@@ -64,8 +65,8 @@
 
 
 
-        <!-- Bottom Save Action Bar (Fixed at absolute bottom with safe area) -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4">
+        <!-- Bottom Save Action Bar (Integrated into Layout) -->
+        <div class="bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4 shrink-0">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
                 class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"
@@ -73,6 +74,30 @@
                 <svg v-if="!processing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span class="text-[20px] tracking-widest" style="color: white !important;">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
             </button>
+        </div>
+        <!-- Global Action Confirm / Toast (Critical for iOS) -->
+        <div v-if="persistentToast" class="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="p-8 text-center space-y-6">
+                    <div class="flex flex-col items-center">
+                        <div v-if="persistentToast.type === 'error'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div v-else class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button @click="persistentToast = null" 
+                                class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                style="color: white !important;">
+                            確認
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -104,6 +129,14 @@ const batchDate = ref(null);
 const batchText = ref('');
 const processing = ref(false);
 const showDatePicker = ref(false);
+const persistentToast = ref(null);
+
+const placeholderText = computed(() => {
+    if (props.armyType === '黑曜軍') {
+        return "黑曜軍 專屬格式範例：\n2026/05/05\n元續 10 (閻尊 5 閻闇 5)\n閻闇 20 (閻尊 10 閻闇 10)";
+    }
+    return "請貼上文字或 Excel 複製之內容...";
+});
 
 const translateRel = (rel) => {
     if (!rel) return '';
@@ -119,7 +152,11 @@ const parsedItems = computed(() => {
     if (!batchText.value.trim()) return [];
     
     const lines = batchText.value.split('\n');
-    let currentDate = batchDate.value; 
+    const getTodayLocal = () => {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    };
+    let currentDate = batchDate.value || getTodayLocal(); 
     const results = [];
     
     const nameAliasMap = {
@@ -171,10 +208,11 @@ const parsedItems = computed(() => {
         let normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // 1. Detect Standalone Date Header (Ignoring symbols like ↓)
+        // 1. Detect Standalone Date Header (Ignoring symbols like ↓ and Weekdays)
         const dateHeader = parseDateText(normLine);
-        const isPureDateStr = normLine.replace(/[\d/.\-↓\s]/g, '').length === 0;
-        if (dateHeader && isPureDateStr) {
+        // Lenient check: if after removing date-like chars, whitespace, and common date suffixes, nothing remains
+        const cleanForCheck = normLine.replace(/[\d/.\-↓\s\(\)（）一二三四五六日月]/g, '');
+        if (dateHeader && cleanForCheck.length <= 1) { // Allow 1 extra char for safety
             currentDate = dateHeader;
             return;
         }
@@ -239,9 +277,49 @@ const parsedItems = computed(() => {
             remarks_text: ''
         };
         
-        // Army-specific defaults
-        if (props.armyType === '黑曜軍') { item.yan_zun = Math.ceil(qty / 2); item.yan_an = Math.floor(qty / 2); }
-        else if (props.armyType === '耀紫軍') { item.long_sheng = Math.ceil(qty / 2); item.long_zhan = Math.floor(qty / 2); }
+        // Specialized Parsing for Obsidian Army (黑曜軍)
+        if (props.armyType === '黑曜軍') {
+            const parenPartMatch = normLine.match(/[\(（](.*?)[\)）]/);
+            const parenPart = parenPartMatch ? parenPartMatch[1] : '';
+            
+            const yanZunMatch = parenPart.match(/[閻阎]尊[^\d]*(\d+)/);
+            const yanAnMatch = parenPart.match(/[閻阎閰][闇閽][^\d]*(\d+)/);
+            
+            if (yanZunMatch || yanAnMatch) {
+                const yz = yanZunMatch ? parseInt(yanZunMatch[1]) : 0;
+                const ya = yanAnMatch ? parseInt(yanAnMatch[1]) : 0;
+                
+                // If total quantity was explicitly specified (qty > 1), ensure sum matches
+                if (qty > 1) {
+                    item.yan_zun = yz;
+                    item.yan_an = ya;
+                    // If sum is incorrect, adjust to match the total qty
+                    if (item.yan_zun + item.yan_an !== qty) {
+                        if (yz > 0 && yz <= qty && ya === 0) {
+                            item.yan_an = qty - yz;
+                        } else if (ya > 0 && ya <= qty && yz === 0) {
+                            item.yan_zun = qty - ya;
+                        } else if (yz + ya > 0) {
+                            // If both present but sum is wrong, respect the parts and update total
+                            item.quantity = yz + ya;
+                        }
+                    }
+                } else {
+                    // No total specified, use sum of parts
+                    item.yan_zun = yz;
+                    item.yan_an = ya;
+                    item.quantity = yz + ya;
+                }
+            } else {
+                // Default split logic
+                item.yan_zun = Math.ceil(qty / 2); 
+                item.yan_an = Math.floor(qty / 2);
+            }
+        }
+        else if (props.armyType === '耀紫軍') { 
+            item.long_sheng = Math.ceil(qty / 2); 
+            item.long_zhan = Math.floor(qty / 2); 
+        }
         else if (props.armyType === '虎甲軍') { item.yan_jue = qty; item.yan_ze = 0; }
         else if (props.armyType === '虎賁軍') { item.yan_di = qty; item.yan_yuan = 0; }
 
@@ -294,28 +372,38 @@ const processExcelFile = (file) => {
 };
 
 const handleBatchSave = async () => {
-    if (parsedItems.value.length === 0) return;
+    const itemsToSave = [...parsedItems.value];
+    if (itemsToSave.length === 0) return;
     
     processing.value = true;
     try {
-        // We'll perform multiple posts or use a batch endpoint if available.
-        // For reliability, we'll iterate through parsed items.
-        // Since it's military records, we use the MilitaryRecordController.
-        
         const chunks = [];
-        for (let i = 0; i < parsedItems.value.length; i += 5) {
-            chunks.push(parsedItems.value.slice(i, i + 5));
+        for (let i = 0; i < itemsToSave.length; i += 5) {
+            chunks.push(itemsToSave.slice(i, i + 5));
         }
 
+        let savedCount = 0;
         for (const chunk of chunks) {
-            await Promise.all(chunk.map(item => axios.post('/military-records', item)));
+            await Promise.all(chunk.map(async (item) => {
+                await axios.post('/military-records', item);
+                savedCount++;
+            }));
         }
 
-        alert(`成功匯入 ${parsedItems.value.length} 筆資料！`);
+        persistentToast.value = { msg: `✓ 成功新增 ${savedCount} 筆資料！`, type: 'success' };
         emit('save');
         batchText.value = '';
+        
+        setTimeout(() => { 
+            if (persistentToast.value?.type === 'success') {
+                persistentToast.value = null;
+                emit('cancel', true); 
+            }
+        }, 1500);
     } catch (e) {
-        alert('部分資料儲存失敗，請檢查網路連線或格式。');
+        console.error('Batch save error:', e);
+        const errorMsg = e.response?.data?.message || e.response?.data?.error || '儲存失敗，請檢查資料格式或網路連線';
+        persistentToast.value = { msg: `✖ ${errorMsg}`, type: 'error' };
     } finally {
         processing.value = false;
     }

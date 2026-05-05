@@ -86,7 +86,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('dharma-names', App\Http\Controllers\DharmaNameController::class);
     Route::resource('roles', App\Http\Controllers\RoleController::class);
     Route::post('grudges/batch', [App\Http\Controllers\GrudgeController::class, 'batchStore']);
+    Route::get('grudges/date-groups', [App\Http\Controllers\GrudgeController::class, 'dateGroups']);
     Route::resource('grudges', App\Http\Controllers\GrudgeController::class);
+    Route::get('military-records/date-groups', [App\Http\Controllers\MilitaryRecordController::class, 'dateGroups']);
     Route::resource('military-records', App\Http\Controllers\MilitaryRecordController::class);
 
     // Notebook Archive System (Main Dashboard)

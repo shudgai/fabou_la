@@ -102,9 +102,7 @@
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6">
                             <div class="text-[36px] font-black text-white leading-tight drop-shadow-sm text-center" style="color: white !important; font-weight: 900 !important;">重大皇恩<br>專區</div>
-                            <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="font-size: 19px !important; color: red !important;">
-                                共 {{ totalCount }} 筆
-                            </div>
+
                         </div>
                     </div>
                 </button>
@@ -120,9 +118,7 @@
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6">
                             <div class="text-[36px] font-black text-white leading-tight drop-shadow-sm text-center" style="color: white !important; font-weight: 900 !important;">未求得<br>重大皇恩</div>
-                            <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="font-size: 19px !important; color: red !important;">
-                                共 {{ unobtainedTotal }} 筆
-                            </div>
+
                         </div>
                     </div>
                 </button>
@@ -151,11 +147,7 @@
                                  style="font-weight: 900 !important; font-size: 24px !important;">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>
-                            <div class="bg-[#fef3c7] px-3 py-1 rounded-full shadow-sm pointer-events-auto">
-                                <div class="font-black text-[#dc2626] whitespace-nowrap" style="font-size: 14px !important;">
-                                    共 {{ getFolderSum(folder.id) }} 筆
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </button>

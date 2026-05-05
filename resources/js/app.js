@@ -28,7 +28,7 @@ app.component('teaching-manager', TeachingManager);
 import GrudgeManager from './components/GrudgeManager.vue';
 app.component('grudge-manager', GrudgeManager);
 
-import MilitaryManager from './components/MilitaryManager.vue';
+import MilitaryManager from './components/MilitaryManagerV2.vue';
 app.component('military-manager', MilitaryManager);
 
 import RegistryManager from './components/RegistryManager.vue';

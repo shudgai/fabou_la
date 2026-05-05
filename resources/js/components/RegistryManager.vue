@@ -94,9 +94,7 @@
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
                                 <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
-                                <div class="mt-4 text-[19px] font-bold bg-white/80 px-4 py-1.5 rounded-full shadow-inner" style="color: red !important;">
-                                    共 {{ getCategorySum('major') }} 筆
-                                </div>
+
                             </div>
                         </div>
                     </button>
@@ -128,11 +126,7 @@
                                      style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name }}
                                 </div>
-                                <div class="bg-[#fef3c7] px-3 py-1 rounded-full shadow-sm">
-                                    <div class="font-black text-[#dc2626] whitespace-nowrap" style="font-size: 14px !important;">
-                                        共 {{ getFolderSum(folder.id) }} 筆
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </button>
@@ -686,9 +680,10 @@ const copyAsTextFile = (item) => {
     try {
         const text = formatRegistryForFile(item);
         navigator.clipboard.writeText(text);
-        alert('內容已複製到剪貼簿');
+        persistentToast.value = { msg: '✓ 內容已複製到剪貼簿', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
     } catch (err) {
-        console.error('Copy failed:', err);
+        persistentToast.value = { msg: '✖ 複製失敗', type: 'error' };
     }
 };
 
@@ -1984,7 +1979,7 @@ const handleRemarksViewerSave = async ({ dnrId, content }) => {
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         await loadData();
     } catch (e) {
-        alert('儲存失敗，請重試');
+        persistentToast.value = { msg: '✖ 儲存失敗，請重試', type: 'error' };
     } finally {
         isSaving.value = false;
         showRemarksModal.value = false; // 確保關閉
@@ -2006,7 +2001,7 @@ const saveRemarksInline = async () => {
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         await loadData();
     } catch (e) {
-        alert('儲存失敗，請重試');
+        persistentToast.value = { msg: '✖ 儲存失敗，請重試', type: 'error' };
     } finally {
         isSaving.value = false;
     }
