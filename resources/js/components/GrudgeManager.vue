@@ -63,8 +63,8 @@
             <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex flex-col pointer-events-auto border border-slate-100 relative w-auto min-w-[280px] max-w-md mx-auto">
                 <div class="flex items-center justify-between" :class="{ 'mb-4': !searchQuery }">
                     <div class="flex flex-col">
-                        <span class="app-body text-slate-400" style="font-weight: 400 !important;">{{ searchQuery ? '搜尋結果總量' : '怨靈載錄總量' }}</span>
-                        <span class="app-body text-slate-900 mt-1 font-bold" style="font-size: 22px !important;">{{ formatArmyTotal(totalGrudgeQuantity) }}</span>
+                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 20px !important;">{{ searchQuery ? `${searchQuery} 之載錄總量` : '怨靈載錄總量' }}</span>
+                        <span class="app-body text-slate-900 font-bold" style="font-size: 20px !important;">{{ formatArmyTotal(totalGrudgeQuantity) }}</span>
                     </div>
                     <button @click="showTotal = false" class="p-2 text-slate-300 active:scale-90 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -196,7 +196,7 @@
                 </template>
                 
                 <div class="mt-8 mb-20 px-2">
-                    <pagination-buttons :meta="activePaginationMeta" @page-change="handlePageChange" />
+                    <pagination-buttons v-if="activePaginationMeta" :meta="activePaginationMeta" @page-change="handlePageChange" />
                 </div>
             </div>
         </div>
@@ -550,14 +550,18 @@ const loadData = async (page = 1) => {
             // Fetch Date Groups
             const params = { page, search: searchQuery.value, t: ts };
             const res = await axios.get('/grudges/date-groups', { params });
-            dateGroupsData.value = res.data.data || [];
+            const paginator = res.data.paginator;
+            dateGroupsData.value = paginator.data || [];
             datePaginationMeta.value = {
-                current_page: res.data.current_page,
-                last_page: res.data.last_page,
-                total: res.data.total
+                current_page: paginator.current_page,
+                last_page: paginator.last_page,
+                total: paginator.total
             };
             items.value = [];
-            // Assuming global totals are fetched separately, or we just keep existing ones
+            globalTotals.value = {
+                quantity: res.data.global_total_quantity,
+                breakdowns: res.data.global_breakdowns
+            };
         } else {
             // Fetch Records for specific date
             const params = { page, search: searchQuery.value, t: ts };

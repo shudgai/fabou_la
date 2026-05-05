@@ -91,39 +91,24 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-10 max-w-[633px] mx-auto">
+                <div class="px-6 pb-24 flex flex-col items-center space-y-6 mt-[25px] max-w-[633px] mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[40px] md:shadow-xl md:w-[352px] md:h-[352px]">
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
                         
-                        <!-- Premium Desktop Shield Badge (Only on Desktop) -->
-                        <div class="absolute inset-8 flex items-center justify-center transition-transform group-hover:scale-105 duration-300 opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto">
-                            <svg class="w-full h-full drop-shadow-2xl" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad' + folder.id + ')'" 
-                                      stroke="white" stroke-width="0.2"/>
-                                <!-- Inner Bevel Effect -->
-                                <path d="M12 4L6 6.25V11C6 15.125 8.625 18.5 12 19.625C15.375 18.5 18 15.125 18 11V6.25L12 4Z" 
-                                      fill="rgba(255,255,255,0.05)" />
-                            </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center px-6">
-                                <span class="text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]" style="font-weight: 900 !important; font-size: 53px !important;">
-                                    {{ folder.name }}
-                                </span>
-
-                            </div>
-                        </div>
-
-                        <!-- Mobile Shield Badge -->
-                        <div class="relative w-[308px] h-[308px] opacity-100 pointer-events-auto md:opacity-0 md:pointer-events-none md:absolute">
+                        <!-- Unified Shield Badge (Matches Mobile Style) -->
+                        <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
                             <svg class="w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
                                       :fill="'url(#mm-fGrad' + folder.id + ')'" 
                                       stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
-                                <span class="text-[46px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" style="font-size: 46px !important; font-weight: 900 !important;">{{ folder.name }}</span>
-
+                                <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" 
+                                    style="font-weight: 900 !important;">{{ folder.name }}</span>
+                                <div class="text-[14px] md:text-[18px] font-bold text-white/80 mt-1">
+                                    {{ formatArmyTotal(armyCounts[folder.name] || 0) }}
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -139,19 +124,16 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         
-                        <div class="text-center space-y-6">
-                            <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </div>
+                        <div class="text-center space-y-6 pt-4">
                             
                             <div class="space-y-2">
-                                <h3 class="app-body text-slate-500 font-bold uppercase tracking-widest">{{ currentFolder.name }} 總計</h3>
-                                <div class="app-body font-black text-indigo-600" style="font-size: 24px !important;">
+                                <h3 class="app-body text-slate-500 font-bold uppercase tracking-widest text-[20px]" style="font-size: 20px !important;">{{ currentFolder.name }} 總計</h3>
+                                <div class="app-body font-black text-indigo-600" style="font-size: 20px !important;">
                                     {{ formatArmyTotal(currentFolderTotal) }}
                                 </div>
                             </div>
 
-                            <div v-if="['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'].includes(currentFolder.name)" class="grid grid-cols-2 gap-y-4 gap-x-2 pt-6 border-t border-slate-100">
+                            <div v-if="['黑曜軍', '耀紫軍'].includes(currentFolder.name)" class="grid grid-cols-2 gap-y-4 gap-x-2 pt-6 border-t border-slate-100">
                                 <template v-for="(val, label) in {
                                     '黑曜軍': { '閻尊': breakdownTotals.yan_zun, '閻闇': breakdownTotals.yan_an },
                                     '耀紫軍': { '龍勝': breakdownTotals.long_sheng, '龍戰': breakdownTotals.long_zhan },
@@ -159,8 +141,8 @@
                                     '虎賁軍': { '閻地': breakdownTotals.yan_di, '閻源': breakdownTotals.yan_yuan }
                                 }[currentFolder.name]" :key="label">
                                     <div class="flex flex-col items-center">
-                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 13px !important;">{{ label }}</span>
-                                        <span class="app-body text-slate-900 font-bold">{{ formatArmyTotal(val) }}</span>
+                                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 20px !important;">{{ label }}</span>
+                                        <span class="app-body text-slate-900 font-bold" style="font-size: 20px !important;">{{ formatArmyTotal(val) }}</span>
                                     </div>
                                 </template>
                             </div>
@@ -249,7 +231,7 @@
                                             </div>
                                         </div>
                                         <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
-                                            <div v-if="['黑曜軍','耀紫軍','虎甲軍','虎賁軍'].includes(item.army_type)" class="military-field">
+                                            <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">
                                                 <label class="military-label">軍隊細目</label>
                                                 <div class="flex items-center space-x-6 flex-wrap gap-y-2">
                                                     <template v-for="(val, label) in {
@@ -276,7 +258,7 @@
                         </template>
 
                 <!-- Pagination Buttons -->
-                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" />
+                <pagination-buttons v-if="activePaginationMeta" :meta="activePaginationMeta" @page-change="handlePageChange" />
                 </div>
             </div>
         </div>
@@ -522,7 +504,10 @@ const groupedItems = computed(() => {
 });
 
 const totalQuantity = computed(() => items.value.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0));
-const currentFolderTotal = computed(() => paginationMeta.value?.total || 0);
+const currentFolderTotal = computed(() => {
+    if (!currentFolder.value) return 0;
+    return armyCounts.value[currentFolder.value.name] || 0;
+});
 
 // breakdownTotals is now a ref populated from server
 

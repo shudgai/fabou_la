@@ -54,7 +54,7 @@
                 <p class="text-[13px] text-[#aeb4be] font-normal">預計匯入：{{ parsedItems.length }} 筆資料</p>
                 <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[100px]">
                     <span v-for="(item, idx) in parsedItems.slice(0, 15)" :key="idx" class="text-[11px] bg-white px-2 py-0.5 rounded-full border border-indigo-100 text-slate-600">
-                        [{{ item.know_date?.replace(/-/g, '/') }}] {{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }} ({{ item.quantity }})
+                        <template v-if="item.display_date">[{{ item.display_date.replace(/-/g, '/') }}] </template>{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }} ({{ item.quantity }})
                     </span>
                     <span v-if="parsedItems.length > 10" class="text-[11px] text-slate-400 self-center">...及其他 {{ parsedItems.length - 10 }} 筆</span>
                 </div>
@@ -62,8 +62,6 @@
         </div>
         <!-- MODALS -->
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
-
-
 
         <!-- Bottom Save Action Bar (Integrated into Layout) -->
         <div class="bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4 shrink-0">
@@ -116,7 +114,6 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel']);
 
 const getTodayStr = () => {
-    // 強制使用台北時區 (Asia/Taipei)
     const options = { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' };
     const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(new Date());
     const y = parts.find(p => p.type === 'year').value;
@@ -134,6 +131,9 @@ const persistentToast = ref(null);
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {
         return "黑曜軍 專屬格式範例：\n2026/05/05\n元續 10 (閻尊 5 閻闇 5)\n閻闇 20 (閻尊 10 閻闇 10)";
+    }
+    if (props.armyType === '耀紫軍') {
+        return "耀紫軍 專屬格式範例：\n2026/05/05\n元續 10 (龍勝 5 龍戰 5)\n龍戰 20 (龍勝 10 龍戰 10)";
     }
     return "請貼上文字或 Excel 複製之內容...";
 });
@@ -156,7 +156,7 @@ const parsedItems = computed(() => {
         const d = new Date();
         return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     };
-    let currentDate = batchDate.value || getTodayLocal(); 
+    let currentResolvedDate = batchDate.value; 
     const results = [];
     
     const nameAliasMap = {
@@ -172,32 +172,19 @@ const parsedItems = computed(() => {
     const parseDateText = (str) => {
         if (!str) return null;
         const clean = str.replace(/[↓↓]/g, '').trim();
-        
-        // Priority 1: 4-digit CE (YYYY/MM/DD)
         const ceMatch = clean.match(/\b(\d{4})[/\-\.\s](\d{1,2})[/\-\.\s](\d{1,2})\b/);
         if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
-        
-        // Priority 2: 2-3 digit ROC (民國 YYY/MM/DD)
         const rocMatch = clean.match(/\b(\d{2,3})[/\-\.\s](\d{1,2})[/\-\.\s](\d{1,2})\b/);
         if (rocMatch) {
             const y = parseInt(rocMatch[1]) + 1911;
             return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
         }
-
-        // Priority 3: 2-part dates (Y/M or M/D)
         const twoPartMatch = clean.match(/\b(\d{2,4})[/\-\.\s](\d{1,2})\b/);
         if (twoPartMatch) {
             const p1 = parseInt(twoPartMatch[1]);
             const p2 = parseInt(twoPartMatch[2]);
-            // Case A: ROC Year / Month (e.g., 110/05) -> First part 13-199
-            if (p1 > 12 && p1 < 200) {
-                return `${p1 + 1911}-${String(p2).padStart(2,'0')}-01`;
-            }
-            // Case B: CE Year / Month (e.g., 2021/05) -> First part >= 1900
-            if (p1 >= 1900) {
-                return `${p1}-${String(p2).padStart(2,'0')}-01`;
-            }
-            // Case C: Month / Day (e.g., 05/20) -> Use current year context
+            if (p1 > 12 && p1 < 200) return `${p1 + 1911}-${String(p2).padStart(2,'0')}-01`;
+            if (p1 >= 1900) return `${p1}-${String(p2).padStart(2,'0')}-01`;
             const y = new Date().getFullYear();
             return `${y}-${String(p1).padStart(2,'0')}-${String(p2).padStart(2,'0')}`;
         }
@@ -208,24 +195,20 @@ const parsedItems = computed(() => {
         let normLine = line.normalize('NFKC').trim();
         if (!normLine) return;
 
-        // 1. Detect Standalone Date Header (Ignoring symbols like ↓ and Weekdays)
         const dateHeader = parseDateText(normLine);
-        // Lenient check: if after removing date-like chars, whitespace, and common date suffixes, nothing remains
         const cleanForCheck = normLine.replace(/[\d/.\-↓\s\(\)（）一二三四五六日月]/g, '');
-        if (dateHeader && cleanForCheck.length <= 1) { // Allow 1 extra char for safety
-            currentDate = dateHeader;
+        if (dateHeader && cleanForCheck.length <= 1) {
+            currentResolvedDate = dateHeader;
             return;
         }
 
-        // 1.5 Detect Date at start of line (e.g. "110/05/01 靈奇 2262")
         const startMatch = normLine.match(/^(\d{2,4}[/.-]\d{1,2}([/.-]\d{1,2})?)\s+/);
         if (startMatch) {
             const d = parseDateText(startMatch[1]);
-            if (d) currentDate = d;
+            if (d) currentResolvedDate = d;
             normLine = normLine.replace(startMatch[1], '').trim();
         }
 
-        // 2. Detect Attribute Keywords
         const attrKeywords = ['備註', '用意'];
         const firstWord = normLine.split(/[\s：:]/)[0];
         if (attrKeywords.includes(firstWord) && results.length > 0) {
@@ -235,7 +218,6 @@ const parsedItems = computed(() => {
             return;
         }
 
-        // 3. Name & Quantity Extraction
         let cleanLine = normLine.replace(/^([\d\.\、\)\s-]+|[（\(]\d+[）\)]\s*|[一二三四五六七八九十]+[\.\、\s-]+)+/, '').trim();
         if (!cleanLine) return;
 
@@ -249,15 +231,41 @@ const parsedItems = computed(() => {
         } else {
             name = translateName(cleanLine.substring(0, firstDigitIndex).trim());
             let rest = cleanLine.substring(firstDigitIndex).replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
-            const numbers = rest.match(/\d+/g);
-            qty = numbers ? numbers.reduce((sum, n) => sum + parseInt(n), 0) : 1;
+            
+            // Robust Quantity Parsing for Units (隊, 萬, 位) and Commas
+            let totalQty = 0;
+            let foundUnit = false;
+            
+            // 1. Detect "隊" (1,000,000)
+            const troopMatch = rest.match(/(\d+)\s*隊/);
+            if (troopMatch) {
+                totalQty += parseInt(troopMatch[1]) * 1000000;
+                foundUnit = true;
+            }
+            
+            // 2. Detect "萬" (10,000)
+            const wanMatch = rest.match(/(\d+)\s*萬/);
+            if (wanMatch) {
+                totalQty += parseInt(wanMatch[1]) * 10000;
+                foundUnit = true;
+            }
+            
+            // 3. Detect remaining numbers or "位" (1)
+            // Remove parts already handled by units
+            let remainingRest = rest.replace(/\d+\s*[隊萬]/g, ' ');
+            // Clean commas
+            remainingRest = remainingRest.replace(/,/g, '');
+            const numbers = remainingRest.match(/\d+/g);
+            if (numbers) {
+                totalQty += numbers.reduce((sum, n) => sum + parseInt(n), 0);
+            }
+            
+            qty = (totalQty > 0) ? totalQty : 1;
         }
 
-        // Filter out headers
         const skipKeywords = ['法號', '日期', '數量', '結果', '項次', '總計'];
         if (skipKeywords.some(key => name === key)) return;
 
-        // Split name and relationship if pattern exists (e.g. 元續之母)
         let finalName = name;
         let uRemarks = '';
         const relSplitMatch = name.match(/^(.*?)([之的])(.+)$/);
@@ -271,54 +279,59 @@ const parsedItems = computed(() => {
         const item = {
             user_name: finalName,
             quantity: qty,
-            know_date: currentDate,
+            know_date: currentResolvedDate,
+            display_date: currentResolvedDate,
             army_type: props.armyType,
             user_remarks: uRemarks,
             remarks_text: ''
         };
         
-        // Specialized Parsing for Obsidian Army (黑曜軍)
-        if (props.armyType === '黑曜軍') {
+        if (props.armyType === '黑曜軍' || props.armyType === '耀紫軍') {
             const parenPartMatch = normLine.match(/[\(（](.*?)[\)）]/);
             const parenPart = parenPartMatch ? parenPartMatch[1] : '';
-            
-            const yanZunMatch = parenPart.match(/[閻阎]尊[^\d]*(\d+)/);
-            const yanAnMatch = parenPart.match(/[閻阎閰][闇閽][^\d]*(\d+)/);
-            
-            if (yanZunMatch || yanAnMatch) {
-                const yz = yanZunMatch ? parseInt(yanZunMatch[1]) : 0;
-                const ya = yanAnMatch ? parseInt(yanAnMatch[1]) : 0;
-                
-                // If total quantity was explicitly specified (qty > 1), ensure sum matches
-                if (qty > 1) {
-                    item.yan_zun = yz;
-                    item.yan_an = ya;
-                    // If sum is incorrect, adjust to match the total qty
-                    if (item.yan_zun + item.yan_an !== qty) {
-                        if (yz > 0 && yz <= qty && ya === 0) {
-                            item.yan_an = qty - yz;
-                        } else if (ya > 0 && ya <= qty && yz === 0) {
-                            item.yan_zun = qty - ya;
-                        } else if (yz + ya > 0) {
-                            // If both present but sum is wrong, respect the parts and update total
-                            item.quantity = yz + ya;
-                        }
-                    }
-                } else {
-                    // No total specified, use sum of parts
-                    item.yan_zun = yz;
-                    item.yan_an = ya;
-                    item.quantity = yz + ya;
+            let part1 = 0, part2 = 0;
+            let hasParts = false;
+
+            if (props.armyType === '黑曜軍') {
+                const p1Match = parenPart.match(/[閻阎]尊[^\d]*(\d+)/);
+                const p2Match = parenPart.match(/[閻阎閰][闇閽][^\d]*(\d+)/);
+                if (p1Match || p2Match) {
+                    part1 = p1Match ? parseInt(p1Match[1]) : 0;
+                    part2 = p2Match ? parseInt(p2Match[1]) : 0;
+                    hasParts = true;
                 }
             } else {
-                // Default split logic
-                item.yan_zun = Math.ceil(qty / 2); 
-                item.yan_an = Math.floor(qty / 2);
+                const p1Match = parenPart.match(/龍勝[^\d]*(\d+)/);
+                const p2Match = parenPart.match(/龍戰[^\d]*(\d+)/);
+                if (p1Match || p2Match) {
+                    part1 = p1Match ? parseInt(p1Match[1]) : 0;
+                    part2 = p2Match ? parseInt(p2Match[1]) : 0;
+                    hasParts = true;
+                }
             }
-        }
-        else if (props.armyType === '耀紫軍') { 
-            item.long_sheng = Math.ceil(qty / 2); 
-            item.long_zhan = Math.floor(qty / 2); 
+            
+            if (hasParts) {
+                if (qty > 1) {
+                    const sum = part1 + part2;
+                    if (sum !== qty) {
+                        if (part1 > 0 && part1 <= qty && part2 === 0) part2 = qty - part1;
+                        else if (part2 > 0 && part2 <= qty && part1 === 0) part1 = qty - part2;
+                        else if (sum > 0) qty = sum;
+                    }
+                } else {
+                    qty = part1 + part2;
+                }
+            } else {
+                part1 = Math.ceil(qty / 2); 
+                part2 = Math.floor(qty / 2);
+            }
+
+            if (props.armyType === '黑曜軍') {
+                item.yan_zun = part1; item.yan_an = part2;
+            } else {
+                item.long_sheng = part1; item.long_zhan = part2;
+            }
+            item.quantity = qty;
         }
         else if (props.armyType === '虎甲軍') { item.yan_jue = qty; item.yan_ze = 0; }
         else if (props.armyType === '虎賁軍') { item.yan_di = qty; item.yan_yuan = 0; }
@@ -350,23 +363,14 @@ const processExcelFile = (file) => {
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        
-        // Convert to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        
         let newText = "";
         jsonData.forEach(row => {
             if (row.length === 0) return;
-            // Join row fields with space to let our smart parser handle it
             const line = row.filter(cell => cell !== null && cell !== undefined).join(' ');
-            if (line.trim()) {
-                newText += line + "\n";
-            }
+            if (line.trim()) newText += line + "\n";
         });
-
-        if (newText) {
-            batchText.value += (batchText.value ? "\n" : "") + newText;
-        }
+        if (newText) batchText.value += (batchText.value ? "\n" : "") + newText;
     };
     reader.readAsArrayBuffer(file);
 };
@@ -374,14 +378,12 @@ const processExcelFile = (file) => {
 const handleBatchSave = async () => {
     const itemsToSave = [...parsedItems.value];
     if (itemsToSave.length === 0) return;
-    
     processing.value = true;
     try {
         const chunks = [];
         for (let i = 0; i < itemsToSave.length; i += 5) {
             chunks.push(itemsToSave.slice(i, i + 5));
         }
-
         let savedCount = 0;
         for (const chunk of chunks) {
             await Promise.all(chunk.map(async (item) => {
@@ -389,11 +391,9 @@ const handleBatchSave = async () => {
                 savedCount++;
             }));
         }
-
         persistentToast.value = { msg: `✓ 成功新增 ${savedCount} 筆資料！`, type: 'success' };
         emit('save');
         batchText.value = '';
-        
         setTimeout(() => { 
             if (persistentToast.value?.type === 'success') {
                 persistentToast.value = null;
@@ -414,6 +414,4 @@ const handleBatchSave = async () => {
 .custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-
 </style>
