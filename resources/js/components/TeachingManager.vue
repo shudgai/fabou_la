@@ -409,7 +409,7 @@
                                             <div v-if="activeTargetRemarksDropdown === 'batch'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="opt in relationshipOptions" :key="opt"
                                                      @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = null"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer whitespace-nowrap">
                                                     {{ opt }}
                                                 </div>
                                             </div>
@@ -417,9 +417,9 @@
                                     </div>
                                     <div v-if="form.dharma_name_ids.length > 0" class="col-span-12 mt-2">
                                         <div class="flex flex-wrap gap-2">
-                                            <span v-for="id in form.dharma_name_ids" :key="id" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[13px] font-black flex items-center">
+                                            <span v-for="id in form.dharma_name_ids" :key="id" class="px-3 py-1 bg-indigo-600 text-white rounded-full text-[13px] font-black flex items-center shadow-sm" style="color: white !important;">
                                                 {{ getDharmaNameText(id) }}
-                                                <button @click="form.dharma_name_ids = form.dharma_name_ids.filter(x => x !== id)" class="ml-1.5 text-indigo-300 hover:text-red-500">
+                                                <button @click="form.dharma_name_ids = form.dharma_name_ids.filter(x => x !== id)" class="ml-1.5 text-white/50 hover:text-white transition-colors">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
                                                 </button>
                                             </span>
@@ -455,10 +455,10 @@
                                         <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
                                         已解析紀錄 ({{ batchRecords.length }} 筆)
                                     </div>
-                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-3">
+                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-indigo-600 border border-indigo-500 rounded-3xl p-5 shadow-lg space-y-3">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2">
-                                                <span class="text-[12px] font-black text-indigo-500 bg-indigo-50 px-2.5 py-1 rounded-lg">#{{ index + 1 }} {{ record.master_name }}</span>
+                                                <span class="text-[12px] font-black text-white bg-indigo-500 px-2.5 py-1 rounded-lg" style="color: white !important;">#{{ index + 1 }} {{ record.master_name }}</span>
                                                 <!-- Reorder Buttons -->
                                                 <div class="flex items-center space-x-1 ml-2">
                                                     <button @click="moveBatchRecord(index, -1)" :disabled="index === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
@@ -474,37 +474,37 @@
                                             </button>
                                         </div>
                                         <div class="flex items-center justify-between">
-                                            <div class="font-black text-slate-900 text-[17px] whitespace-pre-wrap">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
-                                            <div v-if="record.date" class="text-[12px] font-bold text-slate-400 flex items-center">
+                                            <div class="font-black text-white text-[17px] whitespace-pre-wrap" style="color: white !important;">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
+                                            <div v-if="record.date" class="text-[12px] font-bold text-white/50 flex items-center">
                                                 <span class="mr-1">📅</span> {{ record.date }}
                                             </div>
                                         </div>
                                         <!-- Batch Record Target Remarks Dropdown -->
                                         <div class="space-y-0.5 mt-1">
-                                            <div class="relative flex items-center border border-slate-300 rounded-xl bg-slate-50/30 overflow-visible min-h-[44px]">
+                                            <div class="relative flex items-center border border-indigo-400 rounded-xl bg-indigo-700/50 overflow-visible min-h-[44px]">
                                                 <input v-model="record.target_remarks" 
                                                        @focus="activeBatchTargetRemarksIdx = index"
                                                        placeholder="備註對象..." 
-                                                       class="w-full bg-transparent border-none text-[15px] text-slate-700 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold">
-                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-indigo-400 hover:text-indigo-600 transition-all">
+                                                       class="w-full bg-transparent border-none text-[15px] text-white focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-white/30">
+                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-white/60 hover:text-white transition-all">
                                                     <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
                                                 <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="opt in relationshipOptions" :key="opt"
                                                          @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
-                                                         class="px-4 h-[36px] flex items-center rounded-xl hover:bg-indigo-50 font-bold text-[15px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-4 h-[36px] flex items-center rounded-xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
                                                         {{ opt }}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="text-slate-600 text-[16px] font-bold leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
+                                        <div class="text-white/90 text-[16px] font-bold leading-relaxed whitespace-pre-wrap" style="color: rgba(255,255,255,0.9) !important;">{{ record.content }}</div>
                                         <!-- Item Preview inside card -->
-                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-slate-50 space-y-1">
-                                            <div class="text-[11px] font-black text-slate-300 uppercase tracking-widest mb-1">已識別清單：</div>
-                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-indigo-400 font-bold flex items-center">
+                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-white/10 space-y-1">
+                                            <div class="text-[11px] font-black text-white/40 uppercase tracking-widest mb-1">已識別清單：</div>
+                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-white/80 font-bold flex items-center">
                                                 <span class="mr-1.5 opacity-60">💎</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
-                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-slate-300 hover:text-red-400">
+                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-white/30 hover:text-white">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
                                                 </button>
                                             </div>
@@ -583,9 +583,9 @@
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
                                 <!-- Added entries list -->
                                 <div v-if="footerRemarksList.length > 0" class="mb-2 space-y-1">
-                                    <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-50 rounded-2xl px-3 py-2 min-h-[44px]">
-                                        <span class="flex-1 text-[16px] font-bold text-slate-800">{{ r || ' ' }}</span>
-                                        <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-300 hover:text-red-400 ml-2 text-[18px] leading-none transition-all">×</button>
+                                    <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-600 border border-indigo-500 rounded-2xl px-3 py-2 min-h-[44px] shadow-sm">
+                                        <span class="flex-1 text-[16px] font-bold text-white" style="color: white !important;">{{ r || ' ' }}</span>
+                                        <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-white/40 hover:text-white ml-2 text-[18px] leading-none transition-all">×</button>
                                     </div>
                                 </div>
                                 <!-- Input + Add button -->
@@ -1131,7 +1131,7 @@
                                                             <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp2'+dn.id" 
                                                                      @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
-                                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                                     {{ dn.name }}
                                                                 </div>
                                                             </div>
@@ -1207,20 +1207,20 @@
                                 <span class="text-[10px] opacity-50">最下方為最新</span>
                             </div>
                             <div class="space-y-3 pr-1">
-                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-white border border-slate-100 p-3.5 rounded-2xl shadow-sm space-y-2 text-left">
-                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
+                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-indigo-600 border border-indigo-500 p-3.5 rounded-2xl shadow-md space-y-2 text-left">
+                                    <div class="text-[16px] font-black text-white leading-tight" style="color: white !important;">
                                         {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
                                     </div>
                                     <div class="space-y-2.5">
-                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-indigo-50">
+                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-white/40">
                                             <div class="flex-1">
-                                                <div class="text-[14px] text-slate-600 font-bold flex items-start leading-tight">
-                                                    <span class="text-indigo-400 mr-1.5 shrink-0">+ </span>
-                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-indigo-400 mr-1.5 shrink-0">{{ item.name }}</span>
-                                                    <span>{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-slate-400">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
+                                                <div class="text-[14px] font-bold flex items-start leading-tight" style="color: white !important;">
+                                                    <span class="text-white/80 mr-1.5 shrink-0">+ </span>
+                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-white/80 mr-1.5 shrink-0" style="color: white !important;">{{ item.name }}</span>
+                                                    <span style="color: white !important;">{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-white/70" style="color: rgba(255,255,255,0.7) !important;">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
                                                 </div>
                                             </div>
-                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-200 hover:text-red-400 transition-all text-[18px] leading-none">×</button>
+                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-white/50 hover:text-white transition-all text-[18px] leading-none">×</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1238,10 +1238,10 @@
                             
                             <!-- Added entries list (Refined design) -->
                             <div v-if="footerRemarksList.length > 0" class="mb-4 space-y-2">
-                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-white border-2 border-slate-50 rounded-2xl px-4 py-3 shadow-sm animate-fade-in group">
-                                    <div class="w-2 h-2 bg-indigo-400 rounded-full mr-3"></div>
-                                    <span class="flex-1 text-[17px] font-black text-slate-800">{{ r || ' ' }}</span>
-                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-300 hover:text-red-400 transition-all p-1">
+                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-600 border border-indigo-500 rounded-2xl px-4 py-3 shadow-md animate-fade-in group">
+                                    <div class="w-2 h-2 bg-white/60 rounded-full mr-3"></div>
+                                    <span class="flex-1 text-[17px] font-black text-white" style="color: white !important;">{{ r || ' ' }}</span>
+                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-white/40 hover:text-white transition-all p-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" /></svg>
                                     </button>
                                 </div>
@@ -1361,7 +1361,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" /></svg>
                                 </span>
                                 <input v-model="pickerSearch" type="text" placeholder="輸入法號或群組名稱進行搜尋..." 
-                                       class="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-11 pr-4 text-[17px] text-slate-900 focus:ring-4 focus:ring-indigo-100 transition-all outline-none shadow-sm font-black placeholder:font-black">
+                                       class="w-full bg-indigo-600 border border-indigo-500 rounded-2xl py-3.5 pl-11 pr-4 text-[17px] text-white focus:ring-4 focus:ring-indigo-100/20 transition-all outline-none shadow-lg font-black placeholder:text-white/30" style="color: white !important;">
                             </div>
                         </div>
 
@@ -1374,13 +1374,13 @@
                                 <div class="grid grid-cols-2 gap-2">
                                     <button v-for="dn in filteredPickerResults" :key="dn.id" 
                                             @click.prevent="toggleDharmaName(dn.id)"
-                                            :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm' : 'bg-slate-50 border-slate-50 text-slate-600'"
-                                            class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[17px] font-black active:scale-[0.98]">
-                                        <div class="w-5 h-5 rounded-md border flex items-center justify-center mr-3 shrink-0"
-                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200 shadow-sm'">
-                                            <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-700 border-indigo-400 ring-2 ring-white/50' : 'bg-indigo-600 border-indigo-500'"
+                                            class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[17px] font-black active:scale-[0.98] shadow-md">
+                                        <div class="w-5 h-5 rounded-md border-2 flex items-center justify-center mr-3 shrink-0"
+                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-white' : 'bg-indigo-800 border-indigo-500 shadow-inner'">
+                                            <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </div>
-                                        <span class="truncate text-[17px]">{{ dn.name }}</span>
+                                        <span class="truncate text-[17px] text-white" style="color: white !important;">{{ dn.name }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -1391,31 +1391,31 @@
                                     群組搜尋結果
                                 </div>
                                 <div class="space-y-2">
-                                    <div v-for="group in filteredGroups" :key="group.id" 
-                                         class="border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm">
-                                        <div @click.prevent="toggleGroupAccordion(group.id)" 
-                                             class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-slate-50">
-                                            <div class="flex items-center space-x-3">
-                                                <div @click.stop.prevent="toggleGroupSelection(group)" 
-                                                     class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all shadow-sm"
-                                                     :class="isGroupFullySelected(group) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-200'">
-                                                    <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div v-for="group in filteredGroups" :key="group.id" 
+                                             class="border border-indigo-500 rounded-2xl overflow-hidden bg-indigo-600 shadow-md">
+                                            <div @click.prevent="toggleGroupAccordion(group.id)" 
+                                                 class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-indigo-700">
+                                                <div class="flex items-center space-x-3">
+                                                    <div @click.stop.prevent="toggleGroupSelection(group)" 
+                                                         class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all shadow-sm"
+                                                         :class="isGroupFullySelected(group) ? 'bg-white border-white' : 'bg-indigo-700 border-indigo-400'">
+                                                        <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                    </div>
+                                                    <span class="text-[17px] font-black text-white" style="color: white !important;">{{ group.name }}</span>
+                                                    <span class="text-[14px] bg-indigo-500/50 text-white px-2.5 py-1 rounded-full font-bold" style="color: white !important;">{{ group.dharma_names.length }}人</span>
                                                 </div>
-                                                <span class="text-[17px] font-black text-slate-800" :class="isGroupFullySelected(group) ? 'text-indigo-600' : 'text-slate-800'">{{ group.name }}</span>
-                                                <span class="text-[14px] bg-slate-50 text-slate-400 px-2.5 py-1 rounded-full font-bold">{{ group.dharma_names.length }}人</span>
+                                                <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-white/50 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                             </div>
-                                            <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-slate-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            <div v-if="expandedGroupPicker === group.id || pickerSearch" class="bg-indigo-900/20 px-4 py-3 border-t border-white/10 grid grid-cols-2 gap-2 animate-fade-in">
+                                                <button v-for="member in group.dharma_names" :key="member.id" 
+                                                        @click.prevent="toggleDharmaName(member.id)"
+                                                        class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-indigo-500 border border-indigo-400 shadow-sm"
+                                                        :class="form.dharma_name_ids.includes(member.id) ? 'ring-2 ring-white/50' : ''">
+                                                    <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-white' : 'bg-indigo-700'"></div>
+                                                    <span class="truncate font-black text-white" style="color: white !important;">{{ member.name }}</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div v-if="expandedGroupPicker === group.id || pickerSearch" class="bg-indigo-50/20 px-4 py-3 border-t border-indigo-50/50 grid grid-cols-2 gap-2 animate-fade-in">
-                                            <button v-for="member in group.dharma_names" :key="member.id" 
-                                                    @click.prevent="toggleDharmaName(member.id)"
-                                                    class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-white shadow-sm"
-                                                    :class="form.dharma_name_ids.includes(member.id) ? 'text-slate-800 font-black border border-indigo-200' : 'text-slate-900 border border-transparent font-black'">
-                                                <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-indigo-500' : 'bg-slate-200'"></div>
-                                                <span class="truncate">{{ member.name }}</span>
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1448,22 +1448,22 @@
                                     </div>
                                     <div class="grid grid-cols-1 gap-2">
                                         <div v-for="member in pg.members" :key="member.id" 
-                                             class="flex items-center px-3 py-2.5 bg-slate-50/50 rounded-xl border border-slate-100 shadow-sm">
-                                            <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-300 hover:text-red-500 transition-colors shrink-0">
+                                             class="flex items-center px-3 py-2.5 bg-indigo-600 rounded-xl border border-indigo-500 shadow-sm">
+                                            <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-white/60 hover:text-white transition-colors shrink-0">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <span class="text-[16px] font-black text-slate-800 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                            <span class="text-[16px] font-black text-white truncate" style="color: white !important;">{{ stripMasterPrefix(member.name) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
                                 <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
-                                     class="flex items-center px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100">
-                                    <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-300 hover:text-red-500 transition-colors shrink-0">
+                                     class="flex items-center px-4 py-3 bg-indigo-600 rounded-2xl border border-indigo-500 shadow-md">
+                                    <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-white/60 hover:text-white transition-colors shrink-0">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
-                                    <span class="text-[17px] font-black text-slate-800 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                    <span class="text-[17px] font-black text-white truncate" style="color: white !important;">{{ stripMasterPrefix(member.name) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1492,8 +1492,8 @@
                                 <button v-for="p in palaceOrder" 
                                         :key="p"
                                         @click="selectPalaceGroup(p)"
-                                        class="px-2 py-5 bg-slate-50 border border-slate-100 rounded-[24px] text-[17px] font-black text-slate-800 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all active:scale-95 flex items-center justify-center shadow-sm hover:shadow-indigo-200 hover:shadow-lg whitespace-nowrap">
-                                    <svg class="w-4 h-4 mr-2 text-slate-300 group-hover:text-white/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        class="px-2 py-5 bg-indigo-600 border border-indigo-500 rounded-[24px] text-[17px] font-black text-white hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center shadow-lg shadow-indigo-100 whitespace-nowrap" style="color: white !important;">
+                                    <svg class="w-4 h-4 mr-2 text-white/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke: white !important;"/></svg>
                                     {{ p }}
                                 </button>
                             </div>
@@ -1530,7 +1530,7 @@
                                  class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
                                      <span class="app-title font-outfit uppercase tracking-wider">{{ formatDate(dateGroup.date) }}</span>
-                                     <span class="ml-3 px-2.5 py-0.5 bg-white border border-slate-200 rounded-full text-[12px] font-black font-outfit" style="color: #0f172a !important;">
+                                     <span class="ml-3 px-2.5 py-0.5 bg-indigo-600 border border-indigo-500 rounded-full text-[12px] font-black font-outfit text-white shadow-sm" style="color: white !important;">
                                          {{ dateGroup.items.length }} 則
                                      </span>
                                  </div>
@@ -1551,7 +1551,7 @@
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
                                         <div class="mr-3 shrink-0 flex items-center justify-center">
-                                            <div v-if="!reorderMode" class="w-8 h-8 bg-slate-50 rounded-xl flex items-center justify-center text-[15px] font-black text-slate-400">
+                                            <div v-if="!reorderMode" class="w-8 h-8 bg-indigo-600 border border-indigo-500 rounded-xl flex items-center justify-center text-[15px] font-black text-white shadow-sm" style="color: white !important;">
                                                 {{ String(index + 1).padStart(2, '0') }}
                                             </div>
                                             <input v-else 

@@ -1,105 +1,57 @@
 <template>
     <div v-if="show" class="fixed inset-0 h-[100dvh] md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
         
-        <!-- STEP 1: PERSONNEL SELECTION -->
-        <div v-if="currentStep === 1" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <!-- STEP 1 & 2: PERSONNEL SELECTION -->
+        <div v-if="currentStep === 1 || currentStep === 2" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <!-- Header bar -->
-                <div class="border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0 px-2 py-2 w-full md:pt-[60px]">
+                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
-                        <!-- First Row: Main Title -->
-                        <div class="flex items-center md:hidden">
-                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                            </button>
-                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 32px !important;">
-                                其他專區
+                        <div class="flex items-center justify-between w-full">
+                            <!-- Consolidated Title Row -->
+                            <div class="flex items-center flex-1 min-w-0">
+                                <div class="app-title font-black leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 32px !important;">
+                                    其他專區
+                                </div>
+                                <div class="flex items-center ml-3 min-w-0">
+                                    <span class="text-slate-500 font-black truncate" style="font-size: 25px !important; font-weight: 900 !important;">
+                                        {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        
-                                                <!-- Second Row: Subtitle + Action Button -->
-                        <div class="flex items-center justify-between w-full mt-1 px-1 md:pb-2">
-                            <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[24px]" style="font-size: 22px !important;">
-                                {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}{{ lotteryMode === false ? ' - 直接排列' : '' }}
-                            </span>
-                            <div class="flex items-center space-x-2">
+
+                            <!-- Right Side Functional Controls -->
+                            <div class="flex items-center ml-2 shrink-0 space-x-2">
                                 <button @click="invertSelection()" 
-                                    class="px-4 py-1.5 text-[17px] rounded-xl shadow-sm border transition-colors duration-150 bg-white border-slate-300 text-slate-700 font-bold active:bg-blue-600 active:text-white active:border-blue-600"
-                                >反選</button>
-                                <button @click="resetAll" class="p-2 text-slate-400 hover:text-rose-500 transition-colors bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    class="px-[6px] py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
+                                    style="font-size: 16px !important;">
+                                    反選
                                 </button>
-                            </div>
-                        <!-- Third Row: Step Badge (Simplified) -->
-                        <div class="flex items-center mt-1 px-1">
-                            <div class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[13px] font-black border border-indigo-100 flex items-center shadow-sm">
-                                <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2 animate-pulse"></span>
-                                步驟 1：名單選取
+                                <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                
-                <!-- Main scrollable selection grid -->
+                <!-- Main Scrollable Content -->
                 <div class="flex-1 overflow-y-auto custom-scrollbar pb-64 animate-fade-in w-full">
-                    
-                    <!-- Selected Pool (Persistent Display) -->
-                    <div v-if="lotteryMode === false && pendingNames.length > 0" class="bg-blue-50/40 border border-blue-100 rounded-2xl p-4 mx-2 mt-4 mb-2">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[15px] font-black text-blue-800">{{ selectionMode === "fixed" ? "優先固定人員 (照點選順序)" : "已選定人員 (包含固定人員)" }}</span>
-                                <span class="px-2 py-0.5 bg-blue-600 text-white text-[11px] font-black rounded-full" style="color: white !important;">{{ selectionMode === 'fixed' ? fixedParticipants.length : pendingNames.length }} 人</span>
+                    <div class="p-4 space-y-6">
+                        <div class="flex items-center flex-wrap gap-2 mb-2">
+                            <label class="text-[18px] font-black text-slate-800 shrink-0">滑動游標選取人員</label>
+                            <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 border border-slate-100">
+                                <span class="text-[11px] font-bold text-slate-300 whitespace-nowrap shrink-0 mr-1">手動:</span>
+                                <input v-model="manualName" @keyup.enter="addManualName" class="w-16 bg-transparent border-none text-[12px] font-bold h-6 outline-none">
+                                <button @click="addManualName" class="text-blue-500 font-black text-[18px] ml-1">＋</button>
                             </div>
-                            <button @click="resetAll" class="text-blue-400 hover:text-rose-500 transition-colors p-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
-                            <div v-for="(name, pidx) in (selectionMode === 'fixed' ? fixedParticipants : pendingNames)" :key="name" class="bg-white border border-blue-100 px-3 py-1.5 rounded-xl text-[15px] font-black text-blue-900 shadow-sm flex items-center group active:scale-95 transition-all">
-                                
-                                {{ name }}
-                                <button @click="togglePending(name)" class="ml-1.5 text-blue-200 group-hover:text-rose-400 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                </button>
+                            <div class="ml-auto text-slate-800 text-[18px] font-black">
+                                {{ pendingNames.length }} 人
                             </div>
                         </div>
-                        <div class="mt-3 text-[11px] text-blue-400 font-bold italic text-center">* 已依點選順序自動排列</div>
-                    </div>
-
-                    
-                <div class="p-4 flex-1 flex flex-col gap-6 w-full custom-scrollbar pb-64">
-                    <!-- MODE TOGGLE REMOVED - NOW HANDLED BY NEXT BUTTON -->
-
-                    <!-- GRID SELECTION -->
-                    <div class="space-y-6">
-                        <div class="flex items-center justify-between py-2 border-b border-slate-50">
-                            <div class="flex flex-col">
-                                <label class="text-[17px] font-black text-slate-800">
-                                    {{ lotteryMode === true ? '抽籤名單選取' : '人員名單選取' }}
-                                </label>
-                                <span v-if="lotteryMode === false" class="text-[11px] font-bold text-slate-400">
-                                    點擊次數切換：白色(不選) → <span class="text-indigo-500">靛色(抽籤)</span> → <span class="text-blue-500">藍色(固定)</span>
-                                </span>
-                                <span v-else class="text-[12px] font-bold text-slate-400">
-                                    請選取參與本輪抽籤的人員
-                                </span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="relative">
-                                    <input v-model="manualName" @keyup.enter="addManualName" placeholder="手動..." 
-                                        class="w-20 bg-slate-100 border-none rounded-xl px-2 py-2 text-[13px] font-bold focus:ring-1 focus:ring-blue-400 text-center">
-                                    <button @click="addManualName" class="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 font-black text-[22px]">＋</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <!-- Main Selection Grid -->
-                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 relative touch-none"
-                            @mouseleave="stopDrag"
-                            @touchmove.prevent="handleTouchMove">
+                        
+                        <!-- Grid -->
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
                             <button v-for="user in displayUsers" :key="user.id"
                                 @mousedown="startDrag(user.name)"
                                 @mouseenter="onDragEnter(user.name)"
@@ -107,209 +59,111 @@
                                 @touchstart="handleTouchStart($event, user.name)"
                                 @touchend="stopDrag"
                                 :data-name="user.name"
-                                class="dharma-btn h-14 flex items-center justify-center rounded-xl border-2 font-black text-[17px] transition-all active:scale-95 relative"
+                                class="dharma-btn h-14 flex items-center justify-center rounded-xl border-2 font-black text-[17px] transition-all relative"
                                 :style="getPendingStyle(user.name)">
-                                <span class="truncate leading-none pointer-events-none relative flex items-center">
-                                    <!-- Red Checkmark: ONLY for fixed personnel -->
-                                    <span v-if="fixedParticipants.includes(user.name.trim())" class="mr-1 text-rose-500">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    </span>
+                                <span class="pointer-events-none flex items-center">
+                                    <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✔</span>
                                     {{ user.name }}
-                                    <!-- Numeric Badge: For lottery order -->
-                                    <span v-if="pendingNames.includes(user.name.trim()) && !fixedParticipants.includes(user.name.trim())" 
-                                        class="absolute -top-4 -right-4 w-5 h-5 rounded-full bg-indigo-500 text-white text-[11px] flex items-center justify-center border-2 border-white shadow-md font-black z-10">
-                                        {{ pendingNames.indexOf(user.name.trim()) + 1 }}
+                                    <span v-if="pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" class="absolute -top-2 -right-2 w-5 h-5 bg-indigo-500 text-white rounded-full text-[10px] flex items-center justify-center border border-white">
+                                        {{ pendingNames.indexOf(user.name) + 1 }}
                                     </span>
                                 </span>
                             </button>
                         </div>
                     </div>
                 </div>
-                </div>
 
-
-            <!-- Confirm button aligned with desktop container -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-1 pt-2 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
-                <div class="w-full space-y-2">
-                        <button
-                            @click="confirmSelection"
-                            :disabled="pendingNames.length === 0"
-                            class="w-full py-[12px] rounded-2xl font-black text-[17px] shadow-sm active:scale-95 transition-all disabled:opacity-50"
-                            :style="{
-                                background: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8',
-                                color: '#ffffff !important',
-                                textShadow: '0 1px 3px rgba(0,0,0,0.3)'
-                            }">
+                <!-- Bottom Button Area -->
+                <div class="px-4 pb-[85px] pt-2 border-t border-slate-50 bg-white/95 backdrop-blur-sm shrink-0">
+                    <div class="w-full space-y-2">
+                        <button @click="confirmSelection" 
+                                :disabled="pendingNames.length === 0" 
+                                class="w-full py-4 rounded-2xl font-black text-[17px] shadow-lg active:scale-95 disabled:opacity-50 transition-all bg-blue-600 text-white"
+                                style="color: white !important;">
                             確定名單 (共 {{ pendingNames.length }} 人) → 下一步
                         </button>
-                    <button @click="handleBack" class="w-full py-1 text-[13px] font-bold text-slate-400 flex items-center justify-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        返回上一步
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- STEP 2: DRAW CONFIGURATION / ROUND SELECTION -->
-        <div v-if="currentStep === 2" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
-            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 p-3 flex flex-col sticky top-0 z-10 w-full md:pt-[60px]">
-                    <div class="flex flex-col w-full gap-1">
-                        <div class="flex items-center md:hidden">
-                            <div class="w-1"></div>
-                            <div class="app-title font-black leading-tight font-outfit tracking-widest" style="color: #0f172a !important; font-size: 28px !important;">
-                                其他專區
-                            </div>
-                        </div>
-                        <!-- Second Row: Subtitle + Back -->
-                        <div class="flex items-center justify-between w-full mt-1 px-1 md:pb-2">
-                            <div class="flex items-center">
-                                <button @click="currentStep = 1" class="text-slate-400 p-1 mr-2 -ml-1 md:hidden">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <span class="text-slate-700 font-black shrink-0 mr-2 md:text-[28px]" style="font-size: 28px !important;">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '直接排列 - 抽籤設定' }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-4 flex-1 overflow-y-auto flex flex-col gap-6 w-full custom-scrollbar pb-72">
-                    <!-- Total Summary Badge -->
-                    <div class="flex items-center justify-center">
-                        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-2 flex flex-col items-center shadow-sm">
-                            <span class="text-[13px] font-black text-indigo-400 uppercase tracking-widest mb-1">本次抽籤總人數</span>
-                            <span class="text-[32px] font-black text-indigo-600 leading-none">{{ lotteryMode ? roundParticipants.length : selectedNames.length }} <span class="text-[17px] ml-1">人</span></span>
-                        </div>
-                    </div>
-                    
-                    <!-- LOTTERY MODE: Round Subset Selection -->
-                    <div v-if="lotteryMode" class="space-y-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex flex-col">
-                                <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest">1. 從基礎名單點選本輪人員</label>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <button @click="selectAllRound" class="px-3 py-1 bg-indigo-50 text-indigo-500 rounded-lg text-[15px] font-black border border-indigo-100 active:scale-95 transition-all">全選</button>
-                                    <button @click="clearAllRound" class="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-[15px] font-black border border-slate-100 active:scale-95 transition-all">清空</button>
-                                </div>
-                            </div>
-                            <span class="text-[17px] font-black text-emerald-600">{{ roundParticipants.length }} 人</span>
-                        </div>
-                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2" @mouseleave="stopDrag" @touchmove.prevent="handleTouchMoveStep2">
-                            <button v-for="name in selectedNames" :key="'round'+name"
-                                @mousedown="startDragStep2(name)"
-                                @mouseenter="onDragEnterStep2(name)"
-                                @mouseup="stopDrag"
-                                @touchstart="handleTouchStartStep2($event, name)"
-                                @touchend="stopDrag"
-                                :data-round-name="name"  
-                                @click="toggleRoundParticipant(name)"
-                                class="h-14 flex items-center justify-center rounded-xl border-2 font-black text-[17px] transition-all active:scale-95 relative"
-                                :style="getStep2RoundStyle(name)">
-                                <span class="truncate leading-none pointer-events-none relative flex items-center">
-                                    <!-- Red Checkmark: ONLY for fixed personnel -->
-                                    <span v-if="fixedParticipants.includes(name.trim())" class="mr-1 text-rose-500">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    </span>
-                                    {{ name }}
-                                    <!-- Numeric Badge: For participants of this round -->
-                                    <span v-if="isRoundParticipant(name)" 
-                                        class="absolute -top-4 -right-4 w-5 h-5 rounded-full bg-emerald-500 text-white text-[11px] flex items-center justify-center border-2 border-white shadow-md font-black z-10">
-                                        {{ roundParticipants.indexOf(name) + 1 }}
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-
-                        <div v-if="roundParticipants.length > 0" class="pt-4 border-t border-slate-100">
-                            <label class="text-[15px] font-black text-slate-400 uppercase tracking-widest block mb-3">2. 本輪參加名單</label>
-                            <div class="flex flex-wrap gap-2">
-                                <div v-for="name in roundParticipants" :key="'tag'+name" class="bg-rose-50 text-rose-700 px-3 py-1.5 rounded-lg font-black text-[17px] border border-rose-100 flex items-center">
-                                    {{ name }}
-                                    <button @click="toggleRoundParticipant(name)" class="ml-1 text-rose-300">×</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DIRECT MODE: Summary -->
-                    <div v-else class="space-y-8">
-                        <!-- Section 1: Fixed People (Removed grid, only showing summary below) -->
-
-                        <!-- Section 2: Summary of Lists -->
-                        <div v-if="fixedParticipants.length > 0 || (selectedNames.length - fixedParticipants.length) > 0" class="pt-6 border-t border-slate-100 space-y-6">
-                            <!-- Fixed List -->
-                            <div v-if="fixedParticipants.length > 0">
-                                <label class="text-[15px] font-black text-rose-500 uppercase tracking-widest block mb-3">● 優先排列順序 (第 1 ~ {{ fixedParticipants.length }} 名)</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <div v-for="(name, fidx) in fixedParticipants" :key="'ftag'+name" class="bg-rose-50 text-rose-700 px-3 py-1.5 rounded-lg font-black text-[17px] border border-rose-100 flex items-center">
-                                        <span class="mr-1 text-[13px] opacity-40">{{ fidx + 1 }}.</span>
-                                        {{ name }}
-                                        <button @click="toggleFixedParticipant(name)" class="ml-1 text-rose-300">×</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Random Pool List -->
-                            <div v-if="(selectedNames.length - fixedParticipants.length) > 0">
-                                <label class="text-[15px] font-black text-emerald-500 uppercase tracking-widest block mb-3">● 隨機抽籤名單 (接在固定人員之後)</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <div v-for="name in selectedNames.filter(n => !fixedParticipants.includes(n))" :key="'rtag'+name" class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg font-black text-[17px] border border-emerald-100 flex items-center">
-                                        {{ name }}
-                                    </div>
-                                </div>
-                                <div class="mt-2 text-[12px] text-emerald-500 font-bold italic">以上 {{ selectedNames.length - fixedParticipants.length }} 人將進行隨機排序</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fixed Bottom Action Area aligned with desktop container -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-2 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full">
-                <div class="w-full space-y-4">
-                    <!-- Config Row for Direct Mode -->
-                    <div class="flex items-center justify-between px-1">
-                        <label class="text-[15px] font-black text-slate-400 uppercase tracking-wider">抽取人數</label>
-                        <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-12 bg-slate-50/50 w-48 shadow-sm">
-                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-14 h-full text-white bg-slate-400 text-[20px] font-black shadow-none border-none active:bg-slate-500">−</button>
-                            <input 
-                                type="number" 
-                                v-model.number="drawCount" 
-                                @blur="drawCount = Math.max(1, Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount || 1))"
-                                class="flex-1 text-center text-[20px] font-black text-slate-800 bg-transparent outline-none w-full"
-                            >
-                            <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" class="w-14 h-full text-white bg-slate-400 text-[20px] font-black shadow-none border-none active:bg-slate-500">＋</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Button -->
-                    <div class="flex flex-col space-y-2">
-                        <button 
-                            @click="lotteryMode ? performRoundDraw() : performDraw()"
-                            :disabled="lotteryMode && roundParticipants.length === 0"
-                            class="w-full py-[12px] rounded-3xl font-black text-[17px] shadow-sm active:scale-[0.98] transition-all flex justify-center items-center"
-                            :class="lotteryMode ? 'bg-emerald-200 text-white' : 'bg-indigo-200 text-white'"
-                        >
-                            <span style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">{{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}</span>
-                        </button>
-                        <button @click="currentStep = 1" class="w-full py-1 text-[13px] font-bold text-slate-400 flex items-center justify-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        <button @click="emit('close')" class="w-full py-2 text-slate-400 font-bold text-[13px] flex items-center justify-center">
                             返回上一步
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- STEP 3: DRAW CONFIGURATION -->
+        <div v-if="currentStep === 3" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
+                <div class="border-b border-slate-100 p-4 bg-white sticky top-0 z-10 w-full md:pt-[60px]">
+                    <div class="flex items-center">
+                        <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 mr-2 active:scale-90 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <h2 class="text-[24px] font-black text-slate-800">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '步驟 3：抽籤設定' }}</h2>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-8">
+                    <div v-if="!lotteryMode" class="flex justify-center">
+                        <div class="bg-indigo-50 px-8 py-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
+                            <span class="text-indigo-400 text-[13px] font-black uppercase">總參與人數</span>
+                            <span class="text-indigo-600 text-[40px] font-black">{{ selectedNames.length }} 人</span>
+                        </div>
+                    </div>
+
+                    <div v-if="lotteryMode" class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[17px] font-black text-slate-800">1. 從基礎名單點選本輪人員</span>
+                            <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg font-black text-[15px]">全選</button>
+                            <button @click="roundParticipants = []" class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-lg font-black text-[15px]">清空</button>
+                        </div>
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
+                            <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
+                                class="h-14 rounded-xl border-2 font-black text-[17px] transition-all"
+                                :style="getStep2RoundStyle(name)">
+                                {{ name }}
+                            </button>
+                        </div>
+                    </div>
+                    <div v-else class="space-y-6">
+                        <div v-if="fixedParticipants.length > 0">
+                            <label class="text-rose-500 font-black text-[15px] uppercase">固定優先順序</label>
+                            <div class="flex flex-wrap gap-2">
+                                <div v-for="(name, i) in fixedParticipants" :key="i" class="bg-rose-50 text-rose-700 px-3 py-2 rounded-lg font-black">{{ i+1 }}. {{ name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 pb-[60px] pt-4 border-t border-slate-100 space-y-4 bg-white/95 backdrop-blur-sm shrink-0">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[19px] font-black text-slate-800">抽取人數</span>
+                        <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-12 flex items-center justify-center bg-slate-200 text-slate-600 font-black text-[24px]">-</button>
+                            <input v-model.number="drawCount" class="w-16 h-12 text-center font-black text-[24px] bg-transparent outline-none">
+                            <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" 
+                                    class="w-12 h-12 flex items-center justify-center bg-slate-500 text-white font-black text-[24px]">+</button>
+                        </div>
+                    </div>
+                    <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
+                            class="w-full py-4 rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
+                            :class="lotteryMode ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-600 text-white'"
+                            :style="!lotteryMode ? 'color: white !important;' : ''">
+                        {{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}
+                    </button>
+                </div>
+            </div>
+        </div>
         <!-- FULLSCREEN LOTTERY ANIMATION -->
         <div v-if="isDrawing" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
+            <!-- Ambient glow -->
             <div class="absolute inset-0 pointer-events-none">
                 <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
             </div>
 
-            <div class="lottery-cup-container" style="transform: translateY(10vh);">
+            <!-- Bamboo cup + Flying Sticks Container -->
+            <div class="lottery-cup-container" style="transform: translateY(18vh);">
                 <div class="absolute inset-0 pointer-events-none">
                     <div v-for="stick in flyingSticks" :key="stick.id"
                         class="lottery-stick"
@@ -337,83 +191,50 @@
                     <div class="cup-base"></div>
                 </div>
                 <div class="flying-name-display">
-                    <span class="flying-name-text">{{ lotteryDisplayNames[0] || '' }}</span>
-                </div>
-            </div>
-
-            <div class="absolute top-[3vh] left-0 right-0 flex flex-col items-center space-y-2">
-                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
-                <div class="flex gap-2">
-                    <span class="dot-lg" style="background:#b45309;"></span>
-                    <span class="dot-lg" style="background:#d97706;"></span>
-                    <span class="dot-lg" style="background:#f59e0b;"></span>
+                    <div v-if="lotteryDisplayNames.length" class="flying-name-text">{{ lotteryDisplayNames[0] }}</div>
                 </div>
             </div>
         </div>
-
-        <!-- STEP 3: RESULTS -->
-        <div v-if="currentStep === 3" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
+        <!-- STEP 4: RESULTS -->
+        <div v-if="currentStep === 4" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm w-full">
-                    <div class="p-4 flex items-center">
-                        <button @click="currentStep = 2" class="flex items-center text-slate-400 p-1 active:scale-95 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="p-4 border-b border-slate-100 flex flex-col space-y-2">
+                    <div class="flex items-center">
+                        <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <h2 class="text-[17px] font-black text-slate-900 whitespace-nowrap mx-auto">抽籤結果 ({{ results.length }}人)</h2>
-                        <div class="w-8"></div> <!-- Spacer to center title -->
+                        <h2 class="text-[19px] font-black mx-auto">抽籤結果 ({{ results.length }}人)</h2>
                     </div>
-                    <!-- ACTION BUTTONS ROW -->
-                    <div class="px-4 pb-4 flex items-center justify-center space-x-2">
-                        <button v-if="lotteryMode === true" @click="handleNextRound" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-emerald-600 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">新回合</button>
-                        <button @click="handleReselect" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-slate-500 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重選</button>
-                        <button @click="copyResults" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-blue-500 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
-                        <button v-if="folderId" @click="saveResults" class="flex-1 py-3 rounded-xl font-black text-[17px] bg-indigo-600 text-white shadow-sm active:scale-95 transition-all" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">儲存</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div v-if="results.length === 1" class="flex flex-col items-center py-4">
+                        <span class="text-[60px] -mb-2 relative z-10">👑</span>
+                        <div class="bg-yellow-400 text-red-600 text-[36px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce">
+                            1. {{ results[0] }}
+                        </div>
+                    </div>
+                    <div v-else class="columns-2 gap-2 space-y-2">
+                        <div v-for="(name, idx) in results" :key="idx" class="break-inside-avoid py-2 px-3 bg-slate-50 rounded-xl border border-slate-100 font-black flex items-center min-w-0 mb-2">
+                            <span class="text-indigo-400 text-[13px] mr-1.5 w-5 shrink-0">{{ idx + 1 }}.</span>
+                            <span class="text-[17px] truncate">{{ name }}</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-4 no-scrollbar">
-                    <div class="w-full space-y-4 pb-32 pt-2">
-                        <!-- SINGLE RESULT: CROWN & CENTERED -->
-                        <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 animate-scale-in pt-4">
-                            <div class="relative">
-                                <span class="text-[56px] filter drop-shadow-lg">👑</span>
-                                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
-                            </div>
-                            <h3 class="text-[32px] font-black px-8 py-4 rounded-2xl shadow-lg mb-4" style="background-color: #facc15 !important; color: #dc2626 !important; border: 2px solid #eab308 !important;">1. {{ results[0] }}</h3>
-                            <div class="flex items-center space-x-2 text-indigo-300">
-                                <div class="h-[2px] w-8 bg-indigo-100"></div>
-                                <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
-                                <div class="h-[2px] w-8 bg-indigo-100"></div>
-                            </div>
-                        </div>
-
-                        <!-- MULTIPLE RESULTS: DYNAMIC GRID -->
-                        <div v-else :class="[
-                            'grid gap-2 w-full',
-                            results.length <= 8 ? 'grid-cols-1' : (results.length <= 18 ? 'grid-cols-2' : 'grid-cols-3')
-                        ]">
-                            <div v-for="(name, idx) in results" :key="'res'+idx" 
-                                class="py-3 px-2 flex items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm animate-slide-in">
-                                <span class="font-black text-black flex items-center truncate">
-                                    <span class="text-indigo-400 mr-2 text-[13px] opacity-60">{{ idx + 1 }}.</span>
-                                    <span :class="results.length > 18 ? 'text-[15px]' : 'text-[19px]'">{{ name }}</span>
-                                </span>
-                            </div>
-                        </div>
+                <!-- Bottom Button Area (Fixed above navigation) -->
+                <div class="px-4 pb-[60px] pt-2 border-t border-slate-50 bg-white/95 backdrop-blur-sm shrink-0">
+                    <div class="flex gap-2">
+                        <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
+                        <button @click="results = []; currentStep = 2" class="flex-1 py-3 bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
+                        <button @click="copyResults" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
+                        <button @click="saveResults" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
                     </div>
                 </div>
             </div>
-            <!-- GLOBAL BOTTOM NAVIGATION -->
-            <mobile-navbar 
-                v-if="!isDrawing"
-                :can-back="true"
-                :can-home="true"
-                :show-action="false"
-                @back="handleBack"
-                @home="$emit('close')"
-                class="z-[2000]"
-            />
         </div>
+
+        <!-- NAVIGATION -->
+        <mobile-navbar v-if="!isDrawing" :can-back="true" :can-home="true" @back="handleBack" @home="$emit('close')" />
     </div>
 </template>
 
@@ -424,59 +245,110 @@ import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean,
-    initialMode: {
-        type: Boolean,
-        default: null
-    },
+    initialMode: { type: Boolean, default: null },
     folderId: Number
 });
 
 const emit = defineEmits(['close', 'saved']);
 
-watch(() => props.show, (val) => {
-    if (val) {
-        loadUsers();
-        currentStep.value = 1;
-        selectedNames.value = [];
-        hasResult.value = false;
-        results.value = [];
-        fixedParticipants.value = [];
-        lotteryMode.value = props.initialMode;
-        // In Round Lottery mode, skip fixed selection
-        selectionSubStep.value = (lotteryMode.value === true) ? 2 : 1;
-    }
-});
-
 const users = ref([]);
 const pendingNames = ref([]);
 const selectedNames = ref([]);
-const drawCount = ref(1);
+const fixedParticipants = ref([]);
+const roundParticipants = ref([]);
+const results = ref([]);
 const currentStep = ref(1);
-const selectionFiltered = ref(false);
+const drawCount = ref(1);
 const isDrawing = ref(false);
 const hasResult = ref(false);
-const results = ref([]);
-const activeAction = ref('');
 const lotteryMode = ref(props.initialMode);
-const selectionSubStep = ref(props.initialMode === true ? 2 : 1); // 1: Fixed mode, 2: Pool mode
-const selectionMode = computed(() => selectionSubStep.value === 1 ? 'fixed' : 'pool');
+const manualName = ref('');
+const DRAW_DURATION = 3000;
+const currentType = ref('');
+const lotteryDisplayNames = ref([]);
+const flyingSticks = ref([]);
 
-watch(lotteryMode, (val) => {
-    resetAll(true);
-    if (val === true) selectionSubStep.value = 2; // Force pool mode for round lottery
-    else selectionSubStep.value = 1; // Default to fixed mode for direct sort
+watch(() => props.show, (val) => {
+    if (val) {
+        loadUsers();
+        resetAll(true);
+        lotteryMode.value = props.initialMode;
+    }
 });
 
-
-const roundParticipants = ref([]);
-const fixedParticipants = ref([]);
-const DRAW_DURATION = 3500; // 3.5 Seconds confirmed
-const selectAllRound = () => {
-    roundParticipants.value = [...selectedNames.value];
+const loadUsers = async () => {
+    try {
+        const res = await axios.get('/api/dharma-names-list');
+        users.value = res.data;
+    } catch (e) { console.error(e); }
 };
 
-const clearAllRound = () => {
+const displayUsers = computed(() => {
+    if (!lotteryMode.value && currentStep.value === 2) {
+        return users.value.filter(u => !fixedParticipants.value.includes(u.name));
+    }
+    return users.value;
+});
+
+const togglePending = (name) => {
+    if (currentStep.value === 1) {
+        const idx = fixedParticipants.value.indexOf(name);
+        if (idx > -1) {
+            fixedParticipants.value.splice(idx, 1);
+            pendingNames.value = pendingNames.value.filter(n => n !== name);
+        } else {
+            fixedParticipants.value.push(name);
+            if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+        }
+    } else if (currentStep.value === 2) {
+        if (fixedParticipants.value.includes(name)) return;
+        const idx = pendingNames.value.indexOf(name);
+        if (idx > -1) pendingNames.value.splice(idx, 1);
+        else pendingNames.value.push(name);
+    }
+};
+
+const getPendingStyle = (name) => {
+    const isSelected = pendingNames.value.includes(name);
+    if (isSelected) return { background: '#e0f2fe', color: 'black !important', borderColor: '#e0f2fe', borderWidth: '1px' };
+    return { background: 'white', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
+};
+
+const confirmSelection = () => {
+    if (lotteryMode.value === true) {
+        selectedNames.value = [...pendingNames.value];
+        drawCount.value = 1;
+        currentStep.value = 3;
+        return;
+    }
+
+    if (currentStep.value === 1) {
+        currentStep.value = 2;
+    } else if (currentStep.value === 2) {
+        selectedNames.value = [...pendingNames.value];
+        drawCount.value = selectedNames.value.length;
+        currentStep.value = 3;
+    }
+};
+
+const handleBack = () => {
+    if (currentStep.value > 1) currentStep.value--;
+    else emit('close');
+};
+
+const resetAll = (silent = false) => {
+    if (!silent && !confirm('確定清空？')) return;
+    pendingNames.value = [];
+    fixedParticipants.value = [];
+    selectedNames.value = [];
     roundParticipants.value = [];
+    currentStep.value = 1;
+    results.value = [];
+};
+
+const invertSelection = () => {
+    const all = users.value.map(u => u.name);
+    pendingNames.value = all.filter(n => !pendingNames.value.includes(n));
 };
 
 const toggleRoundParticipant = (name) => {
@@ -484,120 +356,163 @@ const toggleRoundParticipant = (name) => {
     if (idx > -1) roundParticipants.value.splice(idx, 1);
     else roundParticipants.value.push(name);
 };
-const isRoundParticipant = (name) => roundParticipants.value.includes(name);
+
+const getStep2RoundStyle = (name) => {
+    const active = roundParticipants.value.includes(name);
+    if (active) return { background: '#2563eb', color: '#ffffff !important', borderColor: '#2563eb', borderWidth: '1px' };
+    return { background: 'white', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
+};
+
+let lotteryInterval = null;
+
+const buildFlyingSticks = (names) => {
+    // Show up to 20 sticks for a fuller animation
+    flyingSticks.value = names.slice(0, 20).map((name, i) => ({
+        id: i,
+        name: name,
+        x: 15 + (i * 7) % 70,
+        dur: 1.4 + (i * 0.1) % 1.2,
+        delay: (i * 0.15) % 2.5,
+        rotate: -90 + (i * 25) % 180,
+        drift: -180 + (i * 45) % 360
+    }));
+};
+
+const performDraw = () => {
+    if (selectedNames.value.length === 0) return;
+    
+    isDrawing.value = true;
+    currentType.value = 'draw';
+    buildFlyingSticks([...selectedNames.value]);
+
+    const pool = [...selectedNames.value];
+    let idx = 0;
+    lotteryDisplayNames.value = [pool[0]];
+    lotteryInterval = setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        lotteryDisplayNames.value = [pool[idx]];
+    }, 80);
+
+    setTimeout(() => {
+        clearInterval(lotteryInterval);
+        lotteryInterval = null;
+        
+        const fixed = fixedParticipants.value.filter(n => pool.includes(n));
+        const rest = pool.filter(n => !fixed.includes(n)).sort(() => Math.random() - 0.5);
+        const full = [...fixed, ...rest];
+        results.value = full.slice(0, Math.min(drawCount.value, full.length));
+        
+        isDrawing.value = false;
+        lotteryDisplayNames.value = [];
+        currentStep.value = 4;
+    }, DRAW_DURATION);
+};
+
+const performRoundDraw = () => {
+    if (roundParticipants.value.length === 0) return;
+    
+    isDrawing.value = true;
+    currentType.value = 'round';
+    buildFlyingSticks([...roundParticipants.value]);
+
+    const pool = [...roundParticipants.value];
+    let idx = 0;
+    lotteryDisplayNames.value = [pool[0]];
+    lotteryInterval = setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        lotteryDisplayNames.value = [pool[idx]];
+    }, 80);
+
+    setTimeout(() => {
+        clearInterval(lotteryInterval);
+        lotteryInterval = null;
+        
+        const shuffled = [...roundParticipants.value].sort(() => Math.random() - 0.5);
+        results.value = shuffled.slice(0, Math.min(drawCount.value, shuffled.length));
+        
+        isDrawing.value = false;
+        lotteryDisplayNames.value = [];
+        currentStep.value = 4;
+    }, DRAW_DURATION);
+};
+
+const copyResults = () => {
+    const text = results.value.map((n, i) => `${i+1}. ${n}`).join('\n');
+    navigator.clipboard.writeText(text).then(() => alert('已複製'));
+};
+
+const saveResults = async () => {
+    if (!props.folderId) return;
+    try {
+        await axios.post(`/other-folders/${props.folderId}/records`, {
+            title: `抽籤結果 - ${new Date().toLocaleString()}`,
+            content: results.value.map((n, i) => `${i+1}. ${n}`).join('\n'),
+            record_date: new Date().toISOString().split('T')[0]
+        });
+        alert('已儲存');
+        emit('saved');
+    } catch (e) { console.error(e); }
+};
+
+const handleReselect = () => {
+    resetAll(true);
+    currentStep.value = 1;
+};
+
+const handleNextRound = () => {
+    pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
+    selectedNames.value = [...pendingNames.value];
+    roundParticipants.value = [];
+    currentStep.value = 3;
+};
+
+const addManualName = () => {
+    if (!manualName.value.trim()) return;
+    const n = manualName.value.trim();
+    if (!users.value.some(u => u.name === n)) users.value.push({ id: Date.now(), name: n });
+    togglePending(n);
+    manualName.value = '';
+};
 
 const isDragging = ref(false);
 const dragSelectionType = ref(null); // 'add' or 'remove'
-
-
-
-const toggleFixedParticipant = (name) => {
-    const idx = fixedParticipants.value.indexOf(name);
-    if (idx > -1) fixedParticipants.value.splice(idx, 1);
-    else fixedParticipants.value.push(name);
-};
-
-const startDragFixed = (name) => {
-    isDragging.value = true;
-    const isSelected = fixedParticipants.value.includes(name);
-    dragSelectionType.value = isSelected ? 'remove' : 'add';
-    toggleFixedParticipant(name);
-    window.addEventListener('mouseup', stopDrag);
-};
-
-const onDragEnterFixed = (name) => {
-    if (!isDragging.value) return;
-    const isSelected = fixedParticipants.value.includes(name);
-    if (dragSelectionType.value === 'add' && !isSelected) {
-        fixedParticipants.value.push(name);
-    } else if (dragSelectionType.value === 'remove' && isSelected) {
-        const idx = fixedParticipants.value.indexOf(name);
-        fixedParticipants.value.splice(idx, 1);
-    }
-};
-
-const handleTouchStartFixed = (e, name) => {
-    lastTouchedName.value = name;
-    startDragFixed(name);
-};
-
-const handleTouchMoveFixed = (e) => {
-    if (!isDragging.value) return;
-    const touch = e.touches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!el) return;
-    const btn = el.closest('button[data-fixed-name]');
-    if (btn) {
-        const name = btn.getAttribute('data-fixed-name');
-        if (name && name !== lastTouchedName.value) {
-            lastTouchedName.value = name;
-            onDragEnterFixed(name);
-        }
-    }
-};
-
-const startDragStep2 = (name) => {
-    isDragging.value = true;
-    const isSelected = isRoundParticipant(name);
-    dragSelectionType.value = isSelected ? 'remove' : 'add';
-    toggleRoundParticipant(name);
-    window.addEventListener('mouseup', stopDrag);
-};
-
-const onDragEnterStep2 = (name) => {
-    if (!isDragging.value) return;
-    const isSelected = isRoundParticipant(name);
-    if (dragSelectionType.value === 'add' && !isSelected) {
-        roundParticipants.value.push(name);
-    } else if (dragSelectionType.value === 'remove' && isSelected) {
-        const idx = roundParticipants.value.indexOf(name);
-        roundParticipants.value.splice(idx, 1);
-    }
-};
-
-const handleTouchStartStep2 = (e, name) => {
-    lastTouchedName.value = name;
-    startDragStep2(name);
-};
-
-const handleTouchMoveStep2 = (e) => {
-    if (!isDragging.value) return;
-    const touch = e.touches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!el) return;
-    const btn = el.closest('button[data-round-name]');
-    if (btn) {
-        const name = btn.getAttribute('data-round-name');
-        if (name && name !== lastTouchedName.value) {
-            lastTouchedName.value = name;
-            onDragEnterStep2(name);
-        }
-    }
-};
+const lastTouchedName = ref(null);
 
 const startDrag = (name) => {
     isDragging.value = true;
     const isSelected = pendingNames.value.includes(name);
     dragSelectionType.value = isSelected ? 'remove' : 'add';
     togglePending(name);
-    
-    // Add global mouseup listener
     window.addEventListener('mouseup', stopDrag);
 };
 
 const onDragEnter = (name) => {
     if (!isDragging.value) return;
     const isSelected = pendingNames.value.includes(name);
-    
     if (dragSelectionType.value === 'add' && !isSelected) {
-        pendingNames.value.push(name);
+        if (currentStep.value === 1) {
+            if (!fixedParticipants.value.includes(name)) fixedParticipants.value.push(name);
+            if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+        } else {
+            if (!fixedParticipants.value.includes(name) && !pendingNames.value.includes(name)) pendingNames.value.push(name);
+        }
     } else if (dragSelectionType.value === 'remove' && isSelected) {
-        const idx = pendingNames.value.indexOf(name);
-        pendingNames.value.splice(idx, 1);
+        if (currentStep.value === 1) {
+            fixedParticipants.value = fixedParticipants.value.filter(n => n !== name);
+            pendingNames.value = pendingNames.value.filter(n => n !== name);
+        } else {
+            if (!fixedParticipants.value.includes(name)) {
+                pendingNames.value = pendingNames.value.filter(n => n !== name);
+            }
+        }
     }
 };
 
-const lastTouchedName = ref(null);
+const stopDrag = () => {
+    isDragging.value = false;
+    lastTouchedName.value = null;
+    window.removeEventListener('mouseup', stopDrag);
+};
 
 const handleTouchStart = (e, name) => {
     lastTouchedName.value = name;
@@ -609,8 +524,6 @@ const handleTouchMove = (e) => {
     const touch = e.touches[0];
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     if (!el) return;
-    
-    // Find the closest dharma-btn
     const btn = el.closest('.dharma-btn');
     if (btn) {
         const name = btn.getAttribute('data-name');
@@ -621,453 +534,58 @@ const handleTouchMove = (e) => {
     }
 };
 
-const stopDrag = () => {
-    isDragging.value = false;
-    lastTouchedName.value = null;
-    window.removeEventListener('mouseup', stopDrag);
-};
-
-// Persistence removed per user request for fresh state on load
-
-const manualName = ref('');
-const addManualName = () => {
-    if (!manualName.value.trim()) return;
-    const name = manualName.value.trim();
-    if (!users.value.some(u => u.name === name)) {
-        users.value.push({ id: Date.now(), name: name });
-    }
-    if (!pendingNames.value.includes(name)) {
-        pendingNames.value.push(name);
-    }
-    manualName.value = '';
-};
-
-const displayUsers = computed(() => {
-    if (!users.value || !Array.isArray(users.value)) return [];
-    // Always return all users so the table is always visible
-    return users.value.filter(u => u && u.name);
-});
-
-const getPendingStyle = (name) => {
-    const t = name.trim();
-    const isSelected = pendingNames.value.includes(t);
-    const isFixed = fixedParticipants.value.includes(t);
-
-    if (isFixed) {
-        return {
-            backgroundColor: '#2563eb', // Blue for FIXED (as per user image)
-            color: '#ffffff !important',
-            borderColor: '#fbbf24', // Gold Border
-            borderWidth: '3px',
-            boxShadow: '0 0 15px rgba(251, 191, 36, 0.4)',
-            zIndex: '5'
-        };
-    } else if (isSelected) {
-        return {
-            backgroundColor: '#4f46e5', // Indigo for SELECTED
-            color: '#ffffff !important',
-            borderColor: '#ffffff', // Simple White Border
-            borderWidth: '2px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            zIndex: '4'
-        };
-    } else {
-        return {
-            backgroundColor: '#ffffff',
-            color: '#000000',
-            border: '1px solid #e2e8f0',
-            textShadow: 'none'
-        };
-    }
-};
-
-const toggleSelectionFilter = () => {
-    if (pendingNames.value.length > 0) {
-        selectionFiltered.value = !selectionFiltered.value;
-    }
-};
-
-const togglePending = (name) => {
-    const isPool = pendingNames.value.includes(name);
-    const isFixed = fixedParticipants.value.includes(name);
-    
-    if (lotteryMode.value === true) {
-        // Simple Toggle for Round Lottery
-        if (isPool) {
-            pendingNames.value.splice(pendingNames.value.indexOf(name), 1);
-        } else {
-            pendingNames.value.push(name);
-        }
-    } else {
-        // Cyclic Toggle for Direct Ordering: Unselected -> Normal -> Fixed -> Unselected
-        if (!isPool && !isFixed) {
-            // White -> Normal (Indigo)
-            pendingNames.value.push(name);
-        } else if (isPool && !isFixed) {
-            // Normal -> Fixed (Blue)
-            fixedParticipants.value.push(name);
-        } else {
-            // Fixed -> Unselected
-            const pIdx = pendingNames.value.indexOf(name);
-            if (pIdx > -1) pendingNames.value.splice(pIdx, 1);
-            const fIdx = fixedParticipants.value.indexOf(name);
-            if (fIdx > -1) fixedParticipants.value.splice(fIdx, 1);
-        }
-    }
-};
-
-const selectAll = () => {
-    pendingNames.value = users.value.map(u => u.name);
-};
-
-const invertSelection = () => {
-    const allNames = users.value.map(u => u.name);
-    pendingNames.value = allNames.filter(n => !pendingNames.value.includes(n));
-};
-
-const confirmSelection = () => {
-    if (pendingNames.value.length === 0) return;
-    
-    selectedNames.value = [...pendingNames.value];
-    
-    // In Direct Mode, default to all selected names
-    // In Lottery Mode, default to 1 person
-    if (lotteryMode.value === false) {
-        drawCount.value = selectedNames.value.length;
-    } else {
-        drawCount.value = 1;
-    }
-    
-    currentStep.value = 2;
-    if (lotteryMode.value) {
-        roundParticipants.value = [];
-        fixedParticipants.value = [];
-    }
-};
-
-const handleBack = () => {
-    if (currentStep.value === 3) {
-        currentStep.value = 2;
-        if (lotteryMode.value) {
-            roundParticipants.value = [];
-            fixedParticipants.value = [];
-            drawCount.value = 1;
-        }
-        return;
-    }
-    if (currentStep.value === 2) {
-        currentStep.value = 1;
-        if (lotteryMode.value === false) {
-            selectionSubStep.value = 2; // Go back to pool selection
-        }
-        return;
-    }
-    if (currentStep.value === 1 && lotteryMode.value === false && selectionSubStep.value === 2) {
-        selectionSubStep.value = 1; // Go back to fixed selection
-        return;
-    }
-
-    emit('close');
-};
-
-const resetAll = (silent = false) => {
-    if (!silent && !confirm('確定要清空所有進度嗎？')) return;
-    pendingNames.value = [];
-    selectedNames.value = [];
-    selectionFiltered.value = false;
-    selectionSubStep.value = (lotteryMode.value === true) ? 2 : 1;
-    currentStep.value = 1;
-    hasResult.value = false;
-    results.value = [];
-    roundParticipants.value = [];
-    fixedParticipants.value = [];
-};
-
-const handleReselect = () => {
-    resetAll(true);
-    emit('close');
-};
-
-const handleNextRound = () => {
-    // Remove winners from overall pool
-    pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
-    // Clear current round setup
-    roundParticipants.value = [];
-    results.value = [];
-    hasResult.value = false;
-    currentStep.value = 2; // Return to draw setup
-};
-
-// Save to session removed for fresh state on load
-
-const loadUsers = async () => {
-    try {
-        const res = await axios.get('/api/dharma-names-list');
-        let rawUsers = res.data;
-        
-        // Custom sorting: Ensure 靈奇, 靈傾 are after 靈情
-        const targetNames = ['靈情', '靈奇', '靈傾'];
-        const listWithoutTargets = rawUsers.filter(u => !targetNames.includes(u.name));
-        const lingQing = rawUsers.find(u => u.name === '靈情');
-        const lingQi = rawUsers.find(u => u.name === '靈奇');
-        const lingQin = rawUsers.find(u => u.name === '靈傾');
-        
-        if (lingQing) {
-            const idx = listWithoutTargets.findIndex(u => u.name === '靈情'); // Should not exist
-            const insertIdx = listWithoutTargets.findIndex(u => u.name === '靈情'); // Placeholder
-            // Find where LingQing should be or was
-            const finalIdx = rawUsers.findIndex(u => u.name === '靈情');
-            
-            // Simplified approach: Re-insert them in place
-            let processed = [...rawUsers];
-            const qingIdx = processed.findIndex(u => u.name === '靈情');
-            if (qingIdx > -1) {
-                // Remove Qi and Qin if they exist elsewhere
-                processed = processed.filter(u => u.name !== '靈奇' && u.name !== '靈傾');
-                const newQingIdx = processed.findIndex(u => u.name === '靈情');
-                if (lingQi) processed.splice(newQingIdx + 1, 0, lingQi);
-                if (lingQin) processed.splice(newQingIdx + 2, 0, lingQin);
-            }
-            users.value = processed;
-        } else {
-            users.value = rawUsers;
-        }
-
-        // Start with empty selection as per user request
-        pendingNames.value = [];
-        selectionFiltered.value = false;
-    } catch (e) { console.error(e); }
-};
-
-
-
-
-// Animation Logic
-const lotteryDisplayNames = ref([]);
-const flyingSticks = ref([]);
-let lotteryInterval = null;
-
-const buildFlyingSticks = (names) => {
-    flyingSticks.value = names.slice(0, 12).map((name, i) => ({
-        id: i,
-        name: name,
-        x: 20 + (i * 5.5) % 60,
-        dur: 1.8 + (i * 0.1) % 1.2,
-        delay: (i * 0.25) % 2.5,
-        rotate: -40 + (i * 17) % 80,
-        drift: -60 + (i * 23) % 120,
-    }));
-};
-
-// Replacement fallback
-const performRoundDraw = () => {
-    if (roundParticipants.value.length === 0) {
-        alert('請先選擇參與抽籤的人員');
-        return;
-    }
-    
-    isDrawing.value = true;
-    hasResult.value = false;
-    buildFlyingSticks([...roundParticipants.value]);
-
-    const pool = [...roundParticipants.value];
-    let idx = 0;
-    lotteryInterval = setInterval(() => {
-        if (pool.length > 0) {
-            idx = (idx + 1) % pool.length;
-            lotteryDisplayNames.value = [pool[idx]];
-        }
-    }, 80);
-
-    setTimeout(() => {
-        try {
-            clearInterval(lotteryInterval);
-            const shuffled = [...pool].sort(() => Math.random() - 0.5);
-            // Default drawCount to at least 1
-            const count = Math.max(1, Math.min(drawCount.value || 1, pool.length));
-            results.value = shuffled.slice(0, count);
-            
-            if (results.value.length === 0 && pool.length > 0) {
-                results.value = [pool[0]];
-            }
-            
-            hasResult.value = true;
-            currentStep.value = 3;
-        } catch (err) {
-            console.error("Round Draw Error:", err);
-            results.value = pool.slice(0, 1);
-            currentStep.value = 3;
-        } finally {
-            isDrawing.value = false;
-        }
-    }, DRAW_DURATION); 
-};
-const performQuickDraw = () => {
-    if (pendingNames.value.length === 0) return;
-    selectedNames.value = [...pendingNames.value];
-    fixedParticipants.value = [];
-    drawCount.value = selectedNames.value.length;
-    performDraw();
-};
-
-const performDraw = () => {
-    if (selectedNames.value.length === 0) return;
-    
-    isDrawing.value = true;
-    hasResult.value = false;
-    buildFlyingSticks([...selectedNames.value]);
-
-    const pool = [...selectedNames.value];
-    let idx = 0;
-    lotteryInterval = setInterval(() => {
-        if (pool.length > 0) {
-            idx = (idx + 1) % pool.length;
-            lotteryDisplayNames.value = [pool[idx]];
-        }
-    }, 80);
-
-    setTimeout(() => {
-        try {
-            clearInterval(lotteryInterval);
-            
-            const fixed = [...fixedParticipants.value];
-            // Filter fixed list to ensure they actually exist in the pool
-            const validFixed = fixed.filter(n => pool.includes(n));
-            const remaining = pool.filter(n => !validFixed.includes(n));
-            const shuffledRemaining = [...remaining].sort(() => Math.random() - 0.5);
-            
-            const fullList = [...validFixed, ...shuffledRemaining];
-            
-            // Ensure results has at least something if fullList is not empty
-            const finalCount = Math.max(1, Math.min(drawCount.value || fullList.length, fullList.length));
-            results.value = fullList.slice(0, finalCount);
-            
-            if (results.value.length === 0 && fullList.length > 0) {
-                results.value = [fullList[0]];
-            }
-            
-            hasResult.value = true;
-            currentStep.value = 3;
-        } catch (err) {
-            console.error("Draw Error:", err);
-            // Fallback to avoid blank screen
-            results.value = pool.slice(0, 1);
-            currentStep.value = 3;
-        } finally {
-            isDrawing.value = false;
-        }
-    }, DRAW_DURATION); 
-};
-
-const copyResults = () => {
-    const text = results.value.map((n, i) => `${i + 1}. ${n}`).join('\n');
-    navigator.clipboard.writeText(text).then(() => alert('已複製抽籤結果！'));
-};
-
-const saveResults = async () => {
-    if (!props.folderId) return;
-    try {
-        const title = `${lotteryMode.value ? '回合抽籤' : '直接排列'} - ${new Date().toLocaleString()}`;
-        const content = results.value.map((n, i) => `${i + 1}. ${n}`).join('\n');
-        
-        await axios.post(`/other-folders/${props.folderId}/records`, {
-            title: title,
-            content: content,
-            record_date: new Date().toISOString().split('T')[0],
-            extra_data: {
-                mode: lotteryMode.value ? 'round' : 'direct',
-                results: results.value,
-                participants: lotteryMode.value ? roundParticipants.value : selectedNames.value,
-                fixed: fixedParticipants.value
-            }
-        });
-        
-        alert('存檔已儲存至「抽籤紀錄」！');
-        emit('saved');
-    } catch (e) {
-        console.error(e);
-        alert('儲存失敗，請稍後再試');
-    }
-};
-
-const getStep2RoundStyle = (name) => {
-    const t = name.trim();
-    const isRound = isRoundParticipant(t);
-    const isFixedStep1 = fixedParticipants.value.includes(t);
-    
-    if (isRound) {
-        return {
-            backgroundColor: '#10b981', // Emerald for active round participation
-            color: '#ffffff !important',
-            borderColor: isFixedStep1 ? '#fbbf24' : '#059669', // Gold border if fixed in step 1
-            borderWidth: isFixedStep1 ? '3px' : '2px',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-        };
-    } else {
-        return {
-            backgroundColor: isFixedStep1 ? '#8b5cf6' : '#ffffff', // Purple if fixed, White if not
-            color: isFixedStep1 ? '#ffffff !important' : '#000000 !important',
-            borderColor: isFixedStep1 ? '#fbbf24' : '#e2e8f0',
-            borderWidth: isFixedStep1 ? '3px' : '1px',
-        };
-    }
-};
-
-const getStep2DirectStyle = (name) => {
-    const t = name.trim();
-    const isFixed = fixedParticipants.value.includes(t);
-    
-    if (isFixed) {
-        return {
-            backgroundColor: '#8b5cf6', // Vibrant Purple for FIXED
-            color: '#ffffff !important',
-            borderColor: '#fbbf24', // Gold Border
-            borderWidth: '3px',
-            boxShadow: '0 0 15px rgba(251, 191, 36, 0.4)',
-            zIndex: '5'
-        };
-    } else {
-        return {
-            backgroundColor: '#2563eb', // Blue for SELECTED (but not fixed)
-            color: '#ffffff !important',
-            borderColor: '#ffffff',
-            borderWidth: '2px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            zIndex: '4'
-        };
-    }
-};
-
-defineExpose({
-    resetAll,
-    selectAll,
-    invertSelection,
-    toggleSelectionFilter,
-    selectionFiltered
-});
-
 onMounted(loadUsers);
 </script>
 
 <style scoped>
 .no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
 .animate-slide-in { animation: slideIn 0.4s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 
-.dot-lg { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: bounce 0.5s infinite alternate; }
-.dot-lg:nth-child(2) { animation-delay: 0.15s; }
-.dot-lg:nth-child(3) { animation-delay: 0.3s; }
-@keyframes bounce { from { transform: translateY(0); opacity: 0.4; } to { transform: translateY(-8px); opacity: 1; } }
+/* ========== LOTTERY STICK ANIMATION ========== */
+.lottery-stick {
+    position: absolute;
+    bottom: 192px;
+    width: 24px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    transform-origin: bottom center;
+    animation: stickFly var(--dur, 1.4s) cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s) infinite;
+    animation-duration: inherit;
+    animation-delay: inherit;
+}
+@keyframes stickFly {
+    0%   { transform: translateY(64px) scale(0.6); opacity: 0; }
+    5%   { opacity: 1; transform: translateY(32px) scale(0.8); }
+    15%  { transform: translateY(-96px) scale(1.1); opacity: 1; }
+    60%  { transform: translateY(-60vh) translateX(var(--drift)) rotate(var(--rotate)) scale(1); opacity: 1; }
+    100% { transform: translateY(-90vh) translateX(var(--drift)) rotate(var(--rotate)) scale(0.9); opacity: 0; }
+}
+.stick-body {
+    width: 24px;
+    height: 110px;
+    border-radius: 12px 12px 4px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.stick-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: #1e1b4b;
+    letter-spacing: 2px;
+}
+.stick-tip {
+    width: 10px; height: 10px; border-radius: 50%; margin-top: -3px; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
 
-/* PEN HOLDER STYLES */
 .lottery-cup-container {
     position: relative;
     width: 100%;
@@ -1086,32 +604,16 @@ onMounted(loadUsers);
     to   { transform: rotate(6deg) translateX(6px); }
 }
 .cup-rim {
-    width: 160px;
-    height: 10px;
-    background: #92400e;
-    border-radius: 3px 3px 0 0;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-    border-bottom: 2px solid #78350f;
+    width: 160px; height: 10px; background: #92400e; border-radius: 3px 3px 0 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3); border-bottom: 2px solid #78350f;
 }
 .cup-sticks-wrapper {
-    position: absolute;
-    top: -96px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 128px;
-    height: 96px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 3px;
+    position: absolute; top: -96px; left: 50%; transform: translateX(-50%);
+    width: 128px; height: 96px; display: flex; align-items: flex-end; justify-content: center; gap: 3px;
 }
 .cup-stick {
-    width: 11px;
-    height: 112px;
-    border-radius: 3px 3px 1px 1px;
-    transform: rotate(var(--ctilt));
-    transform-origin: bottom center;
-    animation: cupStickJiggle 0.15s ease-in-out infinite alternate;
+    width: 11px; height: 112px; border-radius: 3px 3px 1px 1px; transform: rotate(var(--ctilt));
+    transform-origin: bottom center; animation: cupStickJiggle 0.15s ease-in-out infinite alternate;
     animation-delay: calc(var(--ci) * 15ms);
 }
 @keyframes cupStickJiggle {
@@ -1119,85 +621,24 @@ onMounted(loadUsers);
     to   { transform: rotate(calc(var(--ctilt) + 2deg)) translateY(-4px); }
 }
 .cup-body {
-    width: 160px;
-    height: 192px;
+    width: 160px; height: 192px; border-radius: 3px 3px 6px 6px;
     background: linear-gradient(90deg, #92400e 0%, #b45309 15%, #92400e 30%, #78350f 50%, #92400e 70%, #b45309 85%, #78350f 100%);
-    border-radius: 3px 3px 6px 6px;
     box-shadow: inset 3px 0 8px rgba(255,255,255,0.05), 0 10px 32px rgba(0,0,0,0.4);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
 }
 .cup-body::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+    content: ""; position: absolute; inset: 0;
     background-image: repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(0,0,0,0.15) 16px);
 }
 .cup-base {
-    width: 176px;
-    height: 10px;
-    background: #451a03;
-    border-radius: 2px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    position: relative;
-    z-index: 2;
+    width: 176px; height: 10px; background: #451a03; border-radius: 2px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3); position: relative; z-index: 2;
 }
 
-/* Flying stick */
-.lottery-stick {
-    position: absolute;
-    bottom: 192px;
-    width: 16px;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    transform-origin: bottom center;
-    animation: stickFly var(--dur, 1.4s) cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s) infinite;
-}
-@keyframes stickFly {
-    0%   { transform: translateY(64px) scale(0.6); opacity: 0; }
-    5%   { opacity: 1; transform: translateY(32px) scale(0.8); }
-    15%  { transform: translateY(-96px) scale(1.1); opacity: 1; }
-    60%  { transform: translateY(-60vh) translateX(var(--drift)) rotate(var(--rotate)) scale(1); opacity: 1; }
-    100% { transform: translateY(-90vh) translateX(var(--drift)) rotate(var(--rotate)) scale(0.9); opacity: 0; }
-}
-.stick-body {
-    width: 16px;
-    height: 96px;
-    border-radius: 8px 8px 3px 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    writing-mode: vertical-rl;
-    box-shadow: 0 3px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
-}
-.stick-name {
-    font-size: 11px;
-    font-weight: 900;
-    color: #1e1b4b;
-    letter-spacing: 1px;
-}
-.stick-tip {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-top: -3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-
-.flying-name-display {
-    margin-top: 24px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.flying-name-display { margin-top: 24px; height: 50px; display: flex; align-items: center; justify-content: center; }
 .flying-name-text {
-    font-size: 36px;
-    font-weight: 900;
-    color: #92400e;
-    letter-spacing: 6px;
-    animation: namePulse 0.1s ease-in-out;
+    font-size: 48px; font-weight: 900; color: #92400e; letter-spacing: 6px;
+    text-shadow: 0 4px 20px rgba(217,119,6,0.4); animation: namePulse 0.1s ease-in-out;
 }
 @keyframes namePulse { from { opacity: 0.2; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 </style>

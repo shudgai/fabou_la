@@ -39,7 +39,7 @@
                         <div class="flex items-center space-x-2">
                             <button @click.stop="triggerFileUpload" class="text-[15px] font-black text-white bg-indigo-600 px-4 py-2 rounded-xl shadow-sm border border-indigo-500 flex items-center space-x-1 active:scale-95 transition-all" style="color: white !important;">
                                 <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                <span>載入他檔</span>
+                                <span style="color: white !important;">載入他檔</span>
                             </button>
                         </div>
                     </div>

@@ -91,7 +91,7 @@ const form = ref({ id: null, name: '', dharma_name_ids: [] });
 
 const load = async () => {
     const [gres, dres] = await Promise.all([
-        axios.get('/groups'),
+        axios.get('/api/groups'),
         axios.get('/api/dharma-names-list')
     ]);
     items.value = gres.data;
@@ -108,7 +108,7 @@ const openEdit = async (item) => {
     editMode.value = true;
     loading.value = true;
     try {
-        const res = await axios.get(`/groups/${item.id}`);
+        const res = await axios.get(`/api/groups/${item.id}`);
         form.value = { 
             id: res.data.id, 
             name: res.data.name, 
@@ -124,9 +124,9 @@ const save = async () => {
     loading.value = true;
     try {
         if (editMode.value) {
-            await axios.patch(`/groups/${form.value.id}`, form.value);
+            await axios.patch(`/api/groups/${form.value.id}`, form.value);
         } else {
-            await axios.post('/groups', form.value);
+            await axios.post('/api/groups', form.value);
         }
         showModal.value = false;
         load();
@@ -139,7 +139,7 @@ const save = async () => {
 
 const confirmDelete = async (item) => {
     if (confirm(`確定要刪除群組「${item.name}」嗎？此群組的人員關聯將被移除。`)) {
-        await axios.delete(`/groups/${item.id}`);
+        await axios.delete(`/api/groups/${item.id}`);
         load();
     }
 };

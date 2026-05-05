@@ -174,7 +174,7 @@
                                 </template>
                             </div>
 
-                            <button @click="showFullTotal = false" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all mt-4">
+                            <button @click="showFullTotal = false" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all mt-4" style="color: white !important;">
                                 關閉視窗
                             </button>
                         </div>

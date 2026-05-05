@@ -78,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('other-teachings/reorder', [App\Http\Controllers\OtherTeachingController::class, 'reorder']);
     Route::resource('other-teachings', App\Http\Controllers\OtherTeachingController::class);
     Route::resource('other-folders', App\Http\Controllers\OtherFolderController::class);
-    Route::resource('groups', App\Http\Controllers\GroupController::class);
+
     Route::resource('users', App\Http\Controllers\UserController::class);
     Route::post('other-folders/{id}/records', [App\Http\Controllers\OtherFolderController::class, 'storeRecord']);
     Route::put('other-records/{id}', [App\Http\Controllers\OtherFolderController::class, 'updateRecord']);
