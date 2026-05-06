@@ -107,7 +107,9 @@
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6 -translate-y-[4px]">
                             <div class="font-black text-white leading-tight drop-shadow-sm text-center" style="color: white !important; font-weight: 900 !important; font-size: 40px !important;">重大皇恩<br>專區</div>
-
+                            <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
+                                <span class="text-white text-[20px] font-black tracking-tight">{{ totalCount }} 筆</span>
+                            </div>
                         </div>
                     </div>
                 </button>
@@ -123,7 +125,9 @@
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6 -translate-y-[4px]">
                             <div class="font-black text-white leading-tight drop-shadow-sm text-center" style="color: white !important; font-weight: 900 !important; font-size: 40px !important;">未求得<br>重大皇恩</div>
-
+                            <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
+                                <span class="text-white text-[20px] font-black tracking-tight">{{ unobtainedTotal }} 筆</span>
+                            </div>
                         </div>
                     </div>
                 </button>
@@ -152,7 +156,9 @@
                                  style="font-weight: 900 !important; font-size: 24px !important;">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>
-
+                            <div class="mt-1 px-3 py-0.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
+                                <span class="text-white text-[15px] font-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                            </div>
                         </div>
                     </div>
                 </button>

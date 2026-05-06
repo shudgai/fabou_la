@@ -107,6 +107,10 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
                                     style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
+                                <div class="mt-4 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2 animate-fade-in">
+                                    <span class="text-white/80 text-[13px] font-bold tracking-widest uppercase">總計</span>
+                                    <span class="text-white text-[18px] font-black tracking-tight">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -170,6 +174,12 @@
                                     <div class="flex flex-col">
                                         <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
                                     </div>
+                                </div>
+                                <div class="flex items-center space-x-2 z-10">
+                                    <div v-if="group.total_qty" class="px-2.5 py-0.5 bg-indigo-50 border border-indigo-100 rounded-lg shadow-sm">
+                                        <span class="text-indigo-600 text-[14px] font-black">{{ formatArmyTotal(group.total_qty) }}</span>
+                                    </div>
+                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
                             </div>
                         </template>
@@ -775,6 +785,7 @@ const loadData = async (page = 1) => {
                 last_page: res.data.last_page,
                 total: res.data.total
             };
+            armyCounts.value = res.data.armyCounts || {};
             items.value = [];
             if (dres) users.value = dres.data;
 

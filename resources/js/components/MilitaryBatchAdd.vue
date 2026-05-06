@@ -57,17 +57,34 @@
             <textarea 
                 v-model="batchText" 
                 :placeholder="placeholderText"
-                class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner"
+                class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner min-h-[500px]"
             ></textarea>
 
-            <!-- Preview Counter -->
-            <div v-if="parsedItems.length > 0" class="mt-4 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 shrink-0">
-                <p class="text-[13px] text-[#aeb4be] font-normal">預計匯入：{{ parsedItems.length }} 筆資料</p>
-                <div class="mt-2 flex flex-wrap gap-2 overflow-y-auto max-h-[100px]">
-                    <span v-for="(item, idx) in parsedItems.slice(0, 15)" :key="idx" class="text-[11px] bg-white px-2 py-0.5 rounded-full border border-indigo-100 text-slate-600">
-                        <template v-if="item.display_date">[{{ item.display_date.replace(/-/g, '/') }}] </template>{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }} ({{ item.quantity }})
-                    </span>
-                    <span v-if="parsedItems.length > 10" class="text-[11px] text-slate-400 self-center">...及其他 {{ parsedItems.length - 10 }} 筆</span>
+            <!-- Preview Section (Enhanced Table Style) -->
+            <div v-if="parsedItems.length > 0" class="mt-4 border border-indigo-100 rounded-[24px] overflow-hidden bg-white animate-fade-in shrink-0">
+                <div class="bg-indigo-50/50 px-4 py-3 border-b border-indigo-100 flex justify-between items-center">
+                    <div class="flex flex-col">
+                        <span class="text-[15px] font-black text-indigo-600">偵測到 {{ parsedItems.length }} 筆資料</span>
+                        <span class="text-[11px] text-indigo-400 font-bold">即將載錄至 {{ armyType }}</span>
+                    </div>
+                </div>
+                <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
+                    <table class="w-full text-[13px] text-left">
+                        <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tight border-b border-slate-100 z-10">
+                            <tr>
+                                <th class="p-3 font-black">日期</th>
+                                <th class="p-3 font-black">法號</th>
+                                <th class="p-3 font-black text-right">數量</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <tr v-for="(item, idx) in parsedItems" :key="idx" class="hover:bg-indigo-50/30 transition-colors">
+                                <td class="p-3 text-slate-500 font-bold whitespace-nowrap">{{ item.display_date ? item.display_date.replace(/-/g, '/') : '-' }}</td>
+                                <td class="p-3 text-slate-900 font-black truncate max-w-[120px]">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</td>
+                                <td class="p-3 text-indigo-600 font-black text-right">{{ item.quantity.toLocaleString() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -75,7 +92,7 @@
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
 
         <!-- Bottom Save Action Bar -->
-        <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] md:pb-4 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4">
+        <div class="px-4 pb-[72px] bg-white border-t border-slate-100 p-4 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4 shrink-0">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
                 class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"
@@ -152,10 +169,13 @@ const persistentToast = ref(null);
 
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {
-        return "黑曜軍 專屬格式範例：\n2026/05/05\n元續 10 (閻尊 5 閻闇 5)\n閻闇 20 (閻尊 10 閻闇 10)";
+        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10(閻尊5閻闇5)";
     }
     if (props.armyType === '耀紫軍') {
-        return "耀紫軍 專屬格式範例：\n2026/05/05\n元續 10 (龍勝 5 龍戰 5)\n龍戰 20 (龍勝 10 龍戰 10)";
+        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10(龍勝5龍戰5)";
+    }
+    if (props.armyType === '虎賁軍' || props.armyType === '虎甲軍') {
+        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10\n閻閽10";
     }
     return "請貼上文字或 Excel 複製之內容...";
 });

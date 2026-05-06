@@ -19,6 +19,7 @@ class Teaching extends Model
 
     protected $casts = [
         'items' => 'array',
+        'remarks' => 'array',
     ];
 
     public function master()

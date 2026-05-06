@@ -31,18 +31,24 @@
             <div class="flex flex-col space-y-2 pb-24">
                 <button v-for="item in filteredMenuItems" :key="item.id" 
                     @click="navigate(item.id)"
-                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[75px] shrink-0"
+                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[80px] shrink-0 overflow-hidden relative group"
                     style="padding: 0 20px;">
-                    <div class="flex items-center space-x-4">
                         <div class="flex flex-col items-start text-left">
-                            <span class="text-[24px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
-                            <span class="text-[15px] font-bold text-slate-400 mt-1">{{ counts[item.id] || 0 }} 筆</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
+                                <!-- Dynamic Count Badge -->
+                                <div v-if="counts[item.id] > 0" class="px-2 py-0.5 bg-slate-900/80 backdrop-blur-md rounded-lg border border-white/20 shadow-lg shrink-0">
+                                    <span class="text-[11px] font-black text-white tracking-tighter">{{ counts[item.id].toLocaleString() }}</span>
+                                </div>
+                            </div>
+                            <span class="text-[14px] font-bold text-slate-400 mt-1 uppercase tracking-wider">進入管理專區</span>
                         </div>
-                    </div>
                     <div class="flex items-center">
-                        <svg class="h-5 w-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <div class="w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center group-active:bg-indigo-100 transition-colors">
+                            <svg class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
                     </div>
                 </button>
             </div>

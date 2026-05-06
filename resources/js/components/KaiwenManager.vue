@@ -5,6 +5,14 @@
             :actions="addActions" 
             @close="showAddMenu = false"
         />
+
+        <KaiwenBatchAdd 
+            v-if="addMode === 'batch'"
+            :tab="currentTab"
+            :is-saving="isSaving"
+            @save="handleBatchSave"
+            @cancel="addMode = null"
+        />
         <!-- Header (Shared) -->
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
@@ -34,15 +42,21 @@
             <div v-if="!showSearch" class="absolute right-[10px] top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap flex items-center space-x-1 relative"
                     :style="{ fontSize: '16px !important', color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
-                    每週開文
+                    <span>每週開文</span>
+                    <div v-if="weeklyPosts.length > 0" class="px-1.5 py-0.5 bg-white/20 backdrop-blur-md rounded-md border border-white/10 ml-1">
+                        <span class="text-[10px] font-black text-white">{{ weeklyPosts.length }}</span>
+                    </div>
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap flex items-center space-x-1 relative"
                     :style="{ fontSize: '16px !important', color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
-                    自行開文
+                    <span>自行開文</span>
+                    <div v-if="selfPosts.length > 0" class="px-1.5 py-0.5 bg-white/20 backdrop-blur-md rounded-md border border-white/10 ml-1">
+                        <span class="text-[10px] font-black text-white">{{ selfPosts.length }}</span>
+                    </div>
                 </button>
             </div>
 
@@ -538,6 +552,7 @@ import { ref, onMounted, onUnmounted, watch, computed, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
+import KaiwenBatchAdd from './KaiwenBatchAdd.vue';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -600,15 +615,23 @@ const addActions = computed(() => {
             textColor: 'text-indigo-600',
             handler: () => { openAddMode('self'); isManualWeekly.value = false; }
         },
-        { 
-            label: '新增其他文章', 
-            description: '自由內容、直接貼上或輸入',
-            icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.625A2.25 2.25 0 013.375 18V4.625C3.375 4.004 3.879 3.5 4.5 3.5h9.75a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 01-.75-.75V3.5" />',
-            bgColor: 'bg-amber-100',
-            textColor: 'text-amber-600',
-            handler: () => { openAddMode('self'); isManualWeekly.value = true; }
-        }
-    ];
+            { 
+                label: '新增其他文章', 
+                description: '自由內容、直接貼上或輸入',
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.625A2.25 2.25 0 013.375 18V4.625C3.375 4.004 3.879 3.5 4.5 3.5h9.75a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 01-.75-.75V3.5" />',
+                bgColor: 'bg-amber-100',
+                textColor: 'text-amber-600',
+                handler: () => { openAddMode('self'); isManualWeekly.value = true; }
+            },
+            { 
+                label: '多筆匯入開文', 
+                description: '批量貼入多篇文章',
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />',
+                bgColor: 'bg-emerald-100',
+                textColor: 'text-emerald-600',
+                handler: () => { openAddMode('batch'); }
+            }
+        ];
 });
 
 const filteredWeeklyPosts = computed(() => {
@@ -1102,6 +1125,26 @@ const openPostMode = (post, type) => {
             }
             return fullLine;
         });
+    }
+};
+
+const handleBatchSave = async (posts) => {
+    isSaving.value = true;
+    try {
+        await axios.post('/kaiwen/batch', {
+            type: currentTab.value,
+            posts: posts
+        });
+        persistentToast.value = { msg: `✓ 成功匯入 ${posts.length} 筆`, type: 'success' };
+        setTimeout(() => { persistentToast.value = null; }, 2000);
+        addMode.value = null;
+        loadData();
+    } catch (e) {
+        console.error(e);
+        persistentToast.value = { msg: '匯入失敗', type: 'error' };
+        setTimeout(() => { persistentToast.value = null; }, 3000);
+    } finally {
+        isSaving.value = false;
     }
 };
 

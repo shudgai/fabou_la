@@ -89,7 +89,17 @@ class MilitaryRecordController extends Controller
             ->orderByRaw('know_date IS NULL ASC, know_date DESC')
             ->paginate($request->input('per_page', 20));
 
-        return response()->json($dates);
+        // Get per-army quantity sums for the root view
+        $armyCounts = MilitaryRecord::where('user_id', $user->id)
+            ->selectRaw('army_type, SUM(quantity) as total_qty')
+            ->groupBy('army_type')
+            ->get()
+            ->pluck('total_qty', 'army_type');
+
+        $result = $dates->toArray();
+        $result['armyCounts'] = $armyCounts;
+
+        return response()->json($result);
     }
 
     public function store(Request $request)

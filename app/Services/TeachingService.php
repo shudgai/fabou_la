@@ -20,7 +20,7 @@ class TeachingService
 
         if ($search) {
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
+                $q->where('content', 'like', "%{$search}%")
                   ->orWhere('remarks', 'like', "%{$search}%")
                   ->orWhere('target_remarks', 'like', "%{$search}%")
                   ->orWhereHas('dharmaNames', function($sq) use ($search) {
@@ -75,7 +75,6 @@ class TeachingService
     public function create(array $data): Teaching
     {
         $user = auth()->user();
-        $cleanName = trim($data['name'] ?? '');
         $data = $this->resolveRelations($data);
         
         $nameAliasMap = [
@@ -84,20 +83,9 @@ class TeachingService
             '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
         ];
 
-        // 1. Global Unique Name Merging
-        $teaching = Teaching::where('user_id', $user->id)
-            ->where('name', $cleanName)
-            ->first();
-
-        if (!$teaching) {
-            $data['user_id'] = $user->id;
-            $teaching = Teaching::create($data);
-        } else {
-            $teaching->update(array_filter([
-                'remarks' => $data['remarks'] ?? null,
-                'target_remarks' => $data['target_remarks'] ?? null,
-            ]));
-        }
+        // Ensure user_id is set
+        $data['user_id'] = $user->id;
+        $teaching = Teaching::create($data);
 
         $dnIds = $data['dharma_name_ids'] ?? [];
         $targetRemarks = $data['target_remarks'] ?? '';

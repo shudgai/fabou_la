@@ -94,7 +94,9 @@
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 -translate-y-[4px]">
                                 <div class="font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important; font-size: 40px !important;">重大皇恩<br>登記簿</div>
-
+                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
+                                    <span class="text-red-700 text-[20px] font-black tracking-tight">{{ categoryCounts.major || 0 }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -125,7 +127,9 @@
                                      :style="{ color: folder.name === '閻王仙師' ? '#0f172a !important' : '#dc2626 !important' }">
                                      {{ folder.name }}
                                 </div>
-
+                                <div class="mt-1 px-3 py-0.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
+                                    <span :style="{ color: folder.name === '閻王仙師' ? '#0f172a !important' : '#dc2626 !important' }" class="text-[15px] font-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>

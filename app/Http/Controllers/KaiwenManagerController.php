@@ -135,4 +135,34 @@ class KaiwenManagerController extends Controller
         }
         return response()->json(['message' => 'Reordered']);
     }
+    public function batchStore(Request $request)
+    {
+        try {
+            $user_id = auth()->id();
+            $posts = $request->input('posts', []);
+            $type = $request->input('type'); // 'weekly' or 'self'
+            $results = [];
+
+            \DB::beginTransaction();
+            foreach ($posts as $postData) {
+                $postData['user_id'] = $user_id;
+                if ($type === 'weekly') {
+                    $results[] = WeeklyPost::create($postData);
+                } else {
+                    if (isset($postData['master_name']) && !empty($postData['master_name'])) {
+                        $master = \App\Models\Master::where('name', $postData['master_name'])->first();
+                        if ($master) $postData['master_id'] = $master->id;
+                    }
+                    $results[] = SelfPost::create($postData);
+                }
+            }
+            \DB::commit();
+
+            return response()->json($results, 201);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            Log::error('Batch Store Kaiwen Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['PUT', 'PATCH'], 'kaiwen/self/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'updateSelf']);
     Route::delete('kaiwen/self/{id}', [App\Http\Controllers\KaiwenManagerController::class, 'destroySelf']);
     Route::post('kaiwen/self/reorder', [App\Http\Controllers\KaiwenManagerController::class, 'reorderSelf']);
+    Route::post('kaiwen/batch', [App\Http\Controllers\KaiwenManagerController::class, 'batchStore']);
     Route::post('treasures/batch', [App\Http\Controllers\TreasureController::class, 'batchStore']);
     Route::resource('treasures', App\Http\Controllers\TreasureController::class);
     Route::post('teachings/reorder', [App\Http\Controllers\TeachingController::class, 'reorder']);

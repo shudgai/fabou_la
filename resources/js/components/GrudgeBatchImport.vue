@@ -49,7 +49,7 @@
                             rows="15"
                             @click.stop
                             class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[500px] leading-relaxed pr-12"
-                            placeholder="多筆新增輸入方法(可多項)：&#10;法號總數(龍勝數量龍戰數量)&#10;例如：&#10;元續10(龍勝5龍戰5)"
+                            placeholder="多筆新增輸入方法(可多項)：&#10;日期&#10;法號總數(龍勝數量龍戰數量)&#10;例如：&#10;元續10(龍勝5龍戰5)"
                         ></textarea>
                         <!-- Floating Clear Cross Button -->
                         <button v-if="batchText" @click="batchText = ''" 

@@ -109,7 +109,7 @@
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
                     <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">
-                        每日開示載錄
+                        {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
                     <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
                             :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
@@ -137,7 +137,9 @@
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
-
+                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
+                                    <span class="text-white text-[20px] font-black tracking-tight">{{ folderCounts.daily || 0 }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -156,7 +158,9 @@
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
-
+                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
+                                    <span class="text-white text-[20px] font-black tracking-tight">{{ mastersTotalCount }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -190,7 +194,9 @@
                                      style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-
+                                <div class="mt-1 px-3 py-0.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
+                                    <span class="text-white text-[15px] font-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                </div>
                             </div>
                         </div>
                     </button>
@@ -345,11 +351,11 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
                                     <div class="flex space-x-2">
-                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[10px] rounded-xl text-[12px] font-black cursor-pointer active:scale-95 transition-all">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[10px] rounded-xl text-[14px] font-black cursor-pointer active:scale-95 transition-all" style="font-size: 14px !important;">
                                             匯入檔案
                                             <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
                                         </label>
-                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-xl text-[12px] font-black active:scale-95 transition-all">
+                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-xl text-[14px] font-black active:scale-95 transition-all" style="font-size: 14px !important; color: white !important;">
                                             智慧解析
                                         </button>
                                     </div>
@@ -526,7 +532,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[16vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[37px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-indigo-600 text-white rounded-2xl py-[12px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
@@ -1243,7 +1249,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[16vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                            <div class="fixed bottom-[37px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
                                 <div class="grid grid-cols-2 gap-4">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] py-[14px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>
@@ -1832,7 +1838,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[7vh] left-0 right-0 md:fixed md:bottom-[72px] md:left-0 md:right-0 px-6 py-3 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
+                    <div class="fixed bottom-[37px] left-0 right-0 md:fixed md:bottom-[37px] md:left-0 md:right-0 px-6 py-3 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
                         <button @click="saveConfirmModal.show = false" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
@@ -3012,6 +3018,11 @@ const folders_list = [
     { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
     { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇仙師每日開示' }
 ];
+const mastersTotalCount = computed(() => {
+    return Object.entries(folderCounts.value)
+        .filter(([key]) => key !== 'daily' && key !== '0')
+        .reduce((acc, [_, val]) => acc + Number(val), 0);
+});
 
 const filteredFolders = computed(() => {
     return folders_list.filter(f => {
@@ -3850,7 +3861,7 @@ const markings = ref({});
 
 const getRecipientName = (item) => {
     const listInfo = getFullRecipientList(item);
-    const pastedName = item.dharmaSearchQuery || item.target_remarks;
+    const pastedName = (item.dharmaSearchQuery || item.target_remarks || '').trim();
     
     if (!listInfo) return (pastedName || '全體成員');
     
@@ -3858,12 +3869,14 @@ const getRecipientName = (item) => {
     
     // Logic to prevent redundant parentheses (e.g., 鳳媓 (鳳媓))
     let remarks = '';
-    const hasRemarks = item.target_remarks && item.target_remarks.trim() !== '';
+    const rawRemarks = (item.target_remarks || '').trim();
+    const hasRemarks = rawRemarks !== '';
     if (hasRemarks) {
-        const isRedundant = (listInfo.groupName === item.target_remarks) || 
-                          (listInfo.names.length === 1 && listInfo.names[0] === item.target_remarks);
+        const isRedundant = (listInfo.groupName?.trim() === rawRemarks) || 
+                          (listInfo.names.length === 1 && listInfo.names[0]?.trim() === rawRemarks) ||
+                          (listInfo.names.length > 0 && listInfo.names.join(', ').trim() === rawRemarks);
         if (!isRedundant) {
-            remarks = ` (${item.target_remarks})`;
+            remarks = ` (${rawRemarks})`;
         }
     }
     
@@ -3882,6 +3895,12 @@ const getFullRecipientList = (item) => {
         resolvedNames = pendingIds.map(id => dharmaNames.value.find(dn => dn.id === id)?.name).filter(n => n);
     }
     
+    // If still empty, use target_remarks or dharmaSearchQuery to allow "View Details" button for custom recipients
+    if (resolvedNames.length === 0 && (item.target_remarks || item.dharmaSearchQuery)) {
+        const fallback = (item.dharmaSearchQuery || item.target_remarks || '').trim();
+        if (fallback) resolvedNames = [fallback];
+    }
+
     if (resolvedNames.length === 0) return null;
 
     // Group detection logic with robust ID normalization

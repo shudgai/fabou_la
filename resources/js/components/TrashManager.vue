@@ -3,7 +3,12 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-8 pt-6 px-4 shrink-0">
             <div>
-                <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 28px !important;">回收站專區</h1>
+                <div class="flex items-center space-x-2">
+                    <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 28px !important;">回收站專區</h1>
+                    <div v-if="items.length > 0" class="px-2 py-0.5 bg-slate-900 text-white rounded-lg text-[14px] font-black animate-fade-in shadow-sm">
+                        {{ items.length }}
+                    </div>
+                </div>
                 <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Recycle Bin</p>
             </div>
             <div class="flex items-center space-x-3">

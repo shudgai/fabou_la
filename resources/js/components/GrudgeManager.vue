@@ -87,6 +87,12 @@
                         <div class="flex items-center">
                             <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
                         </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="px-3 py-0.5 bg-slate-50 border border-slate-100 rounded-full">
+                                <span class="text-slate-400 text-[14px] font-black">{{ formatArmyTotal(group.total_qty) }}</span>
+                            </div>
+                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </div>
                     </div>
                 </template>
 
