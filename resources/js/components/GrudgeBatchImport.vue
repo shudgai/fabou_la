@@ -48,8 +48,8 @@
                             v-model="batchText" 
                             rows="15"
                             @click.stop
-                            class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[450px] leading-relaxed pr-12"
-                            placeholder="在此貼上法號資料清單..."
+                            class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[500px] leading-relaxed pr-12"
+                            placeholder="多筆新增輸入方法(可多項)：&#10;法號總數(龍勝數量龍戰數量)&#10;例如：&#10;元續10(龍勝5龍戰5)"
                         ></textarea>
                         <!-- Floating Clear Cross Button -->
                         <button v-if="batchText" @click="batchText = ''" 
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="px-4 pb-[8.5vh] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4">
+            <div class="px-4 pb-[72px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4 shrink-0">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
@@ -316,9 +316,36 @@ const handleBatchSave = async () => {
         const qtyMatch = cleanLine.match(/(\d+)\s*位/);
         const qty = qtyMatch ? parseInt(qtyMatch[1]) : (cleanLine.match(/(\d+)/) ? parseInt(cleanLine.match(/(\d+)/)[1]) : 1);
 
-        // Determine Processed status (Always '已處理' unless '未處理' is specified)
+        // Determine Processed status
         const isProcessed = !resultsPart.includes('未處理') && !resultsPart.includes('尚未處理');
-        const dest = isProcessed ? '已處理' : '未處理';
+        
+        // --- Detect Army and Breakdown ---
+        let dest = isProcessed ? '已處理' : '未處理';
+        let breakdown = { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
+        
+        if (normLine.includes('龍勝') || normLine.includes('龍戰')) {
+            dest = '耀紫軍';
+        } else if (normLine.includes('閻尊') || normLine.includes('閻闇')) {
+            dest = '黑曜軍';
+        } else if (resultsPart) {
+            // Check if resultsPart explicitly says another destination
+            const knownDests = ['耀紫軍', '虎賁軍', '虎甲軍', '黑曜軍', '九天'];
+            const foundDest = knownDests.find(d => resultsPart.includes(d));
+            if (foundDest) dest = foundDest;
+        }
+
+        // Parse sub-quantities if army detected
+        if (dest === '耀紫軍') {
+            const lsMatch = normLine.match(/龍勝\s*(\d+)/);
+            if (lsMatch) breakdown.long_sheng = parseInt(lsMatch[1]);
+            const lzMatch = normLine.match(/龍戰\s*(\d+)/);
+            if (lzMatch) breakdown.long_zhan = parseInt(lzMatch[1]);
+        } else if (dest === '黑曜軍') {
+            const yzMatch = normLine.match(/閻尊\s*(\d+)/);
+            if (yzMatch) breakdown.yan_zun = parseInt(yzMatch[1]);
+            const yaMatch = normLine.match(/閻闇\s*(\d+)/);
+            if (yaMatch) breakdown.yan_an = parseInt(yaMatch[1]);
+        }
 
         // Extract remarks: Content inside parentheses ( )
         // 注意：若 rMatch 已從括號擷取了關係詞 (uRemarks)，就不再重複存入 remarks_text
@@ -340,11 +367,11 @@ const handleBatchSave = async () => {
             user_name: finalName,
             user_remarks: uRemarks,
             know_date: finalDate,
-            process_date: isProcessed ? finalDate : null,
+            process_date: (isProcessed || dest !== '未處理') ? finalDate : null,
             destination: dest,
             quantity: qty,
-            remarks: { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 },
-            status: isProcessed ? '已處理' : '待處理',
+            remarks: breakdown,
+            status: (isProcessed || dest !== '未處理') ? '已處理' : '待處理',
             remarks_text: finalRemarksText
         });
     });

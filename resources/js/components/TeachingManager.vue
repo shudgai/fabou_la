@@ -1478,7 +1478,7 @@
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
                                         <div class="mr-3 shrink-0 flex items-center justify-center">
-                                            <div v-if="!reorderMode" class="w-8 h-8 bg-white border border-indigo-600 rounded-xl flex items-center justify-center text-[15px] font-black text-indigo-600 shadow-sm">
+                                            <div v-if="!reorderMode" class="w-8 h-8 flex items-center justify-center text-[17px] font-black text-indigo-600">
                                                 {{ String(index + 1).padStart(2, '0') }}
                                             </div>
                                             <input v-else 

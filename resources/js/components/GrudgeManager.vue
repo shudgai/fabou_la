@@ -735,7 +735,7 @@ onMounted(() => {
 
 /* Large: Label 15, Body 19 */
 :deep(body.font-large) .grudge-label, :deep(body.font-large) .grudge-date-value { font-size: 15px !important; }
-:deep(body.font-large) .grudge-value, :deep(body.font-large) .grudge-value-name { font-size: 19px !important; }
+:deep(body.font-large) .grudge-value, :deep(body.font-large) .grudge-value-name { font-size: 21px !important; }
 
 .animate-slide-up { animation: slideUp 0.15s ease-out; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

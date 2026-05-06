@@ -978,7 +978,7 @@ onMounted(loadData);
 :deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
 
 :deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value { font-size: 15px !important; }
-:deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 19px !important; }
+:deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
 
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }

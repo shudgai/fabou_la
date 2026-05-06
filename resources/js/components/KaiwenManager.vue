@@ -31,16 +31,16 @@
             </div>
             
             <!-- Tab Switcher -->
-            <div v-if="!showSearch" class="absolute right-0 top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
+            <div v-if="!showSearch" class="absolute right-[10px] top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
                     :style="{ fontSize: '16px !important', color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
                     每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-4 py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
+                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap"
                     :style="{ fontSize: '16px !important', color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
                     自行開文
                 </button>
@@ -138,7 +138,7 @@
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
-                                <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest block mb-2">抬頭</span>
+                                <span class="text-[14px] font-black uppercase tracking-widest block mb-2" style="color: black !important;">抬頭</span>
                                 <h3 class="text-[18px] font-normal text-slate-900 tracking-[0.2em] leading-[1.6]">
                                     {{ post.title || '無抬頭' }}
                                 </h3>
@@ -146,7 +146,7 @@
 
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3">
-                                    <span class="app-title block uppercase tracking-widest">開文內容</span>
+                                    <span class="app-title block uppercase tracking-widest font-black" style="color: black !important; font-weight: 900 !important; font-family: 'Noto Sans TC', sans-serif !important;">開文內容</span>
                                     <div class="relative">
                                         <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1">
                                             <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -260,7 +260,7 @@
                             
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3">
-                                    <span class="app-title block uppercase tracking-widest">開文內容</span>
+                                    <span class="app-title block uppercase tracking-widest font-black" style="color: black !important; font-weight: 900 !important; font-family: 'Noto Sans TC', sans-serif !important;">開文內容</span>
                                     <div class="relative">
                                         <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1">
                                             <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -351,12 +351,12 @@
                         </div>
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
-                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', lineHeight: '1.4', fontSize: activeFontSizePx }"></textarea>
+                            <label class="ml-1 font-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: black !important;">抬頭</label>
+                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', lineHeight: '1.4', fontSize: activeFontSizePx }"></textarea>
                         </div>
                         <div v-else-if="addMode === 'weekly_manual'" class="space-y-1">
-                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }">
+                             <label class="ml-1 font-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: black !important;">抬頭</label>
+                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', fontSize: activeFontSizePx }">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
@@ -368,7 +368,7 @@
                         </div>
 
                         <div class="space-y-1">
-                            <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
+                            <label class="ml-1 font-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: black !important;">開文內容</label>
                             <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5">
                                 <div v-for="(char, i) in titleChars" :key="i" class="flex items-center space-x-1.5">
                                     <!-- Acrostic char box (1st cell) -->
@@ -386,12 +386,12 @@
                                         @input="onWeeklyCellInput($event, i, j-1)"
                                         @compositionend="onWeeklyCellCompositionEnd($event, i, j-1)"
                                         class="w-[42px] h-[42px] shrink-0 text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors"
-                                        :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx, minWidth: '0' }"
+                                        :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', fontSize: activeFontSizePx, minWidth: '0' }"
                                     >
                                 </div>
                             </div>
                             <div v-else>
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4]" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }"></textarea>
+                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4]" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', fontSize: activeFontSizePx }"></textarea>
                             </div>
                         </div>
                     </div>
@@ -545,6 +545,10 @@ const getTodayStr = () => {
 };
 
 const emit = defineEmits(['goHome']);
+const props = defineProps({
+    user: Object,
+    isDesktop: Boolean
+});
 
 const resetToRoot = () => {
     addMode.value = null;
@@ -634,6 +638,25 @@ const activeDate = ref(null);
 const isSaving = ref(false);
 const viewerImage = ref(null);
 const activeStatusDropdownId = ref(null);
+
+watch(() => form.value.original_content, (newVal) => {
+    if (addMode.value === 'weekly' && isManualWeekly.value && newVal) {
+        // Extract first character of each line
+        const lines = newVal.split('\n').filter(l => l.trim().length > 0);
+        let extractedTitle = lines.map(l => l.trim()[0]).join('');
+        
+        // Take only up to 14 characters
+        if (extractedTitle.length > 14) extractedTitle = extractedTitle.substring(0, 14);
+        
+        // Format title with newline every 7 chars
+        let formatted = '';
+        for (let i = 0; i < extractedTitle.length; i++) {
+            formatted += extractedTitle[i];
+            if (i === 6 && extractedTitle.length > 7) formatted += '\n';
+        }
+        form.value.title = formatted;
+    }
+});
 
 const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
 
@@ -1041,6 +1064,13 @@ const downloadPost = (post) => {
 };
 
 const formatPostForFile = (post) => {
+    if (post.status === '合格') {
+        const dateParts = (post.date || '').split('-');
+        const m = parseInt(dateParts[1]) || '';
+        const d = parseInt(dateParts[2]) || '';
+        const userName = props.user?.dharma_name || props.user?.name || '';
+        return `${userName}${m}/${d}合格文\n${post.original_content}`;
+    }
     let res = `日期：${post.date}\n`;
     res += `\n開文內容：\n${post.original_content}\n`;
     if (post.modified_content && !post.modified_content.startsWith('data:image')) {

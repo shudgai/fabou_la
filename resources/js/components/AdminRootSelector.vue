@@ -12,7 +12,7 @@
                 <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
                 <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')"></other-teaching-manager>
                 <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
-                <kaiwen-manager v-if="currentView === 'kaiwen'" @go-home="handleNavigate('menu')"></kaiwen-manager>
+                <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')"></kaiwen-manager>
                 <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
             </div>
         </div>
@@ -44,22 +44,22 @@
                         :class="[
                             'flex items-center justify-between w-full transition-all duration-300 rounded-[24px] h-[75px] shrink-0 group',
                             currentView === item.id 
-                                ? 'bg-indigo-600 shadow-xl shadow-indigo-100' 
-                                : 'bg-white hover:shadow-md'
+                                ? 'bg-transparent' 
+                                : 'bg-white hover:bg-slate-50'
                         ]"
                         style="padding: 0 15px;">
                         <div class="flex flex-col items-start text-left">
                             <span :class="[
                                 'text-[21px] font-black tracking-tight leading-tight transition-colors',
-                                currentView === item.id ? 'text-white' : 'text-slate-800'
+                                currentView === item.id ? 'text-blue-600' : 'text-slate-800'
                             ]">{{ item.label }}</span>
                             <span :class="[
                                 'text-[15px] font-bold mt-1 transition-colors',
-                                currentView === item.id ? 'text-indigo-200' : 'text-slate-400'
+                                currentView === item.id ? 'text-blue-400' : 'text-slate-400'
                             ]">{{ counts[item.id] || 0 }} 筆</span>
                         </div>
                         <div class="flex items-center">
-                            <svg :class="['h-6 w-6 transition-all', currentView === item.id ? 'text-white translate-x-1' : 'text-slate-200 group-hover:text-indigo-300 group-hover:translate-x-1']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg :class="['h-6 w-6 transition-all', currentView === item.id ? 'text-blue-600 translate-x-1' : 'text-slate-200 group-hover:text-indigo-300 group-hover:translate-x-1']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                             </svg>
                         </div>
@@ -76,7 +76,7 @@
                 <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></military-manager>
                 <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-teaching-manager>
                 <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-manager>
-                <kaiwen-manager v-if="currentView === 'kaiwen'" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
+                <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
                 <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></trash-manager>
 
                 <!-- Welcome State (If somehow menu on desktop with no default) -->
@@ -255,3 +255,23 @@ onMounted(async () => {
     window.addEventListener('hashchange', syncHash);
 });
 </script>
+
+<style>
+/* -------------------------------------------------------------------------- */
+/* 全域大字體系統 (Global Large Font System) - 全部專區套用 21px */
+/* -------------------------------------------------------------------------- */
+body.font-large :where(.app-body, .app-title, p, td, span:not(.date-text):not(.shield-text), div:not(.date-text):not(.shield-text), h3, label, [class*="text-\["]:not(.text-\[30px\]):not(.text-\[28px\]):not(.text-\[40px\])) {
+    font-size: 21px !important;
+}
+
+body.font-large input,
+body.font-large textarea,
+body.font-large select {
+    font-size: 21px !important;
+}
+
+/* 讓原本極小的標籤（如 13px-15px）在大字體模式下也有感提升 */
+body.font-large :where(.text-[13px], .text-[14px], .text-[15px]) {
+    font-size: 16px !important;
+}
+</style>
