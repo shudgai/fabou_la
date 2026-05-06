@@ -34,11 +34,9 @@
                     class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[75px] shrink-0"
                     style="padding: 0 20px;">
                     <div class="flex items-center space-x-4">
-                        <div class="flex flex-col items-start">
+                        <div class="flex flex-col items-start text-left">
                             <span class="text-[24px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
-                            <span v-if="counts[item.id] !== undefined" class="text-[16px] text-slate-400 font-bold tracking-tight mt-0.5">
-                                {{ counts[item.id] }} 筆記錄
-                            </span>
+                            <span class="text-[15px] font-bold text-slate-400 mt-1">{{ counts[item.id] || 0 }} 筆</span>
                         </div>
                     </div>
                     <div class="flex items-center">

@@ -83,13 +83,13 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center justify-center mt-[25px] max-w-7xl mx-auto">
+                <div class="px-6 pb-24 grid grid-cols-1 gap-y-12 items-center justify-center mt-[25px] max-w-4xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
                         
                         <!-- Unified Shield Badge (Matches Mobile Style) -->
-                        <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
+                        <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px] -translate-y-[60px]">
                             <!-- MOBILE VERSION SVG -->
                             <svg class="block md:hidden w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 

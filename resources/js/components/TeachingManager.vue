@@ -122,7 +122,7 @@
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
-                    <div class="px-[10px] pb-24 flex flex-col items-center -space-y-6 mt-6 max-w-lg mx-auto">
+                    <div class="px-[10px] pb-24 flex flex-col items-center max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"

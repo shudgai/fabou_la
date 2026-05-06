@@ -40,11 +40,16 @@
                 </div>
             </div>
             <div class="flex-1 hidden md:block"></div>
-            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto md:hidden pr-2" style="padding-top: 15px;">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
+            <div v-if="currentFolder" class="flex flex-col items-end space-y-0.5 ml-auto md:hidden pr-2" style="padding-top: 10px;">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-white" title="回到清單">
+                <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
+                        class="px-2 py-0.5 text-[16px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                        :style="{ fontSize: '16px !important', color: reorderMode ? '#059669 !important' : '#64748b !important' }">
+                    {{ reorderMode ? '確認排序' : '修改排序' }}
+                </button>
+                <button v-if="focusedId" @click="handleBack" class="mt-1 w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-white" title="回到清單">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -90,7 +95,7 @@
                 </div>
             </div>
             
-            <div class="flex-1 flex flex-col items-center justify-center -space-y-6 pb-20 w-full max-w-lg mx-auto">
+            <div class="flex-1 flex flex-col items-center justify-center pb-20 w-full max-w-lg mx-auto">
                 <!-- 第一個按鈕：父皇仙師重大皇恩 (進入仙師列表) -->
                 <button 
                     @click="currentCategory = 'masters'"
@@ -173,18 +178,11 @@
                     
                     <!-- Center: Pagination -->
                     <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
-                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !py-0 !px-0" />
                     </div>
 
-                    <!-- Right: Reorder Button -->
-                    <div class="flex items-center justify-end shrink-0 w-[110px]">
-                        <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                :class="reorderMode ? 'bg-emerald-600 text-white border-0 shadow-lg' : 'bg-slate-50 text-slate-500 border-0'"
-                                class="px-2 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
-                                :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                            {{ reorderMode ? '確認排序' : '修改排序' }}
-                        </button>
-                    </div>
+                    <!-- Right: Spacer to maintain balance -->
+                    <div class="flex items-center justify-end shrink-0 w-[80px]"></div>
                 </div>
             </div>
             

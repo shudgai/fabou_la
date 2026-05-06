@@ -100,14 +100,14 @@
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
-                                <span class="text-[15px] tracking-tighter mb-0.5" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
+                                <span class="text-[15px] tracking-tighter mb-0.5 date-text" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #1e293b !important;">{{ (post.title || '').replace(/\s+/g, '').substring(0, 7) }}</span>
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ (post.title || '').replace(/\s+/g, '').substring(7, 14) }}</span>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
                                 <span v-if="post.status === '合格'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg">合格</span>
                                 <span v-else-if="post.status === '不合格'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-lg">不合格</span>
-                                <span v-else class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg">待定</span>
+                                <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                                 <template v-if="!expandedIds[post.id]">
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
                                 <span class="text-[14px] font-bold text-slate-300 uppercase tracking-widest block mb-2">抬頭</span>
@@ -205,7 +205,7 @@
             </div>
 
             <!-- Self Post View -->
-            <div v-if="currentTab === 'self'" class="space-y-3 max-w-2xl mx-auto">
+            <div v-if="currentTab === 'self'" class="space-y-3 w-full">
                 <div 
                     v-for="post in selfPosts" 
                     :key="post.id"
@@ -220,14 +220,14 @@
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
-                                <span class="text-[15px] tracking-tighter mb-0.5" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
+                                <span class="text-[15px] tracking-tighter mb-0.5 date-text" style="color: #0d0d0d !important; font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">{{ post.date || '無日期' }}</span>
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #1e293b !important;">{{ getSelfMaster(post.original_content) }}</span>
                                 <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #475569 !important;">{{ getSelfPreview(post.original_content) }}</span>
                             </div>
                              <div class="flex items-center space-x-2 self-start">
                                 <span v-if="post.message_type === '玄訊'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg">玄訊</span>
                                 <span v-else-if="post.message_type === '非玄訊'" class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-lg">非玄訊</span>
-                                <span v-else class="text-[14px] font-black tracking-wider px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg">待定</span>
+                                <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
                                 
                                 <template v-if="!expandedIds[post.id]">
                                     <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1">
@@ -317,7 +317,7 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <div @click="activeDate = 'date'" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all mt-5 shadow-sm overflow-hidden">
-                                <span :class="form.date ? 'text-slate-900' : 'text-slate-400'" class="leading-tight" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">
+                                <span :class="form.date ? 'text-slate-900' : 'text-slate-400'" class="leading-tight date-text" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">
                                     {{ form.date || '選擇日期' }}
                                 </span>
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -337,9 +337,8 @@
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">審核狀態</label>
                             <div class="flex items-center space-x-2 h-[44px]">
                                 <button @click="form.status = null" 
-                                    :class="!form.status ? 'bg-slate-500 text-white' : 'bg-slate-50 text-slate-400'" 
-                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black"
-                                    :style="{ color: !form.status ? 'white !important' : '#94a3b8 !important' }">待定</button>
+                                    class="flex-1 h-full transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :style="{ color: !form.status ? '#64748b !important' : '#cbd5e1 !important' }">待定</button>
                                 <button @click="form.status = '合格'" 
                                     :class="form.status === '合格' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'" 
                                     class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black"
@@ -353,16 +352,16 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important; line-height: 1.4;"></textarea>
+                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', lineHeight: '1.4', fontSize: activeFontSizePx }"></textarea>
                         </div>
                         <div v-else-if="addMode === 'weekly_manual'" class="space-y-1">
                              <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }">
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
@@ -370,14 +369,29 @@
 
                         <div class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="bg-white rounded-xl overflow-hidden">
-                                <div v-for="(char, i) in titleChars" :key="i" class="flex items-center bg-white border-b border-slate-50 last:border-0 group">
-                                    <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important; font-size: 17px !important;">{{ char }}</div>
-                                    <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5">
+                                <div v-for="(char, i) in titleChars" :key="i" class="flex items-center space-x-1.5">
+                                    <!-- Acrostic char box (1st cell) -->
+                                    <div class="w-[42px] h-[42px] shrink-0 flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center" 
+                                         :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#dc2626', fontSize: activeFontSizePx }">
+                                        {{ char }}
+                                    </div>
+                                    <!-- 6 input boxes (2nd to 7th cells) -->
+                                    <input
+                                        v-for="j in 6" :key="j"
+                                        :id="`weekly-cell-${i}-${j-1}`"
+                                        type="text"
+                                        maxlength="1"
+                                        :value="(weeklyLines[i] || '')[j-1] || ''"
+                                        @input="onWeeklyCellInput($event, i, j-1)"
+                                        @compositionend="onWeeklyCellCompositionEnd($event, i, j-1)"
+                                        class="w-[42px] h-[42px] shrink-0 text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors"
+                                        :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx, minWidth: '0' }"
+                                    >
                                 </div>
                             </div>
                             <div v-else>
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4]" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;"></textarea>
+                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4]" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }"></textarea>
                             </div>
                         </div>
                     </div>
@@ -629,6 +643,13 @@ const fontSizeValue = computed(() => {
     return 1;
 });
 
+// Reactive px value for direct :style binding on inputs/divs
+const activeFontSizePx = computed(() => {
+    if (currentFontSize.value === 'font-small') return '16px';
+    if (currentFontSize.value === 'font-large') return '21px';
+    return '18px';
+});
+
 const handleFontSizeSlider = (e) => {
     const val = parseInt(e.target.value);
     const options = ['font-small', 'font-medium', 'font-large'];
@@ -707,6 +728,50 @@ const collapseAll = () => {
 
 // Weekly Acrostic Handling
 const weeklyLines = ref(Array(14).fill(''));
+
+// Helper: set one character cell in a weeklyLine
+const setWeeklyCell = (row, col, val) => {
+    const chars = (weeklyLines.value[row] || '').split('');
+    if (val) {
+        chars[col] = val[val.length - 1]; // keep last char if somehow multi
+    } else {
+        chars[col] = '';
+    }
+    // Trim trailing empty entries
+    weeklyLines.value[row] = chars.join('');
+};
+
+const focusNextWeeklyCell = (row, col) => {
+    let nextCol = col + 1;
+    let nextRow = row;
+    if (nextCol > 5) {
+        nextCol = 0;
+        nextRow++;
+    }
+    const nextInput = document.getElementById(`weekly-cell-${nextRow}-${nextCol}`);
+    if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+    }
+};
+
+const onWeeklyCellInput = (e, row, col) => {
+    const val = e.target.value;
+    setWeeklyCell(row, col, val);
+    
+    if (val && !e.isComposing) {
+        focusNextWeeklyCell(row, col);
+    }
+};
+
+const onWeeklyCellCompositionEnd = (e, row, col) => {
+    const val = e.target.value;
+    setWeeklyCell(row, col, val);
+    
+    if (val) {
+        focusNextWeeklyCell(row, col);
+    }
+};
 const titleChars = computed(() => {
     const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
     const chars = cleanTitle.split('');
@@ -937,6 +1002,10 @@ const handleTitlePaste = (e) => {
 
 onMounted(() => {
     loadData();
+    // Initialize font size from localStorage
+    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+    document.body.classList.add(currentFontSize.value);
+    
     window.addEventListener('paste', handleGlobalPaste);
     window.addEventListener('click', (e) => { 
         if (!e.target.closest('.relative')) {
@@ -1182,13 +1251,30 @@ const executeDelete = async () => {
 }
 
 /* Kaiwen Specific Font Size Overrides */
-:global(body.font-small) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+.date-text { font-size: 15px !important; }
+
+/* General elements */
+:global(body.font-small) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
     font-size: 16px !important;
 }
-:global(body.font-medium) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+:global(body.font-medium) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
     font-size: 18px !important;
 }
-:global(body.font-large) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+:global(body.font-large) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
+    font-size: 21px !important;
+}
+
+/* High-specificity rules for form controls (browser UA override) */
+:global(body.font-small) .kaiwen-module input,
+:global(body.font-small) .kaiwen-module textarea {
+    font-size: 16px !important;
+}
+:global(body.font-medium) .kaiwen-module input,
+:global(body.font-medium) .kaiwen-module textarea {
+    font-size: 18px !important;
+}
+:global(body.font-large) .kaiwen-module input,
+:global(body.font-large) .kaiwen-module textarea {
     font-size: 21px !important;
 }
 

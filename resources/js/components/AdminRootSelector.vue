@@ -42,23 +42,21 @@
                     <button v-for="item in filteredMenuItems" :key="item.id" 
                         @click="handleNavigate(item.id)"
                         :class="[
-                            'flex items-center justify-between w-full transition-all duration-300 rounded-[24px] h-[90px] shrink-0 group',
+                            'flex items-center justify-between w-full transition-all duration-300 rounded-[24px] h-[75px] shrink-0 group',
                             currentView === item.id 
                                 ? 'bg-indigo-600 shadow-xl shadow-indigo-100' 
                                 : 'bg-white hover:shadow-md'
                         ]"
-                        style="padding: 0 10px;">
+                        style="padding: 0 15px;">
                         <div class="flex flex-col items-start text-left">
                             <span :class="[
                                 'text-[21px] font-black tracking-tight leading-tight transition-colors',
                                 currentView === item.id ? 'text-white' : 'text-slate-800'
                             ]">{{ item.label }}</span>
                             <span :class="[
-                                'text-[14px] font-bold tracking-tight mt-1 transition-colors',
-                                currentView === item.id ? 'text-indigo-100' : 'text-slate-400'
-                            ]">
-                                {{ counts[item.id] !== undefined ? counts[item.id] : 0 }} 筆記錄
-                            </span>
+                                'text-[15px] font-bold mt-1 transition-colors',
+                                currentView === item.id ? 'text-indigo-200' : 'text-slate-400'
+                            ]">{{ counts[item.id] || 0 }} 筆</span>
                         </div>
                         <div class="flex items-center">
                             <svg :class="['h-6 w-6 transition-all', currentView === item.id ? 'text-white translate-x-1' : 'text-slate-200 group-hover:text-indigo-300 group-hover:translate-x-1']" fill="none" stroke="currentColor" viewBox="0 0 24 24">

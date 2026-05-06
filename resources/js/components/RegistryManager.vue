@@ -85,7 +85,7 @@
                 </div>
 
                 <!-- Root Categories -->
-                <div v-if="!currentCategory" class="flex flex-col items-center justify-center -space-y-6 pb-20 w-full max-w-lg mx-auto h-full">
+                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center justify-center pb-20 w-full max-w-lg mx-auto">
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
                         <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
