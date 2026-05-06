@@ -1,7 +1,7 @@
 <template>
     <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
         <!-- Header -->
-        <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full md:max-w-xl md:mx-auto" style="padding: 12px 12px; min-height: 52px;">
+        <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full" style="padding: 12px 12px; min-height: 52px;">
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
@@ -9,7 +9,7 @@
         </div>
 
         <!-- Document List -->
-        <div class="flex-1 overflow-y-auto pb-32 px-4 pt-4 space-y-3 custom-scrollbar w-full md:max-w-xl md:mx-auto">
+        <div class="flex-1 overflow-y-auto pb-32 px-4 pt-4 space-y-3 custom-scrollbar w-full">
             <!-- Navigation back when a record is focused -->
             <div v-if="expandedRecordId" @click="expandedRecordId = null" class="flex items-center text-indigo-600 font-black px-2 py-2 cursor-pointer active:scale-95 transition-all mb-1 animate-fade-in">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

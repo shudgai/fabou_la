@@ -89,8 +89,6 @@ class RegistryController extends Controller
 
             $registry = Registry::where('user_id', $user->id)
                 ->where('name', $cleanName)
-                ->where('master_id', $request->master_id)
-                ->where('category', $request->category)
                 ->first();
 
             if (!$registry) {
@@ -124,7 +122,20 @@ class RegistryController extends Controller
                     // 立刻將 remarks 正規化為純陣列
                     $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
 
-                    // 1. 法號翻譯規則
+                    // 1. 處理括號規則 (Parentheses Rule)
+                    if ($custom_name) {
+                        if (preg_match('/^(.*?)\((.*?)\)$/u', $custom_name, $m)) {
+                            if (trim($m[1])) {
+                                $custom_name = trim($m[1]);
+                                $extra = trim($m[2]);
+                                if (!in_array($extra, $remarks)) $remarks[] = $extra;
+                            } else {
+                                $custom_name = trim($m[2]);
+                            }
+                        }
+                    }
+
+                    // 2. 法號翻譯規則
                     if ($custom_name && isset($nameAliasMap[$custom_name])) {
                         $custom_name = $nameAliasMap[$custom_name];
                     }
@@ -298,8 +309,6 @@ class RegistryController extends Controller
                 $cleanName = trim($recordData['name']);
                 $registry  = Registry::where('user_id', $user->id)
                     ->where('name', $cleanName)
-                    ->where('master_id', $recordData['master_id'])
-                    ->where('category', $recordData['category'] ?? 'major')
                     ->first();
 
                 if (!$registry) {
@@ -325,7 +334,20 @@ class RegistryController extends Controller
                         // 立刻將 remarks 正規化為純陣列
                         $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
 
-                        // 1. 法號翻譯
+                        // 1. 處理括號規則 (Parentheses Rule)
+                        if ($custom_name) {
+                            if (preg_match('/^(.*?)\((.*?)\)$/u', $custom_name, $m)) {
+                                if (trim($m[1])) {
+                                    $custom_name = trim($m[1]);
+                                    $extra = trim($m[2]);
+                                    if (!in_array($extra, $remarks)) $remarks[] = $extra;
+                                } else {
+                                    $custom_name = trim($m[2]);
+                                }
+                            }
+                        }
+
+                        // 2. 法號翻譯
                         if ($custom_name && isset($nameAliasMap[$custom_name])) {
                             $custom_name = $nameAliasMap[$custom_name];
                         }

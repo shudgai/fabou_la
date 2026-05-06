@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row h-[100dvh] bg-slate-50 font-sans overflow-hidden">
+    <div class="flex flex-col md:flex-row h-[100dvh] bg-slate-100 md:bg-white font-sans overflow-hidden">
         <!-- Sidebar / Top Nav Container -->
         <div class="w-full md:w-64 bg-white border-r border-slate-100 flex-shrink-0 flex flex-col shadow-sm z-[50] h-auto md:h-full">
             <!-- Logo area -->
@@ -17,7 +17,7 @@
             </div>
 
             <!-- Menus -->
-            <div class="flex-1 flex md:flex-col items-center md:items-stretch overflow-x-auto md:overflow-y-auto no-scrollbar py-1 md:py-6 bg-white">
+            <div class="flex-1 flex md:flex-col items-center md:items-stretch overflow-x-auto md:overflow-y-auto no-scrollbar py-1 md:py-6 bg-slate-100 md:bg-white">
                 <!-- Notebook Section -->
                 <div v-if="notebookItems.length > 0" class="hidden md:block px-6 mb-2">
                     <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">筆記系統</span>
@@ -59,7 +59,7 @@
         </div>
 
         <!-- Main Content Area -->
-        <main :class="['flex-1 h-full bg-slate-50/30 custom-scrollbar relative', isNotebookView ? 'overflow-hidden' : 'overflow-y-auto']">
+        <main :class="['flex-1 h-full bg-slate-100 custom-scrollbar relative', isNotebookView ? 'overflow-hidden' : 'overflow-y-auto']">
             <div :class="[
                 'max-w-7xl mx-auto w-full pb-32',
                 isNotebookView ? 'p-0' : 'p-4 md:p-6 lg:p-8'
@@ -136,7 +136,7 @@ const forceResetGrace = () => {
 };
 
 const dashboardTitle = computed(() => {
-    return isNotebookView.value ? '皇恩筆記簿' : '系統管理';
+    return isNotebookView.value ? '皇恩筆記本' : '系統管理';
 });
 
 const user = ref(null);

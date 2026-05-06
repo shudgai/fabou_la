@@ -1,18 +1,29 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[100] flex flex-col bg-white animate-fade-in">
-        <!-- Header -->
-        <div class="h-[50px] border-b border-slate-100 flex items-center justify-between px-4 shrink-0 bg-white">
-            <button @click="$emit('cancel', false)" class="text-slate-500 text-[14px] font-normal">取消</button>
-            <h3 class="text-[19px] font-normal text-slate-800">多筆新增：{{ armyType }}</h3>
-            <div class="w-10"></div> <!-- Spacer to keep title centered -->
-        </div>
+    <div v-if="show" class="fixed inset-0 z-[2000] flex md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
+        <!-- Backdrop (Desktop Only) -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel', false)"></div>
+
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[25vh] md:pb-0">
+            <!-- Header (Matched to Single Add Form) -->
+            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
+                <div class="flex-1 flex flex-col justify-center min-w-0">
+                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區</div>
+                    <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
+                        {{ armyType }}-多筆新增
+                    </div>
+                </div>
+                <button @click="$emit('cancel', false)" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
 
         <!-- Options Container -->
         <div class="p-4 bg-slate-50/50 space-y-4 shrink-0">
             <!-- Date Picker, Excel Import & Save -->
             <div class="flex items-center space-x-2">
                 <!-- Date Box (Entirely Clickable) -->
-                <div class="flex-1 flex items-center bg-white p-3 rounded-2xl border border-slate-100 shadow-sm transition-all relative">
+                <div class="flex-1 flex items-center bg-white h-[52px] px-3 rounded-2xl border border-slate-100 shadow-sm transition-all relative">
                     <div @click="showDatePicker = true" class="flex-1 flex items-center cursor-pointer">
                         <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 mr-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -63,8 +74,8 @@
         <!-- MODALS -->
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
 
-        <!-- Bottom Save Action Bar (Integrated into Layout) -->
-        <div class="bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4 shrink-0">
+        <!-- Bottom Save Action Bar -->
+        <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 bg-white border-t border-slate-100 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] md:pb-4 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
                 class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"
@@ -73,6 +84,16 @@
                 <span class="text-[20px] tracking-widest" style="color: white !important;">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
             </button>
         </div>
+        
+        <mobile-navbar 
+            class="md:hidden"
+            :can-back="false"
+            @home="$emit('cancel', false)"
+            :show-action="false"
+            :can-search="false"
+            is-absolute
+        />
+
         <!-- Global Action Confirm / Toast (Critical for iOS) -->
         <div v-if="persistentToast" class="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
             <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
@@ -96,6 +117,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </template>

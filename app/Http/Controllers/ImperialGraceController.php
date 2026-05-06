@@ -78,52 +78,139 @@ class ImperialGraceController extends Controller
     public function storeRegistry(Request $request)
     {
         $user = auth()->user();
-        if (ImperialGrace::where('user_id', $user->id)->where('name', $request->name)->exists()) {
-            return response()->json(['error' => 'duplicate', 'message' => '此法寶名稱「' . $request->name . '」已存在於系統中。'], 422);
-        }
+        $nameAliasMap = [
+            '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
+            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
+            '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
+        ];
 
-        return DB::transaction(function () use ($request, $user) {
-            $grace = ImperialGrace::create([
-                'user_id' => $user->id,
-                'name' => $request->name,
-                'master_id' => $request->master_id,
-                'purpose' => $request->purpose,
-                'record_date' => $request->record_date,
-                'obtained_date' => $request->obtained_date,
-                'status' => $request->status ?? '未求得',
-                'is_multi' => $request->is_multi ?? false,
-                'remarks' => $request->remarks,
-            ]);
+        return DB::transaction(function () use ($request, $nameAliasMap, $user) {
+            $cleanName = trim($request->name);
+            $grace = ImperialGrace::where('user_id', $user->id)
+                ->where('name', $cleanName)
+                ->first();
+
+            if (!$grace) {
+                $grace = ImperialGrace::create([
+                    'user_id' => $user->id,
+                    'name' => $cleanName,
+                    'master_id' => $request->master_id,
+                    'purpose' => $request->purpose,
+                    'record_date' => $request->record_date,
+                    'obtained_date' => $request->obtained_date,
+                    'status' => $request->status ?? '未求得',
+                    'is_multi' => $request->is_multi ?? false,
+                    'remarks' => $request->remarks,
+                ]);
+            } else {
+                $grace->update(array_filter([
+                    'purpose' => $request->purpose,
+                    'remarks' => $request->remarks,
+                ]));
+            }
 
             if ($request->has('dharma_name_registries')) {
                 foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     $custom_name = $dn['custom_name'] ?? null;
+                    $obtained_date = $dn['obtained_date'] ?? null;
+                    $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
 
-                    if (empty($dharma_name_id) && !empty($custom_name)) {
-                        // Split name and relative if needed (e.g. "元續之母")
-                        if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
-                            $custom_name = trim($matches[1]);
-                            $rel = $this->normalizeRelationshipTerm($matches[2]);
-                            $dn['remarks'] = ($dn['remarks'] ?? '') . ($dn['remarks'] ? "\n" : "") . $rel;
+                    // 1. 處理括號規則 (Parentheses Rule)
+                    if ($custom_name) {
+                        if (preg_match('/^(.*?)\((.*?)\)$/u', $custom_name, $m)) {
+                            if (trim($m[1])) {
+                                $custom_name = trim($m[1]);
+                                $extra = trim($m[2]);
+                                if (!in_array($extra, $remarks)) $remarks[] = $extra;
+                            } else {
+                                $custom_name = trim($m[2]);
+                            }
+                        }
+                    }
+
+                    // 2. 法號翻譯規則
+                    if ($custom_name && isset($nameAliasMap[$custom_name])) {
+                        $custom_name = $nameAliasMap[$custom_name];
+                    }
+
+                    // 3. 親友關係轉備註規則
+                    if ($custom_name) {
+                        $relationshipMatch = null;
+                        if (preg_match('/^(.*?)([之的].+)$/u', $custom_name, $matches)) {
+                            $relationshipMatch = $matches;
+                        } else {
+                            $dnNames = DharmaName::pluck('name')->toArray();
+                            usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                            foreach ($dnNames as $dnName) {
+                                if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
+                                    $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
+                                    break;
+                                }
+                            }
                         }
 
-                        $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
+                        if ($relationshipMatch) {
+                            $custom_name = $relationshipMatch[1];
+                            $relRaw = trim($relationshipMatch[2] ?? '');
+                            $relTranslated = match(true) {
+                                $relRaw === '之父' || $relRaw === '父' => '父親',
+                                $relRaw === '之母' || $relRaw === '母' => '母親',
+                                $relRaw === '之嬤' || $relRaw === '嬤' => '奶奶',
+                                $relRaw === '之夫' || $relRaw === '夫' => '先生',
+                                default => preg_replace('/^[之的]/u', '', $relRaw),
+                            };
+                            $datePrefix = $obtained_date ? date('Y/m/d', strtotime($obtained_date)) : '';
+                            $nameOnly = trim($custom_name);
+                            $relEntry = $datePrefix ? "{$datePrefix}  {$nameOnly}{$relTranslated}" : "{$nameOnly}{$relTranslated}";
+                            if (!in_array($relEntry, $remarks)) {
+                                $remarks[] = $relEntry;
+                            }
+                            $obtained_date = null;
+                        }
+                    }
+
+                    if (empty($dharma_name_id) && !empty($custom_name)) {
+                        $matched = DharmaName::where('name', trim($custom_name))->first();
                         if ($matched) {
                             $dharma_name_id = $matched->id;
                             $custom_name = null;
                         }
                     }
 
-                    DharmaNameRegistry::create([
-                        'imperial_grace_id' => $grace->id,
-                        'dharma_name_id' => $dharma_name_id,
-                        'custom_name' => $custom_name,
-                        'obtained_date' => $dn['obtained_date'] ?? null,
-                        'status' => $dn['status'] ?? '已求得',
-                        'remarks' => $this->normalizeRemarks($dn['remarks'] ?? null),
-                        'related_personnel' => $dn['related_personnel'] ?? [],
-                    ]);
+                    // 4. 合併或建立人員紀錄
+                    $existingDnr = DharmaNameRegistry::where('imperial_grace_id', $grace->id)
+                        ->where(function ($q) use ($dharma_name_id, $custom_name) {
+                            if ($dharma_name_id) $q->where('dharma_name_id', $dharma_name_id);
+                            else $q->where('custom_name', $custom_name);
+                        })->first();
+
+                    if (!$existingDnr) {
+                        DharmaNameRegistry::create([
+                            'imperial_grace_id' => $grace->id,
+                            'dharma_name_id' => $dharma_name_id,
+                            'custom_name' => $custom_name,
+                            'obtained_date' => $obtained_date,
+                            'status' => $dn['status'] ?? '已求得',
+                            'remarks' => $remarks,
+                            'related_personnel' => $dn['related_personnel'] ?? [],
+                        ]);
+                    } else {
+                        $updates = [];
+                        if ($obtained_date) $updates['obtained_date'] = $obtained_date;
+                        if (!empty($remarks)) {
+                            $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
+                            $merged = false;
+                            foreach ($remarks as $r) {
+                                if ($r !== '' && !in_array($r, $existingRemarks)) {
+                                    $existingRemarks[] = $r;
+                                    $merged = true;
+                                }
+                            }
+                            if ($merged) $updates['remarks'] = array_values($existingRemarks);
+                        }
+                        if (!empty($updates)) $existingDnr->update($updates);
+                    }
                 }
             }
 
@@ -182,61 +269,144 @@ class ImperialGraceController extends Controller
     {
         $items = $request->input('items', []);
         $masterId = $request->input('master_id');
-        $userId = auth()->id();
-        $results = [];
+        $user = auth()->user();
+        $nameAliasMap = [
+            '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
+            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
+            '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
+        ];
 
-        return DB::transaction(function () use ($items, $masterId, $userId) {
+        return DB::transaction(function () use ($items, $masterId, $user, $nameAliasMap) {
             foreach ($items as $item) {
-                $name = $item['name'] ?? '';
-                if (!$name || ImperialGrace::where('user_id', $userId)->where('name', $name)->exists())
-                    continue;
+                $cleanName = trim($item['name'] ?? '');
+                if (!$cleanName) continue;
 
-                $grace = ImperialGrace::create([
-                    'user_id' => $userId,
-                    'master_id' => $item['master_id'] ?? $masterId,
-                    'name' => $name,
-                    'purpose' => $item['purpose'] ?? null,
-                    'record_date' => $item['record_date'] ?? null,
-                    'obtained_date' => $item['obtained_date'] ?? null,
-                    'status' => $item['status'] ?? '已登記',
-                    'is_multi' => $item['is_multi'] ?? false,
-                    'remarks' => $item['remarks'] ?? null,
-                ]);
+                $grace = ImperialGrace::where('user_id', $user->id)
+                    ->where('name', $cleanName)
+                    ->first();
+
+                if (!$grace) {
+                    $grace = ImperialGrace::create([
+                        'user_id' => $user->id,
+                        'master_id' => $item['master_id'] ?? $masterId,
+                        'name' => $cleanName,
+                        'purpose' => $item['purpose'] ?? null,
+                        'record_date' => $item['record_date'] ?? null,
+                        'obtained_date' => $item['obtained_date'] ?? null,
+                        'status' => $item['status'] ?? '已登記',
+                        'is_multi' => $item['is_multi'] ?? false,
+                        'remarks' => $item['remarks'] ?? null,
+                    ]);
+                } else {
+                    $grace->update(array_filter([
+                        'purpose' => $item['purpose'] ?? null,
+                        'remarks' => $item['remarks'] ?? null,
+                    ]));
+                }
 
                 if (!empty($item['dharma_name_registries'])) {
                     foreach ($item['dharma_name_registries'] as $dn) {
                         $dharma_name_id = $dn['dharma_name_id'] ?? null;
                         $custom_name = $dn['custom_name'] ?? null;
+                        $obtained_date = $dn['obtained_date'] ?? null;
+                        $remarks = $this->normalizeRemarks($dn['remarks'] ?? null);
 
-                        if (empty($dharma_name_id) && !empty($custom_name)) {
-                            // Split name and relative if needed (e.g. "元續之母")
-                            if (preg_match('/^(.*?)[之的](.+)$/u', $custom_name, $matches)) {
-                                $custom_name = trim($matches[1]);
-                                $rel = $this->normalizeRelationshipTerm($matches[2]);
-                                $dn['remarks'] = ($dn['remarks'] ?? '') . ($dn['remarks'] ? "\n" : "") . $rel;
+                        // 1. 處理括號規則
+                        if ($custom_name) {
+                            if (preg_match('/^(.*?)\((.*?)\)$/u', $custom_name, $m)) {
+                                if (trim($m[1])) {
+                                    $custom_name = trim($m[1]);
+                                    $extra = trim($m[2]);
+                                    if (!in_array($extra, $remarks)) $remarks[] = $extra;
+                                } else {
+                                    $custom_name = trim($m[2]);
+                                }
+                            }
+                        }
+
+                        // 2. 法號翻譯
+                        if ($custom_name && isset($nameAliasMap[$custom_name])) {
+                            $custom_name = $nameAliasMap[$custom_name];
+                        }
+
+                        // 3. 親友關係
+                        if ($custom_name) {
+                            $relationshipMatch = null;
+                            if (preg_match('/^(.*?)([之的].+)$/u', $custom_name, $matches)) {
+                                $relationshipMatch = $matches;
+                            } else {
+                                $dnNames = DharmaName::pluck('name')->toArray();
+                                usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                                foreach ($dnNames as $dnName) {
+                                    if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
+                                        $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
+                                        break;
+                                    }
+                                }
                             }
 
-                            $matched = \App\Models\DharmaName::where('name', trim($custom_name))->first();
+                            if ($relationshipMatch) {
+                                $custom_name = $relationshipMatch[1];
+                                $relRaw = trim($relationshipMatch[2] ?? '');
+                                $relTranslated = match(true) {
+                                    $relRaw === '之父' || $relRaw === '父' => '父親',
+                                    $relRaw === '之母' || $relRaw === '母' => '母親',
+                                    $relRaw === '之嬤' || $relRaw === '嬤' => '奶奶',
+                                    $relRaw === '之夫' || $relRaw === '夫' => '先生',
+                                    default => preg_replace('/^[之的]/u', '', $relRaw),
+                                };
+                                $datePrefix = $obtained_date ? date('Y/m/d', strtotime($obtained_date)) : '';
+                                $nameOnly = trim($custom_name);
+                                $relEntry = $datePrefix ? "{$datePrefix}  {$nameOnly}{$relTranslated}" : "{$nameOnly}{$relTranslated}";
+                                if (!in_array($relEntry, $remarks)) $remarks[] = $relEntry;
+                                $obtained_date = null;
+                            }
+                        }
+
+                        if (empty($dharma_name_id) && !empty($custom_name)) {
+                            $matched = DharmaName::where('name', trim($custom_name))->first();
                             if ($matched) {
                                 $dharma_name_id = $matched->id;
                                 $custom_name = null;
                             }
                         }
 
-                        DharmaNameRegistry::create([
-                            'imperial_grace_id' => $grace->id,
-                            'dharma_name_id' => $dharma_name_id,
-                            'custom_name' => $custom_name,
-                            'obtained_date' => $dn['obtained_date'] ?? null,
-                            'status' => $dn['status'] ?? '已登記',
-                            'remarks' => $this->normalizeRemarks($dn['remarks'] ?? null),
-                            'related_personnel' => $dn['related_personnel'] ?? [],
-                        ]);
+                        $existingDnr = DharmaNameRegistry::where('imperial_grace_id', $grace->id)
+                            ->where(function ($q) use ($dharma_name_id, $custom_name) {
+                                if ($dharma_name_id) $q->where('dharma_name_id', $dharma_name_id);
+                                else $q->where('custom_name', $custom_name);
+                            })->first();
+
+                        if (!$existingDnr) {
+                            DharmaNameRegistry::create([
+                                'imperial_grace_id' => $grace->id,
+                                'dharma_name_id' => $dharma_name_id,
+                                'custom_name' => $custom_name,
+                                'obtained_date' => $obtained_date,
+                                'status' => $dn['status'] ?? '已登記',
+                                'remarks' => $remarks,
+                                'related_personnel' => $dn['related_personnel'] ?? [],
+                            ]);
+                        } else {
+                            $updates = [];
+                            if ($obtained_date) $updates['obtained_date'] = $obtained_date;
+                            if (!empty($remarks)) {
+                                $existingRemarks = $this->normalizeRemarks($existingDnr->remarks);
+                                $merged = false;
+                                foreach ($remarks as $r) {
+                                    if ($r !== '' && !in_array($r, $existingRemarks)) {
+                                        $existingRemarks[] = $r;
+                                        $merged = true;
+                                    }
+                                }
+                                if ($merged) $updates['remarks'] = array_values($existingRemarks);
+                            }
+                            if (!empty($updates)) $existingDnr->update($updates);
+                        }
                     }
                 }
-                $results[] = $grace;
             }
-            return response()->json($results, 201);
+            return response()->json(['success' => true]);
         });
     }
 

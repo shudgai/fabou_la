@@ -40,12 +40,16 @@
             </datalist>
 
             <!-- Header -->
-            <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto shrink-0" style="padding: 8px 10px; min-height: 52px;">
+            <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full shrink-0" style="padding: 8px 10px; min-height: 52px;">
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-[32px] font-black text-slate-900 tracking-widest truncate font-outfit uppercase" style="font-size: 32px !important;">其他記錄專區</h2>
+                    <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                        <h1 class="text-[36px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 36px !important; padding-top: 5px; font-weight: 900 !important;">
+                            其他記錄專區
+                        </h1>
+                    </div>
                 </div>
                 <div class="flex items-center space-x-2 mr-2">
-                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                    <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                     <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
@@ -70,7 +74,7 @@
             </div>
 
             <!-- Record List -->
-            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full md:max-w-xl md:mx-auto', focusedId ? 'px-0 py-0' : 'px-4 py-6']">
+            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full', focusedId ? 'px-0 py-0' : 'px-4 py-6']">
                 <div :class="['max-w-4xl mx-auto space-y-4 pb-32', focusedId ? 'space-y-0' : 'space-y-4']">
                     <div v-for="item in filteredRecords" :key="item.id" 
                          v-show="focusedId === null || focusedId === item.id"

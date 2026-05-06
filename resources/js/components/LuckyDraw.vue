@@ -10,11 +10,11 @@
                         <div class="flex items-center justify-between w-full">
                             <!-- Consolidated Title Row -->
                             <div class="flex items-center flex-1 min-w-0">
-                                <div class="app-title font-black leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 32px !important;">
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 32px !important;">
                                     其他專區
                                 </div>
                                 <div class="flex items-center ml-3 min-w-0">
-                                    <span class="text-slate-500 font-black truncate" style="font-size: 25px !important; font-weight: 900 !important;">
+                                    <span class="text-slate-500 truncate" style="font-size: 25px !important; font-weight: 400 !important;">
                                         {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
                                     </span>
                                 </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
+    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -20,7 +20,7 @@
                 </linearGradient>
             </defs>
         </svg>
-        <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
+        <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
         <option v-for="t in instrumentTreasures" :key="t.id" :value="t.name" />
@@ -81,24 +81,24 @@
                 <option value="後身二大穴" />
             </datalist>
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
-            <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full md:max-w-xl md:mx-auto z-[120]" @click="resetToRoot">
-                <div class="flex-1">
-                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important;">父皇仙師開示專區</h1>
+            <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
+                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
+                    <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                 </div>
             </div>
-            <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto">
+            <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full">
                 <!-- Header Row -->
                 <div class="flex items-center justify-between px-3 py-2">
-                    <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h2 class="text-[32px] font-black text-red-600 tracking-tight font-outfit" style="color: #dc2626 !important; font-size: 32px !important;">
+                    <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                        <h2 class="text-[28px] text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                             父皇仙師開示專區
                         </h2>
                     </div>
-                    <div class="flex items-center space-x-2 shrink-0 ml-2">
+                    <div class="flex items-center space-x-2 shrink-0 ml-2" style="padding-top: 5px;">
                         <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-[#dc1428] rounded-xl active:scale-90 transition-all border border-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-3 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-2 py-1 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
@@ -108,7 +108,7 @@
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
-                    <span class="text-[25px] font-bold text-slate-900 font-outfit" style="font-size: 25px !important;">
+                    <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">
                         每日開示載錄
                     </span>
                     <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
@@ -121,20 +121,20 @@
             </div>
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
-                <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 w-full md:max-w-xl md:mx-auto">
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
                     <div class="px-[10px] pb-24 flex flex-col items-center -space-y-6 mt-6 max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-yellow-400 md:rounded-[32px] md:shadow-sm md:w-[350px] md:h-[350px] md:mb-6">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[350px] h-[350px] mb-6">
                         <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4">
-                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
 
@@ -145,15 +145,15 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-indigo-400 md:rounded-[32px] md:shadow-sm md:w-[350px] md:h-[350px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[350px] h-[350px]">
                         <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#818cf8" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4">
-                                <span class="text-[36px] font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
 
@@ -171,7 +171,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
-                            <span class="text-[24px] font-black text-slate-900">父皇仙師開示載錄</span>
+                            <span class="text-[24px] font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">父皇仙師開示載錄</span>
                         </div>
                     </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
@@ -184,7 +184,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label & Pill Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[3px]">
                                 <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
                                      style="font-weight: 900 !important; font-size: 24px !important;">
@@ -304,16 +304,16 @@
 
                                     <!-- Full-Width Selected Personnel Tag Display (Utilizes full page width per user request) -->
                                     <!-- Concise Group Display or Individual Tags -->
-                                    <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生'" class="col-span-12 mt-1 animate-fade-in">
+                                    <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生' && form.dharma_name_ids.length !== dharmaNames.length" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
                                             <!-- Group Mode (Only if more than 1 person) -->
                                             <template v-if="(activeModalGroup || currentMatchedGroup) && form.dharma_name_ids.length > 1">
                                                 <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
-                                                     class="bg-indigo-600 border border-indigo-500 text-white px-4 py-3 rounded-2xl app-body flex items-center shadow-md cursor-pointer active:scale-95 transition-all" style="color: white !important;">
-                                                    <span class="mr-2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                                                    <span class="font-black text-[17px]" style="color: white !important;">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name) }} ({{ form.dharma_name_ids.length }}人)</span>
-                                                    <span class="ml-2 text-[12px] underline font-black tracking-tight" style="color: white !important;">查看明細</span>
-                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-white/60 hover:text-white transition-colors">
+                                                     class="bg-white border border-indigo-600 text-slate-900 px-4 py-3 rounded-2xl app-body flex items-center shadow-sm cursor-pointer active:scale-95 transition-all">
+                                                    <span class="mr-2 w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                                                    <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name) }} ({{ form.dharma_name_ids.length }}人)</span>
+                                                    <span class="ml-2 text-[12px] underline font-black tracking-tight text-indigo-600">查看明細</span>
+                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-slate-400 hover:text-red-500 transition-colors">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
                                                 </div>
@@ -322,11 +322,11 @@
                                             <!-- Individual Mode -->
                                             <template v-else>
                                                 <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
-                                                     class="bg-indigo-600 border border-indigo-500 text-white px-3 py-3 rounded-2xl app-body flex items-center shadow-md active:scale-95 transition-all" style="color: white !important;">
-                                                    <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-white/60 hover:text-white transition-colors">
+                                                     class="bg-white border border-indigo-600 text-slate-900 px-3 py-3 rounded-2xl app-body flex items-center shadow-sm active:scale-95 transition-all">
+                                                    <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
-                                                    <span class="mr-2 w-2 h-2 bg-white rounded-full shrink-0"></span>
+                                                    <span class="mr-2 w-2 h-2 bg-indigo-500 rounded-full shrink-0"></span>
                                                     <span class="font-black">{{ getDharmaNameText(id) }}</span>
                                                 </div>
                                             </template>
@@ -355,69 +355,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Batch Recipient Picker (Added per user request) -->
-                                <div class="grid grid-cols-12 gap-3 mb-4 bg-slate-50/50 p-4 rounded-[28px] border border-slate-100">
-                                    <div class="col-span-7 space-y-0.5">
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-[13px] text-slate-400 font-bold px-1">批次指定對象</label>
-                                            <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
-                                        </div>
-                                        <div class="border border-slate-400 rounded-2xl bg-white pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative shadow-sm">
-                                            <input type="text" 
-                                                   @input="e => { activePractitionerDropdownId = 'batchPract'; handleDharmaSearchInput(e) }" 
-                                                   @focus="activePractitionerDropdownId = 'batchPract'"
-                                                   v-model="dharmaSearchQuery"
-                                                   placeholder="搜尋法號或群組..." 
-                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
-                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'batchPract' ? null : 'batchPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
-                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'batchPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <div v-if="activePractitionerDropdownId === 'batchPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
-                                                <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn_batch'+dn.id"
-                                                     @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
-                                                    {{ dn.name }}
-                                                </div>
-                                                <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
-                                                <div v-for="g in mainSearchFilteredGroups" :key="'g_batch'+g.id"
-                                                     @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
-                                                    {{ formatGroupName(g.name) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 space-y-0.5">
-                                        <label class="text-[13px] text-slate-400 font-bold px-1">批次備註</label>
-                                        <div class="border border-slate-400 rounded-2xl bg-white pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative shadow-sm">
-                                            <input v-model="form.target_remarks" 
-                                                   @focus="activeTargetRemarksDropdown = 'batch'"
-                                                   placeholder="備註對象..." 
-                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-blue-300">
-                                            <button @click.stop="activeTargetRemarksDropdown = (activeTargetRemarksDropdown === 'batch' ? null : 'batch')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
-                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown === 'batch' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <div v-if="activeTargetRemarksDropdown === 'batch'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                <div v-for="opt in relationshipOptions" :key="opt"
-                                                     @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = null"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer whitespace-nowrap">
-                                                    {{ opt }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div v-if="form.dharma_name_ids.length > 0" class="col-span-12 mt-2">
-                                        <div class="flex flex-wrap gap-2">
-                                            <span v-for="id in form.dharma_name_ids" :key="id" class="px-3 py-1 bg-indigo-600 text-white rounded-full text-[13px] font-black flex items-center shadow-sm" style="color: white !important;">
-                                                {{ getDharmaNameText(id) }}
-                                                <button @click="form.dharma_name_ids = form.dharma_name_ids.filter(x => x !== id)" class="ml-1.5 text-white/50 hover:text-white transition-colors">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
                                     <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -447,10 +385,10 @@
                                         <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
                                         已解析紀錄 ({{ batchRecords.length }} 筆)
                                     </div>
-                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-indigo-600 border border-indigo-500 rounded-3xl p-5 shadow-lg space-y-3">
+                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-3">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2">
-                                                <span class="text-[12px] font-black text-white bg-indigo-500 px-2.5 py-1 rounded-lg" style="color: white !important;">#{{ index + 1 }} {{ record.master_name }}</span>
+                                                <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">#{{ index + 1 }} {{ record.master_name }}</span>
                                                 <!-- Reorder Buttons -->
                                                 <div class="flex items-center space-x-1 ml-2">
                                                     <button @click="moveBatchRecord(index, -1)" :disabled="index === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
@@ -466,19 +404,19 @@
                                             </button>
                                         </div>
                                         <div class="flex items-center justify-between">
-                                            <div class="font-black text-white text-[17px] whitespace-pre-wrap" style="color: white !important;">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
-                                            <div v-if="record.date" class="text-[12px] font-bold text-white/50 flex items-center">
+                                            <div class="font-black text-slate-900 text-[17px] whitespace-pre-wrap">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
+                                            <div v-if="record.date" class="text-[12px] font-bold text-slate-400 flex items-center">
                                                 <span class="mr-1">📅</span> {{ record.date }}
                                             </div>
                                         </div>
                                         <!-- Batch Record Target Remarks Dropdown -->
                                         <div class="space-y-0.5 mt-1">
-                                            <div class="relative flex items-center border border-indigo-400 rounded-xl bg-indigo-700/50 overflow-visible min-h-[44px]">
+                                            <div class="relative flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-visible min-h-[44px]">
                                                 <input v-model="record.target_remarks" 
                                                        @focus="activeBatchTargetRemarksIdx = index"
                                                        placeholder="備註對象..." 
-                                                       class="w-full bg-transparent border-none text-[15px] text-white focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-white/30">
-                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-white/60 hover:text-white transition-all">
+                                                       class="w-full bg-transparent border-none text-[15px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-slate-400">
+                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-slate-400 hover:text-indigo-600 transition-all">
                                                     <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
                                                 <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
@@ -490,13 +428,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="text-white/90 text-[16px] font-bold leading-relaxed whitespace-pre-wrap" style="color: rgba(255,255,255,0.9) !important;">{{ record.content }}</div>
+                                        <div class="text-slate-700 text-[16px] font-bold leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
                                         <!-- Item Preview inside card -->
-                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-white/10 space-y-1">
-                                            <div class="text-[11px] font-black text-white/40 uppercase tracking-widest mb-1">已識別清單：</div>
-                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-white/80 font-bold flex items-center">
+                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-slate-100 space-y-1">
+                                            <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">已識別清單：</div>
+                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-indigo-600 font-bold flex items-center">
                                                 <span class="mr-1.5 opacity-60">💎</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
-                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-white/30 hover:text-white">
+                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-slate-300 hover:text-red-500">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
                                                 </button>
                                             </div>
@@ -575,9 +513,9 @@
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
                                 <!-- Added entries list -->
                                 <div v-if="footerRemarksList.length > 0" class="mb-2 space-y-1">
-                                    <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-600 border border-indigo-500 rounded-2xl px-3 py-2 min-h-[44px] shadow-sm">
-                                        <span class="flex-1 text-[16px] font-bold text-white" style="color: white !important;">{{ r || ' ' }}</span>
-                                        <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-white/40 hover:text-white ml-2 text-[18px] leading-none transition-all">×</button>
+                                    <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center border border-indigo-600 rounded-2xl px-3 py-2 min-h-[44px] shadow-sm bg-white">
+                                        <span class="flex-1 text-[16px] font-bold text-slate-900">{{ r || ' ' }}</span>
+                                        <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-400 hover:text-red-500 ml-2 text-[18px] leading-none transition-all">×</button>
                                     </div>
                                 </div>
                                 <!-- Input + Add button -->
@@ -588,7 +526,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[16vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-indigo-600 text-white rounded-2xl py-[12px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
@@ -612,7 +550,7 @@
                             <button @click.prevent="handleItemsDetailClose" class="text-slate-400 mr-4 p-2 bg-slate-50 rounded-full active:scale-90 transition-all hover:bg-slate-100">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
-                            <h3 class="text-[22px] font-black text-slate-900 tracking-tight">降寶詳情</h3>
+                            <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">降寶詳情</h1>
                         </div>
                     </div>
 
@@ -620,7 +558,7 @@
                         <div class="bg-white rounded-[32px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                                 <div class="flex items-center justify-between mb-4 px-1">
                                     <div class="flex items-center min-w-0">
-                                        <span class="w-7 h-7 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-lg shadow-indigo-100">1</span>
+                                        <span class="w-7 h-7 bg-white border border-indigo-600 text-indigo-600 rounded-xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-sm">1</span>
                                         <div class="flex flex-col min-w-0">
                                             <span class="text-[17px] font-black text-slate-900 leading-none">錄入法寶</span>
                                             <span class="text-[12px] text-indigo-500 font-bold mt-1 truncate">
@@ -1199,20 +1137,20 @@
                                 <span class="text-[10px] opacity-50">最下方為最新</span>
                             </div>
                             <div class="space-y-3 pr-1">
-                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="bg-indigo-600 border border-indigo-500 p-3.5 rounded-2xl shadow-md space-y-2 text-left">
-                                    <div class="text-[16px] font-black text-white leading-tight" style="color: white !important;">
+                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="border border-indigo-600 p-3.5 rounded-2xl shadow-sm space-y-2 text-left bg-white">
+                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
                                         {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
                                     </div>
                                     <div class="space-y-2.5">
-                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-white/40">
+                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-slate-200">
                                             <div class="flex-1">
-                                                <div class="text-[14px] font-bold flex items-start leading-tight" style="color: white !important;">
-                                                    <span class="text-white/80 mr-1.5 shrink-0">+ </span>
-                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-white/80 mr-1.5 shrink-0" style="color: white !important;">{{ item.name }}</span>
-                                                    <span style="color: white !important;">{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-white/70" style="color: rgba(255,255,255,0.7) !important;">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
+                                                <div class="text-[14px] font-bold flex items-start leading-tight text-slate-700">
+                                                    <span class="text-slate-400 mr-1.5 shrink-0">+ </span>
+                                                    <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-slate-500 mr-1.5 shrink-0">{{ item.name }}</span>
+                                                    <span class="text-slate-900">{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-slate-400 font-normal">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
                                                 </div>
                                             </div>
-                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-white/50 hover:text-white transition-all text-[18px] leading-none">×</button>
+                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-400 hover:text-red-500 transition-all text-[18px] leading-none">×</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1230,10 +1168,10 @@
                             
                             <!-- Added entries list (Refined design) -->
                             <div v-if="footerRemarksList.length > 0" class="mb-4 space-y-2">
-                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center bg-indigo-600 border border-indigo-500 rounded-2xl px-4 py-3 shadow-md animate-fade-in group">
-                                    <div class="w-2 h-2 bg-white/60 rounded-full mr-3"></div>
-                                    <span class="flex-1 text-[17px] font-black text-white" style="color: white !important;">{{ r || ' ' }}</span>
-                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-white/40 hover:text-white transition-all p-1">
+                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center border-2 border-indigo-600 rounded-2xl px-4 py-3 shadow-sm animate-fade-in group bg-white">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mr-3"></div>
+                                    <span class="flex-1 text-[17px] font-black text-slate-900">{{ r || ' ' }}</span>
+                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-400 hover:text-red-500 transition-all p-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" /></svg>
                                     </button>
                                 </div>
@@ -1305,7 +1243,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                            <div class="fixed bottom-[16vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
                                 <div class="grid grid-cols-2 gap-4">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] py-[14px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>
@@ -1353,7 +1291,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" /></svg>
                                 </span>
                                 <input v-model="pickerSearch" type="text" placeholder="輸入法號或群組名稱進行搜尋..." 
-                                       class="w-full bg-indigo-600 border border-indigo-500 rounded-2xl py-3.5 pl-11 pr-4 text-[17px] text-white focus:ring-4 focus:ring-indigo-100/20 transition-all outline-none shadow-lg font-black placeholder:text-white/30" style="color: white !important;">
+                                       class="w-full bg-white border border-slate-300 rounded-2xl py-3.5 pl-11 pr-4 text-[17px] text-slate-900 focus:ring-4 focus:ring-indigo-100 transition-all outline-none shadow-sm font-black placeholder:text-slate-400">
                             </div>
                         </div>
 
@@ -1366,13 +1304,13 @@
                                 <div class="grid grid-cols-2 gap-2">
                                     <button v-for="dn in filteredPickerResults" :key="dn.id" 
                                             @click.prevent="toggleDharmaName(dn.id)"
-                                            :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-700 border-indigo-400 ring-2 ring-white/50' : 'bg-indigo-600 border-indigo-500'"
-                                            class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[17px] font-black active:scale-[0.98] shadow-md">
+                                            :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-indigo-600 ring-2 ring-indigo-50' : 'bg-white border-slate-200'"
+                                            class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[17px] font-black active:scale-[0.98] shadow-sm">
                                         <div class="w-5 h-5 rounded-md border-2 flex items-center justify-center mr-3 shrink-0"
-                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-white' : 'bg-indigo-800 border-indigo-500 shadow-inner'">
-                                            <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-slate-50 border-slate-200 shadow-inner'">
+                                            <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         </div>
-                                        <span class="truncate text-[17px] text-white" style="color: white !important;">{{ dn.name }}</span>
+                                        <span class="truncate text-[17px] text-slate-900">{{ dn.name }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -1384,27 +1322,27 @@
                                 </div>
                                 <div class="space-y-2">
                                         <div v-for="group in filteredGroups" :key="group.id" 
-                                             class="border border-indigo-500 rounded-2xl overflow-hidden bg-indigo-600 shadow-md">
+                                             class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm mb-2">
                                             <div @click.prevent="toggleGroupAccordion(group.id)" 
-                                                 class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-indigo-700">
+                                                 class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-slate-50">
                                                 <div class="flex items-center space-x-3">
                                                     <div @click.stop.prevent="toggleGroupSelection(group)" 
                                                          class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all shadow-sm"
-                                                         :class="isGroupFullySelected(group) ? 'bg-white border-white' : 'bg-indigo-700 border-indigo-400'">
-                                                        <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                         :class="isGroupFullySelected(group) ? 'bg-indigo-600 border-indigo-600' : 'bg-slate-50 border-slate-200'">
+                                                        <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                     </div>
-                                                    <span class="text-[17px] font-black text-white" style="color: white !important;">{{ group.name }}</span>
-                                                    <span class="text-[14px] bg-indigo-500/50 text-white px-2.5 py-1 rounded-full font-bold" style="color: white !important;">{{ group.dharma_names.length }}人</span>
+                                                    <span class="text-[17px] font-black text-slate-900">{{ group.name }}</span>
+                                                    <span class="text-[14px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-bold">{{ group.dharma_names.length }}人</span>
                                                 </div>
-                                                <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-white/50 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                             </div>
-                                            <div v-if="expandedGroupPicker === group.id || pickerSearch" class="bg-indigo-900/20 px-4 py-3 border-t border-white/10 grid grid-cols-2 gap-2 animate-fade-in">
+                                            <div v-if="expandedGroupPicker === group.id || pickerSearch" class="bg-slate-50/50 px-4 py-3 border-t border-slate-100 grid grid-cols-2 gap-2 animate-fade-in">
                                                 <button v-for="member in group.dharma_names" :key="member.id" 
                                                         @click.prevent="toggleDharmaName(member.id)"
-                                                        class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-indigo-500 border border-indigo-400 shadow-sm"
-                                                        :class="form.dharma_name_ids.includes(member.id) ? 'ring-2 ring-white/50' : ''">
-                                                    <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-white' : 'bg-indigo-700'"></div>
-                                                    <span class="truncate font-black text-white" style="color: white !important;">{{ member.name }}</span>
+                                                        class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-white border border-slate-200 shadow-sm"
+                                                        :class="form.dharma_name_ids.includes(member.id) ? 'border-indigo-600 ring-1 ring-indigo-600/10' : ''">
+                                                    <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-indigo-600' : 'bg-slate-200'"></div>
+                                                    <span class="truncate font-black text-slate-900">{{ member.name }}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -1440,22 +1378,22 @@
                                     </div>
                                     <div class="grid grid-cols-1 gap-2">
                                         <div v-for="member in pg.members" :key="member.id" 
-                                             class="flex items-center px-3 py-2.5 bg-indigo-600 rounded-xl border border-indigo-500 shadow-sm">
-                                            <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-white/60 hover:text-white transition-colors shrink-0">
+                                             class="flex items-center px-3 py-2.5 bg-white rounded-xl border border-indigo-600 shadow-sm">
+                                            <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <span class="text-[16px] font-black text-white truncate" style="color: white !important;">{{ stripMasterPrefix(member.name) }}</span>
+                                            <span class="text-[16px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
                                 <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
-                                     class="flex items-center px-4 py-3 bg-indigo-600 rounded-2xl border border-indigo-500 shadow-md">
-                                    <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-white/60 hover:text-white transition-colors shrink-0">
+                                     class="flex items-center px-4 py-3 bg-white rounded-2xl border border-indigo-600 shadow-sm">
+                                    <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
-                                    <span class="text-[17px] font-black text-white truncate" style="color: white !important;">{{ stripMasterPrefix(member.name) }}</span>
+                                    <span class="text-[17px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1484,8 +1422,8 @@
                                 <button v-for="p in palaceOrder" 
                                         :key="p"
                                         @click="selectPalaceGroup(p)"
-                                        class="px-2 py-5 bg-indigo-600 border border-indigo-500 rounded-[24px] text-[17px] font-black text-white hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center shadow-lg shadow-indigo-100 whitespace-nowrap" style="color: white !important;">
-                                    <svg class="w-4 h-4 mr-2 text-white/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke: white !important;"/></svg>
+                                        class="px-2 py-5 bg-white border border-slate-200 rounded-[24px] text-[17px] font-black text-slate-900 hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center shadow-sm whitespace-nowrap">
+                                    <svg class="w-4 h-4 mr-2 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     {{ p }}
                                 </button>
                             </div>
@@ -1519,12 +1457,9 @@
                             <!-- Date Header: Collapsed by Default -->
                             <div v-show="focusedId === null || isDateOfFocused(dateGroup.date)"
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
-                                 class="px-5 py-4 bg-slate-50 border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
+                                 class="px-5 py-4 bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
                                      <span class="app-title font-outfit uppercase tracking-wider">{{ formatDate(dateGroup.date) }}</span>
-                                     <span class="ml-3 px-2.5 py-0.5 bg-indigo-600 border border-indigo-500 rounded-full text-[12px] font-black font-outfit text-white shadow-sm" style="color: white !important;">
-                                         {{ dateGroup.items.length }} 則
-                                     </span>
                                  </div>
                                  <svg :class="focusedDate === dateGroup.date ? 'rotate-180' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </div>
@@ -1543,7 +1478,7 @@
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
                                         <div class="mr-3 shrink-0 flex items-center justify-center">
-                                            <div v-if="!reorderMode" class="w-8 h-8 bg-indigo-600 border border-indigo-500 rounded-xl flex items-center justify-center text-[15px] font-black text-white shadow-sm" style="color: white !important;">
+                                            <div v-if="!reorderMode" class="w-8 h-8 bg-white border border-indigo-600 rounded-xl flex items-center justify-center text-[15px] font-black text-indigo-600 shadow-sm">
                                                 {{ String(index + 1).padStart(2, '0') }}
                                             </div>
                                             <input v-else 
@@ -1559,8 +1494,8 @@
                                             <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <div class="text-[17px] font-bold text-slate-900 leading-none">
-                                                {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
+                                            <div class="text-[17px] font-bold leading-none">
+                                                <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span v-if="item.content?.trim()" class="text-slate-900">開示</span><span class="text-slate-900">給：{{ getRecipientName(item) }}</span>
                                             </div>
                                             <!-- Content/Item Summary in List Header -->
                                             <div class="mt-[3px] text-[17px] font-normal text-slate-400 truncate leading-none">
@@ -1610,7 +1545,7 @@
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
-                                                    <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important;">父皇仙師開示專區</h1>
+                                                    <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
                                                 </div>
                                                 <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all absolute right-3">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -1619,7 +1554,7 @@
 
                                             <!-- Sub-folder Title (Added for consistency) -->
                                             <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px]">
-                                                <span class="text-[26px] font-bold text-slate-900 tracking-tight" style="font-size: 26px !important;">每日開示載錄</span>
+                                                <span class="text-[24px] font-medium text-red-600 tracking-tight" style="font-size: 24px !important; color: #dc2626 !important; font-weight: 500 !important;">每日開示載錄</span>
                                             </div>
 
                                             <!-- Header (Sub-title Style) -->
@@ -1656,7 +1591,7 @@
                                         </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto px-5 pt-5 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                                            <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2">
@@ -1819,13 +1754,10 @@
                     <!-- High-Density Header -->
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-orange-100 text-orange-500 rounded-lg flex items-center justify-center">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="3" /></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-[19px] font-black text-slate-900 leading-tight">確認錄入資料</h3>
-                                <p class="text-slate-400 font-bold text-[11px] uppercase tracking-widest">請核對以下內容是否正確</p>
-                            </div>
+                        <div class="flex flex-col">
+                            <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
+                            <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">請核對以下內容是否正確</span>
+                        </div>
                         </div>
                         <button @click="saveConfirmModal.show = false" class="p-2 text-slate-300 hover:text-slate-500">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -3965,6 +3897,7 @@ const getFullRecipientList = (item) => {
             return gIds === searchIds;
         });
         if (matched) groupName = matched.name;
+        else if ((pendingIds.length > 0 && pendingIds.length === dharmaNames.value.length) || (resolvedNames.length > 0 && resolvedNames.length === dharmaNames.value.length)) groupName = '全體殿生';
     }
 
     if (groupName === '各宮') {
@@ -4339,7 +4272,9 @@ const processBatchText = () => {
             
             const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
             if (foundDN) record.dharma_name_ids = [foundDN.id];
-            else {
+            else if (nameField === '全體殿生') {
+                record.dharma_name_ids = (dharmaNames.value || []).map(dn => dn.id);
+            } else {
                 const foundGroup = (groups.value || []).find(g => g.name === nameField);
                 if (foundGroup) {
                     record.dharma_name_ids = (foundGroup.dharma_names || []).map(dn => dn.id);

@@ -4,16 +4,13 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[25vh]">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[25px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900">怨靈載錄專區</div>
-                    <div class="text-[22px] font-bold mt-2 truncate font-outfit text-slate-900">
-                        {{ editingId ? '修改載錄' : '怨靈載錄登記簿' }}
-                    </div>
+                    <div class="text-[30px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 30px !important;">怨靈載錄專區-逐筆載錄</div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-2 top-1/2 -translate-y-1/2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -138,7 +135,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="p-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 p-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
                 <button 
                     @click="handleSave" 
                     class="w-full bg-indigo-600 text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
@@ -150,10 +147,12 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
+                class="md:hidden"
                 :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"
+                is-absolute
             />
 
             <!-- Custom Modal Picker -->

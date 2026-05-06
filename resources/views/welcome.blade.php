@@ -10,7 +10,7 @@
         <!-- Badge -->
         <div class="inline-flex items-center space-x-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full mb-8 animate-fade-in shadow-sm">
             <span class="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-            <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-widest leading-none">皇恩筆記本</span>
+            <!-- Badge text removed per user request -->
         </div>
 
         <!-- Hero Title -->
@@ -22,7 +22,7 @@
         <!-- Subtext -->
         <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
             支援法寶、重大皇恩、怨靈記錄，<br/>
-            提供快速複製 LINE 格式與 Excel 匯出功能。
+            提供快速複製 LINE 格式與逐筆、多筆貼上新增功能。
         </p>
 
         <!-- CTA Buttons -->
@@ -55,7 +55,7 @@
             </div>
             <div class="flex flex-col items-center">
                 <div class="text-2xl font-bold font-outfit text-indigo-600">相容</div>
-                <div class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">EXCEL / LINE 格式</div>
+                <div class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">逐筆 / 多筆貼上</div>
             </div>
             <div class="flex flex-col items-center">
                 <div class="text-2xl font-bold font-outfit text-indigo-600">鎖定</div>

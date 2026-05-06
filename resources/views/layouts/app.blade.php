@@ -90,7 +90,7 @@
                                 <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
-                        <span x-show="!sidebarCollapsed" class="text-xl md:text-2xl font-bold font-outfit tracking-tight text-slate-800 whitespace-nowrap" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                        <span x-show="!sidebarCollapsed" class="text-xl md:text-2xl font-outfit tracking-tight text-slate-800 whitespace-nowrap" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                             皇恩筆記本
                         </span>
                     </a>
@@ -177,13 +177,9 @@
                 <div class="p-4 border-t border-slate-100 space-y-4">
                     @auth
                         <div class="flex items-center" :class="{ 'justify-center': sidebarCollapsed, 'space-x-3': !sidebarCollapsed }">
-                            <div class="px-2 py-1 min-w-[36px] min-h-[36px] border-2 border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-bold text-[12px] shrink-0">
-                                {{ Auth::user()->display_name }}
-                            </div>
-                            <div x-show="!sidebarCollapsed" class="min-w-0 flex-1 overflow-hidden" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                                <span class="font-outfit font-bold text-slate-800">皇恩筆記本</span>
-                                <p class="text-xs text-slate-500 truncate">{{ Auth::user()->display_name }}</p>
-                                <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-[10px] text-red-500 font-medium hover:underline">登出</button>
+                            <div x-show="!sidebarCollapsed" class="min-w-0 flex-1 overflow-hidden text-center" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                                <div class="text-[17px] font-black text-slate-900 leading-none mb-1.5">{{ Auth::user()->display_name }}</div>
+                                <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-[13px] text-red-500 font-bold hover:underline tracking-widest">登出</button>
                             </div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                 @csrf
@@ -224,10 +220,10 @@
                                 <circle cx="50" cy="25" r="8" fill="black"/>
                             </svg>
                         </div>
+                        <span class="text-xl font-bold font-outfit tracking-tight text-slate-800 whitespace-nowrap">
+                            皇恩筆記本
+                        </span>
                         @auth
-                            <div class="px-2 py-0.5 border border-slate-200 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 font-black text-[12px] whitespace-nowrap shadow-sm">
-                                {{ Auth::user()->display_name }}
-                            </div>
                         @endauth
                     </div>
                     

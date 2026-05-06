@@ -52,11 +52,11 @@ body.font-large {
     color:       #0f172a !important; /* slate-900 */
 }
 
-/* 標題：粗體 + 淡灰色 (slate-300) */
+/* 標題：非粗體 + 深灰色 (slate-800) */
 .app-title {
     font-family: 'Noto Sans TC', sans-serif !important;
     font-size:   var(--fs-title) !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color:       #1e293b !important; /* slate-800 */
 }
 
@@ -73,9 +73,9 @@ body.font-large {
 
 /* --- Tier 1: 標籤與細項 (th, label, 11px~13px) --- */
 /* Rule: Always 2px smaller than Tier 3. 小 (13px) | 中 (15px) | 大 (17px) | 顏色：slate-300 */
-body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 13px !important; font-weight: 900 !important; color: #1e293b !important; }
-body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; color: #1e293b !important; }
-body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 17px !important; font-weight: 900 !important; color: #1e293b !important; }
+body.font-small  label, body.font-small  th, body.font-small  .text-\[13px\], body.font-small  .text-\[12px\], body.font-small  .text-\[11px\], body.font-small  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 13px !important; font-weight: 400 !important; color: #1e293b !important; }
+body.font-medium label, body.font-medium th, body.font-medium .text-\[13px\], body.font-medium .text-\[12px\], body.font-medium .text-\[11px\], body.font-medium .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 15px !important; font-weight: 400 !important; color: #1e293b !important; }
+body.font-large  label, body.font-large  th, body.font-large  .text-\[13px\], body.font-large  .text-\[12px\], body.font-large  .text-\[11px\], body.font-large  .app-title { font-family: 'Noto Sans TC', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; color: #1e293b !important; }
 
 /* Exception: Imperial Grace Module labels should remain Black */
 .imperial-grace-module .app-title,
@@ -107,11 +107,11 @@ body.font-small  .text-\[24px\], body.font-small  .text-\[23px\], body.font-smal
 body.font-medium .text-\[24px\], body.font-medium .text-\[23px\], body.font-medium .text-\[22px\] { font-size: 22px !important; }
 body.font-large  .text-\[24px\], body.font-large  .text-\[23px\], body.font-large  .text-\[22px\] { font-size: 24px !important; }
 
-/* --- Tier 6: 大型標題與 Hero Text (25px~32px) --- */
-/* 小 (24px) | 中 (28px) | 大 (32px) */
-body.font-small  .text-\[32px\], body.font-small  .text-\[30px\], body.font-small  .text-\[28px\], body.font-small  .text-\[26px\], body.font-small  .text-\[25px\] { font-size: 24px !important; }
-body.font-medium .text-\[32px\], body.font-medium .text-\[30px\], body.font-medium .text-\[28px\], body.font-medium .text-\[26px\], body.font-medium .text-\[25px\] { font-size: 28px !important; }
-body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-large  .text-\[28px\], body.font-large  .text-\[26px\], body.font-large  .text-\[25px\] { font-size: 32px !important; }
+/* --- Tier 6: 大型標題與 Hero Text (25px~36px) --- */
+/* 小 (24px) | 中 (32px) | 大 (36px) */
+body.font-small  .text-\[36px\], body.font-small  .text-\[32px\], body.font-small  .text-\[30px\], body.font-small  .text-\[28px\], body.font-small  .text-\[26px\], body.font-small  .text-\[25px\] { font-size: 24px !important; }
+body.font-medium .text-\[36px\], body.font-medium .text-\[32px\], body.font-medium .text-\[30px\], body.font-medium .text-\[28px\], body.font-medium .text-\[26px\], body.font-medium .text-\[25px\] { font-size: 32px !important; }
+body.font-large  .text-\[36px\], body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-large  .text-\[28px\], body.font-large  .text-\[26px\], body.font-large  .text-\[25px\] { font-size: 36px !important; }
 
 /* 確保輸入框也跟著變，且強制加粗以符合 Imperial Grace 風格 */
 body.font-small input, body.font-small select, body.font-small textarea { font-family: 'Montserrat', sans-serif !important; font-size: 15px !important; font-weight: 400 !important; }
@@ -146,4 +146,36 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     body.font-small  h1, body.font-small  h2, body.font-small  h3, body.font-small  .text-\[25px\], body.font-small  .text-\[26px\], body.font-small  .text-\[28px\], body.font-small  .text-\[30px\], body.font-small  .text-\[32px\], body.font-small  .text-\[42px\] { font-size: 24px !important; line-height: 1.3 !important; }
     body.font-medium h1, body.font-medium h2, body.font-medium h3, body.font-medium .text-\[25px\], body.font-medium .text-\[26px\], body.font-medium .text-\[28px\], body.font-medium .text-\[30px\], body.font-medium .text-\[32px\], body.font-medium .text-\[42px\] { font-size: 28px !important; line-height: 1.3 !important; }
     body.font-large  h1, body.font-large  h2, body.font-large  h3, body.font-large  .text-\[25px\], body.font-large  .text-\[26px\], body.font-large  .text-\[28px\], body.font-large  .text-\[30px\], body.font-large  .text-\[32px\], body.font-large  .text-\[42px\] { font-size: 32px !important; line-height: 1.3 !important; }
+}
+
+/* ============================================================
+   行動裝置優化 (Mobile Smoothness & Ergonomics)
+   ============================================================ */
+@layer utilities {
+    /* 流暢滾動 (iOS Inertia Scrolling) */
+    .custom-scrollbar {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 防止 iOS 輸入框自動縮放 (Minimum 16px) */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+
+    /* 優化點擊反應與消除灰框 (Touch Optimization) */
+    button, [role="button"], a {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 支援全螢幕高度 (Dynamic Viewport Height) */
+    .h-screen-dynamic {
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    /* iOS 安全區域適配 (Safe Area Insets) */
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
@@ -25,29 +25,29 @@
 
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
-        <div v-if="!currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-5xl md:mx-auto" style="padding: 4px 10px; min-height: 32px;">
+        <div v-if="!currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[28px] font-black leading-tight font-outfit tracking-widest break-words text-slate-900" style="font-size: 28px !important;">
+                <h1 class="text-[32px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                     軍隊記錄專區
-                </div>
+                </h1>
             </div>
-            <div class="absolute right-2 top-1/2 -translate-y-1/2">
-                <button @click="sortDesc = !sortDesc" class="px-2.5 py-1 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+            <div class="absolute right-2 bottom-2">
+                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[13px] text-indigo-600 active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-5xl md:mx-auto px-[10px] py-1" style="min-height: 32px;">
+        <div v-if="currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full px-[10px] py-1" style="min-height: 32px;">
             <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="text-[28px] font-black text-slate-900 truncate tracking-tight font-outfit">
+                <h2 class="text-[32px] text-slate-900 truncate tracking-tight font-outfit font-black" style="font-size: 32px !important; color: #0f172a !important; font-weight: 900 !important;">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2.5 py-1.5 text-[13px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important;">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 text-[13px] text-indigo-600 active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -62,7 +62,7 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group md:max-w-5xl md:mx-auto w-full">
+        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -83,7 +83,7 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center justify-center mt-[25px] max-w-5xl mx-auto">
+                <div class="px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center justify-center mt-[25px] max-w-7xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
@@ -92,36 +92,21 @@
                         <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
                             <!-- MOBILE VERSION SVG -->
                             <svg class="block md:hidden w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
-                                <defs>
-                                    <linearGradient :id="'mm-fGrad-m-' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" :stop-color="getGradientColor(folder.color).start" />
-                                        <stop offset="100%" :stop-color="getGradientColor(folder.color).end" />
-                                    </linearGradient>
-                                </defs>
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad-m-' + folder.id + ')'" 
+                                      :fill="folder.name === '耀紫軍' ? '#581c87' : '#000000'" 
                                       stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
                             </svg>
 
                             <!-- DESKTOP VERSION SVG -->
                             <svg class="hidden md:block w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
-                                <defs>
-                                    <linearGradient :id="'mm-fGrad-d-' + folder.id" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" :stop-color="getDesktopGradientColor(folder.color).start" />
-                                        <stop offset="100%" :stop-color="getDesktopGradientColor(folder.color).end" />
-                                    </linearGradient>
-                                </defs>
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                      :fill="'url(#mm-fGrad-d-' + folder.id + ')'" 
+                                      :fill="folder.name === '耀紫軍' ? '#581c87' : '#000000'" 
                                       stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
                             </svg>
 
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
-                                <span class="text-[46px] md:text-[53px] font-black text-white tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" 
-                                    style="font-weight: 900 !important;">{{ folder.name }}</span>
-                                <div class="text-[14px] md:text-[18px] font-bold text-white/80 mt-1">
-                                    {{ formatArmyTotal(armyCounts[folder.name] || 0) }}
-                                </div>
+                                <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
+                                    style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
                             </div>
                         </div>
                     </button>
@@ -129,7 +114,7 @@
             </div>
 
             <!-- LEDGER VIEW -->
-            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 md:max-w-5xl md:mx-auto w-full">
+            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 w-full">
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
@@ -173,7 +158,6 @@
                     <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light px-6">
                         目前尚無{{ currentFolder?.id !== 'all' ? currentFolder?.name : '' }}載錄資料。
                         <div v-if="!expandedDate && !focusedId" class="text-[10px] mt-2 opacity-50">
-                            (日期分組模式: {{ dateGroupsData.length }} 筆)
                         </div>
                     </div>
                     <div v-else class="flex flex-col flex-1 px-1">
@@ -181,18 +165,11 @@
                         <template v-if="!expandedDate && !focusedId && !searchQuery">
                             <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
                                 @click.stop="toggleDateGroup(group.know_date ? formatDate(group.know_date) : '原始數量')"
-                                class="mx-1 mb-3 bg-white p-5 rounded-[24px] shadow-sm border border-slate-100 flex items-center justify-between active:scale-[0.98] transition-all group overflow-hidden relative">
-                                <div class="flex items-center space-x-4 z-10">
-                                    <div class="bg-slate-100 p-3 rounded-2xl group-hover:bg-slate-800 group-hover:text-white transition-colors">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
+                                class="bg-white p-[10px] border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all group overflow-hidden relative">
+                                <div class="flex items-center z-10">
                                     <div class="flex flex-col">
                                         <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
-                                        <span class="text-xs text-slate-400 font-bold mt-0.5 tracking-tight">共計 {{ group.count || 0 }} 筆載錄</span>
                                     </div>
-                                </div>
-                                <div class="z-10 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                                    <svg class="w-5 h-5 -rotate-90 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
                             </div>
                         </template>
@@ -212,7 +189,7 @@
                                     v-show="focusedId === null || focusedId === item.id"
                                     @click="toggleExpand(item.id)"
                                     :class="[
-                                        'py-[15px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                        'py-[10px] px-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
                                         openMenuId === item.id ? 'z-[50]' : 'z-0',
                                         { 'border-b-0': focusedId === item.id }
                                     ]"
@@ -941,21 +918,21 @@ const formatDate = (dateStr) => {
 
 const getGradientColor = (colorClass) => {
     const map = {
-        'bg-indigo-500': { start: '#1e293b', end: '#020617' }, // Tiger Armor -> Very Dark
-        'bg-blue-500':   { start: '#334155', end: '#0f172a' }, // Tiger Brave -> Dark Blue
-        'bg-slate-700':  { start: '#1e293b', end: '#020617' }, // Obsidian -> Very Dark
-        'bg-purple-500': { start: '#7e22ce', end: '#4c1d95' }  // Purple -> Rich Purple
+        'bg-indigo-500': { start: '#1a1a1a', end: '#000000' }, // Tiger Armor -> Black
+        'bg-blue-500':   { start: '#1a1a1a', end: '#000000' }, // Tiger Brave -> Black
+        'bg-slate-700':  { start: '#1a1a1a', end: '#000000' }, // Obsidian -> Black
+        'bg-purple-500': { start: '#581c87', end: '#2e1065' }  // Purple -> DEEP DARK PURPLE
     };
-    return map[colorClass] || { start: '#334155', end: '#0f172a' };
+    return map[colorClass] || { start: '#1a1a1a', end: '#000000' };
 };
 
 const getDesktopGradientColor = (colorClass) => {
     // Desktop: Only Purple is Purple, others are Black
     if (colorClass === 'bg-purple-500') {
-        return { start: '#7e22ce', end: '#4c1d95' };
+        return { start: '#581c87', end: '#2e1065' };
     }
-    // Deep Black for all other folders on Desktop
-    return { start: '#1e293b', end: '#020617' };
+    // Pure Black for all other folders on Desktop
+    return { start: '#1a1a1a', end: '#000000' };
 };
 
 watch(currentFolder, (newVal) => {

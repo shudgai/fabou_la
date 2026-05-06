@@ -124,7 +124,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <button 
                     @click="handleSave" 
                     class="w-full bg-indigo-600 text-white font-black h-[52px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
@@ -136,6 +136,7 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
+                class="md:hidden"
                 :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"

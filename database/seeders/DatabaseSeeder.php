@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             DharmaGroupSeeder::class,
             TreasureSeeder::class,
+            RegistrySeeder::class,
         ]);
     }
 }

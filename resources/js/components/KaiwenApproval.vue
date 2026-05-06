@@ -11,7 +11,7 @@
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
-                            <span class="font-black text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
+                            <span class="text-[15px]" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8' }">
                                 {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
                             </span>
                         </div>
@@ -23,7 +23,7 @@
                     <div class="grid grid-cols-4 md:grid-cols-5 px-1 w-full mt-[15px]" style="gap: 4px; background: #ffffff;">
                             <button v-for="user in filteredUsers" :key="user.id" 
                                 @click="addParticipant(user.name)"
-                                class="flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                class="flex items-center justify-center text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                             :style="{ 
                                 backgroundColor: isParticipantSelected(user.name) ? '#bfdbfe' : '#ffffff',
                                 borderColor: isParticipantSelected(user.name) ? '#93c5fd' : '#d1d5db',
@@ -67,7 +67,7 @@
                         <button @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
-                        <h3 class="text-[17px] font-black text-slate-900 tracking-tight">核定結果</h3>
+                        <h3 class="text-[17px] text-slate-900 tracking-tight">核定結果</h3>
                     </div>
                 </div>
 
@@ -75,8 +75,8 @@
                     
                     <!-- Instruction Text -->
                     <div class="px-2 pb-4 mb-2 flex flex-col space-y-1">
-                        <div class="text-[15px] font-black text-slate-700 tracking-wide">✓代表合格 ×代表不合格</div>
-                        <div class="text-[15px] font-black text-slate-700 tracking-wide">開文結果請示如下：</div>
+                        <div class="text-[15px] text-slate-700 tracking-wide">✓代表合格 ×代表不合格</div>
+                        <div class="text-[15px] text-slate-700 tracking-wide">開文結果請示如下：</div>
                     </div>
 
                     <!-- Ledger Table -->
@@ -85,7 +85,7 @@
                             <tbody>
                                 <tr v-for="(item, idx) in selectionList" :key="idx" class="group transition-all h-[52px]">
                                     <td class="pl-3 pr-1 py-1 w-20 whitespace-nowrap align-middle border-b border-slate-50">
-                                        <span class="text-[17px] font-black text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
+                                        <span class="text-[17px] text-blue-600 leading-none tracking-widest">{{ item.name }}</span>
                                     </td>
                                     
                                     <td class="relative py-2 border-b border-slate-50 min-h-[60px]">
@@ -113,14 +113,14 @@
                                                         @click="setStatus(idx, n-1, 'v')" 
                                                         :class="[item.slots[n-1] === 'v' ? 'bg-emerald-500 text-white w-full' : 'text-slate-300 active:bg-slate-50 w-1/2']"
                                                         class="h-full flex items-center justify-center transition-all duration-200">
-                                                        <span class="text-[17px] font-black leading-none">✓</span>
+                                                        <span class="text-[17px] leading-none">✓</span>
                                                     </button>
                                                     <!-- Only show X if selected or nothing selected -->
                                                     <button v-if="!item.slots[n-1] || item.slots[n-1] === 'x'"
                                                         @click="setStatus(idx, n-1, 'x')" 
                                                         :class="[item.slots[n-1] === 'x' ? 'bg-rose-500 text-white w-full' : 'text-slate-300 active:bg-slate-50 w-1/2']"
                                                         class="h-full flex items-center justify-center transition-all duration-200">
-                                                        <span class="text-[17px] font-black leading-none">×</span>
+                                                        <span class="text-[17px] leading-none">×</span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -407,5 +407,16 @@ onMounted(loadUsers);
 .fade-enter-from, .fade-leave-to {
     opacity: 0;
     transform: translate(-50%, -20px);
+}
+
+/* Kaiwen Specific Font Size Overrides */
+:global(body.font-small) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 16px !important;
+}
+:global(body.font-medium) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 18px !important;
+}
+:global(body.font-large) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+    font-size: 21px !important;
 }
 </style>

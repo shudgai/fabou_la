@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-white flex flex-col other-manager-module relative overflow-hidden">
+    <div class="h-[100dvh] bg-slate-100 md:bg-white flex flex-col other-manager-module relative overflow-hidden">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -16,23 +16,23 @@
             </defs>
         </svg>
         <!-- Level 1: Folder Grid View -->
-        <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-white flex flex-col relative overflow-hidden">
-            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full md:max-w-xl md:mx-auto">
+        <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-slate-100 md:bg-white flex flex-col relative overflow-hidden">
+            <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full">
                 <div class="flex items-center">
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h2 class="font-black tracking-tight cursor-pointer" @click="resetToRoot" style="color: #0f172a !important; font-size: 32px !important;">其他專區資料夾</h2>
+                    <h1 class="font-outfit tracking-tighter truncate font-medium text-red-600" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px; font-weight: 500 !important;">其他專區資料夾</h1>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scrollbar w-full md:max-w-xl md:mx-auto">
+            <div class="flex-1 overflow-y-auto custom-scrollbar w-full">
                 <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
-                    style="background-color: rgb(255, 250, 205);">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                    style="background-color: white;">
                     
                     <!-- Folder Delete Button (Top Right) -->
                     <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
@@ -50,15 +50,15 @@
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 32px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</div>
                         </div>
                     </div>
                 </button>
 
                 <!-- Lucky Draw - Direct Sort (RED FOLDER STYLE) -->
                 <button @click="luckyDrawInitialMode = false; showLuckyDraw = true"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
-                    style="background-color: rgb(255, 250, 205);">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                    style="background-color: white;">
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
@@ -66,7 +66,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
                                 抽順序
                             </span>
                         </div>
@@ -75,8 +75,8 @@
 
                 <!-- Lucky Draw - Round Lottery (EMERALD FOLDER STYLE) -->
                 <button @click="luckyDrawInitialMode = true; showLuckyDraw = true"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-[40px] p-[5px]"
-                    style="background-color: rgb(255, 250, 205);">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                    style="background-color: white;">
                     <div class="relative w-[280px] h-[280px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-roundGrad)" style="fill: #10b981;" opacity="0.8"/>
@@ -84,7 +84,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
                                 回合抽籤
                             </span>
                         </div>
@@ -106,19 +106,21 @@
                 @action="prepareAddFolder"
             />
         </div>
-        <div v-else class="flex-grow flex flex-col bg-slate-50/50 overflow-hidden w-full md:max-w-xl md:mx-auto relative md:h-[90vh]">
+        <div v-else class="flex-grow flex flex-col bg-slate-100 md:bg-white overflow-hidden w-full relative md:h-[90vh]">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 2px; min-height: 52px;">
                 <div class="flex items-center justify-between w-full">
                     <!-- Consolidated Title Row -->
                     <div class="flex items-center flex-1 min-w-0">
-                        <div class="app-title font-black leading-tight font-outfit tracking-widest cursor-pointer shrink-0" @click="resetToRoot" style="color: #0f172a !important; font-size: 32px !important;">
-                            其他專區
+                        <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                            <h1 class="text-[32px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                                其他專區
+                            </h1>
                         </div>
                         <!-- Subtitle (Active Folder) moved behind Main Title -->
                         <div v-if="activeFolder" class="flex items-center ml-3 min-w-0">
-                            <span class="text-slate-500 font-black truncate" style="font-size: 25px !important;">{{ activeFolder.name }}</span>
+                            <span :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate" style="font-size: 25px !important;">{{ activeFolder.name }}</span>
                         </div>
                     </div>
 

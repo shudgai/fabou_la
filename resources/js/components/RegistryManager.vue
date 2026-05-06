@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module">
+    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module overflow-hidden">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -18,26 +18,26 @@
 
         <!-- Header 1: Module Level (Hide titles on Desktop, keep buttons) -->
         <div v-if="currentFolder || addMode" 
-            class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full md:max-w-xl md:mx-auto transition-all duration-300"
+            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden">
-                    <div class="app-title text-[24px] font-black leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
+                    <div class="app-title text-[24px] leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
                         新增法寶登記
                     </div>
                 </div>
             </div>
-            <div v-else class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer md:hidden" @click="resetToRoot">
-                <div class="app-title text-[32px] font-black leading-tight font-outfit tracking-widest break-words" style="color: #dc2626 !important; font-size: 32px !important;">
+            <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                <div class="app-title text-[28px] leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
             </div>
             <div class="flex-1 hidden md:block"></div>
-            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto md:hidden pr-2">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto pr-2" :class="{'md:hidden': !focusedId}">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm md:hidden" style="color: white !important; font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-slate-200" title="回到清單">
@@ -51,7 +51,7 @@
             class="border-b border-slate-50 flex flex-col bg-white z-[105] w-full md:max-w-xl md:mx-auto md:hidden transition-all duration-300">
             <div class="px-2 py-2 bg-slate-50/50 flex items-center justify-between relative">
                 <!-- Left: Folder Name -->
-                <span class="text-[25px] font-bold text-slate-900 font-outfit shrink-0 w-[110px]" style="font-size: 25px !important;">{{ currentFolder.name }}</span>
+                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit shrink-0 w-[110px]" style="font-size: 25px !important; font-weight: 500 !important;">{{ currentFolder.name }}</span>
                 
                 <!-- Center: Pagination -->
                 <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
@@ -71,29 +71,29 @@
         </div>
 
         <!-- Main Scrollable Area -->
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar" style="padding-bottom: 150px;">
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px; -webkit-overflow-scrolling: touch;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
-                    <div class="flex-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="text-[32px] font-black text-red-600 tracking-tight text-center uppercase tracking-widest leading-tight" style="font-size: 32px !important;">
-                            {{ currentCategory ? (currentCategory === 'major' ? '法寶登記專區' : '其他皇恩登記簿') : '法寶登記專區' }}
-                            <br v-if="currentCategory">
-                            <span v-if="currentCategory && currentFolder" class="text-[24px] text-slate-400 font-black">- {{ currentFolder.name }} -</span>
-                        </h1>
-                    </div>
+                        <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" :style="{ color: '#dc2626 !important', fontSize: (currentCategory ? '28px' : '32px') + ' !important', paddingTop: '5px', fontWeight: '900 !important' }">
+                                {{ currentCategory ? (currentCategory === 'major' ? '法寶登記專區' : '其他皇恩登記簿') : '法寶登記專區' }}
+                                <br v-if="currentCategory">
+                                <span v-if="currentCategory && currentFolder" class="text-[24px] text-red-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-full">- {{ currentFolder.name }} -</span>
+                            </h1>
+                        </div>
                 </div>
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex flex-col items-center justify-center -space-y-6 pb-20 w-full max-w-lg mx-auto h-full">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-[40px] p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
                         <div class="relative w-[280px] h-[280px]">
                             <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                                <div class="text-[36px] font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 -translate-y-[4px]">
+                                <div class="font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important; font-size: 40px !important;">重大皇恩<br>登記簿</div>
 
                             </div>
                         </div>
@@ -105,8 +105,7 @@
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 group p-2 w-[180px] h-[180px] relative bg-white shadow-sm',
-                            currentCategory === 'major' ? 'border-yellow-400' : 'border-red-600'
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none border-0 group p-2 w-[180px] h-[180px] relative bg-white shadow-sm'
                         ]">
                         
                         <div class="relative w-[150px] h-[150px]">
@@ -120,10 +119,10 @@
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[2px]">
                                 <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] whitespace-nowrap mb-2"
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-700'"
-                                     style="font-weight: 900 !important; font-size: 24px !important;">
+                                     style="font-weight: 900 !important; font-size: 24px !important;"
+                                     :style="{ color: folder.name === '閻王仙師' ? '#0f172a !important' : '#dc2626 !important' }">
                                      {{ folder.name }}
                                 </div>
 
@@ -145,13 +144,14 @@
             <div v-else-if="currentFolder && !addMode" 
                 :class="[
                     'px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto',
-                    focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto' : ''
-                ]">
+                    focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto custom-scrollbar' : ''
+                ]"
+                style="-webkit-overflow-scrolling: touch;">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Title + Sort Button -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
-                        <h1 class="text-[32px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 32px !important;">法寶登記專區</h1>
+                        <h1 class="text-[28px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">法寶登記專區</h1>
                         <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
@@ -159,7 +159,7 @@
                     <!-- Bottom Row: Folder Name + Pagination + Reorder Button -->
                     <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full relative">
                         <!-- Left: Folder Name -->
-                        <span class="text-[25px] font-bold text-slate-900 font-outfit shrink-0 w-[120px]" style="font-size: 25px !important;">{{ currentFolder.name }}</span>
+                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit shrink-0 w-full whitespace-nowrap overflow-hidden text-ellipsis" style="font-size: 24px !important; font-weight: 500 !important;">{{ currentFolder.name }}</span>
                         
                         <!-- Center: Pagination -->
                         <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center">
@@ -178,7 +178,7 @@
                     </div>
                 </div>
 
-                <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'p-[10px]']" class="mt-0">
+                <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'px-2 py-[10px]']" class="mt-0">
                     <div v-if="loading" class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
                         <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">載入中...</p>
@@ -209,8 +209,8 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                          @click="toggleExpand(item.id)"
                              :class="[
-                                 'bg-white p-[3px] mb-4 border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-0 border-transparent shadow-none !mb-0 md:!mb-4 !rounded-none md:!rounded-3xl -mx-4 md:mx-0 z-[60]' : '',
+                                 'bg-white px-2 py-[10px] border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
+                                 focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60vh] border-transparent shadow-none !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:shadow-2xl md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
                             
@@ -298,7 +298,7 @@
                                                 </div>
                                                 <div class="space-y-1 md:col-span-2 md:text-left">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                                    <div class="app-body font-bold text-slate-900">{{ getMasterName(item.master_id) }}</div>
+                                                    <div class="app-body font-bold" :class="getMasterName(item.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ getMasterName(item.master_id) }}</div>
                                                 </div>
                                             </div>
                                             
@@ -359,16 +359,16 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="px-3 py-3 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">{{ isPalaceRecord(item) ? '宮名' : '法號/群組' }}</th>
-                                                                <th class="px-3 py-3 text-center font-black w-[130px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
-                                                                <th class="px-3 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="px-2 py-1.5 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號/群組</th>
+                                                                <th class="px-2 py-1.5 text-center font-black w-[130px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="recipient in (isPalaceRecord(item) ? getFilteredPalaces : getFilteredDharmaNames)" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-3 py-3 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ recipient.name }}</td>
+                                                            <tr v-for="recipient in getFilteredDharmaNames" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                                <td class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ recipient.name }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-50">
-                                                                    <div class="flex items-center px-3 py-3 justify-center relative">
+                                                                    <div class="flex items-center px-2 py-1.5 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
                                                                             type="text"
@@ -379,14 +379,14 @@
                                                                             class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                         </button>
-                                                                        <span v-else :class="(editMap[item.id + '-' + recipient.id]?.obtained_date || (typeof recipient.id === 'string' && editMap[item.id + '-' + recipient.id.replace('昇','升')]?.obtained_date)) ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
-                                                                            {{ formatDisplayDate(editMap[item.id + '-' + recipient.id]?.obtained_date || (typeof recipient.id === 'string' ? editMap[item.id + '-' + recipient.id.replace('昇','升')]?.obtained_date : null)) || '-' }}
+                                                                        <span v-else :class="editMap[item.id + '-' + recipient.id]?.obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit" style="font-family: 'PMingLiU', serif; color: rgb(220, 20, 40) !important;">
+                                                                            {{ formatDisplayDate(editMap[item.id + '-' + recipient.id]?.obtained_date) || '-' }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-0 text-black">
                                                                     <div @click.stop="triggerRemarksEdit(item, recipient.id)" 
-                                                                        class="w-full py-3 px-3 flex items-center justify-center transition-colors">
+                                                                        class="w-full py-1.5 px-2 flex items-center justify-center transition-colors">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
                                                                         <span v-else-if="item.dharma_name_registries?.find(r => (getDharmaNameText(r).replace('升','昇') === (typeof recipient.name === 'string' ? recipient.name.replace('升','昇') : recipient.name)))?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
                                                                         <span v-else class="text-[15px] text-slate-200">-</span>
@@ -402,16 +402,16 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                 <th class="px-3 py-3 text-center font-black w-[110px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
-                                                                 <th class="px-3 py-3 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">{{ isPalaceRecord(item) ? '宮名' : '法號' }}</th>
-                                                                 <th class="px-3 py-3 text-left font-black w-[90px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
-                                                                 <th class="px-3 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                 <th class="px-2 py-1.5 text-center font-black w-[110px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
+                                                                 <th class="px-2 py-1.5 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
+                                                                 <th class="px-2 py-1.5 text-left font-black w-[90px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
+                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                              </tr>
                                                          </thead>
                                                         <tbody>
                                                             <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
                                                                 <td class="p-0 text-black border-r border-slate-200">
-                                                                    <div class="flex items-center px-3 py-3 justify-center relative">
+                                                                    <div class="flex items-center px-2 py-1.5 justify-center relative">
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + dnr.dharma_name_id].obtained_date" 
                                                                             type="text"
@@ -425,9 +425,9 @@
                                                                         <span v-else class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
-                                                                <td @click="openRemarks(dnr)" class="px-3 py-3 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
+                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
-                                                                    <div class="w-full py-3 px-3 flex items-center">
+                                                                    <div class="w-full py-1.5 px-2 flex items-center">
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + (dnr.dharma_name_id || dnr.custom_name)].relationship"
                                                                             class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
@@ -439,7 +439,7 @@
                                                                 </td>
                                                                 <td class="p-0 text-black">
                                                                     <div @click.stop="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full py-3 px-3 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+                                                                        class="w-full py-1.5 px-2 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
                                                                         <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400 font-outfit">...</span>
                                                                         <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
                                                                              :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black font-outfit' : 'text-[18px] text-amber-500 animate-pulse font-outfit'">
@@ -735,7 +735,7 @@ const addActions = computed(() => {
             handler: () => openAdd('single')
         },
         {
-            label: '多筆新增',
+            label: '多筆貼上新增',
             description: '貼上文字批次匯入',
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-blue-50 text-blue-600',
@@ -757,13 +757,6 @@ const addActions = computed(() => {
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-amber-50 text-amber-600',
             handler: () => { reorderMode.value = !reorderMode.value; }
-        });
-        actions.push({
-            label: '匯出 Excel 報表',
-            description: '下載此資料夾完整清單',
-            icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-            colorClass: 'bg-slate-100 text-slate-600',
-            handler: () => downloadAllData()
         });
     }
 
@@ -871,20 +864,6 @@ watch(allTreasures, (newVal) => {
             }
         });
 
-        // 確保宮名紀錄的所有宮位都有 editMap 條目
-        if (isPalaceRecord(item)) {
-            palaceSortOrder.forEach(pName => {
-                const key = `${item.id}-${pName}`;
-                if (!editMap.value[key]) {
-                    editMap.value[key] = {
-                        obtained_date: '',
-                        remarks: '',
-                        relationship: '',
-                        related_personnel: []
-                    };
-                }
-            });
-        }
     });
 }, { immediate: true, deep: false });
 
@@ -943,17 +922,6 @@ const folders = computed(() => {
     }));
 });
 
-const palaceSortOrder = [
-    '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮',
-    '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
-];
-
-// Normalized check to handle variants like 升/昇
-const isPalaceRecord = (item) => {
-    if (!item.dharma_name_registries || item.dharma_name_registries.length === 0) return false;
-    const palaceRegex = /^玄(通|應|心|妙|昇|升|願|法|閻|窕|瑤|義)宮$/;
-    return item.dharma_name_registries.some(r => palaceRegex.test(getDharmaNameText(r)));
-};
 
 const loadData = async (page = 1) => {
     loading.value = true;
@@ -1010,6 +978,10 @@ watch([sortDesc, currentFolder, currentCategory], () => {
 });
 
 const filteredTreasures = computed(() => {
+    // If an item is focused, only show that item
+    if (focusedId.value) {
+        return allTreasures.value.filter(t => t.id === focusedId.value);
+    }
     // With server-side pagination, allTreasures.value already contains filtered data
     return allTreasures.value;
 });
@@ -1033,18 +1005,6 @@ const getDharmaNameText = (dnr) => {
 const getSortedRegistries = (item) => {
     let registries = [...(item.dharma_name_registries || [])];
     
-    if (isPalaceRecord(item)) {
-        return registries.sort((a, b) => {
-            const nameA = getDharmaNameText(a).replace('升', '昇');
-            const nameB = getDharmaNameText(b).replace('升', '昇');
-            const indexA = palaceSortOrder.indexOf(nameA);
-            const indexB = palaceSortOrder.indexOf(nameB);
-            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-            if (indexA !== -1) return -1;
-            if (indexB !== -1) return 1;
-            return nameA.localeCompare(nameB, 'zh-Hant');
-        });
-    }
 
     return registries.sort((a, b) => {
         const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
@@ -1060,12 +1020,6 @@ const getFilteredDharmaNames = computed(() => {
     return dharmaNames.value.filter(dn => dn.name?.toLowerCase().includes(q));
 });
 
-const getFilteredPalaces = computed(() => {
-    const q = searchQuery.value?.toLowerCase().trim();
-    const list = palaceSortOrder.map(name => ({ id: name, name }));
-    if (!q) return list;
-    return list.filter(p => p.name.toLowerCase().includes(q));
-});
 
 const getFilteredSortedRegistries = (item) => {
     let list = getSortedRegistries(item);
@@ -1204,10 +1158,8 @@ const toggleExpand = (id) => {
     } else {
         nextExpanded.clear();
         nextExpanded.add(id);
-        // 電腦版不進入 Solo Mode (focusedId)，僅在原位展開
-        if (!isDesktop.value) {
-            focusedId.value = id;
-        }
+        // 點擊後進入焦點模式 (Solo Mode)，隱藏其他資料
+        focusedId.value = id;
         showItemDetails.value = false;
     }
     expandedIds.value = nextExpanded;
@@ -1504,7 +1456,24 @@ const triggerBatchSave = async (batchData) => {
                 if (treasureName) {
                     treasureName = treasureName.replace(/[：:。！？]$/, '').trim();
                     const dnr = recipients.map(rawName => {
-                        let translated = translateName(rawName).trim();
+                        let cleanRaw = rawName.trim();
+                        // 處理括號規則：若有括號，優先提取內容
+                        let parenMatch = cleanRaw.match(/^(.*?)\((.*?)\)$/);
+                        let nameForProcessing = cleanRaw;
+                        let extraRemarkFromParen = '';
+
+                        if (parenMatch) {
+                            // 範例：閻尊(玄閻宮) -> name=閻尊, extra=玄閻宮
+                            // 範例：(元續之夫) -> name=元續之夫, extra=""
+                            if (parenMatch[1].trim()) {
+                                nameForProcessing = parenMatch[1].trim();
+                                extraRemarkFromParen = parenMatch[2].trim();
+                            } else {
+                                nameForProcessing = parenMatch[2].trim();
+                            }
+                        }
+
+                        let translated = translateName(nameForProcessing).trim();
                         if (!translated) return null;
 
                         let relMatch = translated.match(/^(.*?)([之的].+)$/);
@@ -1515,13 +1484,11 @@ const triggerBatchSave = async (batchData) => {
                             if (matchedDn) relMatch = [translated, matchedDn.name, translated.substring(matchedDn.name.length)];
                         }
 
+                        const finalDate = lineDate || blockDate || getTodayStr();
+                        const dParts = finalDate.split('-');
+                        const dStr = `${dParts[0]}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
+
                         if (relMatch) {
-                            const finalDate = lineDate || blockDate || getTodayStr();
-                            const dParts = finalDate.split('-');
-                            // 使用西元年格式，與逐筆新增一致
-                            const dStr = `${dParts[0]}/${dParts[1].padStart(2,'0')}/${dParts[2].padStart(2,'0')}`;
-                            
-                            // 關係詞翻譯規則（與怨靈模組相同）
                             const translateRel = (rel) => {
                                 if (!rel) return rel;
                                 const r = rel.trim();
@@ -1534,11 +1501,17 @@ const triggerBatchSave = async (batchData) => {
                             
                             const nameOnly = relMatch[1].trim();
                             const relPart = translateRel(relMatch[2]);
-                            // 格式：日期  法號關係詞（雙空格）
-                            const relEntry = `${dStr}  ${nameOnly}${relPart}`;
+                            // 格式：日期  法號關係詞
+                            let relEntry = `${dStr}  ${nameOnly}${relPart}`;
+                            if (extraRemarkFromParen) relEntry += ` (${extraRemarkFromParen})`;
                             return { custom_name: nameOnly, remarks: relEntry, obtained_date: null };
                         }
-                        return { custom_name: translated, remarks: lineRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
+                        
+                        let finalRemarks = lineRemarks;
+                        if (extraRemarkFromParen) {
+                            finalRemarks = (finalRemarks ? finalRemarks + '\n' : '') + extraRemarkFromParen;
+                        }
+                        return { custom_name: translated, remarks: finalRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
                     }).filter(n => n !== null);
 
                     const newRec = {
@@ -1734,6 +1707,12 @@ const deleteItem = async (id) => {
         const errorMsg = e.response?.data?.error || '刪除失敗';
         persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
+    }
+};
+
+const executeDelete = () => {
+    if (deleteConfirmId.value) {
+        deleteItem(deleteConfirmId.value);
     }
 };
 

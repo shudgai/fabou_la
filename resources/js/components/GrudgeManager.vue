@@ -22,15 +22,15 @@
         </div>
 
         <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] h-[60px] w-full md:max-w-xl md:mx-auto">
-            <div class="flex-1 flex justify-start items-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-[32px] font-black font-outfit tracking-tight truncate" style="color: #0f172a !important; font-size: 32px !important;">{{ displayTitle }}</h1>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-3 py-1.5 text-[16px] text-white font-black bg-indigo-600 rounded-xl active:scale-95 transition-all shadow-sm border border-indigo-500 tracking-tighter" style="font-size: 16px !important; color: white !important;">
+        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full" style="padding-bottom: 8px;">
+            <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                <h1 class="text-[30px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">{{ displayTitle }}</h1>
+            </div>
+            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2" style="padding-top: 15px;">
+                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-[15px] text-indigo-600 active:scale-95 transition-all" style="font-size: 15px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-            </div>
-            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2">
-                <button @click="toggleShowTotal" class="text-[16px] text-slate-900 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button @click="toggleShowTotal" class="text-[16px] text-slate-900 active:scale-95 transition-all" style="font-size: 16px !important;">
                     總數
                 </button>
                 <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
@@ -40,7 +40,7 @@
         </div>
         
         <!-- Search Component (Enhanced with persistent X) -->
-        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full md:max-w-xl md:mx-auto">
+        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full md:max-w-xl md:mx-auto" style="padding-bottom: 80px;">
+        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full" style="padding-bottom: 80px; -webkit-overflow-scrolling: touch;">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
             <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
@@ -83,13 +83,9 @@
                 <template v-if="!activeDateGroup && !focusedId">
                     <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
                         @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
-                        class="px-4 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
+                        class="p-[10px] bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
                         <div class="flex items-center">
                             <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
-                        </div>
-                        <div class="flex items-center text-slate-400">
-                            <span class="app-body font-medium mr-3" style="font-size: 15px !important;">共 {{ group.count }} 筆</span>
-                            <svg class="w-5 h-5 -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </div>
                     </div>
                 </template>
@@ -108,7 +104,7 @@
                         v-show="focusedId === null || focusedId === item.id"
                         @click.stop="toggleExpand(item.id)"
                         :class="[
-                            'py-[9px] px-[12px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                            'p-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
                             { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
                             { 'border-b-0': focusedId === item.id }
                         ]"
@@ -432,16 +428,10 @@ const addActions = computed(() => [
         } 
     },
     { 
-        label: '多筆新增', 
+        label: '多筆貼上新增', 
         description: '直接貼上法號清單批量載錄',
         icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         handler: () => { showBatchImport.value = true; } 
-    },
-    { 
-        label: '匯出 EXCEL', 
-        description: '下載當前篩選名單報表',
-        icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
-        handler: () => { exportToExcel(); } 
     },
     { 
         label: '複製貼 LINE', 
@@ -592,6 +582,15 @@ const loadData = async (page = 1) => {
     }
 };
 
+const fetchUsers = async () => {
+    try {
+        const res = await axios.get('/api/dharma-names-list');
+        users.value = res.data;
+    } catch (e) {
+        console.error('Failed to fetch dharma names:', e);
+    }
+};
+
 watch([searchQuery, activeDateGroup], () => {
     currentPage.value = 1;
     loadData(1);
@@ -695,6 +694,7 @@ watch(currentFolder, (newVal) => {
 
 onMounted(() => {
     loadData();
+    fetchUsers();
 });
 </script>
 

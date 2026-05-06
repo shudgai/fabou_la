@@ -8,7 +8,7 @@
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
-                    <div class="text-[25px] font-black leading-tight font-outfit tracking-tight text-red-600 uppercase" style="font-size: 25px !important;">
+                    <div class="text-[28px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
                         重大皇恩
                     </div>
                 </div>
@@ -267,7 +267,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
+            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
                     class="w-full max-w-md bg-indigo-600 h-[54px] rounded-2xl text-white font-black text-[20px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
                     style="font-size: 20px !important; color: white !important;">
@@ -275,7 +275,7 @@
                 </button>
             </div>
 
-            <mobile-navbar :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
+            <mobile-navbar class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
             
             <datalist id="dharma-names">
                 <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />

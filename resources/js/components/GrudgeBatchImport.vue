@@ -6,12 +6,12 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-[23px] font-black tracking-tight text-slate-900">
-                    怨靈多筆載錄
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 relative">
+                <h3 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
+                    怨靈載錄專區-多筆載錄
                 </h3>
-                <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95 absolute right-2 top-1/2 -translate-y-1/2">
+                    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="px-4 pb-24 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4">
+            <div class="px-4 pb-[8.5vh] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
@@ -114,7 +114,7 @@
                                 style="color: white !important;">
                             確認匯入
                         </button>
-                        <button @click="persistentToast = null" 
+                        <button @click="handleToastConfirm" 
                                 :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
                                 class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
                                 :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
@@ -141,6 +141,14 @@ const emit = defineEmits(['save', 'cancel', 'success']);
 const batchText = ref('');
 const loading = ref(false);
 const persistentToast = ref(null);
+
+const handleToastConfirm = () => {
+    const type = persistentToast.value?.type;
+    persistentToast.value = null;
+    if (type === 'success') {
+        emit('cancel');
+    }
+};
 
 const translateRel = (rel) => {
     if (!rel) return '';
@@ -376,10 +384,9 @@ const executeBatchSave = async () => {
         // Close form after a delay or let user see the success toast
         setTimeout(() => {
             if (persistentToast.value?.type === 'success') {
-                persistentToast.value = null;
-                emit('cancel');
+                handleToastConfirm();
             }
-        }, 3000);
+        }, 2000);
     } catch (error) {
         console.error('Batch import failed:', error);
         persistentToast.value = { msg: '匯入失敗：' + (error.response?.data?.message || error.message), type: 'error' };

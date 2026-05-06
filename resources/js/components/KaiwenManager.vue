@@ -1,15 +1,17 @@
 <template>
-    <div class="bg-slate-50 h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 kaiwen-module">
+    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 kaiwen-module">
         <AddActionMenu 
             :show="showAddMenu" 
             :actions="addActions" 
             @close="showAddMenu = false"
         />
         <!-- Header (Shared) -->
-        <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full md:max-w-2xl md:mx-auto" style="padding: 8px 10px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-center min-w-0 py-1 pl-2 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[28px] font-bold leading-tight font-outfit tracking-widest break-words" style="color: rgb(168, 85, 247); font-size: 28px !important;">
-                    開文專區
+        <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
+            <div class="flex-1 flex flex-col justify-center min-w-0 pl-2 cursor-pointer" @click="resetToRoot">
+                <div class="flex-1 flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
+                    <h1 class="text-[32px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                        開文專區
+                    </h1>
                 </div>
             </div>
             
@@ -78,7 +80,7 @@
 
 
         <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1] w-full md:max-w-xl md:mx-auto">
+        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1] w-full">
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 w-full">
                 <!-- Removed top add button -->
@@ -92,7 +94,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white border border-slate-200 rounded-2xl py-[15px] px-[12px] shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white rounded-2xl py-[15px] px-[12px] cursor-pointer transition-all active:scale-[0.99] relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
@@ -212,7 +214,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white border border-slate-200 rounded-2xl py-[15px] px-[12px] shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white rounded-2xl py-[15px] px-[12px] cursor-pointer transition-all active:scale-[0.99] relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
@@ -335,32 +337,32 @@
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">審核狀態</label>
                             <div class="flex items-center space-x-2 h-[44px]">
                                 <button @click="form.status = null" 
-                                    :class="!form.status ? 'bg-slate-500 text-white border-slate-600 shadow-md' : 'bg-slate-50 text-slate-400 border-slate-100'" 
-                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :class="!form.status ? 'bg-slate-500 text-white' : 'bg-slate-50 text-slate-400'" 
+                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black"
                                     :style="{ color: !form.status ? 'white !important' : '#94a3b8 !important' }">待定</button>
                                 <button @click="form.status = '合格'" 
-                                    :class="form.status === '合格' ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-400 border-slate-100'" 
-                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :class="form.status === '合格' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'" 
+                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black"
                                     :style="{ color: form.status === '合格' ? 'white !important' : '#94a3b8 !important' }">合格</button>
                                 <button @click="form.status = '不合格'" 
-                                    :class="form.status === '不合格' ? 'bg-rose-600 text-white border-rose-500 shadow-lg' : 'bg-slate-50 text-slate-400 border-slate-100'" 
-                                    class="flex-1 h-full rounded-xl border transition-all active:scale-95 tracking-widest text-[16px] font-black"
+                                    :class="form.status === '不合格' ? 'bg-rose-600 text-white' : 'bg-slate-50 text-slate-400'" 
+                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black"
                                     :style="{ color: form.status === '不合格' ? 'white !important' : '#94a3b8 !important' }">不合格</button>
                             </div>
                         </div>
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white border border-slate-200 px-3 py-1 outline-none shadow-sm focus:border-purple-300 transition-all resize-none overflow-hidden" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important; line-height: 1.4;"></textarea>
+                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important; line-height: 1.4;"></textarea>
                         </div>
                         <div v-else-if="addMode === 'weekly_manual'" class="space-y-1">
                              <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">抬頭</label>
-                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 outline-none shadow-sm focus:border-purple-300 transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
+                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
@@ -368,14 +370,14 @@
 
                         <div class="space-y-1">
                             <label class="ml-1" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important; color: #1e293b !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="bg-white rounded-xl overflow-hidden">
                                 <div v-for="(char, i) in titleChars" :key="i" class="flex items-center bg-white border-b border-slate-50 last:border-0 group">
                                     <div class="w-10 h-9 flex items-center justify-center bg-slate-50/50 border-r border-slate-100 transition-colors" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #64748b !important; font-size: 17px !important;">{{ char }}</div>
                                     <input v-model="weeklyLines[i]" type="text" placeholder="接著輸入..." class="flex-1 h-9 px-3 bg-transparent outline-none placeholder:text-slate-200" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;">
                                 </div>
                             </div>
                             <div v-else>
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white border border-slate-200 p-3 outline-none focus:border-purple-300 transition-all leading-[1.4] shadow-sm" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;"></textarea>
+                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4]" style="font-family: 'Montserrat', sans-serif !important; font-weight: 400 !important; color: #0f172a !important; font-size: 17px !important;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1180,13 +1182,13 @@ const executeDelete = async () => {
 }
 
 /* Kaiwen Specific Font Size Overrides */
-:global(body.font-small) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+:global(body.font-small) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
     font-size: 16px !important;
 }
-:global(body.font-medium) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+:global(body.font-medium) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
     font-size: 18px !important;
 }
-:global(body.font-large) .kaiwen-module :where(.app-body, p, td, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
+:global(body.font-large) .kaiwen-module :where(.app-body, p, td, span, div, input, textarea, .text-\[18px\], .text-\[17px\], .text-\[16px\]) {
     font-size: 21px !important;
 }
 

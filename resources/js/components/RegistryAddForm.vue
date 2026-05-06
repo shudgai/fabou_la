@@ -195,48 +195,6 @@
                             <span class="text-[16px] font-black">新增人員</span>
                         </button>
 
-                        <!-- Palace Logic Notice & Table -->
-                        <div v-if="isPalaceMode" class="mt-6 space-y-4">
-
-                            <div v-if="hasPalaceName" class="overflow-x-auto rounded-[24px] border border-slate-100 shadow-sm bg-white animate-fade-in">
-                                <table class="w-full border-collapse bg-white text-[16px]">
-                                    <thead>
-                                        <tr class="bg-indigo-50/50 text-slate-700 font-outfit">
-                                            <th class="border-b border-slate-100 px-3 py-3 text-left font-black w-[80px]">宮名</th>
-                                            <th class="border-b border-slate-100 px-2 py-3 text-center font-black">取得日期</th>
-                                            <th class="border-b border-slate-100 px-3 py-3 text-center font-black w-[60px]">備註</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="pName in palaceSortOrder" :key="pName" class="hover:bg-slate-50 transition-colors">
-                                            <td class="border-b border-slate-50 px-3 py-3 font-black text-black whitespace-nowrap bg-slate-50/20 font-outfit">{{ pName }}</td>
-                                            <td class="border-b border-slate-50 p-1 text-black">
-                                                <div class="flex items-center px-1 py-1 justify-center relative">
-                                                    <input v-model="palaceData[pName].obtained_date" 
-                                                        type="text"
-                                                        placeholder="日期"
-                                                        class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-[14px] font-black font-outfit text-center focus:ring-2 focus:ring-indigo-100 outline-none"
-                                                        style="color: rgb(220, 20, 40) !important;">
-                                                    <button @click.stop="activePicker = { idx: pName, field: 'obtained_date', title: pName + '取得日期' }"
-                                                        class="absolute right-2 text-slate-300 hover:text-indigo-600 p-0.5">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td class="border-b border-slate-50 p-1 text-black">
-                                                <div @click.stop="$emit('openRemarksEdit', { idx: pName, remarks: palaceData[pName].remarks })" 
-                                                    class="w-full py-2 px-3 flex items-center justify-center cursor-pointer active:scale-90 transition-all">
-                                                    <span v-if="palaceData[pName].remarks" class="text-[18px] text-amber-500 animate-pulse">●</span>
-                                                    <span v-else class="text-slate-200">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
 
                 <!-- Batch Mode Fields (Matching Mockup) -->
@@ -300,22 +258,11 @@
                 <!-- Dharma Names & Palaces Auto-complete List -->
                 <datalist id="dharma-names">
                     <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
-                    <option value="玄通宮" />
-                    <option value="玄應宮" />
-                    <option value="玄心宮" />
-                    <option value="玄妙宮" />
-                    <option value="玄昇宮" />
-                    <option value="玄願宮" />
-                    <option value="玄法宮" />
-                    <option value="玄閻宮" />
-                    <option value="玄窕宮" />
-                    <option value="玄瑤宮" />
-                    <option value="玄義宮" />
                 </datalist>
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white h-[52px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : '確認載錄' }}
                 </button>
@@ -327,6 +274,7 @@
 
             <!-- Global Mobile Navbar -->
             <mobile-navbar 
+                class="md:hidden"
                 :can-back="false"
                 @home="$emit('cancel')"
                 :show-action="false"
@@ -344,12 +292,6 @@
         <compact-date-picker 
             v-if="activePicker && typeof activePicker.idx === 'number'"
             v-model="personnel[activePicker.idx][activePicker.field]"
-            :title="activePicker.title"
-            @close="activePicker = null"
-        />
-        <compact-date-picker 
-            v-if="activePicker && typeof activePicker.idx === 'string' && activePicker.idx !== 'main'"
-            v-model="palaceData[activePicker.idx][activePicker.field]"
             :title="activePicker.title"
             @close="activePicker = null"
         />
@@ -389,24 +331,6 @@ const treasureNames = computed(() => {
     return treasureNamesText.value.split(/[\n\r]+|[\s\t]{2,}/).filter(n => n.trim());
 });
 
-const palaceSortOrder = [
-    '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮',
-    '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
-];
-
-const palaceData = ref(palaceSortOrder.reduce((acc, name) => {
-    acc[name] = { obtained_date: '', remarks: '' };
-    return acc;
-}, {}));
-
-const isPalaceMode = computed(() => {
-    return form.value.master_id === 8; // 閻王仙師
-});
-
-const hasPalaceName = computed(() => {
-    const palaceRegex = /^玄(通|應|心|妙|昇|升|願|法|閻|窕|瑤|義)宮$/;
-    return personnel.value.some(p => palaceRegex.test(p.custom_name));
-});
 
 const cleanedTreasureNames = computed(() => treasureNames.value);
 
@@ -865,27 +789,6 @@ const handleSubmit = async () => {
         // Clean up personnel: remove empty rows
         let cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
 
-        // If Palace Mode, merge palaceData into personnel
-        if (isPalaceMode.value && hasPalaceName.value) {
-            palaceSortOrder.forEach(pName => {
-                const pInfo = palaceData.value[pName];
-                if (pInfo.obtained_date || pInfo.remarks) {
-                    // Check if already in personnel (to avoid duplicates)
-                    const existingIdx = cleanedPersonnel.findIndex(p => p.custom_name.replace('升', '昇') === pName.replace('升', '昇'));
-                    if (existingIdx !== -1) {
-                        if (pInfo.obtained_date) cleanedPersonnel[existingIdx].obtained_date = pInfo.obtained_date;
-                        if (pInfo.remarks) cleanedPersonnel[existingIdx].remarks = pInfo.remarks;
-                    } else {
-                        cleanedPersonnel.push({
-                            custom_name: pName,
-                            relationship: '',
-                            obtained_date: pInfo.obtained_date,
-                            remarks: pInfo.remarks
-                        });
-                    }
-                }
-            });
-        }
 
         // If multiple names entered in textarea, handle them
         if (cleanedTreasureNames.value.length > 0) {

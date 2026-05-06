@@ -74,33 +74,111 @@ class TeachingService
 
     public function create(array $data): Teaching
     {
+        $user = auth()->user();
+        $cleanName = trim($data['name'] ?? '');
         $data = $this->resolveRelations($data);
-        $dnIds = $data['dharma_name_ids'] ?? [];
         
-        // Auto-resolve Dharma Name IDs from target_remarks if empty
-        if (empty($dnIds) && !empty($data['target_remarks'])) {
-            $matched = \App\Models\DharmaName::where('name', trim($data['target_remarks']))->first();
-            if ($matched) {
-                $dnIds = [$matched->id];
+        $nameAliasMap = [
+            '金容' => '靈果', '金涓' => '靈慧', '金梅' => '靈妙', '金蘭' => '靈智', '金平' => '靈平',
+            '金瑞' => '龍戰', '金耀' => '龍勝', '金旭' => '靈心', '金熹' => '靈情', '金吉' => '靈奇',
+            '金祥' => '靈傾', '金恩' => '靈昡', '金鈺' => '元續', '金穎' => '赤峰'
+        ];
+
+        // 1. Global Unique Name Merging
+        $teaching = Teaching::where('user_id', $user->id)
+            ->where('name', $cleanName)
+            ->first();
+
+        if (!$teaching) {
+            $data['user_id'] = $user->id;
+            $teaching = Teaching::create($data);
+        } else {
+            $teaching->update(array_filter([
+                'remarks' => $data['remarks'] ?? null,
+                'target_remarks' => $data['target_remarks'] ?? null,
+            ]));
+        }
+
+        $dnIds = $data['dharma_name_ids'] ?? [];
+        $targetRemarks = $data['target_remarks'] ?? '';
+        $remarksList = $this->normalizeRemarks($teaching->remarks);
+
+        // 2. Parentheses Parsing (if name contains parens, e.g. "元續(先生)")
+        if ($targetRemarks && preg_match('/^(.*?)\((.*?)\)$/u', $targetRemarks, $m)) {
+            if (trim($m[1])) {
+                $targetRemarks = trim($m[1]);
+                $extra = trim($m[2]);
+                if (!in_array($extra, $remarksList)) $remarksList[] = $extra;
             } else {
-                // Check if it's a group name
-                $group = \App\Models\Group::where('name', trim($data['target_remarks']))->with('dharmaNames')->first();
+                $targetRemarks = trim($m[2]);
+            }
+        }
+
+        // 3. Dharma Name Alias Translation
+        if ($targetRemarks && isset($nameAliasMap[$targetRemarks])) {
+            $targetRemarks = $nameAliasMap[$targetRemarks];
+        }
+
+        // 4. Relationship Translation
+        if ($targetRemarks) {
+            $relationshipMatch = null;
+            if (preg_match('/^(.*?)([之的].+)$/u', $targetRemarks, $matches)) {
+                $relationshipMatch = $matches;
+            } else {
+                $dnNames = \App\Models\DharmaName::pluck('name')->toArray();
+                usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                foreach ($dnNames as $dnName) {
+                    if (str_starts_with($targetRemarks, $dnName) && mb_strlen($targetRemarks) > mb_strlen($dnName)) {
+                        $relationshipMatch = [$targetRemarks, $dnName, mb_substr($targetRemarks, mb_strlen($dnName))];
+                        break;
+                    }
+                }
+            }
+
+            if ($relationshipMatch) {
+                $targetRemarks = $relationshipMatch[1];
+                $relRaw = trim($relationshipMatch[2] ?? '');
+                $relTranslated = match(true) {
+                    $relRaw === '之父' || $relRaw === '父' => '父親',
+                    $relRaw === '之母' || $relRaw === '母' => '母親',
+                    $relRaw === '之嬤' || $relRaw === '嬤' => '奶奶',
+                    $relRaw === '之夫' || $relRaw === '夫' => '先生',
+                    default => preg_replace('/^[之的]/u', '', $relRaw),
+                };
+                $datePrefix = isset($data['date']) ? date('Y/m/d', strtotime($data['date'])) : '';
+                $relEntry = $datePrefix ? "{$datePrefix}  " . trim($targetRemarks) . $relTranslated : trim($targetRemarks) . $relTranslated;
+                if (!in_array($relEntry, $remarksList)) $remarksList[] = $relEntry;
+                $teaching->update(['remarks' => array_values($remarksList)]);
+                // Crucially, don't link the actual DharmaName if it's a relationship record for the parent
+                $targetRemarks = null; 
+            }
+        }
+
+        // 5. Sync Dharma Names
+        if ($targetRemarks) {
+            $matched = \App\Models\DharmaName::where('name', trim($targetRemarks))->first();
+            if ($matched) {
+                $dnIds[] = $matched->id;
+            } else {
+                $group = \App\Models\Group::where('name', trim($targetRemarks))->with('dharmaNames')->first();
                 if ($group) {
-                    $dnIds = $group->dharmaNames->pluck('id')->toArray();
+                    $dnIds = array_merge($dnIds, $group->dharmaNames->pluck('id')->toArray());
                 }
             }
         }
 
-        // Force set user_id to current authenticated user
-        $data['user_id'] = auth()->id();
-        
-        $teaching = Teaching::create($data);
-        
         if (!empty($dnIds)) {
-            $teaching->dharmaNames()->sync($dnIds);
+            $teaching->dharmaNames()->syncWithoutDetaching(array_unique($dnIds));
         }
         
         return $teaching->load('dharmaNames');
+    }
+
+    private function normalizeRemarks($raw): array
+    {
+        if (is_array($raw)) return array_values(array_filter(array_map('trim', $raw), fn($v) => $v !== ''));
+        if (is_string($raw) && $raw !== '') return array_values(array_filter(array_map('trim', preg_split('/[\n；;]/u', $raw)), fn($v) => $v !== ''));
+        return [];
     }
 
     public function findById(int $id): ?Teaching
