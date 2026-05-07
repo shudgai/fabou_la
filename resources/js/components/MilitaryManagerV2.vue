@@ -666,15 +666,12 @@ const copyToLine = () => {
 const exportToExcel = () => {
     if (!filteredItems.value.length) return alert('目前沒有資料可供匯出');
     
-    // Load XLSX via script if not present
+    // Check if XLSX is loaded (should be pre-loaded in onMounted)
     if (typeof XLSX === 'undefined') {
-        const script = document.createElement('script');
-        script.src = "https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js";
-        script.onload = () => performExcelExport();
-        document.head.appendChild(script);
-    } else {
-        performExcelExport();
+        alert('匯出元件載入中，請稍候再試...');
+        return;
     }
+    performExcelExport();
 };
 
 const performExcelExport = () => {
@@ -959,7 +956,17 @@ watch(currentFolder, (newVal) => {
     }
 });
 
-onMounted(loadData);
+onMounted(() => {
+    loadData();
+
+    // Pre-load XLSX for iOS compatibility (avoids gesture timeout)
+    if (typeof XLSX === 'undefined') {
+        const script = document.createElement('script');
+        script.src = "https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+    }
+});
 </script>
 
 <style scoped>

@@ -28,32 +28,50 @@ export const safeLocalStorage = {
 
 // C3: Clipboard write with iOS fallback
 // navigator.clipboard.writeText fails on iOS unless called synchronously from user gesture
+// C3: Clipboard write with iOS fallback
+// navigator.clipboard.writeText fails on iOS unless called synchronously from user gesture.
+// Also, it only works in Secure Contexts (HTTPS/localhost).
 export async function writeClipboard(text) {
+    // 1. Try modern Clipboard API (if available and in secure context)
     if (navigator.clipboard && navigator.clipboard.writeText) {
         try {
             await navigator.clipboard.writeText(text);
             return true;
         } catch (e) {
-            // Fall back to execCommand
+            console.warn('Modern Clipboard API failed, falling back...', e);
         }
     }
-    // iOS Safari fallback: create temporary textarea and use execCommand('copy')
+
+    // 2. iOS Safari / HTTP Fallback: execCommand('copy')
+    // CRITICAL: This must be called as soon as possible after a user gesture.
+    // If there is a long async delay (e.g., API call) before this, iOS will block it.
     try {
         const textarea = document.createElement('textarea');
         textarea.value = text;
+        
+        // Ensure textarea is not visible but part of the DOM
         textarea.style.position = 'fixed';
         textarea.style.left = '-9999px';
-        textarea.style.top = '-9999px';
+        textarea.style.top = '0';
+        textarea.style.opacity = '0';
+        
+        // Prevent keyboard from popping up on mobile
+        textarea.setAttribute('readonly', '');
         document.body.appendChild(textarea);
+        
+        // Selection for iOS
         textarea.focus();
-        textarea.select();
+        textarea.setSelectionRange(0, 999999);
+        
         const success = document.execCommand('copy');
         document.body.removeChild(textarea);
-        return success;
+        
+        if (success) return true;
     } catch (e) {
-        console.error('Clipboard copy failed:', e);
-        return false;
+        console.error('All clipboard methods failed:', e);
     }
+
+    return false;
 }
 
 // C4: iOS Safari download fallback - <a download> is ignored on iOS
@@ -79,5 +97,33 @@ export function downloadBlob(blob, filename) {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+}
+
+// C6: Body scroll lock for iOS (Prevents rubber-band background scrolling when modals are open)
+let lockCount = 0;
+let scrollPos = 0;
+
+export function lockBodyScroll() {
+    if (lockCount === 0) {
+        scrollPos = window.pageYOffset;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollPos}px`;
+        document.body.style.width = '100%';
+        document.body.style.height = '100dvh'; // Use dynamic viewport height
+    }
+    lockCount++;
+}
+
+export function unlockBodyScroll() {
+    lockCount = Math.max(0, lockCount - 1);
+    if (lockCount === 0) {
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('top');
+        document.body.style.removeProperty('width');
+        document.body.style.removeProperty('height');
+        window.scrollTo(0, scrollPos);
     }
 }

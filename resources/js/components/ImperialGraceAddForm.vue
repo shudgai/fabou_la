@@ -293,10 +293,11 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted, nextTick } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
     mode: String,
@@ -306,6 +307,17 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'close']);
+
+// Watch for mode changes to handle body scroll locking
+watch(() => props.mode, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+    if (props.mode) unlockBodyScroll();
+});
+
 const localMode = ref(props.mode || 'single');
 const batchType = ref('multi');
 const form = ref({ ...props.initialData });

@@ -2,7 +2,7 @@
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden p-[28px] min-w-[360px]">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -13,24 +13,24 @@
                 </div>
                 <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
                     <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                    <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100">確定刪除</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100">確定</button>
                 </div>
             </div>
         </div>
 
         <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full" style="padding-bottom: 8px;">
+        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-[30px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] !text-[30px] pt-[5px]">{{ displayTitle }}</h1>
             </div>
-            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2" style="padding-top: 15px;">
-                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-[15px] text-indigo-600 active:scale-95 transition-all" style="font-size: 15px !important;">
+            <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
+                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 !text-[15px] text-indigo-600 active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleShowTotal" class="text-[16px] text-slate-900 active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button @click="toggleShowTotal" class="!text-[16px] text-slate-900 active:scale-95 transition-all">
                     總數
                 </button>
                 <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
@@ -63,8 +63,8 @@
             <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-2xl flex flex-col pointer-events-auto border border-slate-100 relative w-auto min-w-[280px] max-w-md mx-auto">
                 <div class="flex items-center justify-between" :class="{ 'mb-4': !searchQuery }">
                     <div class="flex flex-col">
-                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest" style="font-size: 20px !important;">{{ searchQuery ? `${searchQuery} 之載錄總量` : '怨靈載錄總量' }}</span>
-                        <span class="app-body text-slate-900 font-bold" style="font-size: 20px !important;">{{ formatArmyTotal(totalGrudgeQuantity) }}</span>
+                        <span class="app-body text-slate-400 font-bold uppercase tracking-widest !text-[20px]">{{ searchQuery ? `${searchQuery} 之載錄總量` : '怨靈載錄總量' }}</span>
+                        <span class="app-body text-slate-900 font-bold !text-[20px]">{{ formatArmyTotal(totalGrudgeQuantity) }}</span>
                     </div>
                     <button @click="showTotal = false" class="p-2 text-slate-300 active:scale-90 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full" style="padding-bottom: 80px; -webkit-overflow-scrolling: touch;">
+        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full pb-[80px]">
             <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
             <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
@@ -149,7 +149,7 @@
                                 <!-- Result -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5">
                                     <label class="grudge-label">結果:</label>
-                                    <div class="grudge-value" :style="{ color: (item.destination === '未處理' ? '#ef4444' : '#0f172a') }">
+                                    <div class="grudge-value" :class="item.destination === '未處理' ? '!text-[#ef4444]' : '!text-[#0f172a]'">
                                         {{ item.destination || '已處理' }}
                                     </div>
                                 </div>
@@ -223,14 +223,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import GrudgeAddForm from './GrudgeAddForm.vue';
 import GrudgeBatchImport from './GrudgeBatchImport.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import PaginationButtons from './PaginationButtons.vue';
-import { writeClipboard, downloadBlob } from '../utils/iosCompat';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+
 
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
@@ -505,14 +506,13 @@ const copyAllToLine = () => {
 
 const exportToExcel = () => {
     if (!sortedItems.value.length) return alert('目前沒有資料可供匯出');
+    
     if (typeof XLSX === 'undefined') {
-        const script = document.createElement('script');
-        script.src = "https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js";
-        script.onload = () => performExcelExport();
-        document.head.appendChild(script);
-    } else {
-        performExcelExport();
+        persistentToast.value = { msg: '正在載入匯出元件，請稍候再試一次...', type: 'info' };
+        setTimeout(() => { persistentToast.value = null; }, 3000);
+        return;
     }
+    performExcelExport();
 };
 
 const performExcelExport = () => {
@@ -696,6 +696,33 @@ watch(currentFolder, (newVal) => {
 onMounted(() => {
     loadData();
     fetchUsers();
+
+    // Pre-load XLSX for iOS compatibility (avoids gesture timeout)
+    if (typeof XLSX === 'undefined') {
+        const script = document.createElement('script');
+        script.src = "https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+    }
+});
+
+const isAnyModalOpen = computed(() => {
+    return !!addMode.value || 
+           !!persistentToast.value || 
+           !!deleteConfirmId.value || 
+           !!focusedId.value || 
+           !!showAddMenu.value || 
+           !!showTotal.value ||
+           !!showBatchImport.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
 });
 </script>
 

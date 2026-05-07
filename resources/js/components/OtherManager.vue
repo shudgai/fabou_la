@@ -1,20 +1,5 @@
 <template>
     <div class="h-[100dvh] bg-slate-100 md:bg-white flex flex-col other-manager-module relative overflow-hidden">
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
-            <defs>
-                <linearGradient id="om-redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="om-roundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(52, 211, 153);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(16, 185, 129);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(5, 150, 105);stop-opacity:1" />
-                </linearGradient>
-            </defs>
-        </svg>
         <!-- Level 1: Folder Grid View -->
         <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-slate-100 md:bg-white flex flex-col relative overflow-hidden">
             <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full">
@@ -282,12 +267,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, defineEmits } from 'vue';
+import { ref, onMounted, onUnmounted, computed, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import KaiwenApproval from './KaiwenApproval.vue';
 import RandomGroup from './RandomGroup.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import LuckyDraw from './LuckyDraw.vue';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+
 
 const getTodayStr = () => {
     const d = new Date();
@@ -456,6 +443,21 @@ const getFolderSum = (id) => {
 };
 
 onMounted(loadData);
+const isAnyModalOpen = computed(() => {
+    return !!showLuckyDraw.value || 
+           !!showAddFolder.value || 
+           !!showAddRecord.value || 
+           !!persistentToast.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
+});
 </script>
 
 <style scoped>

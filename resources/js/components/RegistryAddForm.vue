@@ -1,4 +1,5 @@
 <template>
+    <teleport to="body">
     <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
@@ -18,8 +19,8 @@
 
             <!-- Tab Selection -->
             <div class="px-6 pt-4 flex space-x-1">
-                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" :style="localMode === 'single' ? 'color: white !important;' : ''" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">逐筆登錄</button>
-                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" :style="localMode === 'batch' ? 'color: white !important;' : ''" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">多筆載錄</button>
+                <button @click="localMode = 'single'" :class="[localMode === 'single' ? 'bg-blue-600 !text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">逐筆登錄</button>
+                <button @click="localMode = 'batch'" :class="[localMode === 'batch' ? 'bg-blue-600 !text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200']" class="flex-1 py-[12px] rounded-xl text-[16px] font-black transition-all whitespace-nowrap">多筆載錄</button>
             </div>
 
             <!-- Scrollable Content -->
@@ -111,7 +112,7 @@
                 <div v-if="localMode === 'single'" class="space-y-6">
                         <div class="flex items-center justify-between ml-1">
                             <label class="text-[15px] font-bold text-red-600 uppercase tracking-tight">承接皇恩的師兄姐</label>
-                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-indigo-600 text-white rounded-xl text-[13px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">
+                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-indigo-600 !text-white rounded-xl text-[13px] font-black active:scale-95 transition-all shadow-md">
                                 ＋ 新增人員
                             </button>
                         </div>
@@ -263,11 +264,11 @@
 
             <!-- Footer Action -->
             <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 p-4 pb-6 bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
-                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white h-[55px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important;">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 !text-white h-[55px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest">
                     {{ isSaving ? '儲存中...' : '確認載錄' }}
                 </button>
                 <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0" 
-                    class="w-full bg-blue-600 text-white h-[55px] rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest disabled:opacity-50" style="color: white !important;">
+                    class="w-full bg-blue-600 !text-white h-[55px] rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest disabled:opacity-50">
                     {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
                 </button>
             </div>
@@ -296,6 +297,7 @@
             @close="activePicker = null"
         />
     </div>
+    </teleport>
 </template>
 
 <script setup>
@@ -859,9 +861,9 @@ defineExpose({ updatePersonnelRemarks });
 </script>
 
 <style scoped>
-.tab-button.active { background-color: #2563eb !important; color: white !important; }
-.save-button { background-color: #2563eb !important; color: white !important; height: 52px; font-size: 18px; }
-.add-personnel-button { background-color: #4f46e5 !important; color: white !important; font-size: 18px; }
+.tab-button.active { background-color: #2563eb; color: white; }
+.save-button { background-color: #2563eb; color: white; height: 52px; font-size: 18px; }
+.add-personnel-button { background-color: #4f46e5; color: white; font-size: 18px; }
 .btn { font-size: 18px; }
 .custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }

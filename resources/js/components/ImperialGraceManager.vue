@@ -1,34 +1,14 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module overscroll-none">
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
-            <defs>
-                <linearGradient id="ig-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="ig-unobtainedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="ig-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                </linearGradient>
-            </defs>
-        </svg>
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title text-[28px] leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 8px; font-weight: 900 !important;">
+                <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                     重大皇恩專區
-                </div>
+                </h1>
             </div>
         </div>
 
@@ -41,24 +21,24 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="app-title text-[32px] leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
+                    <div class="app-title text-[32px] leading-tight font-outfit tracking-widest break-words !text-[#dc1428]">
                         新增重大皇恩
                     </div>
                 </div>
             </div>
             <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <!-- Mobile only title here, Desktop will use the sticky internal header -->
-                <div class="app-title text-[28px] leading-tight font-outfit tracking-widest break-words font-black md:hidden" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 8px; font-weight: 900 !important;">
+                <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                     重大皇恩專區
-                </div>
+                </h1>
             </div>
             <div v-if="currentFolder" class="flex flex-col items-end space-y-0.5 ml-auto md:hidden pr-2" style="padding-top: 10px;">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 active:scale-95 transition-all !text-[16px]">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
-                        class="px-2 py-0.5 text-[16px] font-black transition-all active:scale-95 whitespace-nowrap" 
-                        :style="{ fontSize: '16px !important', color: reorderMode ? '#059669 !important' : '#64748b !important' }">
+                        class="px-2 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap !text-[16px]"
+                        :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'">
                     {{ reorderMode ? '確認排序' : '修改排序' }}
                 </button>
                 <button v-if="focusedId" @click="handleBack" class="mt-1 w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-white" title="回到清單">
@@ -68,6 +48,7 @@
         </div>
 
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
+        <teleport to="body">
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-white overflow-hidden" style="padding: 28px; min-width: 360px;">
                 <div class="flex items-start justify-between mb-8">
@@ -81,21 +62,22 @@
                 <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="flex space-x-4">
                     <template v-if="persistentToast.type === 'deleteConfirm'">
                         <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                        <button @click="executeDelete" class="flex-1 bg-red-600 text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定刪除</button>
+                        <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定刪除</button>
                     </template>
                     <template v-else-if="persistentToast.type === 'mismatchConfirm'">
-                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ currentFolder?.name }}</button>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 !text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md">存入{{ currentFolder?.name }}</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 !text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md">存入{{ getMasterName(form.master_id) }}</button>
                     </template>
                     <template v-else>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 !text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定</button>
                     </template>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定</button>
                 </div>
             </div>
         </div>
+        </teleport>
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px; -webkit-overflow-scrolling: touch;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-white flex flex-col items-center">
@@ -109,7 +91,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6 -translate-y-[4px]">
-                            <div class="font-black text-white leading-tight text-center" style="color: white !important; font-weight: 900 !important; font-size: 40px !important;">重大皇恩<br>專區</div>
+                            <div class="leading-tight text-center !font-black !text-white !text-[40px]">重大皇恩<br>專區</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[20px] font-normal tracking-tight">共 {{ totalCount }} 筆</span>
                             </div>
@@ -127,7 +109,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-6 -translate-y-[4px]">
-                            <div class="font-black text-white leading-tight text-center" style="color: white !important; font-weight: 900 !important; font-size: 40px !important;">未求得<br>重大皇恩</div>
+                            <div class="leading-tight text-center !font-black !text-white !text-[40px]">未求得<br>重大皇恩</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[20px] font-normal tracking-tight">共 {{ unobtainedTotal }} 筆</span>
                             </div>
@@ -138,8 +120,7 @@
         </div>
 
         <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white max-w-xl mx-auto">
-            <div class="pt-[5px] pb-2 flex items-center relative min-h-[60px] cursor-pointer" @click="resetToRoot">
-                <h1 class="absolute inset-x-0 text-[28px] text-red-600 uppercase tracking-widest text-center font-outfit font-black" style="font-size: 28px !important; color: #dc2626 !important; padding-top: 8px; font-weight: 900 !important;">重大皇恩登記簿</h1>
+            <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
             <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
@@ -154,9 +135,8 @@
                         
                         <!-- Label & Pill Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none -translate-y-[3px]">
-                            <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
-                                 :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                 style="font-weight: 900 !important; font-size: 24px !important;">
+                            <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black !text-[24px]"
+                                 :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>
                             <div class="mt-1 flex items-center">
@@ -183,8 +163,8 @@
             <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                 <!-- Top Row: Title + Sort Button -->
                 <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
-                    <h1 class="text-[28px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">重大皇恩登記簿</h1>
-                    <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                    <h2 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">重大皇恩專區</h2>
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm !text-white !text-[16px]">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </div>
@@ -192,20 +172,19 @@
                 <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full relative">
                     <!-- Left: Folder Name -->
                     <div class="flex items-center shrink-0 w-[120px]">
-                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis" style="font-size: 24px !important; font-weight: 500 !important;">{{ currentFolder?.name }}</span>
+                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis text-[24px] font-medium">{{ currentFolder?.name }}</span>
                     </div>
                     
                     <!-- Center: Pagination -->
                     <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center">
-                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+                        <pagination-buttons v-if="!focusedId && paginationMeta" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
                     </div>
 
                     <!-- Right: Reorder Button -->
                     <div class="flex items-center space-x-2 shrink-0 w-[120px] justify-end">
                          <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                                class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
-                                :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                                :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-[#64748b] border border-transparent'"
+                                class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm">
                             {{ reorderMode ? '確認排序' : '修改排序' }}
                         </button>
                     </div>
@@ -217,22 +196,15 @@
                 <div class="px-2 py-2 bg-slate-50/50 flex items-center justify-between relative">
                     <!-- Left: Folder Name -->
                     <div class="flex items-center shrink-0 w-[120px]">
-                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis" style="font-size: 24px !important; font-weight: 500 !important;">{{ currentFolder?.name }}</span>
+                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis text-[24px] font-medium">{{ currentFolder?.name }}</span>
                     </div>
                     
                     <!-- Center: Pagination -->
                     <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
-                        <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !py-0 !px-0" />
+                        <pagination-buttons v-if="!focusedId && paginationMeta" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !py-0 !px-0" />
                     </div>
 
-                    <!-- Right: Reorder Button -->
                     <div class="flex items-center justify-end shrink-0 w-[120px]">
-                         <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                                class="px-2 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
-                                :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                            {{ reorderMode ? '確認' : '排序' }}
-                        </button>
                     </div>
                 </div>
             </div>
@@ -270,7 +242,7 @@
                                     </template>
                                     <template v-else-if="reg.record_date">
                                         <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">得知：</span>
-                                        <span class="text-[15px] font-bold text-slate-900 font-outfit" style="font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</span>
+                                        <span class="text-[15px] text-slate-900 font-outfit !font-normal">{{ formatDate(reg.record_date) }}</span>
                                     </template>
                                 </div>
                                 <!-- Row 1b: Master (Only for Unobtained folder) -->
@@ -283,12 +255,11 @@
                                 <div class="flex items-center justify-between">
                                     <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit">{{ reg.name }}</div>
                                     <span :class="[
-                                        'px-3 py-0.5 rounded-full text-[15px] font-black tracking-widest select-none whitespace-nowrap shrink-0 ml-2 border scale-[0.8] origin-right',
+                                        'px-3 py-0.5 rounded-full tracking-widest select-none whitespace-nowrap shrink-0 ml-2 border scale-[0.8] origin-right !font-black !text-[17px]',
                                         reg.status === '已求得' ? 'bg-blue-50 border-blue-200 text-blue-600' : 
                                         reg.status === '已登記' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 
                                         'bg-rose-50 border-rose-200 text-rose-600'
-                                    ]" 
-                                    style="font-size: 17px !important;">
+                                    ]">
                                         {{ reg.status }}
                                     </span>
                                 </div>
@@ -316,7 +287,7 @@
 
                         <!-- Full-page Expanded Overlay -->
                         <teleport to="body">
-                        <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in" style="overscroll-behavior: contain;">
+                        <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
                             <!-- Backdrop -->
                             <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
@@ -326,11 +297,11 @@
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
                                     <!-- Global Main Title -->
                                         <div class="flex-1">
-                                            <h1 class="text-[28px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">重大皇恩登記簿</h1>
+                                            <h1 class="uppercase tracking-widest font-outfit !text-[28px] !font-black !text-[#dc2626]">重大皇恩登記簿</h1>
                                         </div>
                                     <!-- Sub-folder Title -->
                                     <div class="px-[10px] py-[8px] bg-white">
-                                        <span class="text-[24px] font-medium text-red-600 font-outfit block w-full whitespace-nowrap overflow-hidden text-ellipsis" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">{{ currentFolder?.name }}</span>
+                                        <span class="font-outfit block w-full whitespace-nowrap overflow-hidden text-ellipsis !text-[24px] !font-medium !text-[#dc2626]">{{ currentFolder?.name }}</span>
                                     </div>
                                     
                                     <!-- Close Button moved to top right absolute -->
@@ -403,7 +374,7 @@
                                 <div v-if="inlineEditData.is_multi || (inlineEditData.dharma_name_registries && inlineEditData.dharma_name_registries.length > 0)" class="space-y-2">
                                     <div class="flex items-center justify-between">
                                         <label class="app-title tracking-wider text-slate-400 font-bold">人員名單</label>
-                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 text-white px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95" style="color: white !important;">＋ 新增人員</button>
+                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 !text-white px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95">＋ 新增人員</button>
                                     </div>
                                     <div class="space-y-2 border-t pt-2">
                                         <div v-for="(p, idx) in inlineEditData.dharma_name_registries" :key="idx" class="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-2">
@@ -472,12 +443,10 @@
 
                                 <div class="flex space-x-2 pt-2">
                                     <button @click="saveInlineEdit" :disabled="isSaving" 
-                                        class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all"
-                                        style="color: white !important;">
+                                        class="flex-1 py-3 bg-indigo-600 !text-white rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all">
                                         {{ isSaving ? '儲存中...' : '確認儲存' }}
                                     </button>
-                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all"
-                                        style="color: white !important;">
+                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 !text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                                         取消
                                     </button>
                                 </div>
@@ -488,7 +457,7 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-1">
                                         <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                        <div class="text-[15px] font-normal font-outfit" style="color: #0d0d0d !important; font-weight: 400 !important;">{{ formatDate(reg.record_date) }}</div>
+                                        <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
                                     </div>
                                     <div class="space-y-1 text-right pr-8">
                                         <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
@@ -512,9 +481,9 @@
                                         <table class="w-full text-[17px] border-collapse bg-white">
                                             <thead class="bg-slate-50/50">
                                                 <tr class="text-slate-600 font-black border-b border-slate-200">
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 70px;">法號</th>
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 text-[15px]" style="width: 80px;">日期</th>
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px]" style="width: 95px;">狀態</th>
+                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px] w-[70px]">法號</th>
+                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 text-[15px] w-[80px]">日期</th>
+                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px] w-[95px]">狀態</th>
                                                     <th class="py-1.5 px-2 text-left text-[15px]">備註</th>
                                                 </tr>
                                             </thead>
@@ -524,7 +493,7 @@
                                                         {{ dnr.dharma_name?.name || dnr.custom_name }}{{ dnr.related_personnel && dnr.related_personnel.length > 0 ? '(' + translateRelList(dnr.related_personnel) + ')' : '' }}
                                                     </td>
                                                     <td class="py-1.5 px-2 border-r border-slate-100 font-normal text-slate-500 whitespace-nowrap text-[15px]">{{ formatDate(dnr.obtained_date) }}</td>
-                                                    <td class="py-1.5 px-2 border-r border-slate-100 font-black whitespace-nowrap text-[15px]" :style="dnr.status === '未求得' ? 'color: #dc2626 !important;' : (dnr.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">{{ dnr.status }}</td>
+                                                    <td class="py-1.5 px-2 border-r border-slate-100 font-black whitespace-nowrap text-[15px]" :class="dnr.status === '未求得' ? '!text-[#dc2626]' : (dnr.status === '已求得' ? '!text-[#2563eb]' : '!text-[#059669]')">{{ dnr.status }}</td>
                                                     <td class="py-1.5 px-2 text-slate-900 font-bold leading-snug text-[15px]">
                                                         {{ translateRelList(dnr.remarks) }}
                                                     </td>
@@ -635,7 +604,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, defineEmits, watch } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 import SearchComponent from './SearchComponent.vue';
@@ -643,6 +612,8 @@ import AddActionMenu from './AddActionMenu.vue';
 import ImperialGraceAddForm from './ImperialGraceAddForm.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import PaginationButtons from './PaginationButtons.vue';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+
 
 const resetToRoot = () => {
     currentCategory.value = null;
@@ -1038,14 +1009,7 @@ const executeDelete = async () => {
 
 const triggerSimpleDownload = (text, filename) => {
     const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, filename);
 };
 
 const copyOnly = async (reg) => {
@@ -1435,6 +1399,23 @@ const getFolderSum = (id) => {
     if (id === 'unobtained') return unobtainedTotal.value;
     return folderCounts.value[id] || 0;
 };
+const isAnyModalOpen = computed(() => {
+    return !!addMode.value || 
+           !!focusedId.value || 
+           !!persistentToast.value || 
+           !!showAddMenu.value || 
+           !!showSearch.value ||
+           !!activePicker.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
+});
 </script>
 
 <style scoped>

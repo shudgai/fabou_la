@@ -223,9 +223,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
     user: Object
@@ -453,23 +454,16 @@ const toggleExpand = (id) => {
 
 const copyItem = async (item) => {
     const text = `【其他記錄】${formatDate(item.date)}\n${item.master?.name || ''} ${item.target_remarks || ''}\n${item.content}${item.remarks ? '\n備註：' + item.remarks : ''}`;
-    try {
-        await navigator.clipboard.writeText(text);
-        alert('已複製');
-    } catch (e) {
-        alert('複製失敗');
-    }
+    writeClipboard(text).then(success => {
+        if (success) alert('已複製');
+        else alert('複製失敗');
+    });
 };
 
 const downloadItem = (item) => {
     const text = `【其他記錄】\n日期：${formatDate(item.date)}\n仙師：${item.master?.name || '無'}\n對象：${item.target_remarks || '無'}\n內容：\n${item.content}\n備註：${item.remarks || '無'}`;
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `其他記錄_${item.date || '無日期'}_${item.master?.name || ''}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, `其他記錄_${item.date || '無日期'}_${item.master?.name || ''}.txt`);
 };
 
 const formatDate = (d) => {
@@ -491,6 +485,23 @@ const vClickOutside = {
         document.body.removeEventListener('click', el.clickOutsideEvent);
     }
 };
+
+const isAnyModalOpen = computed(() => {
+    return !!showModal.value || 
+           !!persistentToast.value || 
+           !!deleteConfirmId.value || 
+           !!activeActionMenuId.value || 
+           !!focusedId.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
+});
 
 onMounted(loadData);
 </script>

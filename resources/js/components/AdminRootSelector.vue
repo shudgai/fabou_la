@@ -1,5 +1,66 @@
 <template>
     <div class="h-[100dvh] overflow-hidden overscroll-none bg-white flex flex-col items-stretch">
+        <!-- GLOBAL SVG DEFINITIONS (Fixed for iOS Safari stability across all sub-views) -->
+        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+                <!-- Teaching Manager Gradients -->
+                <linearGradient id="tm-dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="tm-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="tm-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+
+                <!-- Registry Manager Gradients -->
+                <linearGradient id="rm-gold-grad-global" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="9%" stop-color="rgba(255, 242, 143, 1)" />
+                    <stop offset="19%" stop-color="rgba(255, 237, 137, 1)" />
+                    <stop offset="34%" stop-color="rgba(255, 233, 133, 1)" />
+                    <stop offset="49%" stop-color="rgba(254, 220, 117, 1)" />
+                    <stop offset="67%" stop-color="rgba(252, 215, 127, 1)" />
+                    <stop offset="82%" stop-color="rgba(249, 208, 140, 1)" />
+                    <stop offset="98%" stop-color="rgba(252, 176, 69, 1)" />
+                </linearGradient>
+
+                <!-- Other Manager Gradients -->
+                <linearGradient id="om-redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="om-roundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(52, 211, 153);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(16, 185, 129);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(5, 150, 105);stop-opacity:1" />
+                </linearGradient>
+
+                <!-- Imperial Grace Manager Gradients -->
+                <linearGradient id="ig-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="ig-unobtainedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="ig-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
         <!-- MOBILE VIEW: Menu -> Manager (Back-to-Home Flow) -->
         <div class="block md:hidden flex-1 h-full overflow-hidden flex flex-col">
             <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate" :counts="counts"></mobile-dashboard>

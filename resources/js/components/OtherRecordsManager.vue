@@ -192,6 +192,7 @@
 import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import { writeClipboard, downloadBlob } from '../utils/iosCompat';
 
 import CompactDatePicker from './CompactDatePicker.vue';
 
@@ -259,20 +260,15 @@ const closeModal = () => {
 
 const copyAsTextFile = (record) => {
     const text = `${record.record_date ? formatDate(record.record_date) + '\n' : ''}${record.title ? record.title + '\n' : ''}${record.content}`;
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('✓ 已複製貼 LINE 格式');
+    writeClipboard(text).then(success => {
+        if (success) showToast('✓ 已複製貼 LINE 格式');
     });
 };
 
 const downloadFile = (record) => {
     const text = `${record.record_date ? formatDate(record.record_date) + '\n' : ''}${record.title ? record.title + '\n' : ''}${record.content}`;
     const blob = new Blob([text], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${record.title || '記錄'}_${formatDate(record.record_date || new Date())}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, `${record.title || '記錄'}_${formatDate(record.record_date || new Date())}.txt`);
     showToast('✓ 已下載檔案');
 };
 

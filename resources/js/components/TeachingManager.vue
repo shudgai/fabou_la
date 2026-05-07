@@ -1,25 +1,5 @@
 <template>
     <div class="bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
-            <defs>
-                <linearGradient id="tm-dailyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="tm-mastersGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="tm-folderGradBase" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 120, 120);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 50, 50);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(220, 0, 0);stop-opacity:1" />
-                </linearGradient>
-            </defs>
-        </svg>
         <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
@@ -1928,13 +1908,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineEmits, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
 import axios from 'axios';
 import SearchComponent from './SearchComponent.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import PaginationButtons from './PaginationButtons.vue';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+
 
 const getTodayStr = () => {
     const d = new Date();
@@ -4242,34 +4224,18 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
 const downloadTeaching = (item) => {
     const text = formatTeachingForExport(item);
     const blob = new Blob([text], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `開示記錄_${item.date}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, `開示記錄_${item.date}.txt`);
 };
 
 const copyToLine = (item, index = null, allRecords = []) => {
     const text = formatTeachingForExport(item, index, allRecords);
     
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
+    writeClipboard(text).then((success) => {
+        if (success) {
             persistentToast.value = { msg: '✓ 內容已複製', type: 'success' };
             setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
-        }).catch(err => {
-            console.error('Copy failed', err);
-        });
-    } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        persistentToast.value = { msg: '✓ 內容已複製 (相容模式)', type: 'success' };
-        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
-    }
+        }
+    });
 };
 
 const processBatchText = () => {
@@ -4610,14 +4576,7 @@ const executeClearTodayDaily = async () => {
 
 const triggerSimpleDownload = (text, filename) => {
     const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, filename);
 };
 
 const exportListTxt = async () => {
@@ -5218,6 +5177,24 @@ onMounted(() => {
         activePractitionerDropdownId.value = null;
         activeSubPractitionerDropdownId.value = null;
     });
+});
+const isAnyModalOpen = computed(() => {
+    return !!addMode.value || 
+           !!focusedId.value || 
+           !!persistentToast.value || 
+           !!showAddMenu.value || 
+           !!activeDropdownId.value || 
+           !!itemsDetailMode.value ||
+           saveConfirmModal.value?.show;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
 });
 </script>
 

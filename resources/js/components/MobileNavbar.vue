@@ -56,11 +56,11 @@
                 <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-none shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
                     <div class="h-44 flex flex-col items-center justify-between py-2 relative">
                         <span class="text-[14px] font-black text-slate-400">大</span>
-                        <div class="relative w-1.5 h-24 bg-slate-100 rounded-none flex items-center justify-center">
+                        <div class="relative w-8 h-24 flex items-center justify-center">
                             <input type="range" min="0" max="2" step="1" 
                                    :value="sliderValue"
                                    @input="handleSliderInput"
-                                   class="vertical-slider w-24 h-8 bg-transparent appearance-none cursor-pointer">
+                                   class="vertical-slider w-8 h-24 bg-transparent cursor-pointer">
                         </div>
                         <span class="text-[14px] font-black text-slate-400">小</span>
                     </div>
@@ -125,35 +125,44 @@ const setFontSize = (key) => {
 
 /* Vertical Slider Styles */
 .vertical-slider {
-    transform: rotate(-90deg);
     -webkit-appearance: none;
     appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 32px;
+    height: 100%;
+    cursor: pointer;
+    touch-action: none; 
+    background: transparent;
 }
 
 .vertical-slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    background: transparent;
+    width: 6px;
+    height: 100%;
+    background: #f1f5f9;
+    border-radius: 3px;
 }
 
 .vertical-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 0%;
+    height: 32px;
+    width: 32px;
+    border-radius: 12px;
     background: #4f46e5;
     cursor: pointer;
-    margin-top: -10px;
-    box-shadow: 0 0 10px rgba(79, 70, 229, 0.3);
-    border: 2px solid white;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+    border: 3px solid white;
+    position: relative;
+    z-index: 20;
 }
 
 .vertical-slider::-moz-range-thumb {
-    height: 24px;
-    width: 24px;
-    border-radius: 0%;
+    height: 32px;
+    width: 32px;
+    border-radius: 12px;
     background: #4f46e5;
     cursor: pointer;
-    border: 2px solid white;
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
 }
 </style>
