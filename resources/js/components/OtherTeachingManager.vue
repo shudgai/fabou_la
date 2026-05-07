@@ -43,7 +43,7 @@
             <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full shrink-0" style="padding: 8px 10px; min-height: 52px;">
                 <div class="flex-1 min-w-0">
                     <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="text-[36px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 36px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a]" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                             其他記錄專區
                         </h1>
                     </div>
@@ -81,7 +81,7 @@
                          @click="toggleExpand(item.id)"
                          :class="[
                              'bg-white shadow-sm transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                             focusedId === item.id ? 'min-h-[80vh] rounded-none p-8' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
+                             focusedId === item.id ? 'min-h-[80vh] rounded-none px-2 py-4 md:p-[10px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
                          ]">
                         
                         <!-- Action Menu Button -->
@@ -115,7 +115,7 @@
                             
                             <!-- Content Body -->
                             <div :class="[
-                                'pt-3 text-[18px] font-bold text-slate-800 leading-relaxed font-outfit',
+                                'pt-3 text-[17px] font-black text-slate-800 leading-relaxed font-outfit',
                                 focusedId === item.id ? 'whitespace-pre-wrap' : 'line-clamp-1'
                             ]">
                                 {{ item.content }}

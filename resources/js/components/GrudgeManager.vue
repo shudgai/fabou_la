@@ -24,7 +24,7 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] !text-[28px] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 32px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
                 <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 !text-[15px] text-indigo-600 active:scale-95 transition-all">
@@ -197,9 +197,7 @@
                     </div>
                 </template>
                 
-                <div class="mt-8 mb-20 px-2">
-                    <pagination-buttons v-if="activePaginationMeta" :meta="activePaginationMeta" @page-change="handlePageChange" />
-                </div>
+
             </div>
         </div>
 
@@ -217,6 +215,17 @@
         />
 
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+
+        <!-- Floating Pagination above MobileNavbar -->
+        <div v-if="!addMode && !showBatchImport && activePaginationMeta && activePaginationMeta.last_page > 1" 
+             class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
+            <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
+                <pagination-buttons 
+                    :meta="activePaginationMeta" 
+                    @page-change="handlePageChange"
+                />
+            </div>
+        </div>
         <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="onBatchSuccess" />
         <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
     </div>

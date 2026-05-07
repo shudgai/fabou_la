@@ -36,7 +36,7 @@ class RegistryController extends Controller
             $query->where('category', $request->category);
         }
         $direction = filter_var($request->input('sortDesc', true), FILTER_VALIDATE_BOOLEAN) ? 'desc' : 'asc';
-        $query->orderBy('sort_order', $direction)
+        $query->orderByRaw('CASE WHEN sort_order = 0 THEN 999999 ELSE sort_order END ASC')
               ->orderBy('id', $direction);
 
         // Single query: get per-master AND per-category counts at once
@@ -251,7 +251,20 @@ class RegistryController extends Controller
         if ($registry->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return DB::transaction(function () use ($request, $registry) {
+        return DB::transaction(function () use ($request, $registry, $user) {
+            if ($request->has('name') && $request->name !== $registry->name) {
+                $cleanName = trim($request->name);
+                $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
+                $exists = Registry::where('user_id', $user->id)
+                    ->where('name', $cleanName)
+                    ->where('id', '!=', $registry->id)
+                    ->first();
+                
+                if ($exists && !in_array($cleanName, $allowedDuplicates)) {
+                    $masterName = \App\Models\Master::find($exists->master_id)?->name ?? '其他';
+                    throw new \Exception("「{$cleanName}」已存在於【{$masterName}】資料夾中，不可重複載錄。");
+                }
+            }
             $registry->update($request->all());
 
             if ($request->has('dharma_name_registries')) {

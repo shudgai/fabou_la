@@ -6,7 +6,7 @@
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title !text-[28px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
+                <div class="app-title !text-[32px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -16,33 +16,31 @@
         <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
         <div v-if="currentFolder && !addMode" 
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
-            <!-- Top Row: Main Title + Actions -->
-            <div class="flex items-center justify-between py-2 px-3 bg-white border-b border-slate-50">
-                <div class="app-title !text-[28px] leading-tight !font-black !text-[#dc2626]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
+            <!-- Top Row: Main Title (Clickable) + Actions (X button removed) -->
+            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-slate-50">
+                <div class="app-title !text-[36px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
+                    @click="resetToRoot"
+                    style="color: #dc2626 !important; font-size: 36px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
                 <div class="flex items-center space-x-2">
-                    <!-- Sort -->
                     <button v-if="!reorderMode" @click="toggleSort" class="!text-[16px] text-slate-600 font-black active:scale-95 px-1">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
-                    <!-- Reorder (Removed per user request) -->
-                    <!-- Back -->
-                    <button @click="resetToRoot" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 active:scale-90">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                            class="!text-[16px] font-black transition-all active:scale-95 whitespace-nowrap px-1"
+                            :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'">
+                        {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
             </div>
-            <!-- Bottom Row: Sub-title + Folder Name -->
-            <div class="px-3 py-2 bg-white flex items-center justify-between">
-                <span class="!text-[24px] !font-black !text-[#dc2626] font-outfit">
-                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '法寶登記專區' }}
+
+            <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
+            <div class="px-4 bg-white border-b border-slate-50 flex items-baseline gap-x-2 py-[5px] overflow-hidden">
+                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 28px !important; font-weight: 400 !important; line-height: 1.1;">
+                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                 </span>
-                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit !font-black !text-[24px]">{{ currentFolder.name }}</span>
-            </div>
-            <!-- Mobile Pagination Row (Optional but helpful) -->
-            <div v-if="!focusedId && paginationMeta" class="bg-slate-50/50 flex justify-center py-1">
-                <pagination-buttons v-if="paginationMeta" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 scale-90" />
+                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 28px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
             </div>
         </div>
 
@@ -52,24 +50,27 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div v-if="currentCategory" class="w-full px-[10px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[28px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
-                                {{ !currentCategory ? '法寶登記專區' : (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }}
-                                <br v-if="currentCategory">
-                                <span v-if="currentCategory && currentFolder" class="text-[24px] text-red-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-full">- {{ currentFolder.name }} -</span>
+                            <h1 v-if="!currentCategory" class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[32px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
+                                法寶登記專區
+                            </h1>
+                            <h1 v-else class="leading-tight font-outfit tracking-widest break-words !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 400 !important;">
+                                {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                                <br>
+                                <span v-if="currentFolder" class="text-[28px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 28px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
                             </h1>
                         </div>
                 </div>
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center justify-start pt-20 pb-20 w-full max-w-lg mx-auto">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-2xl p-0 w-[300px] h-[300px] relative transition-all shadow-sm">
-                        <div class="relative w-[295px] h-[295px]">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-0 w-[310px] h-[310px] relative transition-all shadow-sm">
+                        <div class="relative w-[310px] h-[310px]">
                             <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-gold-grad-global)" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 translate-y-[2px]">
-                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[32px]">重大皇恩<br>登記簿</div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 translate-y-[4px]">
+                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[40px]">重大皇恩<br>登記簿</div>
                                 <div class="mt-4 flex items-center">
                                     <span class="text-black text-[17px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
@@ -95,8 +96,8 @@
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none translate-y-[8px]">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[32px] !font-black"
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none translate-y-[12px]">
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[26px] !font-black"
                                      :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'">
                                      {{ folder.name }}
                                 </div>
@@ -128,7 +129,7 @@
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Main Title + All Action Buttons -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
-                        <h1 class="uppercase tracking-widest font-outfit !text-[28px] !font-black !text-[#dc2626]">法寶登記專區</h1>
+                        <h1 class="uppercase tracking-widest font-outfit !text-[32px] !font-black !text-[#dc2626]">法寶登記專區</h1>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
                             <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95 !text-[16px]">
@@ -146,19 +147,12 @@
                             </button>
                         </div>
                     </div>
-                    <!-- Bottom Row: Dynamic Sub-title + Folder Name -->
-                    <div class="px-4 py-2 bg-white flex items-center justify-between w-full">
-                        <!-- Left: Sub-title -->
-                        <div class="flex items-center">
-                            <span class="font-outfit !text-[24px] !font-black !text-[#dc2626]">
-                                {{ currentCategory === 'major' ? '重大皇恩登記簿' : '法寶登記專區' }}
-                            </span>
-                        </div>
-                        
-                        <!-- Right: Folder Name -->
-                        <div class="flex items-center">
-                            <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit !font-black !text-[24px]">{{ currentFolder.name }}</span>
-                        </div>
+                    <!-- Bottom Row: Dynamic Sub-title + Folder Name (same line, adjacent) -->
+                    <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
+                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 28px !important; font-weight: 400 !important;">
+                            {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                        </span>
+                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 28px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>
                     </div>
                 </div>
 
@@ -553,6 +547,13 @@
             @save="handleRemarksViewerSave"
         />
         <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
+
+        <!-- Bottom Pagination (Floating style) -->
+        <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed bottom-[60px] left-0 right-0 z-[100] flex justify-center pointer-events-none">
+            <div class="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-slate-200 pointer-events-auto scale-[0.65] origin-bottom">
+                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+            </div>
+        </div>
 
         <mobile-navbar 
             is-absolute
@@ -1758,6 +1759,8 @@ const handleReorder = async (item, newOrder) => {
 
     try {
         await axios.post('/registries/reorder', { orders });
+        // Refresh to ensure server-side sorting is consistent
+        await loadData();
     } catch (err) {
         console.error('Reorder failed:', err);
     }

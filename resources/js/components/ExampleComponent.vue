@@ -1,15 +1,8 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
+    <div class="w-full max-w-lg mx-auto px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
+            <h3 class="text-lg font-black text-slate-900 mb-4">Example Component</h3>
+            <p class="text-slate-600">I'm an example component.</p>
         </div>
     </div>
 </template>

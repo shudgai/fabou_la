@@ -34,10 +34,8 @@
                     class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[64px] shrink-0 overflow-hidden relative group"
                     style="padding: 0 20px;">
                         <div class="flex flex-col items-start text-left">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
-                            </div>
-
+                            <span class="text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
+                            <span v-if="counts[item.id]" class="text-[16px] font-normal text-slate-400 mt-0.5">{{ counts[item.id] }} 筆</span>
                         </div>
                     <div class="flex items-center">
                         <div class="w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center group-active:bg-indigo-100 transition-colors">
@@ -117,8 +115,9 @@ const navigate = (id) => {
     emit('navigate', id);
 };
 
-const props = defineProps(['user']);
+const props = defineProps(['user', 'counts']);
 const user = computed(() => props.user);
+const counts = computed(() => props.counts || {});
 const permissions = computed(() => user.value?.permissions || {});
 
 const filteredMenuItems = computed(() => {
@@ -137,49 +136,9 @@ const filteredMenuItems = computed(() => {
     });
 });
 
-const stats = ref({
-    totalItems: 0,
-    todoGrudges: 0
+onMounted(() => {
+    // Counts are now handled by AdminRootSelector and passed via props
 });
-
-const counts = ref({});
-
-const loadStats = async () => {
-    try {
-        const [gre, tre, teach, grud, mil, kai, othTeach] = await Promise.allSettled([
-            axios.get('/imperial-graces'),
-            axios.get('/registries'),
-            axios.get('/teachings'),
-            axios.get('/grudges'),
-            axios.get('/military-records'),
-            axios.get('/kaiwen'),
-            axios.get('/other-teachings')
-        ]);
-        
-        if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.total || gre.value.data.registries?.length || 0;
-        if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.total || tre.value.data?.length || 0;
-        if (teach.status === 'fulfilled') {
-            const res = teach.value.data;
-            const recordsObj = res.records || res;
-            counts.value['teaching'] = recordsObj.total !== undefined ? recordsObj.total : (recordsObj.data ? recordsObj.data.length : recordsObj.length || 0);
-        }
-        if (grud.status === 'fulfilled') counts.value['grudge'] = grud.value.data?.paginator?.total || grud.value.data?.total || grud.value.data?.length || 0;
-        if (mil.status === 'fulfilled') counts.value['military'] = mil.value.data?.records?.total || mil.value.data?.total || mil.value.data?.length || 0;
-        if (kai.status === 'fulfilled') {
-            const kData = kai.value.data || {};
-            counts.value['kaiwen'] = (kData.weeklyPosts?.length || 0) + (kData.selfPosts?.length || 0);
-        }
-        if (othTeach.status === 'fulfilled') counts.value['other_teaching'] = othTeach.value.data?.total || othTeach.value.data?.length || 0;
-        
-        stats.value.totalItems = (counts.value['grace'] || 0) + (counts.value['treasure'] || 0);
-        if (grud.status === 'fulfilled') {
-            const grudgeData = grud.value.data.data || grud.value.data;
-            stats.value.todoGrudges = Array.isArray(grudgeData) ? grudgeData.filter(i => i.status === '待處理').length : 0;
-        }
-    } catch (e) { 
-        if (e.response?.status !== 403) console.error(e); 
-    }
-};
 
 const handleLogout = () => {
     persistentToast.value = { msg: '確定要登出系統嗎？' };
@@ -193,6 +152,4 @@ const executeLogout = async () => {
         window.location.href = '/login';
     }
 };
-
-onMounted(loadStats);
 </script>

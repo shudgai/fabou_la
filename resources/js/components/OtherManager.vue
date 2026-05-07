@@ -7,7 +7,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h1 class="font-outfit tracking-tighter truncate font-medium text-red-600" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px; font-weight: 500 !important;">其他專區資料夾</h1>
+                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">其他專區資料夾</h1>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -35,7 +35,7 @@
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 32px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 26px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                             </div>
@@ -102,14 +102,11 @@
                     <!-- Consolidated Title Row -->
                     <div class="flex items-center flex-1 min-w-0">
                         <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <h1 class="text-[32px] text-slate-900 leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                            <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                                 其他專區
                             </h1>
                         </div>
-                        <!-- Subtitle (Active Folder) moved behind Main Title -->
-                        <div v-if="activeFolder" class="flex items-center ml-3 min-w-0">
-                            <span :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate" style="font-size: 25px !important;">{{ activeFolder.name }}</span>
-                        </div>
+                        <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 28px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
                     </div>
 
                     <!-- Right Side Functional Controls -->
@@ -255,7 +252,7 @@
                         <button @click="persistentToast = null" 
                                 :class="persistentToast.type === 'success' || persistentToast.type === 'error' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
                                 class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
-                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : 'inherit') }">
+                                :style="{ color: (persistentToast.type === 'success' || persistentToast.type === 'error' ? 'white !important' : '#64748b') }">
                             {{ persistentToast.type === 'success' || persistentToast.type === 'error' ? '確認' : '取消' }}
                         </button>
                     </div>

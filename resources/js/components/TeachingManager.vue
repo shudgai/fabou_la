@@ -63,14 +63,14 @@
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
             <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
-                    <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                 </div>
             </div>
             <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full">
                 <!-- Header Row -->
                 <div class="flex items-center justify-between px-3 py-2">
                     <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <h2 class="text-[28px] text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h2 class="text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                             父皇仙師開示專區
                         </h2>
                     </div>
@@ -88,8 +88,8 @@
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
-                    <span class="text-[24px] font-black font-outfit whitespace-nowrap" 
-                          :style="{ color: (currentFolder && currentFolder.name === '閻王仙師' ? '#0f172a' : '#dc2626') + ' !important', fontSize: '24px !important', fontWeight: '900 !important' }">
+                    <span class="text-[28px] font-normal font-outfit whitespace-nowrap" 
+                          :style="{ color: (currentFolder && currentFolder.name === '閻王仙師' ? '#0f172a' : '#dc2626') + ' !important', fontSize: '28px !important', fontWeight: '400 !important' }">
                         {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
                     <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
@@ -114,8 +114,8 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-14 px-4 translate-y-[2px]">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
                                 <div class="mt-4">
@@ -135,8 +135,8 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
-                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-14 px-4 translate-y-[2px]">
+                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
                                 <div class="mt-4">
@@ -156,7 +156,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
-                            <span class="text-[24px] font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">父皇仙師開示載錄</span>
+                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
@@ -169,10 +169,10 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label & Pill Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[3px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[12px]">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                     style="font-weight: 900 !important; font-size: 32px !important;">
+                                     style="font-weight: 900 !important; font-size: 26px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
                                 <div class="mt-1">
@@ -1548,7 +1548,7 @@
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
-                                                    <h1 class="text-[28px] font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 28px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                                                    <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
                                                 </div>
                                                 <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all absolute right-3">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -1674,11 +1674,7 @@
                              </div>
                          </template>
                          
-                         <!-- Pagination -->
-                         <pagination-buttons 
-                             :meta="itemPagination" 
-                             @page-change="fetchItems"
-                         />
+
                      </div>
                 </div>
 
@@ -1758,7 +1754,7 @@
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
                         <div class="flex items-center space-x-3">
                         <div class="flex flex-col">
-                            <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
+                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
                             <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">請核對以下內容是否正確</span>
                         </div>
                         </div>
@@ -1849,6 +1845,17 @@
             
             <!-- Global Components (Visible on all levels) -->
             <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+
+            <!-- Floating Pagination above MobileNavbar -->
+            <div v-if="currentFolder && !addMode && !itemsDetailMode && itemPagination && itemPagination.last_page > 1" 
+                 class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
+                <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
+                    <pagination-buttons 
+                        :meta="itemPagination" 
+                        @page-change="fetchItems"
+                    />
+                </div>
+            </div>
             <mobile-navbar 
                 :can-back="currentFolder !== null || currentCategory !== null || addMode"
                 :show-action="(currentFolder !== null || (currentCategory === 'masters' && !currentFolder) || (currentFolder === null && currentCategory === null)) && !addMode"

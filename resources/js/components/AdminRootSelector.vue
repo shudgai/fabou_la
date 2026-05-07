@@ -114,6 +114,7 @@
                                 'text-[21px] font-black tracking-tight leading-tight transition-colors',
                                 currentView === item.id ? 'text-blue-600' : 'text-slate-800'
                             ]">{{ item.label }}</span>
+                            <span v-if="counts[item.id]" class="text-[14px] font-normal text-slate-400 mt-0.5">{{ counts[item.id] }} 筆</span>
                         </div>
                         <div class="flex items-center">
                             <svg :class="['h-6 w-6 transition-all', currentView === item.id ? 'text-blue-600 translate-x-1' : 'text-slate-200 group-hover:text-indigo-300 group-hover:translate-x-1']" fill="none" stroke="currentColor" viewBox="0 0 24 24">

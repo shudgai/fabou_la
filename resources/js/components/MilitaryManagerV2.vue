@@ -27,7 +27,7 @@
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-[28px] leading-tight font-outfit tracking-widest break-words font-black" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
+                <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                     軍隊記錄專區
                 </h1>
             </div>
@@ -44,7 +44,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="text-[28px] truncate tracking-tight font-outfit font-black" style="font-size: 28px !important; color: #0f172a !important; font-weight: 900 !important;">
+                <h2 class="truncate tracking-tight font-outfit font-normal" style="font-size: 28px !important; color: #0f172a !important; font-weight: 400 !important;">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
                 <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 text-[13px] text-indigo-600 active:scale-95 transition-all">
@@ -106,7 +106,7 @@
 
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
-                                    style="font-weight: 900 !important; font-size: 32px !important;">{{ folder.name }}</span>
+                                    style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
                                 <div class="mt-4 flex items-center space-x-2 animate-fade-in">
                                     <span class="text-white/80 text-[13px] font-bold tracking-widest uppercase">總計</span>
                                     <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
@@ -259,8 +259,7 @@
                             </template>
                         </template>
 
-                <!-- Pagination Buttons -->
-                <pagination-buttons v-if="activePaginationMeta" :meta="activePaginationMeta" @page-change="handlePageChange" />
+
                 </div>
             </div>
         </div>
@@ -284,6 +283,17 @@
 
         <!-- MODALS -->
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
+
+        <!-- Floating Pagination above MobileNavbar -->
+        <div v-if="!addMode && !batchMode && activePaginationMeta && activePaginationMeta.last_page > 1" 
+             class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
+            <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
+                <pagination-buttons 
+                    :meta="activePaginationMeta" 
+                    @page-change="handlePageChange"
+                />
+            </div>
+        </div>
         <military-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" :armyType="currentFolder ? currentFolder.name : ''" :isCumulative="isCumulativeMode" :isSaving="isSaving" @save="saveItem" @cancel="addMode = false; editingId = null" />
         <military-batch-add :show="batchMode" :armyType="currentFolder ? currentFolder.name : ''" @save="batchMode = false; loadData()" @cancel="batchMode = false" />
     </div>

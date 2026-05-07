@@ -75,23 +75,23 @@
 </template>
 
 <script setup>
-import { ref, computed, markRaw, onMounted, watch } from 'vue';
-import DharmaCrud from './admin/DharmaCrud.vue';
-import UserCrud from './admin/UserCrud.vue';
-import GroupCrud from './admin/GroupCrud.vue';
-import MasterCrud from './admin/MasterCrud.vue';
-import TreasureCrud from './admin/TreasureCrud.vue';
+import { ref, computed, markRaw, onMounted, watch, defineAsyncComponent } from 'vue';
 
-// Notebook Managers
-import TeachingManager from './TeachingManager.vue';
-import GrudgeManager from './GrudgeManager.vue';
-import MilitaryManager from './MilitaryManagerV2.vue';
-import RegistryManager from './RegistryManager.vue';
-import ImperialGraceManager from './ImperialGraceManager.vue';
-import OtherManager from './OtherManager.vue';
-import KaiwenManager from './KaiwenManager.vue';
-import OtherTeachingManager from './OtherTeachingManager.vue';
-import TrashManager from './TrashManager.vue';
+const DharmaCrud = defineAsyncComponent(() => import('./admin/DharmaCrud.vue'));
+const UserCrud = defineAsyncComponent(() => import('./admin/UserCrud.vue'));
+const GroupCrud = defineAsyncComponent(() => import('./admin/GroupCrud.vue'));
+const MasterCrud = defineAsyncComponent(() => import('./admin/MasterCrud.vue'));
+const TreasureCrud = defineAsyncComponent(() => import('./admin/TreasureCrud.vue'));
+
+const TeachingManager = defineAsyncComponent(() => import('./TeachingManager.vue'));
+const GrudgeManager = defineAsyncComponent(() => import('./GrudgeManager.vue'));
+const MilitaryManager = defineAsyncComponent(() => import('./MilitaryManagerV2.vue'));
+const RegistryManager = defineAsyncComponent(() => import('./RegistryManager.vue'));
+const ImperialGraceManager = defineAsyncComponent(() => import('./ImperialGraceManager.vue'));
+const OtherManager = defineAsyncComponent(() => import('./OtherManager.vue'));
+const KaiwenManager = defineAsyncComponent(() => import('./KaiwenManager.vue'));
+const OtherTeachingManager = defineAsyncComponent(() => import('./OtherTeachingManager.vue'));
+const TrashManager = defineAsyncComponent(() => import('./TrashManager.vue'));
 
 // Font Size System
 const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());

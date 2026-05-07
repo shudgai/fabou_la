@@ -5,7 +5,7 @@
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <h1 class="font-black tracking-widest font-outfit" style="font-size: 32px !important; color: #0f172a !important;">其他記錄專區</h1>
+            <h1 class="font-black tracking-widest font-outfit !font-black" style="font-size: 32px !important; color: #0f172a !important; font-weight: 900 !important;">其他記錄專區</h1>
         </div>
 
         <!-- Document List -->
@@ -31,7 +31,7 @@
                 :class="[
                     'bg-white border rounded-[22px] px-5 transition-all cursor-pointer relative',
                     expandedRecordId === record.id 
-                        ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 py-6' 
+                        ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 px-2 py-4 md:p-[10px]' 
                         : 'border-slate-100 shadow-sm hover:border-slate-200 z-10 py-4'
                 ]">
                 
@@ -44,7 +44,7 @@
                             {{ formatDate(record.record_date) }}
                         </div>
                         <h3 :class="[
-                            'text-[18px] font-black truncate leading-tight transition-colors',
+                            'text-[17px] font-black truncate leading-tight transition-colors',
                             expandedRecordId === record.id ? 'text-indigo-900' : 'text-slate-900'
                         ]">{{ record.title || '文件記錄' }}</h3>
                     </div>
