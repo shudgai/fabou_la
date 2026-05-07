@@ -6,7 +6,7 @@
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title !text-[28px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]">
+                <div class="app-title !text-[28px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
             </div>
@@ -18,7 +18,7 @@
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Top Row: Main Title + Actions -->
             <div class="flex items-center justify-between py-2 px-3 bg-white border-b border-slate-50">
-                <div class="app-title !text-[28px] leading-tight !font-black !text-[#dc2626]">
+                <div class="app-title !text-[28px] leading-tight !font-black !text-[#dc2626]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
                 <div class="flex items-center space-x-2">
@@ -52,7 +52,7 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div v-if="currentCategory" class="w-full px-[10px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" :class="currentCategory ? '!text-[28px]' : '!text-[32px]'">
+                            <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[28px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
                                 {{ !currentCategory ? '法寶登記專區' : (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }}
                                 <br v-if="currentCategory">
                                 <span v-if="currentCategory && currentFolder" class="text-[24px] text-red-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-full">- {{ currentFolder.name }} -</span>
@@ -62,16 +62,16 @@
 
                 <!-- Root Categories -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center justify-start pt-20 pb-20 w-full max-w-lg mx-auto">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-2xl p-0 w-[300px] h-[300px] relative transition-all shadow-sm border-2 border-[#fbbf24]">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-2xl p-0 w-[300px] h-[300px] relative transition-all shadow-sm">
                         <div class="relative w-[295px] h-[295px]">
                             <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-gold-grad-global)" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 translate-y-[2px]">
-                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[40px]">重大皇恩<br>登記簿</div>
+                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[32px]">重大皇恩<br>登記簿</div>
                                 <div class="mt-4 flex items-center">
-                                    <span class="text-black text-[20px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="text-black text-[17px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 border-[#fbbf24] group p-0 w-[172px] h-[172px] relative bg-white shadow-sm'
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl group p-0 w-[172px] h-[172px] relative bg-white shadow-sm'
                         ]">
                         
                         <div class="relative w-[168px] h-[168px]">
@@ -96,12 +96,12 @@
                             </svg>
                             
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none translate-y-[8px]">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[24px] !font-black"
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[32px] !font-black"
                                      :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'">
                                      {{ folder.name }}
                                 </div>
                                 <div class="mt-1 flex items-center">
-                                    <span class="text-[15px] font-normal !text-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                    <span class="text-[17px] font-normal !text-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -458,7 +458,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[3vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[55px] bg-blue-600 !text-white rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest">儲存修改</button>
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[55px] bg-blue-600 !text-white rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important;">儲存修改</button>
                                         </div>
                                     </div>
                             </div>
@@ -493,12 +493,17 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
-                    <div v-if="persistentToast.type === 'confirm' || persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
-                        <button v-for="a in persistentToast.actions" :key="a.label" @click="a.handler" class="flex-1 bg-red-600 !text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100">{{ a.label }}</button>
-                        <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
+                    <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="flex space-x-4">
+                        <button v-for="a in persistentToast.actions" :key="a.label" @click="a.handler" 
+                            class="flex-1 h-[52px] rounded-2xl text-[16px] font-black tracking-tighter active:scale-95 transition-all shadow-lg !text-white border border-transparent"
+                            :class="persistentToast.type === 'deleteConfirm' ? 'bg-red-600 shadow-red-100' : 'bg-blue-600 shadow-blue-100'"
+                            style="color: white !important;">
+                            {{ a.label }}
+                        </button>
+                        <button v-if="persistentToast.type !== 'mismatchConfirm'" @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
                     </div>
                     <div v-else class="flex justify-end mt-2">
-                        <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100">知道了</button>
+                        <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">知道了</button>
                     </div>
                 </div>
             </div>
@@ -1164,7 +1169,7 @@ const handleBack = () => {
     else emit('goHome');
 };
 
-const saveSingle = async (data) => {
+const saveSingle = async (data, shuntAction = null) => {
     if (!data.name?.trim()) {
         persistentToast.value = { msg: '✖ 請輸入法寶名稱', type: 'error' };
         return;
@@ -1172,6 +1177,24 @@ const saveSingle = async (data) => {
     if (!data.master_id) {
         persistentToast.value = { msg: '✖ 請選擇仙師', type: 'error' };
         return;
+    }
+
+    // Master Mismatch Routing (Shunting)
+    if (currentFolder.value && String(data.master_id) !== String(currentFolder.value.id) && !shuntAction) {
+        persistentToast.value = {
+            msg: `偵測到所選仙師為「${getMasterName(data.master_id)}」，與當前資料夾「${currentFolder.value.name}」不同。請問要存入何處？`,
+            type: 'mismatchConfirm',
+            actions: [
+                { label: `存入 ${currentFolder.value.name}`, handler: () => saveSingle(data, 'force') },
+                { label: `存入 ${getMasterName(data.master_id)}`, handler: () => saveSingle(data, 'shunt') }
+            ]
+        };
+        return;
+    }
+
+    // Apply the chosen action
+    if (shuntAction === 'force') {
+        data.master_id = currentFolder.value.id;
     }
 
     // 前處理：將「親友」欄位轉換為備註內容後再送出

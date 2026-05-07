@@ -37,9 +37,9 @@
                     <div class="flex items-center justify-between mb-2 ml-1">
                         <label class="app-title">貼上資料</label>
                         <div class="flex items-center space-x-2">
-                            <button @click.stop="triggerFileUpload" class="text-[15px] font-black text-white bg-indigo-600 px-4 py-2 rounded-xl shadow-sm flex items-center space-x-1 active:scale-95 transition-all" style="color: white !important;">
-                                <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                <span style="color: white !important;">載入他檔</span>
+                            <button @click.stop="triggerFileUpload" class="text-[14px] font-black text-indigo-600 flex items-center space-x-1 active:scale-95 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span>載入他檔</span>
                             </button>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                             rows="15"
                             @click.stop
                             class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[500px] leading-relaxed pr-12"
-                            placeholder="多筆新增輸入方法(可多項)：&#10;日期&#10;法號總數(龍勝數量龍戰數量)&#10;例如：&#10;元續10(龍勝5龍戰5)"
+                            placeholder="多筆新增如下列:&#10;日期(yyyy/mm/dd)&#10;法號總數(閻尊數量閻閽數量)"
                         ></textarea>
                         <!-- Floating Clear Cross Button -->
                         <button v-if="batchText" @click="batchText = ''" 

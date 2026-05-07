@@ -91,7 +91,13 @@ class RegistryController extends Controller
                 ->where('name', $cleanName)
                 ->first();
 
-            if (!$registry) {
+            $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
+            if ($registry && !in_array($cleanName, $allowedDuplicates)) {
+                $masterName = \App\Models\Master::find($registry->master_id)?->name ?? '其他';
+                throw new \Exception("「{$cleanName}」已存在於【{$masterName}】資料夾中，不可重複載錄。");
+            }
+
+            if (!$registry || in_array($cleanName, $allowedDuplicates)) {
                 $registry = Registry::create([
                     'user_id'            => $user->id,
                     'name'               => $cleanName,
@@ -311,7 +317,12 @@ class RegistryController extends Controller
                     ->where('name', $cleanName)
                     ->first();
 
-                if (!$registry) {
+                $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
+                if ($registry && !in_array($cleanName, $allowedDuplicates)) {
+                    continue; // Skip duplicates for batch
+                }
+
+                if (!$registry || in_array($cleanName, $allowedDuplicates)) {
                     $recordData['name'] = $cleanName;
                     $recordData['user_id'] = $user->id;
                     $registry = Registry::create($recordData);

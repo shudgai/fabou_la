@@ -1,7 +1,7 @@
 <template>
     <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
-        <div style="padding: 16px 20px 8px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[60px] shrink-0">
+        <div style="padding: 8px 20px 4px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[50px] shrink-0">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
                     <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,11 +27,11 @@
         </div>
 
         <!-- 現代化條列式專區 (Scrollable Area) -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 py-4 px-4">
-            <div class="flex flex-col space-y-2 pb-24">
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 py-2 px-4">
+            <div class="flex flex-col space-y-1 pb-24">
                 <button v-for="item in filteredMenuItems" :key="item.id" 
                     @click="navigate(item.id)"
-                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[80px] shrink-0 overflow-hidden relative group"
+                    class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[64px] shrink-0 overflow-hidden relative group"
                     style="padding: 0 20px;">
                         <div class="flex flex-col items-start text-left">
                             <div class="flex items-center space-x-2">
@@ -123,19 +123,16 @@ const permissions = computed(() => user.value?.permissions || {});
 
 const filteredMenuItems = computed(() => {
     return menuItems.filter(item => {
-        // Special Rule: Admin Module access
+        // Admin Module only for true admins
         if (item.id === 'admin') return user.value?.is_admin;
 
-        // Admin sees everything else by default
-        if (user.value?.is_admin) return true;
-
-        // Specific context permissions
-        if (item.id === 'teaching') return permissions.value.can_see_teaching_folders;
-        if (item.id === 'treasure') return permissions.value.can_see_treasures;
-        if (item.id === 'military') return permissions.value.can_see_military;
-        if (item.id === 'other' || item.id === 'other_teaching') return permissions.value.can_see_other_folders;
-        if (item.id === 'trash') return permissions.value.can_see_trash;
+        // Trash remains restricted
+        if (item.id === 'trash') {
+            if (user.value?.is_admin) return true;
+            return permissions.value.can_see_trash;
+        }
         
+        // Show all other primary modules by default to ensure "法號的介面都顯示出來"
         return true;
     });
 });

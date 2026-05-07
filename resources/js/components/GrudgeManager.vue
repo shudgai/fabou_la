@@ -24,7 +24,7 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] !text-[30px] pt-[5px]">{{ displayTitle }}</h1>
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] !text-[28px] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
                 <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 !text-[15px] text-indigo-600 active:scale-95 transition-all">
@@ -85,7 +85,7 @@
                         @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
                         class="p-[10px] bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
                         <div class="flex items-center">
-                            <span class="app-title font-outfit tracking-wider text-[18px] text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
+                            <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <div class="flex items-center">
@@ -103,7 +103,7 @@
                         @click.stop="activeDateGroup = null" 
                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="app-title font-outfit tracking-wider text-slate-800">{{ activeDateGroup }}</span>
+                        <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ activeDateGroup }}</span>
                     </div>
 
                     <div v-for="item in sortedItems" :key="item.id" 
@@ -751,6 +751,11 @@ onUnmounted(() => {
     font-weight: 500;
     color: #0f172a;
 }
+
+/* Specific scaling for the date headers to match label size */
+:deep(body.font-small) .app-title.text-\[14px\] { font-size: 13px !important; }
+:deep(body.font-medium) .app-title.text-\[14px\] { font-size: 14px !important; }
+:deep(body.font-large) .app-title.text-\[14px\] { font-size: 15px !important; }
 
 /* Custom Grudge Scaling Logic */
 /* Small: Label 13, Body 15 */

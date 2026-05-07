@@ -88,7 +88,8 @@
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
-                    <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">
+                    <span class="text-[24px] font-black font-outfit whitespace-nowrap" 
+                          :style="{ color: (currentFolder && currentFolder.name === '閻王仙師' ? '#0f172a' : '#dc2626') + ' !important', fontSize: '24px !important', fontWeight: '900 !important' }">
                         {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
                     <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
@@ -114,11 +115,11 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 32px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
                                 <div class="mt-4">
-                                    <span class="text-black text-[22px] font-normal tracking-tight drop-shadow-sm">{{ folderCounts.daily || 0 }} 筆</span>
+                                    <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folderCounts.daily || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -135,11 +136,11 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
-                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
+                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 32px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
                                 <div class="mt-4">
-                                    <span class="text-black text-[22px] font-normal tracking-tight">{{ mastersTotalCount }} 筆</span>
+                                    <span class="text-black text-[17px] font-normal tracking-tight">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +162,7 @@
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white border-2 border-red-500 rounded-none shadow-sm w-[198px] h-[198px]">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white rounded-none shadow-sm w-[198px] h-[198px]">
                         <div class="relative w-[163px] h-[163px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />
@@ -171,7 +172,7 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[3px]">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                     style="font-weight: 900 !important; font-size: 24px !important;">
+                                     style="font-weight: 900 !important; font-size: 32px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
                                 <div class="mt-1">

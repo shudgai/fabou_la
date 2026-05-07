@@ -169,13 +169,13 @@ const persistentToast = ref(null);
 
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {
-        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10(閻尊5閻闇5)";
+        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數(閻尊數量閻閽數量)";
     }
     if (props.armyType === '耀紫軍') {
-        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10(龍勝5龍戰5)";
+        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數(龍勝數量龍戰數量)";
     }
     if (props.armyType === '虎賁軍' || props.armyType === '虎甲軍') {
-        return "多筆新增輸入方法(可多項)：\n日期\n法號數量\n例如：\n元續10\n閻閽10";
+        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號數量";
     }
     return "請貼上文字或 Excel 複製之內容...";
 });

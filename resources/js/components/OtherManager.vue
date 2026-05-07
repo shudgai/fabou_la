@@ -35,9 +35,9 @@
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 32px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
-                                <span class="text-black text-[20px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
+                                <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
                                 抽順序
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
                                 回合抽籤
                             </span>
                         </div>
@@ -85,7 +85,7 @@
             <mobile-navbar 
                 is-absolute
                 :can-back="true"
-                :show-action="true"
+                :show-action="false"
                 :action-disabled="false"
                 :can-search="false"
                 :can-more="false"
@@ -183,7 +183,7 @@
             <!-- Folder Contents Bottom Navbar -->
             <mobile-navbar 
                 :can-back="true"
-                :show-action="!activeFolder?.name.includes('開文核定') && !activeFolder?.name.includes('隨機分組')"
+                :show-action="false"
                 :action-disabled="false"
                 :can-search="false"
                 :can-more="!!activeFolder"
