@@ -316,7 +316,7 @@
 
                         <!-- Full-page Expanded Overlay -->
                         <teleport to="body">
-                        <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
+                        <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in" style="overscroll-behavior: contain;">
                             <!-- Backdrop -->
                             <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->

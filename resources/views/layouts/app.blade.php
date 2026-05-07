@@ -5,8 +5,13 @@
     <!-- 字體大小初始化：讀 localStorage，避免頁面閃爍 -->
     <script>
         (function () {
-            var size = localStorage.getItem('fabou_font_size') || 'font-medium';
-            document.documentElement.className = size;
+            try {
+                var size = localStorage.getItem('fabou_font_size') || 'font-medium';
+                document.documentElement.className = size;
+            } catch (e) {
+                // iOS Private Browsing: localStorage throws SecurityError
+                document.documentElement.className = 'font-medium';
+            }
         })();
     </script>
     <meta charset="utf-8">
@@ -250,7 +255,7 @@
                 { key: 'font-medium', label: '中' },
                 { key: 'font-large',  label: '大' },
             ],
-            current: localStorage.getItem('fabou_font_size') || 'font-medium',
+            current: (function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })(),
             get currentLabel() {
                 return this.options.find(o => o.key === this.current)?.label || '中';
             },
@@ -261,14 +266,20 @@
                 const body = document.body;
                 body.classList.remove('font-small', 'font-medium', 'font-large');
                 body.classList.add(key);
-                localStorage.setItem('fabou_font_size', key);
+                try { localStorage.setItem('fabou_font_size', key); } catch(e) {}
                 this.current = key;
             },
             init() {
-                const saved = localStorage.getItem('fabou_font_size') || 'font-medium';
-                document.body.classList.remove('font-small', 'font-medium', 'font-large');
-                document.body.classList.add(saved);
-                this.current = saved;
+                try {
+                    const saved = localStorage.getItem('fabou_font_size') || 'font-medium';
+                    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                    document.body.classList.add(saved);
+                    this.current = saved;
+                } catch(e) {
+                    document.body.classList.remove('font-small', 'font-medium', 'font-large');
+                    document.body.classList.add('font-medium');
+                    this.current = 'font-medium';
+                }
             }
         };
     }

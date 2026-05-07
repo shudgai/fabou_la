@@ -89,7 +89,7 @@ defineEmits(['back', 'home', 'action', 'search']);
 
 // Font Size System
 const showFontMenu = ref(false);
-const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
+const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());
 const fontSizeLabel = computed(() => {
     const opts = { 'font-small': '小', 'font-medium': '中', 'font-large': '大' };
     return opts[currentFontSize.value] || '中';
@@ -109,7 +109,7 @@ const handleSliderInput = (e) => {
 const setFontSize = (key) => {
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(key);
-    localStorage.setItem('fabou_font_size', key);
+    try { localStorage.setItem('fabou_font_size', key); } catch(e) {}
     currentFontSize.value = key;
 };
 </script>

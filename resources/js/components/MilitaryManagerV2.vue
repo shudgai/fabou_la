@@ -299,6 +299,7 @@ import MilitaryBatchAdd from './MilitaryBatchAdd.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import PaginationButtons from './PaginationButtons.vue';
+import { writeClipboard, downloadBlob } from '../utils/iosCompat';
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -345,7 +346,7 @@ const batchMode = ref(false);
 const showAddMenu = ref(false);
 const showSearch = ref(false);
 const isCumulativeMode = ref(false);
-const showCumulativePrompt = ref(!localStorage.getItem('hide_mil_cumulative_prompt'));
+const showCumulativePrompt = ref(!(function() { try { return localStorage.getItem('hide_mil_cumulative_prompt'); } catch(e) { return null; } })());
 const showCumulativeAction = ref(true);
 const expandedDate = ref(null);
 const toggleDateGroup = (date) => {
@@ -353,7 +354,7 @@ const toggleDateGroup = (date) => {
 };
 const dismissCumulativePrompt = () => {
     showCumulativePrompt.value = false;
-    localStorage.setItem('hide_mil_cumulative_prompt', 'true');
+    try { localStorage.setItem('hide_mil_cumulative_prompt', 'true'); } catch(e) {}
 };
 const hideCumulativeAction = () => {
     showCumulativeAction.value = false;
@@ -655,7 +656,7 @@ const copyToLine = () => {
     const footerQty   = padToWidthPrecise(total.toString(), 4, true);
     text += `${footerLabel} | ${footerQty}\n`;
     
-    navigator.clipboard.writeText(text).then(() => {
+    writeClipboard(text).then(() => {
         alert('已複製到剪貼簿，快去 LINE 貼上吧！');
     }).catch(err => {
         alert('複製失敗，請手動全選複製。');
@@ -714,19 +715,15 @@ const performExcelExport = () => {
     const dateStr = getTodayStr().replace(/-/g, '');
     const fileName = `${currentFolder.value?.name || '軍隊'}_載錄報表_${dateStr}.xlsx`;
     
-    XLSX.writeFile(workbook, fileName);
+    // iOS Safari fix: XLSX.writeFile uses <a download> which fails on iOS
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    downloadBlob(blob, fileName);
 };
 
 const triggerSimpleDownload = (text, filename) => {
     const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, filename);
 };
 
 const formatMilitaryRecordForFile = (item) => {
@@ -752,7 +749,7 @@ const formatMilitaryRecordForFile = (item) => {
 const copySingleRecord = async (item) => {
     const text = formatMilitaryRecordForFile(item);
     try {
-        await navigator.clipboard.writeText(text);
+        await writeClipboard(text);
         alert('已複製單筆記錄');
     } catch (e) {
         alert('複製失敗');
@@ -761,7 +758,8 @@ const copySingleRecord = async (item) => {
 
 const downloadSingleRecord = (item) => {
     const text = formatMilitaryRecordForFile(item);
-    triggerSimpleDownload(text, `${item.army_type}_${item.user_name}_${formatDate(item.know_date).replace(/\//g, '')}.txt`);
+    const blob = new Blob(['\uFEFF' + text], { type: 'text/plain;charset=utf-8' });
+    downloadBlob(blob, `${item.army_type}_${item.user_name}_${formatDate(item.know_date).replace(/\//g, '')}.txt`);
 };
 
 const form = ref({});

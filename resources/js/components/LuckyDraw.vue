@@ -284,6 +284,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import { writeClipboard } from '../utils/iosCompat';
 
 const props = defineProps({
     show: Boolean,
@@ -492,7 +493,7 @@ const performRoundDraw = () => {
 
 const copyResults = () => {
     const text = results.value.map((n, i) => `${i+1}. ${n}`).join('\n');
-    navigator.clipboard.writeText(text).then(() => alert('已複製'));
+    writeClipboard(text).then(() => alert('已複製'));
 };
 
 const saveResults = async () => {

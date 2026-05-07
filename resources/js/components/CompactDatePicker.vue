@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/10 backdrop-blur-[1px]" @click="$emit('close')">
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/10 backdrop-blur-[1px]" @click="$emit('close')" style="overscroll-behavior: contain;">
         <div class="bg-white rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.1)] p-2 w-[85%] md:w-fit h-auto animate-fade-in border border-slate-100 flex flex-col origin-center" 
              @click.stop>
             <!-- Name Header (Dharma Name) -->

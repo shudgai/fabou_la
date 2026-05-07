@@ -553,6 +553,7 @@ import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import KaiwenBatchAdd from './KaiwenBatchAdd.vue';
+import { writeClipboard, downloadBlob } from '../utils/iosCompat';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -681,7 +682,7 @@ watch(() => form.value.original_content, (newVal) => {
     }
 });
 
-const currentFontSize = ref(localStorage.getItem('fabou_font_size') || 'font-medium');
+const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());
 
 const fontSizeValue = computed(() => {
     if (currentFontSize.value === 'font-small') return 0;
@@ -703,7 +704,7 @@ const handleFontSizeSlider = (e) => {
     
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(next);
-    localStorage.setItem('fabou_font_size', next);
+    try { localStorage.setItem('fabou_font_size', next); } catch(e) {}
     currentFontSize.value = next;
 };
 
@@ -1067,9 +1068,12 @@ onUnmounted(() => {
 const copyAsTextFile = (post) => {
     try {
         const text = formatPostForFile(post);
-        navigator.clipboard.writeText(text);
-        persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
-        setTimeout(() => { persistentToast.value = null; }, 2000);
+        writeClipboard(text).then((success) => {
+            if (success) {
+                persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
+                setTimeout(() => { persistentToast.value = null; }, 2000);
+            }
+        });
     } catch (err) {
         console.error('Copy failed:', err);
     }
@@ -1078,12 +1082,7 @@ const copyAsTextFile = (post) => {
 const downloadPost = (post) => {
     const text = formatPostForFile(post);
     const blob = new Blob([text], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `開文紀錄_${post.date}_${(post.title || '').substring(0, 10)}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, `開文紀錄_${post.date}_${(post.title || '').substring(0, 10)}.txt`);
 };
 
 const formatPostForFile = (post) => {
@@ -1214,13 +1213,14 @@ const copyFullText = (post) => {
         return;
     }
     
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        persistentToast.value = { msg: '✓ 已全文複製', type: 'success' };
-        setTimeout(() => { persistentToast.value = null; }, 2000);
-    }).catch(err => {
-        console.error('Copy failed', err);
-        persistentToast.value = { msg: '複製失敗', type: 'error' };
-        setTimeout(() => { persistentToast.value = null; }, 2000);
+    writeClipboard(textToCopy).then((success) => {
+        if (success) {
+            persistentToast.value = { msg: '✓ 已全文複製', type: 'success' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+        } else {
+            persistentToast.value = { msg: '複製失敗', type: 'error' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+        }
     });
 };
 

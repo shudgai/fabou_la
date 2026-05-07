@@ -230,6 +230,7 @@ import GrudgeBatchImport from './GrudgeBatchImport.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import PaginationButtons from './PaginationButtons.vue';
+import { writeClipboard, downloadBlob } from '../utils/iosCompat';
 
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
@@ -494,9 +495,11 @@ const copyAllToLine = () => {
     const footerLabel = padToWidthPrecise('總結：', 30);
     const footerQty   = padToWidthPrecise(total.toString(), 4, true);
     text += `${footerLabel} | ${footerQty}\n`;
-    navigator.clipboard.writeText(text).then(() => {
-        persistentToast.value = { msg: '✓ 已複製到剪貼簿，快去 LINE 貼上吧！', type: 'success' };
-        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 3000);
+    writeClipboard(text).then((success) => {
+        if (success) {
+            persistentToast.value = { msg: '✓ 已複製到剪貼簿，快去 LINE 貼上吧！', type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 3000);
+        }
     });
 };
 
@@ -532,7 +535,9 @@ const performExcelExport = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, '怨靈資料');
     const dateStr = getTodayStr().replace(/-/g, '');
-    XLSX.writeFile(workbook, `怨靈報表_${dateStr}.xlsx`);
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    downloadBlob(blob, `怨靈報表_${dateStr}.xlsx`);
 };
 
 const form = ref({ user_name: '', user_remarks: '', destination: '未處理', quantity: 1, know_date: getTodayStr(), process_date: '', remarks_text: '', remarks: {} });
@@ -657,7 +662,7 @@ const executeDelete = async () => {
 
 const copyItem = async (item) => {
     const text = `【怨靈結果】${item.user_name}: ${item.destination} (${item.quantity})`;
-    await navigator.clipboard.writeText(text);
+    await writeClipboard(text);
     persistentToast.value = { msg: '✓ 已複製', type: 'success' };
     setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
     openMenuId.value = null;
@@ -667,12 +672,7 @@ const downloadItem = (item, format = 'txt') => {
     let contents = `【怨靈處理結果】\r\n法號：${item.user_name || '未知'}\r\n日期：${formatDate(item.know_date)}\r\n數量：${item.quantity}\r\n結果：${item.destination || '未處理'}\r\n處理日期：${item.process_date ? formatDate(item.process_date) : '-'}\r\n備註：${item.remarks_text || '無'}`;
     let fileName = `怨靈_${item.user_name || '未名'}.txt`;
     const blob = new Blob([contents], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, fileName);
     openMenuId.value = null;
 };
 
@@ -681,12 +681,7 @@ const downloadList = () => {
         sortedItems.value.map(i => `${i.user_name || '未知'}${i.user_remarks?'('+i.user_remarks+')':''}: ${i.destination || '未處理'} (${i.quantity})`).join('\r\n');
     let fileName = '怨靈處理結果清單.txt';
     const blob = new Blob([contents], { type: 'text/plain;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    downloadBlob(blob, fileName);
 };
 
 const breakdownTotals = computed(() => globalTotals.value.breakdowns);
