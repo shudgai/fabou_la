@@ -37,7 +37,7 @@
                     <div class="flex items-center justify-between mb-2 ml-1">
                         <label class="app-title">貼上資料</label>
                         <div class="flex items-center space-x-2">
-                            <button @click.stop="triggerFileUpload" class="text-[15px] font-black text-white bg-indigo-600 px-4 py-2 rounded-xl shadow-sm border border-indigo-500 flex items-center space-x-1 active:scale-95 transition-all" style="color: white !important;">
+                            <button @click.stop="triggerFileUpload" class="text-[15px] font-black text-white bg-indigo-600 px-4 py-2 rounded-xl shadow-sm flex items-center space-x-1 active:scale-95 transition-all" style="color: white !important;">
                                 <svg class="w-[15px] h-[15px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 <span style="color: white !important;">載入他檔</span>
                             </button>
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="px-4 pb-[72px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pt-4 shrink-0">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-4 pt-3 pb-0 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-[1100] shrink-0">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"
@@ -79,6 +79,7 @@
                 @home="$emit('cancel')"
                 :show-action="false"
                 :can-search="false"
+                is-absolute
             />
         </div>
 

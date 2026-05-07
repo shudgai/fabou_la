@@ -39,14 +39,14 @@
             </div>
             
             <!-- Tab Switcher -->
-            <div v-if="!showSearch" class="absolute right-[10px] top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-xl flex shadow-inner animate-fade-in">
+            <div v-if="!showSearch" class="absolute right-[10px] top-1/2 -translate-y-1/2 bg-slate-100 p-1 rounded-none flex shadow-inner animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg text-white' : 'text-slate-400'"
-                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap flex items-center space-x-1 relative"
+                    class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-none transition-all whitespace-nowrap flex items-center space-x-1 relative"
                     :style="{ fontSize: '16px !important', color: currentTab === 'weekly' ? 'white !important' : '#94a3b8 !important' }">
                     <span>每週開文</span>
-                    <div v-if="weeklyPosts.length > 0" class="px-1.5 py-0.5 bg-white/20 backdrop-blur-md rounded-md border border-white/10 ml-1">
-                        <span class="text-[10px] font-black text-white">{{ weeklyPosts.length }}</span>
+                    <div v-if="weeklyPosts.length > 0" class="ml-1 flex items-center">
+                        <span class="text-[11px] font-normal text-black drop-shadow-sm">{{ weeklyPosts.length }}</span>
                     </div>
                 </button>
                 <button @click="currentTab = 'self'" 
@@ -54,8 +54,8 @@
                     class="px-[3px] py-1.5 app-body text-[16px] font-black rounded-lg transition-all whitespace-nowrap flex items-center space-x-1 relative"
                     :style="{ fontSize: '16px !important', color: currentTab === 'self' ? 'white !important' : '#94a3b8 !important' }">
                     <span>自行開文</span>
-                    <div v-if="selfPosts.length > 0" class="px-1.5 py-0.5 bg-white/20 backdrop-blur-md rounded-md border border-white/10 ml-1">
-                        <span class="text-[10px] font-black text-white">{{ selfPosts.length }}</span>
+                    <div v-if="selfPosts.length > 0" class="ml-1 flex items-center">
+                        <span class="text-[11px] font-normal text-black drop-shadow-sm">{{ selfPosts.length }}</span>
                     </div>
                 </button>
             </div>
@@ -63,7 +63,7 @@
             <!-- Search Input -->
             <div v-if="showSearch && !hasAnyExpanded" class="absolute right-12 top-1/2 -translate-y-1/2 flex items-center animate-fade-in" style="width: calc(100% - 150px);">
                 <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
-                    class="w-full h-[36px] bg-slate-50 border border-slate-200 rounded-xl px-4 text-[16px] outline-none focus:border-purple-300 transition-all shadow-inner">
+                    class="w-full h-[36px] bg-slate-50 border border-slate-200 rounded-none px-4 text-[16px] outline-none focus:border-purple-300 transition-all shadow-inner">
             </div>
             
             <!-- Header placeholder for alignment -->
@@ -467,9 +467,9 @@
             <!-- Form Footer (Fixed at bottom) -->
             <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky bottom-0 z-[110]">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 h-[52px] rounded-2xl font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
+                    <button @click="addMode = null" class="flex-1 h-[55px] rounded-none font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
-                        class="flex-[2] bg-purple-600 h-[52px] rounded-2xl font-black text-[19px] text-white shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]"
+                        class="flex-[2] bg-purple-600 h-[55px] rounded-none font-black text-[19px] text-white shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]"
                         style="color: white !important;">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -492,28 +492,28 @@
 
         <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport -->
         <div v-if="!addMode" class="absolute bottom-0 left-0 right-0 h-[7vh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
-            <button @click="$emit('goHome')" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90 text-slate-400">
+            <button @click="$emit('goHome')" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90 text-slate-400">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <!-- Center Add Button -->
             <button @click.stop="showAddMenu = true" 
-                class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 text-blue-600 bg-blue-50/50">
+                class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-95 text-blue-600 bg-blue-50/50">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
-            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-xl flex items-center justify-center transition-all active:scale-90">
+            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-blue-600 bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 
             <!-- Font Gear Menu -->
             <div class="flex justify-center relative">
                 <button @click="showFontMenu = !showFontMenu" 
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all text-blue-600 bg-blue-50/50 active:scale-95">
+                    class="h-full px-4 rounded-none flex items-center justify-center transition-all text-blue-600 bg-blue-50/50 active:scale-95">
                     <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">

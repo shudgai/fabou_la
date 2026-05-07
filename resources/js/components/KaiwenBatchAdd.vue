@@ -9,7 +9,7 @@
                 <h2 class="text-[24px] font-black text-slate-900 ml-2 tracking-tight">多筆匯入開文</h2>
             </div>
             <button @click="handleSave" :disabled="isSaving || parsedPosts.length === 0" 
-                class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-black text-[15px] active:scale-95 transition-all shadow-lg shadow-indigo-100 disabled:opacity-30" style="color: white !important;">
+                class="bg-indigo-600 text-white px-6 py-2 rounded-none font-black text-[15px] active:scale-95 transition-all shadow-lg shadow-indigo-100 disabled:opacity-30" style="color: white !important;">
                 {{ isSaving ? '儲存中...' : `儲存 (${parsedPosts.length})` }}
             </button>
         </div>
@@ -18,8 +18,8 @@
         <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50">
             <div class="max-w-xl mx-auto space-y-6">
                 <!-- Info Alert -->
-                <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 flex items-start space-x-3">
-                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+                <div class="bg-indigo-50/50 p-4 rounded-none border border-indigo-100 flex items-start space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-none shadow-sm flex items-center justify-center shrink-0">
                         <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                     </div>
                     <div class="flex-1">
@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Input Area -->
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden focus-within:border-indigo-300 transition-all">
+                <div class="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden focus-within:border-indigo-300 transition-all">
                     <textarea 
                         v-model="batchInput" 
                         placeholder="在此貼上多筆內容..."
@@ -42,8 +42,8 @@
                         <span class="text-[17px] font-black text-slate-900 uppercase tracking-widest">內容預覽 ({{ parsedPosts.length }})</span>
                     </div>
                     
-                    <div v-for="(post, idx) in parsedPosts" :key="idx" class="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm space-y-3 animate-fade-in relative group">
-                        <div class="absolute top-4 right-4 bg-slate-50 px-2.5 py-1 rounded-lg text-[12px] font-bold text-slate-400">
+                    <div v-for="(post, idx) in parsedPosts" :key="idx" class="bg-white rounded-none border border-slate-100 p-5 shadow-sm space-y-3 animate-fade-in relative group">
+                        <div class="absolute top-4 right-4 bg-slate-50 px-2.5 py-1 rounded-none text-[12px] font-bold text-slate-400">
                             #{{ idx + 1 }}
                         </div>
                         <div class="flex items-center space-x-2">

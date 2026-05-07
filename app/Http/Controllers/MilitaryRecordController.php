@@ -13,7 +13,7 @@ class MilitaryRecordController extends Controller
         $user = auth()->user();
         $query = MilitaryRecord::where('user_id', $user->id);
 
-        if ($request->has('search')) {
+        if (!empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('user_name', 'like', "%{$search}%")
@@ -37,8 +37,16 @@ class MilitaryRecordController extends Controller
         $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
         // Single query: get per-army quantity sums AND column sums at once
-        $armyStats = MilitaryRecord::where('user_id', $user->id)
-            ->selectRaw('army_type, SUM(quantity) as total_qty, SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan, SUM(yan_jue) as yan_jue, SUM(yan_ze) as yan_ze, SUM(yan_di) as yan_di, SUM(yan_yuan) as yan_yuan')
+        $statsQuery = MilitaryRecord::where('user_id', $user->id);
+        if ($request->has('search') && !empty($request->search)) {
+            $search = trim($request->search);
+            $statsQuery->where(function($q) use ($search) {
+                $q->where('user_name', 'like', "%{$search}%")
+                  ->orWhere('user_remarks', 'like', "%{$search}%")
+                  ->orWhere('remarks_text', 'like', "%{$search}%");
+            });
+        }
+        $armyStats = $statsQuery->selectRaw('army_type, SUM(quantity) as total_qty, SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan, SUM(yan_jue) as yan_jue, SUM(yan_ze) as yan_ze, SUM(yan_di) as yan_di, SUM(yan_yuan) as yan_yuan')
             ->groupBy('army_type')
             ->get();
 
@@ -71,7 +79,7 @@ class MilitaryRecordController extends Controller
         $user = auth()->user();
         $query = MilitaryRecord::where('user_id', $user->id);
 
-        if ($request->has('search')) {
+        if (!empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('user_name', 'like', "%{$search}%")
@@ -90,8 +98,16 @@ class MilitaryRecordController extends Controller
             ->paginate($request->input('per_page', 20));
 
         // Get per-army quantity sums for the root view
-        $armyCounts = MilitaryRecord::where('user_id', $user->id)
-            ->selectRaw('army_type, SUM(quantity) as total_qty')
+        $rootStatsQuery = MilitaryRecord::where('user_id', $user->id);
+        if (!empty($request->search)) {
+            $search = $request->search;
+            $rootStatsQuery->where(function($q) use ($search) {
+                $q->where('user_name', 'like', "%{$search}%")
+                  ->orWhere('user_remarks', 'like', "%{$search}%")
+                  ->orWhere('remarks_text', 'like', "%{$search}%");
+            });
+        }
+        $armyCounts = $rootStatsQuery->selectRaw('army_type, SUM(quantity) as total_qty')
             ->groupBy('army_type')
             ->get()
             ->pluck('total_qty', 'army_type');

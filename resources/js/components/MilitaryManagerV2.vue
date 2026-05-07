@@ -62,7 +62,7 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch && currentFolder" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
+        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
             <div class="absolute left-[22px] text-slate-400 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -107,9 +107,9 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
                                     style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
-                                <div class="mt-4 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2 animate-fade-in">
+                                <div class="mt-4 flex items-center space-x-2 animate-fade-in">
                                     <span class="text-white/80 text-[13px] font-bold tracking-widest uppercase">總計</span>
-                                    <span class="text-white text-[18px] font-black tracking-tight">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
+                                    <span class="text-black text-[18px] font-normal tracking-tight drop-shadow-sm">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +129,9 @@
                         <div class="text-center space-y-6 pt-4">
                             
                             <div class="space-y-2">
-                                <h3 class="app-body text-slate-500 font-bold uppercase tracking-widest text-[20px]" style="font-size: 20px !important;">{{ currentFolder.name }} 總計</h3>
+                                <h3 class="app-body text-slate-500 font-bold uppercase tracking-widest text-[20px]" style="font-size: 20px !important;">
+                                    {{ searchQuery ? `「${searchQuery}」之載錄總量` : `${currentFolder.name} 總計` }}
+                                </h3>
                                 <div class="app-body font-black text-indigo-600" style="font-size: 20px !important;">
                                     {{ formatArmyTotal(currentFolderTotal) }}
                                 </div>
@@ -176,8 +178,8 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2 z-10">
-                                    <div v-if="group.total_qty" class="px-2.5 py-0.5 bg-indigo-50 border border-indigo-100 rounded-lg shadow-sm">
-                                        <span class="text-indigo-600 text-[14px] font-black">{{ formatArmyTotal(group.total_qty) }}</span>
+                                    <div v-if="group.total_qty" class="flex items-center">
+                                        <span class="text-black text-[14px] font-black drop-shadow-sm">{{ formatArmyTotal(group.total_qty) }}</span>
                                     </div>
                                     <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
@@ -211,7 +213,7 @@
                                         </div>
                                         <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
                                             <div class="military-field min-w-0">
-                                                <label class="military-label">法號</label>
+                                                <label class="military-label">法號 <span v-if="!currentFolder" class="text-[10px] opacity-60 ml-1">({{ item.army_type }})</span></label>
                                                 <div class="military-value-name">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                             </div>
                                             <div class="military-field">
@@ -282,7 +284,7 @@
 
         <!-- MODALS -->
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
-        <military-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" :armyType="currentFolder ? currentFolder.name : ''" :isCumulative="isCumulativeMode" @save="saveItem" @cancel="addMode = false; editingId = null" />
+        <military-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" :armyType="currentFolder ? currentFolder.name : ''" :isCumulative="isCumulativeMode" :isSaving="isSaving" @save="saveItem" @cancel="addMode = false; editingId = null" />
         <military-batch-add :show="batchMode" :armyType="currentFolder ? currentFolder.name : ''" @save="batchMode = false; loadData()" @cancel="batchMode = false" />
     </div>
 </template>
@@ -378,6 +380,7 @@ const getBulletColor = (key) => {
 
 const users = ref([]);
 const loading = ref(true);
+const isSaving = ref(false);
 const editingId = ref(null);
 const focusedId = ref(null);
 const openStatusId = ref(null);
@@ -768,7 +771,7 @@ const loadData = async (page = 1) => {
     try {
         const ts = new Date().getTime();
         
-        if (!expandedDate.value) {
+        if (!expandedDate.value && !searchQuery.value) {
             // Level 1: fetch date groups
             const params = { page, per_page: 20, t: ts };
             if (searchQuery.value) params.search = searchQuery.value;
@@ -805,7 +808,7 @@ const loadData = async (page = 1) => {
             if (currentFolder.value) params.army_type = currentFolder.value.name;
             if (expandedDate.value === '原始數量') {
                 params.know_date = 'null';
-            } else {
+            } else if (expandedDate.value) {
                 params.know_date = expandedDate.value.replace(/\//g, '-');
             }
 
@@ -842,6 +845,8 @@ const loadData = async (page = 1) => {
 
 watch(searchQuery, () => {
     currentPage.value = 1;
+    expandedDate.value = null;
+    focusedId.value = null;
     loadData(1);
 });
 
@@ -857,7 +862,9 @@ watch(expandedDate, () => {
 });
 
 const saveItem = async (formData) => {
+    if (isSaving.value) return;
     try {
+        isSaving.value = true;
         if (editingId.value) await axios.put(`/military-records/${editingId.value}`, formData);
         else await axios.post('/military-records', formData);
         
@@ -873,6 +880,8 @@ const saveItem = async (formData) => {
         console.error('Save failed:', e);
         const msg = e.response?.data?.message || e.response?.data?.error || '儲存失敗，請檢查資料格式';
         alert(msg); 
+    } finally {
+        isSaving.value = false;
     }
 };
 
@@ -991,14 +1000,14 @@ onMounted(loadData);
 :deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value { font-size: 15px !important; }
 :deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
 
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.1s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 
 .custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 
-.animate-slide-up { animation: slideUp 0.15s ease-out; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide-up { animation: slideUp 0.1s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 </style>

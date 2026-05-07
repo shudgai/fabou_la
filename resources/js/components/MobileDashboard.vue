@@ -36,12 +36,8 @@
                         <div class="flex flex-col items-start text-left">
                             <div class="flex items-center space-x-2">
                                 <span class="text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
-                                <!-- Dynamic Count Badge -->
-                                <div v-if="counts[item.id] > 0" class="px-2 py-0.5 bg-slate-900/80 backdrop-blur-md rounded-lg border border-white/20 shadow-lg shrink-0">
-                                    <span class="text-[11px] font-black text-white tracking-tighter">{{ counts[item.id].toLocaleString() }}</span>
-                                </div>
                             </div>
-                            <span class="text-[14px] font-bold text-slate-400 mt-1 uppercase tracking-wider">進入管理專區</span>
+
                         </div>
                     <div class="flex items-center">
                         <div class="w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center group-active:bg-indigo-100 transition-colors">

@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-full md:h-full bg-white md:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -124,13 +124,23 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 pt-[7px] pb-[0px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 text-white font-black h-[52px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
+                    :disabled="isSaving"
+                    class="w-full bg-indigo-600 text-white font-black h-[55px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
                     style="color: white !important;"
                 >
-                    {{ editingId ? '確認修改' : '確認載錄' }}
+                    <template v-if="isSaving">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        處理中...
+                    </template>
+                    <template v-else>
+                        {{ editingId ? '確認修改' : '確認載錄' }}
+                    </template>
                 </button>
             </div>
 
@@ -167,7 +177,8 @@ const props = defineProps({
     editingId: [Number, String],
     users: Array,
     armyType: String,
-    isCumulative: Boolean
+    isCumulative: Boolean,
+    isSaving: Boolean
 });
 
 const emit = defineEmits(['save', 'cancel']);

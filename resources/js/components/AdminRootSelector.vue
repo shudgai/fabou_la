@@ -20,9 +20,9 @@
         <!-- DESKTOP VIEW: Sidebar + Manager (Two-Column Layout) -->
         <div class="hidden md:flex flex-row h-full w-full overflow-hidden">
             <!-- Sidebar -->
-            <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] py-6 overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+            <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] pt-[67px] pb-8 overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
                 <!-- Sidebar Logo Area -->
-                <div class="flex items-center space-x-3 mb-8 px-2">
+                <div class="flex items-center space-x-3 mb-10 px-2">
                     <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
                         <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="50" cy="50" r="50" fill="white"/>
@@ -38,11 +38,11 @@
                 </div>
 
                 <!-- Navigation List (Matched to Mobile Cards) -->
-                <div class="flex flex-col space-y-3 pb-8">
+                <div class="flex flex-col space-y-1 pb-8 mt-[3px]">
                     <button v-for="item in filteredMenuItems" :key="item.id" 
                         @click="handleNavigate(item.id)"
                         :class="[
-                            'flex items-center justify-between w-full transition-all duration-300 rounded-[24px] h-[75px] shrink-0 group',
+                            'flex items-center justify-between w-full transition-all duration-300 rounded-none h-[55px] shrink-0 group',
                             currentView === item.id 
                                 ? 'bg-transparent' 
                                 : 'bg-white hover:bg-slate-50'
@@ -53,10 +53,6 @@
                                 'text-[21px] font-black tracking-tight leading-tight transition-colors',
                                 currentView === item.id ? 'text-blue-600' : 'text-slate-800'
                             ]">{{ item.label }}</span>
-                            <span :class="[
-                                'text-[15px] font-bold mt-1 transition-colors',
-                                currentView === item.id ? 'text-blue-400' : 'text-slate-400'
-                            ]">{{ counts[item.id] || 0 }} 筆</span>
                         </div>
                         <div class="flex items-center">
                             <svg :class="['h-6 w-6 transition-all', currentView === item.id ? 'text-blue-600 translate-x-1' : 'text-slate-200 group-hover:text-indigo-300 group-hover:translate-x-1']" fill="none" stroke="currentColor" viewBox="0 0 24 24">

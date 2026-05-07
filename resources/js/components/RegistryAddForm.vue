@@ -262,12 +262,12 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
-                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white h-[52px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important;">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 p-4 pb-6 bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+                <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full bg-blue-600 text-white h-[55px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : '確認載錄' }}
                 </button>
                 <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0" 
-                    class="w-full bg-blue-600 text-white h-[52px] rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest disabled:opacity-50" style="color: white !important;">
+                    class="w-full bg-blue-600 text-white h-[55px] rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest disabled:opacity-50" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
                 </button>
             </div>

@@ -9,7 +9,7 @@
                 <button @click.stop="$emit('back')" 
                     :disabled="!canBack"
                     :class="[canBack ? 'text-indigo-600 active:scale-95' : 'text-slate-300']"
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all">
+                    class="h-full px-4 rounded-none flex items-center justify-center transition-all">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
@@ -18,8 +18,8 @@
                 <button @click.stop="$emit('home')" 
                     :disabled="!canHome"
                     :class="[activeTab === 'home' ? 'text-indigo-600' : (canHome ? 'text-indigo-600 active:scale-95' : 'text-slate-300')]"
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all relative">
-                    <div v-if="activeTab === 'home'" class="absolute top-1 w-2 h-2 bg-indigo-600 rounded-full"></div>
+                    class="h-full px-4 rounded-none flex items-center justify-center transition-all relative">
+                    <div v-if="activeTab === 'home'" class="absolute top-1 w-2 h-2 bg-indigo-600 rounded-none"></div>
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -32,7 +32,7 @@
                         (!showAction || actionDisabled) ? 'bg-slate-100 text-slate-300 cursor-not-allowed' : 
                         (actionActive ? 'bg-slate-800 rotate-45 scale-90' : 'bg-indigo-600 text-white shadow-lg active:scale-95')
                     ]"
-                    class="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300">
+                    class="w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -42,7 +42,7 @@
                 <button @click.stop="$emit('search')" 
                     :disabled="!canSearch"
                     :class="[searchActive ? 'text-indigo-600 bg-indigo-50' : (canSearch ? 'text-indigo-600 active:scale-95' : 'text-slate-300')]"
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all">
+                    class="h-full px-4 rounded-none flex items-center justify-center transition-all">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
             </div>
@@ -50,13 +50,13 @@
             <!-- FONT SIZE DROPDOWN (Rightmost) -->
             <div class="flex justify-center relative">
                 <button @click="showFontMenu = !showFontMenu" 
-                    class="h-full px-4 rounded-xl flex items-center justify-center transition-all text-indigo-600 bg-indigo-50/50 active:scale-95">
+                    class="h-full px-4 rounded-none flex items-center justify-center transition-all text-indigo-600 bg-indigo-50/50 active:scale-95">
                     <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
+                <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-none shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
                     <div class="h-44 flex flex-col items-center justify-between py-2 relative">
                         <span class="text-[14px] font-black text-slate-400">大</span>
-                        <div class="relative w-1.5 h-24 bg-slate-100 rounded-full flex items-center justify-center">
+                        <div class="relative w-1.5 h-24 bg-slate-100 rounded-none flex items-center justify-center">
                             <input type="range" min="0" max="2" step="1" 
                                    :value="sliderValue"
                                    @input="handleSliderInput"
@@ -140,7 +140,7 @@ const setFontSize = (key) => {
     -webkit-appearance: none;
     height: 24px;
     width: 24px;
-    border-radius: 50%;
+    border-radius: 0%;
     background: #4f46e5;
     cursor: pointer;
     margin-top: -10px;
@@ -151,7 +151,7 @@ const setFontSize = (key) => {
 .vertical-slider::-moz-range-thumb {
     height: 24px;
     width: 24px;
-    border-radius: 50%;
+    border-radius: 0%;
     background: #4f46e5;
     cursor: pointer;
     border: 2px solid white;

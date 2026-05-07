@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
+    <div class="bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
         <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -126,8 +126,8 @@
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[350px] h-[350px] mb-6">
-                        <div class="relative w-[280px] h-[280px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px] mb-1">
+                        <div class="relative w-[310px] h-[310px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
@@ -137,8 +137,8 @@
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
-                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
-                                    <span class="text-white text-[20px] font-black tracking-tight">{{ folderCounts.daily || 0 }} 筆</span>
+                                <div class="mt-4">
+                                    <span class="text-black text-[22px] font-normal tracking-tight drop-shadow-sm">{{ folderCounts.daily || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -147,19 +147,19 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[350px] h-[350px]">
-                        <div class="relative w-[280px] h-[280px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px]">
+                        <div class="relative w-[310px] h-[310px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#818cf8" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-4 -translate-y-[4px]">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
+                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
-                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
-                                    <span class="text-white text-[20px] font-black tracking-tight">{{ mastersTotalCount }} 筆</span>
+                                <div class="mt-4">
+                                    <span class="text-black text-[22px] font-normal tracking-tight">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -181,21 +181,21 @@
                 <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative md:bg-white md:border-2 md:border-red-500 md:rounded-2xl md:shadow-sm md:w-[180px] md:h-[180px]">
-                        <div class="relative w-[148px] h-[148px]">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white border-2 border-red-500 rounded-none shadow-sm w-[198px] h-[198px]">
+                        <div class="relative w-[163px] h-[163px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label & Pill Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[3px]">
-                                <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] whitespace-nowrap mb-2"
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
                                      style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="mt-1 px-3 py-0.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
-                                    <span class="text-white text-[15px] font-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-1">
+                                    <span class="text-black text-[17px] font-normal">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +211,7 @@
                 <!-- Add View -->
                 <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
                     <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
-                    <div class="bg-white w-full h-full relative flex flex-col md:max-w-xl md:h-auto md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:overflow-hidden animate-slide-up">
+                    <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:shadow-2xl md:overflow-hidden animate-slide-up">
                         <!-- Desktop Header -->
                         <div class="hidden md:flex px-6 py-5 border-b border-slate-100 items-center justify-between shrink-0 bg-slate-50/30">
                             <h3 class="text-[22px] font-black text-slate-900 tracking-tight">父皇仙師每日開示載錄</h3>
@@ -225,7 +225,7 @@
                                         <label class="app-title ml-1 opacity-0">日期</label>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
-                                                class="w-full h-full border border-slate-400 rounded-xl bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[15px]">
+                                                class="w-full h-full border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[15px]">
                                             <button @click="activeDate = 'date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
                                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
@@ -233,14 +233,14 @@
                                     </div>
                                     <div class="space-y-0.5 relative">
                                         <label class="app-title ml-1">仙師</label>
-                                        <div class="border border-slate-400 rounded-xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] shadow-sm relative">
+                                        <div class="border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] shadow-sm relative">
                                             <input v-model="masterNameInput" @change="resolveMasterId" @focus="activeMasterDropdownId = 'mainMaster'" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                             <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
                                                 <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             
                                             <!-- Custom Dropdown Menu -->
-                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                                      @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
                                                      class="px-4 h-[38px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -310,14 +310,14 @@
 
                                     <!-- Full-Width Selected Personnel Tag Display (Utilizes full page width per user request) -->
                                     <!-- Concise Group Display or Individual Tags -->
-                                    <div v-if="form.dharma_name_ids.length > 0 && dharmaSearchQuery !== '全體殿生' && form.dharma_name_ids.length !== dharmaNames.length" class="col-span-12 mt-1 animate-fade-in">
+                                    <div v-if="form.dharma_name_ids.length > 0 || dharmaSearchQuery === '在場全體'" class="col-span-12 mt-1 animate-fade-in">
                                         <div class="flex flex-wrap gap-2.5 px-1 py-1">
-                                            <!-- Group Mode (Only if more than 1 person) -->
-                                            <template v-if="(activeModalGroup || currentMatchedGroup) && form.dharma_name_ids.length > 1">
+                                            <!-- Group Mode (Only if more than 1 person or global group) -->
+                                            <template v-if="(activeModalGroup || currentMatchedGroup || dharmaSearchQuery === '在場全體') && (form.dharma_name_ids.length > 1 || dharmaSearchQuery === '在場全體')">
                                                 <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
                                                      class="bg-white border border-indigo-600 text-slate-900 px-4 py-3 rounded-2xl app-body flex items-center shadow-sm cursor-pointer active:scale-95 transition-all">
                                                     <span class="mr-2 w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                                                    <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name) }} ({{ form.dharma_name_ids.length }}人)</span>
+                                                    <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name || dharmaSearchQuery) }} <span v-if="form.dharma_name_ids.length > 0">({{ form.dharma_name_ids.length }}人)</span></span>
                                                     <span class="ml-2 text-[12px] underline font-black tracking-tight text-indigo-600">查看明細</span>
                                                     <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-slate-400 hover:text-red-500 transition-colors">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -532,14 +532,14 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[37px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
-                                    class="w-[45%] bg-indigo-600 text-white rounded-2xl py-[12px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
+                                    class="w-[45%] bg-indigo-600 text-white rounded-2xl h-[55px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
                                     <span style="color: white !important;">降寶內容</span>
                                 </button>
                                 
-                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-amber-500 text-white rounded-2xl py-[12px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-amber-200/40" style="color: white !important;">
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-amber-500 text-white rounded-2xl h-[55px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-amber-200/40" style="color: white !important;">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
                             </div>
@@ -550,7 +550,7 @@
                 </div>
 
                 <!-- Magic Items Detail View -->
-                <div v-if="itemsDetailMode" class="items-detail-container fixed inset-0 md:max-w-xl md:left-1/2 md:-translate-x-1/2 z-[1100] bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-in border-x border-slate-200 shadow-2xl">
+                <div v-if="itemsDetailMode" class="items-detail-container fixed inset-0 z-[1100] bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-in border-x border-slate-200 shadow-2xl">
                     <div class="bg-white px-6 py-5 border-b border-slate-100 sticky top-0 z-[510] flex items-center justify-between shadow-sm">
                         <div class="flex items-center">
                             <button @click.prevent="handleItemsDetailClose" class="text-slate-400 mr-4 p-2 bg-slate-50 rounded-full active:scale-90 transition-all hover:bg-slate-100">
@@ -560,8 +560,8 @@
                         </div>
                     </div>
 
-                    <div class="px-2.5 pt-0 pb-[20px] space-y-5">
-                        <div class="bg-white rounded-[32px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div class="px-0 pt-0 pb-[20px] space-y-5">
+                        <div class="bg-white rounded-none border-b border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                                 <div class="flex items-center justify-between mb-4 px-1">
                                     <div class="flex items-center min-w-0">
                                         <span class="w-7 h-7 bg-white border border-indigo-600 text-indigo-600 rounded-xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-sm">1</span>
@@ -1249,13 +1249,13 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[37px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                            <div class="fixed bottom-[7px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 pt-[7px] pb-[0px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
                                 <div class="grid grid-cols-2 gap-4">
-                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] py-[14px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
+                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] h-[55px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>
                                         <span class="text-[11px] opacity-80" style="color: white !important;">下一位人員</span>
                                     </button>
-                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-[24px] py-[14px] active:scale-95 disabled:opacity-50 text-[20px] font-black shadow-xl shadow-amber-200/40 transition-all hover:brightness-110" style="color: white !important;">
+                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-[24px] h-[55px] active:scale-95 disabled:opacity-50 text-[20px] font-black shadow-xl shadow-amber-200/40 transition-all hover:brightness-110" style="color: white !important;">
                                         確認存檔
                                     </button>
                                 </div>
@@ -1338,11 +1338,11 @@
                                                         <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                     </div>
                                                     <span class="text-[17px] font-black text-slate-900">{{ group.name }}</span>
-                                                    <span class="text-[14px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-bold">{{ group.dharma_names.length }}人</span>
+                                                    <span v-if="group.name !== '在場全體' && group.name !== '全體殿生'" class="text-[14px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-bold">{{ group.dharma_names.length }}人</span>
                                                 </div>
                                                 <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                             </div>
-                                            <div v-if="expandedGroupPicker === group.id || pickerSearch" class="bg-slate-50/50 px-4 py-3 border-t border-slate-100 grid grid-cols-2 gap-2 animate-fade-in">
+                                            <div v-if="(expandedGroupPicker === group.id || pickerSearch) && group.name !== '在場全體' && group.name !== '全體殿生'" class="bg-slate-50/50 px-4 py-3 border-t border-slate-100 grid grid-cols-2 gap-2 animate-fade-in">
                                                 <button v-for="member in group.dharma_names" :key="member.id" 
                                                         @click.prevent="toggleDharmaName(member.id)"
                                                         class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-white border border-slate-200 shadow-sm"
@@ -1369,39 +1369,55 @@
                         <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-indigo-50/30">
                             <div>
                                 <h3 class="text-[20px] font-bold text-slate-900 tracking-tight">群組成員：{{ activeModalGroup?.name }}</h3>
-                                <p class="text-[14px] text-slate-400 font-bold">共 {{ activeModalGroup?.dharma_names?.length || 0 }} 位人員</p>
+                                <p v-if="activeModalGroup?.name !== '在場全體'" class="text-[14px] text-slate-400 font-bold">共 {{ activeModalGroup?.dharma_names?.length || 0 }} 位人員</p>
                             </div>
                             <button @click.prevent="showGroupMembersModal = false" class="bg-white text-slate-400 w-8 h-8 rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-transform">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
                         <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                            <div v-if="activeModalGroupGrouped.length > 0" class="grid grid-cols-2 gap-x-3 gap-y-6">
-                                <div v-for="pg in activeModalGroupGrouped" :key="pg.palaceName" class="space-y-2">
-                                    <div class="text-[14px] font-black text-indigo-600 uppercase tracking-tighter flex items-center px-1 border-b border-indigo-50 pb-1">
-                                        <span class="w-2 h-2 bg-indigo-500 rounded-full mr-1.5"></span>
-                                        {{ pg.palaceName }}
-                                    </div>
-                                    <div class="grid grid-cols-1 gap-2">
-                                        <div v-for="member in pg.members" :key="member.id" 
-                                             class="flex items-center px-3 py-2.5 bg-white rounded-xl border border-indigo-600 shadow-sm">
-                                            <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <span class="text-[16px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                            <!-- Simplified view for "在場全體" -->
+                            <div v-if="activeModalGroup?.name === '在場全體' || activeModalGroup?.name === '全體殿生'" class="py-16 flex flex-col items-center justify-center space-y-6 animate-fade-in">
+                                <div class="w-24 h-24 bg-indigo-50 rounded-[32px] flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100/50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
+                                </div>
+                                <div class="text-center space-y-2">
+                                    <div class="text-[28px] font-black text-slate-800 tracking-tight">{{ activeModalGroup.name }}</div>
+                                    <p class="text-[16px] text-slate-400 font-bold">
+                                        {{ activeModalGroup.name === '在場全體' ? '已指定對象為在場所有成員' : '已指定對象為全體殿生' }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Standard Group View -->
+                            <template v-else>
+                                <div v-if="activeModalGroupGrouped.length > 0" class="grid grid-cols-2 gap-x-3 gap-y-6">
+                                    <div v-for="pg in activeModalGroupGrouped" :key="pg.palaceName" class="space-y-2">
+                                        <div v-if="pg.palaceName !== '全體成員'" class="text-[14px] font-black text-indigo-600 uppercase tracking-tighter flex items-center px-1 border-b border-indigo-50 pb-1">
+                                            <span class="w-2 h-2 bg-indigo-500 rounded-full mr-1.5"></span>
+                                            {{ pg.palaceName }}
+                                        </div>
+                                        <div class="grid grid-cols-1 gap-2">
+                                            <div v-for="member in pg.members" :key="member.id" 
+                                                 class="flex items-center px-3 py-2.5 bg-white rounded-xl border border-indigo-600 shadow-sm">
+                                                <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                                <span class="text-[16px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
-                                <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
-                                     class="flex items-center px-4 py-3 bg-white rounded-2xl border border-indigo-600 shadow-sm">
-                                    <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-                                    <span class="text-[17px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
+                                    <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
+                                         class="flex items-center px-4 py-3 bg-white rounded-2xl border border-indigo-600 shadow-sm">
+                                        <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <span class="text-[17px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </template>
                         </div>
                         <div class="p-6 border-t border-slate-100 bg-white">
                             <button @click.prevent="showGroupMembersModal = false" class="w-full py-3.5 bg-indigo-600 text-white border border-indigo-500 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg" style="color: white !important;">
@@ -1615,10 +1631,10 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="item.content?.trim()" class="text-[17px] font-normal text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.content.trim() }}</div>
+                                                    <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] font-normal text-slate-800 leading-relaxed whitespace-pre-wrap">{{ stripContentHeaders(item.content).trim() }}</div>
 
-                                                    <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="mt-2">
-                                                        <label class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
+                                                    <div v-if="item.items?.length > 0" class="mt-2">
+                                                        <label v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
                                                         <div class="space-y-1">
                                                             <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
                                                                 <div class="text-[19px] font-normal text-slate-900 leading-tight">
@@ -1811,12 +1827,12 @@
                                 </div>
                             </div>
 
-                            <div v-if="item.content?.trim()" class="text-[16px] text-slate-900 font-normal leading-relaxed whitespace-pre-wrap px-1">
-                                {{ item.content.trim() }}
+                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[16px] text-slate-900 font-normal leading-relaxed whitespace-pre-wrap px-1">
+                                {{ stripContentHeaders(item.content).trim() }}
                             </div>
 
-                            <div v-if="item.items?.length > 0 && !item.content?.includes('賜降：')" class="pt-3 space-y-2">
-                                <div class="text-[16px] font-black text-slate-900 pl-1">賜降：</div>
+                            <div v-if="item.items?.length > 0" class="pt-3 space-y-2">
+                                <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[16px] font-black text-slate-900 pl-1">賜降：</div>
                                 <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[16px] text-slate-900 font-normal flex flex-col px-1">
                                     <div class="flex items-center">
                                         {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
@@ -1838,7 +1854,7 @@
                         </div>
                     </div>
 
-                    <div class="fixed bottom-[37px] left-0 right-0 md:fixed md:bottom-[37px] md:left-0 md:right-0 px-6 py-3 border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
+                    <div class="fixed bottom-[37px] left-0 right-0 md:fixed md:bottom-[37px] md:left-0 md:right-0 px-6 pt-[4px] pb-[1px] border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
                         <button @click="saveConfirmModal.show = false" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
@@ -2946,6 +2962,13 @@ const palaceOrder = [
     const list = (groups.value || []).filter(g => g.name !== '信眾' && g.name !== '各宮');
     
     return list.sort((a, b) => {
+        // Absolute priority for global groups
+        if (a.name === '在場全體' || a.name === '全體殿生') {
+            if (b.name === '在場全體' || b.name === '全體殿生') return a.name.localeCompare(b.name, 'zh-TW', { collation: 'stroke' });
+            return -1;
+        }
+        if (b.name === '在場全體' || b.name === '全體殿生') return 1;
+
         let idxA = -1;
         let idxB = -1;
 
@@ -3128,21 +3151,38 @@ const toggleGroupAccordion = (id) => { expandedGroupPicker.value = expandedGroup
 
 const stripContentHeaders = (text) => {
     if (!text) return "";
-    let cleaned = text.trim();
-    // 1. Strip the "開示給" line and everything before it
-    const recMatch = cleaned.match(/開示給(.*?)[：:]/);
-    if (recMatch) {
-        const matchIndex = cleaned.indexOf(recMatch[0]);
-        const lineEndIndex = cleaned.indexOf('\n', matchIndex);
-        if (lineEndIndex !== -1) {
-            cleaned = cleaned.substring(lineEndIndex).trim();
-        } else {
-            cleaned = ""; // Only header was present
+    let lines = text.trim().split('\n');
+    let startIndex = 0;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) {
+            startIndex = i + 1;
+            continue;
         }
+        
+        // Date check: 2026/05/07 or 2026-05-07
+        if (/^\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2}\s*$/.test(line)) {
+            startIndex = i + 1;
+            continue;
+        }
+        
+        // Header check: Master + 開示給 + Recipient
+        if (line.includes('開示給')) {
+            startIndex = i + 1;
+            continue;
+        }
+        
+        // Standard "賜降" header check
+        if (line === '賜降：' || line === '賜降') {
+            startIndex = i + 1;
+            continue;
+        }
+        
+        break;
     }
-    // 2. Strip any date lines at the top
-    cleaned = cleaned.replace(/^(\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})\s*$/m, '').trim();
-    return cleaned;
+    
+    return lines.slice(startIndex).join('\n').trim();
 };
 
 const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
@@ -3263,6 +3303,9 @@ const triggerGroupSelection = (group) => {
     // SPECIAL CASE: '全體殿生' should include ALL dharma names (approx 46 people)
     if (group.name === '全體殿生') {
         members = [...dharmaNames.value];
+    } else if (group.name === '在場全體') {
+        // Standalone label - no individual members
+        members = [];
     } else {
         // Standard BACKFILL logic for other groups
         members = group.dharma_names || [];
@@ -3301,7 +3344,6 @@ const triggerGroupSelection = (group) => {
     form.value.dharma_name_ids = memberIds;
     dharmaSearchQuery.value = formatGroupName(group.name);
     activePractitionerDropdownId.value = null;
-    showGroupMembersModal.value = true;
 };
 
 const handleDharmaSearchInput = (e) => {
@@ -3362,6 +3404,18 @@ const toggleDharmaName = (id) => {
 };
 
 const toggleGroupSelection = (group) => {
+    if (group.name === '在場全體') {
+        const isActive = dharmaSearchQuery.value === '在場全體';
+        if (isActive) {
+            dharmaSearchQuery.value = '';
+            form.value.dharma_name_ids = [];
+        } else {
+            dharmaSearchQuery.value = '在場全體';
+            form.value.dharma_name_ids = [];
+            activeModalGroup.value = group;
+        }
+        return;
+    }
 
         // Sort by Role (Master > Vice > Member) then by Palace/Name Order
     group.dharma_names.sort((a, b) => {
@@ -3377,6 +3431,7 @@ const toggleGroupSelection = (group) => {
 };
 
 const isGroupFullySelected = (group) => {
+    if (group.name === '在場全體') return dharmaSearchQuery.value === '在場全體';
     if (!group.dharma_names || group.dharma_names.length === 0) return false;
     return group.dharma_names.every(dn => form.value.dharma_name_ids.includes(dn.id));
 };
@@ -3865,7 +3920,11 @@ const getRecipientName = (item) => {
     
     if (!listInfo) return (pastedName || '全體成員');
     
-    if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) return pastedName;
+    if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) {
+        // Deduplicate if pastedName is just repeated groupName (e.g., "在場全體 在場全體")
+        if (pastedName.trim() === `${listInfo.groupName} ${listInfo.groupName}`) return listInfo.groupName;
+        return pastedName;
+    }
     
     // Logic to prevent redundant parentheses (e.g., 鳳媓 (鳳媓))
     let remarks = '';
@@ -3880,10 +3939,18 @@ const getRecipientName = (item) => {
         }
     }
     
+    let res = "";
     if (listInfo.groupName) {
-        return `${listInfo.groupName}${remarks}`;
+        res = `${listInfo.groupName}${remarks}`;
+    } else {
+        res = listInfo.names.join(', ') + remarks;
     }
-    return listInfo.names.join(', ') + remarks;
+
+    // Final deduplication for cases like "在場全體 在場全體"
+    const parts = res.trim().split(/\s+/);
+    if (parts.length === 2 && parts[0] === parts[1]) return parts[0];
+    
+    return res;
 };
 
 const getFullRecipientList = (item) => {
@@ -3935,6 +4002,9 @@ const getFullRecipientList = (item) => {
     // Sort names by official database order
     const nameToObj = new Map();
     dharmaNames.value.forEach(dn => nameToObj.set(dn.name, dn));
+
+    // Deduplicate names
+    resolvedNames = [...new Set(resolvedNames)];
 
     resolvedNames.sort((a, b) => {
         const objA = nameToObj.get(a);
@@ -5156,10 +5226,10 @@ onMounted(() => {
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.animate-slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slide-up { from { transform: translateY(10%); } to { transform: translateY(0); } }
+.animate-slide-up { animation: slide-up 0.15s ease-out; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-.animate-fade-in { animation: fade-in 0.2s ease-out; }
+.animate-fade-in { animation: fade-in 0.1s ease-out; }
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
 * { -webkit-tap-highlight-color: transparent; }
 </style>

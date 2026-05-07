@@ -1,72 +1,54 @@
 <template>
-    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module overflow-hidden">
-        <!-- Global SVG Definitions (Fix for disappearing gradients on desktop) -->
-        <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
-            <defs>
-                <linearGradient id="rm-goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(255, 230, 0);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(255, 200, 0);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(255, 170, 0);stop-opacity:1" />
-                </linearGradient>
-                <linearGradient id="rm-redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(220, 20, 40);stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:rgb(190, 10, 30);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgb(160, 0, 20);stop-opacity:1" />
-                </linearGradient>
-            </defs>
-        </svg>
-
-        <!-- Header 1: Module Level (Hide titles on Desktop, keep buttons) -->
-        <div v-if="currentFolder || addMode" 
+    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module overflow-hidden">
+        <!-- Global Dual Header System -->
+        <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
+        <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
-            <div v-if="addMode && !currentFolder" class="flex items-center w-full">
-                <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-                <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="app-title text-[24px] leading-tight font-outfit tracking-widest break-words" style="color: rgb(220, 20, 40) !important;">
-                        新增法寶登記
-                    </div>
-                </div>
-            </div>
-            <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+            <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="app-title text-[28px] leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
             </div>
-            <div class="flex-1 hidden md:block"></div>
-            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto pr-2" :class="{'md:hidden': !focusedId}">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2.5 py-1 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-lg active:scale-95 transition-all font-black shadow-sm md:hidden" style="color: white !important; font-size: 16px !important;">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
-                </button>
-                <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-slate-200" title="回到清單">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
         </div>
 
-        <!-- Header 2: Folder/Action Level (Hide on Desktop) -->
-        <div v-if="currentFolder" 
-            class="border-b border-slate-50 flex flex-col bg-white z-[105] w-full md:max-w-xl md:mx-auto md:hidden transition-all duration-300">
-            <div class="px-2 py-2 bg-slate-50/50 flex items-center justify-between relative">
-                <!-- Left: Folder Name -->
-                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit shrink-0 w-[110px]" style="font-size: 25px !important; font-weight: 500 !important;">{{ currentFolder.name }}</span>
-                
-                <!-- Center: Pagination -->
-                <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
-                    <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
+        <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
+        <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
+        <div v-if="currentFolder && !addMode" 
+            class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
+            <!-- Top Row: Main Title + Actions -->
+            <div class="flex items-center justify-between py-2 px-3 bg-white border-b border-slate-50">
+                <div class="app-title text-[28px] leading-tight font-black" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">
+                    法寶登記專區
                 </div>
-
-                <!-- Right: Reorder Button -->
-                <div class="flex items-center justify-end shrink-0 w-[110px]">
-                    <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                            class="px-2 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
-                            :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                        {{ reorderMode ? '確認排序' : '修改排序' }}
+                <div class="flex items-center space-x-2">
+                    <!-- Sort -->
+                    <button v-if="!reorderMode" @click="toggleSort" class="text-[16px] text-slate-600 font-black active:scale-95 px-1" style="font-size: 16px !important;">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                    <!-- Reorder -->
+                    <button @click="reorderMode = !reorderMode" 
+                            :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'"
+                            class="text-[16px] font-black active:scale-95 px-1" 
+                            :style="{ fontSize: '16px !important' }">
+                        {{ reorderMode ? '確認' : '排序' }}
+                    </button>
+                    <!-- Back -->
+                    <button @click="resetToRoot" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 active:scale-90">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
+            </div>
+            <!-- Bottom Row: Sub-title + Folder Name -->
+            <div class="px-3 py-2 bg-white flex items-center justify-between">
+                <span class="text-[24px] font-black text-red-600 font-outfit" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 900 !important;">
+                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '法寶登記專區' }}
+                </span>
+                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-black" style="font-size: 24px !important; font-weight: 900 !important;">{{ currentFolder.name }}</span>
+            </div>
+            <!-- Mobile Pagination Row (Optional but helpful) -->
+            <div v-if="!focusedId" class="bg-slate-50/50 flex justify-center py-1">
+                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 scale-90" />
             </div>
         </div>
 
@@ -74,10 +56,10 @@
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px; -webkit-overflow-scrolling: touch;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div class="w-full px-[10px] py-[10px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
+                <div v-if="currentCategory" class="w-full px-[10px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" :style="{ color: '#dc2626 !important', fontSize: (currentCategory ? '28px' : '32px') + ' !important', paddingTop: '5px', fontWeight: '900 !important' }">
-                                {{ currentCategory ? (currentCategory === 'major' ? '法寶登記專區' : '其他皇恩登記簿') : '法寶登記專區' }}
+                                {{ !currentCategory ? '法寶登記專區' : (currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿') }}
                                 <br v-if="currentCategory">
                                 <span v-if="currentCategory && currentFolder" class="text-[24px] text-red-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-full">- {{ currentFolder.name }} -</span>
                             </h1>
@@ -85,17 +67,28 @@
                 </div>
 
                 <!-- Root Categories -->
-                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center justify-center pb-20 w-full max-w-lg mx-auto">
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-4 w-[350px] h-[350px] relative transition-all shadow-sm">
-                        <div class="relative w-[280px] h-[280px]">
-                            <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-goldGrad)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center justify-start pt-20 pb-20 w-full max-w-lg mx-auto">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-2xl p-0 w-[300px] h-[300px] relative transition-all shadow-sm border-2 border-[#fbbf24]">
+                        <div class="relative w-[295px] h-[295px]">
+                            <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 64 64" fill="none">
+                                <defs>
+                                    <linearGradient id="rm-gold-grad-root" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="9%" stop-color="rgba(255, 242, 143, 1)" />
+                                        <stop offset="19%" stop-color="rgba(255, 237, 137, 1)" />
+                                        <stop offset="34%" stop-color="rgba(255, 233, 133, 1)" />
+                                        <stop offset="49%" stop-color="rgba(254, 220, 117, 1)" />
+                                        <stop offset="67%" stop-color="rgba(252, 215, 127, 1)" />
+                                        <stop offset="82%" stop-color="rgba(249, 208, 140, 1)" />
+                                        <stop offset="98%" stop-color="rgba(252, 176, 69, 1)" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-gold-grad-root)" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-root)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 -translate-y-[4px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 translate-y-[2px]">
                                 <div class="font-black text-red-700 leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center" style="color: #b91c1c !important; font-weight: 900 !important; font-size: 40px !important;">重大皇恩<br>登記簿</div>
-                                <div class="mt-4 px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl flex items-center space-x-2">
-                                    <span class="text-red-700 text-[20px] font-black tracking-tight">{{ categoryCounts.major || 0 }} 筆</span>
+                                <div class="mt-4 flex items-center">
+                                    <span class="text-black text-[20px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -103,32 +96,41 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 gap-[10px] p-2 place-items-center max-w-xl mx-auto">
+                <div v-else class="grid grid-cols-2 gap-4 p-2 place-items-center max-w-xl mx-auto">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none border-0 group p-2 w-[180px] h-[180px] relative bg-white shadow-sm'
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl border-2 border-[#fbbf24] group p-0 w-[172px] h-[172px] relative bg-white shadow-sm'
                         ]">
                         
-                        <div class="relative w-[150px] h-[150px]">
-                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                        <div class="relative w-[168px] h-[168px]">
+                             <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-sm" viewBox="0 0 64 64" fill="none">
+                                <defs>
+                                    <linearGradient :id="'rm-gold-grad-' + folder.id" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="9%" stop-color="rgba(255, 242, 143, 1)" />
+                                        <stop offset="19%" stop-color="rgba(255, 237, 137, 1)" />
+                                        <stop offset="34%" stop-color="rgba(255, 233, 133, 1)" />
+                                        <stop offset="49%" stop-color="rgba(254, 220, 117, 1)" />
+                                        <stop offset="67%" stop-color="rgba(252, 215, 127, 1)" />
+                                        <stop offset="82%" stop-color="rgba(249, 208, 140, 1)" />
+                                        <stop offset="98%" stop-color="rgba(252, 176, 69, 1)" />
+                                    </linearGradient>
+                                </defs>
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
-                                    :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
-                                    :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" />
+                                    :fill="'url(#rm-gold-grad-' + folder.id + ')'" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
-                                    :fill="currentCategory === 'major' ? 'url(#rm-goldGrad)' : 'url(#rm-redGrad)'" 
-                                    :style="{ fill: currentCategory === 'major' ? '#fbbf24' : '#ef4444' }" 
-                                    stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                    :fill="'url(#rm-gold-grad-' + folder.id + ')'" 
+                                    stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[2px]">
-                                <div class="font-black tracking-tight leading-tight text-center drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] whitespace-nowrap mb-2"
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none translate-y-[8px]">
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      style="font-weight: 900 !important; font-size: 24px !important;"
                                      :style="{ color: folder.name === '閻王仙師' ? '#0f172a !important' : '#dc2626 !important' }">
                                      {{ folder.name }}
                                 </div>
-                                <div class="mt-1 px-3 py-0.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg">
-                                    <span :style="{ color: folder.name === '閻王仙師' ? '#0f172a !important' : '#dc2626 !important' }" class="text-[15px] font-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-1 flex items-center">
+                                    <span style="color: black !important;" class="text-[15px] font-normal">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -153,31 +155,39 @@
                 style="-webkit-overflow-scrolling: touch;">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
-                    <!-- Top Row: Title + Sort Button -->
-                    <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
+                    <!-- Top Row: Main Title + All Action Buttons -->
+                    <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
                         <h1 class="text-[28px] font-black text-red-600 uppercase tracking-widest font-outfit" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 900 !important;">法寶登記專區</h1>
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-[16px] text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
-                            {{ sortDesc ? '新→舊' : '舊→新' }}
-                        </button>
-                    </div>
-                    <!-- Bottom Row: Folder Name + Pagination + Reorder Button -->
-                    <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full relative">
-                        <!-- Left: Folder Name -->
-                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit shrink-0 w-full whitespace-nowrap overflow-hidden text-ellipsis" style="font-size: 24px !important; font-weight: 500 !important;">{{ currentFolder.name }}</span>
-                        
-                        <!-- Center: Pagination -->
-                        <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center">
-                            <pagination-buttons v-if="!focusedId" :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
-                        </div>
-
-                        <!-- Right: Reorder Button -->
-                        <div class="flex items-center space-x-2 shrink-0 w-[120px] justify-end">
-                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                    :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                                    class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm" 
-                                    :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
+                        <div class="flex items-center space-x-3">
+                            <!-- Sort Button -->
+                            <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-[16px] text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95" style="font-size: 16px !important;">
+                                {{ sortDesc ? '新→舊' : '舊→新' }}
+                            </button>
+                            <!-- Reorder Button -->
+                            <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+                                    :class="reorderMode ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'"
+                                    class="px-2 py-1 text-[16px] font-black transition-all active:scale-95 whitespace-nowrap" 
+                                    :style="{ fontSize: '16px !important' }">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
+                            <!-- Back/Close Button -->
+                            <button @click="resetToRoot" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Bottom Row: Dynamic Sub-title + Folder Name -->
+                    <div class="px-4 py-2 bg-white flex items-center justify-between w-full">
+                        <!-- Left: Sub-title -->
+                        <div class="flex items-center">
+                            <span class="text-[24px] font-black text-red-600 font-outfit" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 900 !important;">
+                                {{ currentCategory === 'major' ? '重大皇恩登記簿' : '法寶登記專區' }}
+                            </span>
+                        </div>
+                        
+                        <!-- Right: Folder Name -->
+                        <div class="flex items-center">
+                            <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-black" style="font-size: 24px !important; font-weight: 900 !important;">{{ currentFolder.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -480,8 +490,8 @@
                                         </div>
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[7vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[52px] bg-blue-600 text-white rounded-2xl font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important;">儲存修改</button>
+                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[3vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[55px] bg-blue-600 text-white rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important;">儲存修改</button>
                                         </div>
                                     </div>
 
@@ -1999,7 +2009,7 @@ const getCategorySum = (category) => {
 </script>
 
 <style scoped>
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }

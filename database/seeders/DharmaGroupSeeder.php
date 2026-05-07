@@ -56,10 +56,12 @@ class DharmaGroupSeeder extends Seeder
             '閻王仙師直屬弟子' => ['閻帝', '閻尊', '閻爵', '閻澤', '閻闇', '閻願', '赤峰', '閻㻇'],
             '太子直屬弟子' => ['龍勝', '龍戰'],
             '全體殿生' => [],
+            '在場全體' => [],
         ];
 
         // Ensure '全體殿生' includes everyone
-        $groupMembers['全體殿生'] = DharmaName::pluck('name')->toArray();
+        $allNames = DharmaName::pluck('name')->toArray();
+        $groupMembers['全體殿生'] = $allNames;
 
         // Resolve Meta-Groups: If a group's "member" list contains the name of another group (like '各宮' containing '玄通宮'), 
         // expand it to include all members of that referenced group.

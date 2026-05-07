@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel', false)"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[25vh] md:pb-0">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[0px] md:pb-0">
             <!-- Header (Matched to Single Add Form) -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -40,7 +40,7 @@
                 </div>
                 
                 <!-- Import Button -->
-                <button @click="$refs.fileInput.click()" class="bg-emerald-600 text-white px-4 h-[52px] rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-md border border-emerald-500" style="color: white !important;">
+                <button @click="$refs.fileInput.click()" class="bg-emerald-600 text-white px-4 h-[52px] rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-md" style="color: white !important;">
                     <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                     <span class="text-[11px] font-black" style="color: white !important;">匯入他檔</span>
                 </button>
@@ -92,7 +92,7 @@
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
 
         <!-- Bottom Save Action Bar -->
-        <div class="px-4 pb-[72px] bg-white border-t border-slate-100 p-4 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] pt-4 shrink-0">
+        <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-4 pt-3 pb-0 bg-white border-t border-slate-100 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
                 class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"

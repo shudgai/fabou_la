@@ -4,7 +4,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100vh] md:max-w-xl bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-[100vh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
@@ -217,8 +217,8 @@
                         <textarea v-model="batchInput" rows="10" class="w-full rounded-2xl border border-slate-200 p-4 font-mono text-[14px] bg-slate-50/30 focus:ring-2 focus:ring-indigo-100 outline-none shadow-inner" 
                             style="font-size: 14px !important;"
                             :placeholder="batchType === 'single' 
-                                ? '單人承接請貼上或輸入\n法寶名稱\n用意:\n法寶名稱\n用意:\n以此類推' 
-                                : '多人承接請貼上或輸入\n法寶名稱:\n用意:\n法號\n法號\n法寶名稱:\n用意:\n法號\n法號\n以此類推'">
+                                ? '單人承接請貼上或輸入 (沒有用意可以不用填入)\n法寶名稱\n用意:\n法寶名稱\n用意:\n以此類推' 
+                                : '多人承接請貼上或輸入 (沒有用意可以不用填入)\n法寶名稱:\n用意:\n法號\n法號\n法寶名稱:\n用意:\n法號\n法號\n以此類推'">
                         </textarea>
                         <input type="file" ref="fileInput" class="hidden" @change="handleFileUpload" accept=".txt,.xlsx,.xls,.docx">
                     </div>
@@ -267,9 +267,9 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 px-4 py-4 bg-white/95 backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-4 pt-[7px] pb-[0px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
-                    class="w-full max-w-md bg-indigo-600 h-[54px] rounded-2xl text-white font-black text-[20px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
+                    class="w-full max-w-md bg-indigo-600 h-[55px] rounded-2xl text-white font-black text-[20px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
                     style="font-size: 20px !important; color: white !important;">
                     {{ isSaving ? '處理中...' : (localMode === 'single' ? '確認載錄' : `開始載錄這 ${excelRows.length} 筆資料`) }}
                 </button>
@@ -464,6 +464,7 @@ const fetchDharmaNames = async () => {
 };
 
 const addPersonnelRow = () => {
+    alert('單人承接無需使用多人承接模式');
     personnel.value.push({ custom_name: '', relationship: '', obtained_date: '', status: '已求得', remarks: '' });
 };
 

@@ -4,14 +4,14 @@
         <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" @click="$emit('close')"></div>
         
         <!-- Menu -->
-        <div class="relative w-auto min-w-[200px] max-w-[260px] bg-white rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-slate-100/50 overflow-hidden animate-menu-up p-1">
+        <div class="relative w-auto min-w-[200px] max-w-[260px] bg-white rounded-[32px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-slate-100/50 overflow-hidden animate-menu-up p-1">
             <div class="flex flex-col space-y-0">
                 <div v-for="action in actions" :key="action.label" class="relative group/item">
                     <button 
                         @click="handleAction(action)"
-                        class="w-full px-3 py-1.5 hover:bg-slate-50 active:bg-slate-100 rounded-[18px] flex items-center transition-all group relative overflow-hidden pr-10"
+                        class="w-full px-3 py-1.5 hover:bg-slate-50 active:bg-slate-100 rounded-none flex items-center transition-all group relative overflow-hidden pr-10"
                     >
-                        <div :class="action.colorClass || (action.bgColor && action.textColor ? `${action.bgColor} ${action.textColor}` : 'bg-indigo-50 text-indigo-600')" class="w-8 h-8 rounded-[10px] flex items-center justify-center mr-2.5 group-active:scale-90 transition-all shadow-sm shrink-0">
+                        <div :class="action.colorClass || (action.bgColor && action.textColor ? `${action.bgColor} ${action.textColor}` : 'bg-indigo-50 text-indigo-600')" class="w-8 h-8 rounded-none flex items-center justify-center mr-2.5 group-active:scale-90 transition-all shadow-sm shrink-0">
                             <div v-if="action.icon" v-html="action.icon" class="w-4 h-4 flex items-center justify-center stroke-[2.2]"></div>
                         </div>
                         <div class="text-left flex-1 min-w-0">

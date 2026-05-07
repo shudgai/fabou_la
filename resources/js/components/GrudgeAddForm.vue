@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[25vh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-0">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -135,7 +135,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[16vh] left-0 right-0 md:relative md:bottom-0 p-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 p-4 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
                 <button 
                     @click="handleSave" 
                     class="w-full bg-indigo-600 text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
