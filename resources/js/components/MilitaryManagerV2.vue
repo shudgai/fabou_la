@@ -89,7 +89,7 @@
                         class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
                         
                         <!-- Unified Shield Badge (Matches Mobile Style) -->
-                        <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px] -translate-y-[60px]">
+                        <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
                             <!-- MOBILE VERSION SVG -->
                             <svg class="block md:hidden w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
@@ -119,6 +119,20 @@
 
             <!-- LEDGER VIEW -->
             <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 w-full">
+                <!-- Army Shield (shown when a specific army is selected) -->
+                <div v-if="currentFolder && currentFolder.id !== 'all'" class="flex justify-center pt-4 pb-2">
+                    <div class="relative w-[120px] h-[120px] md:w-[140px] md:h-[140px]">
+                        <svg class="w-full h-full drop-shadow-xl" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
+                                  :fill="currentFolder.name === '耀紫軍' ? '#581c87' : '#000000'" 
+                                  stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="font-black text-white tracking-[0.15em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
+                                style="font-weight: 900 !important; font-size: 18px !important;">{{ currentFolder.name }}</span>
+                        </div>
+                    </div>
+                </div>
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
