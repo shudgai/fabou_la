@@ -310,6 +310,7 @@ import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import PaginationButtons from './PaginationButtons.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { debounce } from '../utils/debounce';
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -848,12 +849,12 @@ const loadData = async (page = 1) => {
     }
 };
 
-watch(searchQuery, () => {
+watch(searchQuery, debounce(() => {
     currentPage.value = 1;
     expandedDate.value = null;
     focusedId.value = null;
     loadData(1);
-});
+}, 300));
 
 watch(currentFolder, () => {
     currentPage.value = 1;

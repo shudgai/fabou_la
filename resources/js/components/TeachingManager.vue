@@ -1917,6 +1917,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
+import { debounce } from '../utils/debounce';
 import axios from 'axios';
 import SearchComponent from './SearchComponent.vue';
 import MobileNavbar from './MobileNavbar.vue';
@@ -3474,11 +3475,11 @@ const fetchItems = async (page = 1) => {
     } catch (e) { console.error(e); } finally { loading.value = false; }
 };
 
-watch(searchQuery, () => {
+watch(searchQuery, debounce(() => {
     if (currentFolder.value || currentCategory.value) {
         fetchItems(1);
     }
-});
+}, 300));
 
 
 

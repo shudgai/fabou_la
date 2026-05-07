@@ -62,18 +62,18 @@
                 <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="flex space-x-4">
                     <template v-if="persistentToast.type === 'deleteConfirm'">
                         <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                        <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定刪除</button>
+                        <button @click="executeDelete" class="flex-1 bg-red-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定刪除</button>
                     </template>
                     <template v-else-if="persistentToast.type === 'mismatchConfirm'">
-                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 !text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md">存入{{ currentFolder?.name }}</button>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 !text-white h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ currentFolder?.name }}</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ getMasterName(form.master_id) }}</button>
                     </template>
                     <template v-else>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 !text-white h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定</button>
+                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
                     </template>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md">確定</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
                 <!-- Top Row: Title + Sort Button -->
                 <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
                     <h1 class="font-outfit tracking-tighter truncate font-black text-red-600" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">皇恩專區</h1>
-                    <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 text-white bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm !text-white !text-[16px]">
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm !text-[16px]" style="color: white !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                 </div>
@@ -369,7 +369,7 @@
                                 <div v-if="inlineEditData.is_multi || (inlineEditData.dharma_name_registries && inlineEditData.dharma_name_registries.length > 0)" class="space-y-2">
                                     <div class="flex items-center justify-between">
                                         <label class="app-title tracking-wider text-slate-400 font-bold">人員名單</label>
-                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 !text-white px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95">＋ 新增人員</button>
+                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95" style="color: white !important;">＋ 新增人員</button>
                                     </div>
                                     <div class="space-y-2 border-t pt-2">
                                         <div v-for="(p, idx) in inlineEditData.dharma_name_registries" :key="idx" class="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-2">
@@ -438,10 +438,10 @@
 
                                 <div class="flex space-x-2 pt-2">
                                     <button @click="saveInlineEdit" :disabled="isSaving" 
-                                        class="flex-1 py-3 bg-indigo-600 !text-white rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all">
+                                        class="flex-1 py-3 bg-indigo-600 rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all" style="color: white !important;">
                                         {{ isSaving ? '儲存中...' : '確認儲存' }}
                                     </button>
-                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 !text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
+                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 rounded-xl font-bold shadow-sm active:scale-95 transition-all" style="color: white !important;">
                                         取消
                                     </button>
                                 </div>
@@ -609,6 +609,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
+import { debounce } from '../utils/debounce';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 import SearchComponent from './SearchComponent.vue';
@@ -805,10 +806,10 @@ const loadData = async (page = 1) => {
     }
 };
 
-watch(searchQuery, () => {
+watch(searchQuery, debounce(() => {
     currentPage.value = 1;
     loadData(1);
-});
+}, 300));
 
 watch(currentFolder, () => {
     currentPage.value = 1;

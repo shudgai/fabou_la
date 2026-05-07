@@ -580,6 +580,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
+import { debounce } from '../utils/debounce';
 import axios from 'axios';
 
 const getTodayStr = () => {
@@ -758,12 +759,17 @@ const addActions = computed(() => {
 const showSearch = ref(false);
 const searchQuery = ref('');
 
-watch(searchQuery, (newVal) => {
+watch(searchQuery, debounce((newVal) => {
     if (newVal?.trim() && focusedId.value) {
         focusedId.value = null;
         expandedIds.value.clear();
     }
-});
+    currentPage.value = 1;
+    loadData(1);
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
+}, 300));
 const showExportMenu = ref(false);
 const deleteConfirmId = ref(null);
 const activePicker = ref(null); // { id, field, title }
@@ -953,14 +959,6 @@ const loadData = async (page = 1) => {
         loading.value = false; 
     }
 };
-
-watch(searchQuery, () => {
-    currentPage.value = 1;
-    loadData(1);
-    if (scrollContainer.value) {
-        scrollContainer.value.scrollTop = 0;
-    }
-});
 
 watch([sortDesc, currentFolder, currentCategory], () => {
     currentPage.value = 1;

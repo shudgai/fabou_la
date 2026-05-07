@@ -233,6 +233,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
+import { debounce } from '../utils/debounce';
 import axios from 'axios';
 import GrudgeAddForm from './GrudgeAddForm.vue';
 import GrudgeBatchImport from './GrudgeBatchImport.vue';
@@ -611,10 +612,10 @@ const fetchUsers = async () => {
     }
 };
 
-watch([searchQuery, activeDateGroup], () => {
+watch([searchQuery, activeDateGroup], debounce(() => {
     currentPage.value = 1;
     loadData(1);
-});
+}, 300));
 
 const saveItem = async (formData) => {
     try {
