@@ -189,10 +189,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed, watch, onUnmounted } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import { writeClipboard, downloadBlob } from '../utils/iosCompat';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 import CompactDatePicker from './CompactDatePicker.vue';
 
@@ -337,6 +337,23 @@ const executeToastAction = async () => {
     deleteConfirmId.value = null;
 };
 
+const isAnyModalOpen = computed(() => {
+    return !!showAddModal.value || 
+           !!persistentToast.value || 
+           !!expandedRecordId.value || 
+           !!showDatePicker.value || 
+           !!activeDropdownId.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
+});
+
 onMounted(() => {
     loadData();
     document.addEventListener('click', () => { activeDropdownId.value = null; });
@@ -357,7 +374,6 @@ onMounted(() => {
     100% { transform: translate(-50%, -20px); opacity: 0; }
 }
 .animate-toast { animation: toast 2s forwards; }
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

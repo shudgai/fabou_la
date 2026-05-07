@@ -1064,7 +1064,7 @@ onUnmounted(() => {
 const isAnyModalOpen = computed(() => {
     return !!addMode.value || 
            !!persistentToast.value || 
-           expandedIds.value.size > 0 || 
+           hasAnyExpanded.value || 
            !!showAddMenu.value ||
            !!openMenuId.value;
 });
@@ -1291,7 +1291,7 @@ const executeDelete = async () => {
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.custom-scrollbar { overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }

@@ -270,7 +270,6 @@ const handleSave = () => {
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up {
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }

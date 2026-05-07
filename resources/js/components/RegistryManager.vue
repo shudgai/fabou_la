@@ -45,7 +45,7 @@
         </div>
 
         <!-- Main Scrollable Area -->
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px; -webkit-overflow-scrolling: touch;">
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div v-if="currentCategory" class="w-full px-[10px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
@@ -124,7 +124,7 @@
                     'px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto',
                     focusedId ? 'fixed inset-0 z-[100] pt-[110px] overflow-y-auto custom-scrollbar' : ''
                 ]"
-                style="-webkit-overflow-scrolling: touch;">
+                style="">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Main Title + All Action Buttons -->
@@ -2032,7 +2032,7 @@ onUnmounted(() => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.custom-scrollbar { overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

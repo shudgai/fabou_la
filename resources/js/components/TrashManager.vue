@@ -122,9 +122,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const items = ref([]);
 const loading = ref(true);
@@ -213,6 +214,19 @@ const formatDate = (dateString) => {
     }
     return s.replace(/-/g, '/');
 };
+
+const isAnyModalOpen = computed(() => {
+    return !!persistentToast.value;
+});
+
+watch(isAnyModalOpen, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+    if (isAnyModalOpen.value) unlockBodyScroll();
+});
 
 onMounted(loadItems);
 </script>

@@ -595,7 +595,6 @@ onMounted(loadUsers);
 <style scoped>
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .custom-scrollbar {
-    -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
 }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }

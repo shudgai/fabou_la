@@ -1594,7 +1594,7 @@
                                         </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                                            <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2">
@@ -5207,7 +5207,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.custom-scrollbar { overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

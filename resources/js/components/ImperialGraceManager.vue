@@ -78,7 +78,7 @@
             </div>
         </div>
         </teleport>
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px; -webkit-overflow-scrolling: touch;">
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-white flex flex-col items-center">
             <div class="flex-1 flex flex-col items-center justify-center pb-20 w-full max-w-lg mx-auto">
@@ -332,7 +332,7 @@
                                     </div>
                                 </div>
                                 <!-- Scrollable Content -->
-                                <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                                <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar">
                         <div class="animate-fade-in bg-white space-y-4 relative">
 
                             <!-- INLINE EDITING FORM -->

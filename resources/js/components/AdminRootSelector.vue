@@ -81,7 +81,8 @@
         <!-- DESKTOP VIEW: Sidebar + Manager (Two-Column Layout) -->
         <div class="hidden md:flex flex-row h-full w-full overflow-hidden">
             <!-- Sidebar -->
-            <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] pt-[67px] pb-8 overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+            <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]"
+    style="padding-top: calc(67px + env(safe-area-inset-top, 0px)); padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));">
                 <!-- Sidebar Logo Area -->
                 <div class="flex items-center space-x-3 mb-10 px-2">
                     <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
@@ -127,7 +128,7 @@
 
             <!-- Content Area -->
             <div class="flex-1 h-full overflow-hidden flex flex-col bg-white relative">
-                <teaching-manager v-if="currentView === 'teaching' || currentView === 'menu'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></teaching-manager>
+                <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></teaching-manager>
                 <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></grudge-manager>
                 <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></imperial-grace-manager>
                 <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></registry-manager>
@@ -137,8 +138,8 @@
                 <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
                 <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></trash-manager>
 
-                <!-- Welcome State (If somehow menu on desktop with no default) -->
-                <div v-if="currentView === 'menu' && !user" class="flex-1 flex flex-col items-center justify-center p-12 text-center">
+                <!-- Welcome State (Desktop menu) -->
+                <div v-if="currentView === 'menu'" class="flex-1 flex flex-col items-center justify-center p-12 text-center">
                     <div class="w-32 h-32 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
                         <svg class="w-16 h-16 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>

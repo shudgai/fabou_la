@@ -33,7 +33,7 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain" style="-webkit-overflow-scrolling: touch;">
+            <div class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain">
                 
                 <!-- COMMON FIELDS (Date & Master) -->
                 <div class="grid grid-cols-2 gap-3 bg-white p-1">
@@ -228,7 +228,7 @@
                             <span class="text-[13px] font-black text-slate-600" style="font-size: 13px !important;">預覽解析結果 ({{ excelRows.length }} 筆)</span>
                             <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest" style="font-size: 11px !important;">PREVIEW</span>
                         </div>
-                        <div class="overflow-x-auto max-h-[400px] overscroll-contain" style="-webkit-overflow-scrolling: touch;">
+                        <div class="overflow-x-auto max-h-[400px] overscroll-contain">
                             <table class="w-full text-left border-collapse">
                                 <thead class="sticky top-0 bg-slate-50 shadow-sm z-10">
                                     <tr class="text-[11px] text-slate-400 uppercase tracking-widest font-black">

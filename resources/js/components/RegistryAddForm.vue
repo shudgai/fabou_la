@@ -865,7 +865,6 @@ defineExpose({ updatePersonnelRemarks });
 .save-button { background-color: #2563eb; color: white; height: 52px; font-size: 18px; }
 .add-personnel-button { background-color: #4f46e5; color: white; font-size: 18px; }
 .btn { font-size: 18px; }
-.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 .animate-pop-in { animation: popIn 0.25s cubic-bezier(0.2, 1, 0.3, 1); }

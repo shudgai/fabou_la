@@ -15,7 +15,7 @@
         })();
     </script>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -72,7 +72,8 @@
                     'w-[90%] lg:w-64': !sidebarCollapsed,
                     'w-[90%] lg:w-20': sidebarCollapsed
                 }"
-                class="fixed inset-y-0 left-0 z-[200] bg-white border-r border-slate-200 shadow-2xl transition-all duration-300 lg:static lg:translate-x-0 flex flex-col">
+                class="fixed inset-y-0 left-0 z-[200] bg-white border-r border-slate-200 shadow-2xl transition-all duration-300 lg:static lg:translate-x-0 flex flex-col"
+                style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);">
                 
                 <!-- Sidebar Header -->
                 <div class="h-16 flex items-center justify-between px-4 border-b border-slate-100 shrink-0 overflow-hidden">
@@ -200,7 +201,7 @@
             <div class="flex-1 flex flex-col min-w-0 relative">
                 <!-- Mobile Header -->
                 @if(!request()->routeIs('note.index'))
-                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0 shrink-0">
+                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0 shrink-0" style="padding-top: env(safe-area-inset-top, 0px); height: calc(3.5rem + env(safe-area-inset-top, 0px));">
                     <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
