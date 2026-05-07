@@ -90,7 +90,7 @@
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 translate-y-[2px]">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
                             <div class="leading-tight text-center !font-black !text-white !text-[40px]">重大皇恩<br>專區</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight">共 {{ totalCount }} 筆</span>
@@ -108,7 +108,7 @@
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 translate-y-[2px]">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
                             <div class="leading-tight text-center !font-black !text-white !text-[40px]">未求得<br>重大皇恩</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight">共 {{ unobtainedTotal }} 筆</span>
@@ -134,7 +134,7 @@
                         </svg>
                         
                         <!-- Label & Pill Inside -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[10px]">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                             <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black !text-[26px]"
                                  :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}

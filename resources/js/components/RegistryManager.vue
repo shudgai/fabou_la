@@ -69,7 +69,7 @@
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-gold-grad-global)" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 translate-y-[4px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
                                 <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[40px]">重大皇恩<br>登記簿</div>
                                 <div class="mt-4 flex items-center">
                                     <span class="text-black text-[17px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
@@ -80,14 +80,14 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 gap-4 p-2 place-items-center max-w-xl mx-auto">
+                <div v-else class="grid grid-cols-2 gap-[10px] p-2 place-items-center max-w-xl mx-auto">
                     <button v-for="folder in folders" :key="folder.id" 
                         @click="currentFolder = folder"
                         :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-2xl group p-0 w-[172px] h-[172px] relative bg-white shadow-sm'
+                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative bg-white shadow-sm'
                         ]">
                         
-                        <div class="relative w-[168px] h-[168px]">
+                        <div class="relative w-[163px] h-[163px]">
                              <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-sm" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     fill="url(#rm-gold-grad-global)" />
@@ -96,7 +96,7 @@
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none translate-y-[12px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[26px] !font-black"
                                      :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'">
                                      {{ folder.name }}

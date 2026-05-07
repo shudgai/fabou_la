@@ -114,7 +114,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-14 px-4 translate-y-[2px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
@@ -135,7 +135,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-14 px-4 translate-y-[2px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
                                 <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
@@ -169,7 +169,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label & Pill Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-4 px-2 pointer-events-none translate-y-[12px]">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
                                      style="font-weight: 900 !important; font-size: 26px !important;">

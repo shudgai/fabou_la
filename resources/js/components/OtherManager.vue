@@ -31,7 +31,7 @@
                             <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none -translate-y-[4px]">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none">
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
@@ -53,7 +53,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <!-- Label Inside -->
-                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
                             <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
                                 抽順序
                             </span>
@@ -71,7 +71,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-roundGrad)" style="fill: #10b981;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <!-- Label Inside -->
-                        <div class="absolute inset-0 flex items-center justify-center pt-5 px-3">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
                             <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
                                 回合抽籤
                             </span>

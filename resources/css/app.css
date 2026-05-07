@@ -114,7 +114,6 @@ body.font-medium .text-\[36px\], body.font-medium .text-\[32px\], body.font-medi
 body.font-large  .text-\[36px\], body.font-large  .text-\[32px\], body.font-large  .text-\[30px\], body.font-large  .text-\[28px\], body.font-large  .text-\[26px\], body.font-large  .text-\[25px\] { font-size: 36px !important; }
 
 /* 確保輸入框也跟著變，且強制加粗以符合 Imperial Grace 風格 */
-/* iOS minimum: 16px to prevent auto-zoom on focus */
 body.font-small input, body.font-small select, body.font-small textarea { font-family: 'Montserrat', sans-serif !important; font-size: 16px !important; font-weight: 400 !important; }
 body.font-medium input, body.font-medium select, body.font-medium textarea { font-family: 'Montserrat', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; }
 body.font-large input, body.font-large select, body.font-large textarea { font-family: 'Montserrat', sans-serif !important; font-size: 19px !important; font-weight: 400 !important; }
@@ -129,7 +128,7 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
    ============================================================ */
 @media (min-width: 768px) {
     /* --- 1. 標準內文 (Body Text) - Tier 3 --- */
-    body.font-small  .app-body, body.font-small  p, body.font-small  td, body.font-small  input, body.font-small  textarea, body.font-small  .text-\[16px\], body.font-small  .text-\[17px\], body.font-small  .text-\[18px\] { font-size: 16px !important; line-height: 1.6 !important; }
+    body.font-small  .app-body, body.font-small  p, body.font-small  td, body.font-small  input, body.font-small  textarea, body.font-small  .text-\[16px\], body.font-small  .text-\[17px\], body.font-small  .text-\[18px\] { font-size: 15px !important; line-height: 1.6 !important; }
     body.font-medium .app-body, body.font-medium p, body.font-medium td, body.font-medium input, body.font-medium textarea, body.font-medium .text-\[16px\], body.font-medium .text-\[17px\], body.font-medium .text-\[18px\] { font-size: 17px !important; line-height: 1.6 !important; }
     body.font-large  .app-body, body.font-large  p, body.font-large  td, body.font-large  input, body.font-large  textarea, body.font-large  .text-\[16px\], body.font-large  .text-\[17px\], body.font-large  .text-\[18px\] { font-size: 19px !important; line-height: 1.6 !important; }
 
@@ -153,8 +152,9 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
    行動裝置優化 (Mobile Smoothness & Ergonomics)
    ============================================================ */
 @layer utilities {
-    /* 流暢滾動 */
-    .custom-scrollbar {}
+    /* 流暢滾動 (iOS Inertia Scrolling) */
+    .custom-scrollbar {
+    }
 
     /* 防止 iOS 輸入框自動縮放 (Minimum 16px) */
     input, select, textarea {
@@ -173,19 +173,6 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
         height: 100dvh;
     }
 
-    /* C1: iOS Safari 100dvh fallback - browsers not supporting dvh get vh fallback */
-    @supports not (height: 100dvh) {
-        .h-\[100dvh\] {
-            height: 100vh !important;
-        }
-    }
-    /* iOS Safari: use -webkit-fill-available for proper mobile viewport */
-    @supports (-webkit-touch-callout: none) {
-        .h-\[100dvh\] {
-            min-height: -webkit-fill-available;
-        }
-    }
-
     /* C1: iOS 15.0-15.3 100dvh fallback - 不支援時退回 100vh */
     .h-dvh-fallback {
         height: 100vh;
@@ -194,31 +181,27 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
             min-height: -webkit-fill-available;
         }
     }
+}
 
-    /* 全局 overscroll 防止彈性滾動 */
-    html, body {
-        overscroll-behavior: none;
+/* C1: iOS Safari 100dvh fallback - browsers not supporting dvh get vh fallback */
+@supports not (height: 100dvh) {
+    .h-\[100dvh\] {
+        height: 100vh !important;
     }
+}
+/* iOS Safari: use -webkit-fill-available for proper mobile viewport */
+@supports (-webkit-touch-callout: none) {
+    .h-\[100dvh\] {
+        min-height: -webkit-fill-available;
+    }
+}
 
-    /* iOS 安全區域適配 (Safe Area Insets) */
-    .pb-safe {
-        padding-bottom: env(safe-area-inset-bottom, 24px);
-    }
-    .pt-safe {
-        padding-top: env(safe-area-inset-top, 0px);
-    }
-    .pl-safe {
-        padding-left: env(safe-area-inset-left, 0px);
-    }
-    .pr-safe {
-        padding-right: env(safe-area-inset-right, 0px);
-    }
-    .px-safe {
-        padding-left: env(safe-area-inset-left, 0px);
-        padding-right: env(safe-area-inset-right, 0px);
-    }
-    .min-h-screen-safe {
-        min-height: 100vh;
-        min-height: calc(100vh - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px));
-    }
+/* 全局 overscroll 防止彈性滾動 */
+html, body {
+    overscroll-behavior: none;
+}
+
+/* iOS 安全區域適配 (Safe Area Insets) */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 24px);
 }
