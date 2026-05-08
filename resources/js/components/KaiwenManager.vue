@@ -15,43 +15,35 @@
         />
         <!-- Header (Shared) -->
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
-            <div class="flex-1 flex flex-col justify-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="flex-1 flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
-                    <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="font-size: 32px !important;">
-                        開文專區
-                    </h1>
-                </div>
+            <div class="flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626]" style="font-size: 30px !important;">
+                    開文專區
+                </h1>
             </div>
-            
 
-
-            <!-- Search Icon (Only in main list view) -->
-            <div v-if="!hasAnyExpanded && !addMode" class="flex items-center space-x-2 mr-2">
-                <button @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all">
-                    <svg v-if="!showSearch" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <svg v-else class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            
             <!-- Tab Switcher -->
-            <div v-if="!showSearch" class="absolute right-[10px] top-[55%] -translate-y-1/2 flex space-x-3 animate-fade-in">
+            <div v-if="!showSearch" class="flex items-center space-x-2 ml-auto mr-1 animate-fade-in shrink-0">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-4 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
-                    style="font-size: 16px !important;">
+                    class="px-2.5 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
+                    style="font-size: 14px !important;">
                     <span :class="currentTab === 'weekly' ? '!text-white' : ''">每週開文</span>
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-4 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
-                    style="font-size: 16px !important;">
+                    class="px-2.5 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
+                    style="font-size: 14px !important;">
                     <span :class="currentTab === 'self' ? '!text-white' : ''">自行開文</span>
+                </button>
+                <!-- Search Icon -->
+                <button v-if="!hasAnyExpanded && !addMode" @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all ml-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </button>
             </div>
 
             <!-- Search Input -->
-            <div v-if="showSearch && !hasAnyExpanded" class="px-2 py-2 w-full animate-fade-in">
-                <div class="relative group">
+            <div v-if="showSearch && !hasAnyExpanded" class="flex items-center px-2 py-2 w-full animate-fade-in gap-2">
+                <div class="relative flex-1 group">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
@@ -61,10 +53,10 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
+                <button @click="showSearch = false" class="shrink-0 p-2 text-slate-400 active:scale-90 transition-all">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
             </div>
-            
-            <!-- Header placeholder for alignment -->
-            <div class="w-[40px]"></div>
         </div>
 
 
@@ -121,28 +113,6 @@
                                 <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
                                 
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
-                                <template v-if="!expandedIds[post.id]">
-                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1">
-                                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <circle cx="5" cy="12" r="2" />
-                                            <circle cx="12" cy="12" r="2" />
-                                            <circle cx="19" cy="12" r="2" />
-                                        </svg>
-                                    </button>
-                                    
-                                    <!-- Actions Menu -->
-                                    <div v-if="openMenuId === post.id" class="absolute right-4 top-12 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[100] py-1 animate-fade-in overflow-hidden">
-                                        <button @click.stop="openPostMode(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
-                                            殿中修改之文
-                                        </button>
-                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">展開清單</button>
-                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">收起清單</button>
-                                        <button @click.stop="editItem(post, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
-                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製貼 LINE</button>
-                                        <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
-                                        <button @click.stop="confirmDelete(post.id, 'weekly')" class="w-full px-4 py-3 text-left text-[17px] font-bold text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
-                                    </div>
-                                </template>
                             </div>
                         </div>
                         
@@ -245,29 +215,6 @@
                                 <span v-else-if="post.message_type === '非玄訊'" class="text-[14px] font-black tracking-wider text-amber-700">非玄訊</span>
                                 <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
                                 
-                                <template v-if="!expandedIds[post.id]">
-                                    <button @click.stop="openMenuId = (openMenuId === post.id ? null : post.id)" class="p-1">
-                                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <circle cx="5" cy="12" r="2" />
-                                            <circle cx="12" cy="12" r="2" />
-                                            <circle cx="19" cy="12" r="2" />
-                                        </svg>
-                                    </button>
-                                    
-                                    <!-- Actions Menu -->
-                                    <div v-if="openMenuId === post.id" class="absolute right-4 top-12 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[100] py-1 animate-fade-in overflow-hidden">
-                                        <button v-if="post.message_type === '玄訊'" @click.stop="openPostMode(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
-                                            <svg class="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                            殿中修改之文
-                                        </button>
-                                        <button v-if="!hasAnyExpanded" @click.stop="expandAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>展開清單</button>
-                                        <button v-else @click.stop="collapseAll" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>收起清單</button>
-                                        <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">編輯紀錄</button>
-                                        <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">複製貼 LINE</button>
-                                        <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">下載檔案</button>
-                                        <button @click.stop="confirmDelete(post.id, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 flex items-center">刪除紀錄</button>
-                                    </div>
-                                </template>
                             </div>
                         </div>
                         
