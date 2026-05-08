@@ -61,12 +61,22 @@
             <!-- Bottom Spacer -->
             <div class="h-24"></div>
         </div>
+
+        <!-- Mobile Navbar -->
+        <MobileNavbar 
+            :can-back="true"
+            :can-home="false"
+            :show-action="false"
+            :can-search="false"
+            @back="$emit('cancel')"
+        />
     </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue';
 import axios from 'axios';
+import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     isSaving: Boolean,

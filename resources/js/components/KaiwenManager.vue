@@ -16,45 +16,22 @@
         <!-- Header (Shared) -->
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626]" style="font-size: 30px !important;">
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
                     開文專區
                 </h1>
             </div>
 
             <!-- Tab Switcher -->
-            <div v-if="!showSearch" class="flex items-center space-x-2 ml-auto mr-1 animate-fade-in shrink-0">
+            <div class="flex items-center space-x-2 ml-auto mr-1 animate-fade-in shrink-0">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
-                    style="font-size: 14px !important;">
-                    <span :class="currentTab === 'weekly' ? '!text-white' : ''">每週開文</span>
+                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab">
+                    <span :class="currentTab === 'weekly' ? '!text-white' : ''" style="font-size: 14px !important;">每週開文</span>
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
-                    style="font-size: 14px !important;">
-                    <span :class="currentTab === 'self' ? '!text-white' : ''">自行開文</span>
-                </button>
-                <!-- Search Icon -->
-                <button v-if="!hasAnyExpanded && !addMode" @click="showSearch = !showSearch" class="p-2 text-slate-400 active:scale-90 transition-all ml-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </button>
-            </div>
-
-            <!-- Search Input -->
-            <div v-if="showSearch && !hasAnyExpanded" class="flex items-center px-2 py-2 w-full animate-fade-in gap-2">
-                <div class="relative flex-1 group">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
-                        class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
-                    <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                </div>
-                <button @click="showSearch = false" class="shrink-0 p-2 text-slate-400 active:scale-90 transition-all">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab">
+                    <span :class="currentTab === 'self' ? '!text-white' : ''" style="font-size: 14px !important;">自行開文</span>
                 </button>
             </div>
         </div>
@@ -84,6 +61,20 @@
 
         <!-- LIST VIEW -->
         <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full">
+            <!-- Search -->
+            <div v-if="showSearch" class="px-1 pb-3 animate-fade-in">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..."
+                        class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                    <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+            </div>
+
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 w-full">
                 <!-- Removed top add button -->
@@ -419,14 +410,14 @@
             <!-- Form Footer (Fixed at bottom) -->
             <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky bottom-0 z-[110]">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 h-[55px] rounded-none font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
+                    <button @click="addMode = null" class="flex-1 px-4 py-[13.5px] rounded-2xl font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
-                        class="flex-[2] bg-purple-600 h-[55px] rounded-none font-black text-[19px] !text-white shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
+                        class="flex-[2] px-4 py-[14.5px] rounded-[15px] font-black text-[19px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>
                         <template v-else>
-                            儲存紀錄
+                            儲存記錄
                         </template>
                     </button>
                 </div>
@@ -441,51 +432,18 @@
             />
         </div>
 
-        <!-- Bottom Navigation Bar (Mobile First) - Height set to 7% of viewport -->
-        <div v-if="!addMode" class="absolute bottom-0 left-0 right-0 h-[7vh] bg-white/80 backdrop-blur-xl border-t border-slate-200 px-6 z-[100] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-slide-up">
-            <button @click="$emit('goHome')" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90 text-slate-400">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-
-            <button @click="currentTab = 'weekly'" :class="currentTab === 'weekly' ? 'text-white bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-
-            <!-- Center Add Button -->
-            <button @click.stop="showAddMenu = true" 
-                class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-95 text-white bg-indigo-600 shadow-sm">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-
-            <button @click="currentTab = 'self'" :class="currentTab === 'self' ? 'text-white bg-blue-50' : 'text-slate-400'" class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-90">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-
-            <!-- Font Gear Menu -->
-            <div class="flex justify-center relative">
-                <button @click="showFontMenu = !showFontMenu" 
-                    class="h-full px-4 rounded-none flex items-center justify-center transition-all text-blue-600 bg-blue-50/50 active:scale-95">
-                    <svg class="w-6 h-6 transition-transform duration-500" :class="{'rotate-90': showFontMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
-                    <div class="h-44 flex flex-col items-center justify-between py-2 relative">
-                        <span class="text-[14px] font-black text-slate-400">大</span>
-                        <div class="relative w-8 h-24 flex items-center justify-center">
-                            <input 
-                                type="range" 
-                                min="0" 
-                                max="2" 
-                                step="1" 
-                                :value="fontSizeValue"
-                                @input="handleFontSizeSlider"
-                                class="vertical-slider w-8 h-24 bg-transparent cursor-pointer"
-                            >
-                        </div>
-                        <span class="text-[14px] font-black text-slate-400">小</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Mobile Navbar with Search -->
+        <MobileNavbar 
+            :can-back="false"
+            :can-home="true"
+            :show-action="!addMode"
+            :action-active="showAddMenu"
+            :search-active="showSearch"
+            :can-search="!addMode"
+            @home="$emit('goHome')"
+            @action="showAddMenu = !showAddMenu"
+            @search="showSearch = !showSearch"
+        />
 
         <!-- Image Zoom Overlay -->
         <div v-if="viewerImage" class="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4 md:p-12 animate-fade-in" @click="viewerImage = null">
@@ -504,6 +462,7 @@ import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import KaiwenBatchAdd from './KaiwenBatchAdd.vue';
+import MobileNavbar from './MobileNavbar.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const getTodayStr = () => {
@@ -517,13 +476,36 @@ const props = defineProps({
     isDesktop: Boolean
 });
 
-const resetToRoot = () => {
-    addMode.value = null;
-    searchQuery.value = '';
-    showSearch.value = false;
-    expandedIds.value = {};
-    openMenuId.value = null;
-};
+    const resetToRoot = () => {
+        addMode.value = null;
+        searchQuery.value = '';
+        showSearch.value = false;
+        expandedIds.value = {};
+        openMenuId.value = null;
+    };
+
+    // 強制固定大標和Tab按鈕字體大小
+    const forceFixedFontSize = () => {
+        setTimeout(() => {
+            const title = document.querySelector('.kaiwen-title');
+            const tabs = document.querySelectorAll('.kaiwen-tab');
+            if (title) {
+                title.style.setProperty('font-size', '30px', 'important');
+            }
+            tabs.forEach(tab => {
+                tab.style.setProperty('font-size', '14px', 'important');
+            });
+        }, 100);
+    };
+
+    onMounted(() => {
+        forceFixedFontSize();
+        // 監聽body類別變化
+        const observer = new MutationObserver(() => {
+            forceFixedFontSize();
+        });
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    });
 
 const currentTab = ref('weekly'); // 'weekly' or 'self'
 const weeklyPosts = ref([]);
@@ -533,7 +515,6 @@ const loading = ref(false);
 const searchQuery = ref('');
 const showSearch = ref(false);
 
-const showFontMenu = ref(false);
 const showAddMenu = ref(false);
 const isManualWeekly = ref(false);
 
@@ -1257,43 +1238,4 @@ const executeDelete = async () => {
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 * { -webkit-tap-highlight-color: transparent; }
-
-/* Vertical Slider Styles */
-.vertical-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    writing-mode: vertical-lr;
-    direction: rtl;
-    width: 32px;
-    height: 100%;
-}
-.vertical-slider::-webkit-slider-runnable-track {
-    width: 4px;
-    height: 100%;
-    background: transparent;
-}
-.vertical-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    background: #2563eb; /* blue-600 */
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
-    border: 2px solid white;
-}
-.vertical-slider::-moz-range-thumb {
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    background: #2563eb;
-    cursor: pointer;
-    border: 2px solid white;
-}
-
-/* 開文專區標題不受字體大小系統影響 */
-body .kaiwen-module h1 {
-    font-size: 30px !important;
-}
-
 </style>
