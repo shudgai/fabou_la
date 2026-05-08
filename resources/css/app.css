@@ -130,12 +130,6 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     .custom-scrollbar {
     }
 
-    /* 優化點擊反應與消除灰框 (Touch Optimization) */
-    * {
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-    }
-
     /* 支援全螢幕高度 (Dynamic Viewport Height) */
     .h-screen-dynamic {
         height: 100vh;
@@ -150,6 +144,12 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
             min-height: -webkit-fill-available;
         }
     }
+}
+
+/* 優化點擊反應與消除灰框 (Touch Optimization) - 在 @layer 外以確保最高權重 */
+* {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* C1: iOS Safari 100dvh fallback - only apply -webkit-fill-available when 100dvh NOT supported */
