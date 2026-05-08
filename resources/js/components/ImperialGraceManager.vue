@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 imperial-grace-module overscroll-none">
+    <div class="bg-white h-full flex flex-col relative overflow-clip text-slate-900 imperial-grace-module overscroll-none">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
@@ -15,7 +15,7 @@
         <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
         <div v-if="currentFolder || addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
-            style="padding: 4px 15px;">
+            style="padding: 4px 15px; padding-top: env(safe-area-inset-top, 0px);">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>

@@ -1,5 +1,5 @@
 ﻿<template>
-    <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module overflow-hidden">
+    <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module overflow-clip">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
