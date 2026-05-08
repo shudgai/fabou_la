@@ -5,7 +5,8 @@
             <!-- Logo area -->
             <div class="p-4 md:p-6 border-b border-slate-50 flex items-center justify-between bg-white">
                 <div>
-                    <h1 class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
+                    <logo-imperial-notebook v-if="isNotebookView" :height="44" />
+                    <h1 v-else class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="/note" class="p-2 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
@@ -92,6 +93,7 @@ const OtherManager = defineAsyncComponent(() => import('./OtherManager.vue'));
 const KaiwenManager = defineAsyncComponent(() => import('./KaiwenManager.vue'));
 const OtherTeachingManager = defineAsyncComponent(() => import('./OtherTeachingManager.vue'));
 const TrashManager = defineAsyncComponent(() => import('./TrashManager.vue'));
+import LogoImperialNotebook from './LogoImperialNotebook.vue';
 
 // Font Size System
 const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());

@@ -2,22 +2,7 @@
     <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
         <div style="padding: 8px 20px 4px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[50px] shrink-0">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
-                    <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="50" fill="white"/>
-                        <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                        <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                        <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                        <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                        <circle cx="50" cy="75" r="8" fill="white"/>
-                        <circle cx="50" cy="25" r="8" fill="black"/>
-                    </svg>
-                </div>
-                <span class="text-2xl font-bold font-outfit tracking-tight text-slate-800 whitespace-nowrap">
-                    皇恩筆記本
-                </span>
-            </div>
+            <logo-imperial-notebook :height="40" />
             
             <div class="flex items-center">
                 <button @click="handleLogout" class="p-2 text-red-500 active:scale-90 transition-transform">
@@ -34,7 +19,7 @@
                     class="flex items-center justify-between w-full bg-white active:bg-indigo-50 active:scale-[0.98] transition-all duration-200 rounded-2xl border border-slate-100 h-[64px] shrink-0 overflow-hidden relative group"
                     style="padding: 0 20px;">
                         <div class="flex flex-col items-start text-left">
-                            <span class="text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
+                            <span class="!text-[22px] font-black text-slate-800 tracking-tight leading-tight">{{ item.label }}</span>
                             <span v-if="counts[item.id]" class="text-[16px] font-normal text-slate-400 mt-0.5">{{ counts[item.id] }} 筆</span>
                         </div>
                     <div class="flex items-center">
@@ -90,6 +75,7 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import LogoImperialNotebook from './LogoImperialNotebook.vue';
 
 const persistentToast = ref(null);
 

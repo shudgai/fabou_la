@@ -55,15 +55,15 @@
                 </button>
                 <div v-if="showFontMenu" class="absolute bottom-full right-0 mb-4 w-16 bg-white rounded-none shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-slate-100 p-4 z-[110] animate-slide-up flex flex-col items-center space-y-4">
                     <div class="h-44 flex flex-col items-center justify-between py-2 relative">
-                        <span class="text-[13px] font-black text-slate-400">大</span>
+                        <span class="!text-[13px] font-black text-slate-400">大</span>
                         <div class="relative w-8 h-24 flex items-center justify-center">
-                            <span class="absolute left-[-16px] text-[13px] font-black text-slate-400">中</span>
+                            <span class="absolute left-[-16px] !text-[13px] font-black text-slate-400">中</span>
                             <input type="range" min="0" max="2" step="1" 
                                    :value="sliderValue"
                                    @input="handleSliderInput"
                                    class="vertical-slider w-8 h-24 bg-transparent cursor-pointer">
                         </div>
-                        <span class="text-[13px] font-black text-slate-400">小</span>
+                        <span class="!text-[13px] font-black text-slate-400">小</span>
                     </div>
                 </div>
             </div>

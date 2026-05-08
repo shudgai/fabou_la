@@ -32,7 +32,7 @@
                 </h1>
             </div>
             <div class="absolute right-2 bottom-2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-[13px] text-indigo-600 active:scale-95 transition-all">
+                <button @click="sortDesc = !sortDesc" class="px-2 py-1 !text-[13px] text-indigo-600 active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -47,7 +47,7 @@
                 <h2 class="truncate tracking-tight font-outfit font-normal" style="font-size: 28px !important; color: #0f172a !important; font-weight: 400 !important;">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 text-[13px] text-indigo-600 active:scale-95 transition-all">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 !text-[13px] text-indigo-600 active:scale-95 transition-all">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -104,7 +104,7 @@
                                 <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
                                     style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
                                 <div class="mt-4 flex items-center space-x-2 animate-fade-in">
-                                    <span class="text-white/80 text-[13px] font-bold tracking-widest uppercase">總計</span>
+                                    <span class="text-white/80 !text-[13px] font-bold tracking-widest uppercase">總計</span>
                                     <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
                                 </div>
                             </div>

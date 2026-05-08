@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="bg-white h-[100dvh] flex flex-col relative text-slate-900 registry-manager-module overflow-hidden">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
@@ -18,9 +18,9 @@
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Top Row: Main Title (Clickable) + Actions (X button removed) -->
             <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-slate-50">
-                <div class="app-title !text-[36px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
+                <div class="app-title !text-[32px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
                     @click="resetToRoot"
-                    style="color: #dc2626 !important; font-size: 36px !important; font-weight: 900 !important;">
+                    style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
                 <div class="flex items-center space-x-2">
@@ -37,7 +37,7 @@
 
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-slate-50 flex items-baseline gap-x-2 py-[5px] overflow-hidden">
-                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 28px !important; font-weight: 400 !important; line-height: 1.1;">
+                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 32px !important; font-weight: 400 !important; line-height: 1.1;">
                     {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                 </span>
                 <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 28px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
@@ -53,7 +53,7 @@
                             <h1 v-if="!currentCategory" class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[32px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
                                 法寶登記專區
                             </h1>
-                            <h1 v-else class="leading-tight font-outfit tracking-widest break-words !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 28px !important; font-weight: 400 !important;">
+                            <h1 v-else class="leading-tight font-outfit tracking-widest break-words !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 400 !important;">
                                 {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                                 <br>
                                 <span v-if="currentFolder" class="text-[28px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 28px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
@@ -149,7 +149,7 @@
                     </div>
                     <!-- Bottom Row: Dynamic Sub-title + Folder Name (same line, adjacent) -->
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
-                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 28px !important; font-weight: 400 !important;">
+                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important; font-weight: 400 !important;">
                             {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                         </span>
                         <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 28px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>

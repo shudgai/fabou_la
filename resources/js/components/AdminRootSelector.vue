@@ -84,19 +84,8 @@
             <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]"
     style="padding-top: calc(67px + env(safe-area-inset-top, 0px)); padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));">
                 <!-- Sidebar Logo Area -->
-                <div class="flex items-center space-x-3 mb-10 px-2">
-                    <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
-                        <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="50" fill="white"/>
-                            <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                            <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                            <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                            <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                            <circle cx="50" cy="75" r="8" fill="white"/>
-                            <circle cx="50" cy="25" r="8" fill="black"/>
-                        </svg>
-                    </div>
-                    <span class="text-[28px] font-black font-outfit tracking-tighter text-slate-800">皇恩筆記本</span>
+                <div class="mb-10 px-2">
+                    <logo-imperial-notebook :height="52" />
                 </div>
 
                 <!-- Navigation List (Matched to Mobile Cards) -->
@@ -112,7 +101,7 @@
                         style="padding: 0 15px;">
                         <div class="flex flex-col items-start text-left">
                             <span :class="[
-                                'text-[21px] font-black tracking-tight leading-tight transition-colors',
+                                '!text-[21px] font-black tracking-tight leading-tight transition-colors',
                                 currentView === item.id ? 'text-blue-600' : 'text-slate-800'
                             ]">{{ item.label }}</span>
                             <span v-if="counts[item.id]" class="text-[14px] font-normal text-slate-400 mt-0.5">{{ counts[item.id] }} 筆</span>
@@ -143,7 +132,7 @@
                     <div class="w-32 h-32 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
                         <svg class="w-16 h-16 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="text-3xl font-black text-slate-900 mb-2 font-outfit">歡迎使用皇恩筆記本</h2>
+                    <h2 class="!text-3xl font-black text-slate-900 mb-2 font-outfit">歡迎使用皇恩筆記本</h2>
                     <p class="text-slate-400 text-[18px] max-w-md">請從左側選擇一個專區開始記錄或查看資料。</p>
                 </div>
             </div>
@@ -165,6 +154,7 @@ import KaiwenManager from './KaiwenManager.vue';
 import AdminDashboard from './AdminDashboard.vue';
 import MobileDashboard from './MobileDashboard.vue';
 import TrashManager from './TrashManager.vue';
+import LogoImperialNotebook from './LogoImperialNotebook.vue';
 
 const user = ref(null);
 const currentView = ref('menu');
