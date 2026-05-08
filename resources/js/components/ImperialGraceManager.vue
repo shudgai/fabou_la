@@ -216,7 +216,7 @@
                         v-show="focusedId === null || focusedId === reg.id"
                         @click="toggleExpand(reg.id)"
                         :class="[
-                            'w-full block p-2 border-b border-white last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
+                            'w-full block p-2 border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
                             openMenuId === reg.id ? 'z-[50]' : 'z-0'
                         ]">
                         
@@ -231,9 +231,9 @@
                             </div>
 
                             <!-- Content column: date on top, name+status on bottom -->
-                            <div class="flex flex-col flex-1 min-w-0 pr-10">
-                                <!-- Row 1: Date -->
-                                <div v-if="reg.obtained_date || reg.record_date" class="mb-0.5 flex items-center justify-between">
+                            <div class="flex flex-col flex-1 min-w-0">
+                                <!-- Row 1: Date + Status -->
+                                <div class="mb-0.5 flex items-center justify-between">
                                     <div>
                                         <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
                                             <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">日期：</span>
@@ -244,20 +244,8 @@
                                             <span class="text-[15px] text-slate-900 font-outfit !font-normal">{{ formatDate(reg.record_date) }}</span>
                                         </template>
                                     </div>
-                                    
-
-                                </div>
-                                <!-- Row 1b: Master (Only for Unobtained folder) -->
-                                <div v-if="currentFolder.id === 'unobtained' && reg.master_id" 
-                                     class="text-[11px] font-black mb-0.5 tracking-wider uppercase font-outfit"
-                                     :class="getMasterName(reg.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">
-                                    {{ getMasterName(reg.master_id) }}
-                                </div>
-                                <!-- Row 2: Name + Status -->
-                                <div class="flex items-center justify-between">
-                                    <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit">{{ reg.name }}</div>
                                     <span :class="[
-                                        'px-3 py-0.5 rounded-full tracking-widest select-none whitespace-nowrap shrink-0 ml-2 border scale-[0.8] origin-right !font-black !text-[17px]',
+                                        'px-3 py-0.5 rounded-full tracking-widest select-none whitespace-nowrap shrink-0 border scale-[0.8] origin-right !font-black !text-[17px]',
                                         reg.status === '已求得' ? 'bg-blue-50 border-blue-200 text-blue-600' : 
                                         reg.status === '已登記' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 
                                         'bg-rose-50 border-rose-200 text-rose-600'
@@ -265,6 +253,14 @@
                                         {{ reg.status }}
                                     </span>
                                 </div>
+                                <!-- Row 1b: Master (Only for Unobtained folder) -->
+                                <div v-if="currentFolder.id === 'unobtained' && reg.master_id" 
+                                     class="text-[11px] font-black mb-0.5 tracking-wider uppercase font-outfit"
+                                     :class="getMasterName(reg.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">
+                                    {{ getMasterName(reg.master_id) }}
+                                </div>
+                                <!-- Row 2: Name -->
+                                <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit">{{ reg.name }}</div>
                             </div>
                         </div>
 
@@ -526,7 +522,7 @@
         </div>
     </div> <!-- End Scrollable Area -->
 
-    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed z-[100] flex justify-center bg-white border-t border-slate-200" style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
         <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !mt-0" />
     </div>
 
