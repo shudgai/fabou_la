@@ -6,7 +6,7 @@
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
             style="padding: 4px 15px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
+                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -28,7 +28,7 @@
             </div>
             <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <!-- Mobile only title here, Desktop will use the sticky internal header -->
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
+                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -164,7 +164,7 @@
             <!-- Desktop Centered Header Section -->
             <div class="hidden md:flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[60]">
                 <div class="px-[15px] pt-0">
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
@@ -278,7 +278,7 @@
                                     <!-- Global Main Title + Master Name (same row) -->
                                         <div class="flex-1 px-[15px] py-[8px] flex items-end justify-between pr-12">
                                             <div class="flex items-baseline flex-wrap gap-x-2">
-                                                <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 40px !important;">重大皇恩登記簿</h1>
+                                                <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
                                                 <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
                                             </div>
                                             <!-- Three dots menu in expanded view (Moved to title row) -->
