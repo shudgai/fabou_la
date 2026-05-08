@@ -37,14 +37,29 @@
                     <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
-                            <input v-model="form.user_name" type="text" list="user-list-mil" placeholder="輸入法號" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
-                            <datalist id="user-list-mil">
-                                <option v-for="u in users" :key="u.id" :value="u.name"></option>
-                            </datalist>
+                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm dharma-dropdown">
+                                <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
+                                    @focus="activeDharmaDropdown = true"
+                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
+                                <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
+                                    <svg class="w-5 h-5" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <input type="hidden" v-model="form.user_name">
+                                <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                    <div v-for="u in filteredDharmaNames" :key="u.id"
+                                        @click.stop="selectDharma(u.name)"
+                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        {{ u.name }}
+                                    </div>
+                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[15px] text-slate-400 text-center">
+                                        無符合的法號
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-1">
                             <label class="app-title ml-1">備註對象</label>
-                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm">
+                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm remarks-dropdown">
                                 <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
                                     @focus="activeRemarksDropdown = true"
                                     class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
@@ -167,7 +182,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
 
@@ -184,7 +199,46 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);
 const activeRemarksDropdown = ref(false);
+const activeDharmaDropdown = ref(false);
+const dharmaSearch = ref('');
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
+
+const filteredDharmaNames = computed(() => {
+    if (!dharmaSearch.value) return props.users || [];
+    const search = dharmaSearch.value.toLowerCase();
+    return (props.users || []).filter(u => u.name.toLowerCase().includes(search));
+});
+
+const selectDharma = (name) => {
+    form.value.user_name = name;
+    dharmaSearch.value = name;
+    activeDharmaDropdown.value = false;
+};
+
+// Watch form.user_name to sync with dharmaSearch
+watch(() => form.value.user_name, (newVal) => {
+    if (newVal && !dharmaSearch.value) {
+        dharmaSearch.value = newVal;
+    }
+}, { immediate: true });
+
+// Close dropdowns when clicking outside
+const handleClickOutside = (e) => {
+    if (activeDharmaDropdown.value && !e.target.closest('.dharma-dropdown')) {
+        activeDharmaDropdown.value = false;
+    }
+    if (activeRemarksDropdown.value && !e.target.closest('.remarks-dropdown')) {
+        activeRemarksDropdown.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
 
 
 const form = ref({ 

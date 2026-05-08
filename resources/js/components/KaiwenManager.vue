@@ -95,8 +95,7 @@
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[15px] tracking-tighter mb-0.5 date-text !text-[#0d0d0d] !font-black" style="font-family: 'Noto Sans TC', sans-serif !important;">{{ post.date || '無日期' }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest !text-[#1e293b] !font-normal" style="font-family: 'Montserrat', sans-serif !important;">{{ (post.title || '').replace(/\s+/g, '').substring(0, 7) }}</span>
-                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest !text-[#475569] !font-normal" style="font-family: 'Montserrat', sans-serif !important;">{{ (post.title || '').replace(/\s+/g, '').substring(7, 14) }}</span>
+                                <span v-if="!expandedIds[post.id]" class="app-body text-[17px] tracking-widest !text-[#1e293b] !font-normal" style="font-family: 'Montserrat', sans-serif !important; white-space: pre-line;">{{ (post.title || '').replace(/\s+/g, '').replace(/(.{7})/g, '$1\n') }}</span>
                             </div>
                             <div class="flex items-center space-x-2 self-start">
                                 <span v-if="post.status === '合格'" class="text-[14px] font-black tracking-wider text-emerald-600">合格</span>

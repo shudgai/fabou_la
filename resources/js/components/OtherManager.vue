@@ -7,7 +7,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
+                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -35,7 +35,7 @@
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 26px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                             </div>
@@ -54,9 +54,9 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
-                                抽順序
-                            </span>
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 26px !important;">
+                                 抽順序
+                             </span>
                         </div>
                     </div>
                 </button>
@@ -72,9 +72,9 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
-                                回合抽籤
-                            </span>
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 26px !important;">
+                                 回合抽籤
+                             </span>
                         </div>
                     </div>
                 </button> 

@@ -24,13 +24,13 @@
                     法寶登記專區
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button v-if="!reorderMode" @click="toggleSort" class="text-slate-600 font-black active:scale-95 px-1" style="font-size: 16px !important;">
+                    <button v-if="!reorderMode" @click="toggleSort" class="text-slate-600 font-black active:scale-95 px-0.5" style="font-size: 14px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                     <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                            class="font-black transition-all active:scale-95 whitespace-nowrap px-1"
+                            class="font-black transition-all active:scale-95 whitespace-nowrap px-0.5"
                             :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'"
-                            style="font-size: 16px !important;">
+                            style="font-size: 14px !important;">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
@@ -38,10 +38,10 @@
 
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-slate-50 flex items-baseline gap-x-2 py-[5px] overflow-hidden">
-                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 32px !important; font-weight: 400 !important; line-height: 1.1;">
+                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                     {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                 </span>
-                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 28px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
+                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
             </div>
         </div>
 
@@ -98,11 +98,11 @@
                             </svg>
                             
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-1 pointer-events-none">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
-                                     :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
-                                     style="font-size: 24px !important;">
-                                     {{ folder.name }}
-                                </div>
+                        <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
+                             :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
+                             style="font-size: 23px !important;">
+                             {{ folder.name }}
+                        </div>
                                 <div class="mt-1 flex items-center">
                                     <span class="font-normal !text-black" style="font-size: 17px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
@@ -134,14 +134,14 @@
                         <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 32px !important;">法寶登記專區</h1>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
-                            <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95" style="font-size: 16px !important;">
+                            <button v-if="!reorderMode" @click="toggleSort" class="px-1 py-0.5 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95" style="font-size: 14px !important;">
                                 {{ sortDesc ? '新→舊' : '舊→新' }}
                             </button>
                             <!-- Reorder Button -->
                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
                                     :class="reorderMode ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'"
-                                    class="px-2 py-1 font-black transition-all active:scale-95 whitespace-nowrap"
-                                    style="font-size: 16px !important;">
+                                    class="px-1 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap"
+                                    style="font-size: 14px !important;">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
                             <!-- Back/Close Button -->
@@ -152,10 +152,10 @@
                     </div>
                     <!-- Bottom Row: Dynamic Sub-title + Folder Name (same line, adjacent) -->
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
-                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important; font-weight: 400 !important;">
+                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
                             {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                         </span>
-                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 28px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>
+                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>
                     </div>
                 </div>
 
