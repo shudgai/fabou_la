@@ -309,7 +309,7 @@ onMounted(async () => {
 /* -------------------------------------------------------------------------- */
 /* 全域大字體系統 (Global Large Font System) - 全部專區套用 21px */
 /* -------------------------------------------------------------------------- */
-body.font-large :where(.app-body, .app-title, p, td, span:not(.date-text):not(.shield-text), div:not(.date-text):not(.shield-text), h3, label, [class*="text-\["]:not(.text-\[30px\]):not(.text-\[28px\]):not(.text-\[40px\])) {
+body.font-large :where(.app-body, .app-title, p, td, span:not(.date-text):not(.shield-text), div:not(.date-text):not(.shield-text), h3, label, [class*="text-\["]:not(.text-\[30px\]):not(.text-\[28px\]):not(.text-\[40px\]):not([class*="!text-"])) {
     font-size: 21px !important;
 }
 
