@@ -97,7 +97,7 @@
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-1 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
                                      :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
                                      style="font-size: 24px !important;">

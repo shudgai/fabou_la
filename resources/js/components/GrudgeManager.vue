@@ -114,20 +114,7 @@
                     >
                         <!-- List Item Detail (Simplified per user request) -->
                         <div class="animate-fade-in py-0 bg-white relative px-1.5">
-                            <!-- Three dots menu - far right, aligned with 法號 row -->
-                            <div class="absolute right-0 top-0 z-20" @click.stop>
-                                <button @click.stop="toggleMenu(item.id)" class="w-9 h-9 flex items-center justify-center text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <div v-if="openMenuId === item.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-y-3 pr-10 md:flex md:flex-wrap md:items-center md:gap-x-5">
+                            <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
                                 <!-- Date -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5">
                                     <label class="grudge-label">日期:</label>
@@ -137,6 +124,23 @@
                                 <div class="grudge-field flex flex-col">
                                     <label class="grudge-label">法號:</label>
                                     <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                </div>
+                                <!-- Three dots menu (right side of whole row, expanded only) -->
+                                <div v-if="focusedId === item.id" 
+                                     class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
+                                    <div class="relative">
+                                        <button @click.stop="toggleMenu(item.id)" class="flex items-center justify-center w-8 h-8 text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                        </button>
+                                        <!-- Dropdown Menu -->
+                                        <div v-if="openMenuId === item.id" @click.stop 
+                                             class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                            <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起詳情</button>
+                                            <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                            <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                            <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Quantity -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">

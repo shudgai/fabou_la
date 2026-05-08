@@ -135,7 +135,7 @@
                         </svg>
                         
                         <!-- Label & Pill Inside -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
                             <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
                                  :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
                                  style="font-size: 24px !important;">

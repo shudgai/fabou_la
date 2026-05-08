@@ -169,7 +169,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <!-- Label & Pill Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
                                      style="font-weight: 900 !important; font-size: 24px !important;">
@@ -1507,7 +1507,7 @@
                                                 <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span v-if="item.content?.trim()" class="text-slate-900">開示</span><span class="text-slate-900">給：{{ getRecipientName(item) }}</span>
                                             </div>
                                             <!-- Content/Item Summary in List Header -->
-                                            <div class="mt-[3px] text-[17px] font-normal text-slate-400 truncate leading-none">
+                                            <div class="mt-[3px] text-[17px] font-semibold text-slate-500 truncate leading-none">
                                                 <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
                                                 <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                             </div>
@@ -1593,7 +1593,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] font-normal text-slate-800 leading-relaxed whitespace-pre-wrap">{{ stripContentHeaders(item.content).trim() }}</div>
+                                                    <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{{ stripContentHeaders(item.content).trim() }}</div>
 
                                                     <div v-if="item.items?.length > 0" class="mt-2">
                                                         <label v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
@@ -1784,7 +1784,7 @@
                                 </div>
                             </div>
 
-                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[16px] text-slate-900 font-normal leading-relaxed whitespace-pre-wrap px-1">
+                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[16px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
                                 {{ stripContentHeaders(item.content).trim() }}
                             </div>
 
