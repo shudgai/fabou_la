@@ -209,6 +209,20 @@ const filteredDharmaNames = computed(() => {
     return (props.users || []).filter(u => u.name.toLowerCase().includes(search));
 });
 
+const form = ref({ 
+    ...props.initialData,
+    army_type: props.armyType || props.initialData.army_type,
+    yan_zun: props.initialData.yan_zun || 0,
+    yan_an: props.initialData.yan_an || 0,
+    long_sheng: props.initialData.long_sheng || 0,
+    long_zhan: props.initialData.long_zhan || 0,
+    quantity: props.initialData.quantity || 0
+});
+
+watch(() => props.initialData, (newVal) => {
+    form.value = { ...newVal, army_type: props.armyType || newVal.army_type };
+}, { deep: true });
+
 const selectDharma = (name) => {
     form.value.user_name = name;
     dharmaSearch.value = name;
@@ -240,20 +254,6 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 });
 
-
-const form = ref({ 
-    ...props.initialData,
-    army_type: props.armyType || props.initialData.army_type,
-    yan_zun: props.initialData.yan_zun || 0,
-    yan_an: props.initialData.yan_an || 0,
-    long_sheng: props.initialData.long_sheng || 0,
-    long_zhan: props.initialData.long_zhan || 0,
-    quantity: props.initialData.quantity || 0
-});
-
-watch(() => props.initialData, (newVal) => {
-    form.value = { ...newVal, army_type: props.armyType || newVal.army_type };
-}, { deep: true });
 
 const formatArmyTotal = (num) => {
     num = Number(num) || 0;

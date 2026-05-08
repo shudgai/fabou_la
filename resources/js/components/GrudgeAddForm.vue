@@ -276,6 +276,18 @@ const filteredDharmaNames = computed(() => {
     return (props.users || []).filter(u => u.name.toLowerCase().includes(search));
 });
 
+const form = ref({ 
+    ...props.initialData,
+    remarks: (props.initialData?.remarks && !Array.isArray(props.initialData.remarks)) ? props.initialData.remarks : {}
+});
+
+watch(() => props.initialData, (newVal) => {
+    form.value = { 
+        ...newVal,
+        remarks: (newVal?.remarks && !Array.isArray(newVal.remarks)) ? newVal.remarks : {}
+    };
+}, { deep: true });
+
 const selectDharma = (name) => {
     form.value.user_name = name;
     dharmaSearch.value = name;
@@ -306,18 +318,6 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 });
-
-const form = ref({ 
-    ...props.initialData,
-    remarks: (props.initialData?.remarks && !Array.isArray(props.initialData.remarks)) ? props.initialData.remarks : {}
-});
-
-watch(() => props.initialData, (newVal) => {
-    form.value = { 
-        ...newVal,
-        remarks: (newVal?.remarks && !Array.isArray(newVal.remarks)) ? newVal.remarks : {}
-    };
-}, { deep: true });
 
 // Auto-sum logic for "二人份" (split quantities)
 watch(() => form.value.remarks, (newRemarks) => {

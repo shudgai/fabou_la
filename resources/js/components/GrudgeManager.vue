@@ -24,13 +24,13 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[15px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                <h1 class="leading-tight font-outfit tracking-widest whitespace-nowrap !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
-                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 14px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleShowTotal" class="text-slate-900 active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button @click="toggleShowTotal" class="text-slate-900 font-black active:scale-95 transition-all" style="font-size: 14px !important;">
                     總數
                 </button>
                 <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
@@ -75,128 +75,138 @@
                 <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-slate-100 border-t-indigo-600"></div>
             </div>
             <div v-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
-            <div v-else class="flex flex-col flex-1 px-2 pt-0">
-                <!-- Drill-down: Date Groups List (Level 1) -->
-                <template v-if="!activeDateGroup && !focusedId">
-                    <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
-                        @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
-                        class="p-[10px] bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
-                        <div class="flex items-center">
-                            <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <div class="flex items-center">
-                                <span class="text-black text-[14px] font-normal drop-shadow-sm">{{ formatArmyTotal(group.total_qty) }}</span>
-                            </div>
-                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </div>
-                    </div>
-                </template>
+             <div v-else class="flex flex-col flex-1 px-2 pt-0">
+                 <!-- Drill-down: Date Groups List (Level 1) -->
+                 <template v-if="!activeDateGroup && !focusedId">
+                     <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
+                         @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
+                         class="p-[10px] bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
+                         <div class="flex items-center">
+                             <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
+                         </div>
+                         <div class="flex items-center space-x-2">
+                             <div class="flex items-center">
+                                 <span class="text-black text-[14px] font-normal drop-shadow-sm">{{ formatArmyTotal(group.total_qty) }}</span>
+                             </div>
+                             <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                         </div>
+                     </div>
+                 </template>
+                 <!-- Drill-down: Specific Date Records List (Level 2) with Virtual Scrolling -->
+                 <template v-else>
+                     <!-- Date Header Back Button -->
+                     <div v-if="activeDateGroup && focusedId === null" 
+                         @click.stop="activeDateGroup = null" 
+                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
+                         <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                         <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ activeDateGroup }}</span>
+                     </div>
 
-                <!-- Drill-down: Specific Date Records List (Level 2) -->
-                <template v-else>
-                    <!-- Date Header Back Button -->
-                    <div v-if="activeDateGroup && focusedId === null" 
-                        @click.stop="activeDateGroup = null" 
-                        class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
-                        <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ activeDateGroup }}</span>
-                    </div>
+                     <!-- Virtual Scroller for Records -->
+                     <div class="flex-1 overflow-hidden">
+                         <virtual-scroller 
+                             :items="sortedItems" 
+                             :item-size="120" 
+                             :key-field="'id'"
+                             class="w-full"
+                         >
+                             <template #default="{ item }">
+                                 <div v-show="focusedId === null || focusedId === item.id" 
+                                     @click.stop="toggleExpand(item.id)"
+                                     :class="[
+                                         'p-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                                     { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
+                                     { 'border-b-0': focusedId === item.id }
+                                 ]"
+                                 >
+                                     <!-- List Item Detail (Simplified per user request) -->
+                                     <div class="animate-fade-in py-0 bg-white relative px-1.5">
+                                         <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
+                                             <!-- Date -->
+                                             <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                                 <label class="grudge-label">日期:</label>
+                                                 <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
+                                             </div>
+                                             <!-- Dharma Name -->
+                                             <div class="grudge-field flex flex-col">
+                                                 <label class="grudge-label">法號:</label>
+                                                 <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                             </div>
+                                             <!-- Three dots menu (right side of whole row, expanded only) -->
+                                             <div v-if="focusedId === item.id" 
+                                                  class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
+                                                 <div class="relative">
+                                                     <button @click.stop="toggleMenu(item.id)" class="flex items-center justify-center w-8 h-8 text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                     </button>
+                                                     <!-- Dropdown Menu -->
+                                                     <div v-if="openMenuId === item.id" @click.stop 
+                                                          class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                         <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起詳情</button>
+                                                         <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                         <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                                         <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <!-- Quantity -->
+                                             <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">
+                                                 <label class="grudge-label">數量:</label>
+                                                 <div class="grudge-value whitespace-nowrap">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
+                                             </div>
+                                             <!-- Result -->
+                                             <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                                 <label class="grudge-label">結果:</label>
+                                                 <div class="grudge-value" :class="item.destination === '未處理' ? '!text-[#ef4444]' : '!text-[#0f172a]'">
+                                                     {{ item.destination || '已處理' }}
+                                                 </div>
+                                             </div>
+                                         </div>
 
-                    <div v-for="item in sortedItems" :key="item.id" 
-                        v-show="focusedId === null || focusedId === item.id"
-                        @click.stop="toggleExpand(item.id)"
-                        :class="[
-                            'p-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
-                            { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
-                            { 'border-b-0': focusedId === item.id }
-                        ]"
-                    >
-                        <!-- List Item Detail (Simplified per user request) -->
-                        <div class="animate-fade-in py-0 bg-white relative px-1.5">
-                            <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
-                                <!-- Date -->
-                                <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                    <label class="grudge-label">日期:</label>
-                                    <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
-                                </div>
-                                <!-- Dharma Name -->
-                                <div class="grudge-field flex flex-col">
-                                    <label class="grudge-label">法號:</label>
-                                    <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
-                                </div>
-                                <!-- Three dots menu (right side of whole row, expanded only) -->
-                                <div v-if="focusedId === item.id" 
-                                     class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
-                                    <div class="relative">
-                                        <button @click.stop="toggleMenu(item.id)" class="flex items-center justify-center w-8 h-8 text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
-                                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                        </button>
-                                        <!-- Dropdown Menu -->
-                                        <div v-if="openMenuId === item.id" @click.stop 
-                                             class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                            <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起詳情</button>
-                                            <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                            <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                            <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Quantity -->
-                                <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">
-                                    <label class="grudge-label">數量:</label>
-                                    <div class="grudge-value whitespace-nowrap">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
-                                </div>
-                                <!-- Result -->
-                                <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                    <label class="grudge-label">結果:</label>
-                                    <div class="grudge-value" :class="item.destination === '未處理' ? '!text-[#ef4444]' : '!text-[#0f172a]'">
-                                        {{ item.destination || '已處理' }}
-                                    </div>
-                                </div>
-                            </div>
+                                         <!-- Expanded Content (Show Everything when focused) -->
+                                         <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
 
-                            <!-- Expanded Content (Show Everything when focused) -->
-                            <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
+                                             <!-- Army Breakdown (if applicable) -->
+                                             <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
+                                                 <label class="app-title uppercase tracking-widest">軍隊細目</label>
+                                                 <div class="flex items-center space-x-6">
+                                                     <template v-if="item.destination === '黑曜軍'">
+                                                         <div class="flex items-center space-x-2">
+                                                             <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                                                             <span class="app-body font-bold text-[17px]">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
+                                                         </div>
+                                                         <div class="flex items-center space-x-2">
+                                                             <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                             <span class="app-body font-bold text-[17px]">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
+                                                         </div>
+                                                     </template>
+                                                     <template v-else-if="item.destination === '耀紫軍'">
+                                                         <div class="flex items-center space-x-2">
+                                                             <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                                                             <span class="app-body font-bold text-[17px]">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
+                                                         </div>
+                                                         <div class="flex items-center space-x-2">
+                                                             <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                                             <span class="app-body font-bold text-[17px]">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
+                                                         </div>
+                                                     </template>
+                                                 </div>
+                                             </div>
 
-                                <!-- Army Breakdown (if applicable) -->
-                                <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
-                                    <label class="app-title uppercase tracking-widest">軍隊細目</label>
-                                    <div class="flex items-center space-x-6">
-                                        <template v-if="item.destination === '黑曜軍'">
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-2 h-2 rounded-full bg-slate-900"></span>
-                                                <span class="app-body font-bold text-[17px]">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
-                                            </div>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                                                <span class="app-body font-bold text-[17px]">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
-                                            </div>
-                                        </template>
-                                        <template v-else-if="item.destination === '耀紫軍'">
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                                                <span class="app-body font-bold text-[17px]">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
-                                            </div>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                                <span class="app-body font-bold text-[17px]">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-
-                                <!-- Detailed Remarks / Remarks Text -->
-                                <div v-if="item.remarks_text" class="space-y-2">
-                                    <label class="app-title uppercase tracking-widest">詳細備註</label>
-                                    <div class="app-body font-medium leading-relaxed whitespace-pre-wrap text-[18px] bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
-                                        {{ item.remarks_text }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                                             <!-- Detailed Remarks / Remarks Text -->
+                                             <div v-if="item.remarks_text" class="space-y-2">
+                                                 <label class="app-title uppercase tracking-widest">詳細備註</label>
+                                                 <div class="app-body font-medium leading-relaxed whitespace-pre-wrap text-[18px] bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
+                                                     {{ item.remarks_text }}
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </template>
+                         </virtual-scroller>
+                     </div>
+                 </template>
                 
 
             </div>

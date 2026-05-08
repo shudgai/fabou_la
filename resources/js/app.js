@@ -1,11 +1,18 @@
 import './bootstrap';
 import { createApp, defineAsyncComponent } from 'vue';
 import Alpine from 'alpinejs';
+import { RecycleScroller, DynamicScroller } from 'vue-virtual-scroller';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 window.Alpine = Alpine;
 Alpine.start();
 
 const app = createApp({});
+// Register the components globally
+app.component('RecycleScroller', RecycleScroller);
+app.component('DynamicScroller', DynamicScroller);
+app.component('virtual-scroller', RecycleScroller); // Alias to match what was used in GrudgeManager
+
 
 const components = {
     'example-component': () => import('./components/ExampleComponent.vue'),

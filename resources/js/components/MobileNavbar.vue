@@ -58,10 +58,12 @@
                         <span class="!text-[13px] font-black text-slate-400">大</span>
                         <div class="relative w-8 h-24 flex items-center justify-center">
                             <span class="absolute left-[-16px] !text-[13px] font-black text-slate-400">中</span>
-                            <input type="range" min="0" max="2" step="1" 
-                                   :value="sliderValue"
-                                   @input="handleSliderInput"
-                                   class="vertical-slider w-8 h-24 bg-transparent cursor-pointer">
+                             <input type="range" min="0" max="2" step="1" 
+                                    :value="sliderValue"
+                                    @input="handleSliderInput"
+                                    @touchmove="handleSliderInput"
+                                    @touchend="handleSliderInput"
+                                    class="vertical-slider w-8 h-24 bg-transparent cursor-pointer">
                         </div>
                         <span class="!text-[13px] font-black text-slate-400">小</span>
                     </div>
