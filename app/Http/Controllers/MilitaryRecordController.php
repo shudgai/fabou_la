@@ -11,7 +11,20 @@ class MilitaryRecordController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        $permissions = $user->getPermissions();
+        $allowedArmies = $user->isAdmin() ? ['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'] : $permissions['allowed_armies'];
+
         $query = MilitaryRecord::where('user_id', $user->id);
+
+        if ($request->has('army_type')) {
+            $armyType = $request->army_type;
+            if (!in_array($armyType, $allowedArmies)) {
+                return response()->json(['error' => 'Unauthorized army type'], 403);
+            }
+            $query->where('army_type', $armyType);
+        } else {
+            $query->whereIn('army_type', $allowedArmies);
+        }
 
         if (!empty($request->search)) {
             $search = $request->search;
@@ -20,10 +33,6 @@ class MilitaryRecordController extends Controller
                   ->orWhere('user_remarks', 'like', "%{$search}%")
                   ->orWhere('remarks_text', 'like', "%{$search}%");
             });
-        }
-
-        if ($request->has('army_type')) {
-            $query->where('army_type', $request->army_type);
         }
 
         if ($request->has('know_date')) {
@@ -37,7 +46,7 @@ class MilitaryRecordController extends Controller
         $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
         // Single query: get per-army quantity sums AND column sums at once
-        $statsQuery = MilitaryRecord::where('user_id', $user->id);
+        $statsQuery = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies);
         if ($request->has('search') && !empty($request->search)) {
             $search = trim($request->search);
             $statsQuery->where(function($q) use ($search) {
@@ -77,7 +86,20 @@ class MilitaryRecordController extends Controller
     public function dateGroups(Request $request)
     {
         $user = auth()->user();
+        $permissions = $user->getPermissions();
+        $allowedArmies = $user->isAdmin() ? ['黑曜軍', '耀紫軍', '虎甲軍', '虎賁軍'] : $permissions['allowed_armies'];
+
         $query = MilitaryRecord::where('user_id', $user->id);
+
+        if ($request->has('army_type')) {
+            $armyType = $request->army_type;
+            if (!in_array($armyType, $allowedArmies)) {
+                return response()->json(['error' => 'Unauthorized army type'], 403);
+            }
+            $query->where('army_type', $armyType);
+        } else {
+            $query->whereIn('army_type', $allowedArmies);
+        }
 
         if (!empty($request->search)) {
             $search = $request->search;
@@ -88,17 +110,13 @@ class MilitaryRecordController extends Controller
             });
         }
 
-        if ($request->has('army_type')) {
-            $query->where('army_type', $request->army_type);
-        }
-
         $dates = $query->select('know_date', DB::raw('count(*) as count'), DB::raw('sum(quantity) as total_qty'))
             ->groupBy('know_date')
             ->orderByRaw('know_date IS NULL ASC, know_date DESC')
             ->paginate($request->input('per_page', 20));
 
         // Get per-army quantity sums for the root view
-        $rootStatsQuery = MilitaryRecord::where('user_id', $user->id);
+        $rootStatsQuery = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies);
         if (!empty($request->search)) {
             $search = $request->search;
             $rootStatsQuery->where(function($q) use ($search) {
