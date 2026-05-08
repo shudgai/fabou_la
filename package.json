@@ -16,6 +16,12 @@
         "vite": "^5.0.0",
         "vue": "^3.5.13"
     },
+    "browserslist": [
+        "iOS >= 13",
+        "Android >= 5",
+        "last 2 versions",
+        "not dead"
+    ],
     "dependencies": {
         "alpinejs": "^3.15.11"
     }

@@ -157,22 +157,17 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     }
 }
 
-/* C1: iOS Safari 100dvh fallback - browsers not supporting dvh get vh fallback */
-@supports not (height: 100dvh) {
+/* C1: iOS Safari 100dvh fallback - only apply -webkit-fill-available when 100dvh NOT supported */
+@supports (-webkit-touch-callout: none) and (not (height: 100dvh)) {
     .h-\[100dvh\] {
-        height: 100vh !important;
-    }
-}
-/* iOS Safari: use -webkit-fill-available for proper mobile viewport */
-@supports (-webkit-touch-callout: none) {
-    .h-\[100dvh\] {
-        min-height: -webkit-fill-available;
+        height: -webkit-fill-available !important;
     }
 }
 
 /* 全局 overscroll 防止彈性滾動 */
 html, body {
     overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
 }
 
 /* iOS 安全區域適配 (Safe Area Insets) */

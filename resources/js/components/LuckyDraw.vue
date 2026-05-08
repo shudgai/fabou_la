@@ -284,7 +284,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import { writeClipboard } from '../utils/iosCompat';
+import { writeClipboard, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
     show: Boolean,
@@ -588,6 +588,11 @@ const handleTouchMove = (e) => {
         }
     }
 };
+
+watch(persistentToast, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
 
 onMounted(loadUsers);
 </script>

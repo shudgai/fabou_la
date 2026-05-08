@@ -454,6 +454,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const users = ref([]);
 const selectedNames = ref([]);   // Step 2 uses this
@@ -928,6 +929,11 @@ const resetAll = () => {
     currentStep.value = 1;
     includeGuardians.value = false;
 };
+
+watch(persistentToast, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
 
 onMounted(loadUsers);
 

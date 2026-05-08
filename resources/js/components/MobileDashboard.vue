@@ -72,10 +72,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 import LogoImperialNotebook from './LogoImperialNotebook.vue';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const persistentToast = ref(null);
 
@@ -126,6 +127,11 @@ onMounted(() => {
 const handleLogout = () => {
     persistentToast.value = { msg: '確定要登出系統嗎？' };
 };
+
+watch(persistentToast, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+});
 
 const executeLogout = async () => {
     try {

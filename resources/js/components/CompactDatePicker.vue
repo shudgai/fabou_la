@@ -60,7 +60,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+
+onMounted(() => lockBodyScroll());
+onUnmounted(() => unlockBodyScroll());
 
 const props = defineProps({
     modelValue: String,
