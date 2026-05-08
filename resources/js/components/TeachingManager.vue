@@ -172,7 +172,7 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                     style="font-weight: 900 !important; font-size: 26px !important;">
+                                     style="font-weight: 900 !important; font-size: 40px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
                                 <div class="mt-1">

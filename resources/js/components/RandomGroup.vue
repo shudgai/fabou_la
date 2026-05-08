@@ -13,7 +13,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="flex flex-col">
-                            <span class="shrink-0 leading-tight" style="font-size: 20px !important; color: #0f172a !important;">
+                            <span class="shrink-0 leading-tight font-black" style="font-size: 28px !important; color: #0f172a !important;">
                                 {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                             </span>
                             <span v-if="!selectionFiltered" class="text-[12px] text-slate-400 -mt-0.5">
@@ -26,7 +26,7 @@
                             <button @click="addManualName" class="text-blue-500 font-black text-xl ml-1">+</button>
                         </div>
                     </div>
-                    <span class="text-[15px] font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8' }">已選 {{ pendingNames.length }} 人</span>
+                    <span class="font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8', fontSize: '16px !important' }">已選 {{ pendingNames.length }} 人</span>
                 </div>
 
                 <!-- Grid evenly distributed, stretching boxes -->
@@ -39,8 +39,11 @@
                         @touchstart.passive="handleTouchStart($event, user.name)"
                         @touchmove.passive="handleTouchMove($event)"
                         @touchend.passive="stopDrag"
-                        class="dharma-btn flex items-center justify-center font-black text-[17px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
-                        :style="getPendingStyle(user.name)"
+                        class="dharma-btn flex items-center justify-center font-black transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                        :style="{ 
+                            ...getPendingStyle(user.name),
+                            fontSize: '16px !important'
+                        }"
                         :data-name="user.name"
                     >
                         <span class="truncate leading-none pointer-events-none relative">
@@ -59,12 +62,13 @@
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
-                    class="w-full py-[15px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
+                    class="w-full py-[15px] rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
                     :style="{
                         background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
                         color: '#ffffff !important',
                         textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        fontSize: '16px !important'
                     }"
                 >
                     <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
@@ -86,8 +90,8 @@
                 </button>
                 <div class="flex items-center space-x-2">
                     <div class="flex items-center space-x-1 text-slate-400">
-                        <span class="text-[15px] font-bold">總計</span>
-                        <span class="text-[17px] font-black text-indigo-600">{{ selectedNames.length }}</span>
+                        <span class="font-bold" style="font-size: 16px !important;">總計</span>
+                        <span class="font-black text-indigo-600" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
                     </div>
                 </div>
             </div>
@@ -98,8 +102,8 @@
                 <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
                 <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
                     <div class="flex items-center justify-between px-0.5">
-                        <label class="text-[15px] font-black uppercase tracking-wider text-amber-600">🌟 指定關主</label>
-                        <span class="text-[15px] font-black text-amber-400 uppercase tracking-widest">⚠️ 全場抽選</span>
+                        <label class="font-black uppercase tracking-wider text-amber-600" style="font-size: 16px !important;">🌟 指定關主</label>
+                        <span class="font-black text-amber-400 uppercase tracking-widest" style="font-size: 16px !important;">⚠️ 全場抽選</span>
                     </div>
                     
                     <div class="flex items-start space-x-2">
@@ -139,14 +143,15 @@
                         <div class="flex-1 flex flex-col space-y-1 pt-0.5">
                             <div class="flex items-center space-x-1">
                                 <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-none w-36">
-                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-300 font-black text-[18px] shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">−</button>
+                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
                                     <input 
                                         type="number" 
                                         v-model.number="pickSize" 
                                         @blur="pickSize = Math.max(1, Math.min(selectedNames.length, pickSize || 1))"
-                                        class="flex-1 text-[16px] font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
+                                        class="flex-1 font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
+                                        style="font-size: 24px !important;"
                                     >
-                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-300 font-black text-[18px] shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">＋</button>
+                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
                                 </div>
                                 <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
                                     class="py-[10px] px-3 font-black text-[13px] rounded-lg bg-amber-200 text-white shadow-sm active:scale-95 disabled:opacity-30 whitespace-nowrap"
@@ -166,7 +171,7 @@
                     
                     <!-- 2A. SEED SELECTION (ROLE ASSIGNMENT) -->
                     <div class="space-y-1.5 pb-1">
-                        <label class="text-[17px] font-bold text-slate-400 uppercase tracking-wider px-1">🌟 指定種子組 (優先扣除)</label>
+                        <label class="font-bold text-slate-400 uppercase tracking-wider px-1" style="font-size: 16px !important;">🌟 指定種子組 (優先扣除)</label>
                         <div class="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-slate-100 rounded-xl min-h-[44px]">
                             <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-amber-50 text-amber-900 text-[16px] font-black px-3 py-1 rounded-lg border border-amber-100">
                                 <span>{{ name }}</span>
@@ -199,7 +204,7 @@
                                 <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full shrink-0', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '包含關主模式' : '排除關主模式' }}</span>
                             </div>
                             <div class="space-y-1 px-0.5">
-                                <div class="flex items-center justify-between text-[16px] font-black"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
+                                <div class="flex items-center justify-between font-black" style="font-size: 16px !important;"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
                                 
                                 <!-- Detailed Deduction Rows -->
                                 <div class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
@@ -234,16 +239,17 @@
                         <div class="space-y-1.5">
                             <label class="text-[17px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
                             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-14 bg-slate-50/50">
-                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-300 font-black text-[20px] transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">−</button>
+                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
                                 <div class="flex-1 flex flex-col items-center justify-center">
                                     <input 
                                         type="number" 
                                         v-model.number="groupSize" 
                                         @blur="groupSize = Math.max(2, Math.min(selectedNames.length, groupSize || 2))"
-                                        class="text-[20px] font-black text-slate-800 leading-none bg-transparent outline-none text-center w-full"
+                                        class="font-black text-slate-800 leading-none bg-transparent outline-none text-center w-full"
+                                        style="font-size: 24px !important;"
                                     >
                                 </div>
-                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-300 font-black text-[20px] transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">＋</button>
+                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
                             </div>
                         </div>
                     </div>
@@ -297,8 +303,8 @@
                     <button
                         @click="doGrouping"
                         :disabled="selectedNames.length < 1 || isDrawing"
-                        class="w-full py-[12px] rounded-2xl font-black text-[17px] transition-all active:scale-[0.98] shadow-sm"
-                        style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);"
+                        class="w-full py-[12px] rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
+                        style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;"
                     >
                         <span style="color: #ffffff !important;">開始分組演算</span>
                     </button>
@@ -374,11 +380,11 @@
                 <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h2 class="flex-1 whitespace-nowrap" style="color: #0f172a !important; font-size: 24px !important;">分組結果</h2>
+                <h2 class="flex-1 whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 28px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
-                    <button @click="handleNextRound" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-indigo-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">下一輪</button>
-                    <button @click="redrawAll" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">重抽</button>
-                    <button @click="copyResult" class="w-[72px] h-[36px] flex items-center justify-center text-[14px] font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">複製</button>
+                    <button @click="handleNextRound" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-indigo-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">下一輪</button>
+                    <button @click="redrawAll" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">重抽</button>
+                    <button @click="copyResult" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">複製</button>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-24">
@@ -399,7 +405,7 @@
                             <span :class="['text-[12px] font-bold', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.members.length }} 人</span>
                         </div>
                         <div class="flex flex-wrap gap-x-4 gap-y-1">
-                            <span v-for="member in group.members" :key="member" :class="['text-[17px] font-black', group.isSeed ? 'text-amber-900' : 'text-black']">{{ member }}</span>
+                            <span v-for="member in group.members" :key="member" :class="['font-black', group.isSeed ? 'text-amber-900' : 'text-black']" style="font-size: 16px !important;">{{ member }}</span>
                         </div>
                     </div>
                 </div>

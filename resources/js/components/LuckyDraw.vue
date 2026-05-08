@@ -14,7 +14,7 @@
                                     抽籤專區
                                 </div>
                                 <div class="flex items-center ml-3 min-w-0">
-                                    <span class="text-slate-500 truncate" style="font-size: 25px !important; font-weight: 400 !important;">
+                                    <span class="text-slate-500 truncate" style="font-size: 28px !important; font-weight: 400 !important;">
                                         {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
                                     </span>
                                 </div>
@@ -140,10 +140,10 @@
                     <div class="flex items-center justify-between">
                         <span class="text-[19px] font-black text-slate-800">抽取人數</span>
                         <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
-                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-12 flex items-center justify-center bg-slate-200 text-slate-600 font-black text-[24px]">-</button>
-                            <input v-model.number="drawCount" class="w-16 h-12 text-center font-black text-[24px] bg-transparent outline-none">
+                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-12 flex items-center justify-center bg-slate-200 text-slate-600 font-black" style="font-size: 24px !important;">-</button>
+                            <input v-model.number="drawCount" class="w-16 h-12 text-center font-black bg-transparent outline-none" style="font-size: 24px !important;">
                             <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" 
-                                    class="w-12 h-12 flex items-center justify-center bg-slate-500 text-white font-black text-[24px]">+</button>
+                                    class="w-12 h-12 flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
                         </div>
                     </div>
                     <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 

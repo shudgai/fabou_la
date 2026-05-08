@@ -32,7 +32,7 @@
                 </h1>
             </div>
             <div class="absolute right-2 bottom-2">
-                <button @click="sortDesc = !sortDesc" class="px-2 py-1 !text-[13px] text-indigo-600 active:scale-95 transition-all">
+                <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>
@@ -47,7 +47,7 @@
                 <h2 class="truncate tracking-tight font-outfit font-normal" style="font-size: 28px !important; color: #0f172a !important; font-weight: 400 !important;">
                     {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
                 </h2>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 !text-[13px] text-indigo-600 active:scale-95 transition-all">
+                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
             </div>

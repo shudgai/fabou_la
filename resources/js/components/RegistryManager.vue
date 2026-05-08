@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module overflow-clip">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
@@ -24,12 +24,13 @@
                     法寶登記專區
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button v-if="!reorderMode" @click="toggleSort" class="!text-[16px] text-slate-600 font-black active:scale-95 px-1">
+                    <button v-if="!reorderMode" @click="toggleSort" class="text-slate-600 font-black active:scale-95 px-1" style="font-size: 16px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                     <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                            class="!text-[16px] font-black transition-all active:scale-95 whitespace-nowrap px-1"
-                            :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'">
+                            class="font-black transition-all active:scale-95 whitespace-nowrap px-1"
+                            :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'"
+                            style="font-size: 16px !important;">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
@@ -70,9 +71,9 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c] !text-[40px]">重大皇恩<br>登記簿</div>
+                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c]" style="font-size: 40px !important;">重大皇恩<br>登記簿</div>
                                 <div class="mt-4 flex items-center">
-                                    <span class="text-black text-[17px] font-black tracking-tight drop-shadow-sm">{{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="text-black font-black tracking-tight drop-shadow-sm" style="font-size: 17px !important;">{{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -97,12 +98,13 @@
                             </svg>
                             
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !text-[26px] !font-black"
-                                     :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'">
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
+                                     :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
+                                     style="font-size: 40px !important;">
                                      {{ folder.name }}
                                 </div>
                                 <div class="mt-1 flex items-center">
-                                    <span class="text-[17px] font-normal !text-black">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                    <span class="font-normal !text-black" style="font-size: 17px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -129,16 +131,17 @@
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Main Title + All Action Buttons -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
-                        <h1 class="uppercase tracking-widest font-outfit !text-[32px] !font-black !text-[#dc2626]">法寶登記專區</h1>
+                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 32px !important;">法寶登記專區</h1>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
-                            <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95 !text-[16px]">
+                            <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95" style="font-size: 16px !important;">
                                 {{ sortDesc ? '新→舊' : '舊→新' }}
                             </button>
                             <!-- Reorder Button -->
                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
                                     :class="reorderMode ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'"
-                                    class="px-2 py-1 font-black transition-all active:scale-95 whitespace-nowrap !text-[16px]">
+                                    class="px-2 py-1 font-black transition-all active:scale-95 whitespace-nowrap"
+                                    style="font-size: 16px !important;">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
                             <!-- Back/Close Button -->

@@ -54,7 +54,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
                                 抽順序
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 32px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
                                 回合抽籤
                             </span>
                         </div>

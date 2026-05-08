@@ -27,10 +27,10 @@
                 <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 32px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
-                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 !text-[15px] text-indigo-600 active:scale-95 transition-all">
+                <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
-                <button @click="toggleShowTotal" class="!text-[16px] text-slate-900 active:scale-95 transition-all">
+                <button @click="toggleShowTotal" class="text-slate-900 active:scale-95 transition-all" style="font-size: 16px !important;">
                     總數
                 </button>
                 <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">

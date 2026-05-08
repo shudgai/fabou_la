@@ -17,7 +17,7 @@
         <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
             <div class="flex-1 flex flex-col justify-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="flex-1 flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
-                    <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] !text-[32px] pt-[5px]">
+                    <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="font-size: 32px !important;">
                         開文專區
                     </h1>
                 </div>
@@ -37,12 +37,14 @@
             <div v-if="!showSearch" class="absolute right-[10px] top-[55%] -translate-y-1/2 flex space-x-3 animate-fade-in">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-4 py-1.5 app-body !text-[16px] font-black rounded-xl transition-all whitespace-nowrap flex items-center relative">
+                    class="px-4 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
+                    style="font-size: 16px !important;">
                     <span :class="currentTab === 'weekly' ? '!text-white' : ''">每週開文</span>
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-4 py-1.5 app-body !text-[16px] font-black rounded-xl transition-all whitespace-nowrap flex items-center relative">
+                    class="px-4 py-1.5 app-body font-black rounded-xl transition-all whitespace-nowrap flex items-center relative"
+                    style="font-size: 16px !important;">
                     <span :class="currentTab === 'self' ? '!text-white' : ''">自行開文</span>
                 </button>
             </div>
