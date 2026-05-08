@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module overflow-clip">
+    <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module overflow-visible">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
@@ -82,14 +82,14 @@
 
                 <!-- Masters Grid -->
                 <div v-else class="grid grid-cols-2 gap-[10px] p-2 place-items-center max-w-xl mx-auto">
-                    <button v-for="folder in folders" :key="folder.id" 
-                        @click="currentFolder = folder"
-                        :class="[
-                            'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative bg-white shadow-sm'
-                        ]">
+<button v-for="folder in folders" :key="folder.id" 
+                         @click="currentFolder = folder"
+                         :class="[
+                             'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[220px] h-[220px] relative bg-white shadow-sm'
+                         ]">
                         
-                        <div class="relative w-[163px] h-[163px]">
-                             <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-sm" viewBox="0 0 64 64" fill="none">
+<div class="relative w-[180px] h-[180px]">
+                              <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-sm" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     fill="url(#rm-gold-grad-global)" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
