@@ -259,7 +259,7 @@ const props = defineProps({
     initialData: Object,
     editingId: [Number, String],
     users: Array
-);
+});
 
 const emit = defineEmits(['save', 'cancel']);
 const activeDate = ref(null);

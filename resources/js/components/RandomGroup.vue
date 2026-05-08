@@ -4,8 +4,8 @@
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
 
-            <!-- Main scrollable selection grid -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar pb-40">
+<!-- Main scrollable selection grid -->
+             <div class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5 md:pt-[60px]">
                     <div class="flex items-center space-x-2 flex-1 mr-4">
@@ -39,7 +39,7 @@
                         @touchstart.passive="handleTouchStart($event, user.name)"
                         @touchmove.passive="handleTouchMove($event)"
                         @touchend.passive="stopDrag"
-                        class="dharma-btn flex items-center justify-center font-black transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                        class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                         :style="{ 
                             ...getPendingStyle(user.name),
                             fontSize: '16px !important'
@@ -57,24 +57,24 @@
                 </div>
             </div>
 
-            <!-- Confirm button — FIXED above mobile nav -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
-                <button
-                    @click="confirmSelection"
-                    :disabled="pendingNames.length === 0"
-                    class="w-full py-[15px] rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
-                    :style="{
-                        background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
-                        color: '#ffffff !important',
-                        textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                        fontSize: '16px !important'
-                    }"
-                >
-                    <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
-                    <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
-                </button>
-            </div>
+<!-- Confirm button — FIXED above mobile nav -->
+             <div class="fixed bottom-[60px] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+                 <button
+                     @click="confirmSelection"
+                     :disabled="pendingNames.length === 0"
+                     class="w-full py-[5px] rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
+                     :style="{
+                         background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
+                         color: '#ffffff !important',
+                         textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                         boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                         fontSize: '16px !important'
+                     }"
+                 >
+                     <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
+                     <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
+                 </button>
+             </div>
         </div>
 
 
@@ -297,19 +297,19 @@
                 </div>
             </div>
             
-            <!-- Fixed Bottom Action Area aligned with desktop container -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
-                <div class="w-full">
-                    <button
-                        @click="doGrouping"
-                        :disabled="selectedNames.length < 1 || isDrawing"
-                        class="w-full py-[12px] rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
-                        style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;"
-                    >
-                        <span style="color: #ffffff !important;">開始分組演算</span>
-                    </button>
-                </div>
-            </div>
+<!-- Fixed Bottom Action Area aligned with desktop container -->
+             <div class="fixed bottom-[60px] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+                 <div class="w-full">
+                     <button
+                         @click="doGrouping"
+                         :disabled="selectedNames.length < 1 || isDrawing"
+                         class="w-full py-[5px] rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
+                         style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;"
+                     >
+                         <span style="color: #ffffff !important;">開始分組演算</span>
+                     </button>
+                 </div>
+             </div>
             </div>
         </div>
 

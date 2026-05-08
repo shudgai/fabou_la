@@ -14,19 +14,19 @@
                                      抽籤專區
                                  </div>
                                 <div class="flex items-center ml-3 min-w-0">
-                                    <span class="text-slate-500 truncate" style="font-size: 26px !important; font-weight: 400 !important;">
-                                         {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
-                                     </span>
+<span class="text-slate-500 truncate" style="font-size: 23px !important; font-weight: 400 !important;">
+                                          {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
+                                      </span>
                                 </div>
                             </div>
 
                             <!-- Right Side Functional Controls -->
                             <div class="flex items-center ml-2 shrink-0 space-x-2">
-                                <button @click="invertSelection()" 
-                                     class="px-[6px] py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border-none whitespace-nowrap"
-                                     style="font-size: 16px !important;">
-                                     反選
-                                 </button>
+<button @click="invertSelection()" 
+                                      class="px-[6px] py-[10px] bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border-none whitespace-nowrap"
+                                      style="font-size: 16px !important;">
+                                      反選
+                                  </button>
                                 <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
                                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                  </button>
@@ -38,8 +38,8 @@
                 <!-- Main Scrollable Content -->
                 <div class="flex-1 overflow-y-auto custom-scrollbar pb-64 animate-fade-in w-full">
                     <div class="p-4 space-y-6">
-                        <div class="flex items-center flex-wrap gap-2 mb-2">
-                            <label class="text-[18px] font-black text-slate-800 shrink-0">滑動游標選取人員</label>
+<div class="flex items-center flex-wrap gap-2 mb-2">
+                             <label class="text-[18px] font-black text-slate-800 shrink-0">滑動游標選取人員</label>
                             <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 border border-slate-100">
                                 <span class="text-[11px] font-bold text-slate-300 whitespace-nowrap shrink-0 mr-1">手動:</span>
                                 <input v-model="manualName" @keyup.enter="addManualName" class="w-16 bg-transparent border-none text-[12px] font-bold h-6 outline-none">
@@ -59,7 +59,7 @@
                                 @touchstart="handleTouchStart($event, user.name)"
                                 @touchend="stopDrag"
                                 :data-name="user.name"
-                                class="dharma-btn h-14 flex items-center justify-center rounded-xl border-2 font-black text-[17px] transition-all relative"
+                                class="dharma-btn h-[45px] flex items-center justify-center rounded-xl border-2 font-normal text-[17px] transition-all relative"
                                 :style="getPendingStyle(user.name)">
                                 <span class="pointer-events-none flex items-center">
                                     <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✔</span>
@@ -74,16 +74,13 @@
                 </div>
 
                 <!-- Bottom Button Area -->
-                <div class="px-4 pb-[85px] pt-2 border-t border-slate-50 bg-white/95 backdrop-blur-sm shrink-0">
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-50 z-[200] w-full" style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                     <div class="w-full space-y-2">
                         <button @click="confirmSelection" 
                                 :disabled="pendingNames.length === 0" 
-                                class="w-full py-4 rounded-2xl font-black text-[17px] shadow-lg active:scale-95 disabled:opacity-50 transition-all bg-blue-600 text-white"
+                                class="w-full py-[10px] rounded-2xl font-black text-[17px] shadow-lg active:scale-95 disabled:opacity-50 transition-all bg-blue-600 text-white"
                                 style="color: white !important;">
                             確定名單 (共 {{ pendingNames.length }} 人) → 下一步
-                        </button>
-                        <button @click="emit('close')" class="w-full py-2 text-slate-400 font-bold text-[13px] flex items-center justify-center">
-                            返回上一步
                         </button>
                     </div>
                 </div>
@@ -115,8 +112,8 @@
                             <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
                         </div>
                         <div class="flex gap-2">
-                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-1.5 bg-indigo-50 text-white rounded-lg font-black text-[15px]">全選</button>
-                            <button @click="roundParticipants = []" class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-lg font-black text-[15px]">清空</button>
+<button @click="roundParticipants = [...selectedNames]" class="px-4 py-[10px] bg-indigo-50 text-white rounded-lg font-black text-[15px]">全選</button>
+                             <button @click="roundParticipants = []" class="px-4 py-[10px] bg-slate-100 text-slate-400 rounded-lg font-black text-[15px]">清空</button>
                         </div>
                         <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
                             <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
@@ -136,20 +133,20 @@
                     </div>
                 </div>
 
-                <div class="px-4 pb-[60px] pt-4 border-t border-slate-100 space-y-4 bg-white/95 backdrop-blur-sm shrink-0">
+<div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 space-y-4 z-[200] w-full" style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                     <div class="flex items-center justify-between">
                         <span class="text-[19px] font-black text-slate-800">抽取人數</span>
                         <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
-                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-12 flex items-center justify-center bg-slate-200 text-slate-600 font-black" style="font-size: 24px !important;">-</button>
-                            <input v-model.number="drawCount" class="w-16 h-12 text-center font-black bg-transparent outline-none" style="font-size: 24px !important;">
-                            <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" 
-                                    class="w-12 h-12 flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
+                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-[44px] flex items-center justify-center bg-slate-200 text-slate-600 font-black" style="font-size: 24px !important;">-</button>
+                             <input v-model.number="drawCount" class="w-16 h-[44px] text-center font-black bg-transparent outline-none" style="font-size: 24px !important;">
+                             <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" 
+                                     class="w-12 h-[44px] flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
                         </div>
                     </div>
                     <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
-                            class="w-full py-4 rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
-                            :class="lotteryMode ? 'bg-emerald-100 text-white' : 'bg-indigo-600 text-white'"
-                            :style="lotteryMode ? 'color: white !important;' : 'color: white !important;'">
+                             class="w-full py-[10px] rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
+                             :class="lotteryMode ? 'bg-emerald-100 text-white' : 'bg-indigo-600 text-white'"
+                             :style="lotteryMode ? 'color: white !important;' : 'color: white !important;'">
                         {{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}
                     </button>
                 </div>
@@ -231,13 +228,13 @@
                     </div>
                 </div>
 
-                <!-- Bottom Button Area (Fixed above navigation) -->
-                <div class="px-4 pb-[60px] pt-2 border-t border-slate-50 bg-white/95 backdrop-blur-sm shrink-0">
+<!-- Bottom Button Area (Fixed above navigation) -->
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-50 z-[200] w-full" style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                     <div class="flex gap-2">
-                        <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
-                        <button @click="results = []; currentStep = 2" class="flex-1 py-3 bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
-                        <button @click="copyResults" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
-                        <button @click="saveResults" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
+                        <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
+                         <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
+                         <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
+                         <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
                     </div>
                 </div>
             </div>

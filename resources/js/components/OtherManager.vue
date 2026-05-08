@@ -32,10 +32,10 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none">
-                            <div :class="[
-                                'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
-                                folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 26px !important;">{{ folder.name }}</div>
+<div :class="[
+                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
+                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                             ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                             </div>
@@ -54,9 +54,9 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 26px !important;">
-                                 抽順序
-                             </span>
+<span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                                  抽順序
+                              </span>
                         </div>
                     </div>
                 </button>
@@ -72,9 +72,9 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 26px !important;">
-                                 回合抽籤
-                             </span>
+<span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                                  回合抽籤
+                              </span>
                         </div>
                     </div>
                 </button> 
@@ -102,31 +102,31 @@
                     <!-- Consolidated Title Row -->
                     <div class="flex items-center flex-1 min-w-0">
                         <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
-                                抽籤專區
-                            </h1>
+<h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+                                 抽籤專區
+                             </h1>
                         </div>
-                        <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 28px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
+                        <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
                     </div>
 
                     <!-- Right Side Functional Controls -->
                     <div v-if="activeFolder" class="flex items-center ml-2 shrink-0 space-x-2">
                         <!-- Trash Icon (Clear/Reset) moved to the far right -->
-                        <template v-if="activeFolder.name.includes('隨機分組')">
-                            <!-- Invert Selection Button for Random Group -->
-                            <button @click="randomGroupRef?.invertSelection()" 
-                                class="px-[6px] py-1 bg-indigo-50 text-white rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
-                                style="font-size: 16px !important;">
-                                反選
-                            </button>
-                            <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 bg-red-50 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+<template v-if="activeFolder.name.includes('隨機分組')">
+                             <!-- Invert Selection Button for Random Group -->
+                             <button @click="randomGroupRef?.invertSelection()" 
+                                 class="px-[6px] py-[5px] bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border-none whitespace-nowrap"
+                                 style="font-size: 16px !important;">
+                                 反選
+                             </button>
+                             <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                             </button>
                         </template>
                         <template v-else-if="activeFolder.name.includes('開文核定')">
-                            <button @click="kaiwenRef?.clearAll()" class="w-10 h-10 bg-red-50 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+<button @click="kaiwenRef?.clearAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                             </button>
                         </template>
                     </div>
                 </div>
