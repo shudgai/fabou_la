@@ -3,10 +3,10 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
-            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 15px; min-height: 52px;">
+            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
+            style="padding: 4px 15px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -14,8 +14,8 @@
 
         <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
         <div v-if="currentFolder || addMode" 
-            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 15px; min-height: 52px;">
+            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
+            style="padding: 4px 15px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -28,7 +28,7 @@
             </div>
             <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <!-- Mobile only title here, Desktop will use the sticky internal header -->
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -82,7 +82,7 @@
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-white flex flex-col items-center">
-            <div class="flex-1 flex flex-col items-center justify-center pb-20 w-full max-w-lg mx-auto">
+            <div class="flex-1 flex flex-col items-center justify-center md:justify-start md:pt-4 pb-20 w-full max-w-lg mx-auto">
                 <button 
                     @click="currentCategory = 'masters'"
                     class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-0 w-[310px] h-[310px] relative transition-all">
@@ -163,12 +163,12 @@
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white w-full md:max-w-xl md:mx-auto">
             <!-- Desktop Centered Header Section -->
             <div class="hidden md:flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[60]">
-                <div class="px-[15px] pt-1">
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                <div class="px-[15px] pt-0">
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 40px !important; padding-top: 0px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
-                <div class="flex items-end justify-between w-full px-[15px] pt-0 pb-[8px]">
+                <div class="flex items-end justify-between w-full px-[15px] pt-0 pb-[4px]">
                     <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0 ml-4">
                         <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
@@ -278,7 +278,7 @@
                                     <!-- Global Main Title + Master Name (same row) -->
                                         <div class="flex-1 px-[15px] py-[8px] flex items-end justify-between pr-12">
                                             <div class="flex items-baseline flex-wrap gap-x-2">
-                                                <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important;">重大皇恩登記簿</h1>
+                                                <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 40px !important;">重大皇恩登記簿</h1>
                                                 <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
                                             </div>
                                             <!-- Three dots menu in expanded view (Moved to title row) -->
