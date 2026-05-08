@@ -124,7 +124,7 @@
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
                                 </div>
-                                <button @click="removePersonnelRow(idx)" class="w-7 h-7 flex items-center justify-center bg-rose-50 text-rose-500 rounded-full active:scale-90 transition-all">✕</button>
+                                <button @click="removePersonnelRow(idx)" class="w-7 h-7 flex items-center justify-center bg-rose-50 text-white rounded-full active:scale-90 transition-all">✕</button>
                             </div>
                             
                             <!-- Fields -->

@@ -49,29 +49,7 @@
                         ]">{{ record.title || '文件記錄' }}</h3>
                     </div>
 
-                    <!-- More Menu -->
-                    <div class="relative shrink-0 ml-2">
-                        <button @click.stop="activeDropdownId = activeDropdownId === record.id ? null : record.id" class="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-indigo-500 active:scale-90 transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                        </button>
-                        
-                        <div v-if="activeDropdownId === record.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 z-[100] overflow-hidden p-1.5 animate-fade-in">
-                            <div class="flex flex-col space-y-1">
-                                <button @click.stop="handleMenuEdit(record); activeDropdownId = null" class="w-full px-4 py-3 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                    <span class="text-[17px] font-black text-slate-900">修改</span>
-                                </button>
-                                <button @click.stop="copyAsTextFile(record); activeDropdownId = null" class="w-full px-4 py-3 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                    <span class="text-[17px] font-black text-slate-900">複製貼 LINE</span>
-                                </button>
-                                <button @click.stop="downloadFile(record); activeDropdownId = null" class="w-full px-4 py-3 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                    <span class="text-[17px] font-black text-slate-900">下載檔案</span>
-                                </button>
-                                <button @click.stop="deleteRecord(record.id); activeDropdownId = null" class="w-full px-4 py-3 text-left flex items-center hover:bg-rose-50 rounded-2xl transition-all text-rose-500">
-                                    <span class="text-[17px] font-black">刪除</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 <!-- Expandable Content -->

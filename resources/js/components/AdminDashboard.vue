@@ -152,7 +152,7 @@ const notebookItems = computed(() => {
         { id: 'military', label: '軍隊記錄專區' },
         { id: 'treasure', label: '法寶登記專區' },
         { id: 'other_teaching', label: '其他記錄專區' },
-        { id: 'other', label: '其他專區' },
+        { id: 'other', label: '抽籤專區' },
         { id: 'trash', label: '回收桶' },
     ];
 

@@ -101,7 +101,7 @@ const menuItems = [
     { id: 'military', label: '軍隊記錄專區', icon: '🛡️', color: 'bg-emerald-50' },
     { id: 'treasure', label: '法寶登記專區', icon: '💎', color: 'bg-sky-50' },
     { id: 'other_teaching', label: '其他記錄專區', icon: '📜', color: 'bg-orange-50' },
-    { id: 'other', label: '其他專區', icon: '📁', color: 'bg-orange-50' },
+    { id: 'other', label: '抽籤專區', icon: '🎰', color: 'bg-orange-50' },
     { id: 'trash', label: '回收桶', icon: '🗑️', color: 'bg-slate-100' },
     { id: 'admin', label: '系統資料管理', icon: '⚙️', color: 'bg-slate-800 text-white' },
 ];
@@ -122,16 +122,13 @@ const permissions = computed(() => user.value?.permissions || {});
 
 const filteredMenuItems = computed(() => {
     return menuItems.filter(item => {
-        // Admin Module only for true admins
         if (item.id === 'admin') return user.value?.is_admin;
-
-        // Trash remains restricted
-        if (item.id === 'trash') {
-            if (user.value?.is_admin) return true;
-            return permissions.value.can_see_trash;
-        }
-        
-        // Show all other primary modules by default to ensure "法號的介面都顯示出來"
+        if (user.value?.is_admin) return true;
+        if (item.id === 'teaching') return permissions.value.can_see_teaching_folders;
+        if (item.id === 'treasure') return permissions.value.can_see_treasures;
+        if (item.id === 'military') return permissions.value.can_see_military;
+        if (item.id === 'other' || item.id === 'other_teaching') return permissions.value.can_see_other_folders;
+        if (item.id === 'trash') return permissions.value.can_see_trash;
         return true;
     });
 });

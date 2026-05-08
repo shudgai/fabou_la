@@ -11,7 +11,7 @@
 
             <div class="flex items-center space-x-1.5 mb-1.5">
                 <button @click="clear" class="flex-1 h-[32px] bg-slate-50 text-slate-400 app-body font-black rounded-lg active:scale-95 transition-all">清除</button>
-                <button @click="setToday" class="flex-1 h-[32px] bg-indigo-50 text-indigo-600 app-body font-black rounded-lg active:scale-95 transition-all">今天</button>
+                <button @click="setToday" class="flex-1 h-[32px] bg-indigo-50 text-white app-body font-black rounded-lg active:scale-95 transition-all">今天</button>
             </div>
 
             <!-- Month/Year Header -->
@@ -53,7 +53,7 @@
             <!-- Bottom Actions -->
             <div class="flex items-center space-x-1.5 mt-1.5">
                 <button @click="clear" class="flex-1 h-[36px] bg-slate-50 text-slate-400 app-body font-black rounded-lg active:scale-95 transition-all">清除</button>
-                <button @click="setToday" class="flex-1 h-[36px] bg-indigo-50 text-indigo-600 app-body font-black rounded-lg active:scale-95 transition-all">今天</button>
+                <button @click="setToday" class="flex-1 h-[36px] bg-indigo-50 text-white app-body font-black rounded-lg active:scale-95 transition-all">今天</button>
             </div>
         </div>
     </div>

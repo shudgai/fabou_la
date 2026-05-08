@@ -84,20 +84,7 @@
                              focusedId === item.id ? 'min-h-[80vh] rounded-none px-2 py-4 md:p-[10px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
                          ]">
                         
-                        <!-- Action Menu Button -->
-                        <button @click.stop="toggleActionMenu(item.id)" 
-                                class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-[#dc1428] hover:text-red-700 active:scale-90 transition-all z-10">
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                        </button>
 
-                        <!-- Action Menu Dropdown (Matched with Grudge) -->
-                        <div v-if="activeActionMenuId === item.id" v-click-outside="() => activeActionMenuId = null"
-                             class="absolute top-14 right-4 w-24 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 p-1 animate-scale-in origin-top-right overflow-hidden">
-                            <button @click.stop="startEdit(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改</button>
-                            <button @click.stop="copyItem(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製</button>
-                            <button @click.stop="downloadItem(item); activeActionMenuId = null" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載</button>
-                            <button @click.stop="deleteRecord(item.id)" class="w-full px-2 py-2.5 text-left text-[14px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
-                        </div>
 
                         <!-- Content -->
                         <div class="space-y-1">

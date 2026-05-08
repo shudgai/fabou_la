@@ -117,19 +117,6 @@
                     >
                         <!-- List Item Detail (Simplified per user request) -->
                         <div class="animate-fade-in py-0 bg-white relative px-1.5">
-                            <!-- Menu Trigger (Persistent) -->
-                            <div class="absolute right-0 top-0 z-10">
-                                <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
-                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
-                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadItem(item, 'txt'); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
-                                </div>
-                            </div>
-
                             <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
                                 <!-- Date -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5">
@@ -142,9 +129,9 @@
                                     <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                 </div>
                                 <!-- Quantity -->
-                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">
                                     <label class="grudge-label">數量:</label>
-                                    <div class="grudge-value">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
+                                    <div class="grudge-value whitespace-nowrap">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
                                 </div>
                                 <!-- Result -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5">

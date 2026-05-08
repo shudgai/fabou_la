@@ -233,15 +233,19 @@
                             <!-- Content column: date on top, name+status on bottom -->
                             <div class="flex flex-col flex-1 min-w-0 pr-10">
                                 <!-- Row 1: Date -->
-                                <div v-if="reg.obtained_date || reg.record_date" class="mb-0.5">
-                                    <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
-                                        <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">日期：</span>
-                                        <span class="text-[15px] font-bold text-slate-400 font-outfit">{{ formatDate(reg.obtained_date) }}</span>
-                                    </template>
-                                    <template v-else-if="reg.record_date">
-                                        <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">得知：</span>
-                                        <span class="text-[15px] text-slate-900 font-outfit !font-normal">{{ formatDate(reg.record_date) }}</span>
-                                    </template>
+                                <div v-if="reg.obtained_date || reg.record_date" class="mb-0.5 flex items-center justify-between">
+                                    <div>
+                                        <template v-if="['已登記','已求得'].includes(reg.status) && reg.obtained_date">
+                                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">日期：</span>
+                                            <span class="text-[15px] font-bold text-slate-400 font-outfit">{{ formatDate(reg.obtained_date) }}</span>
+                                        </template>
+                                        <template v-else-if="reg.record_date">
+                                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest font-outfit">得知：</span>
+                                            <span class="text-[15px] text-slate-900 font-outfit !font-normal">{{ formatDate(reg.record_date) }}</span>
+                                        </template>
+                                    </div>
+                                    
+
                                 </div>
                                 <!-- Row 1b: Master (Only for Unobtained folder) -->
                                 <div v-if="currentFolder.id === 'unobtained' && reg.master_id" 
@@ -264,24 +268,6 @@
                             </div>
                         </div>
 
-                        <!-- Independent Menu Button (Three Dots) for Collapsed State -->
-                        <div v-if="expandedId !== reg.id" class="absolute right-0 top-1/2 -translate-y-1/2 z-[20] pr-1">
-                            <div class="relative" :class="[deleteConfirmId === reg.id ? 'text-red-600' : 'text-red-500']">
-                                <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center -mr-2">
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </button>
-                                <div v-if="openMenuId === reg.id" @click.stop 
-                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
-                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
-                                    </button>
-                                    <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Full-page Expanded Overlay -->
                         <teleport to="body">
@@ -294,30 +280,18 @@
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
                                     <!-- Global Main Title + Master Name (same row) -->
-                                        <div class="flex-1 px-[10px] py-[8px] flex items-baseline flex-wrap gap-x-2">
-                                            <h1 class="uppercase tracking-widest font-outfit !text-[32px] !font-black !text-[#dc2626] whitespace-nowrap">重大皇恩登記簿</h1>
-                                            <span class="font-outfit whitespace-nowrap !text-[28px] !font-medium !text-[#dc2626]">{{ currentFolder?.name }}</span>
-                                        </div>
-                                    
-                                    <!-- Close Button moved to top right absolute -->
-                                    <button @click="toggleExpand(reg.id)" class="absolute right-3 top-3 z-[100] w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-                                    
-                                    <!-- Item Info & Actions -->
-                                    <div class="px-5 py-3 flex items-center justify-between bg-slate-50/50">
-                                        <div class="flex flex-col min-w-0 flex-1 pr-2">
-                                            <div class="text-[15px] font-bold text-slate-400 mb-1">{{ formatDate(reg.record_date) }}</div>
-                                            <div class="text-[17px] font-black text-slate-900 leading-tight truncate">{{ reg.name }}</div>
-                                        </div>
-                                        <div class="flex items-center space-x-1 shrink-0">
-                                            <!-- Three dots menu in expanded view -->
+                                        <div class="flex-1 px-[10px] py-[8px] flex items-end justify-between pr-12">
+                                            <div class="flex items-baseline flex-wrap gap-x-2">
+                                                <h1 class="uppercase tracking-widest font-outfit !text-[32px] !font-black !text-[#dc2626] whitespace-nowrap">重大皇恩登記簿</h1>
+                                                <span class="font-outfit whitespace-nowrap !text-[28px] !font-medium !text-[#dc2626]">{{ currentFolder?.name }}</span>
+                                            </div>
+                                            <!-- Three dots menu in expanded view (Moved to title row) -->
                                             <div class="relative z-[20]">
-                                                <button @click.stop="toggleMenu(reg.id)" class="w-9 h-9 flex items-center justify-center text-red-500 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                                <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all rounded-full hover:bg-red-50">
                                                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                                 </button>
                                                 <div v-if="openMenuId === reg.id" @click.stop 
-                                                     class="absolute right-0 top-full mt-1 w-auto min-w-[120px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                     class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
                                                     <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                                         {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                                     </button>
@@ -329,7 +303,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    
+                                    <!-- Close Button moved to top right absolute -->
+                                    <button @click="toggleExpand(reg.id)" class="absolute right-3 top-3 z-[100] w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    
                                 </div>
                                 <!-- Scrollable Content -->
                                 <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar">
@@ -464,7 +443,7 @@
                                 <div v-if="reg.is_multi || (reg.dharma_name_registries && reg.dharma_name_registries.length > 0)" class="mt-4 animate-fade-in">
                                     <div class="mb-3">
                                         <label class="app-title tracking-wider text-slate-500 font-bold mr-1">法寶名稱</label>
-                                        <span class="font-outfit !font-medium !text-red-600" style="font-size: 28px !important;">- {{ currentFolder.name }} -</span>
+                                        <span class="font-outfit !font-medium !text-slate-900" style="font-size: 17px !important;">{{ reg.name }}</span>
                                     </div>
 
                                     <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="mb-4">
@@ -547,6 +526,10 @@
         </div>
     </div> <!-- End Scrollable Area -->
 
+    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed z-[100] flex justify-center bg-white border-t border-slate-200" style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+        <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !mt-0" />
+    </div>
+
     <mobile-navbar 
         is-absolute
         :can-back="true"
@@ -570,13 +553,6 @@
     />
 
     <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
-
-    <!-- Bottom Pagination (Floating style) -->
-    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed bottom-[60px] left-0 right-0 z-[100] flex justify-center pointer-events-none">
-        <div class="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-slate-200 pointer-events-auto scale-[0.65] origin-bottom">
-            <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
-        </div>
-    </div>
 
     <add-action-menu 
         :show="showAddMenu" 

@@ -7,7 +7,7 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">其他專區資料夾</h1>
+                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -103,7 +103,7 @@
                     <div class="flex items-center flex-1 min-w-0">
                         <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
-                                其他專區
+                                抽籤專區
                             </h1>
                         </div>
                         <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 28px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
@@ -115,16 +115,16 @@
                         <template v-if="activeFolder.name.includes('隨機分組')">
                             <!-- Invert Selection Button for Random Group -->
                             <button @click="randomGroupRef?.invertSelection()" 
-                                class="px-[6px] py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
+                                class="px-[6px] py-1 bg-indigo-50 text-white rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
                                 style="font-size: 16px !important;">
                                 反選
                             </button>
-                            <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
+                            <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 bg-red-50 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </template>
                         <template v-else-if="activeFolder.name.includes('開文核定')">
-                            <button @click="kaiwenRef?.clearAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
+                            <button @click="kaiwenRef?.clearAll()" class="w-10 h-10 bg-red-50 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </template>

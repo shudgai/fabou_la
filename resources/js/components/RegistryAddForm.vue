@@ -203,7 +203,7 @@
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入法寶名稱明細</label>
                         <div class="flex items-center space-x-2">
-                            <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-[13px] font-bold active:scale-95 transition-all flex items-center space-x-1 border border-red-100">
+                            <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-white rounded-lg text-[13px] font-bold active:scale-95 transition-all flex items-center space-x-1 border border-red-100">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 <span>清空</span>
                             </button>

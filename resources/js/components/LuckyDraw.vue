@@ -11,7 +11,7 @@
                             <!-- Consolidated Title Row -->
                             <div class="flex items-center flex-1 min-w-0">
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 32px !important;">
-                                    其他專區
+                                    抽籤專區
                                 </div>
                                 <div class="flex items-center ml-3 min-w-0">
                                     <span class="text-slate-500 truncate" style="font-size: 25px !important; font-weight: 400 !important;">
@@ -23,11 +23,11 @@
                             <!-- Right Side Functional Controls -->
                             <div class="flex items-center ml-2 shrink-0 space-x-2">
                                 <button @click="invertSelection()" 
-                                    class="px-[6px] py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
+                                    class="px-[6px] py-1 bg-indigo-50 text-white rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border border-indigo-100 whitespace-nowrap"
                                     style="font-size: 16px !important;">
                                     反選
                                 </button>
-                                <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
+                                <button @click="resetAll" class="w-10 h-10 bg-red-50 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </div>
@@ -115,7 +115,7 @@
                             <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
                         </div>
                         <div class="flex gap-2">
-                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg font-black text-[15px]">全選</button>
+                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-1.5 bg-indigo-50 text-white rounded-lg font-black text-[15px]">全選</button>
                             <button @click="roundParticipants = []" class="px-4 py-1.5 bg-slate-100 text-slate-400 rounded-lg font-black text-[15px]">清空</button>
                         </div>
                         <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
@@ -148,8 +148,8 @@
                     </div>
                     <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
                             class="w-full py-4 rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
-                            :class="lotteryMode ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-600 text-white'"
-                            :style="!lotteryMode ? 'color: white !important;' : ''">
+                            :class="lotteryMode ? 'bg-emerald-100 text-white' : 'bg-indigo-600 text-white'"
+                            :style="lotteryMode ? 'color: white !important;' : 'color: white !important;'">
                         {{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}
                     </button>
                 </div>

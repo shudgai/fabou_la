@@ -504,7 +504,12 @@ class RegistryController extends Controller
      */
     public function updatePersonnelRemarks(Request $request, $id)
     {
-        $dnr = DharmaNameRegistry::findOrFail($id);
+        $user = auth()->user();
+        $dnr = DharmaNameRegistry::with('registry')->findOrFail($id);
+        $registry = $dnr->registry;
+        if (!$registry || $registry->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $dnr->update(['remarks' => $this->normalizeRemarks($request->remarks)]);
         return response()->json(['success' => true]);
     }

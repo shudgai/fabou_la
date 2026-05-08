@@ -75,7 +75,7 @@
                         </h2>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 ml-2" style="padding-top: 5px;">
-                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-[#dc1428] rounded-xl active:scale-90 transition-all border border-red-100">
+                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-xl active:scale-90 transition-all border border-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-2 py-1 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
@@ -238,7 +238,7 @@
                                     <div class="col-span-7 space-y-0.5">
                                         <div class="flex items-center justify-between">
                                             <label class="text-[13px] text-slate-400 font-bold px-1">對象 / 群組</label>
-                                            <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
+                                            <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-white px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
                                         </div>
                                         <div class="border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
                                             <input type="text" 
@@ -1507,32 +1507,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex items-center shrink-0 pl-2 -mr-2">
-                                        <div class="relative">
-                                            <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-[#dc1428] hover:text-red-700 active:scale-95 transition-transform">
-                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                            </button>
-                                            <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-50 overflow-hidden p-1.5 focus:outline-none">
-                                                <div class="flex flex-col space-y-1">
-                                                    <button @click.stop="toggleExpand(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="text-[17px] font-black text-slate-900">{{ isSessionFocused(item) ? '收起清單' : '展開清單' }}</span>
-                                                    </button>
-                                                    <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="text-[17px] font-black text-slate-900">修改</span>
-                                                    </button>
-                                                    <button @click.stop="copyAsTextFile(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="text-[17px] font-black text-slate-900">複製貼 LINE</span>
-                                                    </button>
-                                                    <button @click.stop="downloadTeaching(item); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
-                                                        <span class="text-[17px] font-black text-slate-900">下載檔案</span>
-                                                    </button>
-                                                    <button @click.stop="deleteItem(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-rose-50 rounded-2xl transition-all text-rose-500">
-                                                        <span class="text-[17px] font-black">刪除</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
 
                             </div>

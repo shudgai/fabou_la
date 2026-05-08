@@ -98,7 +98,7 @@ class DharmaGroupSeeder extends Seeder
                     $groupIds[] = $groupCache->get($gName)->id;
                 }
             }
-            $dn->groups()->sync($groupIds);
+            $dn->groups()->syncWithoutDetaching($groupIds);
         }
     }
 }

@@ -12,7 +12,7 @@
                 <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Recycle Bin</p>
             </div>
             <div class="flex items-center space-x-3">
-                <button @click="cleanup" class="bg-rose-50 text-rose-600 px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-rose-100 transition-all border border-rose-100">
+                <button @click="cleanup" class="bg-rose-50 text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-rose-100 transition-all border border-rose-100">
                     清空並清理備份 (5分內)
                 </button>
             </div>
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="flex items-center space-x-2 mt-4 md:mt-0 md:pl-6">
-                    <button @click="restore(item)" class="flex-grow md:flex-none py-2.5 px-4 rounded-xl font-bold text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all">
+                    <button @click="restore(item)" class="flex-grow md:flex-none py-2.5 px-4 rounded-xl font-bold text-sm bg-indigo-50 text-white hover:bg-indigo-600 hover:text-white transition-all">
                         回復
                     </button>
                     <button @click="forceDelete(item)" class="p-2.5 rounded-xl font-bold text-sm text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-all">

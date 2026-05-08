@@ -204,9 +204,12 @@ class TeachingService
 
     public function reorder(array $orders): bool
     {
+        $userId = auth()->id();
         foreach ($orders as $order) {
             if (isset($order['id']) && isset($order['sort_order'])) {
-                Teaching::where('id', $order['id'])->update(['sort_order' => $order['sort_order']]);
+                Teaching::where('id', $order['id'])
+                    ->where('user_id', $userId)
+                    ->update(['sort_order' => $order['sort_order']]);
             }
         }
         return true;

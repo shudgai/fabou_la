@@ -24,7 +24,7 @@ class MasterSeeder extends Seeder
         ];
 
         foreach ($masters as $name) {
-            \App\Models\Master::create(['name' => $name]);
+            \App\Models\Master::firstOrCreate(['name' => $name]);
         }
     }
 }

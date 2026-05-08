@@ -13,7 +13,7 @@
         </button>
 
         <!-- Page Indicator -->
-        <div class="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-slate-600 font-black flex items-center space-x-1" style="font-size: 20px !important;">
+        <div class="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-slate-600 flex items-center space-x-1" style="font-size: 16px !important;">
             <span class="text-slate-900">{{ meta.current_page }}</span>
             <span class="text-slate-300">/</span>
             <span>{{ meta.last_page }}</span>

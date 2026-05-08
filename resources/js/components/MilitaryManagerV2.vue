@@ -119,20 +119,6 @@
 
             <!-- LEDGER VIEW -->
             <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 w-full">
-                <!-- Army Shield (shown when a specific army is selected) -->
-                <div v-if="currentFolder && currentFolder.id !== 'all'" class="flex justify-center pt-4 pb-2">
-                    <div class="relative w-[120px] h-[120px] md:w-[140px] md:h-[140px]">
-                        <svg class="w-full h-full drop-shadow-xl" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
-                                  :fill="currentFolder.name === '耀紫軍' ? '#581c87' : '#000000'" 
-                                  stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="font-black text-white tracking-[0.15em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
-                                style="font-weight: 900 !important; font-size: 18px !important;">{{ currentFolder.name }}</span>
-                        </div>
-                    </div>
-                </div>
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
@@ -230,21 +216,11 @@
                                                 <label class="military-label">法號 <span v-if="!currentFolder" class="text-[10px] opacity-60 ml-1">({{ item.army_type }})</span></label>
                                                 <div class="military-value-name">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                             </div>
-                                            <div class="military-field">
+                                            <div class="military-field min-w-[130px]">
                                                 <label class="military-label">數量</label>
-                                                <div class="military-value">{{ formatArmyTotal(item.quantity) }}</div>
+                                                <div class="military-value whitespace-nowrap">{{ formatArmyTotal(item.quantity) }}</div>
                                             </div>
-                                            <div class="absolute right-1 top-0">
-                                                <button @click.stop="toggleMenu(item.id)" class="p-1 text-[#dc1428] hover:text-red-700 active:scale-95 transition-all">
-                                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 114 0z" /></svg>
-                                                </button>
-                                                <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up py-1">
-                                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                                    <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                                    <button @click.stop="downloadSingleRecord(item); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                                    <button @click.stop="deleteItem(item.id)" class="w-full px-4 py-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 whitespace-nowrap">刪除</button>
-                                                </div>
-                                            </div>
+
                                         </div>
                                         <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
                                             <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">
