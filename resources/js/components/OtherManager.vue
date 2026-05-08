@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-slate-100 md:bg-white flex flex-col other-manager-module relative overflow-hidden">
+    <div class="h-full bg-slate-100 md:bg-white flex flex-col other-manager-module relative overflow-clip">
         <!-- Level 1: Folder Grid View -->
         <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-slate-100 md:bg-white flex flex-col relative overflow-hidden">
             <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full">
@@ -35,7 +35,7 @@
                             <div :class="[
                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
-                            ]" style="font-weight: 900 !important; font-size: 26px !important;">{{ folder.name }}</div>
+                            ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                             </div>
@@ -54,7 +54,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
                                 抽順序
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                         </svg>
                         <!-- Label Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 40px !important;">
+                            <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
                                 回合抽籤
                             </span>
                         </div>

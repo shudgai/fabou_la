@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-slate-50 md:bg-white flex flex-col overflow-hidden w-full">
+    <div class="h-full bg-slate-50 md:bg-white flex flex-col overflow-clip w-full">
         <!-- Header -->
         <div class="flex items-center justify-between mb-8 pt-6 px-4 shrink-0">
             <div>

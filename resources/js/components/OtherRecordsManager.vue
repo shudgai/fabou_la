@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
+    <div class="h-full bg-white flex flex-col overflow-clip">
         <!-- Header -->
         <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full" style="padding: 12px 12px; min-height: 52px;">
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="bg-white h-full flex flex-col relative overflow-clip">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden p-[28px] min-w-[320px]" style="max-width: calc(100vw - 32px);">
@@ -24,7 +24,7 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[15px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 32px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
                 <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
@@ -114,14 +114,27 @@
                     >
                         <!-- List Item Detail (Simplified per user request) -->
                         <div class="animate-fade-in py-0 bg-white relative px-1.5">
-                            <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
+                            <!-- Three dots menu - far right, aligned with 法號 row -->
+                            <div class="absolute right-0 top-0 z-20" @click.stop>
+                                <button @click.stop="toggleMenu(item.id)" class="w-9 h-9 flex items-center justify-center text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+                                <div v-if="openMenuId === item.id" @click.stop 
+                                     class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                    <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-y-3 pr-10 md:flex md:flex-wrap md:items-center md:gap-x-5">
                                 <!-- Date -->
                                 <div class="grudge-field flex flex-row items-center space-x-1.5">
                                     <label class="grudge-label">日期:</label>
                                     <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
                                 </div>
                                 <!-- Dharma Name -->
-                                <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                <div class="grudge-field flex flex-col">
                                     <label class="grudge-label">法號:</label>
                                     <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                 </div>
@@ -140,7 +153,7 @@
                             </div>
 
                             <!-- Expanded Content (Show Everything when focused) -->
-                            <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in">
+                            <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
 
                                 <!-- Army Breakdown (if applicable) -->
                                 <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">

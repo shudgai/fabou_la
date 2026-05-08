@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
@@ -102,11 +102,7 @@
 
                             <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
                                 <span class="font-black text-white tracking-[0.2em] leading-tight text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]" 
-                                    style="font-weight: 900 !important; font-size: 40px !important;">{{ folder.name }}</span>
-                                <div class="mt-4 flex items-center space-x-2 animate-fade-in">
-                                    <span class="text-white/80 !text-[13px] font-bold tracking-widest uppercase">總計</span>
-                                    <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ formatArmyTotal(armyCounts[folder.name] || 0) }}</span>
-                                </div>
+                                    style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</span>
                             </div>
                         </div>
                     </button>
@@ -205,11 +201,28 @@
                                     ]"
                                 >
                                     <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
+                                        <!-- Collapsed View: Date + Name + Quantity -->
                                         <div class="military-field">
                                             <label class="military-label">日期</label>
                                             <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
                                         </div>
-                                        <div class="grid grid-cols-2 gap-x-4 pr-8 relative">
+
+                                        <!-- Three dots menu - far right, aligned with 日期 row (only when expanded) -->
+                                        <div v-if="focusedId === item.id" class="absolute right-[-8px] top-[8px] z-20">
+                                            <button @click.stop="openMenuId === item.id ? openMenuId = null : openMenuId = item.id" class="w-9 h-9 flex items-center justify-center text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                            </button>
+                                            <!-- Dropdown Menu -->
+                                            <div v-if="openMenuId === item.id" @click.stop 
+                                                 class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起詳情</button>
+                                                <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                <button @click.stop="copySingleRecord(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                                <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-x-4 pr-4 relative">
                                             <div class="military-field min-w-0">
                                                 <label class="military-label">法號 <span v-if="!currentFolder" class="text-[10px] opacity-60 ml-1">({{ item.army_type }})</span></label>
                                                 <div class="military-value-name">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
@@ -218,9 +231,12 @@
                                                 <label class="military-label">數量</label>
                                                 <div class="military-value whitespace-nowrap">{{ formatArmyTotal(item.quantity) }}</div>
                                             </div>
-
                                         </div>
-                                        <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in">
+
+                                        <!-- Expanded View: Details -->
+                                        <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in relative">
+
+                                            <!-- Army Breakdown -->
                                             <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">
                                                 <label class="military-label">軍隊細目</label>
                                                 <div class="flex items-center space-x-6 flex-wrap gap-y-2">
@@ -237,6 +253,7 @@
                                                     </template>
                                                 </div>
                                             </div>
+                                            <!-- Remarks -->
                                             <div v-if="item.remarks_text" class="military-field">
                                                 <label class="military-label">詳細內容 / 備註</label>
                                                 <div class="military-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">{{ item.remarks_text }}</div>

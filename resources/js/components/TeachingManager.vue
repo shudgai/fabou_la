@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-[100dvh] flex flex-col overflow-hidden text-slate-900">
+    <div class="bg-white h-full flex flex-col overflow-clip text-slate-900">
         <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
@@ -115,7 +115,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
                                     父皇仙師<br>每日開示
                                 </span>
                                 <div class="mt-4">
@@ -136,7 +136,7 @@
                             </svg>
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
-                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 40px !important;">
+                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
                                     父皇仙師<br>開示載錄
                                 </span>
                                 <div class="mt-4">
@@ -172,7 +172,7 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                     style="font-weight: 900 !important; font-size: 40px !important;">
+                                     style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
                                 <div class="mt-1">

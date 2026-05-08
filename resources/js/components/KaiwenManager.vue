@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative overflow-hidden text-slate-900 kaiwen-module">
+    <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
         <AddActionMenu 
             :show="showAddMenu" 
             :actions="addActions" 

@@ -92,7 +92,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 40px !important;">重大皇恩<br>專區</div>
+                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 42px !important;">重大皇恩<br>專區</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ totalCount }} 筆</span>
                             </div>
@@ -110,7 +110,7 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 40px !important;">未求得<br>重大皇恩</div>
+                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 42px !important;">未求得<br>重大皇恩</div>
                             <div class="mt-4 flex items-center space-x-2">
                                 <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ unobtainedTotal }} 筆</span>
                             </div>
@@ -138,7 +138,7 @@
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                             <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
                                  :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
-                                 style="font-size: 26px !important;">
+                                 style="font-size: 24px !important;">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>
                             <div class="mt-1 flex items-center">

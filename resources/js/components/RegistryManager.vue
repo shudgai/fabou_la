@@ -71,7 +71,7 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c]" style="font-size: 40px !important;">重大皇恩<br>登記簿</div>
+                                <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c]" style="font-size: 42px !important;">重大皇恩<br>登記簿</div>
                                 <div class="mt-4 flex items-center">
                                     <span class="text-black font-black tracking-tight drop-shadow-sm" style="font-size: 17px !important;">{{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
@@ -100,7 +100,7 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-1 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
                                      :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
-                                     style="font-size: 40px !important;">
+                                     style="font-size: 24px !important;">
                                      {{ folder.name }}
                                 </div>
                                 <div class="mt-1 flex items-center">

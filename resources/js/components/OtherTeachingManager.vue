@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100dvh] bg-white flex flex-col text-slate-900 overflow-hidden">
+    <div class="h-full bg-white flex flex-col text-slate-900 overflow-clip">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
