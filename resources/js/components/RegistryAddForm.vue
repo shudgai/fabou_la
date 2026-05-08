@@ -5,7 +5,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[95vh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[95vh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">

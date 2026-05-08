@@ -130,11 +130,6 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     .custom-scrollbar {
     }
 
-    /* 防止 iOS 輸入框自動縮放 (Minimum 16px) */
-    input, select, textarea {
-        font-size: 16px !important;
-    }
-
     /* 優化點擊反應與消除灰框 (Touch Optimization) */
     * {
         touch-action: manipulation;
@@ -162,6 +157,11 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     .h-\[100dvh\] {
         height: -webkit-fill-available !important;
     }
+}
+
+/* 防止 iOS 輸入框自動縮放 (Minimum 16px) - 在 @layer 外以確保最高權重 */
+input, select, textarea {
+    font-size: 16px !important;
 }
 
 /* 全局 overscroll 防止彈性滾動 */

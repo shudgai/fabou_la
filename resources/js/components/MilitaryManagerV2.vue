@@ -410,6 +410,7 @@ const deleteConfirmId = ref(null);
 const currentPage = ref(1);
 const sortDesc = ref(true);
 let fullTotalTimer = null;
+let requestId = 0;
 
 const activePaginationMeta = computed(() => {
     if (!expandedDate.value && !focusedId.value && !searchQuery.value) {
@@ -419,6 +420,7 @@ const activePaginationMeta = computed(() => {
 });
 
 const isEmptyState = computed(() => {
+    if (loading.value) return false;
     if (!expandedDate.value && !focusedId.value && !searchQuery.value) {
         return (dateGroupsData.value || []).length === 0;
     }
@@ -778,6 +780,7 @@ const downloadSingleRecord = (item) => {
 const form = ref({});
 
 const loadData = async (page = 1) => {
+    const currentRequestId = ++requestId;
     loading.value = true;
     try {
         const ts = new Date().getTime();
@@ -793,6 +796,7 @@ const loadData = async (page = 1) => {
                 requests.push(axios.get(`/api/dharma-names-list?t=${ts}`));
             }
             const [res, dres] = await Promise.all(requests);
+            if (currentRequestId !== requestId) return;
             dateGroupsData.value = res.data.data || [];
             datePaginationMeta.value = {
                 current_page: res.data.current_page,
@@ -805,6 +809,7 @@ const loadData = async (page = 1) => {
 
             // Also refresh army counts
             const statsRes = await axios.get('/military-records', { params: { ...params, page: 1, per_page: 1 } });
+            if (currentRequestId !== requestId) return;
             if (page === 1) {
                 armyCounts.value = statsRes.data.armyCounts || {};
                 breakdownTotals.value = statsRes.data.breakdownTotals || { 
@@ -828,6 +833,7 @@ const loadData = async (page = 1) => {
                 requests.push(axios.get(`/api/dharma-names-list?t=${ts}`));
             }
             const [res, dres] = await Promise.all(requests);
+            if (currentRequestId !== requestId) return;
 
             const recData = res.data.records;
             items.value = recData.data || [];
@@ -846,24 +852,29 @@ const loadData = async (page = 1) => {
             if (dres) users.value = dres.data;
         }
     } catch (e) { 
+        if (currentRequestId !== requestId) return;
         console.error('Load data failed:', e);
         items.value = [];
         dateGroupsData.value = [];
     } finally { 
+        if (currentRequestId !== requestId) return;
         loading.value = false;
     }
 };
 
-watch(searchQuery, debounce(() => {
+const onSearchChange = debounce(() => {
     currentPage.value = 1;
     expandedDate.value = null;
     focusedId.value = null;
     loadData(1);
-}, 300));
+}, 300);
+watch(searchQuery, onSearchChange);
 
 watch(currentFolder, () => {
     currentPage.value = 1;
     expandedDate.value = null;
+    dateGroupsData.value = [];
+    items.value = [];
     loadData(1);
 });
 
@@ -988,6 +999,7 @@ watch(isAnyModalOpen, (newVal) => {
 
 onUnmounted(() => {
     if (isAnyModalOpen.value) unlockBodyScroll();
+    onSearchChange.cancel();
 });
 
 onMounted(() => {

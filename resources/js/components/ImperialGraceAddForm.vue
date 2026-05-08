@@ -4,7 +4,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100dvh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-[100dvh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
