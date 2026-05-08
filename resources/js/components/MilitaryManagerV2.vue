@@ -2,7 +2,7 @@
     <div class="bg-slate-100 md:bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full px-[10px] py-1" style="min-height: 32px;">
+        <div v-if="currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full px-[15px] py-1" style="min-height: 32px;">
             <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
@@ -62,21 +62,17 @@
         </div>
 
         <!-- SEARCH COMPONENT -->
-        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
-            <div class="absolute left-[22px] text-slate-400 pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+        <div v-if="showSearch" class="px-2 py-2 animate-fade-in">
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
+                    class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
-            <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
-                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl pl-9 pr-10 text-[15px] focus:ring-1 focus:ring-slate-300 outline-none transition-all shadow-sm">
-            
-            <button @click="searchQuery ? searchQuery = '' : showSearch = false" 
-                class="absolute right-[18px] w-8 h-8 flex items-center justify-center text-slate-500 active:text-slate-900 transition-all p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
         </div>
 
         <!-- MAIN CONTENT AREA -->
@@ -118,7 +114,7 @@
             </div>
 
             <!-- LEDGER VIEW -->
-            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[10px] bg-white flex flex-col pb-24 w-full">
+            <div v-if="(currentFolder || addMode || showSearch)" class="flex-1 overflow-y-auto px-[15px] bg-white flex flex-col pb-24 w-full">
                 <!-- Full Total Modal (Centered) -->
                 <div v-if="showFullTotal && currentFolder" class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in" @click="showFullTotal = false">
                     <div class="bg-white w-full max-w-sm rounded-[32px] p-8 shadow-2xl animate-pop-in relative" @click.stop>
@@ -159,9 +155,11 @@
                 </div>
 
                 <!-- List Content -->
-                <div v-if="!showFullTotal" class="flex flex-col flex-1">
-                    <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
-                    <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light px-6">
+                <div v-if="!showFullTotal" class="flex flex-col flex-1 relative">
+                    <div v-if="loading" class="absolute inset-0 z-20 flex items-start justify-center pt-10 bg-white/60 pointer-events-none">
+                        <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-slate-100 border-t-indigo-600"></div>
+                    </div>
+                    <div v-if="isEmptyState" class="text-center py-20 text-slate-400 font-light px-6">
                         目前尚無{{ currentFolder?.id !== 'all' ? currentFolder?.name : '' }}載錄資料。
                         <div v-if="!expandedDate && !focusedId" class="text-[10px] mt-2 opacity-50">
                         </div>
@@ -201,7 +199,7 @@
                                     v-show="focusedId === null || focusedId === item.id"
                                     @click="toggleExpand(item.id)"
                                     :class="[
-                                        'py-[10px] px-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                        'py-[10px] px-[15px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
                                         openMenuId === item.id ? 'z-[50]' : 'z-0',
                                         { 'border-b-0': focusedId === item.id }
                                     ]"
@@ -276,13 +274,13 @@
 
         <!-- Floating Pagination above MobileNavbar -->
         <div v-if="!addMode && !batchMode && activePaginationMeta && activePaginationMeta.last_page > 1" 
-             class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
-            <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
-                <pagination-buttons 
-                    :meta="activePaginationMeta" 
-                    @page-change="handlePageChange"
-                />
-            </div>
+             class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
+             style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+            <pagination-buttons 
+                :meta="activePaginationMeta" 
+                @page-change="handlePageChange" 
+                class="!mb-0 !mt-0"
+            />
         </div>
         <military-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" :armyType="currentFolder ? currentFolder.name : ''" :isCumulative="isCumulativeMode" :isSaving="isSaving" @save="saveItem" @cancel="addMode = false; editingId = null" />
         <military-batch-add :show="batchMode" :armyType="currentFolder ? currentFolder.name : ''" @save="batchMode = false; loadData()" @cancel="batchMode = false" />

@@ -162,7 +162,7 @@ body.font-large input, body.font-large select, body.font-large textarea { font-f
     }
 
     /* 優化點擊反應與消除灰框 (Touch Optimization) */
-    button, [role="button"], a {
+    * {
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
     }

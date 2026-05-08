@@ -61,7 +61,7 @@
                 <option value="後身二大穴" />
             </datalist>
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
-            <div v-if="!currentFolder && !addMode" class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
+            <div v-if="!currentFolder && !addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                     <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                 </div>
@@ -103,7 +103,7 @@
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
-                    <div class="px-[10px] pb-24 flex flex-col items-center max-w-lg mx-auto">
+                    <div class="px-[15px] pb-24 flex flex-col items-center max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
@@ -206,7 +206,7 @@
                                         <label class="app-title ml-1 opacity-0">日期</label>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
-                                                class="w-full h-full border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[15px]">
+                                                class="w-full h-full border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
                                             <button @click="activeDate = 'date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
                                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
@@ -402,7 +402,7 @@
                                                 <input v-model="record.target_remarks" 
                                                        @focus="activeBatchTargetRemarksIdx = index"
                                                        placeholder="備註對象..." 
-                                                       class="w-full bg-transparent border-none text-[15px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-slate-400">
+                                                       class="w-full bg-transparent border-none text-[16px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-slate-400">
                                                 <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-slate-400 hover:text-indigo-600 transition-all">
                                                     <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
@@ -513,7 +513,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style="padding-bottom: calc(1px + env(safe-area-inset-bottom, 0px));">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-indigo-600 text-white rounded-2xl h-[55px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
@@ -1230,7 +1230,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 pt-[7px] pb-[0px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                            <div class="fixed bottom-[7px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 pt-[7px] pb-[0px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]" style="padding-bottom: calc(0px + env(safe-area-inset-bottom, 0px));">
                                 <div class="grid grid-cols-2 gap-4">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] h-[55px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>
@@ -1448,13 +1448,19 @@
                       @click="focusedId = null; focusedDate = null; activeDropdownId = null">
                      <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
                      <div v-else class="space-y-0 mt-0 min-h-full">
-                         <!-- Search Component -->
-                         <search-component 
-                             v-model="searchQuery" 
-                             :show="showSearch" 
-                             placeholder="搜尋內容、法號或法寶..."
-                             @close="showSearch = false"
-                         />
+                          <!-- Search -->
+                          <div v-if="showSearch" class="px-1 pb-3 animate-fade-in">
+                              <div class="relative group">
+                                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                      <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                  </div>
+                                  <input v-model="searchQuery" type="text" placeholder="搜尋內容、法號或法寶..."
+                                      class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                                  <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                  </button>
+                              </div>
+                          </div>
                         <!-- Date-Based Accordion: Grouping by Daily sessions -->
                         <template v-for="dateGroup in recordsByDate" :key="dateGroup.date">
                             <!-- Date Header: Collapsed by Default -->
@@ -1521,7 +1527,7 @@
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                         <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform;">
                                             <!-- Global Main Title (Added) -->
-                                            <div class="px-[10px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
+                                            <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
                                                     <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
                                                 </div>
@@ -1536,7 +1542,7 @@
                                             </div>
 
                                             <!-- Header (Sub-title Style) -->
-                                            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+                                            <div class="px-[15px] py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
                                                 <div class="flex flex-col">
                                                     <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
                                                     <div class="text-[17px] font-black text-slate-900 leading-tight">
@@ -1569,7 +1575,7 @@
                                         </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar">
+                                            <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2">
@@ -1655,7 +1661,6 @@
 
 
 
-                <search-component v-if="showSearch" v-model="searchQuery" :show="showSearch" @close="showSearch = false" />
                 <div v-if="distributionModal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#FFB266]/60 backdrop-blur-sm animate-fade-in">
                     <div class="bg-white rounded-[32px] w-full max-w-sm overflow-hidden shadow-2xl animate-slide-up border border-white/20">
                         <div class="p-8 text-center space-y-6">
@@ -1823,13 +1828,13 @@
 
             <!-- Floating Pagination above MobileNavbar -->
             <div v-if="currentFolder && !addMode && !itemsDetailMode && itemPagination && itemPagination.last_page > 1" 
-                 class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
-                <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
-                    <pagination-buttons 
-                        :meta="itemPagination" 
-                        @page-change="fetchItems"
-                    />
-                </div>
+                 class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
+                 style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+                <pagination-buttons 
+                    :meta="itemPagination" 
+                    @page-change="fetchItems" 
+                    class="!mb-0 !mt-0"
+                />
             </div>
             <mobile-navbar 
                 :can-back="currentFolder !== null || currentCategory !== null || addMode"

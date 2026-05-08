@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[100vh] bg-white flex flex-col overflow-hidden">
+    <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
         <!-- Header -->
         <div class="border-b border-slate-100 bg-white sticky top-0 z-20 flex items-center shrink-0 w-full" style="padding: 12px 12px; min-height: 52px;">
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
@@ -31,7 +31,7 @@
                 :class="[
                     'bg-white border rounded-[22px] px-5 transition-all cursor-pointer relative',
                     expandedRecordId === record.id 
-                        ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 px-2 py-4 md:p-[10px]' 
+                        ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 px-[15px] py-4 md:px-[15px]' 
                         : 'border-slate-100 shadow-sm hover:border-slate-200 z-10 py-4'
                 ]">
                 
@@ -108,7 +108,7 @@
                     <label class="text-[13px] text-slate-400 font-bold px-1">內容</label>
                     <textarea v-model="newContent"
                         placeholder="輸入文件內容..."
-                        class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-[15px] text-slate-900 focus:ring-2 focus:ring-indigo-300 outline-none transition-all resize-none leading-relaxed min-h-[300px]"></textarea>
+                        class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-[16px] text-slate-900 focus:ring-2 focus:ring-indigo-300 outline-none transition-all resize-none leading-relaxed min-h-[300px]"></textarea>
                 </div>
             </div>
 

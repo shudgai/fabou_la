@@ -162,7 +162,7 @@
                                             :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''"
                                             @input="e => handlePersonnelDateInput(idx, e)"
                                             placeholder="年/月/日"
-                                            class="personnel-date-input w-full h-full bg-transparent px-2 text-[14px] font-bold font-outfit text-slate-900 outline-none uppercase"
+                                            class="personnel-date-input w-full h-full bg-transparent px-2 text-[16px] font-bold font-outfit text-slate-900 outline-none uppercase"
                                         >
                                         <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '師兄姐') + '取得日期' }" 
                                             class="absolute right-0 top-0 h-full px-2 text-slate-300 hover:text-indigo-500 transition-colors bg-white/80 backdrop-blur-sm">

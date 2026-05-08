@@ -4,7 +4,7 @@
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 4px; min-height: 52px;">
+            style="padding: 4px 15px; min-height: 52px;">
             <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
                     重大皇恩專區
@@ -15,7 +15,7 @@
         <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
         <div v-if="currentFolder || addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 4px; min-height: 52px;">
+            style="padding: 4px 15px; min-height: 52px;">
             <div v-if="addMode && !currentFolder" class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -50,7 +50,7 @@
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
         <teleport to="body">
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-white overflow-hidden" style="padding: 28px; min-width: 360px;">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-white overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -159,29 +159,15 @@
 
         <!-- Level 2: Folder Contents -->
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white min-h-screen w-full md:max-w-xl md:mx-auto">
-            <!-- Desktop Centered Header Section (Consistent with Registry Module) -->
-            <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
-                <!-- Top Row: Title + Sort Button -->
-                <div class="flex items-center justify-between bg-white border-b border-slate-300 w-full py-2 px-4">
-                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">皇恩專區</h1>
-                    <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm !text-[16px]" style="color: white !important;">
-                        {{ sortDesc ? '新→舊' : '舊→新' }}
-                    </button>
-                </div>
-                <!-- Bottom Row: Folder Name + Pagination + Reorder Button -->
-                <div class="px-4 py-2 bg-slate-50/50 flex items-center justify-between w-full relative">
-                    <!-- Left: Folder Name -->
-                    <div class="flex items-center shrink-0 w-[120px]">
-                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis text-[24px] font-medium">{{ currentFolder?.name }}</span>
-                    </div>
-                    
-                    <!-- Center: Pagination (Moved to bottom) -->
-                    <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center">
-                    </div>
-
-                    <!-- Right: Reorder Button -->
-                    <div class="flex items-center space-x-2 shrink-0 w-[120px] justify-end">
-                         <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
+            <!-- Desktop Centered Header Section -->
+            <div class="hidden md:flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[50]">
+                <div class="flex items-end justify-between w-full px-[15px] pt-0 pb-[8px]">
+                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !text-[28px] !font-medium">{{ currentFolder?.name }}</span>
+                    <div class="flex items-center space-x-2 shrink-0 ml-4">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm !text-[16px]" style="color: white !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
+                        <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
                                 :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-[#64748b] border border-transparent'"
                                 class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap shadow-sm">
                             {{ reorderMode ? '確認排序' : '修改排序' }}
@@ -192,25 +178,31 @@
 
             <!-- Header for Level 2 (Mobile Only) -->
             <div class="flex flex-col border-b border-white w-full bg-white md:hidden">
-                <div class="px-2 py-2 bg-slate-50/50 flex items-center justify-between relative">
-                    <!-- Left: Folder Name -->
-                    <div class="flex items-center shrink-0 w-[120px]">
-                        <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap overflow-hidden text-ellipsis text-[24px] font-medium">{{ currentFolder?.name }}</span>
-                    </div>
-                    
-                    <!-- Center: Pagination (Moved to bottom) -->
+                <div class="px-[15px] pt-0 pb-[8px] bg-slate-50/50 flex items-end justify-between relative">
+                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !text-[28px] !font-medium">{{ currentFolder?.name }}</span>
                     <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
-                    </div>
-
-                    <div class="flex items-center justify-end shrink-0 w-[120px]">
                     </div>
                 </div>
             </div>
             
             <!-- List Display Area -->
-            <div style="padding: 0px 10px 10px 10px;" class="mt-0">
-                <div v-if="loading" class="text-center py-4 text-xs text-slate-400">載入中...</div>
-                <div v-else class="flex flex-col">
+            <div style="padding: 0px 15px 10px 15px;" class="mt-0 relative">
+                <div v-if="loading" class="absolute inset-0 z-20 flex items-start justify-center pt-10 bg-white/60 pointer-events-none">
+                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-slate-100 border-t-indigo-600"></div>
+                </div>
+                <div class="flex flex-col">
+                    <div v-if="showSearch" class="pb-3 animate-fade-in">
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <input v-model="searchQuery" type="text" placeholder="搜尋..."
+                                class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                            <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
                     <!-- Data Rows -->
                     <div v-for="(reg, index) in filteredRegistries" :key="reg.id" 
                         v-show="focusedId === null || focusedId === reg.id"
@@ -276,7 +268,7 @@
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
                                     <!-- Global Main Title + Master Name (same row) -->
-                                        <div class="flex-1 px-[10px] py-[8px] flex items-end justify-between pr-12">
+                                        <div class="flex-1 px-[15px] py-[8px] flex items-end justify-between pr-12">
                                             <div class="flex items-baseline flex-wrap gap-x-2">
                                                 <h1 class="uppercase tracking-widest font-outfit !text-[32px] !font-black !text-[#dc2626] whitespace-nowrap">重大皇恩登記簿</h1>
                                                 <span class="font-outfit whitespace-nowrap !text-[28px] !font-medium !text-[#dc2626]">{{ currentFolder?.name }}</span>
@@ -307,7 +299,7 @@
                                     
                                 </div>
                                 <!-- Scrollable Content -->
-                                <div class="flex-1 overflow-y-auto px-2 pt-2 pb-32 custom-scrollbar">
+                                <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
                         <div class="animate-fade-in bg-white space-y-4 relative">
 
                             <!-- INLINE EDITING FORM -->
@@ -316,7 +308,7 @@
                                     <div class="space-y-1">
                                         <label class="app-title tracking-wider block text-slate-400 font-bold">得知日期</label>
                                         <div class="relative">
-                                            <input v-model="inlineEditData.record_date" type="text" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <input v-model="inlineEditData.record_date" type="text" class="w-full p-2 border rounded-xl text-[16px] font-bold">
                                             <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
@@ -324,7 +316,7 @@
                                     </div>
                                     <div class="space-y-1">
                                         <label class="app-title tracking-wider block text-slate-400 font-bold">載錄目標仙師</label>
-                                        <select v-model="inlineEditData.master_id" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                        <select v-model="inlineEditData.master_id" class="w-full p-2 border rounded-xl text-[16px] font-bold">
                                             <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
                                         </select>
                                     </div>
@@ -337,7 +329,7 @@
 
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block text-slate-400 font-bold">法寶用意</label>
-                                    <textarea v-model="inlineEditData.purpose" rows="2" class="w-full p-2 border rounded-xl text-[15px] font-bold"></textarea>
+                                    <textarea v-model="inlineEditData.purpose" rows="2" class="w-full p-2 border rounded-xl text-[16px] font-bold"></textarea>
                                 </div>
 
                                 <!-- Inline Personnel Editor (For Multi-person) -->
@@ -349,8 +341,8 @@
                                     <div class="space-y-2 border-t pt-2">
                                         <div v-for="(p, idx) in inlineEditData.dharma_name_registries" :key="idx" class="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-2">
                                             <div class="flex items-center space-x-2">
-                                                <input v-model="p.custom_name" placeholder="法號" class="flex-1 p-2 border rounded-lg text-[14px] font-bold">
-                                                <select v-model="p.status" class="w-24 p-2 border rounded-lg text-[13px] font-bold">
+                                                <input v-model="p.custom_name" placeholder="法號" class="flex-1 p-2 border rounded-lg text-[16px] font-bold">
+                                                <select v-model="p.status" class="w-24 p-2 border rounded-lg text-[16px] font-bold">
                                                     <option>已登記</option>
                                                     <option>已求得</option>
                                                     <option>未求得</option>
@@ -361,7 +353,7 @@
                                             </div>
                                             <div class="grid grid-cols-2 gap-2">
                                                 <div class="relative">
-                                                    <input v-model="p.obtained_date" placeholder="求得日期" class="w-full p-2 border rounded-lg text-[12px] pr-8">
+                                                    <input v-model="p.obtained_date" placeholder="求得日期" class="w-full p-2 border rounded-lg text-[16px] pr-8">
                                                     <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '人員') + '求得日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 p-1">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
@@ -369,7 +361,7 @@
                                                 <div class="relative flex items-center border rounded-lg bg-white overflow-visible">
                                                     <input v-model="p.remarks" placeholder="備註" 
                                                         @focus="activeRelDropdownIdx = idx"
-                                                        class="w-full bg-transparent border-none p-2 text-[12px] focus:ring-0 outline-none">
+                                                        class="w-full bg-transparent border-none p-2 text-[16px] focus:ring-0 outline-none">
                                                     <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-1 text-slate-400 hover:text-indigo-500 transition-all">
                                                         <svg class="w-4 h-4" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
@@ -389,7 +381,7 @@
                                 <div v-else class="grid grid-cols-2 gap-3">
                                     <div class="space-y-1">
                                         <label class="app-title tracking-wider block text-slate-400 font-bold">目前狀態</label>
-                                        <select v-model="inlineEditData.status" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                        <select v-model="inlineEditData.status" class="w-full p-2 border rounded-xl text-[16px] font-bold">
                                             <option>已登記</option>
                                             <option>已求得</option>
                                             <option>未求得</option>
@@ -398,7 +390,7 @@
                                     <div class="space-y-1">
                                         <label class="app-title tracking-wider block text-slate-400 font-bold">求得日期</label>
                                         <div class="relative">
-                                            <input v-model="inlineEditData.obtained_date" type="text" class="w-full p-2 border rounded-xl text-[14px] font-bold">
+                                            <input v-model="inlineEditData.obtained_date" type="text" class="w-full p-2 border rounded-xl text-[16px] font-bold">
                                             <button @click="activePicker = { field: 'obtained_date', title: '修改求得日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
@@ -408,7 +400,7 @@
 
                                 <div class="space-y-1">
                                     <label class="app-title tracking-wider block text-slate-400 font-bold">備註</label>
-                                    <textarea v-model="inlineEditData.remarks" rows="2" class="w-full p-2 border rounded-xl text-[14px]"></textarea>
+                                    <textarea v-model="inlineEditData.remarks" rows="2" class="w-full p-2 border rounded-xl text-[16px]"></textarea>
                                 </div>
 
                                 <div class="flex space-x-2 pt-2">
@@ -542,12 +534,6 @@
     />
 
     <!-- MODAL COMPONENTS -->
-    <search-component 
-        v-model="searchQuery" 
-        :show="showSearch" 
-        @close="showSearch = false"
-    />
-
     <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
 
     <add-action-menu 

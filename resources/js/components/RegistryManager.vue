@@ -48,7 +48,7 @@
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div v-if="currentCategory" class="w-full px-[10px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
+                <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <h1 v-if="!currentCategory" class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[32px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
                                 法寶登記專區
@@ -156,15 +156,13 @@
                     </div>
                 </div>
 
-                <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'px-2 py-[10px]']" class="mt-0">
-                    <div v-if="loading" class="text-center py-10">
-                        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-100 border-t-indigo-600 mb-4"></div>
-                        <p class="text-xs font-black font-outfit uppercase tracking-widest text-slate-400">載入中...</p>
+                <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'px-2 py-[10px]']" class="mt-0 relative">
+                    <!-- Loading overlay (keeps DOM intact so input keeps focus) -->
+                    <div v-if="loading" class="absolute inset-0 bg-white/60 z-30 flex items-start justify-center pt-20 pointer-events-none">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-100 border-t-indigo-600"></div>
                     </div>
 
-                    <template v-else>
-                        <!-- Search Bar -->
-                        <div v-if="showSearch && !focusedId" class="mb-4 sticky top-0 z-40 bg-white/80 backdrop-blur-md pb-2 px-1 animate-fade-in">
+                    <div v-if="showSearch && !focusedId" class="mb-4 sticky top-0 z-40 bg-white/80 backdrop-blur-md pb-2 px-1 animate-fade-in">
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -457,7 +455,6 @@
                                     </div>
                             </div>
                         </div>
-                    </template>
                 </div>
             </div>
         </div>
@@ -478,7 +475,7 @@
         <!-- Persistent Toasts/Picker -->
         <teleport to="body">
             <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-                <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+                <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
                     <div class="flex items-start justify-between mb-8">
                         <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                             {{ persistentToast.msg }}
@@ -548,11 +545,11 @@
         />
         <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
 
-        <!-- Bottom Pagination (Floating style) -->
-        <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed bottom-[60px] left-0 right-0 z-[100] flex justify-center pointer-events-none">
-            <div class="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg border border-slate-200 pointer-events-auto scale-[0.65] origin-bottom">
-                <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0" />
-            </div>
+        <!-- Bottom Pagination -->
+        <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" 
+             class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
+             style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+            <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !mt-0" />
         </div>
 
         <mobile-navbar 

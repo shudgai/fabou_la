@@ -2,7 +2,7 @@
     <div class="h-[100dvh] bg-white flex flex-col text-slate-900 overflow-hidden">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -59,16 +59,16 @@
             </div>
 
             <!-- Search Area -->
-            <div v-if="isSearchVisible" class="px-4 py-3 bg-white border-b border-slate-100 animate-fade-in">
-                <div class="relative flex items-center group">
-                    <div class="absolute left-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div v-if="isSearchVisible" class="px-2 py-2 animate-fade-in">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     <input v-model="searchQuery" 
                            placeholder="搜尋日期、內容或仙師..." 
-                           class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3 text-[17px] font-bold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-100 focus:bg-white transition-all outline-none">
-                    <button v-if="searchQuery" @click="searchQuery = ''" class="absolute right-4 text-slate-300 hover:text-slate-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                           class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                    <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                          @click="toggleExpand(item.id)"
                          :class="[
                              'bg-white shadow-sm transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                             focusedId === item.id ? 'min-h-[80vh] rounded-none px-2 py-4 md:p-[10px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
+                              focusedId === item.id ? 'min-h-[80vh] rounded-none px-[15px] py-4 md:px-[15px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
                          ]">
                         
 
@@ -145,7 +145,7 @@
                 <!-- Desktop Backdrop Click Area -->
                 <div class="absolute inset-0" @click="showModal = false"></div>
                 
-                <div class="relative w-full h-[100vh] md:h-auto md:max-h-[95vh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
+                <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95vh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
                         <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
                         <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">

@@ -55,7 +55,7 @@
             </div>
 
             <!-- Confirm button — FIXED above mobile nav -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
                 <button
                     @click="confirmSelection"
                     :disabled="pendingNames.length === 0"
@@ -292,7 +292,7 @@
             </div>
             
             <!-- Fixed Bottom Action Area aligned with desktop container -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 pb-4 pt-3 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
                 <div class="w-full">
                     <button
                         @click="doGrouping"
@@ -312,7 +312,7 @@
 
             <!-- Ambient glow -->
             <div class="absolute inset-0 pointer-events-none">
-                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:min(400px,90vw);height:min(400px,90vw);background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
             </div>
 
             <!-- Bamboo cup + Flying Sticks Container -->

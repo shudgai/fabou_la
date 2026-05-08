@@ -159,7 +159,7 @@
         <div v-if="isDrawing" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
             <!-- Ambient glow -->
             <div class="absolute inset-0 pointer-events-none">
-                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+                <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:min(400px,90vw);height:min(400px,90vw);background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 70%);border-radius:50%;"></div>
             </div>
 
             <!-- Bamboo cup + Flying Sticks Container -->

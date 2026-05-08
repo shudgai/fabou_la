@@ -48,9 +48,17 @@
             </div>
 
             <!-- Search Input -->
-            <div v-if="showSearch && !hasAnyExpanded" class="absolute right-12 top-1/2 -translate-y-1/2 flex items-center animate-fade-in" style="width: calc(100% - 150px);">
-                <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
-                    class="w-full h-[36px] bg-slate-50 border border-slate-200 rounded-none px-4 text-[16px] outline-none focus:border-purple-300 transition-all shadow-inner">
+            <div v-if="showSearch && !hasAnyExpanded" class="px-2 py-2 w-full animate-fade-in">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..." 
+                        class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                    <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
             
             <!-- Header placeholder for alignment -->
@@ -59,7 +67,7 @@
 
 
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 360px;">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -81,7 +89,7 @@
 
 
         <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[10px] py-3 pb-32 relative z-[1] w-full">
+        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full">
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 w-full">
                 <!-- Removed top add button -->
@@ -136,7 +144,7 @@
                             </div>
                         </div>
                         
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
                                 <div class="flex items-center justify-between mb-2">
@@ -261,7 +269,7 @@
                             </div>
                         </div>
                         
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[10px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
 
                             
                             <div class="relative">
@@ -496,7 +504,7 @@
 
             <!-- Center Add Button -->
             <button @click.stop="showAddMenu = true" 
-                class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-95 text-white bg-blue-50/50">
+                class="h-full px-4 rounded-none flex items-center justify-center transition-all active:scale-95 text-white bg-indigo-600 shadow-sm">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
 

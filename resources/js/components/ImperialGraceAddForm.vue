@@ -4,7 +4,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100vh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
+        <div class="relative w-full h-[100dvh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7vh]">
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
@@ -153,7 +153,7 @@
                                         </label>
                                         <div class="relative">
                                             <input v-model="p.obtained_date" type="text" placeholder="日期" 
-                                                class="w-full h-[46px] rounded-2xl bg-white px-3 font-black text-slate-900 border border-slate-200 shadow-sm outline-none text-[15px] pr-8" style="font-size: 15px !important;">
+                                                class="w-full h-[46px] rounded-2xl bg-white px-3 font-black text-slate-900 border border-slate-200 shadow-sm outline-none text-[16px] pr-8" style="font-size: 16px !important;">
                                             <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-300 p-2 z-20 active:scale-90">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>

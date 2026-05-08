@@ -105,6 +105,7 @@ const handleSliderInput = (e) => {
     const val = parseInt(e.target.value);
     const map = { 2: 'font-large', 1: 'font-medium', 0: 'font-small' };
     setFontSize(map[val]);
+    setTimeout(() => { showFontMenu.value = false; }, 600);
 };
 
 const setFontSize = (key) => {

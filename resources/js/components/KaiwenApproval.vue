@@ -45,7 +45,7 @@
             </div>
             
             <!-- Confirm Action -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));">
                 <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
                     :disabled="selectionList.length === 0" 
                     class="w-full font-black text-[17px] py-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center shadow-lg" 
@@ -134,7 +134,7 @@
             </div>
 
             <!-- Bottom Action Button aligned with desktop container -->
-            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full">
+            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center w-full" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));">
                 <button @click="copyToLine" class="w-full bg-emerald-600 h-14 rounded-2xl font-black transition-all active:scale-[0.98] text-[17px] tracking-widest flex items-center justify-center space-x-2 shadow-lg" style="box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     <span style="color: #ffffff !important;">複製貼 LINE</span>

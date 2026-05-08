@@ -2,7 +2,7 @@
     <div class="bg-white h-[100dvh] flex flex-col relative overflow-hidden">
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden p-[28px] min-w-[360px]">
+            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden p-[28px] min-w-[320px]" style="max-width: calc(100vw - 32px);">
                 <div class="flex items-start justify-between mb-8">
                     <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
                         {{ persistentToast.msg }}
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Static Header -->
-        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[10px] w-full pb-2">
+        <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[15px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 32px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
             </div>
@@ -39,23 +39,18 @@
             </div>
         </div>
         
-        <!-- Search Component (Enhanced with persistent X) -->
-        <div v-if="showSearch" class="px-[10px] mt-2 animate-fade-in relative flex items-center group w-full">
-            <div class="absolute left-[22px] text-slate-400 pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+        <!-- Search Component -->
+        <div v-if="showSearch" class="px-2 py-2 animate-fade-in">
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
+                    class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
-            <input v-model="searchQuery" type="text" placeholder="搜尋項目..." 
-                class="w-full h-[36px] bg-white border border-slate-200 rounded-xl pl-9 pr-10 text-[15px] focus:ring-1 focus:ring-slate-300 outline-none transition-all shadow-sm">
-            
-            <!-- Persistent X: Clear or Close -->
-            <button @click="searchQuery ? searchQuery = '' : showSearch = false" 
-                class="absolute right-[18px] w-8 h-8 flex items-center justify-center text-slate-500 active:text-slate-900 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
         </div>
 
         <!-- Total Simple Overlay (Updated with Breakdowns) -->
@@ -75,9 +70,11 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full pb-[80px]">
-            <div v-if="loading" class="text-center py-10 text-xs text-slate-400">載入中...</div>
-            <div v-else-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
+        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full pb-[80px] relative">
+            <div v-if="loading" class="absolute inset-0 z-20 flex items-start justify-center pt-10 bg-white/60 pointer-events-none">
+                <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-slate-100 border-t-indigo-600"></div>
+            </div>
+            <div v-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
             <div v-else class="flex flex-col flex-1 px-2 pt-0">
                 <!-- Drill-down: Date Groups List (Level 1) -->
                 <template v-if="!activeDateGroup && !focusedId">
@@ -205,13 +202,13 @@
 
         <!-- Floating Pagination above MobileNavbar -->
         <div v-if="!addMode && !showBatchImport && activePaginationMeta && activePaginationMeta.last_page > 1" 
-             class="fixed bottom-[60px] left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
-            <div class="bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-slate-200/50 p-1 pointer-events-auto scale-[0.65] transform origin-bottom">
-                <pagination-buttons 
-                    :meta="activePaginationMeta" 
-                    @page-change="handlePageChange"
-                />
-            </div>
+             class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
+             style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+            <pagination-buttons 
+                :meta="activePaginationMeta" 
+                @page-change="handlePageChange" 
+                class="!mb-0 !mt-0"
+            />
         </div>
         <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="onBatchSuccess" />
         <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
