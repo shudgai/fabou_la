@@ -174,3 +174,8 @@ html, body {
 .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 24px);
 }
+
+/* 開文專區標題不受字體大小系統影響 — 全域規則 (備援, bypass Vue scoping) */
+body .kaiwen-module h1 {
+    font-size: 30px !important;
+}

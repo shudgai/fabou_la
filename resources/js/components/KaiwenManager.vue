@@ -1291,32 +1291,9 @@ const executeDelete = async () => {
     border: 2px solid white;
 }
 
-/* Kaiwen Specific Font Size Overrides */
-.date-text { font-size: 15px !important; }
-
-/* General elements */
-:global(body.font-small) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
-    font-size: 16px !important;
-}
-:global(body.font-medium) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
-    font-size: 18px !important;
-}
-:global(body.font-large) .kaiwen-module :where(.app-body, .app-title, p, td, span:not(.date-text), div:not(.date-text), h1, h3, label, [class*="text-["]) {
-    font-size: 21px !important;
-}
-
-/* High-specificity rules for form controls (browser UA override) */
-:global(body.font-small) .kaiwen-module input,
-:global(body.font-small) .kaiwen-module textarea {
-    font-size: 16px !important;
-}
-:global(body.font-medium) .kaiwen-module input,
-:global(body.font-medium) .kaiwen-module textarea {
-    font-size: 18px !important;
-}
-:global(body.font-large) .kaiwen-module input,
-:global(body.font-large) .kaiwen-module textarea {
-    font-size: 21px !important;
+/* 開文專區標題不受字體大小系統影響 */
+body .kaiwen-module h1 {
+    font-size: 30px !important;
 }
 
 </style>
