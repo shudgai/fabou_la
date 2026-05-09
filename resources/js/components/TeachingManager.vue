@@ -78,9 +78,7 @@
                         <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-xl active:scale-90 transition-all border border-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <button v-if="currentFolder !== null && !addMode" @click="toggleSort" class="px-2 py-1 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
-                            {{ sortDesc ? '新→舊' : '舊→新' }}
-                        </button>
+
                         <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
@@ -92,12 +90,17 @@
                           :style="{ color: (currentFolder && currentFolder.name === '閻王仙師' ? '#0f172a' : '#dc2626') + ' !important', fontSize: '28px !important', fontWeight: '400 !important' }">
                         {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
-                    <button v-if="currentFolder !== null" @click="reorderMode = !reorderMode" 
-                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-500 border border-transparent'"
-                            class="px-3 py-1.5 rounded-xl text-[16px] font-black transition-all active:scale-95 whitespace-nowrap" 
-                            :style="{ fontSize: '16px !important', color: reorderMode ? 'white !important' : '#64748b !important' }">
-                        {{ reorderMode ? '確認排序' : '修改排序' }}
-                    </button>
+                    <div v-if="currentFolder !== null" class="flex items-center space-x-2 shrink-0">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
+                        <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
+                                class="px-2 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap"
+                                :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
+                                style="font-size: 16px !important;">
+                            {{ reorderMode ? '確認排序' : '修改排序' }}
+                        </button>
+                    </div>
                 </div>
             </div>
 
