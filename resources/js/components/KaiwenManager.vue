@@ -115,8 +115,8 @@
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
                                 </div>
-                                <h3 class="text-[18px] font-normal text-slate-900 tracking-[0.2em] leading-[1.6]">
-                                    {{ post.title || '無抬頭' }}
+                                <h3 class="text-[18px] font-normal text-slate-900 tracking-[0.2em] leading-[1.6] whitespace-pre-line">
+                                    {{ (post.title || '無抬頭').replace(/\s+/g, '').replace(/(.{7})/g, '$1\n').trim() }}
                                 </h3>
                             </div>
 
