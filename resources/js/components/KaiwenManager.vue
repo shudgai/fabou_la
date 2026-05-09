@@ -325,10 +325,10 @@
 
                         <div class="space-y-1">
                             <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5">
-                                <div v-for="(char, i) in titleChars" :key="i" class="flex items-center space-x-1.5">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5 overflow-x-hidden">
+                                <div v-for="(char, i) in titleChars" :key="i" class="grid grid-cols-7 gap-1">
                                     <!-- Acrostic char box (1st cell) -->
-                                    <div class="w-[42px] h-[42px] shrink-0 flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 
+                                    <div class="aspect-square flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 
                                          :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }">
                                         {{ char }}
                                     </div>
@@ -341,7 +341,7 @@
                                         :value="(weeklyLines[i] || '')[j-1] || ''"
                                         @input="onWeeklyCellInput($event, i, j-1)"
                                         @compositionend="onWeeklyCellCompositionEnd($event, i, j-1)"
-                                        class="w-[42px] h-[42px] shrink-0 text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors !font-black !text-[#0f172a] min-w-0"
+                                        class="aspect-square text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors !font-black !text-[#0f172a] min-w-0"
                                         :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }"
                                     >
                                 </div>
