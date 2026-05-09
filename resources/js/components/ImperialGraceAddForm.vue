@@ -254,11 +254,16 @@
                                             <div v-if="row.c1 && row.c1 !== '-'" class="text-[11px] text-slate-400 font-bold leading-tight" style="font-size: 11px !important;">{{ row.c1 }}</div>
                                         </td>
                                         <td class="px-4 py-3 align-top">
-                                            <div v-for="(p, pIdx) in row._dharma_name_registries" :key="pIdx" class="text-[13px] font-black text-slate-700 mb-1" style="font-size: 13px !important;">
-                                                {{ p.custom_name }} <span class="text-[10px] text-slate-400">{{ p.status }}</span>
+                                            <div v-for="(p, pIdx) in row._dharma_name_registries" :key="pIdx" class="text-[13px] font-black text-slate-700 mb-1.5 flex flex-wrap items-center gap-x-1" style="font-size: 13px !important;">
+                                                <span class="text-indigo-600">+</span>
+                                                <span>{{ p.custom_name }}</span>
+                                                <span class="text-slate-300 mx-0.5">/</span>
+                                                <span class="text-slate-400 font-normal">{{ p.obtained_date || '-' }}</span>
+                                                <span class="text-slate-300 mx-0.5">/</span>
+                                                <span :class="p.status === '未求得' ? 'text-red-500' : (p.status === '已求得' ? 'text-blue-500' : 'text-emerald-500')">{{ p.status }}</span>
                                             </div>
-                                            <div v-if="row._manualRemarks" class="text-[11px] text-amber-600 font-bold italic" style="font-size: 11px !important;">
-                                                {{ row._manualRemarks }}
+                                            <div v-if="row._manualRemarks" class="text-[11px] text-amber-600 font-bold italic mt-2 border-t border-amber-50 pt-1" style="font-size: 11px !important;">
+                                                備註: {{ row._manualRemarks }}
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 align-top text-center">

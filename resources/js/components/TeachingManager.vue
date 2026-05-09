@@ -5155,10 +5155,13 @@ watch(() => form.value.dharma_name_ids, (newIds) => {
         const name = getDharmaNameText(newIds[0]);
         if (dharmaSearchQuery.value !== name) dharmaSearchQuery.value = name;
     } else if (newIds.length === 0) {
-        dharmaSearchQuery.value = '';
+        // Special case: "在場全體" is a virtual group with no IDs, don't clear it
+        if (dharmaSearchQuery.value !== '在場全體') {
+            dharmaSearchQuery.value = '';
+        }
     } else {
-        const isGroupMatch = (groups.value || []).some(g => g.name === dharmaSearchQuery.value);
-        if (!isGroupMatch) {
+        const isGroupMatch = (groups.value || []).some(g => g.name === dharmaSearchQuery.value || formatGroupName(g.name) === dharmaSearchQuery.value);
+        if (!isGroupMatch && dharmaSearchQuery.value !== '在場全體') {
             dharmaSearchQuery.value = '';
         }
     }
