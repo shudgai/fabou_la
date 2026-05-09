@@ -14,26 +14,25 @@
             @cancel="addMode = null"
         />
         <!-- Header (Shared) -->
-        <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[200] w-full" style="padding: 8px 10px; min-height: 52px;">
-            <div class="flex items-center min-w-0 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
+        <div class="flex items-start bg-white sticky top-0 z-[200] w-full" style="padding: 6px 10px;">
+            <div class="cursor-pointer shrink-0 pt-[2px]" @click="resetToRoot">
+                <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
                     開文專區
                 </h1>
             </div>
 
-            <!-- Tab Switcher -->
-            <div class="flex items-center space-x-2 ml-auto mr-1 animate-fade-in shrink-0">
+            <div class="flex flex-row items-center ml-3 mt-[3px] animate-fade-in gap-3">
                 <button @click="currentTab = 'weekly'" 
-                    :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab"
-                    :style="{ color: currentTab === 'weekly' ? 'white !important' : 'inherit' }">
-                    <span :class="currentTab === 'weekly' ? '!text-white' : ''" style="font-size: 14px !important;">每週開文</span>
+                    :class="currentTab === 'weekly' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
+                    class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
+                    style="font-size: 17px !important;">
+                    每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
-                    :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab"
-                    :style="{ color: currentTab === 'self' ? 'white !important' : 'inherit' }">
-                    <span :class="currentTab === 'self' ? '!text-white' : ''" style="font-size: 14px !important;">自行開文</span>
+                    :class="currentTab === 'self' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
+                    class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
+                    style="font-size: 17px !important;">
+                    自行開文
                 </button>
             </div>
         </div>
@@ -414,10 +413,10 @@
             <!-- Form Footer (Fixed above Navbar) -->
             <div class="px-4 py-[2px] bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
                  style="bottom: calc(7vh + env(safe-area-inset-bottom));">
-                <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 px-4 h-[48px] rounded-2xl font-black text-[16px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest" style="font-size: 16px !important;">取消返回</button>
+                <div class="max-w-2xl mx-auto w-full grid grid-cols-2 gap-4">
+                    <button @click="addMode = null" class="px-4 h-[48px] rounded-2xl font-black text-[16px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest" style="font-size: 16px !important;">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
-                        class="flex-[2] px-4 h-[48px] rounded-2xl font-black text-[16px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]" style="font-size: 16px !important; color: white !important;">
+                        class="px-4 h-[48px] rounded-2xl font-black text-[16px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]" style="font-size: 16px !important; color: white !important;">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>

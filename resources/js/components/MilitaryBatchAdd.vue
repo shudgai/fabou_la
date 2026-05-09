@@ -169,7 +169,7 @@ const persistentToast = ref(null);
 
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {
-        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數(閻尊數量閻閽數量)";
+        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數";
     }
     if (props.armyType === '耀紫軍') {
         return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數(龍勝數量龍戰數量)";

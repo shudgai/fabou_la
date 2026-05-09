@@ -67,8 +67,8 @@
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-0 w-[310px] h-[310px] relative transition-all shadow-sm">
                         <div class="relative w-[310px] h-[310px]">
                             <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#rm-gold-grad-global)" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#rm-gold-grad-global)" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#b91c1c" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#b91c1c" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
                                 <div class="leading-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] text-center !font-black !text-[#b91c1c]" style="font-size: 42px !important;">重大皇恩<br>登記簿</div>
@@ -81,25 +81,23 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 gap-[10px] p-2 place-items-center max-w-xl mx-auto">
-<button v-for="folder in folders" :key="folder.id" 
-                         @click="currentFolder = folder"
-                         :class="[
-                             'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative bg-white'
-                         ]">
+                <div v-else class="flex flex-col items-center gap-[4px] mx-auto">
+                    <button v-for="folder in folders" :key="folder.id" 
+                             @click="currentFolder = folder"
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative"
+                             :class="[]">
                         
 <div class="relative w-[163px] h-[163px]">
                               <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
-                                    fill="url(#rm-gold-grad-global)" />
+                                    fill="#b91c1c" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
-                                    fill="url(#rm-gold-grad-global)" 
+                                    fill="#b91c1c" 
                                     stroke="rgba(255,255,255,0.6)" stroke-width="1" />
                             </svg>
                             
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-1 pointer-events-none">
-                        <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
-                             :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
+                         <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black !text-[#fbbf24]"
                              style="font-size: 24px !important;">
                              {{ folder.name }}
                         </div>

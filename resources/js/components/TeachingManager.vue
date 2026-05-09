@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-white h-full flex flex-col overflow-clip text-slate-900">
-        <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
+    <div class="bg-white h-full flex flex-col text-slate-900">
+        <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
         <option v-for="t in instrumentTreasures" :key="t.id" :value="t.name" />
@@ -161,16 +161,15 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
+                <div class="flex flex-col items-center gap-[4px]">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white rounded-none w-[198px] h-[198px] p-2">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] p-2">
                         <div class="relative w-[163px] h-[163px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
-                            <!-- Label & Pill Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"

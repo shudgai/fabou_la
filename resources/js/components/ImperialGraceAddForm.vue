@@ -284,8 +284,8 @@
             <!-- Footer Action -->
             <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
-                    class="w-full max-w-md bg-indigo-600 h-[48px] rounded-2xl text-white font-black text-[16px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
-                    style="font-size: 16px !important; color: white !important;">
+                    class="w-full max-w-md bg-indigo-600 h-[48px] rounded-2xl text-white font-black text-[18px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
+                    style="font-size: 18px !important; color: white !important;">
                     {{ isSaving ? '處理中...' : (localMode === 'single' ? '確認載錄' : `開始載錄這 ${excelRows.length} 筆資料`) }}
                 </button>
             </div>
