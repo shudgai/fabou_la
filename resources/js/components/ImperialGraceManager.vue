@@ -33,19 +33,11 @@
                 </h1>
             </div>
             <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto md:hidden pr-2" style="padding-top: 10px;">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
-                </button>
-                <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
-                        class="px-2 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap"
-                        :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
-                        style="font-size: 16px !important;">
-                    {{ reorderMode ? '確認排序' : '修改排序' }}
-                </button>
                 <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-white" title="回到清單">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
+
         </div>
 
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
@@ -186,9 +178,18 @@
 
             <!-- Header for Level 2 (Mobile Only) -->
             <div class="flex flex-col border-b border-white w-full bg-white md:hidden sticky top-0 z-[60]">
-                <div class="px-[15px] pt-0 pb-[8px] bg-slate-50/50 flex items-end justify-between relative">
+                <div class="px-[15px] pt-0 pb-[8px] bg-slate-50/50 flex items-center justify-between relative">
                     <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
-                    <div class="absolute left-1/2 -translate-x-1/2 z-[60] flex items-center justify-center scale-90">
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
+                            {{ sortDesc ? '新→舊' : '舊→新' }}
+                        </button>
+                        <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
+                                class="px-2 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap"
+                                :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
+                                style="font-size: 16px !important;">
+                            {{ reorderMode ? '確認排序' : '修改排序' }}
+                        </button>
                     </div>
                 </div>
             </div>
