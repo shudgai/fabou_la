@@ -161,7 +161,7 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="flex flex-col items-center">
+                <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] p-2">

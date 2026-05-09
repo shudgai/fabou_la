@@ -81,7 +81,7 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="flex flex-col items-center gap-[4px] mx-auto">
+                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
                     <button v-for="folder in folders" :key="folder.id" 
                              @click="currentFolder = folder"
                               class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative"
