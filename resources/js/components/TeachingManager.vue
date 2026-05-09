@@ -162,10 +162,10 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="grid grid-cols-2 gap-[10px] p-4 place-items-center">
+                <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white rounded-none shadow-sm w-[198px] h-[198px]">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative bg-white rounded-none w-[198px] h-[198px] p-2">
                         <div class="relative w-[163px] h-[163px]">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#tm-folderGradBase)" style="fill: #ef4444;" />

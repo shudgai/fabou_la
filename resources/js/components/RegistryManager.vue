@@ -85,11 +85,11 @@
 <button v-for="folder in folders" :key="folder.id" 
                          @click="currentFolder = folder"
                          :class="[
-                             'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[220px] h-[220px] relative bg-white shadow-sm'
+                             'flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative bg-white'
                          ]">
                         
-<div class="relative w-[180px] h-[180px]">
-                              <svg class="w-full h-full transition-transform group-hover:scale-105 drop-shadow-sm" viewBox="0 0 64 64" fill="none">
+<div class="relative w-[163px] h-[163px]">
+                              <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
                                     fill="url(#rm-gold-grad-global)" />
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
@@ -100,7 +100,7 @@
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-1 pointer-events-none">
                         <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
                              :class="folder.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'"
-                             style="font-size: 23px !important;">
+                             style="font-size: 24px !important;">
                              {{ folder.name }}
                         </div>
                                 <div class="mt-1 flex items-center">
