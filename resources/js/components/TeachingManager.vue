@@ -422,8 +422,8 @@
                                         <!-- Item Preview inside card -->
                                         <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-slate-100 space-y-1">
                                             <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">已識別清單：</div>
-                                            <div v-for="it in record.items" :key="it.uid" class="text-[13px] text-indigo-600 font-bold flex items-center">
-                                                <span class="mr-1.5 opacity-60">💎</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
+                                            <div v-for="(it, iIdx) in record.items" :key="it.uid" class="text-[13px] text-indigo-600 font-bold flex items-center">
+                                                <span class="text-indigo-400/80 mr-1.5 font-sans font-black text-[12px]">{{ iIdx + 1 }}.</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
                                                 <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-slate-300 hover:text-red-500">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
                                                 </button>
@@ -567,7 +567,7 @@
                                         <div class="text-[13px] text-slate-400 font-bold px-2 mb-0.5 text-left">法寶名稱</div>
                                         <div class="flex items-center">
                                             <div class="flex-1 border-2 border-slate-100 rounded-2xl bg-slate-50/50 flex items-center transition-all focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-md py-[11px] relative">
-                                                <input v-model="newItemName" ref="treasureInput" @input="activeTreasureDropdownId = 'main'"
+                                                <input v-model="newItemName" ref="treasureInput" @input="activeTreasureDropdownId = 'main'" @click.stop
                                                        autocomplete="off"
                                                        class="treasure-name-input w-full bg-transparent border-none px-4 text-[18px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-slate-300">
                                                 <div class="flex items-center space-x-1 pr-2">
@@ -601,7 +601,7 @@
                                         <div class="text-[13px] text-slate-400 font-bold px-2 mb-0.5 text-center">天份</div>
                                         <div class="border-2 border-slate-100 rounded-2xl bg-slate-50/50 flex items-center px-3 transition-all focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-md py-[11px] relative">
                                             <input v-model="newItemDays" 
-                                                   @focus="activeDaysDropdownId = 'main'"
+                                                   @focus="activeDaysDropdownId = 'main'" @click.stop
                                                    class="w-full bg-transparent border-none text-[18px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder-slate-300" 
                                                    placeholder="0">
                                             <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
@@ -690,16 +690,38 @@
                                     <div v-else-if="magicItemCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                <input v-model="newItemMainTimes" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainTimes" 
+                                                       @focus="activeDaysDropdownId = 'mainTimes'" @click.stop
+                                                       class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
+                                                
+                                                <!-- Custom Times Dropdown -->
+                                                <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="'mt'+n" 
+                                                         @click.stop="newItemMainTimes = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="space-y-1">
                                             <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
-                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                <input v-model="newItemMainHours" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                            <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainHours" 
+                                                       @focus="activeDaysDropdownId = 'mainHours'" @click.stop
+                                                       class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
+                                                
+                                                <!-- Custom Hours Dropdown -->
+                                                <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="'mh'+n" 
+                                                         @click.stop="newItemMainHours = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div v-if="!hasSubDetailData && !newItemMainRemarks.trim()" class="space-y-1">
@@ -734,7 +756,7 @@
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">天數</div>
                                                 <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
                                                     <input v-model="newItemSubDetails" 
-                                                           @focus="activeDaysDropdownId = 'subDetails'"
+                                                           @focus="activeDaysDropdownId = 'subDetails'" @click.stop
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
                                                     
@@ -892,7 +914,7 @@
                                                 </div>
                                                 <div class="border border-slate-400 rounded-2xl bg-blue-50/40 overflow-visible flex items-center px-1 transition-all py-[10px] relative">
                                                     <input v-model="newItemDetailsExtraDays"
-                                                           @focus="activeDaysDropdownId = 'subExtra'"
+                                                           @focus="activeDaysDropdownId = 'subExtra'" @click.stop
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" 
                                                            placeholder="0">
                                                     <span class="text-slate-400 font-black mr-0.5 shrink-0 text-[12px]">天</span>
@@ -938,9 +960,20 @@
                                                     <div class="text-[11px] text-slate-400 font-bold">天份</div>
                                                     <button @click="stageContent" class="text-red-500 text-[20px] font-black leading-none active:scale-90 transition-all -mb-1">＋</button>
                                                 </div>
-                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                    <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                    <input v-model="newItemDetailsExtraDays" 
+                                                           @focus="activeDaysDropdownId = 'subExtraSlight'" @click.stop
+                                                           class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
+                                                    
+                                                    <!-- Custom Days Dropdown -->
+                                                    <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-for="n in 9" :key="'ses'+n" 
+                                                             @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                            {{ n }}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -948,16 +981,38 @@
                                         <div v-else-if="magicItemSubCategory === '金丹'" class="grid grid-cols-3 gap-2">
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                        <input v-model="newItemSubTimes" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemSubTimes" 
+                                                               @focus="activeDaysDropdownId = 'subTimes'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
+                                                        
+                                                        <!-- Custom Times Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'st'+n" 
+                                                                 @click.stop="newItemSubTimes = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="space-y-1">
                                                     <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                        <input v-model="newItemSubHours" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemSubHours" 
+                                                               @focus="activeDaysDropdownId = 'subHours'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
+                                                        
+                                                        <!-- Custom Hours Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'sh'+n" 
+                                                                 @click.stop="newItemSubHours = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="space-y-1">
@@ -965,9 +1020,20 @@
                                                         <div class="text-[11px] text-slate-400 font-bold">天份</div>
                                                         <button @click="stageContent" class="text-red-500 text-[20px] font-black leading-none active:scale-90 transition-all -mb-1">＋</button>
                                                     </div>
-                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px]">
-                                                        <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemDetailsExtraDays" 
+                                                               @focus="activeDaysDropdownId = 'subExtra2'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
+                                                        
+                                                        <!-- Custom Days Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'se2'+n" 
+                                                                 @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -986,7 +1052,7 @@
                                                         </div>
                                                         <div class="border border-slate-100 rounded-2xl bg-slate-50/20 flex items-center px-3 py-[10px] relative overflow-visible">
                                                             <input v-model="newItemDetailsExtraDays" 
-                                                                   @focus="activeDaysDropdownId = 'extraDaysModal'"
+                                                                   @focus="activeDaysDropdownId = 'extraDaysModal'" @click.stop
                                                                    class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
                                                             
@@ -1132,10 +1198,10 @@
                                         {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
                                     </div>
                                     <div class="space-y-2.5">
-                                        <div v-for="item in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-slate-200">
+                                        <div v-for="(item, idx) in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-slate-200">
                                             <div class="flex-1">
                                                 <div class="text-[14px] font-bold flex items-start leading-tight text-slate-700">
-                                                    <span class="text-slate-400 mr-1.5 shrink-0">+ </span>
+                                                    <span class="w-5 h-5 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-[10px] font-black mr-2 shrink-0 mt-0.5">{{ idx + 1 }}</span>
                                                     <span v-if="item.name && !shouldHideContentName(gName, item.name)" class="text-slate-500 mr-1.5 shrink-0">{{ item.name }}</span>
                                                     <span class="text-slate-900">{{ item.details }} <span v-if="getCleanRemark(item.remarks || item.sub_name, item.details)" class="text-slate-400 font-normal">({{ getCleanRemark(item.remarks || item.sub_name, item.details) }})</span></span>
                                                 </div>
@@ -1233,7 +1299,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[7px] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 pt-[7px] pb-[0px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]" style="padding-bottom: calc(0px + env(safe-area-inset-bottom, 0px));">
+                            <div class="fixed bottom-[calc(7vh+env(safe-area-inset-bottom))] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-[2px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
                                 <div class="grid grid-cols-2 gap-4">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] h-[55px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>
@@ -1795,7 +1861,7 @@
                                 <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[16px] font-black text-slate-900 pl-1">賜降：</div>
                                 <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[16px] text-slate-900 font-normal flex flex-col px-1">
                                     <div class="flex items-center">
-                                        {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
+                                        <span class="text-slate-400 mr-2 font-outfit">{{ gIdx + 1 }}.</span> {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
                                     </div>
                                     <div v-if="group.length > 1 || (group[0] && group[0].name)" class="pl-6 space-y-0.5 mt-1">
                                         <div v-for="m in group" :key="m.uid">

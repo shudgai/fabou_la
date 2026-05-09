@@ -25,12 +25,14 @@
             <div class="flex items-center space-x-2 ml-auto mr-1 animate-fade-in shrink-0">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab">
+                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab"
+                    :style="{ color: currentTab === 'weekly' ? 'white !important' : 'inherit' }">
                     <span :class="currentTab === 'weekly' ? '!text-white' : ''" style="font-size: 14px !important;">每週開文</span>
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? 'bg-purple-600 shadow-lg !text-white' : 'bg-slate-100 !text-[#94a3b8]'"
-                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab">
+                    class="px-2.5 py-1.5 font-black rounded-xl transition-all whitespace-nowrap flex items-center relative kaiwen-tab"
+                    :style="{ color: currentTab === 'self' ? 'white !important' : 'inherit' }">
                     <span :class="currentTab === 'self' ? '!text-white' : ''" style="font-size: 14px !important;">自行開文</span>
                 </button>
             </div>
@@ -49,10 +51,10 @@
                 </div>
                 <div v-if="persistentToast.type === 'deleteConfirm'" class="flex space-x-4">
                     <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-500 h-[52px] rounded-2xl border border-slate-200 text-[18px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                    <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100">確定刪除</button>
+                    <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-purple-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-purple-100">確定</button>
+                    <button @click="persistentToast = null" class="bg-purple-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-purple-100" style="color: white !important;">確定</button>
                 </div>
             </div>
         </div>
@@ -168,7 +170,7 @@
                                 <p v-else class="text-[18px] font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
                             <div v-else-if="post.status === '合格'" class="pt-4">
-                                <button @click.stop="openPostMode(post, 'weekly')" class="w-full py-4 bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black text-[17px] tracking-widest shadow-lg shadow-purple-100 active:scale-95 transition-all flex items-center justify-center">
+                                <button @click.stop="openPostMode(post, 'weekly')" class="w-full py-4 bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black text-[17px] tracking-widest shadow-lg shadow-purple-100 active:scale-95 transition-all flex items-center justify-center" style="color: white !important;">
                                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     上傳殿中貼文圖片
                                 </button>
@@ -293,16 +295,19 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1.5">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">審核狀態</label>
-                            <div class="flex items-center space-x-2 h-[44px]">
-                                <button @click="form.status = null" 
-                                    class="flex-1 h-full transition-all active:scale-95 tracking-widest text-[16px] font-black"
-                                    :class="!form.status ? '!text-[#64748b]' : '!text-[#cbd5e1]'">待定</button>
-                                <button @click="form.status = '合格'" 
-                                    :class="form.status === '合格' ? 'bg-emerald-600 !text-white' : 'bg-slate-50 !text-[#94a3b8]'" 
-                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black">合格</button>
-                                <button @click="form.status = '不合格'" 
-                                    :class="form.status === '不合格' ? 'bg-rose-600 !text-white' : 'bg-slate-50 !text-[#94a3b8]'" 
-                                    class="flex-1 h-full rounded-xl transition-all active:scale-95 tracking-widest text-[16px] font-black">不合格</button>
+                            <div class="flex items-center h-[44px] w-full relative z-10">
+                                <button @click.stop="form.status = null" 
+                                    class="flex-1 h-full transition-all active:scale-95 tracking-widest text-[16px] cursor-pointer bg-transparent"
+                                    :class="!form.status ? 'font-black' : 'font-normal'"
+                                    :style="{ color: !form.status ? '#1e293b !important' : '#cbd5e1' }">待定</button>
+                                <button @click.stop="form.status = '合格'" 
+                                    class="flex-1 h-full transition-all active:scale-95 tracking-widest text-[16px] cursor-pointer bg-transparent"
+                                    :class="form.status === '合格' ? 'font-black' : 'font-normal'"
+                                    :style="{ color: form.status === '合格' ? '#059669 !important' : '#cbd5e1' }">合格</button>
+                                <button @click.stop="form.status = '不合格'" 
+                                    class="flex-1 h-full transition-all active:scale-95 tracking-widest text-[16px] cursor-pointer bg-transparent"
+                                    :class="form.status === '不合格' ? 'font-black' : 'font-normal'"
+                                    :style="{ color: form.status === '不合格' ? '#dc2626 !important' : '#cbd5e1' }">不合格</button>
                             </div>
                         </div>
 
@@ -391,7 +396,7 @@
                                     <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                                 </div>
                                 <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
-                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 h-[48px] bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="font-size: 16px !important;">
+                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 h-[48px] bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="font-size: 16px !important; color: white !important;">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                         <span class="app-body">上傳圖片檔案</span>
                                     </button>
@@ -407,12 +412,12 @@
             </div>
 
             <!-- Form Footer (Fixed above Navbar) -->
-            <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
+            <div class="px-4 py-[2px] bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
                  style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
                     <button @click="addMode = null" class="flex-1 px-4 h-[48px] rounded-2xl font-black text-[16px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest" style="font-size: 16px !important;">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
-                        class="flex-[2] px-4 h-[48px] rounded-2xl font-black text-[16px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]" style="font-size: 16px !important;">
+                        class="flex-[2] px-4 h-[48px] rounded-2xl font-black text-[16px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]" style="font-size: 16px !important; color: white !important;">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>

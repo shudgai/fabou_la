@@ -42,31 +42,48 @@
 
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
         <teleport to="body">
-        <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
-            <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-white overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
-                <div class="flex items-start justify-between mb-8">
-                    <span class="text-[17px] font-black text-slate-900 leading-relaxed tracking-widest">
+        <div v-if="persistentToast" class="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-md animate-fade-in pointer-events-auto">
+            <div class="bg-white w-full max-w-[340px] rounded-[48px] p-10 shadow-[0_30px_100px_rgba(0,0,0,0.3)] animate-slide-up flex flex-col items-center relative border border-white/50">
+                
+                <!-- Icon Section -->
+                <div v-if="persistentToast.type === 'success'" class="mb-6">
+                    <svg class="w-12 h-12 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 13l4 4L19 7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div v-else-if="persistentToast.type === 'error'" class="mb-6">
+                    <svg class="w-12 h-12 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div v-else-if="persistentToast.type === 'deleteConfirm'" class="mb-6">
+                    <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                </div>
+
+                <div class="w-full text-center mb-10">
+                    <span class="text-[20px] font-black text-slate-900 leading-relaxed block px-2">
                         {{ persistentToast.msg }}
                     </span>
-                    <button @click="persistentToast = null" class="ml-6 text-slate-400 hover:text-slate-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
                 </div>
-                <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="flex space-x-4">
+
+                <div v-if="['confirm', 'deleteConfirm', 'mismatchConfirm'].includes(persistentToast.type)" class="w-full flex flex-col space-y-3">
                     <template v-if="persistentToast.type === 'deleteConfirm'">
-                        <button @click="persistentToast = null" class="flex-1 bg-slate-100 text-slate-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all">取消</button>
-                        <button @click="executeDelete" class="flex-1 bg-red-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定刪除</button>
+                        <button @click="executeDelete" class="w-full bg-red-600 h-[44px] rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100" style="color: white !important;">確定刪除</button>
+                        <button @click="persistentToast = null" class="w-full bg-slate-100 text-slate-500 h-[40px] rounded-2xl text-[15px] font-bold tracking-widest active:scale-95 transition-all">取消</button>
                     </template>
                     <template v-else-if="persistentToast.type === 'mismatchConfirm'">
-                        <button @click="saveSingle('correct')" class="flex-1 bg-amber-500 h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ currentFolder?.name }}</button>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 h-[48px] rounded-2xl border border-white text-[15px] font-black tracking-tighter active:scale-95 transition-all whitespace-nowrap shadow-md" style="color: white !important;">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="saveSingle('correct')" class="w-full bg-amber-500 h-[44px] rounded-2xl text-[16px] font-black active:scale-95 transition-all shadow-lg shadow-amber-100" style="color: white !important;">存入{{ currentFolder?.name }}</button>
+                        <button @click="saveSingle('shunt')" class="w-full bg-indigo-600 h-[44px] rounded-2xl text-[16px] font-black active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">存入{{ getMasterName(form.master_id) }}</button>
+                        <button @click="persistentToast = null" class="w-full h-[36px] text-slate-400 font-bold text-[14px]">取消</button>
                     </template>
                     <template v-else>
-                        <button @click="saveSingle('shunt')" class="flex-1 bg-indigo-600 h-[48px] rounded-2xl border border-white text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
+                        <button @click="saveSingle('shunt')" class="w-full bg-indigo-600 h-[44px] rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
                     </template>
                 </div>
-                <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 px-8 py-2.5 rounded-2xl text-[17px] font-black tracking-widest active:scale-95 transition-all shadow-md" style="color: white !important;">確定</button>
+                <div v-else class="w-full">
+                    <button @click="persistentToast = null" class="w-full bg-[#5c56e0] h-[44px] rounded-[22px] text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-[0_10px_30px_rgba(92,86,224,0.3)]" style="color: white !important;">確認</button>
                 </div>
             </div>
         </div>
@@ -839,7 +856,7 @@ const copyAsTextFile = (reg) => {
     try {
         const text = formatRegistryForFile(reg);
         navigator.clipboard.writeText(text);
-        persistentToast.value = { message: '內容已複製到剪貼簿', type: 'success' };
+        persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 3000);
     } catch (err) {
         console.error('Copy failed:', err);
@@ -898,7 +915,7 @@ const saveInlineEdit = async () => {
     isSaving.value = true;
     try {
         await axios.post(`/imperial-graces/registry/${inlineEditId.value}`, { ...inlineEditData.value, _method: 'PATCH' });
-        persistentToast.value = { msg: '✓ 已更新載錄', type: 'success' };
+        persistentToast.value = { msg: '已更新載錄', type: 'success' };
         inlineEditId.value = null;
         expandedId.value = null;
         await loadData(currentPage.value);
@@ -964,7 +981,7 @@ const executeDelete = async () => {
     if (!deleteConfirmId.value) return;
     try { 
         await axios.delete(`/imperial-graces/registry/${deleteConfirmId.value}`); 
-        persistentToast.value = { msg: '✓ 已成功刪除紀錄', type: 'success' };
+        persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         focusedId.value = null;
         expandedId.value = null;
@@ -987,7 +1004,7 @@ const copyOnly = async (reg) => {
     const text = formatRegistryForFile(reg);
     try {
         await navigator.clipboard.writeText(text);
-        persistentToast.value = { msg: '已複製資料,可至 LINE 貼上.', type: 'success' };
+        persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
     } catch (e) {
         persistentToast.value = { msg: '✖ 複製失敗', type: 'error' };
     }
@@ -1008,7 +1025,7 @@ const handleReorder = async (reg, newOrderStr) => {
     const newIndex = newOrder - 1;
     
     if (isNaN(newOrder) || oldIndex === -1 || newIndex < 0 || newIndex >= currentList.length) {
-        persistentToast.value = { msg: '✖ 無效的項次', type: 'error' };
+        persistentToast.value = { msg: '無效的項次', type: 'error' };
         return;
     }
     
@@ -1024,7 +1041,7 @@ const handleReorder = async (reg, newOrderStr) => {
         reorderMode.value = false;
         await loadData(currentPage.value);
     } catch (e) {
-        persistentToast.value = { msg: '✖ 順序更新失敗', type: 'error' };
+        persistentToast.value = { msg: '順序更新失敗', type: 'error' };
     }
 };
 
@@ -1034,9 +1051,9 @@ const copyListOnly = async () => {
         allRegistries.value.map(r => formatRegistryForFile(r).replace('【重大皇恩】\r\n', '')).join('\r\n\r\n');
     try {
         await navigator.clipboard.writeText(contents);
-        persistentToast.value = { msg: '已複製全部清單,可至 LINE 貼上.', type: 'success' };
+        persistentToast.value = { msg: '內容已複製到剪貼簿', type: 'success' };
     } catch (e) {
-        persistentToast.value = { msg: '✖ 複製失敗', type: 'error' };
+        persistentToast.value = { msg: '複製失敗', type: 'error' };
     }
     openMenuId.value = null;
 };
@@ -1056,10 +1073,10 @@ const exportListTxt = () => {
     try {
         const finalHeader = `【重大皇恩清單 - ${currentFolder.value.name} 完整清單】\r\n\r\n`;
         triggerSimpleDownload(finalHeader + contents, `重大皇恩清單_${currentFolder.value.name}_一筆一筆資料.txt`);
-        persistentToast.value = { msg: '✓ 文字檔匯出成功', type: 'success' };
+        persistentToast.value = { msg: '文字檔匯出成功', type: 'success' };
     } catch (e) {
         console.error(e);
-        persistentToast.value = { msg: '✖ 匯出失敗', type: 'error' };
+        persistentToast.value = { msg: '匯出失敗', type: 'error' };
     }
 };
 
@@ -1109,17 +1126,17 @@ const saveSingle = async (resolutionOrData = null) => {
     }
 
     if (!form.value.name) {
-        persistentToast.value = { msg: '錯誤：請輸入法寶名稱', type: 'error' };
+        persistentToast.value = { msg: '請輸入法寶名稱', type: 'error' };
         return;
     }
 
     if (!form.value.master_id) {
-        persistentToast.value = { msg: '錯誤：請選擇目標仙師', type: 'error' };
+        persistentToast.value = { msg: '請選擇目標仙師', type: 'error' };
         return;
     }
 
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
-        persistentToast.value = { msg: '錯誤：請輸入求得日期', type: 'error' };
+        persistentToast.value = { msg: '請輸入求得日期', type: 'error' };
         return;
     }
     
@@ -1134,10 +1151,10 @@ const saveSingle = async (resolutionOrData = null) => {
         let res;
         if (form.value.id) {
             res = await axios.post(`/imperial-graces/registry/${form.value.id}`, { ...form.value, _method: 'PATCH' });
-            persistentToast.value = { msg: '✓ 修改成功', type: 'success' };
+            persistentToast.value = { msg: '修改成功', type: 'success' };
         } else {
             res = await axios.post('/imperial-graces/registry', { ...form.value, master_id: finalMid });
-            persistentToast.value = { msg: '✓ 新增成功', type: 'success' };
+            persistentToast.value = { msg: '新增成功', type: 'success' };
         }
         
         if (targetMaster) {
@@ -1153,7 +1170,7 @@ const saveSingle = async (resolutionOrData = null) => {
         
         if (resolution === 'shunt' || isFromUnobtained) {
             persistentToast.value = { 
-                msg: `✓ 已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
+                msg: `已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
                 type: 'success',
                 duration: 1500 
             };
@@ -1164,7 +1181,7 @@ const saveSingle = async (resolutionOrData = null) => {
     } catch (e) {
         console.error('儲存失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '資料驗證失敗';
-        persistentToast.value = { msg: `✖ 儲存失敗：${serverMsg}`, type: 'error' };
+        persistentToast.value = { msg: `儲存失敗：${serverMsg}`, type: 'error' };
     } finally {
         isSaving.value = false;
     }
@@ -1176,7 +1193,7 @@ const handleFileUpload = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
         batchInput.value = e.target.result;
-        persistentToast.value = { msg: '✓ 檔案內容已載入', type: 'success' };
+        persistentToast.value = { msg: '檔案內容已載入', type: 'success' };
     };
     reader.readAsText(file);
     event.target.value = '';
@@ -1220,7 +1237,7 @@ const changeStatus = async (reg, nextStatus) => {
                     currentCategory.value = 'masters';
                     currentFolder.value = matchedFolder;
                     persistentToast.value = { 
-                        msg: `✓ 已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, 
+                        msg: `已改成【${nextStatus}】並回存至【${targetMaster.name}】資料夾內`, 
                         type: 'success',
                         duration: 1500
                     };
@@ -1230,7 +1247,7 @@ const changeStatus = async (reg, nextStatus) => {
     } catch (e) {
         console.error('狀態變更失敗:', e);
         const serverMsg = e.response?.data?.message || '資料驗證失敗';
-        persistentToast.value = { msg: `✖ 狀態變更失敗：${serverMsg}`, type: 'error' };
+        persistentToast.value = { msg: `狀態變更失敗：${serverMsg}`, type: 'error' };
     }
 };
 
@@ -1249,14 +1266,14 @@ const saveBatch = async (payload = null) => {
         } else {
             const lines = batchInput.value.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('【')); 
             if (lines.length === 0) {
-                persistentToast.value = { msg: '✖ 內容格式不正確', type: 'error' };
+                persistentToast.value = { msg: '內容格式不正確', type: 'error' };
                 isSaving.value = false;
                 return;
             }
             dataToSend.lines = lines;
         }
         await axios.post('/imperial-graces/registry/batch', dataToSend);
-        persistentToast.value = { msg: '✓ 多筆新增成功', type: 'success' };
+        persistentToast.value = { msg: '多筆新增成功', type: 'success' };
         const targetMaster = masters.value.find(m => String(m.id) === String(finalMasterId));
         if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
@@ -1273,7 +1290,7 @@ const saveBatch = async (payload = null) => {
     } catch (e) { 
         console.error('批次失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '格式解析錯誤或伺服器連線失敗';
-        persistentToast.value = { msg: `✖ 批次新增失敗：${serverMsg}`, type: 'error' };
+        persistentToast.value = { msg: `批次新增失敗：${serverMsg}`, type: 'error' };
     } finally {
         isSaving.value = false;
     }
