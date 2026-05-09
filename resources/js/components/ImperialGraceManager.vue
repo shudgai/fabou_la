@@ -1307,12 +1307,19 @@ const filteredRegistries = computed(() => {
     const statusOrder = { '未求得': 1, '已求得': 2, '已登記': 3 };
     
     filtered.sort((a, b) => {
-        // Priority 1: Status (always first)
+        // Priority 1: Status (always first to group by lifecycle)
         const orderA = statusOrder[a.status] || 99;
         const orderB = statusOrder[b.status] || 99;
         if (orderA !== orderB) return orderA - orderB;
 
-        // Priority 2: Master Order (Only for Unobtained Folder)
+        // Priority 2: Date (New to Old / Old to New)
+        const dateA = a.record_date || '';
+        const dateB = b.record_date || '';
+        if (dateA !== dateB) {
+            return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+        }
+
+        // Priority 3: Master Order (Only for Unobtained Folder, within same status/date)
         if (currentFolder.value.id === 'unobtained') {
             const masterOrderA = masters.value.findIndex(m => String(m.id) === String(a.master_id));
             const masterOrderB = masters.value.findIndex(m => String(m.id) === String(b.master_id));
@@ -1321,16 +1328,9 @@ const filteredRegistries = computed(() => {
             if (ma !== mb) return ma - mb;
         }
 
-        // Priority 3: Manual sort_order (within same status)
+        // Priority 4: Manual sort_order (within same status/date)
         if ((a.sort_order || 9999) !== (b.sort_order || 9999)) {
             return (a.sort_order || 9999) - (b.sort_order || 9999);
-        }
-        
-        // Priority 4: Date (within same status & sort_order)
-        const dateA = a.record_date || '';
-        const dateB = b.record_date || '';
-        if (dateA !== dateB) {
-            return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
         }
         
         // Priority 5: ID Fallback

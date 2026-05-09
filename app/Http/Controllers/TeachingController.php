@@ -23,6 +23,7 @@ class TeachingController extends Controller
         $mode = $request->query('mode'); // 'dates' or 'items'
         $perPage = $request->query('per_page', 15);
         $search = $request->query('search');
+        $sortDesc = filter_var($request->query('sortDesc', true), FILTER_VALIDATE_BOOLEAN);
         
         $user = auth()->user();
         $permissions = $user->getPermissions();
@@ -41,7 +42,7 @@ class TeachingController extends Controller
         $folderCounts['daily'] = $allCounts->sum('daily_total');
 
         if ($mode === 'dates') {
-            $data = $this->teachingService->getPaginatedDates($masterId, $perPage);
+            $data = $this->teachingService->getPaginatedDates($masterId, $perPage, $sortDesc);
             return response()->json([
                 'data' => $data,
                 'folderCounts' => $folderCounts
@@ -49,14 +50,14 @@ class TeachingController extends Controller
         }
 
         if ($date) {
-            $records = $this->teachingService->getByDate($date, $masterId);
+            $records = $this->teachingService->getByDate($date, $masterId, $sortDesc);
             return response()->json([
                 'records' => $records,
                 'folderCounts' => $folderCounts
             ]);
         }
 
-        $records = $this->teachingService->getAll($masterId, $perPage, $search);
+        $records = $this->teachingService->getAll($masterId, $perPage, $search, $sortDesc);
         return response()->json([
             'records' => $records,
             'folderCounts' => $folderCounts

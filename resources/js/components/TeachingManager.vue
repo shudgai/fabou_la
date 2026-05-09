@@ -2281,7 +2281,7 @@ const togglePreviewRecipients = (idx) => {
 
 const toggleSort = () => { sortDesc.value = !sortDesc.value; };
 const groupedRecords = computed(() => {
-    let list = visibleItems.value;
+    let list = [...visibleItems.value];
     // Server-side filtering is now used, so we don't need client-side filter here.
     // However, we keep the sorting logic.
     
@@ -3420,7 +3420,8 @@ const fetchItems = async (page = 1) => {
         const params = { 
             master_id: currentFolder.value?.id, 
             page: page,
-            search: searchQuery.value
+            search: searchQuery.value,
+            sortDesc: sortDesc.value ? 1 : 0
         };
         const isDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         if (isDaily) {
@@ -4495,6 +4496,10 @@ const handleDateInit = (date) => {
     // Moved initialization logic out of template to avoid re-renders
     return '';
 };
+
+watch(sortDesc, () => {
+    fetchItems(1);
+});
 
 watch(visibleItems, (newItems) => {
     const newCollapsed = new Set(collapsedDates.value);

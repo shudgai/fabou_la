@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class TeachingService
 {
-    public function getAll($masterId = null, $perPage = 15, $search = null)
+    public function getAll($masterId = null, $perPage = 15, $search = null, $sortDesc = true)
     {
         $user = auth()->user();
         $query = Teaching::with(['master', 'dharmaNames', 'user']);
@@ -31,10 +31,14 @@ class TeachingService
 
         $this->applyVisibilityFilter($query, $user);
 
-        return $query->latest('date')->orderBy('sort_order', 'desc')->latest('id')->paginate($perPage);
+        $direction = $sortDesc ? 'desc' : 'asc';
+        return $query->orderBy('date', $direction)
+            ->orderBy('sort_order', $direction)
+            ->orderBy('id', $direction)
+            ->paginate($perPage);
     }
 
-    public function getPaginatedDates($masterId = null, $perPage = 15)
+    public function getPaginatedDates($masterId = null, $perPage = 15, $sortDesc = true)
     {
         $user = auth()->user();
         $query = Teaching::query();
@@ -50,11 +54,11 @@ class TeachingService
         
         return $query->selectRaw('date, count(*) as count')
             ->groupBy('date')
-            ->orderBy('date', 'desc')
+            ->orderBy('date', $sortDesc ? 'desc' : 'asc')
             ->paginate($perPage);
     }
 
-    public function getByDate($date, $masterId = null)
+    public function getByDate($date, $masterId = null, $sortDesc = true)
     {
         $user = auth()->user();
         $query = Teaching::with(['master', 'dharmaNames', 'user'])
@@ -69,7 +73,8 @@ class TeachingService
         $this->applyVisibilityFilter($query, $user);
 
         
-        return $query->orderBy('sort_order', 'desc')->latest()->get();
+        $direction = $sortDesc ? 'desc' : 'asc';
+        return $query->orderBy('sort_order', $direction)->orderBy('id', $direction)->get();
     }
 
     public function create(array $data): Teaching
