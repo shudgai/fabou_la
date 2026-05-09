@@ -1817,7 +1817,7 @@
                             </div>
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
-                                <span class="text-[16px] font-normal text-slate-900 leading-tight">
+                                <span class="text-[17px] font-normal text-slate-900 leading-tight">
                                     {{ item.master_name }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
                                 </span>
                             </div>
@@ -1848,19 +1848,19 @@
                                 </div>
                             </div>
 
-                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[16px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
+                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
                                 {{ stripContentHeaders(item.content).trim() }}
                             </div>
 
                             <div v-if="item.items?.length > 0" class="pt-3 space-y-2">
-                                <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[16px] font-black text-slate-900 pl-1">賜降：</div>
-                                <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[16px] text-slate-900 font-normal flex flex-col px-1">
+                                <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[17px] font-black text-slate-900 pl-1">賜降：</div>
+                                <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[17px] text-slate-900 font-normal flex flex-col px-1">
                                     <div class="flex items-center">
                                         <span class="text-slate-400 mr-2 font-outfit">{{ gIdx + 1 }}.</span> {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
                                     </div>
                                     <div v-if="group.length > 1 || (group[0] && group[0].name)" class="pl-6 space-y-0.5 mt-1">
                                         <div v-for="(m, mIdx) in group" :key="m.uid">
-                                            <div v-if="(m.name && !shouldHideContentName(gName, m.name)) || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="text-[16px] text-slate-900 font-normal">
+                                            <div v-if="(m.name && !shouldHideContentName(gName, m.name)) || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="text-[17px] text-slate-900 font-normal">
                                                 <span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.{{ mIdx + 1 }}</span> {{ m.name ? m.name : (getMainDetails(group) ? '' : '項目') }}
                                                 {{ (m.details && (m.name || !getMainDetails(group))) ? (m.name ? ' : ' : '') + m.details : '' }}
                                                 <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="opacity-60 ml-1">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span>
@@ -1869,7 +1869,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="item.items_footer_remarks" class="text-[16px] text-slate-900 font-normal leading-tight pt-2 border-t border-slate-50 whitespace-pre-wrap">
+                            <div v-if="item.items_footer_remarks" class="text-[17px] text-slate-900 font-normal leading-tight pt-2 border-t border-slate-50 whitespace-pre-wrap">
                                 {{ item.items_footer_remarks }}
                             </div>
                         </div>
@@ -4442,9 +4442,17 @@ const processBatchText = () => {
                 contentLines.push(l);
             }
         });
-        // Final record content is the cleaned text block (minus headers) plus "完畢" 
-        // to match Image 3 visual standard.
-        let cleanedRecordContent = stripContentHeaders(text);
+        // Final record content: Split by "賜降：" to avoid duplication in the items list
+        let contentPart = text;
+        const treasureStart = text.indexOf('賜降：');
+        if (treasureStart > -1) {
+            contentPart = text.substring(0, treasureStart);
+        } else if (record.items.length > 0) {
+            // Heuristic: If we parsed items but no "賜降" header, remove detected item lines from content
+            contentPart = contentLines.join('\n');
+        }
+        
+        let cleanedRecordContent = stripContentHeaders(contentPart);
         if (block.includes('完畢') && !cleanedRecordContent.includes('完畢')) {
             cleanedRecordContent += "\n\n完畢";
         }
