@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel', false)"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[0px] md:pb-0">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[0px] md:pb-0">
             <!-- Header (Matched to Single Add Form) -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
                 <div class="flex-1 flex flex-col justify-center min-w-0">

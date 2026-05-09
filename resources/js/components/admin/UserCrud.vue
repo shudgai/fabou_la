@@ -58,7 +58,7 @@
         <!-- Form Modal -->
         <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showModal = false"></div>
-            <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto custom-scrollbar animate-fade-in border border-slate-100">
+            <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md max-h-[85dvh] overflow-y-auto custom-scrollbar animate-fade-in border border-slate-100">
                 <div class="p-6 md:p-8">
                     <h3 class="text-2xl font-bold text-slate-900 mb-6 sticky top-0 bg-white z-10 py-2">{{ editMode ? '編輯帳號' : '新增帳號' }}</h3>
                     <div class="space-y-4">

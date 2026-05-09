@@ -81,7 +81,7 @@
                          @click="toggleExpand(item.id)"
                          :class="[
                              'bg-white shadow-sm transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                              focusedId === item.id ? 'min-h-[80vh] rounded-none px-[15px] py-4 md:px-[15px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
+                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
                          ]">
                         
 
@@ -145,7 +145,7 @@
                 <!-- Desktop Backdrop Click Area -->
                 <div class="absolute inset-0" @click="showModal = false"></div>
                 
-                <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95vh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
+                <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
                         <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
                         <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">

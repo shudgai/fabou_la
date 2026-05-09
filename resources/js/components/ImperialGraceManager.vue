@@ -290,7 +290,7 @@
                             <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
-                            <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
+                            <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
                                     <!-- Global Main Title + Master Name (same row) -->

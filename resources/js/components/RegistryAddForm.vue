@@ -64,7 +64,7 @@
                             <teleport to="body">
                                 <div v-if="showMasterDropdown" class="fixed inset-0 z-[5000] flex items-end justify-center">
                                     <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] transition-opacity" @click="showMasterDropdown = false"></div>
-                                    <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80vh]">
+                                    <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
                                         <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between bg-white sticky top-0 z-10">
                                             <span class="text-[20px] font-black text-slate-900">選擇載錄目標仙師</span>
                                             <button @click="showMasterDropdown = false" class="p-2 text-slate-300 hover:text-slate-600 transition-colors">

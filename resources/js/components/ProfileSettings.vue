@@ -1,7 +1,7 @@
 <template>
     <div class="fixed inset-0 z-[2000] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-fade-in" @click="$emit('close')"></div>
-        <div class="relative bg-white rounded-[40px] shadow-2xl w-full max-w-md overflow-hidden animate-slide-up border border-slate-100 flex flex-col max-h-[90vh]">
+        <div class="relative bg-white rounded-[40px] shadow-2xl w-full max-w-md overflow-hidden animate-slide-up border border-slate-100 flex flex-col max-h-[90dvh]">
             <!-- Header -->
             <div class="p-8 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
                 <div>

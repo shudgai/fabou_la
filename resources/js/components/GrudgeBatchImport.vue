@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 relative">
                 <h5 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
@@ -104,7 +104,7 @@
                         <div v-else class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         </div>
-                        <h3 class="text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-4 rounded-2xl border border-slate-100 overflow-y-auto max-h-[30vh] custom-scrollbar">{{ persistentToast.msg }}</h3>
+                        <h3 class="text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-4 rounded-2xl border border-slate-100 overflow-y-auto max-h-[30dvh] custom-scrollbar">{{ persistentToast.msg }}</h3>
                         <p v-if="persistentToast.type === 'preview'" class="mt-4 text-[15px] font-bold text-slate-400 uppercase tracking-widest">確定繼續匯入嗎？</p>
                     </div>
 

@@ -94,7 +94,7 @@
                 @action="prepareAddFolder"
             />
         </div>
-        <div v-else class="flex-grow flex flex-col bg-slate-100 md:bg-white overflow-hidden w-full relative md:h-[90vh]">
+        <div v-else class="flex-grow flex flex-col bg-slate-100 md:bg-white overflow-hidden w-full relative md:h-[90dvh]">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
             <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 2px; min-height: 52px;">

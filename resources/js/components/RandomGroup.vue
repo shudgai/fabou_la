@@ -322,7 +322,7 @@
             </div>
 
             <!-- Bamboo cup + Flying Sticks Container -->
-            <div class="lottery-cup-container" style="transform: translateY(10vh) scale(0.8);">
+            <div class="lottery-cup-container" style="transform: translateY(10dvh) scale(0.8);">
                 <!-- Flying sticks (multiple, staggered) -->
                 <div class="absolute inset-0 pointer-events-none">
                     <div v-for="stick in flyingSticks" :key="stick.id"

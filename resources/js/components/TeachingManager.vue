@@ -1293,7 +1293,7 @@
                                 </div>
                             </div>
 
-                            <div class="fixed bottom-[calc(7vh+env(safe-area-inset-bottom))] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-[2px] bg-white/95 backdrop-blur-md border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                            <div class="fixed bottom-[calc(7dvh+env(safe-area-inset-bottom))] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-[2px] bg-white/95 border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
                                 <div class="grid grid-cols-2 gap-4">
                                     <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] h-[55px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
                                         <span style="color: white !important;">完成並新增</span>

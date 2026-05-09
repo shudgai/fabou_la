@@ -34,7 +34,7 @@
         <!-- Form Modal -->
         <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showModal = false"></div>
-            <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto custom-scrollbar animate-fade-in">
+            <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md max-h-[85dvh] overflow-y-auto custom-scrollbar animate-fade-in">
                 <div class="p-8">
                     <h3 class="text-2xl font-bold text-slate-900 mb-6 sticky top-0 bg-white z-10 py-2">{{ editMode ? '編輯群組' : '新增群組' }}</h3>
                     <div class="space-y-6">
@@ -46,7 +46,7 @@
                         <!-- People Selection -->
                         <div class="space-y-3 pt-4 border-t border-slate-50">
                             <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">群組成員管理</label>
-                            <div class="bg-slate-50 rounded-2xl p-4 max-h-[40vh] overflow-y-auto custom-scrollbar grid grid-cols-2 gap-2">
+                            <div class="bg-slate-50 rounded-2xl p-4 max-h-[40dvh] overflow-y-auto custom-scrollbar grid grid-cols-2 gap-2">
                                 <label v-for="dn in dharmaNames" :key="dn.id" 
                                     class="flex items-center space-x-2 p-2 hover:bg-white rounded-lg cursor-pointer transition-colors group">
                                     <input type="checkbox" :value="dn.id" v-model="form.dharma_name_ids" 

@@ -9,7 +9,7 @@
                  @click.stop="close"></div>
             
             <!-- Modal Container -->
-            <div class="relative bg-white w-full max-w-lg md:rounded-[32px] rounded-t-[32px] p-6 shadow-2xl flex flex-col max-h-[85vh] animate-slide-up-fancy transition-all"
+            <div class="relative bg-white w-full max-w-lg md:rounded-[32px] rounded-t-[32px] p-6 shadow-2xl flex flex-col max-h-[85dvh] animate-slide-up-fancy transition-all"
                  @click.stop>
                 
                 <div class="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-4 md:hidden"></div>
