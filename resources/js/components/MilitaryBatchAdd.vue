@@ -92,7 +92,7 @@
         <compact-date-picker v-if="showDatePicker" v-model="batchDate" @close="showDatePicker = false" />
 
         <!-- Bottom Save Action Bar -->
-        <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-4 pt-3 pb-0 bg-white border-t border-slate-100 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0">
+        <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-4 pt-3 pb-0 bg-white border-t border-slate-100 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
                 class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"

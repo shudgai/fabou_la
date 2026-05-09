@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-[1100] shrink-0">
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-[1100] shrink-0">
                 <button 
                     @click="handleBatchSave" 
                     :disabled="loading"

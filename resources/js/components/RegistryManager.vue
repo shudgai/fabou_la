@@ -450,7 +450,7 @@
                                         </div>
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[3vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[3dvh] left-0 right-0 p-4 pb-6 bg-white/95 border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                                             <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[48px] bg-blue-600 !text-white rounded-2xl font-black text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important; font-size: 16px !important;">儲存修改</button>
                                         </div>
                                     </div>
@@ -549,7 +549,7 @@
         <!-- Bottom Pagination -->
         <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" 
              class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
-             style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+             style="bottom: calc(7dvh + env(safe-area-inset-bottom)); left: 0; right: 0;">
             <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !mt-0" />
         </div>
 

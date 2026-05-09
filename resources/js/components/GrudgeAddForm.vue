@@ -150,7 +150,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
                 <button 
                     @click="handleSave" 
                     class="w-full bg-indigo-600 text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"

@@ -412,7 +412,7 @@
 
             <!-- Form Footer (Fixed above Navbar) -->
             <div class="px-4 py-[2px] bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
-                 style="bottom: calc(7vh + env(safe-area-inset-bottom));">
+                 style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                 <div class="max-w-2xl mx-auto w-full grid grid-cols-2 gap-4">
                     <button @click="addMode = null" class="px-4 h-[48px] rounded-2xl font-black text-[16px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest" style="font-size: 16px !important;">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"

@@ -364,7 +364,7 @@
             </div>
 
             <!-- Status text -->
-            <div class="absolute top-[3vh] left-0 right-0 flex flex-col items-center space-y-2">
+            <div class="absolute top-[3dvh] left-0 right-0 flex flex-col items-center space-y-2">
                 <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
                 <div class="flex gap-2">
                     <span class="dot-lg" style="background:#b45309;"></span>

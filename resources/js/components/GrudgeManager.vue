@@ -230,7 +230,7 @@
         <!-- Floating Pagination above MobileNavbar -->
         <div v-if="!addMode && !showBatchImport && activePaginationMeta && activePaginationMeta.last_page > 1" 
              class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
-             style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+             style="bottom: calc(7dvh + env(safe-area-inset-bottom)); left: 0; right: 0;">
             <pagination-buttons 
                 :meta="activePaginationMeta" 
                 @page-change="handlePageChange" 

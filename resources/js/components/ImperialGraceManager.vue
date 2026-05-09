@@ -540,7 +540,7 @@
         </div>
     </div> <!-- End Scrollable Area -->
 
-    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+    <div v-if="currentFolder && !focusedId && paginationMeta && paginationMeta.last_page > 1" class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" style="bottom: calc(7dvh + env(safe-area-inset-bottom)); left: 0; right: 0;">
         <pagination-buttons :meta="paginationMeta" @page-change="handlePageChange" class="!mb-0 !mt-0" />
     </div>
 

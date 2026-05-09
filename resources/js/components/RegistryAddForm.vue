@@ -5,7 +5,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[95vh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
@@ -273,7 +273,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
                 <button v-if="localMode === 'single'" @click="handleSubmit" :disabled="isSaving" class="w-full max-w-md bg-blue-600 !text-white h-[48px] rounded-2xl font-black text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center tracking-widest" style="color: white !important; font-size: 16px !important;">
                     {{ isSaving ? '儲存中...' : '確認載錄' }}
                 </button>

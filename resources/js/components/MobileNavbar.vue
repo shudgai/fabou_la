@@ -2,7 +2,7 @@
     <div :class="[
         isAbsolute ? 'absolute' : 'fixed',
         !isAbsolute ? 'md:left-64' : ''
-    ]" class="bottom-0 left-0 right-0 bg-white border-t border-white z-[3000] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]" style="height: calc(7vh + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
+    ]" class="bottom-0 left-0 right-0 bg-white border-t border-white z-[3000] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"         style="height: calc(7dvh + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
         <div class="grid grid-cols-5 h-full items-center px-2">
             <!-- BACK BUTTON -->
             <div class="flex justify-center">

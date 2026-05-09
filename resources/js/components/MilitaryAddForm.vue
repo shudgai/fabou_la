@@ -139,7 +139,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
                 <button 
                     @click="handleSave" 
                     :disabled="isSaving"

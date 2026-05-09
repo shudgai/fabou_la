@@ -46,7 +46,7 @@
             </div>
             
             <!-- Confirm Action -->
-            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7vh + env(safe-area-inset-bottom));">
+            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                 <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
                     :disabled="selectionList.length === 0" 
                     class="w-full font-black py-[10px] rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center shadow-lg" 
@@ -136,7 +136,7 @@
             </div>
 
 <!-- Bottom Action Button aligned with desktop container -->
-            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7vh + env(safe-area-inset-bottom));">
+            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                 <button @click="copyToLine" class="w-full bg-emerald-600 py-[10px] rounded-2xl font-black transition-all active:scale-[0.98] tracking-widest flex items-center justify-center space-x-2 shadow-lg" style="box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2); font-size: 16px !important;">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     <span style="color: #ffffff !important;">複製給 LINE</span>

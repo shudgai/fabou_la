@@ -191,7 +191,7 @@
             <!-- Level 2: List & Add View -->
             <template v-else>
                 <!-- Add View -->
-                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
+                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
                     <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
                     <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:rounded-3xl md:shadow-2xl md:overflow-hidden animate-slide-up">
                         <!-- Desktop Header -->
@@ -359,7 +359,7 @@
 
 
                                 <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
-                                    <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
+                                    <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </button>
                                     <div class="p-5 flex-1 flex flex-col">
@@ -511,7 +511,7 @@
                             </div>
 
                             <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
-                            <div class="fixed bottom-[7vh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white backdrop-blur-md z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style="padding-bottom: calc(1px + env(safe-area-inset-bottom, 0px));">
+                            <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style="padding-bottom: calc(1px + env(safe-area-inset-bottom, 0px));">
                                 <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
                                     @click.prevent="itemsDetailMode = true" 
                                     class="w-[45%] bg-indigo-600 text-white rounded-2xl h-[55px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
@@ -1324,7 +1324,7 @@
 
                 <!-- Dharma Picker Modal -->
                 <div v-if="showDharmaPicker" class="fixed inset-0 z-[400] bg-[#FFB266]/40 flex items-end justify-center sm:items-center animate-fade-in">
-                    <div class="bg-white w-full h-[85vh] sm:h-[70vh] sm:max-w-xl rounded-t-[32px] sm:rounded-[32px] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+                    <div class="bg-white w-full h-[85dvh] sm:h-[70dvh] sm:max-w-xl rounded-t-[32px] sm:rounded-[32px] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
                         <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
                             <div>
                                 <h3 class="text-[20px] font-bold text-slate-900">選擇對象</h3>
@@ -1409,7 +1409,7 @@
 
                 <!-- Group Members Detail Modal -->
                 <div v-if="showGroupMembersModal && activeModalGroup" class="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-                    <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up max-h-[80vh]">
+                    <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up max-h-[80dvh]">
                         <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-indigo-50/30">
                             <div>
                                 <h3 class="text-[20px] font-bold text-slate-900 tracking-tight">群組成員：{{ activeModalGroup?.name }}</h3>
@@ -1483,7 +1483,7 @@
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
                         </div>
-                        <div class="p-8 overflow-y-auto max-h-[60vh] custom-scrollbar">
+                        <div class="p-8 overflow-y-auto max-h-[60dvh] custom-scrollbar">
                             <div class="grid grid-cols-2 gap-4">
                                 <button v-for="p in palaceOrder" 
                                         :key="p"
@@ -1585,10 +1585,10 @@
                                 <teleport to="body">
                                     <div v-if="isSessionFocused(item)" class="fixed inset-0 z-[500] animate-fade-in">
                                         <!-- Backdrop (click to close) -->
-                                        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(item.id)"></div>
+                                        <div class="absolute inset-0 bg-slate-900/50" @click="toggleExpand(item.id)"></div>
                                         <!-- Content Panel -->
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform;">
+                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform;">
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
@@ -1893,7 +1893,7 @@
             <!-- Floating Pagination above MobileNavbar -->
             <div v-if="currentFolder && !addMode && !itemsDetailMode && itemPagination && itemPagination.last_page > 1" 
                  class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
-                 style="bottom: calc(7vh + env(safe-area-inset-bottom)); left: 0; right: 0;">
+                 style="bottom: calc(7dvh + env(safe-area-inset-bottom)); left: 0; right: 0;">
                 <pagination-buttons 
                     :meta="itemPagination" 
                     @page-change="fetchItems" 
