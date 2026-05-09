@@ -705,18 +705,12 @@ const collapseAll = () => {
 };
 
 // Weekly Acrostic Handling
-const weeklyLines = ref(Array(14).fill(''));
+const weeklyLines = ref(Array(14).fill(null).map(() => Array(6).fill('')));
 
 // Helper: set one character cell in a weeklyLine
 const setWeeklyCell = (row, col, val) => {
-    const chars = (weeklyLines.value[row] || '').split('');
-    if (val) {
-        chars[col] = val[val.length - 1]; // keep last char if somehow multi
-    } else {
-        chars[col] = '';
-    }
-    // Trim trailing empty entries
-    weeklyLines.value[row] = chars.join('');
+    if (!weeklyLines.value[row]) weeklyLines.value[row] = Array(6).fill('');
+    weeklyLines.value[row][col] = val ? val[val.length - 1] : '';
 };
 
 const focusNextWeeklyCell = (row, col) => {
@@ -762,7 +756,10 @@ const titleChars = computed(() => {
 
 const currentOriginalPreview = computed(() => {
     if (addMode.value === 'weekly' && !isManualWeekly.value) {
-        return titleChars.value.map((char, i) => (char || '') + (weeklyLines.value[i] || '')).join('\n');
+        return titleChars.value.map((char, i) => {
+            const lineArr = weeklyLines.value[i] || Array(6).fill('');
+            return (char || '') + lineArr.join('');
+        }).join('\n');
     }
     return form.value.original_content;
 });
@@ -833,7 +830,7 @@ const getMasterName = (id) => {
 const openAddMode = (type) => {
     addMode.value = type;
     formTab.value = 'original';
-    weeklyLines.value = Array(14).fill('');
+    weeklyLines.value = Array(14).fill(null).map(() => Array(6).fill(''));
     form.value = {
         date: getTodayStr(),
         status: null,
@@ -867,13 +864,19 @@ const editItem = (post, type) => {
         isManualWeekly.value = !isAcrostic;
 
         if (isAcrostic) {
-            weeklyLines.value = Array(14).fill('').map((_, i) => {
+            weeklyLines.value = Array(14).fill(null).map((_, i) => {
                 const fullLine = lines[i] || '';
                 const char = cleanTitle[i] || '';
+                let content = '';
                 if (char && fullLine.startsWith(char)) {
-                    return fullLine.substring(char.length);
+                    content = fullLine.substring(char.length);
+                } else {
+                    content = fullLine;
                 }
-                return fullLine;
+                // Pad to 6 chars
+                const arr = content.split('');
+                while(arr.length < 6) arr.push('');
+                return arr.slice(0, 6);
             });
         }
     } else {
@@ -1062,13 +1065,18 @@ const openPostMode = (post, type) => {
     if (type === 'weekly' && post.original_content) {
         const lines = post.original_content.split('\n');
         const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
-        weeklyLines.value = Array(14).fill('').map((_, i) => {
+        weeklyLines.value = Array(14).fill(null).map((_, i) => {
             const fullLine = lines[i] || '';
             const char = cleanTitle[i] || '';
+            let content = '';
             if (char && fullLine.startsWith(char)) {
-                return fullLine.substring(char.length);
+                content = fullLine.substring(char.length);
+            } else {
+                content = fullLine;
             }
-            return fullLine;
+            const arr = content.split('');
+            while(arr.length < 6) arr.push('');
+            return arr.slice(0, 6);
         });
     }
 };
