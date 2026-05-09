@@ -542,7 +542,6 @@
     />
 
     <!-- MODAL COMPONENTS -->
-    <lucky-draw :show="showLuckyDraw" @close="showLuckyDraw = false" />
 
     <add-action-menu 
         :show="showAddMenu" 
