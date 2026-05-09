@@ -453,7 +453,7 @@
 
                                         <!-- Sticky Save Button Bar (Inside expansion) -->
                                         <div v-if="editingIds.has(item.id)" class="fixed bottom-[3vh] left-0 right-0 p-4 pb-6 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[55px] bg-blue-600 !text-white rounded-none font-black text-[20px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important;">儲存修改</button>
+                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[48px] bg-blue-600 !text-white rounded-2xl font-black text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important; font-size: 16px !important;">儲存修改</button>
                                         </div>
                                     </div>
                             </div>

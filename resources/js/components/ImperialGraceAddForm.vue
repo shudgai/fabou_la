@@ -4,7 +4,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-[100dvh] md:h-full bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
+        <div class="relative w-full h-[100dvh] md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
@@ -19,13 +19,13 @@
 
             <div class="px-4 py-2 bg-slate-50 flex space-x-2 border-b border-slate-100">
                 <button @click="localMode = 'single'" 
-                    :class="localMode === 'single' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-400 border border-slate-200'"
+                    :class="localMode === 'single' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-50 text-slate-400 border border-slate-100'"
                     class="flex-1 py-2 text-[16px] font-black rounded-2xl transition-all whitespace-nowrap active:scale-95"
                     :style="{ fontSize: '16px !important', color: localMode === 'single' ? 'white !important' : '#94a3b8 !important' }">
                     逐筆登錄
                 </button>
                 <button @click="localMode = 'batch'" 
-                    :class="localMode === 'batch' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-400 border border-slate-200'"
+                    :class="localMode === 'batch' ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-50 text-slate-400 border border-slate-100'"
                     class="flex-1 py-2 text-[16px] font-black rounded-2xl transition-all whitespace-nowrap active:scale-95"
                     :style="{ fontSize: '16px !important', color: localMode === 'batch' ? 'white !important' : '#94a3b8 !important' }">
                     多筆載錄
@@ -91,7 +91,7 @@
                     </div>
 
                     <div v-if="personnel.length === 0" class="flex justify-center py-4 border-t border-slate-50 mt-4">
-                        <button @click="addPersonnelRow" class="px-6 py-2 bg-slate-100 text-indigo-600 font-bold text-[15px] rounded-xl flex items-center space-x-2 active:scale-95 transition-all shadow-sm border border-slate-200">
+                        <button @click="addPersonnelRow" class="px-6 py-2 bg-slate-100 text-indigo-600 font-black text-[16px] rounded-2xl flex items-center space-x-2 active:scale-95 transition-all shadow-sm border border-slate-200" style="font-size: 16px !important;">
                             <span>＋ 多人承接模式</span>
                         </button>
                     </div>
@@ -104,10 +104,10 @@
                                 <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest" style="font-size: 11px !important;">MULTI-PERSON MODE</span>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <button @click="personnel = []" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-xl text-[12px] font-black active:scale-95 transition-all border border-slate-100 shadow-sm" style="font-size: 12px !important;">
+                                <button @click="personnel = []" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-2xl text-[16px] font-black active:scale-95 transition-all border border-slate-100 shadow-sm" style="font-size: 16px !important;">
                                     切換回單人
                                 </button>
-                                <button @click="addPersonnelRow" class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[12px] font-black active:scale-95 transition-all shadow-md" style="font-size: 12px !important; color: white !important;">
+                                <button @click="addPersonnelRow" class="px-3 py-1.5 bg-indigo-600 text-white rounded-2xl text-[16px] font-black active:scale-95 transition-all shadow-md" style="font-size: 16px !important; color: white !important;">
                                     ＋ 新增人員
                                 </button>
                             </div>
@@ -194,15 +194,25 @@
                 <!-- BATCH MODE -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
                     <!-- Batch Type Toggle -->
-                    <div class="px-1 py-1 bg-slate-100 rounded-xl flex space-x-1 mb-2">
+                    <div class="px-1 py-1 bg-slate-50 rounded-2xl flex space-x-1 mb-4 border border-slate-100">
                         <button @click="batchType = 'single'" 
-                            :class="batchType === 'single' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'"
-                            class="flex-1 py-2 rounded-lg text-[15px] font-black transition-all">
+                            :class="batchType === 'single' ? 'shadow-md' : 'bg-transparent text-slate-400'"
+                            class="flex-1 py-2.5 rounded-xl text-[16px] font-black transition-all active:scale-95"
+                            :style="{ 
+                                fontSize: '16px !important', 
+                                backgroundColor: batchType === 'single' ? 'rgb(135, 206, 235) !important' : 'transparent',
+                                color: batchType === 'single' ? 'white !important' : '#94a3b8 !important' 
+                            }">
                             單人承接
                         </button>
                         <button @click="batchType = 'multi'" 
-                            :class="batchType === 'multi' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'"
-                            class="flex-1 py-2 rounded-lg text-[15px] font-black transition-all">
+                            :class="batchType === 'multi' ? 'shadow-md' : 'bg-transparent text-slate-400'"
+                            class="flex-1 py-2.5 rounded-xl text-[16px] font-black transition-all active:scale-95"
+                            :style="{ 
+                                fontSize: '16px !important', 
+                                backgroundColor: batchType === 'multi' ? 'rgb(135, 206, 235) !important' : 'transparent',
+                                color: batchType === 'multi' ? 'white !important' : '#94a3b8 !important' 
+                            }">
                             多人承接
                         </button>
                     </div>
@@ -269,8 +279,8 @@
             <!-- Footer Action -->
             <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-4 pt-[7px] pb-[0px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] flex justify-center">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
-                    class="w-full max-w-md bg-indigo-600 h-[55px] rounded-2xl text-white font-black text-[20px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
-                    style="font-size: 20px !important; color: white !important;">
+                    class="w-full max-w-md bg-indigo-600 h-[48px] rounded-2xl text-white font-black text-[16px] active:scale-95 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100"
+                    style="font-size: 16px !important; color: white !important;">
                     {{ isSaving ? '處理中...' : (localMode === 'single' ? '確認載錄' : `開始載錄這 ${excelRows.length} 筆資料`) }}
                 </button>
             </div>
@@ -319,7 +329,7 @@ onUnmounted(() => {
 });
 
 const localMode = ref(props.mode || 'single');
-const batchType = ref('multi');
+const batchType = ref('single');
 const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);

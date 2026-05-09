@@ -391,7 +391,7 @@
                                     <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                                 </div>
                                 <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
-                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 py-4 bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all">
+                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 h-[48px] bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="font-size: 16px !important;">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                         <span class="app-body">上傳圖片檔案</span>
                                     </button>
@@ -410,9 +410,9 @@
             <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
                  style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
-                    <button @click="addMode = null" class="flex-1 px-4 py-[13.5px] rounded-2xl font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
+                    <button @click="addMode = null" class="flex-1 px-4 h-[48px] rounded-2xl font-black text-[16px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest" style="font-size: 16px !important;">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
-                        class="flex-[2] px-4 py-[14.5px] rounded-[15px] font-black text-[19px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]">
+                        class="flex-[2] px-4 h-[48px] rounded-2xl font-black text-[16px] !text-white bg-purple-600 shadow-lg shadow-purple-200 active:scale-95 transition-all disabled:bg-slate-300 flex items-center justify-center overflow-hidden tracking-[0.2em]" style="font-size: 16px !important;">
                         <template v-if="isSaving">
                             <svg class="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </template>

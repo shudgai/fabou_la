@@ -75,7 +75,7 @@
                         </h2>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 ml-2" style="padding-top: 5px;">
-                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-xl active:scale-90 transition-all border border-red-100">
+                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-2xl active:scale-90 transition-all border border-red-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
 
@@ -195,7 +195,7 @@
                 <!-- Add View -->
                 <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:backdrop-blur-sm md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
                     <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
-                    <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:shadow-2xl md:overflow-hidden animate-slide-up">
+                    <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:rounded-3xl md:shadow-2xl md:overflow-hidden animate-slide-up">
                         <!-- Desktop Header -->
                         <div class="hidden md:flex px-6 py-5 border-b border-slate-100 items-center justify-between shrink-0 bg-slate-50/30">
                             <h3 class="text-[22px] font-black text-slate-900 tracking-tight">父皇仙師每日開示載錄</h3>
@@ -209,7 +209,7 @@
                                         <label class="app-title ml-1 opacity-0">日期</label>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
-                                                class="w-full h-full border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
+                                                class="w-full h-full border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[32px] shadow-sm focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
                                             <button @click="activeDate = 'date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
                                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
@@ -217,17 +217,17 @@
                                     </div>
                                     <div class="space-y-0.5 relative">
                                         <label class="app-title ml-1">仙師</label>
-                                        <div class="border border-slate-400 rounded-none bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] shadow-sm relative">
+                                        <div class="border border-slate-400 rounded-2xl bg-slate-50/50 pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] shadow-sm relative">
                                             <input v-model="masterNameInput" @change="resolveMasterId" @focus="activeMasterDropdownId = 'mainMaster'" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
                                             <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
                                                 <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             
                                             <!-- Custom Dropdown Menu -->
-                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                                      @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
-                                                     class="px-4 h-[38px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                     class="px-4 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ m }}
                                                 </div>
                                             </div>
@@ -335,11 +335,11 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
                                     <div class="flex space-x-2">
-                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[10px] rounded-xl text-[14px] font-black cursor-pointer active:scale-95 transition-all" style="font-size: 14px !important;">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[10px] rounded-2xl text-[14px] font-black cursor-pointer active:scale-95 transition-all" style="font-size: 14px !important;">
                                             匯入檔案
                                             <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
                                         </label>
-                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-xl text-[14px] font-black active:scale-95 transition-all" style="font-size: 14px !important; color: white !important;">
+                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-2xl text-[14px] font-black active:scale-95 transition-all" style="font-size: 14px !important; color: white !important;">
                                             智慧解析
                                         </button>
                                     </div>
@@ -378,7 +378,7 @@
                                     <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-3">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-2">
-                                                <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">#{{ index + 1 }} {{ record.master_name }}</span>
+                                                <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
                                                 <!-- Reorder Buttons -->
                                                 <div class="flex items-center space-x-1 ml-2">
                                                     <button @click="moveBatchRecord(index, -1)" :disabled="index === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
@@ -401,7 +401,7 @@
                                         </div>
                                         <!-- Batch Record Target Remarks Dropdown -->
                                         <div class="space-y-0.5 mt-1">
-                                            <div class="relative flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-visible min-h-[44px]">
+                                            <div class="relative flex items-center border border-slate-200 rounded-2xl bg-slate-50 overflow-visible min-h-[44px]">
                                                 <input v-model="record.target_remarks" 
                                                        @focus="activeBatchTargetRemarksIdx = index"
                                                        placeholder="備註對象..." 
@@ -412,7 +412,7 @@
                                                 <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="opt in relationshipOptions" :key="opt"
                                                          @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
-                                                         class="px-4 h-[36px] flex items-center rounded-xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
+                                                         class="px-4 h-[36px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
                                                         {{ opt }}
                                                     </div>
                                                 </div>
@@ -465,7 +465,7 @@
                                                             <div class="flex flex-col flex-1 min-w-0">
                                                                 <div class="flex items-center">
                                                                     <span class="font-bold text-slate-700 truncate">{{ m.name ? m.name : '項目內容' }}</span>
-                                                                    <span v-if="m.details" class="ml-2 text-indigo-500 font-black px-2 py-0.5 bg-indigo-50 rounded-lg text-[13px]">{{ m.details }}</span>
+                                                                    <span v-if="m.details" class="ml-2 text-indigo-500 font-black px-2 py-0.5 bg-indigo-50 rounded-2xl text-[13px]">{{ m.details }}</span>
                                                                     <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                                                                 </div>
                                                                 <div v-if="m.sub_name?.trim()" class="mt-1 text-[13px] text-slate-400 font-medium leading-tight">
@@ -511,7 +511,7 @@
                                 <!-- Input + Add button -->
                                 <div class="flex items-center border border-slate-400 rounded-2xl bg-white overflow-hidden shadow-sm h-[52px]">
                                     <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
-                                    <button @click="addFooterRemark" class="w-[44px] h-[44px] bg-indigo-600 text-white rounded-xl flex items-center justify-center font-black text-[28px] mr-1 active:scale-90 transition-all shadow-sm" style="color: white !important;">+</button>
+                                    <button @click="addFooterRemark" class="w-[44px] h-[44px] bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-black text-[28px] mr-1 active:scale-90 transition-all shadow-sm" style="color: white !important;">+</button>
                                 </div>
                             </div>
 
@@ -545,10 +545,10 @@
                     </div>
 
                     <div class="px-0 pt-0 pb-[20px] space-y-5">
-                        <div class="bg-white rounded-none border-b border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                        <div class="bg-white rounded-2xl border-b border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                                 <div class="flex items-center justify-between mb-4 px-1">
                                     <div class="flex items-center min-w-0">
-                                        <span class="w-7 h-7 bg-white border border-indigo-600 text-indigo-600 rounded-xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-sm">1</span>
+                                        <span class="w-7 h-7 bg-white border border-indigo-600 text-indigo-600 rounded-2xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-sm">1</span>
                                         <div class="flex flex-col min-w-0">
                                             <span class="text-[17px] font-black text-slate-900 leading-none">錄入法寶</span>
                                             <span class="text-[12px] text-indigo-500 font-bold mt-1 truncate">
@@ -560,7 +560,7 @@
 
                                     <button v-if="newItemName" @click="addNewItemQuickly" 
                                             :class="isAddingFlash ? 'bg-emerald-500 scale-110 shadow-emerald-200' : 'bg-red-500 shadow-red-200'"
-                                            class="w-[40px] h-[40px] rounded-xl flex items-center justify-center text-white text-[28px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
+                                            class="w-[40px] h-[40px] rounded-2xl flex items-center justify-center text-white text-[28px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
                                 </div>
                                 <div class="grid grid-cols-12 gap-3 items-end">
                                     <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('由')) ? 'col-span-12' : 'col-span-8'" class="space-y-1 relative">
@@ -592,7 +592,7 @@
                                             <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                     :key="t"
                                                     @click="newItemName = t"
-                                                    class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                    class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-2xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                 {{ t }}
                                             </button>
                                         </div>
@@ -610,7 +610,7 @@
                                             <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="n in 9" :key="n" 
                                                      @click.stop="newItemDays = n; activeDaysDropdownId = null" 
-                                                     class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                     class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ n }}
                                                 </div>
                                             </div>
@@ -622,7 +622,7 @@
                                 <div v-if="!hasSubDetailData" class="mt-4 text-left">
                                     <button @click="showMainRemarks = !showMainRemarks" 
                                             :class="showMainRemarks ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400'"
-                                            class="text-[13px] font-black flex items-center px-4 py-2.5 rounded-xl transition-all active:scale-95">
+                                            class="text-[13px] font-black flex items-center px-4 py-2.5 rounded-2xl transition-all active:scale-95">
                                         <svg :class="showMainRemarks ? 'rotate-180' : ''" class="w-4 h-4 mr-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" /></svg>
                                         {{ showMainRemarks ? '隱藏主備註' : '加入主備註' }}
                                     </button>
@@ -636,7 +636,7 @@
                                             <div class="flex flex-wrap gap-2 pb-2 px-1">
                                                 <button v-for="opt in ['完畢', '允同享皇恩']" :key="opt"
                                                         @click="newItemMainRemarks = (newItemMainRemarks ? newItemMainRemarks + '\n' : '') + opt"
-                                                        class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-lg text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
+                                                        class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-2xl text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
                                                     {{ opt }}
                                                 </button>
                                             </div>
@@ -679,7 +679,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -713,7 +713,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -741,7 +741,7 @@
                                                     <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemSubDetails = n; activeDaysDropdownId = null" 
-                                                             class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                             {{ n }}
                                                         </div>
                                                     </div>
@@ -794,7 +794,7 @@
                                     <div class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
                                         <div class="relative group">
-                                            <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                            <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                 <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'pract2'" @focus="activePractitionerDropdownId = 'pract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
                                                 <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'pract2' ? null : 'pract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                     <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -812,14 +812,14 @@
                                     <!-- 2. Instrument Name - Only show if the name is generic -->
                                     <div v-if="(newItemName === '令牌' || newItemName === '法器' || newItemName?.includes('由')) && newItemName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemName === k)" class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
-                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
+                                        <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="使用的法器...">
                                         </div>
                                     </div>
                                     <!-- 3. Body Part -->
                                     <div class="space-y-1.5">
                                         <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
-                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
+                                        <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入部位...">
                                         </div>
                                     </div>
@@ -837,7 +837,7 @@
                                     <!-- Staged Contents List (Modern Chip/Tag display) -->
                                     <div v-if="stagedContents.length > 0" class="flex flex-wrap gap-2 mb-4 px-1">
                                         <div v-for="(sc, sci) in stagedContents" :key="sci" 
-                                             class="bg-white border border-indigo-100 rounded-xl px-3 py-2 flex items-center shadow-sm animate-fade-in group hover:border-indigo-300 transition-all">
+                                             class="bg-white border border-indigo-100 rounded-2xl px-3 py-2 flex items-center shadow-sm animate-fade-in group hover:border-indigo-300 transition-all">
                                             <span class="text-[14px] font-black text-slate-700">
                                                 {{ sc.name }}{{ sc.details ? ' : ' + sc.details : '' }}{{ sc.remarks?.trim() ? ' (' + sc.remarks.trim() + ')' : '' }}
                                             </span>
@@ -854,7 +854,7 @@
                                                     <div class="text-[12px] text-slate-400 font-bold text-left">內容物名稱</div>
                                                     <button v-if="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由'))" @click="stageContent" class="text-red-500 text-[26px] font-black leading-none active:scale-90 transition-all -mb-1.5">＋</button>
                                                 </div>
-                                                <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                     <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'"
                                                            class="w-full bg-transparent border-none outline-none shadow-none text-[17px] font-black text-slate-900 focus:ring-0 text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
                                                            placeholder="輸入法寶名稱">
@@ -879,7 +879,7 @@
                                                     <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
                                                             :key="t"
                                                             @click="newItemSubName = t"
-                                                            class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                            class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-2xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
                                                         {{ t }}
                                                     </button>
                                                 </div>
@@ -890,7 +890,7 @@
                                                     <div class="text-[13px] text-slate-400 font-bold select-none">天份</div>
                                                     <button @click="stageContent" class="text-red-500 text-[26px] font-black leading-none active:scale-90 transition-all -mb-1.5">＋</button>
                                                 </div>
-                                                <div class="border border-slate-400 rounded-xl bg-blue-50/40 overflow-visible flex items-center px-1 transition-all py-[10px] relative">
+                                                <div class="border border-slate-400 rounded-2xl bg-blue-50/40 overflow-visible flex items-center px-1 transition-all py-[10px] relative">
                                                     <input v-model="newItemDetailsExtraDays"
                                                            @focus="activeDaysDropdownId = 'subExtra'"
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" 
@@ -901,7 +901,7 @@
                                                     <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                             class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                             {{ n }}
                                                         </div>
                                                     </div>
@@ -993,7 +993,7 @@
                                                             <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="n in 9" :key="n" 
                                                                      @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                                     class="px-5 h-[38px] flex items-center justify-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                     class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                                     {{ n }}
                                                                 </div>
                                                             </div>
@@ -1043,7 +1043,7 @@
                                                 <div class="space-y-1.5">
                                                     <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
                                                     <div class="relative group">
-                                                        <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                        <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
                                                             <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract2'" @focus="activeSubPractitionerDropdownId = 'subPract2'" autocomplete="off" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入法號...">
                                                             <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract2' ? null : 'subPract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                                 <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1061,7 +1061,7 @@
                                                 <!-- 2. Instrument Name - Only show if the name is generic -->
                                                 <div v-if="(newItemSubName === '令牌' || newItemSubName === '法器' || newItemSubName?.includes('由')) && newItemSubName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemSubName === k)" class="space-y-1.5">
                                                     <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
-                                                    <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                    <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
                                                         <input v-model="newItemSubInstrumentName" 
                                                                list="instrument-list" 
                                                                class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" 
@@ -1071,7 +1071,7 @@
                                                 <!-- 3. Body Part -->
                                                 <div class="space-y-1.5">
                                                     <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
-                                                    <div class="border border-blue-100/50 rounded-xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                    <div class="border border-blue-100/50 rounded-2xl bg-blue-50/40 px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
                                                         <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入部位...">
                                                     </div>
                                                 </div>
@@ -1092,7 +1092,7 @@
                                                     <div class="flex flex-wrap gap-2 pb-2 px-1">
                                                         <button v-for="opt in ['完畢', '允同享皇恩']" :key="opt"
                                                                 @click="newItemRemarks = (newItemRemarks ? newItemRemarks + '\n' : '') + opt"
-                                                                class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-lg text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
+                                                                class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-2xl text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
                                                             {{ opt }}
                                                         </button>
                                                     </div>
@@ -1150,7 +1150,7 @@
                         <!-- Footer Remarks (independent, always visible, multi-entry) -->
                         <div class="px-2 mt-8 mb-4">
                             <div class="flex items-center space-x-2 mb-4 px-1">
-                                <span class="w-6 h-6 bg-slate-100 text-slate-500 rounded-lg flex items-center justify-center">
+                                <span class="w-6 h-6 bg-slate-100 text-slate-500 rounded-2xl flex items-center justify-center">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-width="2.5" /></svg>
                                 </span>
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase">結尾備註</div>
@@ -1171,7 +1171,7 @@
                             <div class="relative">
                                 <div class="flex items-center border-2 border-slate-100 rounded-[24px] bg-slate-50/30 overflow-hidden focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-lg transition-all group">
                                     <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[18px] font-black text-slate-900 focus:ring-0 outline-none px-5 py-4 placeholder-slate-300">
-                                    <button @click="addFooterRemark" class="mr-3 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shadow-md shadow-indigo-100" style="color: white !important;">
+                                    <button @click="addFooterRemark" class="mr-3 w-10 h-10 bg-indigo-600 text-white rounded-2xl flex items-center justify-center active:scale-95 transition-all shadow-md shadow-indigo-100" style="color: white !important;">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" /></svg>
                                     </button>
                                 </div>
@@ -1317,7 +1317,7 @@
                                                  class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-slate-50">
                                                 <div class="flex items-center space-x-3">
                                                     <div @click.stop.prevent="toggleGroupSelection(group)" 
-                                                         class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all shadow-sm"
+                                                         class="w-6 h-6 rounded-2xl border flex items-center justify-center transition-all shadow-sm"
                                                          :class="isGroupFullySelected(group) ? 'bg-indigo-600 border-indigo-600' : 'bg-slate-50 border-slate-200'">
                                                         <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                     </div>
@@ -1329,7 +1329,7 @@
                                             <div v-if="(expandedGroupPicker === group.id || pickerSearch) && group.name !== '在場全體' && group.name !== '全體殿生'" class="bg-slate-50/50 px-4 py-3 border-t border-slate-100 grid grid-cols-2 gap-2 animate-fade-in">
                                                 <button v-for="member in group.dharma_names" :key="member.id" 
                                                         @click.prevent="toggleDharmaName(member.id)"
-                                                        class="flex items-center p-2 rounded-xl text-[17px] transition-all bg-white border border-slate-200 shadow-sm"
+                                                        class="flex items-center p-2 rounded-2xl text-[17px] transition-all bg-white border border-slate-200 shadow-sm"
                                                         :class="form.dharma_name_ids.includes(member.id) ? 'border-indigo-600 ring-1 ring-indigo-600/10' : ''">
                                                     <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-indigo-600' : 'bg-slate-200'"></div>
                                                     <span class="truncate font-black text-slate-900">{{ member.name }}</span>
@@ -1383,7 +1383,7 @@
                                         </div>
                                         <div class="grid grid-cols-1 gap-2">
                                             <div v-for="member in pg.members" :key="member.id" 
-                                                 class="flex items-center px-3 py-2.5 bg-white rounded-xl border border-indigo-600 shadow-sm">
+                                                 class="flex items-center px-3 py-2.5 bg-white rounded-2xl border border-indigo-600 shadow-sm">
                                                 <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
@@ -1498,7 +1498,7 @@
                                                    :value="index + 1"
                                                    @click.stop
                                                    @change="e => handleReorder(item, e.target.value)"
-                                                   class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
+                                                   class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-2xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
                                         </div>
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -1584,7 +1584,7 @@
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2">
                                                         <button @click.stop="toggleRecipientDetails(item.id)" 
                                                                 class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
-                                                            <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center">
+                                                            <div class="w-6 h-6 bg-indigo-50 rounded-2xl flex items-center justify-center">
                                                                 <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                             </div>
                                                             <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
@@ -1765,7 +1765,7 @@
                             <div v-if="getFullRecipientList(item)" class="space-y-2">
                                 <button @click="toggleRecipientDetails(item.id || bIdx)" 
                                         class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
-                                    <div class="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div class="w-6 h-6 bg-indigo-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id || bIdx] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </div>
                                     <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>

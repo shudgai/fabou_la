@@ -4,7 +4,7 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
         
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-full bg-white md:rounded-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
+        <div class="relative w-full h-full md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -26,7 +26,7 @@
                         <label class="app-title ml-1">日期</label>
                         <div class="relative flex items-center">
                             <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold">
+                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold">
                             <button @click="activeDate = 'know_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
@@ -37,7 +37,7 @@
                     <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
-                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm dharma-dropdown">
+                            <div class="relative flex items-center border border-slate-400 rounded-2xl bg-white overflow-visible min-h-[44px] shadow-sm dharma-dropdown">
                                 <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
                                     @focus="activeDharmaDropdown = true"
                                     class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
@@ -48,7 +48,7 @@
                                 <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <div v-for="u in filteredDharmaNames" :key="u.id"
                                         @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
                                         {{ u.name }}
                                     </div>
                                     <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[15px] text-slate-400 text-center">
@@ -59,7 +59,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="app-title ml-1">備註對象</label>
-                            <div class="relative flex items-center border border-slate-400 rounded-lg bg-white overflow-visible min-h-[44px] shadow-sm remarks-dropdown">
+                            <div class="relative flex items-center border border-slate-400 rounded-2xl bg-white overflow-visible min-h-[44px] shadow-sm remarks-dropdown">
                                 <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
                                     @focus="activeRemarksDropdown = true"
                                     class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
@@ -70,7 +70,7 @@
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
                                         {{ opt }}
                                     </div>
                                 </div>
@@ -83,9 +83,9 @@
                     <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
                         <div class="flex items-center justify-between ml-1">
                             <label class="app-title">數量</label>
-                            <span v-if="form.quantity >= 1000000" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-lg">{{ formatArmyTotal(form.quantity) }}</span>
+                            <span v-if="form.quantity >= 1000000" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
                         </div>
-                        <input v-model="form.quantity" type="number" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                        <input v-model="form.quantity" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
@@ -93,11 +93,11 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="number" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_zun" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="number" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_an" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
@@ -139,12 +139,12 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 pt-[7px] pb-[0px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+            <div class="absolute bottom-[7vh] left-0 right-0 md:relative md:bottom-0 px-6 pt-[7px] pb-[0px] bg-white backdrop-blur-md border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
                 <button 
                     @click="handleSave" 
                     :disabled="isSaving"
-                    class="w-full bg-indigo-600 text-white font-black h-[55px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
-                    style="color: white !important;"
+                    class="w-full max-w-md bg-indigo-600 text-white font-black h-[48px] text-[16px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="color: white !important; font-size: 16px !important;"
                 >
                     <template v-if="isSaving">
                         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
