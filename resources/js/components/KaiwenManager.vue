@@ -406,8 +406,9 @@
                 </div>
             </div>
 
-            <!-- Form Footer (Fixed at bottom) -->
-            <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky bottom-0 z-[110]">
+            <!-- Form Footer (Fixed above Navbar) -->
+            <div class="p-4 bg-white border-t border-slate-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] sticky z-[110]"
+                 style="bottom: calc(7vh + env(safe-area-inset-bottom));">
                 <div class="max-w-2xl mx-auto w-full flex space-x-4">
                     <button @click="addMode = null" class="flex-1 px-4 py-[13.5px] rounded-2xl font-black text-[17px] text-slate-500 bg-slate-100 border border-slate-200 active:scale-95 transition-all tracking-widest">取消返回</button>
                     <button @click="saveForm" :disabled="isSaving"
