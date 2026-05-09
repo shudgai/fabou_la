@@ -181,11 +181,11 @@
                 <div class="px-[15px] pt-0 pb-[8px] bg-slate-50/50 flex items-center justify-between relative">
                     <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0">
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-outfit active:scale-95 transition-all" style="font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
-                                class="px-2 py-0.5 transition-all active:scale-95 whitespace-nowrap"
+                                class="px-2 py-0.5 font-outfit transition-all active:scale-95 whitespace-nowrap"
                                 :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
                                 style="font-size: 16px !important;">
                             {{ reorderMode ? '確認排序' : '修改排序' }}
