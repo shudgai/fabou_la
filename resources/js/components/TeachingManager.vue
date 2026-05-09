@@ -152,8 +152,8 @@
         </template>
             
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
-                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white max-w-2xl mx-auto">
-                    <div class="pt-[5px] pb-2 flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
+                    <div class="flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
                         <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
@@ -161,7 +161,7 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="flex flex-col items-center gap-[4px]">
+                <div class="flex flex-col items-center">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] p-2">

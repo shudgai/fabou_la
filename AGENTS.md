@@ -1,0 +1,151 @@
+# 法寶管理系統 — Project Knowledge
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Vue 3 (Composition API, SFC), Vite 5, Tailwind CSS 3, Sass |
+| Backend | Laravel 10 (PHP 8.2), MySQL, Sanctum auth |
+| Node | 22.20.0 / npm 10.9.3 |
+| CSS | Tailwind v3.4 with arbitrary values (`text-[13px]`, `w-[198px]`, etc.) |
+
+## Project Structure
+
+```
+D:\xampp\htdocs\fabou_la
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/    # 19 controllers
+│   │   └── ...
+│   ├── Models/              # 18 Eloquent models
+│   └── ...
+├── resources/
+│   └── js/
+│       └── components/      # 37 Vue components
+│           ├── AdminDashboard.vue
+│           ├── TeachingManager.vue
+│           ├── RegistryManager.vue
+│           ├── ImperialGraceManager.vue
+│           ├── ImperialGraceAddForm.vue
+│           ├── KaiwenManager.vue
+│           ├── KaiwenBatchAdd.vue
+│           ├── GrudgeManager.vue
+│           ├── GrudgeBatchImport.vue
+│           ├── GrudgeAddForm.vue
+│           ├── MilitaryManagerV2.vue
+│           ├── MilitaryAddForm.vue
+│           ├── MilitaryBatchAdd.vue
+│           ├── OtherManager.vue
+│           ├── OtherRecordsManager.vue
+│           ├── OtherTeachingManager.vue
+│           ├── RegistryAddForm.vue
+│           ├── LuckyDraw.vue
+│           ├── TrashManager.vue
+│           ├── SearchComponent.vue
+│           ├── CompactDatePicker.vue
+│           ├── RemarksViewer.vue
+│           ├── PaginationButtons.vue
+│           ├── LogoImperialNotebook.vue
+│           ├── MobileDashboard.vue
+│           ├── MobileNavbar.vue
+│           ├── ProfileSettings.vue
+│           ├── RandomGroup.vue
+│           ├── AdminRootSelector.vue
+│           ├── AddActionMenu.vue
+│           ├── KaiwenApproval.vue
+│           └── admin/
+│               ├── DharmaCrud.vue
+│               ├── GroupCrud.vue
+│               ├── MasterCrud.vue
+│               ├── TreasureCrud.vue
+│               └── UserCrud.vue
+├── routes/
+│   ├── web.php              # Main routes (auth-protected)
+│   └── api.php              # API routes (sanctum)
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── composer.json
+```
+
+## Dev Workflow
+
+| Command | Purpose |
+|---|---|
+| `php artisan serve` | Start PHP dev server (http://127.0.0.1:8000) |
+| `npm run dev` | Start Vite HMR dev server |
+| `npm run build` | Production build |
+| `php artisan migrate` | Run DB migrations |
+| `php artisan route:list` | List all routes |
+
+Two terminals needed: `php artisan serve` + `npm run dev`.
+
+## GitHub
+
+- Remote: `https://github.com/shudgai/fabou_la.git`
+- Current branch: `optimization`
+
+## Database
+
+- MySQL, database `fabou`, user `root`/no password
+- 18 models/tables
+
+## UI Conventions (from recent work)
+
+| Rule | Description |
+|---|---|
+| Input style | `border-0 border-b-2 border-slate-300 bg-transparent` (underline, no box) |
+| Folder button | `w-[198px] h-[198px]`, SVG `w-[163px] h-[163px]`, `viewBox="0 0 64 64"` |
+| Folder fill | Solid color (no `url(#gradient)`) — `#ef4444` / `#b91c1c` |
+| Folder text (registries) | Yellow `#fbbf24` |
+| Folder grid | `flex flex-col items-center gap-[4px]` (vertical, no borders) |
+| Button layout (Kaiwen) | Title + two tabs on same row: `flex-row items-center gap-3 ml-3` |
+| Batch import title | `<h5>` with `<br>` for multi-line |
+| Layout | Use `flex-col` / `items-center` for vertical stacking; `grid-cols-2` only for form footer buttons |
+| SVG folder path | `M4 14C4 11.7909...` (standard folder shape, solid fill) |
+| Vite build warning | Pre-existing CSS `text-[13px]` warning is minor/ignorable |
+| Vue parser | `h-[198px]` cannot be inside `:class` — use static `class` instead |
+| Overflow | Avoid `overflow-x-clip` on containers that hold fixed-width folder buttons |
+
+## Component-Specific Notes
+
+### TeachingManager.vue
+- Main add/list UI for 父皇仙師開示載錄
+- Folder grid: `flex flex-col items-center gap-[4px]`
+- Folder icon fill: `#ef4444` (red)
+- Has `*允同享皇恩` in remark-list datalist
+
+### RegistryManager.vue
+- 法寶登記專區
+- Folder grid: same as Teaching
+- Folder text: `#fbbf24` (yellow)
+- Folder icon fill: `#b91c1c` (dark red)
+- `overflow-visible` on outer wrapper
+
+### ImperialGraceManager.vue
+- 皇恩 module — reference for folder sizing (198×198 buttons, 163×163 SVG, `overflow-clip` on wrapper)
+- `overflow-y-auto` on scroll container
+
+### KaiwenManager.vue
+- 開文專區 — weekly + self posts
+- Header: title "開文專區" + two tabs side by side (17px, purple active color)
+- Form footer: `grid grid-cols-2 gap-4` for cancel/save buttons
+- `mt-[3px]` on tab container
+
+### GrudgeBatchImport.vue
+- Batch import UI for 怨靈載錄
+- Header: `<h5>` "怨靈載錄專區<br>多筆載錄"
+- Preview toast: `w-full` on flex column to match parent
+- Placeholder: `多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數`
+
+### LuckyDraw.vue
+- 抽籤專區 — lottery/draw system
+- Step 1 label: "滑動游標選取固定人員"; Step 2 label: "滑動游標選取其他抽籤人員"
+- Flow: 抽順序 (step1 → step2 → step3), 回合抽籤 (step1 → step3)
+
+### GrudgeAddForm.vue / MilitaryAddForm.vue
+- All inputs: `border-0 border-b-2 border-slate-300 bg-transparent` (underline)
+- Dharma name dropdown items: 17px to match content text
+
+### GrudgeManager.vue
+- List items: `py-3 px-3` with `border-slate-300` between items

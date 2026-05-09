@@ -55,9 +55,6 @@
                 <button @click="toggleFullTotal" class="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important;">
                     總數
                 </button>
-                <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
             </div>
         </div>
 
@@ -204,7 +201,12 @@
                                         <!-- Collapsed View: Date + Name + Quantity -->
                                         <div class="military-field">
                                             <label class="military-label">日期</label>
-                                            <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
+                                            <div class="flex items-center justify-between">
+                                                <div class="military-date-value">{{ formatDate(item.know_date) || '歷史累積' }}</div>
+                                                <button v-if="focusedId === item.id" @click.stop="toggleExpand(item.id)" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all -mt-[50px] -mr-3">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <!-- Three dots menu - far right, aligned with 日期 row (only when expanded) -->

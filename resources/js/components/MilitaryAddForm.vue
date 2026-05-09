@@ -37,7 +37,7 @@
                     <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
-                            <div class="relative flex items-center border border-slate-400 rounded-2xl bg-white overflow-visible min-h-[44px] shadow-sm dharma-dropdown">
+                            <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] dharma-dropdown">
                                 <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
                                     @focus="activeDharmaDropdown = true"
                                     class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
@@ -48,10 +48,10 @@
                                 <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <div v-for="u in filteredDharmaNames" :key="u.id"
                                         @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[17px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
                                         {{ u.name }}
                                     </div>
-                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[15px] text-slate-400 text-center">
+                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[17px] text-slate-400 text-center">
                                         無符合的法號
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="app-title ml-1">備註對象</label>
-                            <div class="relative flex items-center border border-slate-400 rounded-2xl bg-white overflow-visible min-h-[44px] shadow-sm remarks-dropdown">
+                            <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] remarks-dropdown">
                                 <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
                                     @focus="activeRemarksDropdown = true"
                                     class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
@@ -85,7 +85,7 @@
                             <label class="app-title">數量</label>
                             <span v-if="form.quantity >= 1000000" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
                         </div>
-                        <input v-model="form.quantity" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                        <input v-model="form.quantity" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
@@ -93,11 +93,11 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_zun" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="number" class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_an" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
@@ -114,11 +114,11 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="number" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.long_sheng" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="number" class="w-full py-[10px] rounded-lg border border-slate-400 bg-white px-2 focus:ring-0 outline-none shadow-sm app-body leading-tight text-slate-900">
+                                <input v-model="form.long_zhan" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
@@ -133,7 +133,7 @@
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full py-[10px] rounded-lg border border-slate-400 bg-slate-50/50 px-3 focus:ring-0 outline-none shadow-sm app-body text-slate-900">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900">
                     </div>
                 </div>
             </div>

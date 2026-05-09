@@ -114,7 +114,7 @@
                                  <div v-show="focusedId === null || focusedId === item.id" 
                                      @click.stop="toggleExpand(item.id)"
                                      :class="[
-                                         'p-[10px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                                         'py-3 px-3 border-b border-slate-300 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
                                      { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
                                      { 'border-b-0': focusedId === item.id }
                                  ]"

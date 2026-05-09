@@ -39,7 +39,7 @@
                 <div class="flex-1 overflow-y-auto custom-scrollbar pb-64 animate-fade-in w-full">
                     <div class="p-4 space-y-6">
 <div class="flex items-center flex-wrap gap-2 mb-2">
-                             <label class="text-[18px] font-black text-slate-800 shrink-0">滑動游標選取人員</label>
+                             <label class="text-[18px] font-black text-slate-800 shrink-0">{{ currentStep === 1 ? '滑動游標選取固定人員' : '滑動游標選取其他抽籤人員' }}</label>
                             <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 border border-slate-100">
                                 <span class="text-[11px] font-bold text-slate-300 whitespace-nowrap shrink-0 mr-1">手動:</span>
                                 <input v-model="manualName" @keyup.enter="addManualName" class="w-16 bg-transparent border-none text-[12px] font-bold h-6 outline-none">
