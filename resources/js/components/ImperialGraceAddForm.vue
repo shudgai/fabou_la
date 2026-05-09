@@ -233,7 +233,7 @@
                         <input type="file" ref="fileInput" class="hidden" @change="handleFileUpload" accept=".txt,.xlsx,.xls,.docx">
                     </div>
 
-                    <div v-if="excelRows.length > 0" class="mt-4 border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
+                    <div v-if="excelRows.length > 0 && batchType === 'single'" class="mt-4 border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
                         <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-100 flex justify-between items-center">
                             <span class="text-[13px] font-black text-slate-600" style="font-size: 13px !important;">預覽解析結果 ({{ excelRows.length }} 筆)</span>
                             <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest" style="font-size: 11px !important;">PREVIEW</span>
