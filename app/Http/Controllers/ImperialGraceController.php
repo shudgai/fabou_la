@@ -44,7 +44,8 @@ class ImperialGraceController extends Controller
         }
 
         $direction = filter_var($request->input('sortDesc', true), FILTER_VALIDATE_BOOLEAN) ? 'desc' : 'asc';
-        $query->orderBy('sort_order', $direction)
+        $query->orderByRaw("FIELD(status, '未求得', '已求得', '已登記') ASC")
+              ->orderBy('sort_order', $direction)
               ->orderBy('id', $direction);
 
         // Single query: get per-master counts AND unobtained count at once

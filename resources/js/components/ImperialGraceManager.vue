@@ -33,7 +33,7 @@
                 </h1>
             </div>
             <div v-if="currentFolder" class="flex flex-col items-end space-y-0.5 ml-auto md:hidden pr-2" style="padding-top: 10px;">
-                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
+                <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 16px !important;">
                     {{ sortDesc ? '新→舊' : '舊→新' }}
                 </button>
                 <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
