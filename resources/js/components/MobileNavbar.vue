@@ -61,8 +61,8 @@
                              <input type="range" min="0" max="2" step="1" 
                                     :value="sliderValue"
                                     @input="handleSliderInput"
-                                    @touchmove="handleSliderInput"
-                                    @touchend="handleSliderInput"
+                                    @change="handleSliderFinish"
+                                    @touchend="handleSliderFinish"
                                     class="vertical-slider w-8 h-24 bg-transparent cursor-pointer">
                         </div>
                         <span class="!text-[13px] font-black text-slate-400">小</span>
@@ -107,7 +107,11 @@ const handleSliderInput = (e) => {
     const val = parseInt(e.target.value);
     const map = { 2: 'font-large', 1: 'font-medium', 0: 'font-small' };
     setFontSize(map[val]);
-    setTimeout(() => { showFontMenu.value = false; }, 600);
+};
+
+const handleSliderFinish = () => {
+    // Automatically close the menu after selection is finished
+    setTimeout(() => { showFontMenu.value = false; }, 400);
 };
 
 const setFontSize = (key) => {
