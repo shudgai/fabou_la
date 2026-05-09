@@ -171,8 +171,8 @@
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2"
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#fbbf24]'"
                                      style="font-weight: 900 !important; font-size: 24px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
@@ -204,13 +204,15 @@
                         <div class="space-y-4 pb-32 flex-1 p-4 md:overflow-y-auto custom-scrollbar">
                                 <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
                                     <div v-if="activeEntryTab === 'single'" class="space-y-0.5">
-                                        <label class="app-title ml-1 opacity-0">日期</label>
+                                        <div class="flex items-center justify-between px-1">
+                                            <label class="app-title ml-1">日期</label>
+                                            <button @click="activeDate = 'date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
                                         <div class="relative flex items-center h-[52px]">
                                             <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
-                                                class="w-full h-full border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[32px] focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
-                                            <button @click="activeDate = 'date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
-                                                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
+                                                class="w-full h-full border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[10px] focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
                                         </div>
                                     </div>
                                     <div class="space-y-0.5 relative">

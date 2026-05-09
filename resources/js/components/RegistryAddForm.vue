@@ -39,13 +39,15 @@
                 <!-- Date & Master Selection (Grid Layout as per Screenshot) -->
                 <div class="grid gap-4" :class="localMode === 'single' ? 'grid-cols-2' : 'grid-cols-1'">
                     <div v-if="localMode === 'single'" class="space-y-1.5">
-                        <label class="text-[17px] font-bold text-slate-800 block ml-1">得知日期</label>
+                        <div class="flex items-center justify-between px-1">
+                            <label class="text-[17px] font-bold text-slate-800 block ml-1">得知日期</label>
+                            <button @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" class="text-slate-400 hover:text-indigo-600 transition-all p-1 active:scale-90">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
                         <div class="relative flex items-center">
                             <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-8 focus:ring-2 focus:ring-indigo-100 outline-none text-[15px] font-bold text-slate-900 shadow-sm">
-                            <button @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" class="absolute right-3 text-slate-400 hover:text-indigo-600 transition-all p-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white px-4 focus:ring-2 focus:ring-indigo-100 outline-none text-[15px] font-bold text-slate-900 shadow-sm">
                         </div>
                     </div>
                     <div class="space-y-1.5 relative">
@@ -166,7 +168,13 @@
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
+                                    <div class="flex items-center justify-between px-1">
+                                        <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
+                                        <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '師兄姐') + '取得日期' }" 
+                                            class="text-slate-300 hover:text-indigo-500 transition-colors active:scale-90 p-0.5">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    </div>
                                     <div class="relative w-full py-[10px] rounded-xl border border-slate-400 bg-white flex items-center overflow-hidden group/date">
                                         <input 
                                             :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''"
@@ -174,10 +182,6 @@
                                             placeholder="年/月/日"
                                             class="personnel-date-input w-full h-full bg-transparent px-2 text-[16px] font-bold font-outfit text-slate-900 outline-none uppercase"
                                         >
-                                        <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '師兄姐') + '取得日期' }" 
-                                            class="absolute right-0 top-0 h-full px-2 text-slate-300 hover:text-indigo-500 transition-colors bg-white/80 backdrop-blur-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
                                     </div>
                                 </div>
                                 <div class="space-y-1">

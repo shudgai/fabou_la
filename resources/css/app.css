@@ -101,6 +101,20 @@ body.font-small input, body.font-small select, body.font-small textarea { font-f
 body.font-medium input, body.font-medium select, body.font-medium textarea { font-family: 'Montserrat', sans-serif !important; font-size: 17px !important; font-weight: 400 !important; }
 body.font-large input, body.font-large select, body.font-large textarea { font-family: 'Montserrat', sans-serif !important; font-size: 19px !important; font-weight: 400 !important; }
 
+/* --- Tier 4: 大標題與資料夾標籤 (Titles & Folder Labels, 23px~32px) --- */
+/* 小 (減 2-3px) | 中 (原始) | 大 (加 2-3px) */
+body.font-small  .text-\[32px\] { font-size: 28px !important; }
+body.font-medium .text-\[32px\] { font-size: 32px !important; }
+body.font-large  .text-\[32px\] { font-size: 35px !important; }
+
+body.font-small  .text-\[28px\] { font-size: 25px !important; }
+body.font-medium .text-\[28px\] { font-size: 28px !important; }
+body.font-large  .text-\[28px\] { font-size: 31px !important; }
+
+body.font-small  .text-\[24px\], body.font-small .text-\[23px\] { font-size: 21px !important; }
+body.font-medium .text-\[24px\], body.font-medium .text-\[23px\] { font-size: 24px !important; }
+body.font-large  .text-\[24px\], body.font-large  .text-\[23px\] { font-size: 27px !important; }
+
 /* ============================================================
    電腦版專屬字體排版設計 (Desktop Typography - min-width: 768px)
    依照指示：

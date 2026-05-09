@@ -21,13 +21,15 @@
                 <div class="space-y-[15px]">
                     <!-- Row 1: 得知日期 -->
                     <div class="space-y-0.5 mt-[-5px]">
-                        <label class="app-title ml-1">得知日期</label>
+                        <div class="flex items-center justify-between px-1">
+                            <label class="app-title ml-1">得知日期</label>
+                            <button @click.stop="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
                         <div class="relative flex items-center">
                             <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-7 focus:ring-0 outline-none shadow-sm app-body font-bold">
-                            <button @click.stop="activeDate = 'know_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
+                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
                         </div>
                     </div>
 
@@ -85,13 +87,15 @@
                     <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
                     <div :class="form.destination === '未處理' ? 'space-y-0.5' : 'grid grid-cols-2 gap-[15px]'">
                         <div v-if="form.destination !== '未處理'" class="space-y-0.5">
-                            <label class="app-title ml-1">處理日期</label>
+                            <div class="flex items-center justify-between px-1">
+                                <label class="app-title ml-1">處理日期</label>
+                                <button @click.stop="activeDate = 'process_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
                             <div class="relative flex items-center">
                                 <input v-model="form.process_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-7 focus:ring-0 outline-none app-body">
-                                <button @click.stop="activeDate = 'process_date'" class="absolute right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
+                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-2 focus:ring-0 outline-none app-body">
                             </div>
                         </div>
                         <div class="space-y-0.5 relative">
@@ -153,7 +157,7 @@
             <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
                 <button 
                     @click="handleSave" 
-                    class="w-full bg-indigo-600 text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
+                    class="w-full bg-indigo-600 !text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
                     style="color: white !important;"
                 >
                     {{ editingId ? '確認修改' : '確認載錄' }}
@@ -238,7 +242,7 @@
 
                     <div class="flex flex-col space-y-3">
                         <button @click="persistentToast = null" 
-                                class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                class="w-full py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
                                 style="color: white !important;">
                             確認
                         </button>

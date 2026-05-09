@@ -94,7 +94,7 @@
         <!-- Bottom Save Action Bar -->
         <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-4 pt-3 pb-0 bg-white border-t border-slate-100 z-[1100] shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0">
             <button @click="handleBatchSave" :disabled="parsedItems.length === 0 || processing" 
-                class="w-full bg-indigo-600 text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
+                class="w-full bg-indigo-600 !text-white font-black h-[52px] rounded-2xl shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center space-x-2"
                 style="color: white !important;"
             >
                 <svg v-if="!processing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -127,7 +127,7 @@
 
                     <div class="flex flex-col space-y-3">
                         <button @click="persistentToast = null" 
-                                class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
+                                class="w-full py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
                                 style="color: white !important;">
                             確認
                         </button>

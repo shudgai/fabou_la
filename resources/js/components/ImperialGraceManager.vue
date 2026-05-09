@@ -90,43 +90,41 @@
         </teleport>
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
-        <div v-if="!currentCategory && !currentFolder && !addMode" class="h-full bg-white flex flex-col items-center">
-            <div class="flex-1 flex flex-col items-center justify-center md:justify-start md:pt-4 pb-20 w-full max-w-lg mx-auto">
-                <button 
-                    @click="currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-0 w-[310px] h-[310px] relative transition-all">
-                    <div class="relative w-[310px] h-[310px]">
-                        <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 42px !important;">重大皇恩<br>專區</div>
-                            <div class="mt-4 flex items-center space-x-2">
-                                <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ totalCount }} 筆</span>
-                            </div>
+        <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
+            <button 
+                @click="currentCategory = 'masters'"
+                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
+                <div class="relative w-[310px] h-[310px]">
+                    <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                        <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
+                        <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 px-2">
+                        <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 42px !important; font-weight: 900 !important;">重大皇恩<br>專區</div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
-                </button>
+                </div>
+            </button>
 
-                <!-- 第二個按鈕：未求得重大皇恩 (直接進入內容) -->
+            <!-- 第二個按鈕：未求得重大皇恩 (直接進入內容) -->
                 <button 
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center bg-white active:scale-95 rounded-none p-0 w-[310px] h-[310px] relative transition-all mt-[-20px]">
+                    class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
                     <div class="relative w-[310px] h-[310px]">
-                        <svg class="w-full h-full" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10">
-                            <div class="leading-tight text-center !font-black !text-white" style="font-size: 42px !important;">未求得<br>重大皇恩</div>
-                            <div class="mt-4 flex items-center space-x-2">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 px-2">
+                            <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 42px !important; font-weight: 900 !important;">未求得<br>重大皇恩</div>
+                            <div class="mt-4 flex items-center">
                                 <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ unobtainedTotal }} 筆</span>
                             </div>
                         </div>
                     </div>
                 </button>
-            </div>
         </div>
 
         <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white max-w-xl mx-auto">
@@ -139,14 +137,14 @@
                     class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[198px] h-[198px] relative group rounded-none">
                     <div class="relative w-[163px] h-[163px]">
                         <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#ig-folderGradBase)" style="fill: #fbbf24;" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
+                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
                         </svg>
                         
                         <!-- Label & Pill Inside -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
-                            <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black"
-                                 :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white'"
+                            <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                 :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#fbbf24]'"
                                  style="font-size: 24px !important;">
                                  {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
                             </div>

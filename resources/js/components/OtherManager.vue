@@ -32,9 +32,9 @@
                             <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none">
-<div :class="[
+                            <div :class="[
                                  'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
-                                 folder.name === '閻王仙師' ? 'text-black' : 'text-white'
+                                 folder.name === '閻王仙師' ? 'text-black' : 'text-[#fbbf24]'
                              ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
                             <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                 <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
