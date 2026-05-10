@@ -192,11 +192,12 @@
                                     v-show="focusedId === null || focusedId === item.id"
                                     @click="toggleExpand(item.id)"
                                      :class="[
-                                         'py-[25px] px-[15px] border-b-2 border-slate-300 relative group transition-all cursor-pointer z-0',
-                                         openMenuId === item.id ? 'z-[50]' : 'z-0'
+                                         'py-[10px] px-[15px] border-b border-slate-300 relative group cursor-pointer z-0',
+                                         openMenuId === item.id ? 'z-[50]' : 'z-0',
+                                         { 'border-b-0': focusedId === item.id }
                                      ]"
                                 >
-                                    <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
+                                    <div class="py-2 bg-white space-y-4 relative px-1.5">
                                         <!-- Collapsed View: Date + Name + Quantity -->
                                         <div class="military-field">
                                             <label class="military-label">日期</label>
@@ -234,7 +235,7 @@
                                                 <div class="military-value whitespace-nowrap">{{ formatWithCommas(item.quantity) }}</div>
                                             </div>
                                         </div>
-                                         <div class="border-b-2 border-slate-300 my-4 mx-1"></div>
+
                                         <!-- Expanded View: Details -->
                                         <div v-if="focusedId === item.id" class="pt-4 border-t-2 border-slate-200 space-y-4 animate-fade-in relative">
 
