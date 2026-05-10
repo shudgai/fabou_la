@@ -79,7 +79,7 @@
                             <!-- Step 1: Date & Master -->
                             <div v-if="currentStep === 1" :key="1" class="space-y-6 animate-fade-in text-center">
                                 <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
-                                <div class="space-y-8 max-w-sm mx-auto">
+                                <div class="space-y-8 max-w-sm mx-auto mt-12">
                                     <div class="relative group">
                                         <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
                                         <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
@@ -235,21 +235,21 @@
                         </transition>
                     </div>
 
-                    <!-- Immersive Navigation Footer - Fixed above mobile navbar -->
-                    <div class="absolute bottom-[7dvh] left-0 right-0 px-8 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100]">
+                    <!-- Immersive Navigation Footer - Fixed above mobile navbar, No gap -->
+                    <div class="absolute bottom-[7dvh] left-0 right-0 px-8 py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100]">
                         <button v-if="currentStep > 1" @click="currentStep--" 
-                                class="w-16 h-16 rounded-full border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                class="w-12 h-12 rounded-2xl border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <div v-else class="w-16 h-16"></div>
 
                         <button v-if="currentStep < (personnel.length > 0 ? 6 : 6)" @click="currentStep++" 
-                                class="flex-1 h-16 bg-indigo-600 text-white rounded-[24px] font-black text-[20px] shadow-lg shadow-indigo-200 active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
+                                class="flex-1 h-12 bg-indigo-600 text-white rounded-2xl font-black text-[16px] active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
                             <span>下一步</span>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <button v-else @click="handleSubmit" :disabled="isSaving"
-                                class="flex-1 h-16 bg-red-600 text-white rounded-[24px] font-black text-[20px] shadow-lg shadow-red-200 active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
+                                class="flex-1 h-12 bg-red-600 text-white rounded-2xl font-black text-[16px] active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
                             <span>{{ isSaving ? '處理中...' : '確認載錄' }}</span>
                         </button>
                     </div>
