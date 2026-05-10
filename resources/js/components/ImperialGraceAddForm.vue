@@ -2,13 +2,13 @@
     <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0 imperial-grace-module" style="overscroll-behavior: contain;">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
-        
+
         <!-- Form Container -->
         <div class="relative w-full h-[100dvh] md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
-                    <div class="text-[28px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black" style="color: #dc2626 !important;">
+                    <div class="text-[26px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black" style="color: #dc2626 !important;">
                         重大皇恩
                     </div>
                 </div>
@@ -34,9 +34,9 @@
 
             <!-- Scrollable Content -->
             <div class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain">
-                
-                <!-- COMMON FIELDS (Date & Master) -->
-                <div class="grid grid-cols-2 gap-3 bg-white p-1">
+
+                <!-- COMMON FIELDS (Date & Master) - Hidden in Single Immersive Mode -->
+                <div v-if="localMode !== 'single'" class="grid grid-cols-2 gap-3 bg-white p-1">
                     <div class="space-y-1.5">
                         <div class="flex items-center justify-between px-1">
                             <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">得知日期</label>
@@ -57,143 +57,201 @@
                     </div>
                 </div>
 
-                <!-- SINGLE MODE -->
-                <div v-if="localMode === 'single'" class="space-y-5 animate-fade-in">
-                    <div class="space-y-1.5">
-                        <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">法寶名稱</label>
-                        <textarea v-model="form.name" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="請輸入法寶名稱..." class="app-body w-full py-3 border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none placeholder:text-slate-200"></textarea>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">法寶用意</label>
-                        <input v-model="form.purpose" placeholder="輸入法寶用途..." class="app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none placeholder:text-slate-200">
-                    </div>
-
-                    <!-- MASTER STATUS/DATE (ONLY FOR SINGLE PERSON) -->
-                    <div v-if="personnel.length === 0" class="grid grid-cols-2 gap-3 animate-fade-in">
-                        <div class="space-y-1.5">
-                            <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">目前狀態</label>
-                            <select v-model="form.status" class="app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none">
-                                <option value="未求得">未求得</option>
-                                <option value="已求得">已求得</option>
-                                <option value="已登記">已登記</option>
-                            </select>
+                <!-- SINGLE MODE: Immersive One-Thing-At-A-Time -->
+                <div v-if="localMode === 'single'" class="flex-1 flex flex-col min-h-0 relative">
+                    <!-- Progress Indicator -->
+                    <div class="px-8 pt-2 pb-6">
+                        <div class="flex items-center justify-between gap-1">
+                            <div v-for="s in (personnel.length > 0 ? 6 : 5)" :key="s" 
+                                 class="h-1 flex-1 rounded-full transition-all duration-500"
+                                 :class="s <= currentStep ? 'bg-indigo-500' : 'bg-slate-100'">
+                            </div>
                         </div>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between px-1">
-                                <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">
-                                    {{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}
-                                </label>
-                                <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" class="text-slate-300 hover:text-indigo-600 transition-colors p-1 z-20 active:scale-90">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                            <div class="relative">
-                                <input v-model="form.obtained_date" type="text" placeholder="日期" class="app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none">
-                            </div>
+                        <div class="flex justify-between mt-2">
+                            <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">Step {{ currentStep }} of {{ personnel.length > 0 ? 6 : 5 }}</span>
+                            <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">{{ stepTitles[currentStep - 1] }}</span>
                         </div>
                     </div>
 
-                    <div v-if="personnel.length === 0" class="flex justify-center py-4 border-t border-slate-50 mt-4">
-                        <button @click="addPersonnelRow" class="px-6 py-2 bg-slate-100 text-indigo-600 font-black text-[16px] rounded-2xl flex items-center space-x-2 active:scale-95 transition-all shadow-sm border border-slate-200">
-                            <span>＋ 多人承接模式</span>
-                        </button>
-                    </div>
-
-                    <!-- PERSONNEL SECTION (ONLY FOR MULTI-PERSON) -->
-                    <div v-if="personnel.length > 0" class="space-y-6 pt-4 border-t border-slate-100 animate-fade-in">
-                        <div class="flex items-center justify-between ml-1">
-                            <div class="flex flex-col">
-                                <label class="text-[15px] font-black text-red-600 uppercase tracking-tight">多人承接名單</label>
-                                <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">MULTI-PERSON MODE</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button @click="personnel = []" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-2xl text-[16px] font-black active:scale-95 transition-all border border-slate-100 shadow-sm">
-                                    切換回單人
-                                </button>
-                                <button @click="addPersonnelRow" class="px-3 py-1.5 bg-indigo-600 text-white rounded-2xl text-[16px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">
-                                    ＋ 新增人員
-                                </button>
-                            </div>
-                        </div>
-
-                        <div v-for="(p, idx) in personnel" :key="idx" 
-                            class="p-4 bg-white rounded-[24px] border border-slate-200 space-y-4 relative group animate-fade-in shadow-sm">
-                            <div class="absolute top-3 right-3 flex items-center space-x-2">
-                                <div class="flex items-center space-x-1 bg-slate-50 rounded-lg px-1 py-0.5">
-                                    <button v-if="personnel.length > 1" @click="movePersonnel(idx, -1)" :disabled="idx === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-10 transition-all active:scale-90">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-                                    <button v-if="personnel.length > 1" @click="movePersonnel(idx, 1)" :disabled="idx === personnel.length - 1" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-10 transition-all active:scale-90">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-                                </div>
-                                <button @click="removePersonnelRow(idx)" class="w-7 h-7 flex items-center justify-center bg-rose-50 text-white rounded-full active:scale-90 transition-all">✕</button>
-                            </div>
-                            
-                            <!-- Fields -->
-                            <div class="space-y-4">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="space-y-1.5">
-                                        <label class="app-title font-black text-red-400 ml-1 uppercase tracking-widest">法號</label>
-                                        <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
-                                            @keydown.enter.prevent="handlePersonnelEnter(idx)"
-                                            class="personnel-name-input app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none font-outfit">
+                    <!-- Step Content Container -->
+                    <div class="flex-1 flex flex-col justify-center px-6 pb-20">
+                        <transition name="step-fade" mode="out-in">
+                            <!-- Step 1: Date & Master -->
+                            <div v-if="currentStep === 1" :key="1" class="space-y-6 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請問載錄的<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">目標</span>？</h2>
+                                <div class="space-y-8 max-w-sm mx-auto">
+                                    <div class="relative group">
+                                        <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
+                                        <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
+                                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
+                                        <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-200 hover:text-indigo-500 transition-colors">
+                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
                                     </div>
-                                    <div class="space-y-1.5">
-                                        <label class="app-title font-black text-red-400 ml-1 uppercase tracking-widest">狀態</label>
-                                        <select v-model="p.status" class="app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black outline-none"
-                                            :style="p.status === '未求得' ? 'color: #dc2626 !important;' : (p.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                            <option value="未求得">未求得</option>
-                                            <option value="已求得">已求得</option>
-                                            <option value="已登記">已登記</option>
+                                    <div class="relative group">
+                                        <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">載錄目標</label>
+                                        <select v-model="form.master_id" class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
+                                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="space-y-1.5" :class="{ 'opacity-50 pointer-events-none': p.status === '未求得' }">
-                                        <div class="flex items-center justify-between px-1">
-                                            <label class="app-title font-black text-red-400 ml-1 uppercase tracking-widest">
-                                                {{ p.status === '已登記' ? '登記日期' : (p.status === '已求得' ? '求得日期' : '日期') }}
-                                            </label>
-                                            <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="text-slate-300 hover:text-indigo-600 transition-colors p-1 z-20 active:scale-90">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
+                            </div>
+
+                            <!-- Step 2: Item Name -->
+                            <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
+                                <div class="max-w-md mx-auto">
+                                    <textarea v-model="form.name" rows="2" 
+                                        @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" 
+                                        placeholder="例如：如意金剛杵..." 
+                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Purpose -->
+                            <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
+                                <div class="max-w-md mx-auto">
+                                    <input v-model="form.purpose" placeholder="選填：例如 鎮宅避邪..." 
+                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
+                                </div>
+                                <div class="flex justify-center pt-4">
+                                    <button @click="currentStep++" class="text-slate-300 font-bold hover:text-indigo-500 transition-colors">跳過此步驟</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Mode Selection (Single vs Multi) -->
+                            <div v-else-if="currentStep === 4" :key="4" class="space-y-6 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">由<span class="text-indigo-600">何人</span>承接此法寶？</h2>
+                                <div class="grid grid-cols-1 gap-4 max-w-sm mx-auto">
+                                    <button @click="personnel = []; currentStep++" 
+                                            class="group p-6 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
+                                        <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+                                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="text-[20px] font-black text-slate-900">單人承接</div>
+                                            <div class="text-[14px] text-slate-400 font-bold">預設為目前登錄者</div>
+                                        </div>
+                                    </button>
+                                    <button @click="addPersonnelRow(); currentStep++" 
+                                            class="group p-6 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
+                                        <div class="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center shrink-0">
+                                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="text-[20px] font-black text-slate-900">多人承接</div>
+                                            <div class="text-[14px] text-slate-400 font-bold">可輸入多位同修法號</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 5 (Single): Status & Date OR Step 5 (Multi): Personnel List -->
+                            <div v-else-if="currentStep === 5" :key="5" class="space-y-8 animate-fade-in w-full h-full flex flex-col">
+                                <!-- Single Mode Status -->
+                                <div v-if="personnel.length === 0" class="text-center space-y-6">
+                                    <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
+                                    <div class="grid grid-cols-1 gap-8 max-w-sm mx-auto">
+                                        <div class="relative">
+                                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
+                                            <select v-model="form.status" class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all appearance-none">
+                                                <option value="未求得">未求得</option>
+                                                <option value="已求得">已求得</option>
+                                                <option value="已登記">已登記</option>
+                                            </select>
                                         </div>
                                         <div class="relative">
-                                            <input v-model="p.obtained_date" type="text" placeholder="日期" 
-                                                class="app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-3 font-black text-slate-900 outline-none">
-                                        </div>
-                                    </div>
-                                    <div class="space-y-1.5">
-                                        <label class="app-title font-black text-slate-400 ml-1 uppercase tracking-widest">備註對象</label>
-                                        <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible h-[46px]">
-                                            <input v-model="p.relationship" placeholder="備註對象..." 
-                                                @focus="activeRelDropdownIdx = idx"
-                                                class="app-body w-full bg-transparent border-none px-4 font-black text-slate-900 focus:ring-0 outline-none placeholder:text-slate-200">
-                                            <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-2 text-indigo-500 hover:text-indigo-700 transition-all">
-                                                <svg class="w-5 h-5" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}</label>
+                                            <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" 
+                                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all">
+                                            <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" class="absolute right-0 bottom-4 text-slate-200 hover:text-red-500 transition-colors">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activeRelDropdownIdx === idx" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar overscroll-contain">
-                                                <div v-for="opt in relationshipOptions" :key="opt"
-                                                     @click.stop="p.relationship = opt; activeRelDropdownIdx = null"
-                                                     class="px-4 py-2.5 flex items-center rounded-xl hover:bg-indigo-50 font-black app-body text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                                    {{ opt }}
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Multi Mode List -->
+                                <div v-else class="flex-1 flex flex-col min-h-0">
+                                    <div class="text-center mb-6">
+                                        <h2 class="text-[28px] font-black text-slate-900 leading-tight tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
+                                    </div>
+                                    <div class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-24 space-y-4">
+                                        <div v-for="(p, idx) in personnel" :key="idx" 
+                                            class="p-5 bg-slate-50/50 rounded-[32px] border border-slate-100 space-y-4 relative group animate-fade-in">
+                                            <button @click="removePersonnelRow(idx)" class="absolute -top-2 -right-2 w-8 h-8 bg-white border border-slate-100 text-slate-400 rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-all z-10">✕</button>
+                                            
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-1">
+                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">法號</label>
+                                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                                        class="w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none">
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">狀態</label>
+                                                    <select v-model="p.status" class="w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none appearance-none"
+                                                        :style="p.status === '未求得' ? 'color: #dc2626 !important;' : (p.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                                        <option value="未求得">未求得</option>
+                                                        <option value="已求得">已求得</option>
+                                                        <option value="已登記">已登記</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-1">
+                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">日期</label>
+                                                    <div class="relative">
+                                                        <input v-model="p.obtained_date" type="text" class="w-full text-[16px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-2 outline-none">
+                                                        <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="absolute right-0 bottom-2 text-slate-200">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">備註對象</label>
+                                                    <input v-model="p.relationship" placeholder="選填..." class="w-full text-[16px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-2 outline-none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button @click="addPersonnelRow" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-[28px] text-slate-400 font-black hover:border-indigo-300 hover:text-indigo-500 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                            <span>＋ 繼續新增人員</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Table is "collapsed" by default when personnel length is 0 -->
+                            <!-- Final Step: Remarks & Confirm -->
+                            <div v-else-if="currentStep === (personnel.length > 0 ? 6 : 6)" :key="6" class="space-y-6 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">最後，有其他<br><span class="text-indigo-600">補充說明</span>嗎？</h2>
+                                <div class="max-w-md mx-auto">
+                                    <textarea v-model="form.remarks" rows="3" placeholder="例如：法寶現存放於..." 
+                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
+                                </div>
+                                <div class="bg-indigo-50 p-6 rounded-[32px] max-w-sm mx-auto space-y-2 border border-indigo-100">
+                                    <div class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">READY TO SAVE</div>
+                                    <div class="text-[18px] font-black text-slate-900">點擊下方按鈕完成載錄</div>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
 
+                    <!-- Immersive Navigation Footer - Fixed above mobile navbar -->
+                    <div class="absolute bottom-[7dvh] left-0 right-0 px-8 py-4 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100]">
+                        <button v-if="currentStep > 1" @click="currentStep--" 
+                                class="w-16 h-16 rounded-full border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div v-else class="w-16 h-16"></div>
 
-                        <div class="col-span-2 space-y-1 py-[5px]">
-                            <label class="app-title font-black text-slate-400 uppercase tracking-widest block ml-1">詳細內容 / 備註</label>
-                            <textarea v-model="form.remarks" rows="1" placeholder="輸入更多說明內容..." class="app-body w-full py-[5px] border-0 border-b-2 border-slate-300 bg-transparent p-2 font-bold text-slate-900 outline-none"></textarea>
-                        </div>
+                        <button v-if="currentStep < (personnel.length > 0 ? 6 : 6)" @click="currentStep++" 
+                                class="flex-1 h-16 bg-indigo-600 text-white rounded-[24px] font-black text-[20px] shadow-lg shadow-indigo-200 active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
+                            <span>下一步</span>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button v-else @click="handleSubmit" :disabled="isSaving"
+                                class="flex-1 h-16 bg-red-600 text-white rounded-[24px] font-black text-[20px] shadow-lg shadow-red-200 active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
+                            <span>{{ isSaving ? '處理中...' : '確認載錄' }}</span>
+                        </button>
                     </div>
                 </div>
 
@@ -285,8 +343,8 @@
                 </div>
             </div>
 
-            <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-50 z-[10] flex justify-center">
+            <!-- Footer Action - Only shown in Batch Mode -->
+            <div v-if="localMode === 'batch'" class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-50 z-[10] flex justify-center">
                 <button @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
                     class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] shadow-lg shadow-indigo-100 active:scale-95 transition-all disabled:bg-slate-300"
                     style="color: white !important;">
@@ -295,7 +353,7 @@
             </div>
 
             <mobile-navbar class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
-            
+
             <datalist id="dharma-names">
                 <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
             </datalist>
@@ -344,6 +402,21 @@ const batchInput = ref('');
 const activePicker = ref(null);
 const activeRelDropdownIdx = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
+
+// One Thing At A Time State
+const currentStep = ref(1);
+const stepTitles = [
+    '日期與目標',
+    '法寶名稱',
+    '法寶用意',
+    '承接模式',
+    '人員明細',
+    '備註確認'
+];
+
+watch(localMode, () => {
+    currentStep.value = 1;
+});
 
 const activePickerValue = computed({
     get: () => {
@@ -430,7 +503,7 @@ const excelRows = computed(() => {
             } else if (isStatus) {
                 const statusStr = isStatus[0];
                 const namePart = line.split(statusStr)[0].replace(/狀態[:：]?/, '').trim();
-                
+
                 if (namePart) {
                     const pDate = isDate ? isDate[0].replace(/\//g, '-') : '';
                     currentRec.personnel.push({ custom_name: namePart, status: statusStr, obtained_date: pDate, remarks: '' });
@@ -459,7 +532,7 @@ const excelRows = computed(() => {
         }
     }
     if (currentRec) records.push(currentRec);
-    
+
     return records.map(r => {
         let finalStatus = r.status;
         if (r.personnel.length > 0) {
@@ -495,8 +568,7 @@ const fetchDharmaNames = async () => {
 };
 
 const addPersonnelRow = () => {
-    alert('單人承接無需使用多人承接模式');
-    personnel.value.push({ custom_name: '', relationship: '', obtained_date: '', status: '已求得', remarks: '' });
+    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.record_date || '', status: '已求得', remarks: '' });
 };
 
 const handlePersonnelEnter = (idx) => {
@@ -554,7 +626,7 @@ watch(personnel, (newVal) => {
                 const namePart = relSplitMatch[1].trim();
                 let connector = relSplitMatch[2];
                 let relPart = relSplitMatch[3].trim();
-                
+
                 p.custom_name = namePart;
                 p.relationship = connector + relPart;
             }
@@ -567,7 +639,7 @@ const handleSubmit = () => {
         if (!form.value.name?.trim()) { alert('請輸入法寶名稱'); return; }
         const cleaned = personnel.value.filter(p => p.custom_name?.trim());
         const isMulti = cleaned.length > 0;
-        
+
         let finalStatus = form.value.status;
         if (isMulti) {
             const hasUnobtained = cleaned.some(p => p.status === '未求得');
@@ -576,7 +648,7 @@ const handleSubmit = () => {
             else if (allRegistered) finalStatus = '已登記';
             else finalStatus = '已求得';
         }
-        
+
         emit('saveSingle', { 
             ...form.value,
             status: finalStatus,
@@ -627,4 +699,18 @@ const handleDirectPaste = async () => { /* logic */ };
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Step Transitions */
+.step-fade-enter-active,
+.step-fade-leave-active {
+    transition: all 0.3s ease-in-out;
+}
+.step-fade-enter-from {
+    opacity: 0;
+    transform: translateX(20px);
+}
+.step-fade-leave-to {
+    opacity: 0;
+    transform: translateX(-20px);
+}
 </style>

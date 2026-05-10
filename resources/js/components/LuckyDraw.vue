@@ -1,6 +1,6 @@
 <template>
     <div v-if="show" class="fixed inset-0 h-[100dvh] md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
-        
+
         <!-- STEP 1 & 2: PERSONNEL SELECTION -->
         <div v-if="currentStep === 1 || currentStep === 2" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
@@ -49,7 +49,7 @@
                                 {{ pendingNames.length }} 人
                             </div>
                         </div>
-                        
+
                         <!-- Grid -->
                         <div class="grid grid-cols-4 md:grid-cols-5 gap-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
                             <button v-for="user in displayUsers" :key="user.id"
@@ -194,7 +194,7 @@
 
             <!-- Status text (Added to match RandomGroup) -->
             <div class="absolute top-[3dvh] left-0 right-0 flex flex-col items-center space-y-2">
-                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <p class="text-[30px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
                 <div class="flex gap-2">
                     <span class="dot-lg w-3 h-3 rounded-full" style="background:#b45309;"></span>
                     <span class="dot-lg w-3 h-3 rounded-full" style="background:#d97706;"></span>
@@ -432,7 +432,7 @@ const buildFlyingSticks = (names) => {
 
 const performDraw = () => {
     if (selectedNames.value.length === 0) return;
-    
+
     isDrawing.value = true;
     currentType.value = 'draw';
     buildFlyingSticks([...selectedNames.value]);
@@ -448,12 +448,12 @@ const performDraw = () => {
     setTimeout(() => {
         clearInterval(lotteryInterval);
         lotteryInterval = null;
-        
+
         const fixed = fixedParticipants.value.filter(n => pool.includes(n));
         const rest = pool.filter(n => !fixed.includes(n)).sort(() => Math.random() - 0.5);
         const full = [...fixed, ...rest];
         results.value = full.slice(0, Math.min(drawCount.value, full.length));
-        
+
         isDrawing.value = false;
         lotteryDisplayNames.value = [];
         currentStep.value = 4;
@@ -462,7 +462,7 @@ const performDraw = () => {
 
 const performRoundDraw = () => {
     if (roundParticipants.value.length === 0) return;
-    
+
     isDrawing.value = true;
     currentType.value = 'round';
     buildFlyingSticks([...roundParticipants.value]);
@@ -478,10 +478,10 @@ const performRoundDraw = () => {
     setTimeout(() => {
         clearInterval(lotteryInterval);
         lotteryInterval = null;
-        
+
         const shuffled = [...roundParticipants.value].sort(() => Math.random() - 0.5);
         results.value = shuffled.slice(0, Math.min(drawCount.value, shuffled.length));
-        
+
         isDrawing.value = false;
         lotteryDisplayNames.value = [];
         currentStep.value = 4;

@@ -7,7 +7,10 @@
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
+                    <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
+                    </div>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
             </div>
@@ -18,7 +21,7 @@
                     @click="activeFolderId = folder.id"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
                     style="background-color: white;">
-                    
+
                     <!-- Folder Delete Button (Top Right) -->
                     <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
                         @click.stop="deleteFolder(folder.id)"
@@ -102,9 +105,12 @@
                     <!-- Consolidated Title Row -->
                     <div class="flex items-center flex-1 min-w-0">
                         <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-<h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+<div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                                  抽籤專區
                              </h1>
+                    </div>
                         </div>
                         <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
                     </div>
@@ -132,7 +138,6 @@
                 </div>
             </div>
 
-
             <div v-if="activeFolder || showLuckyDraw" class="h-full">
                 <!-- Special View: 抽籤工具 (LuckyDraw) -->
                 <lucky-draw v-if="showLuckyDraw" ref="luckyDrawRef" 
@@ -141,12 +146,12 @@
                     :folder-id="lotteryFolderId"
                     @close="showLuckyDraw = false" 
                     @saved="loadData(); showLuckyDraw = false" />
-                
+
                 <!-- Special View: 開文核定表 -->
                 <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" />
                 <!-- Special View: 隨機分組 -->
                 <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
-                
+
                 <!-- Default View: Standard Records -->
                 <div v-else-if="activeFolder" class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
                     <div class="space-y-4">
@@ -154,7 +159,7 @@
                             <button @click.stop="deleteRecord(record.id)" class="absolute top-4 right-4 text-slate-300 active:text-red-500 transition-colors p-2 z-20">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            
+
                             <div class="flex items-center text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 {{ formatDate(record.record_date) || formatDate(record.created_at) }}
@@ -190,8 +195,6 @@
                 @more="handleMore"
             />
         </div>
-
-
 
         <!-- Add Folder Modal -->
         <div v-if="showAddFolder" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -272,7 +275,6 @@ import MobileNavbar from './MobileNavbar.vue';
 import LuckyDraw from './LuckyDraw.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
-
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -329,7 +331,7 @@ const lotteryFolderId = computed(() => folders.value.find(f => f.name === '抽�
 const loadData = async () => {
     const res = await axios.get('/other-folders');
     folders.value = res.data;
-    
+
     const kaiwenFolders = folders.value.filter(f => f.name.includes('開文核定'));
     const randomFolders = folders.value.filter(f => f.name.includes('隨機分組'));
 
@@ -386,7 +388,7 @@ const executeToastAction = async () => {
     if (!persistentToast.value) return;
     const type = persistentToast.value.type;
     const id = deleteConfirmId.value;
-    
+
     try {
         if (type === 'deleteRecord') {
             await axios.delete(`/other-records/${id}`);
@@ -396,7 +398,7 @@ const executeToastAction = async () => {
             if (activeFolderId.value === id) activeFolderId.value = null;
             persistentToast.value = { msg: '✓ 已成功刪除資料夾', type: 'success' };
         }
-        
+
         if (persistentToast.value?.type === 'success') {
             setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         }

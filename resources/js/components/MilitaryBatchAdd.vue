@@ -38,7 +38,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
-                
+
                 <!-- Import Button -->
                 <button @click="$refs.fileInput.click()" class="bg-emerald-600 text-white px-4 h-[52px] rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-md" style="color: white !important;">
                     <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
@@ -101,7 +101,7 @@
                 <span class="text-[20px] tracking-widest" style="color: white !important;">{{ processing ? '正在儲存...' : `確認載錄 (${parsedItems.length} 筆)` }}</span>
             </button>
         </div>
-        
+
         <mobile-navbar 
             class="md:hidden"
             :can-back="false"
@@ -192,7 +192,7 @@ const translateRel = (rel) => {
 
 const parsedItems = computed(() => {
     if (!batchText.value.trim()) return [];
-    
+
     const lines = batchText.value.split('\n');
     const getTodayLocal = () => {
         const d = new Date();
@@ -200,7 +200,7 @@ const parsedItems = computed(() => {
     };
     let currentResolvedDate = batchDate.value; 
     const results = [];
-    
+
     const nameAliasMap = {
         '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
         '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
@@ -266,32 +266,32 @@ const parsedItems = computed(() => {
         let name = '';
         let qty = 0;
         const firstDigitIndex = cleanLine.replace(/[\(\（][^\)\）]*[\)\）]/g, m => ' '.repeat(m.length)).search(/\d/);
-        
+
         if (firstDigitIndex === -1) {
             name = translateName(cleanLine);
             qty = 1;
         } else {
             name = translateName(cleanLine.substring(0, firstDigitIndex).trim());
             let rest = cleanLine.substring(firstDigitIndex).replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
-            
+
             // Robust Quantity Parsing for Units (隊, 萬, 位) and Commas
             let totalQty = 0n;
             let foundUnit = false;
-            
+
             // 1. Detect "隊" (1,000,000)
             const troopMatch = rest.match(/(\d+)\s*隊/);
             if (troopMatch) {
                 totalQty += BigInt(troopMatch[1]) * 1000000n;
                 foundUnit = true;
             }
-            
+
             // 2. Detect "萬" (10,000)
             const wanMatch = rest.match(/(\d+)\s*萬/);
             if (wanMatch) {
                 totalQty += BigInt(wanMatch[1]) * 10000n;
                 foundUnit = true;
             }
-            
+
             // 3. Detect remaining numbers or "位" (1)
             // Remove parts already handled by units
             let remainingRest = rest.replace(/\d+\s*[隊萬]/g, ' ');
@@ -301,7 +301,7 @@ const parsedItems = computed(() => {
             if (numbers) {
                 totalQty += numbers.reduce((sum, n) => sum + BigInt(n), 0n);
             }
-            
+
             qty = (totalQty > 0n) ? totalQty.toString() : "1";
         }
 
@@ -327,7 +327,7 @@ const parsedItems = computed(() => {
             user_remarks: uRemarks,
             remarks_text: ''
         };
-        
+
         if (props.armyType === '黑曜軍' || props.armyType === '耀紫軍') {
             const parenPartMatch = normLine.match(/[\(（](.*?)[\)）]/);
             const parenPart = parenPartMatch ? parenPartMatch[1] : '';
@@ -351,7 +351,7 @@ const parsedItems = computed(() => {
                     hasParts = true;
                 }
             }
-            
+
             const bQty = BigInt(qty);
             if (hasParts) {
                 if (bQty > 1n) {
@@ -381,7 +381,7 @@ const parsedItems = computed(() => {
 
         results.push(item);
     });
-    
+
     return results;
 });
 

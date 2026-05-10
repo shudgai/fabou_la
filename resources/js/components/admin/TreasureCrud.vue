@@ -44,7 +44,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Form Modal -->
         <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showModal = false"></div>

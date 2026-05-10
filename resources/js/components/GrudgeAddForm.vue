@@ -2,7 +2,7 @@
     <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
-        
+
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-0">
             <!-- Header -->
@@ -66,7 +66,7 @@
                                 <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
                                     <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
-                                
+
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
@@ -100,7 +100,7 @@
                         </div>
                         <div class="space-y-0.5 relative">
                             <label class="app-title ml-1">處理結果</label>
-                            
+
                             <!-- Input with Picker Trigger -->
                             <div class="relative">
                                 <input v-model="form.destination" 
@@ -364,7 +364,7 @@ const onDestinationChange = () => {
         delete form.value.remarks.yan_zun;
         delete form.value.remarks.yan_an;
     }
-    
+
     if (form.value.destination === '耀紫軍') {
         form.value.remarks.long_sheng = form.value.remarks.long_sheng || "0";
         form.value.remarks.long_zhan = form.value.remarks.long_zhan || "0";

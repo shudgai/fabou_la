@@ -21,15 +21,16 @@
             </div>
         </div>
 
-
-
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Hidden when in folder view to increase density) -->
         <div v-if="!currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                     軍隊記錄專區
                 </h1>
+                    </div>
             </div>
             <div class="absolute right-2 bottom-2">
                 <button @click="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
@@ -39,22 +40,32 @@
         </div>
 
         <!-- Header 2: Folder/Action Level (Sticky at top when folder selected) -->
-        <div v-if="currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full px-[15px] py-1" style="min-height: 32px;">
-            <button @click="resetToRoot" class="text-slate-400 p-2 -ml-2 mr-2 active:scale-90 transition-transform shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <div class="flex items-center flex-1 min-w-0 justify-start">
-                <h2 class="truncate tracking-tight font-outfit font-normal" style="font-size: 28px !important; color: #0f172a !important; font-weight: 400 !important;">
-                    {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
-                </h2>
-                <button @click.stop="sortDesc = !sortDesc" class="ml-2 px-2 py-1 text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
-                    {{ sortDesc ? '新→舊' : '舊→新' }}
-                </button>
+        <div v-if="currentFolder" class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300">
+            <!-- Row 1: Logo + Module Title -->
+            <div class="flex items-center justify-between px-3 py-1 bg-white border-b border-white" @click="resetToRoot">
+                <div class="flex items-center gap-2">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+                        軍隊記錄專區
+                    </h1>
+                </div>
             </div>
-            <div class="ml-2 flex items-center space-x-2">
-                <button @click="toggleFullTotal" class="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-[14px] font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important;">
-                    總數
-                </button>
+
+            <!-- Row 2: Folder Name + Actions -->
+            <div class="flex items-center justify-between px-[15px] py-[6px] bg-white">
+                <div class="flex items-center flex-1 min-w-0">
+                    <h2 class="truncate tracking-tight font-outfit font-normal" style="font-size: 26px !important; color: #0f172a !important; font-weight: 400 !important;">
+                        {{ currentFolder?.id === 'all' ? '全部軍隊' : currentFolder?.name }}
+                    </h2>
+                </div>
+                <div class="flex items-center space-x-2 shrink-0 ml-4">
+                    <button @click.stop="sortDesc = !sortDesc" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                        {{ sortDesc ? '新→舊' : '舊→新' }}
+                    </button>
+                    <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-900 text-white rounded-xl font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important; font-size: 16px !important;">
+                        總數
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -80,7 +91,7 @@
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
-                        
+
                         <!-- Unified Shield Badge (Matches Mobile Style) -->
                         <div class="relative w-[339px] h-[339px] md:w-[387px] md:h-[387px]">
                             <!-- MOBILE VERSION SVG -->
@@ -114,9 +125,9 @@
                         <button @click="showFullTotal = false" class="absolute right-6 top-6 text-slate-300 hover:text-slate-600 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        
+
                         <div class="text-center space-y-6 pt-4">
-                            
+
                             <div class="space-y-2">
                                 <h3 class="app-body text-slate-500 font-bold uppercase tracking-widest text-[20px]" style="font-size: 20px !important;">
                                     {{ searchQuery ? `「${searchQuery}」之載錄總量` : `${currentFolder.name} 總計` }}
@@ -209,7 +220,6 @@
                                             </div>
                                         </div>
 
-
                                         <!-- Three dots menu - far right, aligned with 日期 row (only when expanded) -->
                                         <div v-if="focusedId === item.id" class="absolute right-[-8px] top-[8px] z-20">
                                             <button @click.stop="openMenuId === item.id ? openMenuId = null : openMenuId = item.id" class="w-9 h-9 flex items-center justify-center text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
@@ -267,7 +277,6 @@
                             </template>
                         </template>
 
-
                 </div>
             </div>
         </div>
@@ -306,7 +315,6 @@
         <military-batch-add :show="batchMode" :armyType="currentFolder ? currentFolder.name : ''" @save="batchMode = false; loadData()" @cancel="batchMode = false" />
     </div>
 </template>
-
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
@@ -455,11 +463,11 @@ const formatArmyTotal = (num) => {
     if (!isValidBigInt(num)) return '0';
     const b = BigInt(String(num).replace(/,/g, ''));
     if (b < 1000000n) return formatWithCommas(b);
-    
+
     const troops = b / 1000000n;
     const remaining = b % 1000000n;
     if (remaining === 0n) return `${troops}隊`;
-    
+
     const wan = remaining / 10000n;
     const rest = remaining % 10000n;
     let res = `${troops}隊`;
@@ -479,7 +487,7 @@ const filteredItems = computed(() => {
 });
 const sortedItems = computed(() => {
     let result = [...filteredItems.value];
-    
+
     result.sort((a, b) => {
         // Records without know_date (Historical Accumulation) always go to the bottom
         if (!a.know_date && b.know_date) return 1;
@@ -561,7 +569,7 @@ const toggleExpand = (id) => { focusedId.value = focusedId.value === id ? null :
 
 const addActions = computed(() => {
     const actions = [];
-    
+
     actions.push({
         label: '原始數量',
         description: '錄入歷史累積之軍隊數量',
@@ -643,7 +651,7 @@ const getVisualWidth = (str) => {
 const padToWidthPrecise = (str, width, isNumeric = false) => {
     const currentWidth = getVisualWidth(str);
     if (currentWidth >= width) return str;
-    
+
     if (isNumeric) {
         // USE FIGURE SPACE (\u2007) FOR NUMBERS - it has same width as digits
         const padding = '\u2007'.repeat(width - currentWidth);
@@ -666,36 +674,36 @@ const padToWidthPrecise = (str, width, isNumeric = false) => {
 
 const copyToLine = () => {
     if (!sortedItems.value.length) return alert('目前沒有資料可供複製');
-    
+
     let text = `【${currentFolder.value?.name || '軍隊'} 載錄報表】\n\n`;
-    
+
     // Header - Precise alignment using \u3000 and \u2007
     const hDate = padToWidthPrecise('日期', 10);
     const hName = padToWidthPrecise('法號', 18);
     const hQty  = '數量';
     text += `${hDate} | ${hName} | ${hQty}\n`;
     text += `----------------------------------------\n`;
-    
+
     let total = 0;
     sortedItems.value.forEach(item => {
         const dateStr = formatDate(item.know_date);
         const fullName = item.user_name + (item.user_remarks || '');
         const qtyNum = Number(item.quantity) || 0;
         total += qtyNum;
-        
+
         // Body - Precise alignment
         const cDate = padToWidthPrecise(dateStr, 10);
         const cName = padToWidthPrecise(fullName, 18);
         const cQty  = padToWidthPrecise(qtyNum.toString(), 4, true); // Pad numeric part
-        
+
         text += `${cDate} | ${cName} | ${cQty}\n`;
     });
-    
+
     text += `----------------------------------------\n`;
     const footerLabel = padToWidthPrecise('總結：', 30);
     const footerQty   = padToWidthPrecise(total.toString(), 4, true);
     text += `${footerLabel} | ${footerQty}\n`;
-    
+
     writeClipboard(text).then(() => {
         alert('已複製到剪貼簿，快去 LINE 貼上吧！');
     }).catch(err => {
@@ -705,7 +713,7 @@ const copyToLine = () => {
 
 const exportToExcel = () => {
     if (!filteredItems.value.length) return alert('目前沒有資料可供匯出');
-    
+
     // Check if XLSX is loaded (should be pre-loaded in onMounted)
     if (typeof XLSX === 'undefined') {
         alert('匯出元件載入中，請稍候再試...');
@@ -719,11 +727,11 @@ const performExcelExport = () => {
     const data = sortedItems.value.map(item => {
         const qty = Number(item.quantity) || 0;
         total += qty;
-        
+
         const row = {};
         row['日期'] = formatDate(item.know_date);
         row['法號'] = item.user_name + (item.user_remarks || '');
-        
+
         if (item.army_type === '黑曜軍') {
             row['閻尊量'] = item.yan_zun || 0;
             row['閻闇量'] = item.yan_an || 0;
@@ -731,7 +739,7 @@ const performExcelExport = () => {
             row['龍勝量'] = item.long_sheng || 0;
             row['龍戰量'] = item.long_zhan || 0;
         }
-        
+
         row['總數量'] = qty;
         row['備註'] = item.remarks_text || '';
         return row;
@@ -748,10 +756,10 @@ const performExcelExport = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, currentFolder.value?.name || '全部');
-    
+
     const dateStr = getTodayStr().replace(/-/g, '');
     const fileName = `${currentFolder.value?.name || '軍隊'}_載錄報表_${dateStr}.xlsx`;
-    
+
     // iOS Safari fix: XLSX.writeFile uses <a download> which fails on iOS
     const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([wbout], { type: 'application/octet-stream' });
@@ -767,7 +775,7 @@ const formatMilitaryRecordForFile = (item) => {
     let res = `【軍隊記錄 - ${item.army_type}】\r\n`;
     res += `日期：${formatDate(item.know_date)}\r\n`;
     res += `法號：${item.user_name}${item.user_remarks ? '(' + item.user_remarks + ')' : ''}\r\n`;
-    
+
     if (['黑曜軍', '耀紫軍'].includes(item.army_type)) {
         if (item.army_type === '黑曜軍') {
             res += `閻尊：${(item.yan_zun || 0).toLocaleString()}\r\n`;
@@ -777,7 +785,7 @@ const formatMilitaryRecordForFile = (item) => {
             res += `龍戰：${(item.long_zhan || 0).toLocaleString()}\r\n`;
         }
     }
-    
+
     res += `總數：${formatArmyTotal(item.quantity)}\r\n`;
     res += `備註：${item.remarks_text || '無'}`;
     return res;
@@ -806,7 +814,7 @@ const loadData = async (page = 1) => {
     loading.value = true;
     try {
         const ts = new Date().getTime();
-        
+
         if (!expandedDate.value && !searchQuery.value) {
             // Level 1: fetch date groups
             const params = { page, per_page: 20, t: ts };
@@ -911,15 +919,15 @@ const saveItem = async (formData) => {
         isSaving.value = true;
         if (editingId.value) await axios.put(`/military-records/${editingId.value}`, formData);
         else await axios.post('/military-records', formData);
-        
+
         addMode.value = false; 
         editingId.value = null;
         searchQuery.value = ''; 
         focusedId.value = null;
         form.value = {};
-        
+
         // Removed auto-hide of cumulative action
-        
+
         await loadData();
     } catch (e) { 
         console.error('Save failed:', e);

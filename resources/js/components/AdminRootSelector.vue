@@ -64,7 +64,7 @@
         <!-- MOBILE VIEW: Menu -> Manager (Back-to-Home Flow) -->
         <div class="block md:hidden flex-1 h-full overflow-hidden flex flex-col">
             <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate" :counts="counts"></mobile-dashboard>
-            
+
             <div v-else class="flex-1 h-full overflow-hidden flex flex-col">
                 <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')"></teaching-manager>
                 <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')"></grudge-manager>
@@ -201,7 +201,7 @@ const loadStats = async () => {
             axios.get('/kaiwen'),
             axios.get('/other-teachings')
         ]);
-        
+
         if (gre.status === 'fulfilled') counts.value['grace'] = gre.value.data.registries?.total || gre.value.data.registries?.length || 0;
         if (tre.status === 'fulfilled') counts.value['treasure'] = tre.value.data?.total || tre.value.data?.length || 0;
         if (teach.status === 'fulfilled') {
@@ -221,7 +221,7 @@ const loadStats = async () => {
 
 const syncHash = () => {
     if (!user.value) return; 
-    
+
     const hash = window.location.hash.replace('#', '');
     const viewMap = {
         'treasure': 'treasure',
@@ -235,9 +235,9 @@ const syncHash = () => {
         'kaiwen': 'kaiwen',
         'trash': 'trash'
     };
-    
+
     let targetView = viewMap[hash] || 'menu';
-    
+
     // Security Check: Unauthorized hash access
     if (isAdmin.value) {
         currentView.value = targetView;
@@ -270,7 +270,7 @@ const syncHash = () => {
         targetView = 'menu';
         window.location.hash = '';
     }
-    
+
     currentView.value = targetView;
 };
 

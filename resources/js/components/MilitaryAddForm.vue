@@ -2,7 +2,7 @@
     <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
-        
+
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
             <!-- Header -->
@@ -68,7 +68,7 @@
                                 <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
                                     <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
-                                
+
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
@@ -109,8 +109,6 @@
                         </div>
                     </div>
 
-
-
                     <!-- Case 5: 耀紫軍 (龍勝/龍戰) -->
                     <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
                         <div class="grid grid-cols-2 gap-[5px]">
@@ -129,8 +127,6 @@
                             <span class="app-body text-slate-900">{{ formatWithCommas(purpleSubtotalBig) }}</span>
                         </div>
                     </div>
-
-
 
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
@@ -170,7 +166,6 @@
                 :can-search="false"
                 is-absolute
             />
-
 
         </div>
         <!-- Custom Date Picker -->
@@ -266,7 +261,6 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 });
 
-
 const isValidBigInt = (val) => {
     if (val === null || val === undefined || val === '') return false;
     try {
@@ -297,11 +291,11 @@ const formatArmyTotal = (num) => {
     if (!isValidBigInt(num)) return '0';
     const b = BigInt(String(num).replace(/,/g, ''));
     if (b < 1000000n) return formatWithCommas(b);
-    
+
     const troops = b / 1000000n;
     const remaining = b % 1000000n;
     if (remaining === 0n) return `${troops}隊`;
-    
+
     const wan = remaining / 10000n;
     const rest = remaining % 10000n;
     let res = `${troops}隊`;
@@ -371,7 +365,7 @@ const handleSave = () => {
 
     console.log('Saving Military Record:', form.value);
     emit('save', form.value);
-    
+
     // Clear form data after successful emit
     form.value = {
         know_date: '', 

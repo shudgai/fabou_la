@@ -36,6 +36,7 @@ const components = {
     'other-teaching-manager': () => import('./components/OtherTeachingManager.vue'),
     'other-records-manager': () => import('./components/OtherRecordsManager.vue'),
     'pagination-buttons': () => import('./components/PaginationButtons.vue'),
+    'logo-imperial-notebook': () => import('./components/LogoImperialNotebook.vue'),
 };
 
 Object.entries(components).forEach(([name, loader]) => {

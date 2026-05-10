@@ -2,7 +2,7 @@
     <div v-if="show" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
-        
+
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
@@ -107,7 +107,7 @@
                     </div>
 
                     <h3 class="w-full text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-[10px] border-y border-slate-100 overflow-y-auto max-h-[40dvh] custom-scrollbar">{{ persistentToast.msg }}</h3>
-                    
+
                     <div class="p-8 pt-4 flex flex-col items-center w-full">
                         <p v-if="persistentToast.type === 'preview'" class="mb-4 text-[15px] font-bold text-slate-400 uppercase tracking-widest">確定繼續匯入嗎？</p>
                     </div>
@@ -179,7 +179,7 @@ const getTodayStr = () => {
     const year = taipeiDate.find(p => p.type === 'year').value;
     const month = taipeiDate.find(p => p.type === 'month').value;
     const day = taipeiDate.find(p => p.type === 'day').value;
-    
+
     return `${year}-${month}-${day}`;
 };
 const batchDate = ref(null);
@@ -323,11 +323,11 @@ const handleBatchSave = async () => {
 
         // Determine Processed status
         const isProcessed = !resultsPart.includes('未處理') && !resultsPart.includes('尚未處理');
-        
+
         // --- Detect Army and Breakdown ---
         let dest = isProcessed ? '已處理' : '未處理';
         let breakdown = { yan_zun: 0, yan_an: 0, long_sheng: 0, long_zhan: 0 };
-        
+
         if (normLine.includes('龍勝') || normLine.includes('龍戰')) {
             dest = '耀紫軍';
         } else if (normLine.includes('閻尊') || normLine.includes('閻闇')) {
@@ -391,26 +391,26 @@ const handleBatchSave = async () => {
     // --- Detailed Preview ---
     const first = finalItems[0];
     const preview = `即將匯入 ${finalItems.length} 筆資料。\n\n[ 第一筆資料預覽 ]\n法號：${first.user_name}${first.user_remarks ? '(' + translateRel(first.user_remarks) + ')' : ''}\n得知日期：${first.know_date}\n處理日期：${first.process_date || '無'}\n狀態：${first.status}\n備註：${first.remarks_text}`;
-    
+
     persistentToast.value = { msg: preview, type: 'preview', data: finalItems };
 };
 
 const executeBatchSave = async () => {
     if (!persistentToast.value || !persistentToast.value.data) return;
     const finalItems = persistentToast.value.data;
-    
+
     loading.value = true;
     persistentToast.value = null; // Close preview
     try {
         const response = await axios.post('/grudges/batch', { items: finalItems });
         const saved = response.data;
         const pending = saved.filter(i => i.status === '待處理').length;
-        
+
         persistentToast.value = { 
             msg: `匯入成功！\n共新增/更新 ${saved.length} 筆紀錄\n- 已處理：${saved.length - pending} 筆\n- 待處理：${pending} 筆`, 
             type: 'success' 
         };
-        
+
         batchText.value = '';
         emit('success');
         // Close form after a delay or let user see the success toast

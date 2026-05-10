@@ -5,7 +5,10 @@
             <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <h1 class="font-black tracking-widest font-outfit !font-black" style="font-size: 32px !important; color: #0f172a !important; font-weight: 900 !important;">其他記錄專區</h1>
+            <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="font-black tracking-widest font-outfit !font-black" style="font-size: 30px !important; color: #0f172a !important; font-weight: 900 !important;">其他記錄專區</h1>
+                    </div>
         </div>
 
         <!-- Document List -->
@@ -34,7 +37,7 @@
                         ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 px-[15px] py-4 md:px-[15px]' 
                         : 'z-10 py-[25px]'
                 ]">
-                
+
                 <div class="flex items-start justify-between">
                     <div class="flex flex-col min-w-0">
                         <div v-if="record.record_date" :class="[
@@ -48,7 +51,6 @@
                             expandedRecordId === record.id ? 'text-indigo-900' : 'text-slate-900'
                         ]">{{ record.title || '文件記錄' }}</h3>
                     </div>
-
 
                 </div>
 
@@ -83,9 +85,12 @@
                 <button @click="closeModal" class="p-2 text-slate-400 mr-2 active:scale-90 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h1 style="font-size: 32px !important; font-weight: 900; color: #0f172a !important;">{{ editingRecordId ? '修改文件記錄' : '新增文件記錄' }}</h1>
+                <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 style="font-size: 30px !important; font-weight: 900; color: #0f172a !important;">{{ editingRecordId ? '修改文件記錄' : '新增文件記錄' }}</h1>
+                    </div>
             </div>
-            
+
             <div class="flex-1 overflow-y-auto p-6 space-y-5">
                 <!-- Date Field -->
                 <div class="space-y-1.5">

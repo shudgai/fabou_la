@@ -13,7 +13,6 @@
                 {{ isSaving ? '儲存中...' : `儲存 (${parsedPosts.length})` }}
             </button>
         </div>
-
         <!-- Content -->
         <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50">
             <div class="max-w-xl mx-auto space-y-6">
@@ -26,7 +25,6 @@
                         <p class="text-[15px] font-bold text-slate-700 leading-relaxed">請貼上開文內容，每篇文章請以「---」或「空行」分隔。系統將自動識別日期。</p>
                     </div>
                 </div>
-
                 <!-- Input Area -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden focus-within:border-indigo-300 transition-all">
                     <textarea 
@@ -35,13 +33,11 @@
                         class="w-full min-h-[400px] p-6 text-[17px] font-medium leading-relaxed outline-none resize-none border-none"
                     ></textarea>
                 </div>
-
                 <!-- Preview Section -->
                 <div v-if="parsedPosts.length > 0" class="space-y-4">
                     <div class="flex items-center justify-between px-2">
                         <span class="text-[17px] font-black text-slate-900 uppercase tracking-widest">內容預覽 ({{ parsedPosts.length }})</span>
                     </div>
-                    
                     <div v-for="(post, idx) in parsedPosts" :key="idx" class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-3 animate-fade-in relative group">
                         <div class="absolute top-4 right-4 bg-slate-50 px-2.5 py-1 rounded-2xl text-[12px] font-bold text-slate-400">
                             #{{ idx + 1 }}
@@ -57,11 +53,9 @@
                     </div>
                 </div>
             </div>
-            
             <!-- Bottom Spacer -->
             <div class="h-24"></div>
         </div>
-
         <!-- Mobile Navbar -->
         <MobileNavbar 
             :can-back="true"
@@ -72,42 +66,33 @@
         />
     </div>
 </template>
-
 <script setup>
 import { ref, computed, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-
 const props = defineProps({
     isSaving: Boolean,
     tab: String // 'weekly' or 'self'
 });
-
 const emit = defineEmits(['save', 'cancel']);
-
 const batchInput = ref('');
 const parsedPosts = ref([]);
-
 const getTodayStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
-
 watch(batchInput, (newVal) => {
     if (!newVal.trim()) {
         parsedPosts.value = [];
         return;
     }
-
     // Split by separator or multiple newlines
     const blocks = newVal.split(/---|\n{2,}/).filter(b => b.trim().length > 10);
     const results = [];
-    
     blocks.forEach(block => {
         const cleanBlock = block.trim();
         const lines = cleanBlock.split('\n');
         let date = getTodayStr();
-        
         // Simple date detection in the first few lines
         for (let i = 0; i < Math.min(3, lines.length); i++) {
             const line = lines[i].trim();
@@ -117,7 +102,6 @@ watch(batchInput, (newVal) => {
                 break;
             }
         }
-
         results.push({
             date: date,
             original_content: cleanBlock,
@@ -125,19 +109,15 @@ watch(batchInput, (newVal) => {
             status: null
         });
     });
-
     parsedPosts.value = results;
 });
-
 const removePost = (idx) => {
     parsedPosts.value.splice(idx, 1);
 };
-
 const handleSave = () => {
     emit('save', parsedPosts.value);
 };
 </script>
-
 <style scoped>
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -147,4 +127,4 @@ const handleSave = () => {
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-</style>
+</style>

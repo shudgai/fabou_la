@@ -24,7 +24,10 @@
         <!-- Static Header -->
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[15px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest whitespace-nowrap !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 28px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="leading-tight font-outfit tracking-widest whitespace-nowrap !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 26px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
+                    </div>
             </div>
             <div class="flex items-center justify-end shrink-0 space-x-1 pr-2 pt-[15px]">
                 <button @click.stop="sortDesc = !sortDesc" class="px-2 py-1 text-indigo-600 font-black active:scale-95 transition-all" style="font-size: 14px !important;">
@@ -38,7 +41,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Search Component -->
         <div v-if="showSearch" class="px-2 py-2 animate-fade-in">
             <div class="relative group">
@@ -162,7 +165,7 @@
                                          </div>
 
                                       </div>
- 
+
                                           <!-- Expanded Content (Show Everything when focused) -->
                                          <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
 
@@ -206,7 +209,6 @@
                          </virtual-scroller>
                      </div>
                  </template>
-                
 
             </div>
         </div>
@@ -251,7 +253,6 @@ import AddActionMenu from './AddActionMenu.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import PaginationButtons from './PaginationButtons.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
-
 
 const props = defineProps(['user']);
 const emit = defineEmits(['goHome']);
@@ -388,7 +389,6 @@ const translateRel = (rel) => {
     return result.replace(/^[之的]/, '');
 };
 
-
 let totalTimer = null;
 const toggleShowTotal = () => {
     showTotal.value = !showTotal.value;
@@ -399,7 +399,6 @@ const toggleShowTotal = () => {
         }, 10000);
     }
 };
-
 
 const filteredItems = computed(() => {
     return items.value;
@@ -431,7 +430,7 @@ const sortedItems = computed(() => {
         // 使用字串比較日期，避免 Date 物件轉換時區問題
         const dateA = String(a.know_date || '');
         const dateB = String(b.know_date || '');
-        
+
         if (dateA !== dateB) {
             return sortDesc.value ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
         }
@@ -532,7 +531,7 @@ const copyAllToLine = () => {
 
 const exportToExcel = () => {
     if (!sortedItems.value.length) return alert('目前沒有資料可供匯出');
-    
+
     if (typeof XLSX === 'undefined') {
         persistentToast.value = { msg: '正在載入匯出元件，請稍候再試一次...', type: 'info' };
         setTimeout(() => { persistentToast.value = null; }, 3000);
@@ -572,7 +571,7 @@ const loadData = async (page = 1) => {
     loading.value = true;
     try {
         const ts = new Date().getTime();
-        
+
         if (!activeDateGroup.value) {
             // Fetch Date Groups
             const params = { page, search: searchQuery.value, t: ts, per_page: 10 };

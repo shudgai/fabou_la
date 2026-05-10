@@ -4,7 +4,10 @@
         <div class="flex items-center justify-between mb-8 pt-6 px-4 shrink-0">
             <div>
                 <div class="flex items-center space-x-2">
-                    <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 28px !important;">回收站專區</h1>
+                    <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 26px !important;">回收站專區</h1>
+                    </div>
                     <div v-if="items.length > 0" class="px-2 py-0.5 bg-slate-900 text-white rounded-lg text-[14px] font-normal animate-fade-in shadow-sm">
                         {{ items.length }}
                     </div>
@@ -37,7 +40,7 @@
         <div v-else-if="items.length > 0" class="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-3 pb-32">
             <div v-for="item in items" :key="item.type + item.id" 
                 class="bg-white p-5 rounded-[28px] border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group overflow-hidden relative">
-                
+
                 <div class="flex-grow">
                     <div class="flex items-center space-x-2 mb-2">
                         <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
@@ -47,7 +50,7 @@
                              刪除於 {{ formatDate(item.deleted_at) }}
                         </span>
                     </div>
-                    
+
                     <h3 class="text-[17px] font-extrabold text-slate-800 leading-tight">
                         {{ getTitle(item) }}
                     </h3>
@@ -76,7 +79,7 @@
                 目前沒有任何暫存刪除的紀錄。刪除後的筆記會在此保留一段時間以便回復。
             </p>
         </div>
-        
+
         <mobile-navbar 
             active-tab="home"
             :can-back="true"
@@ -162,7 +165,7 @@ const executeToastAction = async () => {
     if (!persistentToast.value) return;
     const type = persistentToast.value.type;
     const item = toastContext.value;
-    
+
     try {
         if (type === 'restore') {
             await axios.post('/api/trash/restore', { id: item.id, type: item.type });
@@ -174,7 +177,7 @@ const executeToastAction = async () => {
             await axios.post('/api/trash/cleanup');
             persistentToast.value = { msg: '✓ 系統清理完成', type: 'success' };
         }
-        
+
         if (persistentToast.value?.type === 'success') {
             setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
         }

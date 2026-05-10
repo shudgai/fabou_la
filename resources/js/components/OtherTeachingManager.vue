@@ -42,12 +42,13 @@
             <!-- Header -->
             <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full shrink-0" style="padding: 8px 10px; min-height: 52px;">
                 <div class="flex-1 min-w-0">
-                    <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a]" style="color: #0f172a !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                    <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a]" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                             其他記錄專區
                         </h1>
                     </div>
-                </div>
+                    </div>
                 <div class="flex items-center space-x-2 mr-2">
                     <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
@@ -87,8 +88,6 @@
                                 class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all z-10">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        
-
 
                         <!-- Content -->
                         <div class="space-y-1">
@@ -103,7 +102,7 @@
                                 <span v-if="item.master && item.target_remarks" class="text-slate-300 mx-1">/</span>
                                 <span v-if="item.target_remarks" class="text-amber-600">{{ item.target_remarks }}</span>
                             </div>
-                            
+
                             <!-- Content Body -->
                             <div :class="[
                                 'pt-3 text-[17px] font-black text-slate-800 leading-relaxed font-outfit',
@@ -148,7 +147,7 @@
             <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-end md:items-center justify-center px-0 bg-slate-900/20 backdrop-blur-sm">
                 <!-- Desktop Backdrop Click Area -->
                 <div class="absolute inset-0" @click="showModal = false"></div>
-                
+
                 <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
                         <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
@@ -156,7 +155,7 @@
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round"/></svg>
                         </button>
                     </div>
-                
+
                 <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-32">
                     <!-- Date Input -->
                     <div class="space-y-2">
@@ -262,15 +261,15 @@ const form = ref({
 // Computed
 const filteredRecords = computed(() => {
     let result = [...records.value];
-    
+
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
-        
+
         // Find dharma names that match a group name
         const matchingGroupIds = groups.value
             .filter(g => g.name.toLowerCase().includes(q))
             .map(g => g.id);
-            
+
         const namesInMatchingGroups = dharmaNames.value
             .filter(dn => dn.groups && dn.groups.some(g => matchingGroupIds.includes(g.id)))
             .map(dn => dn.name.toLowerCase());
@@ -283,7 +282,7 @@ const filteredRecords = computed(() => {
             const remarks = (r.remarks || '').toLowerCase();
 
             const basicMatch = content.includes(q) || date.includes(q) || masterName.includes(q) || target.includes(q) || remarks.includes(q);
-            
+
             // If the query is a group name, also check if target_remarks is a dharma name in that group
             let groupMatch = false;
             if (namesInMatchingGroups.length > 0 && target) {

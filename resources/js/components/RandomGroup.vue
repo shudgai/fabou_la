@@ -1,6 +1,6 @@
 <template>
     <div class="flex h-full bg-white overflow-hidden font-sans relative">
-        
+
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
 
@@ -13,7 +13,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="flex flex-col">
-                            <span class="shrink-0 leading-tight font-black" style="font-size: 28px !important; color: #0f172a !important;">
+                            <span class="shrink-0 leading-tight font-black" style="font-size: 26px !important; color: #0f172a !important;">
                                 {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                             </span>
                             <span v-if="!selectionFiltered" class="text-[12px] text-slate-400 -mt-0.5">
@@ -77,9 +77,6 @@
              </div>
         </div>
 
-
-
-
         <!-- STEP 2: GROUPING & RESULTS -->
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
@@ -98,14 +95,14 @@
 
             <!-- Main Content Container -->
             <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
-                
+
                 <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
                 <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
                     <div class="flex items-center justify-between px-0.5">
                         <label class="font-black uppercase tracking-wider text-amber-600" style="font-size: 16px !important;">🌟 指定關主</label>
                         <span class="font-black text-amber-400 uppercase tracking-widest" style="font-size: 16px !important;">⚠️ 全場抽選</span>
                     </div>
-                    
+
                     <div class="flex items-start space-x-2">
                         <!-- Left: Search & Tags (Unified) -->
                         <div class="flex-[1.5] space-y-1.5 min-w-0">
@@ -119,7 +116,7 @@
                                     <button v-for="name in filteredGDropdown" :key="'gopt'+name" @click="addManualGuardian(name)" 
                                         class="w-full text-left px-4 py-2 text-[15px] font-black text-slate-700 hover:bg-amber-50 hover:text-amber-700 border-b border-slate-50 last:border-0">{{ name }}</button>
                                 </div>
-                                
+
                                 <!-- Dedicated Guardian Animation Overlay -->
                                 <div v-if="isDrawing && currentType === 'guardian'" class="absolute inset-0 bg-amber-50/90 rounded-xl flex items-center justify-center space-x-3 z-[60] border border-amber-200 animate-pulse">
                                     <span class="dot bg-amber-400 w-2.5 h-2.5"></span>
@@ -168,7 +165,7 @@
 
                 <!-- AREA 2: PERSONNEL ROLES & CALCULATION -->
                 <div class="bg-white p-3 rounded-2xl border border-slate-100 space-y-3 shadow-sm">
-                    
+
                     <!-- 2A. SEED SELECTION (ROLE ASSIGNMENT) -->
                     <div class="space-y-1.5 pb-1">
                         <label class="font-bold text-slate-400 uppercase tracking-wider px-1" style="font-size: 16px !important;">🌟 指定種子組 (優先扣除)</label>
@@ -205,7 +202,7 @@
                             </div>
                             <div class="space-y-1 px-0.5">
                                 <div class="flex items-center justify-between font-black" style="font-size: 16px !important;"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
-                                
+
                                 <!-- Detailed Deduction Rows -->
                                 <div class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
                                     <span>− 種子組名單 <span v-if="guardianSeedsCount > 0" class="text-[11px] opacity-60 font-black ml-1">(含 {{ guardianSeedsCount }} 位關主)</span></span>
@@ -215,7 +212,7 @@
                                     <span>− 指定關主名單 <span class="text-[10px] opacity-40 ml-1">(扣除重複種子)</span></span>
                                     <span>{{ nonSeedGuardiansCount }} 人</span>
                                 </div>
-                                
+
                                 <div class="flex items-center justify-between text-[14px] font-black pt-1 border-t border-dashed border-slate-100 mt-1">
                                     <span class="text-rose-400/80">❷ 總計排除</span>
                                     <span class="text-rose-500">{{ totalExclusionCount }} 人</span>
@@ -258,7 +255,7 @@
                 <!-- Results Display Area -->
                 <div class="animate-fade-in space-y-3 pb-32 px-1 -mt-4 min-h-[100px]">
                     <div class="border-t border-slate-100 w-16 mx-auto mb-1"></div>
-                    
+
                     <!-- Suspense Animation (Relocated here for visibility) -->
                     <div v-if="isDrawing" class="flex flex-col items-center justify-center py-8 space-y-4 animate-pulse">
                         <div class="flex gap-3">
@@ -296,7 +293,7 @@
                     </div>
                 </div>
             </div>
-            
+
 <!-- Fixed Bottom Action Area aligned with desktop container -->
              <div class="fixed bottom-[60px] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
                  <div class="w-full">
@@ -365,7 +362,7 @@
 
             <!-- Status text -->
             <div class="absolute top-[3dvh] left-0 right-0 flex flex-col items-center space-y-2">
-                <p class="text-[32px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <p class="text-[30px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
                 <div class="flex gap-2">
                     <span class="dot-lg" style="background:#b45309;"></span>
                     <span class="dot-lg" style="background:#d97706;"></span>
@@ -380,7 +377,7 @@
                 <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
-                <h2 class="flex-1 whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 28px !important;">分組結果</h2>
+                <h2 class="flex-1 whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">分組結果</h2>
                 <div class="flex items-center space-x-2">
                     <button @click="handleNextRound" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-indigo-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">下一輪</button>
                     <button @click="redrawAll" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">重抽</button>
@@ -675,7 +672,7 @@ const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         let rawUsers = res.data;
-        
+
         // Custom sorting: Ensure 靈奇, 靈傾 are after 靈情
         let processed = [...rawUsers];
         const qingIdx = processed.findIndex(u => u.name === '靈情');
@@ -688,7 +685,7 @@ const loadUsers = async () => {
             if (lingQin) processed.splice(newQingIdx + 2, 0, lingQin);
         }
         users.value = processed;
-        
+
         // Reset to clean state as requested: no pre-selection
         pendingNames.value = [];
         selectedNames.value = [];
@@ -757,7 +754,7 @@ const distributePlayers = (players, size) => {
 
     // Strictly shuffle only those NOT in the exclusion set
     let candidates = players.filter(p => !exclusionSet.has(p));
-    
+
     // Shuffle candidates
     for (let i = candidates.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -814,14 +811,14 @@ let lotteryInterval = null;
 
 const doGrouping = () => {
     if (selectedNames.value.length < 1) return;
-    
+
     isDrawing.value = true;
     currentType.value = 'group';
     groups.value = [];
-    
+
     // Build flying sticks from current selected names
     buildFlyingSticks([...selectedNames.value]);
-    
+
     // Start cycling names for animation
     const pool = [...selectedNames.value];
     let idx = 0;
@@ -830,7 +827,7 @@ const doGrouping = () => {
         idx = (idx + 1) % pool.length;
         lotteryDisplayNames.value = [pool[idx]];
     }, 80);
-    
+
     setTimeout(() => {
         clearInterval(lotteryInterval);
         lotteryInterval = null;
@@ -870,7 +867,7 @@ const redrawAll = () => {
 const executeToastAction = () => {
     if (!persistentToast.value) return;
     const type = persistentToast.value.type;
-    
+
     if (type === 'clear') {
         guardianResults.value = [];
         persistentToast.value = { msg: '✓ 已清空關主名單', type: 'success' };
@@ -883,7 +880,7 @@ const executeToastAction = () => {
         currentStep.value = 2;
         persistentToast.value = { msg: '✓ 已將所有人員歸還', type: 'success' };
     }
-    
+
     setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
 };
 
@@ -1152,4 +1149,3 @@ defineExpose({
 }
 * { -webkit-tap-highlight-color: transparent; }
 </style>
-

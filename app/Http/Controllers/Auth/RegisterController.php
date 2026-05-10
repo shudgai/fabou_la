@@ -51,6 +51,15 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'name.required' => '請輸入您的法號',
+            'name.max' => '法號長度不能超過 255 個字元',
+            'email.required' => '請輸入電子郵件信箱',
+            'email.email' => '請輸入有效的電子郵件格式',
+            'email.unique' => '此電子郵件已經被註冊過',
+            'password.required' => '請設定密碼',
+            'password.min' => '密碼長度至少需要 8 個字元',
+            'password.confirmed' => '兩次輸入的密碼不一致，請重新確認',
         ]);
     }
 

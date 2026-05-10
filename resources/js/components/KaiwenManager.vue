@@ -16,9 +16,12 @@
         <!-- Header (Shared) -->
         <div class="flex items-start bg-white sticky top-0 z-[200] w-full" style="padding: 6px 10px;">
             <div class="cursor-pointer shrink-0 pt-[2px]" @click="resetToRoot">
-                <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
+                <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
                     開文專區
                 </h1>
+                    </div>
             </div>
 
             <div class="flex flex-row items-center ml-5 mt-[3px] animate-fade-in gap-5">
@@ -36,7 +39,6 @@
                 </button>
             </div>
         </div>
-
 
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
@@ -57,8 +59,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <!-- LIST VIEW -->
         <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full">
@@ -102,11 +102,11 @@
                                 <span v-if="post.status === '合格'" class="text-[14px] font-black tracking-wider text-emerald-600">合格</span>
                                 <span v-else-if="post.status === '不合格'" class="text-[14px] font-black tracking-wider text-rose-600">不合格</span>
                                 <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
-                                
+
                                 <!-- Only show menu if NOT in full page mode, or show a close button in full page mode -->
                             </div>
                         </div>
-                        
+
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
                             <!-- Title inside full page -->
                             <div class="border-b border-slate-100 pb-1">
@@ -132,7 +132,7 @@
                                                 <circle cx="19" cy="12" r="2" />
                                             </svg>
                                         </button>
-                                        
+
                                         <!-- Actions Menu in Expanded View -->
                                         <div v-if="openMenuId === 'exp-' + post.id" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[200] py-1 animate-fade-in overflow-hidden">
                                             <button @click.stop="toggleExpand(post.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
@@ -174,7 +174,7 @@
                                     上傳殿中貼文圖片
                                 </button>
                             </div>
-                            
+
                             <div class="pt-8 pb-12"></div>
                         </div>
                     </div>
@@ -205,13 +205,12 @@
                                 <span v-if="post.message_type === '玄訊'" class="text-[14px] font-black tracking-wider text-emerald-600">玄訊</span>
                                 <span v-else-if="post.message_type === '非玄訊'" class="text-[14px] font-black tracking-wider text-amber-700">非玄訊</span>
                                 <span v-else class="text-[14px] font-black tracking-wider text-slate-400">待定</span>
-                                
+
                             </div>
                         </div>
-                        
+
                         <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
 
-                            
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
                                     <span class="app-title block uppercase tracking-widest !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">開文內容</span>
@@ -224,7 +223,7 @@
                                                     <circle cx="19" cy="12" r="2" />
                                                 </svg>
                                             </button>
-                                            
+
                                             <!-- Actions Menu in Expanded View -->
                                             <div v-if="openMenuId === 'exp-' + post.id" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[200] py-1 animate-fade-in overflow-hidden">
                                                 <button @click.stop="toggleExpand(post.id); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
@@ -258,7 +257,7 @@
                                 </div>
                                 <p v-else class="app-body font-bold text-red-600 whitespace-pre-wrap leading-[1.6] tracking-widest">{{ post.modified_content || '-' }}</p>
                             </div>
-                            
+
                             <div class="pt-8 pb-12"></div>
                         </div>
                     </div>
@@ -604,10 +603,10 @@ watch(() => form.value.original_content, (newVal) => {
         // Extract first character of each line
         const lines = newVal.split('\n').filter(l => l.trim().length > 0);
         let extractedTitle = lines.map(l => l.trim()[0]).join('');
-        
+
         // Take only up to 14 characters
         if (extractedTitle.length > 14) extractedTitle = extractedTitle.substring(0, 14);
-        
+
         // Format title with newline every 7 chars
         let formatted = '';
         for (let i = 0; i < extractedTitle.length; i++) {
@@ -637,7 +636,7 @@ const handleFontSizeSlider = (e) => {
     const val = parseInt(e.target.value);
     const options = ['font-small', 'font-medium', 'font-large'];
     const next = options[val];
-    
+
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(next);
     try { localStorage.setItem('fabou_font_size', next); } catch(e) {}
@@ -647,7 +646,7 @@ const handleFontSizeSlider = (e) => {
 const formatListTitle = (title) => {
     if (!title) return '無抬頭';
     if (currentFontSize.value !== 'font-large') return title;
-    
+
     // For large font, split every 7 characters
     const clean = title.replace(/\s+/g, '');
     let res = '';
@@ -683,10 +682,10 @@ const toggleExpand = (id) => {
     } else {
         // Clear others for better focus
         expandedIds.value = { [id]: true };
-        
+
         // Close menus
         openMenuId.value = null;
-        
+
         nextTick(() => {
             const el = document.getElementById(`post-${id}`);
             if (el) {
@@ -735,7 +734,7 @@ const focusNextWeeklyCell = (row, col) => {
 const onWeeklyCellInput = (e, row, col) => {
     const val = e.target.value;
     setWeeklyCell(row, col, val);
-    
+
     if (val && !e.isComposing) {
         focusNextWeeklyCell(row, col);
     }
@@ -744,7 +743,7 @@ const onWeeklyCellInput = (e, row, col) => {
 const onWeeklyCellCompositionEnd = (e, row, col) => {
     const val = e.target.value;
     setWeeklyCell(row, col, val);
-    
+
     if (val) {
         focusNextWeeklyCell(row, col);
     }
@@ -849,11 +848,11 @@ const editItem = (post, type) => {
     addMode.value = type;
     formTab.value = 'original';
     form.value = { ...post };
-    
+
     if (type === 'weekly' && post.original_content) {
         const lines = (post.original_content || '').split('\n');
         const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
-        
+
         // Detect if it's manual or acrostic
         // If it's 14 lines and matches the title characters, it's likely acrostic
         let isAcrostic = lines.length >= 14;
@@ -865,7 +864,7 @@ const editItem = (post, type) => {
                 }
             }
         }
-        
+
         isManualWeekly.value = !isAcrostic;
 
         if (isAcrostic) {
@@ -887,7 +886,7 @@ const editItem = (post, type) => {
     } else {
         isManualWeekly.value = false;
     }
-    
+
     openMenuId.value = null;
 };
 
@@ -948,13 +947,13 @@ const processImage = (file) => {
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
-            
+
             // Fill white background (useful for transparent PNGs converted to JPEG)
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, width, height);
-            
+
             ctx.drawImage(img, 0, 0, width, height);
-            
+
             // Convert to JPEG with 0.7 quality for high compression
             form.value.modified_content = canvas.toDataURL('image/jpeg', 0.7);
         };
@@ -991,7 +990,7 @@ onMounted(() => {
     // Initialize font size from localStorage
     document.body.classList.remove('font-small', 'font-medium', 'font-large');
     document.body.classList.add(currentFontSize.value);
-    
+
     window.addEventListener('paste', handleGlobalPaste);
     window.addEventListener('click', (e) => { 
         if (!e.target.closest('.relative')) {
@@ -1065,7 +1064,7 @@ const openPostMode = (post, type) => {
     formTab.value = 'modified';
     form.value = { ...post };
     openMenuId.value = null;
-    
+
     // Auto populate weekly lines if editing from weekly
     if (type === 'weekly' && post.original_content) {
         const lines = post.original_content.split('\n');
@@ -1171,7 +1170,7 @@ const copyFullText = (post) => {
         setTimeout(() => { persistentToast.value = null; }, 2000);
         return;
     }
-    
+
     writeClipboard(textToCopy).then((success) => {
         if (success) {
             persistentToast.value = { msg: '✓ 已全文複製', type: 'success' };
@@ -1185,7 +1184,7 @@ const copyFullText = (post) => {
 
 const saveForm = async () => {
     isSaving.value = true;
-    
+
     // Format title to 7 characters per line
     if (form.value.title) {
         form.value.title = formatTitleForSave(form.value.title);
@@ -1194,7 +1193,7 @@ const saveForm = async () => {
     if (addMode.value === 'weekly') {
         form.value.original_content = currentOriginalPreview.value;
     }
-    
+
     try {
         const url = addMode.value === 'weekly' 
             ? (form.value.id ? `/kaiwen/weekly/${form.value.id}` : `/kaiwen/weekly`)
@@ -1236,7 +1235,6 @@ const executeDelete = async () => {
         deleteConfirmType.value = null;
     }
 };
-
 
 </script>
 

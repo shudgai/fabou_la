@@ -47,7 +47,7 @@
                 <option v-for="dn in sortedDharmaNames" :key="'dn'+dn.id" :value="dn.name">{{ dn.name }}</option>
                 <option v-for="g in palacePrioritizedGroups" :key="'g'+g.id" :value="g.name">{{ g.name }}</option>
             </datalist>
-            
+
             <datalist id="body-part-list">
                 <option value="患處" />
                 <option value="五大穴" />
@@ -62,14 +62,18 @@
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
             <div v-if="!currentFolder && !addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                    <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                    </div>
                 </div>
             </div>
             <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full">
                 <!-- Header Row -->
                 <div class="flex items-center justify-between px-3 py-2">
-                    <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <h2 class="text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">
+                    <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                        <logo-imperial-notebook :height="36" />
+                        <h2 class="text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                             父皇仙師開示專區
                         </h2>
                     </div>
@@ -84,18 +88,17 @@
                     </div>
                 </div>
                 <!-- Sub-header Row -->
-                <div v-if="!addMode" class="px-4 pb-2 flex items-center justify-between">
-                    <span class="text-[28px] font-normal font-outfit whitespace-nowrap" 
-                          :style="{ color: (currentFolder && currentFolder.name === '閻王仙師' ? '#0f172a' : '#dc2626') + ' !important', fontSize: '28px !important', fontWeight: '400 !important' }">
+                <div v-if="!addMode" class="px-[15px] pt-1 pb-[6px] bg-white flex items-end justify-between w-full">
+                    <span :class="currentFolder && currentFolder.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">
                         {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
-                    <div v-if="currentFolder !== null" class="flex items-center space-x-2 shrink-0">
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-outfit !font-bold active:scale-95 transition-all" style="font-size: 16px !important;">
+                    <div v-if="currentFolder !== null" class="flex items-center space-x-2 shrink-0 ml-4">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
-                                class="px-2 py-0.5 font-outfit !font-bold transition-all active:scale-95 whitespace-nowrap"
-                                :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
+                                :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-[#64748b] border border-transparent'"
+                                class="px-3 py-1.5 rounded-xl font-black transition-all active:scale-95 whitespace-nowrap shadow-sm"
                                 style="font-size: 16px !important;">
                             {{ reorderMode ? '確認排序' : '修改排序' }}
                         </button>
@@ -144,7 +147,7 @@
                 </div>
             </div>
         </template>
-            
+
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
                     <div class="flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
@@ -152,7 +155,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
-                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 28px !important;">父皇仙師開示載錄</span>
+                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
                 <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
@@ -163,7 +166,7 @@
                             <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
                                 <div class="font-black text-[#fbbf24] tracking-tighter leading-none text-center opacity-80" style="font-size: 11px !important;">父皇仙師開示載錄</div>
-                                
+
                                 <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-1"
                                      style="font-weight: 900 !important; font-size: 25px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
@@ -175,7 +178,6 @@
                         </div>
                     </button>
                 </div>
-                
 
                 </div>
             </template>
@@ -214,7 +216,7 @@
                                             <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
                                                 <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            
+
                                             <!-- Custom Dropdown Menu -->
                                             <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
@@ -228,7 +230,7 @@
                                 </div>
 
                                 <template v-if="activeEntryTab === 'single'">
-                                
+
                                 <div class="grid grid-cols-12 gap-3 py-1.5 border-b border-blue-100/10">
                                     <div class="col-span-7 space-y-0.5">
                                         <div class="flex items-center justify-between">
@@ -300,7 +302,7 @@
                                                     </button>
                                                 </div>
                                             </template>
-                                            
+
                                             <!-- Individual Mode -->
                                             <template v-else>
                                                 <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
@@ -315,7 +317,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 pl-[10px] pr-4 flex flex-col space-y-1.5">
                                     <label class="text-[13px] text-slate-400 font-bold px-1 uppercase tracking-wider">輸入開示內容</label>
                                     <div class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent overflow-hidden">
@@ -351,7 +353,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
                                     <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -361,7 +362,7 @@
                                                   @paste="handleBatchPaste"
                                                   placeholder="整筆智慧錄入 (V2) (不可手動輸入文字，僅供貼上或匯入檔案)&#10;&#10;在此貼上資料...&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
                                                   class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
-                                        
+
                                         <!-- Instructions -->
                                         <div class="mt-4 p-4 bg-white/60 rounded-2xl border border-blue-50 text-[13px] text-slate-400 leading-normal">
                                             <p class="font-bold text-slate-500 mb-1">💡 智慧貼上說明：</p>
@@ -444,7 +445,7 @@
                                 <div class="px-2 py-4 text-[13px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center">
                                     📝 已加入降寶 ({{ form.items.length }})
                                 </div>
-                                
+
                                 <div v-for="(group, gName, gIdx) in groupedPendingItems" :key="gName" class="py-2.5 px-4 rounded-[28px] mb-2 border border-slate-100 bg-white hover:bg-slate-50 transition-colors cursor-pointer shadow-sm" @click="expandedDetails[gName] = !expandedDetails[gName]">
                                     <div class="flex items-center justify-between">
                                         <div class="flex flex-col flex-1 min-w-0 px-2">
@@ -454,7 +455,7 @@
                                                     <span v-if="group[0].details" class="text-indigo-600 font-black ml-1"> : {{ group[0].details }}</span>
                                                 </template>
                                             </span>
-                                            
+
                                             <!-- Specialized mode main details (Directly visible indented line) -->
                                             <div v-if="!(group.length === 1 && !group[0].name && !isSpecialInstrument(gName) && !gName.includes('丹') && !gName.includes('符') && !gName.includes('令') && !gName.includes('疏') && !gName.includes('香') && !gName.includes('由'))" 
                                                  class="mt-1 pl-6 text-[16px] text-slate-800 font-black flex items-center justify-between">
@@ -494,7 +495,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Empty State -->
                             <div v-else class="py-20 md:pt-10 flex flex-col items-center justify-center text-slate-300">
                                 <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
@@ -511,7 +512,7 @@
                                     class="w-[45%] bg-indigo-600 text-white rounded-2xl h-[55px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
                                     <span style="color: white !important;">降寶內容</span>
                                 </button>
-                                
+
                                 <button @click="saveItem" :disabled="saving" class="flex-1 bg-amber-500 text-white rounded-2xl h-[55px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-amber-200/40" style="color: white !important;">
                                     {{ saving ? '錄入中...' : '確認存檔' }}
                                 </button>
@@ -529,7 +530,10 @@
                             <button @click.prevent="handleItemsDetailClose" class="text-slate-400 mr-4 p-2 bg-slate-50 rounded-full active:scale-90 transition-all hover:bg-slate-100">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
-                            <h1 class="text-[28px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">降寶詳情</h1>
+                            <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="text-[26px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">降寶詳情</h1>
+                    </div>
                         </div>
                     </div>
 
@@ -545,11 +549,10 @@
                                             </span>
                                         </div>
                                     </div>
-                                    
 
                                     <button v-if="newItemName" @click="addNewItemQuickly" 
                                             :class="isAddingFlash ? 'bg-emerald-500 scale-110 shadow-emerald-200' : 'bg-red-500 shadow-red-200'"
-                                            class="w-[40px] h-[40px] rounded-2xl flex items-center justify-center text-white text-[28px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
+                                            class="w-[40px] h-[40px] rounded-2xl flex items-center justify-center text-white text-[26px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
                                 </div>
                                 <div class="grid grid-cols-12 gap-3 items-end">
                                     <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('由')) ? 'col-span-12' : 'col-span-8'" class="space-y-1 relative">
@@ -594,7 +597,7 @@
                                                    class="w-full bg-transparent border-none text-[18px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder-slate-300" 
                                                    placeholder="0">
                                             <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
-                                            
+
                                             <!-- Custom Days Dropdown (Showing above) -->
                                             <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="n in 9" :key="n" 
@@ -664,7 +667,7 @@
                                                        @focus="activeDaysDropdownId = 'mainDays'"
                                                        class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
-                                                
+
                                                 <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
@@ -684,7 +687,7 @@
                                                        @focus="activeDaysDropdownId = 'mainTimes'" @click.stop
                                                        class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
-                                                
+
                                                 <!-- Custom Times Dropdown -->
                                                 <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mt'+n" 
@@ -702,7 +705,7 @@
                                                        @focus="activeDaysDropdownId = 'mainHours'" @click.stop
                                                        class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
-                                                
+
                                                 <!-- Custom Hours Dropdown -->
                                                 <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mh'+n" 
@@ -720,7 +723,7 @@
                                                        @focus="activeDaysDropdownId = 'mainDays2'"
                                                        class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天</span>
-                                                
+
                                                 <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
@@ -748,7 +751,7 @@
                                                            @focus="activeDaysDropdownId = 'subDetails'" @click.stop
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                     <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
-                                                    
+
                                                     <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemSubDetails = n; activeDaysDropdownId = null" 
@@ -836,7 +839,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="mt-6 pt-5 border-t border-slate-100">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="flex items-center space-x-2 px-1">
@@ -844,7 +846,7 @@
                                             <span class="text-[17px] font-black text-slate-800">內容物 / 細項</span>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Staged Contents List (Modern Chip/Tag display) -->
                                     <div v-if="stagedContents.length > 0" class="flex flex-wrap gap-2 mb-4 px-1">
                                         <div v-for="(sc, sci) in stagedContents" :key="sci" 
@@ -907,7 +909,7 @@
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" 
                                                            placeholder="0">
                                                     <span class="text-slate-400 font-black mr-0.5 shrink-0 text-[12px]">天</span>
-                                                    
+
                                                     <!-- Custom Days Dropdown (Showing above) -->
                                                     <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
@@ -954,7 +956,7 @@
                                                            @focus="activeDaysDropdownId = 'subExtraSlight'" @click.stop
                                                            class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
-                                                    
+
                                                     <!-- Custom Days Dropdown -->
                                                     <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="'ses'+n" 
@@ -975,7 +977,7 @@
                                                                @focus="activeDaysDropdownId = 'subTimes'" @click.stop
                                                                class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
-                                                        
+
                                                         <!-- Custom Times Dropdown -->
                                                         <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'st'+n" 
@@ -993,7 +995,7 @@
                                                                @focus="activeDaysDropdownId = 'subHours'" @click.stop
                                                                class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
-                                                        
+
                                                         <!-- Custom Hours Dropdown -->
                                                         <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'sh'+n" 
@@ -1014,7 +1016,7 @@
                                                                @focus="activeDaysDropdownId = 'subExtra2'" @click.stop
                                                                class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
-                                                        
+
                                                         <!-- Custom Days Dropdown -->
                                                         <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'se2'+n" 
@@ -1044,7 +1046,7 @@
                                                                    @focus="activeDaysDropdownId = 'extraDaysModal'" @click.stop
                                                                    class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                             <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
-                                                            
+
                                                             <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="n in 9" :key="n" 
                                                                      @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
@@ -1091,7 +1093,6 @@
                                             </div>
                                         </div>
 
-                                            
                                             <!-- SUB-ITEM INSTRUMENT SPECIAL CASE (Always accessible if detected) -->
                                             <div v-if="isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由')" class="mt-4 space-y-4">
                                                 <!-- 1. Practitioner -->
@@ -1132,8 +1133,6 @@
                                                 </div>
                                             </div>
 
-
-
                                         <div class="mt-2 text-left">
                                             <button @click="showSubRemarks = !showSubRemarks" class="text-[11px] font-bold text-slate-400 flex items-center px-1">
                                                 {{ showSubRemarks ? '隱藏細項備註' : '+ 加入細項備註' }}
@@ -1154,12 +1153,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
-
-
-
-
-
 
                                     </div>
                                 </div>
@@ -1209,7 +1202,7 @@
                                 </span>
                                 <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase">結尾備註</div>
                             </div>
-                            
+
                             <!-- Added entries list (Refined design) -->
                             <div v-if="footerRemarksList.length > 0" class="mb-4 space-y-2">
                                 <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center border-2 border-indigo-600 rounded-2xl px-4 py-3 shadow-sm animate-fade-in group bg-white">
@@ -1220,7 +1213,7 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- Input + Add button (Modernized) -->
                             <div class="relative">
                                 <div class="flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-hidden focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-lg transition-all group">
@@ -1239,7 +1232,7 @@
                                 離開視窗
                             </button>
                         </div>
-                
+
                     </div>
                 </div>
 
@@ -1247,7 +1240,7 @@
                             <!-- High-Fidelity Card Preview - Hidden per user request -->
                             <div v-if="false && (form.content.trim() || form.items.length > 0)" class="bg-white rounded-[28px] p-5 border border-slate-200 shadow-xl shadow-slate-100/50 space-y-4 animate-fade-in relative overflow-hidden">
                                 <div class="absolute top-0 right-0 px-3 py-1 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-xl shadow-sm">預覽</div>
-                                
+
                                 <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
                                     <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ (form.date || '').replace(/-/g, '/') }}</span>
                                     <span class="text-[16px] font-black text-slate-900 leading-tight mt-1.5 pr-8">
@@ -1306,7 +1299,6 @@
                             <p class="text-[14px] text-slate-400 mt-4 font-medium px-6 text-center leading-relaxed">※ 保存後將同時儲存對象、仙師及所有開示與降寶內容。</p>
                         </div>
 
-
                     <!-- Bottom Navbar in Detail Mode for consistency -->
                         <mobile-navbar 
                             :can-back="true"
@@ -1328,7 +1320,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" /></svg>
                             </button>
                         </div>
-                        
+
                         <div class="px-6 py-4 shrink-0 bg-slate-50/50">
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
@@ -1420,13 +1412,13 @@
                                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
                                 </div>
                                 <div class="text-center space-y-2">
-                                    <div class="text-[28px] font-black text-slate-800 tracking-tight">{{ activeModalGroup.name }}</div>
+                                    <div class="text-[26px] font-black text-slate-800 tracking-tight">{{ activeModalGroup.name }}</div>
                                     <p class="text-[16px] text-slate-400 font-bold">
                                         {{ activeModalGroup.name === '在場全體' ? '已指定對象為在場所有成員' : '已指定對象為全體殿生' }}
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <!-- Standard Group View -->
                             <template v-else>
                                 <div v-if="activeModalGroupGrouped.length > 0" class="grid grid-cols-2 gap-x-3 gap-y-6">
@@ -1464,7 +1456,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Palace Picker Modal -->
                 <div v-if="showPalacePicker" class="fixed inset-0 z-[700] bg-indigo-900/60 backdrop-blur-sm flex items-center justify-center p-6 animate-fade-in" @click.self="showPalacePicker = false">
                     <div class="bg-white w-full max-w-lg rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-slide-up border border-white/20">
@@ -1539,7 +1531,7 @@
                                   @click.stop="reorderMode ? null : toggleExpand(item.id)"
                                   class="py-[25px] px-[12px] flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
                                   :class="[isSessionFocused(item) ? 'bg-slate-50 ring-2 ring-indigo-50/10' : '']">
-                                
+
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center min-w-0 flex-1">
                                         <!-- Sequence Number / Reorder Input -->
@@ -1586,7 +1578,10 @@
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
-                                                    <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                                                    <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 30px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                    </div>
                                                 </div>
                                             </div>
 
@@ -1625,11 +1620,11 @@
                                                                 <button @click.stop="deleteItem(item.id); activeDropdownId = null" class="w-full px-4 py-2 text-left flex items-center hover:bg-rose-50 rounded-2xl transition-all text-rose-500">
                                                                     <span class="text-[17px] font-black">刪除</span>
                                                                 </button>
-                                                            </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
                                             <!-- Scrollable Content -->
                                             <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
@@ -1712,12 +1707,9 @@
                                  </template>
                              </div>
                          </template>
-                         
 
                      </div>
                 </div>
-
-
 
                 <div v-if="distributionModal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#FFB266]/60 backdrop-blur-sm animate-fade-in">
                     <div class="bg-white rounded-[32px] w-full max-w-sm overflow-hidden shadow-2xl animate-slide-up border border-white/20">
@@ -1726,20 +1718,20 @@
                                 <div class="text-[22px] font-black text-black tracking-tight leading-tight">偵測到不同的仙師開示</div>
                                 <p class="text-[15px] text-slate-500 font-bold">內容包含：{{ distributionModal.detectedNames.join('、') }}</p>
                             </div>
-                            
+
                             <div class="flex flex-col space-y-4 pt-2">
                                 <!-- Primary Action: Distribute -->
                                 <button @click="executeDistributionSave('distribute')" 
                                         class="w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg" style="color: white !important;">
                                     {{ distributionModal.detectedNames.length === 1 ? '存入「' + distributionModal.detectedNames[0] + '」資料夾' : '依內容自動分流儲存' }}
                                 </button>
-                                
+
                                 <!-- Secondary Action: Keep in Current -->
                                 <button @click="executeDistributionSave('keep')" 
                                         class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all shadow-lg" style="color: white !important;">
                                     維持存入「{{ currentFolder?.name || '目前' }}」資料夾
                                 </button>
-                                
+
                                 <button @click="distributionModal.show = false" 
                                         class="w-full py-3 text-slate-400 font-bold text-[15px] active:scale-95 transition-all">
                                     取消錄入
@@ -1748,7 +1740,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Master Mismatch Warning Modal -->
                 <div v-if="masterMismatchModal.show" class="fixed inset-0 z-[1300] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.55);backdrop-filter:blur(4px)">
                     <div class="bg-white rounded-[28px] shadow-2xl w-full max-w-sm mx-auto p-6 animate-fade-in text-left">
@@ -1792,7 +1784,10 @@
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
                         <div class="flex items-center space-x-3">
                         <div class="flex flex-col">
-                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
+                            <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
+                    </div>
                             <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">請核對以下內容是否正確</span>
                         </div>
                         </div>
@@ -1800,7 +1795,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                     </div>
-                    
+
                     <!-- High-Density Summary Content: Full Preview of All Records -->
                     <div class="flex-1 overflow-y-auto px-4 py-4 pb-32 custom-scrollbar bg-slate-50/30 space-y-4">
                         <div v-for="(item, bIdx) in saveConfirmModal.records" :key="bIdx" 
@@ -1880,7 +1875,7 @@
                 </div>
 
             </template>
-            
+
             <!-- Global Components (Visible on all levels) -->
             <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
 
@@ -1906,7 +1901,7 @@
                 @search="showSearch = !showSearch"
                 @more="itemPagination.last_page > 0 ? exportListExcel() : null"
             />
-            
+
             <compact-date-picker 
                 v-if="activeDate"
                 v-model="datePickerValue"
@@ -1963,7 +1958,6 @@ import AddActionMenu from './AddActionMenu.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import PaginationButtons from './PaginationButtons.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
-
 
 const getTodayStr = () => {
     const d = new Date();
@@ -2053,7 +2047,7 @@ const getMainDetails = (items) => {
     if (!items || items.length === 0) return '';
     const main = items.find(i => !i.name);
     if (main) return main.details || '';
-    
+
     // Fallback: If no header record (name: ''), but it's a special treasure with exactly one item
     const tName = items[0]?.treasure_name || '';
     if (items.length === 1 && (tName.includes('七素') || tName.includes('七表'))) {
@@ -2065,26 +2059,26 @@ const getMainDetails = (items) => {
 const getRecordHeaderPreview = (item, index, allRecords) => {
     let masterName = item.master?.name || item.master_name;
     if (!masterName) masterName = '父皇';
-    
+
     const recipient = getRecipientName(item);
-    
+
     // Deduplication logic: 
     if (index > 0) {
         const prevItem = allRecords[index - 1];
         const prevMasterName = prevItem.master?.name || prevItem.master_name || '父皇';
         const prevRecipient = getRecipientName(prevItem);
-        
+
         // If everything matches (Date, Master, Recipient) -> HIDE HEADER COMPLETELY
         if (masterName === prevMasterName && item.date === prevItem.date && recipient === prevRecipient) {
             return '';
         }
-        
+
         // If same master/date but DIFFERENT recipient -> only show "開示給..."
         if (masterName === prevMasterName && item.date === prevItem.date) {
             return `開示給：${recipient}`;
         }
     }
-    
+
     return `${masterName}開示給：${recipient}`;
 };
 
@@ -2144,10 +2138,10 @@ const startInlineEdit = (item) => {
     // Explicitly set focus to ensure expansion without toggling
     focusedId.value = item.id;
     inlineEditingId.value = item.id;
-    
+
     // Word Mode: Prepare full text version
     inlineWordText.value = formatTeachingForFile(item).trim();
-    
+
     inlineEditData.value = { 
         id: item.id,
         date: item.date || '',
@@ -2174,7 +2168,7 @@ const saveInlineEdit = async () => {
     try {
         // 1. Parse the unified text back into structured data
         const parsed = parseTeachingWordText(inlineWordText.value);
-        
+
         // 2. Send to backend
         const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, {
             date: parsed.date || inlineEditData.value.date,
@@ -2184,13 +2178,13 @@ const saveInlineEdit = async () => {
             items: parsed.items || [],
             items_footer_remarks: parsed.items_footer_remarks || ''
         });
-        
+
         // Update local state
         const idx = teachings.value.findIndex(t => t.id === inlineEditData.value.id);
         if (idx !== -1) {
             teachings.value[idx] = { ...teachings.value[idx], ...res.data };
         }
-        
+
         cancelInlineEdit();
     } catch (err) {
         console.error('Failed to save inline edit:', err);
@@ -2268,7 +2262,7 @@ const parseTeachingWordText = (text) => {
                     const lastItem = result.items[result.items.length - 1];
                     const namePart = subMatch[1].trim();
                     const remarkPart = subMatch[3] ? subMatch[3].trim() : '';
-                    
+
                     if (!lastItem.name) {
                         lastItem.name = namePart;
                         lastItem.sub_name = remarkPart;
@@ -2327,7 +2321,6 @@ const relationshipOptions = ['長輩', '母親', '父親', '公公', '婆婆', '
 const treasureInput = ref(null);
 const activeSubPractitionerDropdownId = ref(null);
 
-
 const showPreviewRecipients = ref(new Set());
 const togglePreviewRecipients = (idx) => {
     if (showPreviewRecipients.value.has(idx)) showPreviewRecipients.value.delete(idx);
@@ -2339,29 +2332,29 @@ const groupedRecords = computed(() => {
     let list = [...visibleItems.value];
     // Server-side filtering is now used, so we don't need client-side filter here.
     // However, we keep the sorting logic.
-    
+
     // Sort first
     list.sort((a, b) => {
         const dA = a.date ? new Date(a.date).getTime() : NaN;
         const dB = b.date ? new Date(b.date).getTime() : NaN;
-        
+
         // Push "Historical Accumulation" (no date) to the end regardless of sort direction
         if (isNaN(dA) && isNaN(dB)) return sortDesc.value ? b.id - a.id : a.id - b.id;
         if (isNaN(dA)) return 1;
         if (isNaN(dB)) return -1;
-        
+
         // Group by date first
         if (sortDesc.value) {
             if (dB !== dA) return dB - dA;
         } else {
             if (dA !== dB) return dA - dB;
         }
-        
+
         // Within same date, follow sortDesc (New to Old -> latest opening first)
         const sA = a.sort_order || 999999;
         const sB = b.sort_order || 999999;
         if (sA !== sB) return sortDesc.value ? sB - sA : sA - sB;
-        
+
         return sortDesc.value ? b.id - a.id : a.id - b.id;
     });
 
@@ -2372,7 +2365,7 @@ const groupedRecords = computed(() => {
         namesKey: (item.dharma_names || []).map(dn => dn.name).sort().join(','),
         ids: [item.id]
     }));
-    
+
     return grouped;
 });
 
@@ -2407,13 +2400,13 @@ const recordsByDate = computed(() => {
         // Always put "歷史累積" (Historical) at the very bottom
         if (a === '歷史累積') return 1;
         if (b === '歷史累積') return -1;
-        
+
         const dA = new Date(a).getTime();
         const dB = new Date(b).getTime();
-        
+
         if (isNaN(dA)) return 1;
         if (isNaN(dB)) return -1;
-        
+
         return sortDesc.value ? dB - dA : dA - dB;
     }).map(date => ({ date, items: map[date] }));
 });
@@ -2501,7 +2494,6 @@ const activeTreasureDropdownId = ref(null);
 const activeDaysDropdownId = ref(null);
 const activeSubTreasureDropdownId = ref(null);
 
-
 const isSpecialInstrument = (name) => {
     if (!name) return false;
     const n = name.toLowerCase();
@@ -2539,14 +2531,14 @@ const openBatchItemDetails = (index) => {
         form.value.items_footer_remarks = br.items_footer_remarks;
     }
     form.value.master_name = br.master_name;
-    
+
     itemsDetailMode.value = true;
 };
 
 const addBatchBlock = (startEditing = false) => {
     // Strict Inheritance: Always use the first master in the set
     const firstMaster = batchRecords.value.length > 0 ? (batchRecords.value[0].master_name || masterNameInput.value) : (masterNameInput.value || '父皇');
-    
+
     const newIndex = batchRecords.value.length;
     batchRecords.value.push({ 
         dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
@@ -2570,7 +2562,7 @@ const handleItemsDetailClose = (mode = false) => {
         br.dharma_name_ids = [...form.value.dharma_name_ids];
         br.target_remarks = form.value.target_remarks;
         br.items_footer_remarks = form.value.items_footer_remarks;
-        
+
         // Strict Inheritance
         const firstM = batchRecords.value[0].master_name || masterNameInput.value;
         br.master_name = firstM;
@@ -2583,7 +2575,7 @@ const handleItemsDetailClose = (mode = false) => {
         addBatchBlock(false);
         return;
     }
-    
+
     itemsDetailMode.value = false;
 
     if (mode === true) {
@@ -2614,14 +2606,14 @@ const stashAndContinue = () => {
         target_remarks: form.value.target_remarks || '',
         items_footer_remarks: form.value.items_footer_remarks || ''
     };
-    
+
     // Remove first dummy block if it exists and is empty
     if (batchRecords.value.length === 1 && !batchRecords.value[0].content && batchRecords.value[0].items.length === 0 && !batchRecords.value[0].dharma_name_ids.length) {
         batchRecords.value = [newRecord];
     } else {
         batchRecords.value.push(newRecord);
     }
-    
+
     // Clear for next
     form.value.content = '';
     form.value.items = [];
@@ -2629,7 +2621,7 @@ const stashAndContinue = () => {
     form.value.target_remarks = '';
     stagedContents.value = [];
     dharmaSearchQuery.value = '';
-    
+
     // Requirement: Keep user in 'single' entry mode for the next persona per request
     activeEntryTab.value = 'single';
     itemsDetailMode.value = false;
@@ -2649,18 +2641,17 @@ const uniqueTreasureNames = computed(() => {
         const n = t.name ? t.name.trim() : '';
         return stripMasterPrefix(n);
     });
-    
+
     // Add specific tokens and instruments to the suggestions
     const extraSuggestions = [
         '太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌',
         '極令', '元令', '道令', '靈令', '玉皇令', '太令', '龍令', '王令', 
         '金印', '令牌', '令旗', '天筆', '法筆', '玉筆', '八卦', '寶扇', '油燈', '清煞'
     ];
-    
+
     const combined = [...new Set([...names, ...extraSuggestions])];
     return combined.filter(n => n && n !== '清煞法寶' && n !== '法器').sort((a, b) => a.length - b.length || a.localeCompare(b, 'zh-TW', { collation: 'stroke' }));
 });
-
 
 const canCRUD = (item) => {
     if (!props.user) return false;
@@ -2734,18 +2725,18 @@ const palaceDharmaMapping = computed(() => {
         '第五組': '玄昇宮', '第六組': '玄願宮', '第七組': '玄法宮', '第八組': '玄閻宮',
         '第九組': '玄窕宮', '第十組': '玄瑤宮', '第十一組': '玄義宮'
     };
-    
+
     (groups.value || []).forEach(g => {
         let pIndex = -1;
         const mappedName = groupToPalace[g.name] || g.name;
         pIndex = palaceOrder.indexOf(mappedName);
-        
+
         if (pIndex === -1) {
             palaceOrder.forEach((p, idx) => {
                 if (g.name.includes(p)) pIndex = idx;
             });
         }
-        
+
         if (pIndex !== -1 && g.dharma_names) {
             g.dharma_names.forEach(dn => {
                 // Map both ID and name to the palace index
@@ -2765,10 +2756,10 @@ const sortedDharmaNames = computed(() => {
         if (a.order !== undefined && b.order !== undefined) {
             if (a.order !== b.order) return a.order - b.order;
         }
-        
+
         const idxA = palaceDharmaMapping.value.get(String(a.id));
         const idxB = palaceDharmaMapping.value.get(String(b.id));
-        
+
         if (idxA !== undefined && idxB !== undefined) {
             if (idxA !== idxB) return idxA - idxB;
         } else if (idxA !== undefined) {
@@ -2776,7 +2767,7 @@ const sortedDharmaNames = computed(() => {
         } else if (idxB !== undefined) {
             return 1;
         }
-        
+
         return (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
     });
 });
@@ -2795,11 +2786,11 @@ visibleItems.value.forEach(item => {
 
 const activeModalGroupGrouped = computed(() => {
     if (!activeModalGroup.value) return [];
-    
+
     // Use the dharma_names already populated in triggerGroupSelection
     const membersList = activeModalGroup.value.dharma_names || [];
     if (membersList.length === 0) return [];
-    
+
     const name = activeModalGroup.value?.name || '';
 
     // Filter to only include those actually in the current form selection
@@ -2825,7 +2816,7 @@ const activeModalGroupGrouped = computed(() => {
             '玄通宮', '玄應宮', '玄心宮', '玄妙宮', '玄昇宮', 
             '玄願宮', '玄法宮', '玄閻宮', '玄窕宮', '玄瑤宮', '玄義宮'
         ];
-        
+
         palaces.forEach(pName => {
             const members = currentMembers.filter(m => {
                 const pIdx = palaceDharmaMapping.value.get(String(m.id));
@@ -2843,7 +2834,7 @@ const activeModalGroupGrouped = computed(() => {
         if (others.length > 0) {
             grouped.push({ palaceName: '其他', members: others });
         }
-        
+
         return grouped;
     }
 
@@ -2871,14 +2862,14 @@ const handleBlockDharmaInput = (index, val) => {
     if (relSplitMatch) {
         const namePart = relSplitMatch[1].trim();
         let relPart = relSplitMatch[2].trim();
-        
+
         // Terminology Translation
         if (relPart === '母') relPart = '母親';
         if (relPart === '父') relPart = '父親';
-        
+
         block.dharmaSearchQuery = namePart;
         block.target_remarks = relPart;
-        
+
         // Find dharma name ID for the name part
         const matchedDN = dharmaNames.value.find(dn => dn.name === namePart);
         if (matchedDN) { block.dharma_name_ids = [matchedDN.id]; }
@@ -2893,7 +2884,6 @@ const handleBlockDharmaInput = (index, val) => {
         block.dharmaSearchQuery = matchedGroup.name;
     }
 };
-
 
 const form = ref({
     supplement: '', target_remarks: '', content: '',
@@ -2941,18 +2931,17 @@ const currentMatchedGroup = computed(() => {
         const gIds = g.dharma_names.map(m => String(m.id));
         return currentIds.every(id => gIds.includes(id));
     });
-    
-    
+
     if (matched && matched.dharma_names) {
         // Sort dharma_names by palace mapping to ensure correct order for "Palace Master" etc.
         const sorted = [...matched.dharma_names].sort((a, b) => {
             if (a.order !== undefined && b.order !== undefined) {
                 if (a.order !== b.order) return a.order - b.order;
             }
-            
+
             const idxA = palaceDharmaMapping.value.get(String(a.id));
             const idxB = palaceDharmaMapping.value.get(String(b.id));
-            
+
             if (idxA !== undefined && idxB !== undefined) {
                 if (idxA !== idxB) return idxA - idxB;
             } else if (idxA !== undefined) {
@@ -2960,12 +2949,12 @@ const currentMatchedGroup = computed(() => {
             } else if (idxB !== undefined) {
                 return 1;
             }
-            
+
             return (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
         });
         return { ...matched, dharma_names: sorted };
     }
-    
+
     return matched;
 });
 
@@ -2987,9 +2976,9 @@ const palaceOrder = [
         '第五組': '玄昇宮', '第六組': '玄願宮', '第七組': '玄法宮', '第八組': '玄閻宮',
         '第九組': '玄窕宮', '第十組': '玄瑤宮', '第十一組': '玄義宮'
     };
-    
+
     const list = (groups.value || []).filter(g => g.name !== '信眾' && g.name !== '各宮');
-    
+
     return list.sort((a, b) => {
         // Absolute priority for global groups
         if (a.name === '在場全體' || a.name === '全體殿生') {
@@ -3024,14 +3013,14 @@ const palaceOrder = [
             if (b.name === '宮主') idxB = 100;
             if (b.name === '宮主副宮主') idxB = 101;
         }
-        
+
         if (idxA !== -1 && idxB !== -1) {
             if (idxA !== idxB) return idxA - idxB;
             return a.name.localeCompare(b.name, 'zh-TW', { collation: 'stroke' });
         }
         if (idxA !== -1) return -1;
         if (idxB !== -1) return 1;
-        
+
         return (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
     });
 });
@@ -3039,7 +3028,7 @@ const palaceOrder = [
 const mainSearchFilteredGroups = computed(() => {
     const q = (dharmaSearchQuery.value || '').toLowerCase().trim();
     if (!q) return palacePrioritizedGroups.value;
-    
+
     const groupToPalace = {
         '第一組': '玄通宮', '第二組': '玄應宮', '第三組': '玄心宮', '第四組': '玄妙宮',
         '第五組': '玄昇宮', '第六組': '玄願宮', '第七組': '玄法宮', '第八組': '玄閻宮',
@@ -3053,7 +3042,7 @@ const mainSearchFilteredGroups = computed(() => {
             return palaceOrder.includes(mapped);
         });
     }
-    
+
     return palacePrioritizedGroups.value.filter(g => {
         const mapped = groupToPalace[g.name] || g.name;
         return (mapped || '').toLowerCase().includes(q) || (g.name || '').toLowerCase().includes(q);
@@ -3088,7 +3077,7 @@ const masterNameInput = ref('');
 const filteredPickerResults = computed(() => {
     if (!pickerSearch.value) return (dharmaNames.value || []).slice(0, 100); 
     const q = pickerSearch.value.toLowerCase();
-    
+
     // Find groups that match the query
     const matchedDNsFromGroups = new Set();
     (groups.value || []).forEach(g => {
@@ -3119,7 +3108,7 @@ const groupedPendingItems = computed(() => groupItems(form.value.items));
 const addActions = computed(() => {
     const isDaily = currentFolder.value?.id === 0 || currentFolder.value?.id === '0';
     const actions = [];
-    
+
     if (!isDaily && currentFolder.value === null) {
         actions.push({ 
             label: '多筆新增', 
@@ -3182,35 +3171,35 @@ const stripContentHeaders = (text) => {
     if (!text) return "";
     let lines = text.trim().split('\n');
     let startIndex = 0;
-    
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) {
             startIndex = i + 1;
             continue;
         }
-        
+
         // Date check: 2026/05/07 or 2026-05-07
         if (/^\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2}\s*$/.test(line)) {
             startIndex = i + 1;
             continue;
         }
-        
+
         // Header check: Master + 開示給 + Recipient
         if (line.includes('開示給')) {
             startIndex = i + 1;
             continue;
         }
-        
+
         // Standard "賜降" header check
         if (line === '賜降：' || line === '賜降') {
             startIndex = i + 1;
             continue;
         }
-        
+
         break;
     }
-    
+
     return lines.slice(startIndex).join('\n').trim();
 };
 
@@ -3220,7 +3209,7 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
 
     e.preventDefault();
     let teachingContent = text;
-    
+
     // Standardize target access
     const isMainForm = blockIndex === null;
     const target = isMainForm ? form.value : targetRefOrObj;
@@ -3236,7 +3225,7 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
             const mm = String(dObj.getMonth() + 1).padStart(2, '0');
             const dd = String(dObj.getDate()).padStart(2, '0');
             target.date = `${yyyy}-${mm}-${dd}`;
-            
+
             // Sync with global date if in main form
             if (isMainForm) {
                 form.value.date = `${yyyy}-${mm}-${dd}`;
@@ -3247,7 +3236,7 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
     // 1. Master Detection
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const masterMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
-    
+
     for (const mName of masterNames) {
         if (text.includes(mName + '仙師')) {
             target.master_name = mName + '仙師';
@@ -3307,7 +3296,7 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
                  });
             }
         });
-        
+
         if (newItems.length > 0) {
             target.items = [...(target.items || []), ...newItems];
         }
@@ -3328,7 +3317,7 @@ const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
 
 const triggerGroupSelection = (group) => {
     let members = [];
-    
+
     // SPECIAL CASE: '全體殿生' should include ALL dharma names (approx 46 people)
     if (group.name === '全體殿生') {
         members = [...dharmaNames.value];
@@ -3400,7 +3389,7 @@ const selectPalaceGroup = (pName) => {
     dharmaSearchQuery.value = pName;
     showPalacePicker.value = false;
     activePractitionerDropdownId.value = null;
-    
+
     if (pName === '各宮') {
         const g = (groups.value || []).find(g => g.name === '各宮');
         if (g) {
@@ -3506,7 +3495,7 @@ const fetchItems = async (page = 1) => {
             last_page: recordsObj.last_page || 1,
             total: recordsObj.total || itemsArray.length
         };
-        
+
         // Scroll to top when page changes
         const container = document.querySelector('.overflow-y-auto.flex-1');
         if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3519,8 +3508,6 @@ watch(searchQuery, debounce(() => {
         fetchItems(1);
     }
 }, 300));
-
-
 
 const syncRecords = async () => {
     try {
@@ -3551,7 +3538,6 @@ const getDharmaNameText = (id) => {
     return dn ? stripMasterPrefix(dn.name) : '';
 };
 
-
 const editItem = (item) => { 
     editingId.value = item.id; 
     form.value = { 
@@ -3572,7 +3558,7 @@ const deleteItem = (id) => {
 const executeToastAction = async () => {
     if (!persistentToast.value) return;
     const type = persistentToast.value.type;
-    
+
     if (type === 'deleteConfirm') {
         try { 
             await axios.delete(`/teachings/${deleteConfirmId.value}`); 
@@ -3643,7 +3629,7 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart 
     } else {
         // Broaden instrument check
         const isInst = isSpecialInstrument(itemName) || itemName?.includes('執法') || !!instrument || !!bodyPart;
-        
+
         if (isInst) {
             if (pr) parts.push(`執法-${pr}`);
             if (instrument) parts.push(`法器-${instrument}`);
@@ -3659,7 +3645,7 @@ const buildTreasureDetails = (cat, t, h, d, sz, sh, pr, itemName = '', bodyPart 
 
 function stageContent() {
     if (!newItemSubName.value) return;
-    
+
     const details = buildTreasureDetails(
         magicItemSubCategory.value,
         newItemSubTimes.value,
@@ -3709,7 +3695,7 @@ function stageContent() {
 
 function addNewItemQuickly() {
     if (!newItemName.value || isSaving.value) return;
-    
+
     isSaving.value = true;
     setTimeout(() => { isSaving.value = false; }, 400); // Prevent rapid-fire
 
@@ -3887,7 +3873,7 @@ const updateGroupName = (oldName, newName) => {
 const groupItems = (items) => {
     const groups = {};
     if (!items) return groups;
-    
+
     let itemsArr = items;
     if (typeof items === 'string') {
         try {
@@ -3897,7 +3883,7 @@ const groupItems = (items) => {
             return groups;
         }
     }
-    
+
     if (!Array.isArray(itemsArr)) return groups;
 
     itemsArr.forEach((item, index) => { 
@@ -3947,15 +3933,15 @@ const markings = ref({});
 const getRecipientName = (item) => {
     const listInfo = getFullRecipientList(item);
     const pastedName = (item.dharmaSearchQuery || item.target_remarks || '').trim();
-    
+
     if (!listInfo) return (pastedName || '全體成員');
-    
+
     if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) {
         // Deduplicate if pastedName is just repeated groupName (e.g., "在場全體 在場全體")
         if (pastedName.trim() === `${listInfo.groupName} ${listInfo.groupName}`) return listInfo.groupName;
         return pastedName;
     }
-    
+
     // Logic to prevent redundant parentheses (e.g., 鳳媓 (鳳媓))
     let remarks = '';
     const rawRemarks = (item.target_remarks || '').trim();
@@ -3968,7 +3954,7 @@ const getRecipientName = (item) => {
             remarks = ` (${rawRemarks})`;
         }
     }
-    
+
     let res = "";
     if (listInfo.groupName) {
         res = `${listInfo.groupName}${remarks}`;
@@ -3979,19 +3965,19 @@ const getRecipientName = (item) => {
     // Final deduplication for cases like "在場全體 在場全體"
     const parts = res.trim().split(/\s+/);
     if (parts.length === 2 && parts[0] === parts[1]) return parts[0];
-    
+
     return res;
 };
 
 const getFullRecipientList = (item) => {
     const names = (item.dharma_names || []).map(dn => dn.name);
     const pendingIds = item.dharma_name_ids || [];
-    
+
     let resolvedNames = [...names];
     if (resolvedNames.length === 0 && pendingIds.length > 0) {
         resolvedNames = pendingIds.map(id => dharmaNames.value.find(dn => dn.id === id)?.name).filter(n => n);
     }
-    
+
     // If still empty, use target_remarks or dharmaSearchQuery to allow "View Details" button for custom recipients
     if (resolvedNames.length === 0 && (item.target_remarks || item.dharmaSearchQuery)) {
         const fallback = (item.dharmaSearchQuery || item.target_remarks || '').trim();
@@ -4004,9 +3990,9 @@ const getFullRecipientList = (item) => {
     const normalizedItemIds = (item.dharma_names || []).map(d => Number(d.id)).sort((a, b) => a - b).join(',');
     const normalizedPendingIds = (pendingIds || []).map(id => Number(id)).sort((a, b) => a - b).join(',');
     const searchIds = normalizedItemIds || normalizedPendingIds;
-    
+
     let groupName = null;
-    
+
     if (searchIds && (groups.value || []).length > 0) {
         const matched = groups.value.find(g => {
             const gIds = (g.dharma_names || []).map(dn => Number(dn.id)).sort((a, b) => a - b).join(',');
@@ -4039,7 +4025,7 @@ const getFullRecipientList = (item) => {
     resolvedNames.sort((a, b) => {
         const objA = nameToObj.get(a);
         const objB = nameToObj.get(b);
-        
+
         if (objA && objB) return objA.order - objB.order;
         if (objA) return -1;
         if (objB) return 1;
@@ -4063,10 +4049,10 @@ const getRecordHeader = (item, index, allRecords) => {
 const isSameSessionAsNext = (item, index, allRecords) => {
     if (!allRecords || index >= allRecords.length - 1) return false;
     const next = allRecords[index + 1];
-    
+
     const masterName = (item.master?.name === '父皇仙師' || item.master?.name === '父皇' ? '父皇' : (item.master?.name || item.master_name || '父皇'));
     const nextMaster = (next.master?.name === '父皇仙師' || next.master?.name === '父皇' ? '父皇' : (next.master?.name || next.master_name || '父皇'));
-    
+
     return masterName === nextMaster && item.date === next.date;
 };
 
@@ -4074,14 +4060,14 @@ const isSessionFocused = (item) => {
     if (!focusedId.value) return false;
     // Check main ID first
     if (focusedId.value === item.id) return true;
-    
+
     // Check if they are from the same session
     const focusedItem = visibleItems.value.find(i => i.id === focusedId.value);
     if (!focusedItem) return false;
-    
+
     const m1 = (item.master?.name === '父皇仙師' || item.master?.name === '父皇' ? '父皇' : (item.master?.name || item.master_name || '父皇'));
     const m2 = (focusedItem.master?.name === '父皇仙師' || focusedItem.master?.name === '父皇' ? '父皇' : (focusedItem.master?.name || focusedItem.master_name || '父皇'));
-    
+
     return item.date === focusedItem.date && m1 === m2;
 };
 
@@ -4109,19 +4095,19 @@ const handleReorder = async (item, newOrderStr) => {
     const newOrder = parseInt(newOrderStr);
     const dateGroup = recordsByDate.value.find(g => g.date === item.date);
     if (!dateGroup || isNaN(newOrder)) return;
-    
+
     // Create a copy of the current group's items
     const list = [...dateGroup.items];
     const oldIndex = list.findIndex(i => i.id === item.id);
     if (oldIndex === -1) return;
-    
+
     // Bounds check
     const targetIndex = Math.max(0, Math.min(newOrder - 1, list.length - 1));
-    
+
     // Move the item in memory
     const [movedItem] = list.splice(oldIndex, 1);
     list.splice(targetIndex, 0, movedItem);
-    
+
     // Calculate new sort_orders for everyone in this group
     // In our system, usually sortDesc=true means higher sort_order is on top.
     // However, the display index (1, 2, 3...) is relative to the current view.
@@ -4135,7 +4121,7 @@ const handleReorder = async (item, newOrderStr) => {
             sort_order: calculatedOrder
         });
     });
-    
+
     try {
         await axios.post('/teachings/reorder', { orders });
         fetchItems(itemPagination.value.current_page);
@@ -4153,7 +4139,7 @@ const handleBack = () => {
         const isDaily = currentFolder.value.id === 0 || currentFolder.value.id === '0';
         currentFolder.value = null; 
         if (isDaily) currentCategory.value = null;
-        
+
         // If restricted, skip category selection and go home when backing out of a folder
         if (props.user?.permissions && !props.user.permissions.can_see_daily_teachings) {
             currentCategory.value = null;
@@ -4182,11 +4168,11 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
     const grouped = groupItems(item.items);
     let treasureLines = [];
     const groupKeys = Object.keys(grouped);
-    
+
     groupKeys.forEach((gName, gIdx) => {
         const group = grouped[gName];
         let line = groupKeys.length > 1 ? `${gIdx + 1}. ${gName}` : gName;
-        
+
         if (group.length === 1 && !group[0].name && !group[0].sub_name) {
             if (group[0].details) line += `: ${group[0].details}`;
             treasureLines.push(line);
@@ -4205,12 +4191,12 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
 
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
-    
+
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (!hasFinishedSuffix(item)) {
         footer += (footer ? '\n\n' : '\n\n') + '完畢';
     }
-    
+
     let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
     return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
 };
@@ -4220,12 +4206,12 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     const grouped = groupItems(item.items);
     let treasureLines = [];
     const groupKeys = Object.keys(grouped);
-    
+
     groupKeys.forEach((gName, gIdx) => {
         const group = grouped[gName];
         // "沒有項次就不要加項次" (If only one group, no numbering like 1. )
         let line = groupKeys.length > 1 ? `${gIdx + 1}. ${gName}` : gName;
-        
+
         if (group.length === 1 && !group[0].name && !group[0].sub_name) {
             if (group[0].details) line += `: ${group[0].details}`;
             treasureLines.push(line);
@@ -4245,7 +4231,7 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
 
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
     const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
-    
+
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (index !== null && allRecords.length > 0) {
         if (isSameSessionAsNext(item, index, allRecords)) {
@@ -4277,7 +4263,7 @@ const downloadTeaching = (item) => {
 
 const copyToLine = (item, index = null, allRecords = []) => {
     const text = formatTeachingForExport(item, index, allRecords);
-    
+
     writeClipboard(text).then((success) => {
         if (success) {
             persistentToast.value = { msg: '✓ 內容已複製', type: 'success' };
@@ -4288,7 +4274,7 @@ const copyToLine = (item, index = null, allRecords = []) => {
 
 const processBatchText = () => {
     if (!batchImportContent.value.trim()) return;
-    
+
     // Split by common delimiters (e.g., "完畢", horizontal lines, or multiple newlines)
     const rawBlocks = batchImportContent.value.split(/完畢[！!]?|--+|==+/);
     const newRecords = [];
@@ -4302,16 +4288,16 @@ const processBatchText = () => {
         '金翎': '鳳尊', '金妙': '鳳媓'
     };
     const translateName = (n) => nameAliasMap[n] || n;
-    
+
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師'];
-    
+
     let currentActiveDate = null;
-    
+
     rawBlocks.forEach(block => {
         let text = block.trim();
         if (!text || text.length < 5) return;
-        
+
         const record = { 
             // Apply global picker defaults (Added per user request)
             dharma_name_ids: [...(form.value.dharma_name_ids || [])],
@@ -4323,7 +4309,7 @@ const processBatchText = () => {
             date: null,
             items_footer_remarks: form.value.items_footer_remarks || ''
         };
-        
+
         // 0. Date Detection (Look for date patterns anywhere in the text)
         const dateMatch = text.match(/(\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})/) || text.match(/(\d{1,2}[\/\s.-]\d{1,2})/);
         if (dateMatch) {
@@ -4346,10 +4332,10 @@ const processBatchText = () => {
                 }
             } catch(e) {}
         }
-        
+
         // Apply the sticky date (either found in this block or remembered from previous blocks)
         record.date = currentActiveDate;
-        
+
         // 1. Master Detection
         let foundMaster = false;
         let matchedKeywordInText = '';
@@ -4362,7 +4348,7 @@ const processBatchText = () => {
             }
         });
         // We do NOT fallback to currentFolder name here to avoid locking records to the current view during shunting
-        
+
         // 2. Recipient Detection (Highly Robust Regex)
         // Match "開示給" followed by any characters until a colon, newline, or specific terminator
         const recMatch = text.match(/開示給\s*([^：:\n\r]*)/);
@@ -4372,7 +4358,7 @@ const processBatchText = () => {
             const nameField = translateName(recMatch[1].trim());
             record.dharmaSearchQuery = nameField;
             record.target_remarks = nameField; // Essential for persistence
-            
+
             const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
             if (foundDN) record.dharma_name_ids = [foundDN.id];
             else if (nameField === '全體殿生') {
@@ -4397,7 +4383,7 @@ const processBatchText = () => {
         if (matchedKeywordInText) {
             // Master name is extracted but NOT stripped to preserve "exactly same" content
         }
-        
+
         // 3. Line-by-line Parsing (Heuristic for content vs items)
         const lines = contentToParse.split('\n');
         let contentLines = [];
@@ -4406,22 +4392,22 @@ const processBatchText = () => {
         lines.forEach(line => {
             const l = line.trim();
             if (!l) return;
-            
+
             if (l.includes('賜降：')) {
                 parsingTreasures = true;
                 return;
             }
-            
+
             // Heuristic: If it has a prefix (1. or +) AND (parsingTreasures OR contains treasure keywords)
             // OR it contains keywords like "法寶", "天份", "金丹", "符", "疏文"
             const hasTreasureKeywords = l.includes('法寶') || l.includes('天份') || 
                                        l.includes('金丹') || l.includes('符') || 
                                        l.includes('疏文');
-            
+
             // Only auto-detect as item if we are in treasures section OR it's a short line with keywords
             const isItem = (parsingTreasures && l.match(/^(\d+\.|[+*])/)) || 
                            (hasTreasureKeywords && l.length < 60);
-            
+
             if (isItem) {
                 const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
                 if (tMatch) {
@@ -4445,16 +4431,16 @@ const processBatchText = () => {
             // Heuristic: If we parsed items but no "賜降" header, remove detected item lines from content
             contentPart = contentLines.join('\n');
         }
-        
+
         let cleanedRecordContent = stripContentHeaders(contentPart);
         if (block.includes('完畢') && !cleanedRecordContent.includes('完畢')) {
             cleanedRecordContent += "\n\n完畢";
         }
         record.content = cleanedRecordContent;
-        
+
         newRecords.push(record);
     });
-    
+
     if (newRecords.length > 0) {
         batchRecords.value = newRecords;
     }
@@ -4471,7 +4457,7 @@ const handleBatchPaste = (e) => {
 const moveBatchRecord = (index, direction) => {
     const targetIndex = index + direction;
     if (targetIndex < 0 || targetIndex >= batchRecords.value.length) return;
-    
+
     // Swap elements in the reactive array
     const record = batchRecords.value[index];
     batchRecords.value.splice(index, 1);
@@ -4597,7 +4583,7 @@ const copyAllToLine = async () => {
         const text = allItems.map((item, idx) => {
             return formatTeachingForExport(item, idx, allItems);
         }).join('\n\n\n');
-        
+
         await navigator.clipboard.writeText(text);
         persistentToast.value = { msg: '✓ 已複製完整清單至剪貼簿', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
@@ -4620,11 +4606,11 @@ const executeClearTodayDaily = async () => {
         const recordsObj = res.data.records || res.data;
         const itemsArray = recordsObj.data || recordsObj;
         const items = itemsArray.filter(i => i.date === form.value.date && i.is_daily);
-        
+
         for (const item of items) {
             await axios.delete(`/teachings/${item.id}`);
         }
-        
+
         persistentToast.value = { msg: '✓ 今日每日開示暫存區已清空\n(仙師專區紀錄均已受保護)', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 3000);
         fetchItems(1);
@@ -4678,7 +4664,7 @@ const exportListTxt = async () => {
             const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
             return `【日期：${item.date?.replace(/-/g, '/')}】\n${item.master?.name || '仙師'}開示給${dnText}：${safeContent}${treasuresStr ? '\n賜降：\n'+treasuresStr : ''}\n\n完畢！`;
         }).join('\n\n' + '='.repeat(40) + '\n\n');
-        
+
         const fileName = `開示記錄_${currentFolder.value?.name}_${getTodayStr()}.txt`;
         triggerSimpleDownload(text, fileName);
     } catch (e) { 
@@ -4752,7 +4738,7 @@ const saveItem = async () => {
                 target_remarks: form.value.target_remarks,
                 items_footer_remarks: form.value.items_footer_remarks
             };
-            
+
             // Fix: Be more inclusive with what defines an "existing record" to prevent overwrites
             const first = batchRecords.value[0];
             const isFirstActuallyEmpty = !first.content && first.items.length === 0 && first.dharma_name_ids.length === 0;
@@ -4771,7 +4757,7 @@ const saveItem = async () => {
             const mIdMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
             const isInSpecificFolder = currentFolder.value &&
                 currentFolder.value.id !== 0 && currentFolder.value.id !== '0' && currentFolder.value.id !== null;
-            
+
             if (isInSpecificFolder) {
                 const folderMasterId = Number(currentFolder.value.id);
                 let mismatchName = null;
@@ -4849,7 +4835,7 @@ const chooseMasterAndProceed = (useDetected) => {
 
 const performActualSave = async () => {
     if (saving.value) return;
-    
+
     // Always distribution 'keep' mode as per user request to skip intermediate modals
     if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1) {
         await executeDistributionSave('distribute');
@@ -4880,7 +4866,7 @@ const performActualSave = async () => {
                 visibleItems.value.unshift(newRecord);
                 focusedId.value = res.data.id;
                 focusedDate.value = res.data.date;
-                
+
                 // Ensure the newly added item is scrolled into view
                 nextTick(() => {
                     const element = document.getElementById(`teaching-row-${res.data.id}`);
@@ -4890,10 +4876,10 @@ const performActualSave = async () => {
                 });
             }
         }
-        
+
         saveConfirmModal.value.show = false;
         addMode.value = false;
-        
+
         // Refresh in background to ensure total consistency (sorting, etc)
         fetchItems(1);
     } catch (e) {
@@ -4931,23 +4917,23 @@ const executeDistributionSave = async (mode) => {
         for (const record of batchRecords.value) {
             let content = record.content?.trim() || '';
             let items = [...(record.items || [])];
-            
+
             // Requirement: If user typed into the card manually, we should try to extract items from content
             if (content && items.length === 0) {
                 const lines = content.split('\n');
                 let remainingContent = [];
                 let parsingTreasures = false;
-                
+
                 lines.forEach(line => {
                     const l = line.trim();
                     if (!l) return;
                     if (l.includes('賜降：')) { parsingTreasures = true; return; }
-                    
+
                     const isItem = parsingTreasures || l.match(/^(\d+\.|[+*])/) || 
                                    l.includes('法寶') || l.includes('天份') || 
                                    l.includes('金丹') || l.includes('符') || 
                                    l.includes('疏文');
-                                   
+
                     if (isItem) {
                         const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
                         if (tMatch) {
@@ -4969,7 +4955,7 @@ const executeDistributionSave = async (mode) => {
             if (!content && items.length === 0 && record.dharma_name_ids.length === 0) continue;
 
             let blockMasterId = currentMasterId;
-            
+
             // Master ID Resolution:
             // 1. pendingMasterId = number → user explicitly chose this master (folder's master)
             // 2. pendingMasterId = 'auto' → user chose text auto-detection
@@ -5006,9 +4992,8 @@ const executeDistributionSave = async (mode) => {
             }
             // else: isInSpecificMasterFolder && pendingMasterId===null → blockMasterId = currentMasterId (folder's master)
 
-
             const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
-            
+
             let finalDharmaIds = [...(record.dharma_name_ids || [])];
             let finalTargetRemarks = record.target_remarks || form.value.target_remarks || '';
 
@@ -5040,7 +5025,7 @@ const executeDistributionSave = async (mode) => {
                 user_id: props.user?.id || 1,
                 is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
             };
-            
+
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
                 const newRecord = {
@@ -5056,7 +5041,7 @@ const executeDistributionSave = async (mode) => {
                 }
             }
         }
-        
+
         if (focusedId.value) {
             nextTick(() => {
                 const element = document.getElementById(`teaching-row-${focusedId.value}`);
@@ -5065,10 +5050,10 @@ const executeDistributionSave = async (mode) => {
                 }
             });
         }
-        
+
         distributionModal.value.show = false;
         addMode.value = false;
-        
+
         // Stay in current folder to allow user to see the newly added data
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         batchImportContent.value = '';
@@ -5097,16 +5082,16 @@ const showAdd = () => {
         const isDaily = currentFolder.value.id === 0 || currentFolder.value.id === '0';
         const mName = isDaily ? '父皇' : currentFolder.value.name;
         const mId = isDaily ? 5 : currentFolder.value.id;
-        
+
         form.value.master_id = mId;
         form.value.master_name = mName;
         masterNameInput.value = mName;
-        
+
         batchRecords.value = [{ 
             dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
             target_remarks: '', relatives: '', items: [], master_name: mName 
         }];
-        
+
         if (isDaily) activeEntryTab.value = 'single';
         else activeEntryTab.value = 'batch';
     }
@@ -5128,7 +5113,7 @@ const showMultiMasterAdd = () => {
         dharma_name_ids: [], content: '', dharmaSearchQuery: '', 
         target_remarks: '', relatives: '', items: [], master_name: '' 
     }];
-    
+
     activeEntryTab.value = 'batch';
     addMode.value = true;
 };
@@ -5274,4 +5259,3 @@ onUnmounted(() => {
 .custom-date-input::-webkit-calendar-picker-indicator { margin-left: auto; cursor: pointer; }
 * { -webkit-tap-highlight-color: transparent; }
 </style>
- 

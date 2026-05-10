@@ -5,46 +5,36 @@
         <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
             style="padding: 4px 15px;">
-            <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
+            <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
         </div>
 
-        <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
-        <div v-if="currentFolder || addMode" 
+        <!-- Header 2: Add Mode Level (Shown only when adding a new record) -->
+        <div v-if="addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
             style="padding: 4px 15px; padding-top: env(safe-area-inset-top, 0px);">
-            <div v-if="addMode && !currentFolder" class="flex items-center w-full">
+            <div class="flex items-center w-full">
                 <button @click="addMode = null" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="leading-tight font-outfit tracking-widest break-words" style="color: #dc1428 !important; font-size: 32px !important; font-weight: 900 !important;">
+                    <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
+                        <logo-imperial-notebook :height="36" />
                         新增重大皇恩
                     </div>
                 </div>
             </div>
-            <div v-else class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <!-- Mobile only title here, Desktop will use the sticky internal header -->
-                <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black md:hidden whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
-                    重大皇恩專區
-                </h1>
-            </div>
-            <div v-if="currentFolder" class="flex items-center space-x-2 ml-auto md:hidden pr-2" style="padding-top: 10px;">
-                <button v-if="focusedId" @click="handleBack" class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-90 transition-all shadow-sm border border-white" title="回到清單">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
         </div>
 
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
         <teleport to="body">
         <div v-if="persistentToast" class="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-md animate-fade-in pointer-events-auto">
             <div class="bg-white w-full max-w-[340px] rounded-[48px] p-10 shadow-[0_30px_100px_rgba(0,0,0,0.3)] animate-slide-up flex flex-col items-center relative border border-white/50">
-                
+
                 <!-- Icon Section -->
                 <div v-if="persistentToast.type === 'success'" class="mb-6">
                     <svg class="w-12 h-12 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +102,7 @@
                     <div class="relative w-[310px] h-[310px]">
                         <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
-                            <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 32px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
+                            <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 30px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
                             <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
                                 <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ unobtainedTotal }} 筆</span>
                             </div>
@@ -142,7 +132,6 @@
                 </button>
             </div>
 
-
             <!-- Minimalist Back to Category -->
             <div class="mt-12 flex justify-center pb-[5px]">
                 <button @click="currentCategory = null" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
@@ -154,15 +143,19 @@
 
         <!-- Level 2: Folder Contents -->
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white w-full md:max-w-xl md:mx-auto">
-            <!-- Desktop Centered Header Section -->
-            <div class="hidden md:flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[60]">
-                <div class="px-[15px] pt-0">
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
+            <!-- Consolidated Header Section -->
+            <div class="flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[110]">
+                <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
+                <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
-                <div class="flex items-end justify-between w-full px-[15px] pt-0 pb-[4px]">
-                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
+
+                <!-- Row 2: Folder Name + Actions (Sticky on all devices) -->
+                <div class="flex items-end justify-between w-full px-[15px] pt-1 pb-[6px] bg-white">
+                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0 ml-4">
                         <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
@@ -177,24 +170,6 @@
                 </div>
             </div>
 
-            <!-- Header for Level 2 (Mobile Only) -->
-            <div class="flex flex-col border-b border-white w-full bg-white md:hidden sticky top-0 z-[60]">
-                <div class="px-[15px] pt-0 pb-[8px] bg-slate-50/50 flex items-center justify-between relative">
-                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
-                    <div class="flex items-center space-x-2 shrink-0">
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-0.5 text-indigo-600 font-outfit !font-bold active:scale-95 transition-all" style="font-size: 16px !important;">
-                            {{ sortDesc ? '新→舊' : '舊→新' }}
-                        </button>
-                        <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
-                                class="px-2 py-0.5 font-outfit !font-bold transition-all active:scale-95 whitespace-nowrap"
-                                :class="reorderMode ? '!text-[#059669]' : '!text-[#64748b]'"
-                                style="font-size: 16px !important;">
-                            {{ reorderMode ? '確認排序' : '修改排序' }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
             <!-- List Display Area -->
             <div style="padding: 0px 15px 10px 15px;" class="mt-0 relative">
                 <div v-if="loading" class="absolute inset-0 z-20 flex items-start justify-center pt-10 bg-white/60 pointer-events-none">
@@ -221,7 +196,7 @@
                             'w-full block p-2 border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50 select-none',
                             openMenuId === reg.id ? 'z-[50]' : 'z-0'
                         ]">
-                        
+
                         <!-- List Item Display (Header when collapsed) -->
                         <div v-if="expandedId !== reg.id" class="mt-0 flex items-center">
                             <!-- Number column -->
@@ -266,7 +241,6 @@
                             </div>
                         </div>
 
-
                         <!-- Full-page Expanded Overlay -->
                         <teleport to="body">
                         <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
@@ -280,8 +254,12 @@
                                     <!-- Global Main Title + Master Name (same row) -->
                                         <div class="flex-1 px-[15px] py-[8px] flex items-end justify-between pr-12">
                                             <div class="flex items-baseline flex-wrap gap-x-2">
-                                                <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
-                                                <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 28px !important;">{{ currentFolder?.name }}</span>
+                                                <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
+                    </div>
+                                                </div>
+                                                <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
                                             </div>
                                             <!-- Three dots menu in expanded view (Moved to title row) -->
                                             <div class="relative z-[20]">
@@ -298,15 +276,14 @@
                                                     <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                                     <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                                     <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
-                                                </div>
                                             </div>
                                         </div>
-                                    
+
                                     <!-- Close Button moved to top right absolute -->
                                     <button @click="toggleExpand(reg.id)" class="absolute right-3 top-3 z-[100] w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
-                                    
+
                                 </div>
                                 <!-- Scrollable Content -->
                                 <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
@@ -571,7 +548,7 @@
         :title="activePicker.title"
         @close="activePicker = null"
     />
-    </div> <!-- End Root Module Div -->
+    </div>
 </template>
 
 <script setup>
@@ -586,7 +563,6 @@ import CompactDatePicker from './CompactDatePicker.vue';
 import PaginationButtons from './PaginationButtons.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
-
 const resetToRoot = () => {
     currentCategory.value = null;
     currentFolder.value = null;
@@ -600,8 +576,6 @@ const resetToRoot = () => {
         scrollContainer.value.scrollTop = 0;
     }
 };
-
-
 
 const translateRel = (rel) => {
     if (!rel) return '';
@@ -753,7 +727,7 @@ const loadData = async (page = 1) => {
             axios.get('/api/masters-list'),
             axios.get('/api/dharma-names-list')
         ]);
-        
+
         allRegistries.value = res.data.registries.data || [];
         paginationMeta.value = {
             current_page: res.data.registries.current_page,
@@ -1007,19 +981,19 @@ const handleReorder = async (reg, newOrderStr) => {
     const currentList = [...allRegistries.value];
     const oldIndex = currentList.findIndex(item => item.id === reg.id);
     const newIndex = newOrder - 1;
-    
+
     if (isNaN(newOrder) || oldIndex === -1 || newIndex < 0 || newIndex >= currentList.length) {
         persistentToast.value = { msg: '無效的項次', type: 'error' };
         return;
     }
-    
+
     const [movedItem] = currentList.splice(oldIndex, 1);
     currentList.splice(newIndex, 0, movedItem);
     const updates = currentList.map((item, idx) => ({
         id: item.id,
         sort_order: idx + 1
     }));
-    
+
     try {
         await axios.post('/imperial-graces/registry/reorder', { orders: updates });
         reorderMode.value = false;
@@ -1123,7 +1097,7 @@ const saveSingle = async (resolutionOrData = null) => {
         persistentToast.value = { msg: '請輸入求得日期', type: 'error' };
         return;
     }
-    
+
     isSaving.value = true;
     persistentToast.value = null;
 
@@ -1140,7 +1114,7 @@ const saveSingle = async (resolutionOrData = null) => {
             res = await axios.post('/imperial-graces/registry', { ...form.value, master_id: finalMid });
             persistentToast.value = { msg: '新增成功', type: 'success' };
         }
-        
+
         if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
             if (matchedFolder) {
@@ -1151,7 +1125,7 @@ const saveSingle = async (resolutionOrData = null) => {
             currentCategory.value = 'unobtained';
             currentFolder.value = { id: 'unobtained', name: '未求得' };
         }
-        
+
         if (resolution === 'shunt' || isFromUnobtained) {
             persistentToast.value = { 
                 msg: `已改成【${form.value.status}】並回存至【${targetMasterName}】資料夾內`, 
@@ -1159,7 +1133,7 @@ const saveSingle = async (resolutionOrData = null) => {
                 duration: 1500 
             };
         }
-        
+
         addMode.value = null;
         await loadData(currentPage.value);
     } catch (e) {
@@ -1295,7 +1269,7 @@ onMounted(() => {
 
 const filteredRegistries = computed(() => {
     if (!currentFolder.value) return [];
-    
+
     let filtered = [];
     if (currentFolder.value.id === 'unobtained') {
         filtered = allRegistries.value.filter(r => !r.master_id || r.status === '未求得');
@@ -1303,10 +1277,9 @@ const filteredRegistries = computed(() => {
         filtered = allRegistries.value.filter(r => String(r.master_id) === String(currentFolder.value.id));
     }
 
-
     // 狀態排序：未求得 → 已求得 → 已登記
     const statusOrder = { '未求得': 1, '已求得': 2, '已登記': 3 };
-    
+
     filtered.sort((a, b) => {
         // Priority 1: Status (always first to group by lifecycle)
         const orderA = statusOrder[a.status] || 99;
@@ -1333,7 +1306,7 @@ const filteredRegistries = computed(() => {
         if ((a.sort_order || 9999) !== (b.sort_order || 9999)) {
             return (a.sort_order || 9999) - (b.sort_order || 9999);
         }
-        
+
         // Priority 5: ID Fallback
         return sortDesc.value ? ((b.id || 0) - (a.id || 0)) : ((a.id || 0) - (b.id || 0));
     });
@@ -1347,7 +1320,7 @@ const filteredRegistries = computed(() => {
                    (r.remarks || '').toLowerCase().includes(query) ||
                    mName.includes(query);
         });
-        
+
         // Matches always move to top regardless of global sort
         filtered.sort((a, b) => {
             const am = a.name.toLowerCase().includes(query) ? 1 : 0;

@@ -21,7 +21,7 @@
                         <div class="w-1.5 h-6 bg-indigo-500 rounded-full"></div>
                         <h3 class="text-lg font-black text-slate-900">基本資料 (鎖定)</h3>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 gap-4">
                         <div class="p-5 bg-slate-50/50 rounded-3xl border border-slate-50 flex items-center space-x-4">
                             <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm shrink-0">
@@ -63,7 +63,7 @@
                             <input v-model="passForm.new_password" type="password" placeholder="請輸入新密碼 (至少 8 碼)"
                                 class="w-full px-5 py-4 bg-white border border-slate-100 rounded-2xl text-[15px] focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder-slate-300">
                         </div>
-                        
+
                         <button @click="updatePassword" :disabled="loading" 
                             class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl shadow-slate-100 hover:bg-slate-800 active:scale-95 transition-all flex justify-center items-center">
                             <span v-if="loading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

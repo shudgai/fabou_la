@@ -3,10 +3,10 @@
     <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
-        
+
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
-            
+
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -35,7 +35,7 @@
 
             <!-- Scrollable Content -->
             <div class="flex-1 min-h-0 overflow-y-auto px-[10px] py-[20px] space-y-[20px] custom-scrollbar bg-white">
-                
+
                 <!-- Date & Master Selection (Grid Layout as per Screenshot) -->
                 <div class="grid gap-4" :class="localMode === 'single' ? 'grid-cols-2' : 'grid-cols-1'">
                     <div v-if="localMode === 'single'" class="space-y-1.5">
@@ -140,7 +140,7 @@
                                 </button>
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 transition-colors p-1">✕</button>
                             </div>
-                            
+
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號/群組</label>
@@ -226,7 +226,7 @@
                     <textarea v-model="batchInput" rows="10" 
                         class="w-full rounded-2xl border border-slate-300 text-[15px] font-normal text-slate-900 bg-white focus:ring-2 focus:ring-indigo-100 p-4" 
                         placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
-                    
+
                     <!-- Batch Preview Section -->
                     <div v-if="parsedItemsCount > 0" class="border border-indigo-100 rounded-[24px] overflow-hidden bg-white animate-fade-in">
                         <div class="bg-indigo-50/50 px-4 py-3 border-b border-indigo-100 flex justify-between items-center">
@@ -267,7 +267,6 @@
                             </table>
                         </div>
                     </div>
-
 
                 </div>
                 <!-- Dharma Names & Palaces Auto-complete List -->
@@ -347,12 +346,11 @@ const treasureNames = computed(() => {
     return treasureNamesText.value.split(/[\n\r]+|[\s\t]{2,}/).filter(n => n.trim());
 });
 
-
 const cleanedTreasureNames = computed(() => treasureNames.value);
 
 const batchParsedRows = computed(() => {
     if (!batchInput.value.trim()) return [];
-    
+
     const lines = batchInput.value.split('\n');
     const results = [];
     let currentMasterId = form.value.master_id;
@@ -433,7 +431,7 @@ const batchParsedRows = computed(() => {
         // 3. Detect Attribute Keywords
         const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
         const firstWord = normLine.split(/[\s：:]/)[0];
-        
+
         if (attrKeywords.includes(firstWord) && results.length > 0) {
             const prev = results[results.length - 1];
             const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
@@ -473,7 +471,7 @@ const batchParsedRows = computed(() => {
             rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
             const name = rawName;
             const val = kwMatch[4].trim();
-            
+
             const item = { 
                 name, 
                 remarks: val, 
@@ -484,7 +482,7 @@ const batchParsedRows = computed(() => {
                 obtained_date: currentDateInText || form.value.record_date || '',
                 status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
             };
-            
+
             if (val.includes('已登記')) {
                 item.status = '已登記';
                 item.obtained_date = currentDate;
@@ -593,12 +591,12 @@ watch(() => props.mode, (newVal) => {
 // Intelligent Date Auto-conversion and Auto-newline for Batch Mode
 watch(batchInput, (newVal, oldVal) => {
     if (newVal.length <= oldVal.length) return;
-    
+
     // Pattern: 2-3 digit ROC year followed by date separators
     // Removed $ anchor to handle text following date
     const rocRegex = /(\b\d{2,3})([/.-])(\d{1,2})\2(\d{1,2})(?!\d)/;
     const ceRegex = /(\b\d{4})([/.-])(\d{1,2})\2(\d{1,2})(?!\d)/;
-    
+
     let match = newVal.match(rocRegex);
     if (match) {
         const fullMatch = match[0];
@@ -658,30 +656,30 @@ const getMasterName = (id) => {
 
 const handlePersonnelNameInput = (idx, event) => {
     let val = event.target.value;
-    
+
     // Rule: "Name之Relative" split
     const relSplitMatch = val.match(/^(.*?)[之的](.+)$/);
     if (relSplitMatch) {
         const namePart = relSplitMatch[1].trim();
         let relPart = relSplitMatch[2].trim();
-        
+
         // Keep the '之' or '的' as part of the relationship
         const connector = val.includes('之') ? '之' : '的';
-        
+
         personnel.value[idx].custom_name = namePart;
         personnel.value[idx].relationship = connector + relPart;
         return;
     }
 
     const splitters = /[，、, \s]+/;
-    
+
     // Check for multi-name input (e.g., "A B C" or "A,B,C")
     if (splitters.test(val)) {
         const names = val.split(splitters).filter(n => n.trim());
         if (names.length > 1) {
             // Keep the first name in current row, move others to new rows
             personnel.value[idx].custom_name = names[0];
-            
+
             // Insert new rows after current index
             const newRows = names.slice(1).map(n => ({
                 custom_name: n,
@@ -689,9 +687,9 @@ const handlePersonnelNameInput = (idx, event) => {
                 obtained_date: personnel.value[idx].obtained_date,
                 remarks: ''
             }));
-            
+
             personnel.value.splice(idx + 1, 0, ...newRows);
-            
+
             // Move focus to the end of the newly added rows
             nextTick(() => {
                 const inputs = document.querySelectorAll('.personnel-name-input');
@@ -705,10 +703,10 @@ const handlePersonnelNameInput = (idx, event) => {
 const handlePersonnelDateInput = (idx, event) => {
     let val = event.target.value.trim();
     if (!val) return;
-    
+
     const rocRegex = /^(\d{2,3})([/.-])(\d{1,2})\2(\d{1,2})$/;
     const ceRegex = /^(\d{4})([/.-])(\d{1,2})\2(\d{1,2})$/;
-    
+
     let isComplete = false;
     let match = val.match(rocRegex);
     if (match) {
@@ -727,7 +725,7 @@ const handlePersonnelDateInput = (idx, event) => {
             isComplete = true;
         }
     }
-    
+
     if (isComplete) {
         // Move focus to next line (next person's name field)
         if (idx === personnel.value.length - 1) {
@@ -739,7 +737,6 @@ const handlePersonnelDateInput = (idx, event) => {
         });
     }
 };
-
 
 const handleFileImport = (event) => {
     const file = event.target.files[0];
@@ -763,7 +760,7 @@ const processExcelFile = (file) => {
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        
+
         let newText = "";
         jsonData.forEach(row => {
             if (row.length === 0) return;
@@ -778,7 +775,7 @@ const processExcelFile = (file) => {
 
 const validateSingle = () => {
     if (!form.value.master_id) return '請選擇仙師';
-    
+
     // Auto-fill main record_date if empty but first personnel has a date
     if (!form.value.record_date && personnel.value.length > 0 && personnel.value[0].obtained_date) {
         form.value.record_date = personnel.value[0].obtained_date;
@@ -790,7 +787,7 @@ const validateSingle = () => {
 
     if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入法寶名稱';
     if (!form.value.record_date) return '請輸入頂部的「得知日期」';
-    
+
     return null;
 };
 
@@ -801,17 +798,16 @@ const handleSubmit = async () => {
             alert(error);
             return;
         }
-        
+
         // Clean up personnel: remove empty rows
         let cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
-
 
         // If multiple names entered in textarea, handle them
         if (cleanedTreasureNames.value.length > 0) {
             cleanedTreasureNames.value.forEach(tn => {
                 let finalName = tn.trim();
                 let finalMethod = form.value.acquisition_method;
-                
+
                 const methodMatch = finalName.match(/(.*)\s*(求寶|求寶方式)[：:](.*)/);
                 if (methodMatch) {
                     finalName = methodMatch[1].trim();

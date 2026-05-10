@@ -5,43 +5,46 @@
         <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 4px; min-height: 52px;">
-            <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <div class="app-title !text-[32px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
+            <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                <div class="app-title !text-[30px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
             </div>
         </div>
 
-        <!-- Header 2: Action/Folder Level (Shown when in a folder or add mode) -->
         <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
         <div v-if="currentFolder && !addMode" 
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
-            <!-- Top Row: Main Title (Clickable) + Actions (X button removed) -->
-            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white">
-                <div class="app-title !text-[32px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
-                    @click="resetToRoot"
-                    style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
-                    法寶登記專區
+            <!-- Row 1: Global Title (Now visible on mobile to replace redundant Header 1) -->
+            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white" @click="resetToRoot">
+                <div class="flex items-center gap-2">
+                    <logo-imperial-notebook :height="36" />
+                    <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
+                        style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
+                        法寶登記專區
+                    </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <button v-if="!reorderMode" @click="toggleSort" class="text-slate-600 font-black active:scale-95 px-0.5" style="font-size: 14px !important;">
+            </div>
+
+            <!-- Row 2: Category Name + Master Name + Actions (Consolidated 2-row Header) -->
+            <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px] overflow-hidden">
+                <div class="flex items-baseline gap-x-2 overflow-hidden">
+                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                        {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                    </span>
+                    <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
+                </div>
+                <div class="flex items-center space-x-2 shrink-0 ml-4">
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-3 py-1 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 14px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
                     <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                            class="font-black transition-all active:scale-95 whitespace-nowrap px-0.5"
-                            :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'"
+                            class="font-black transition-all active:scale-95 whitespace-nowrap px-3 py-1 rounded-xl shadow-sm"
+                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500' : 'bg-slate-50 text-slate-400 border border-transparent'"
                             style="font-size: 14px !important;">
                         {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
-            </div>
-
-            <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
-            <div class="px-4 bg-white border-b border-white flex items-baseline gap-x-2 py-[5px] overflow-hidden">
-                <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
-                </span>
-                <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
             </div>
         </div>
 
@@ -51,20 +54,20 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-white relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <h1 v-if="!currentCategory" class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[32px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
-                                法寶登記專區
-                            </h1>
-                            <h1 v-else class="leading-tight font-outfit tracking-widest break-words !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 400 !important;">
-                                {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
-                                <br>
-                                <span v-if="currentFolder" class="text-[28px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 28px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
-                            </h1>
+                            <div class="flex items-center gap-2">
+                                <logo-imperial-notebook :height="36" />
+                                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
+                                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                                    <br>
+                                    <span v-if="currentFolder" class="text-[26px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 26px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
+                                </h1>
+                            </div>
                         </div>
                 </div>
 
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
-                    
+
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-[300px] h-[320px]">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  class="w-[300px] h-[300px] object-contain transition-transform group-hover:scale-105" 
@@ -84,16 +87,16 @@
                     <button v-for="folder in folders" :key="folder.id" 
                              @click="currentFolder = folder"
                               class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[189px] h-[189px] relative bg-white hover:bg-white active:bg-white">
-                        
+
                         <div class="relative w-[177px] h-[177px]">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
                                  alt="Book Icon">
-                            
+
                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-8 pb-2 px-1 pointer-events-none">
                                 <div class="font-black tracking-tighter leading-none text-center -mt-2 mb-2" style="font-size: 12.6px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
                                 <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-0.5" style="font-size: 11px !important;">重大皇恩登記簿</div>
-                                
+
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-4"
                                      :style="{ fontSize: '17.25px !important', fontWeight: '900 !important', color: folder.name === '閻王仙師' ? '#000000' : '#dc2626' }">
                                      {{ folder.name }}
@@ -125,17 +128,20 @@
                 <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Main Title + All Action Buttons -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
-                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 32px !important;">法寶登記專區</h1>
+                        <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">法寶登記專區</h1>
+                    </div>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
-                            <button v-if="!reorderMode" @click="toggleSort" class="px-1 py-0.5 text-slate-600 hover:text-indigo-600 font-black transition-all active:scale-95" style="font-size: 14px !important;">
+                            <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
                                 {{ sortDesc ? '新→舊' : '舊→新' }}
                             </button>
                             <!-- Reorder Button -->
                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                    :class="reorderMode ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'"
-                                    class="px-1 py-0.5 font-black transition-all active:scale-95 whitespace-nowrap"
-                                    style="font-size: 14px !important;">
+                                    :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-400 border border-transparent'"
+                                    class="px-3 py-1.5 rounded-xl font-black transition-all active:scale-95 whitespace-nowrap shadow-sm"
+                                    style="font-size: 16px !important;">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
                             <!-- Back/Close Button -->
@@ -186,7 +192,7 @@
                                  focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent shadow-none !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:shadow-2xl md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
-                            
+
                             <!-- Sequence Number / Reorder Input -->
                             <div class="mr-4 shrink-0 flex items-center justify-center pt-1 md:pt-2">
                                 <div v-if="!reorderMode" class="w-8 h-8 md:w-12 md:h-12 bg-slate-50 md:bg-slate-100/60 rounded-xl flex items-center justify-center text-[14px] md:text-[18px] font-black text-slate-400 md:text-slate-500 transition-all">
@@ -211,7 +217,7 @@
                                         <circle cx="19" cy="12" r="2" />
                                     </svg>
                                 </button>
-                                
+
                                 <div v-if="openMenuId === item.id" 
                                      class="absolute right-0 mt-2 w-24 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
@@ -254,10 +260,6 @@
                                     </div>
                                 </div>
                             </div>
-                                
-
-                             
-
 
                                     <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative">
                                         <!-- Detailed Record View -->
@@ -273,7 +275,7 @@
                                                     <div class="app-body font-bold" :class="getMasterName(item.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ getMasterName(item.master_id) }}</div>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Row 2: Name -->
                                             <div class="space-y-1 md:hidden">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
@@ -496,7 +498,7 @@
                 </div>
             </div>
         </teleport>
-        
+
         <!-- Delete Confirmation Overlay -->
         <teleport to="body">
             <div v-if="deleteConfirmId" class="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
@@ -593,7 +595,6 @@ import { writeClipboard, lockBodyScroll, unlockBodyScroll } from '../utils/iosCo
 const isDesktop = ref(window.innerWidth >= 768);
 const handleResize = () => { isDesktop.value = window.innerWidth >= 768; };
 
-
 onMounted(() => {
     window.addEventListener('resize', handleResize);
     loadData();
@@ -677,7 +678,7 @@ const copyAsTextFile = (item) => {
 
 const formatRegistryForFile = (item) => {
     let registries = [...(item.dharma_name_registries || [])];
-    
+
     registries.sort((a, b) => {
         const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
         const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
@@ -860,7 +861,6 @@ watch(allTreasures, (newVal) => {
     });
 }, { immediate: true, deep: false });
 
-
 watch(dharmaNames, (newDns) => {
     allTreasures.value.forEach(item => {
         // Ensure metadata exists
@@ -914,7 +914,6 @@ const folders = computed(() => {
         name: m.name === '父皇仙師' ? '父皇' : m.name
     }));
 });
-
 
 const loadData = async (page = 1) => {
     loading.value = true;
@@ -973,7 +972,7 @@ const filteredTreasures = computed(() => {
 
 const dynamicHeaderTitle = computed(() => {
     if (!currentFolder.value) return '法寶登記專區';
-    
+
     const catName = currentCategory.value === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿';
     return `${catName}-${currentFolder.value.name}`;
 });
@@ -989,7 +988,6 @@ const getDharmaNameText = (dnr) => {
 
 const getSortedRegistries = (item) => {
     let registries = [...(item.dharma_name_registries || [])];
-    
 
     return registries.sort((a, b) => {
         const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
@@ -1004,7 +1002,6 @@ const getFilteredDharmaNames = computed(() => {
     if (!q) return dharmaNames.value;
     return dharmaNames.value.filter(dn => dn.name?.toLowerCase().includes(q));
 });
-
 
 const getFilteredSortedRegistries = (item) => {
     let list = getSortedRegistries(item);
@@ -1058,10 +1055,10 @@ const addPersonRowFromSelect = (itemId, event) => {
 const removePersonFromEdit = (itemId, dnId) => {
     const item = allTreasures.value.find(t => t.id === itemId);
     if (!item) return;
-    
+
     // Remove from editMap
     delete editMap.value[`${itemId}-${dnId}`];
-    
+
     // Remove from local list so it disappears visually
     item.dharma_name_registries = item.dharma_name_registries.filter(r => r.dharma_name_id !== dnId);
 };
@@ -1336,7 +1333,7 @@ const triggerBatchSave = async (batchData) => {
                     currentContextYear = y;
                     continue; // Skip the rest, it's just setting the context year
                 }
-                
+
                 const lineDateParsed = parseDateStr(line, currentContextYear);
                 const isPureDateStr = line.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
                 if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && isPureDateStr) {
@@ -1350,7 +1347,7 @@ const triggerBatchSave = async (batchData) => {
                     activeRecord = null;
                     continue;
                 }
-                
+
                 let treasureName = '';
                 let recipients = [];
                 let lineDate = blockDate;
@@ -1363,7 +1360,7 @@ const triggerBatchSave = async (batchData) => {
                 if (attrKeywords.includes(firstWord)) {
                     const val = line.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
                     const target = activeRecord || pendingAttrs;
-                    
+
                     if (firstWord === '用意') target.purpose = (target.purpose ? target.purpose + '；' : '') + val;
                     else if (firstWord === '狀態') {
                         if (val.includes('已登記')) {
@@ -1388,7 +1385,7 @@ const triggerBatchSave = async (batchData) => {
                     const parsed = parseDateStr(lineStartDateMatch[1], currentContextYear);
                     if (parsed) lineDate = parsed;
                     else lineDate = lineStartDateMatch[1].replace(/\//g, '-');
-                    
+
                     if (!blockDate || blockDate === getTodayStr()) {
                         blockDate = lineDate;
                     }
@@ -1401,7 +1398,7 @@ const triggerBatchSave = async (batchData) => {
                     // Strip common prefixes from name if they were accidentally caught
                     rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
                     treasureName = rawName;
-                    
+
                     const content = kwMatch[4].trim();
                     if (content) {
                         recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
@@ -1501,7 +1498,7 @@ const triggerBatchSave = async (batchData) => {
                                 if (r === '之夫' || r === '夫') return '先生';
                                 return r.replace(/^[之的]/, '');
                             };
-                            
+
                             const nameOnly = relMatch[1].trim();
                             const relPart = translateRel(relMatch[2]);
                             // 格式：日期  法號關係詞
@@ -1509,7 +1506,7 @@ const triggerBatchSave = async (batchData) => {
                             if (extraRemarkFromParen) relEntry += ` (${extraRemarkFromParen})`;
                             return { custom_name: nameOnly, remarks: relEntry, obtained_date: null };
                         }
-                        
+
                         let finalRemarks = lineRemarks;
                         if (extraRemarkFromParen) {
                             finalRemarks = (finalRemarks ? finalRemarks + '\n' : '') + extraRemarkFromParen;
@@ -1535,7 +1532,7 @@ const triggerBatchSave = async (batchData) => {
                     if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
                     if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
                     if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
-                    
+
                     // Reset pending
                     pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
 
@@ -1564,7 +1561,7 @@ const triggerBatchSave = async (batchData) => {
                 if (rec.remarks && !existing.remarks.includes(rec.remarks)) {
                     existing.remarks = existing.remarks ? (existing.remarks + '\n' + rec.remarks) : rec.remarks;
                 }
-                
+
                 rec.dharma_name_registries.forEach(nr => {
                     const existingDnr = existing.dharma_name_registries.find(er => (er.custom_name === nr.custom_name && er.obtained_date === nr.obtained_date));
                     if (existingDnr) {
@@ -1609,7 +1606,7 @@ const triggerBatchSave = async (batchData) => {
 const openAndEdit = (id) => {
     const nextEditing = new Set(editingIds.value);
     const nextExpanded = new Set(expandedIds.value);
-    
+
     if (nextEditing.has(id)) {
         nextEditing.delete(id);
     } else {
@@ -1619,7 +1616,7 @@ const openAndEdit = (id) => {
             nextExpanded.add(id);
         }
     }
-    
+
     editingIds.value = nextEditing;
     expandedIds.value = nextExpanded;
     openMenuId.value = null;
@@ -1639,7 +1636,7 @@ const triggerRemarksEdit = (item, personIdentifier) => {
             // It's a dnId
             key = `${item.id}-${personIdentifier}`;
         }
-        
+
         currentRemarksKey.value = key;
         currentDnrId.value = null; // We save via the main form's save, but let's see
         activeRemarks.value = editMap.value[key]?.remarks || '';
@@ -1648,7 +1645,7 @@ const triggerRemarksEdit = (item, personIdentifier) => {
         const dnr = typeof personIdentifier === 'object' 
             ? personIdentifier 
             : item.dharma_name_registries?.find(r => r.dharma_name_id === personIdentifier);
-        
+
         if (dnr) {
             openRemarks(dnr);
         } else {
@@ -1697,13 +1694,13 @@ const deleteItem = async (id) => {
         await axios.delete(`/registries/${id}`);
         persistentToast.value = { msg: '✓ 已成功刪除資料', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
-        
+
         // Reset states
         deleteConfirmId.value = null;
         focusedId.value = null;
         expandedIds.value = new Set();
         openMenuId.value = null;
-        
+
         await loadData();
     } catch (e) {
         console.error(e);
@@ -1721,8 +1718,6 @@ const executeDelete = () => {
 
 const toggleMenu = (id) => openMenuId.value = openMenuId.value === id ? null : id;
 const toggleSort = () => sortDesc.value = !sortDesc.value;
-
-
 
 const handleReorder = async (item, newOrder) => {
     const targetOrder = parseInt(newOrder);
@@ -1792,7 +1787,7 @@ const copyToLine = (item) => {
             const name = dn?.name || r.custom_name || '未知人員';
             return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
         }).join('\n');
-    
+
     const finalRecordsText = dnrText || '尚無紀錄';
     const text = `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${finalRecordsText}`;
     writeClipboard(text).then(success => {
@@ -1810,7 +1805,7 @@ const downloadItemData = (item) => {
         const r = item.dharma_name_registries?.find(reg => reg.dharma_name_id === dn.id);
         return [dn.name, formatToROC(r?.obtained_date) || '', r?.remarks || ''].join(',');
     });
-    
+
     // Add UTF-8 BOM to prevent garbled text (亂碼) in Excel
     const csvContent = "\ufeff" + [headers.join(','), ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1830,7 +1825,7 @@ const copyAllToLine = () => {
         persistentToast.value = { msg: '✖ 尚無資料可複製', type: 'error' };
         return;
     }
-    
+
     const text = items.map(item => {
         const dnrText = item.dharma_name_registries?.filter(r => r.obtained_date).map(r => {
             const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
@@ -1839,7 +1834,7 @@ const copyAllToLine = () => {
         }).join('\n') || '尚無紀錄';
         return `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${dnrText}`;
     }).join('\n\n------------------\n\n');
-    
+
     navigator.clipboard.writeText(text);
     persistentToast.value = { msg: '✓ 已複製全部資料至 LINE', type: 'success' };
     setTimeout(() => persistentToast.value = null, 2000);
@@ -1851,17 +1846,17 @@ const downloadAllData = () => {
         persistentToast.value = { msg: '✖ 尚無資料可下載', type: 'error' };
         return;
     }
-    
+
     const contents = items.map(item => {
         const dnrText = item.dharma_name_registries?.filter(r => r.obtained_date).map(r => {
             const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
             const name = dn?.name || r.custom_name || '未知人員';
             return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
         }).join('\r\n') || '尚無紀錄';
-        
+
         return `【${item.name}】\r\n用意：${item.purpose || '-'}\r\n登記狀況：\r\n${dnrText}`;
     }).join('\r\n\r\n--------------------------------\r\n\r\n');
-    
+
     const finalContent = `【法寶登記專區 - ${currentFolder.value.name} 完整清單】\r\n\r\n${contents}`;
     const blob = new Blob(["\ufeff" + finalContent], { type: 'text/plain;charset=utf-8;' });
     const link = document.createElement("a");
@@ -1877,18 +1872,18 @@ const saveItemInPlace = async (item) => {
     isSaving.value = true;
     try {
         const registries = [];
-        
+
         // Handle all existing and potential registries
         // We use the item.dharma_name_registries as the source of truth for what exists
         // and editMap for the updates.
-        
+
         // 1. Process standard dharma names (from master list)
         dharmaNames.value.forEach(dn => {
             const key = `${item.id}-${dn.id}`;
             const data = editMap.value[key];
             // If we have edit data OR there was already a record for this person
             const wasExisting = item.dharma_name_registries?.some(r => r.dharma_name_id === dn.id);
-            
+
             if (data && (data.obtained_date || data.remarks || data.relationship || wasExisting)) {
                 registries.push({
                     dharma_name_id: dn.id,
@@ -1898,7 +1893,7 @@ const saveItemInPlace = async (item) => {
                 });
             }
         });
-        
+
         // 2. Process custom names (things added via text but not in system list)
         (item.dharma_name_registries || []).forEach(r => {
             if (!r.dharma_name_id && r.custom_name) {
@@ -1911,7 +1906,7 @@ const saveItemInPlace = async (item) => {
                 });
             }
         });
-        
+
         const metadata = editMap.value[item.id] || {};
         await axios.post(`/registries/${item.id}`, { 
             ...item, 
@@ -1920,7 +1915,7 @@ const saveItemInPlace = async (item) => {
             dharma_name_registries: registries,
             _method: 'PATCH' 
         });
-        
+
         const nextEditing = new Set(editingIds.value);
         nextEditing.delete(item.id);
         editingIds.value = nextEditing;

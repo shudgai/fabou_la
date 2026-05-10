@@ -20,7 +20,7 @@
                 </div>
                 <h3 class="text-[19px] font-bold text-slate-800">{{ item.name }}</h3>
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{{ item.category }}</span>
-                
+
                 <div class="mt-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     <button @click="openEdit(item)" class="text-xs font-bold text-indigo-600 underline">編輯</button>
                     <button @click="confirmDelete(item)" class="text-xs font-bold text-rose-500 underline">刪除</button>

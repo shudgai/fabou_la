@@ -4,15 +4,15 @@
         <div class="w-full md:w-64 bg-white border-r border-white flex-shrink-0 flex flex-col z-[50] h-auto md:h-full">
             <!-- Logo area -->
             <div class="p-4 md:p-6 border-b border-white flex items-center justify-between bg-white">
-                <div>
-                    <logo-imperial-notebook v-if="isNotebookView" :height="44" />
-                    <h1 v-else class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
+                <div class="flex items-center gap-3">
+                    <logo-imperial-notebook :height="44" />
+                    <h1 v-if="!isNotebookView" class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="/note" class="p-2 text-slate-300 hover:text-indigo-600 active:scale-95 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
-                    
+
                     <!-- Font size button removed per user request -->
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">系統管理</span>
                 </div>
                 <div v-if="notebookItems.length > 0 && adminItems.length > 0" class="md:h-px md:bg-white md:mx-4 md:my-2 md:hidden h-4 w-px bg-slate-200 mx-2"></div>
-                
+
                 <button v-for="item in adminItems" :key="item.id" 
                     @click="selectTab(item.id)"
                     :class="[
@@ -145,7 +145,7 @@ const user = ref(null);
 
 const notebookItems = computed(() => {
     if (!window.location.pathname.includes('/note')) return [];
-    
+
     const items = [
         { id: 'grace', label: '重大皇恩專區' },
         { id: 'teaching', label: '父皇仙師開示專區' },
@@ -172,7 +172,7 @@ const notebookItems = computed(() => {
 
 const adminItems = computed(() => {
     if (!window.location.pathname.includes('/admin')) return [];
-    
+
     const items = [
         { id: 'dharma', label: '法號與人員' },
         { id: 'user', label: '帳號與權限' },

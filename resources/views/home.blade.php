@@ -11,34 +11,56 @@
     <div class="max-w-md mx-auto px-6 min-h-[70vh] flex flex-col justify-center relative z-10">
         <!-- Main Entry Button (Premium Style) -->
         <div class="animate-fade-in-down">
-            <a href="{{ route('note.index') }}" class="w-full relative group block flex justify-center">
-                <div class="relative w-[330px] h-[330px] active:scale-95 transition-all duration-200">
-                    <img src="/image/registry_book_yellow_v2.png" 
-                         class="w-full h-full object-contain mix-blend-multiply" 
-                         alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 pb-2">
-                        <div class="mb-2">
-                            <svg class="w-14 h-14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="50" fill="white"/>
-                                <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                                <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                                <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                                <circle cx="50" cy="75" r="8" fill="white"/>
-                                <circle cx="50" cy="25" r="8" fill="black"/>
-                            </svg>
-                        </div>
-                        <div class="font-black text-center tracking-tighter leading-none -mt-8 mb-4"
-                             style="font-size: 28.8px !important; font-weight: 900 !important; color: rgb(139, 0, 0) !important;">
-                             法寶登記專區
-                        </div>
-                        <div class="text-[#dc2626] font-black text-center tracking-tight leading-tight px-6"
-                             style="font-size: 25.5px !important; font-weight: 900 !important;">
-                             重大皇恩<br>登記簿
-                        </div>
-                        <div class="mt-2 flex items-center">
-                            <span class="text-black font-normal tracking-tight" style="font-size: 18px !important;">共 {{ \App\Models\Registry::count() }} 筆</span>
-                        </div>
+            <a href="{{ route('note.index') }}" class="w-full relative group block flex justify-center cursor-pointer">
+                <div class="relative w-full active:scale-95 transition-all duration-200 flex flex-col items-center justify-center mx-auto py-12">
+                    <div class="text-slate-400 font-bold tracking-[0.5em] mb-4 text-[15px] pl-2 flex items-center justify-center">
+                        請進入
+                        <svg class="w-4 h-4 ml-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="relative z-10 flex items-center justify-center px-4 transition-transform duration-300 hover:scale-105">
+                        <svg class="w-64 h-64 drop-shadow-xl" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Golden decorative rings -->
+                            <circle cx="120" cy="120" r="114" fill="white" stroke="#eab308" stroke-width="4"/>
+                            <circle cx="120" cy="120" r="108" fill="white" stroke="#eab308" stroke-width="1.5"/>
+                            <circle cx="120" cy="120" r="58" fill="white" stroke="#eab308" stroke-width="1.5"/>
+                            
+                            <!-- Central Taiji -->
+                            <g transform="translate(70, 70)">
+                                <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
+                                <path d="M50 1C22.936 1 1 22.936 1 50C1 77.064 22.936 99 50 99C50 74.5 50 74.5 50 50C50 25.5 50 25.5 50 1Z" fill="white"/>
+                                <path d="M50 1C77.064 1 99 22.936 99 50C99 77.064 77.064 99 50 99V50V1Z" fill="black"/>
+                                <path d="M50 99C36.469 99 25.5 88.031 25.5 74.5C25.5 60.969 36.469 50 50 50V99Z" fill="black"/>
+                                <path d="M50 50C63.531 50 74.5 39.031 74.5 25.5C74.5 11.969 63.531 1 50 1V50Z" fill="white"/>
+                                <circle cx="50" cy="74.5" r="8" fill="white"/>
+                                <circle cx="50" cy="25.5" r="8" fill="black"/>
+                            </g>
+
+                            <!-- Circular Text wrapping around -->
+                            <defs>
+                                <path id="badgeArcMobile" d="M 71.9, 168.1 A 68,68 0 1,1 168.1, 168.1" />
+                            </defs>
+                            <text font-family="'BiauKai', 'DFKai-SB', 'PMingLiU', 'Noto Serif TC', serif" font-weight="900" font-size="38" fill="#dc2626">
+                                <textPath href="#badgeArcMobile" startOffset="50%" text-anchor="middle" letter-spacing="10">
+                                    皇恩筆記本
+                                </textPath>
+                            </text>
+                            
+                            <!-- Bottom decorative elements: 9 dots arranged up and down (zigzag) and spread out -->
+                            <!-- Inner dots (5) -->
+                            <circle cx="120" cy="188" r="3.5" fill="#dc2626" />
+                            <circle cx="120" cy="188" r="3.5" fill="#dc2626" transform="rotate(30, 120, 120)" />
+                            <circle cx="120" cy="188" r="3.5" fill="#dc2626" transform="rotate(-30, 120, 120)" />
+                            <circle cx="120" cy="188" r="3.5" fill="#dc2626" transform="rotate(60, 120, 120)" />
+                            <circle cx="120" cy="188" r="3.5" fill="#dc2626" transform="rotate(-60, 120, 120)" />
+                            
+                            <!-- Outer dots (4) -->
+                            <circle cx="120" cy="208" r="3.5" fill="#dc2626" transform="rotate(15, 120, 120)" />
+                            <circle cx="120" cy="208" r="3.5" fill="#dc2626" transform="rotate(-15, 120, 120)" />
+                            <circle cx="120" cy="208" r="3.5" fill="#dc2626" transform="rotate(45, 120, 120)" />
+                            <circle cx="120" cy="208" r="3.5" fill="#dc2626" transform="rotate(-45, 120, 120)" />
+                        </svg>
                     </div>
                 </div>
             </a>

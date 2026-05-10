@@ -2,7 +2,7 @@
     <div v-if="show" class="fixed inset-0 z-[4000] flex items-end justify-center px-4 pb-6">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px]" @click="$emit('close')"></div>
-        
+
         <!-- Menu -->
         <div class="relative w-auto min-w-[200px] max-w-[260px] bg-white rounded-[32px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-slate-100/50 overflow-hidden animate-menu-up p-1">
             <div class="flex flex-col space-y-0">
@@ -27,7 +27,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="mt-0.5 mb-1 px-1">
                 <button @click="$emit('close')" class="w-full py-2 font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-[0.2em] text-center text-[17px] active:scale-[0.98]">
                     取消

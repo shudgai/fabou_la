@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
-        
+
         <!-- Step 1: Selection Page -->
         <div v-if="step === 1" class="flex flex-col h-full overflow-hidden relative">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Confirm Action -->
             <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                 <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto py-4 flex flex-col custom-scrollbar w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
-                    
+
                     <!-- Instruction Text -->
                     <div class="px-2 pb-4 mb-2 flex flex-col space-y-1">
                         <div class="text-slate-700 tracking-wide font-black" style="font-size: 16px !important;">✓代表合格 ×代表不合格</div>
@@ -89,7 +89,7 @@
                                     <td class="pl-3 pr-1 py-1 w-20 whitespace-nowrap align-middle border-b border-slate-50">
                                         <span class="text-blue-600 leading-none tracking-widest font-black" style="font-size: 16px !important;">{{ item.name }}</span>
                                     </td>
-                                    
+
                                     <td class="relative py-2 border-b border-slate-50 min-h-[60px]">
                                         <!-- Fixed Icons at Top-Right of THIS row -->
                                         <div class="absolute top-1 right-0 flex items-center space-x-2 z-20 bg-white/80 backdrop-blur-sm px-1 rounded-bl-lg">
@@ -201,7 +201,7 @@ const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         users.value = res.data;
-        
+
         // Regular Selection: Start with an empty list
         selectionList.value = [];
         selectionFiltered.value = false;
@@ -285,7 +285,7 @@ const invertSelection = () => {
     const allNames = filteredUsers.value.map(u => u.name);
     const selectedNames = selectionList.value.map(item => item.name);
     const unselectedNames = allNames.filter(n => !selectedNames.includes(n));
-    
+
     // Completely replace selectionList with unselected
     selectionList.value = unselectedNames.map(name => ({
         name: name,
@@ -328,13 +328,13 @@ const copyToLine = () => {
 
     let text = `✓ 代表合格 × 代表不合格\n`;
     text += `開文結果請示如下：\n`;
-    
+
     selectionList.value.forEach(item => {
         const count = item.slotCount || 3;
         const symbols = item.slots.slice(0, count)
             .filter(s => s === 'v' || s === 'x')
             .map(s => s === 'v' ? '✓' : '×');
-        
+
         if (symbols.length === 0) return;
 
         let results = '';
@@ -347,7 +347,7 @@ const copyToLine = () => {
                 }
             }
         }
-        
+
         text += `${item.name}：${results}\n`;
     });
 

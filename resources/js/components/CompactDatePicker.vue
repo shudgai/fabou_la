@@ -102,7 +102,7 @@ const days = computed(() => {
 
     const res = [];
     const startOffset = firstDay.getDay();
-    
+
     // Previous month days (Hidden)
     for (let i = startOffset - 1; i >= 0; i--) {
         res.push({ day: '', isCurrent: false });
