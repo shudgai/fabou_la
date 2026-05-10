@@ -164,8 +164,11 @@
                                         <div class="relative">
                                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}</label>
                                             <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" 
-                                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all">
-                                            <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" class="absolute right-0 bottom-4 text-slate-200 hover:text-red-500 transition-colors">
+                                                :disabled="form.status === '未求得'"
+                                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all disabled:text-slate-300">
+                                            <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" 
+                                                :disabled="form.status === '未求得'"
+                                                class="absolute right-0 bottom-4 text-slate-200 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                         </div>
@@ -201,8 +204,12 @@
                                                 <div class="space-y-1">
                                                     <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">日期</label>
                                                     <div class="relative">
-                                                        <input v-model="p.obtained_date" type="text" class="w-full text-[16px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-2 outline-none">
-                                                        <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" class="absolute right-0 bottom-2 text-slate-200">
+                                                        <input v-model="p.obtained_date" type="text" 
+                                                            :disabled="p.status === '未求得'"
+                                                            class="w-full text-[16px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-2 outline-none disabled:text-slate-300">
+                                                        <button @click="activePicker = { field: 'obtained_date', idx: idx, title: '修改人員日期' }" 
+                                                            :disabled="p.status === '未求得'"
+                                                            class="absolute right-0 bottom-2 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                         </button>
                                                     </div>
@@ -243,12 +250,12 @@
                         </button>
                         <div v-else class="w-16 h-16"></div>
 
-                        <button v-if="currentStep < (personnel.length > 0 ? 6 : 6)" @click="currentStep++" 
+                        <button v-if="currentStep < (personnel.length > 0 ? 6 : 6)" @click="handleNext" 
                                 class="flex-1 h-12 bg-indigo-600 text-white rounded-2xl font-black text-[16px] active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
                             <span>下一步</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <button v-else @click="handleSubmit" :disabled="isSaving"
+                        <button v-else @click="validateStep(currentStep) && handleSubmit()" :disabled="isSaving"
                                 class="flex-1 h-12 bg-red-600 text-white rounded-2xl font-black text-[16px] active:scale-95 transition-all flex items-center justify-center gap-2" style="color: white !important;">
                             <span>{{ isSaving ? '處理中...' : '確認載錄' }}</span>
                         </button>
@@ -417,6 +424,63 @@ const stepTitles = [
 watch(localMode, () => {
     currentStep.value = 1;
 });
+
+// Status & Date Logic
+watch(() => form.value.status, (newStatus) => {
+    if (newStatus === '未求得') {
+        form.value.obtained_date = '';
+    }
+});
+
+watch(personnel, (newVal) => {
+    newVal.forEach(p => {
+        if (p.status === '未求得' && p.obtained_date) {
+            p.obtained_date = '';
+        }
+    });
+}, { deep: true });
+
+const validateStep = (step) => {
+    if (step === 5) {
+        if (personnel.value.length === 0) {
+            // Single Mode
+            if (form.value.status === '未求得' && form.value.obtained_date) {
+                alert('狀態為「未求得」時不可輸入日期');
+                form.value.obtained_date = '';
+                return false;
+            }
+            if ((form.value.status === '已求得' || form.value.status === '已登記') && !form.value.obtained_date) {
+                alert(`狀態為「${form.value.status}」時必須輸入日期`);
+                return false;
+            }
+        } else {
+            // Multi Mode
+            for (let i = 0; i < personnel.value.length; i++) {
+                const p = personnel.value[i];
+                if (!p.custom_name) {
+                    alert(`第 ${i+1} 位人員請輸入法號`);
+                    return false;
+                }
+                if (p.status === '未求得' && p.obtained_date) {
+                    alert(`人員「${p.custom_name}」狀態為「未求得」時不可輸入日期`);
+                    p.obtained_date = '';
+                    return false;
+                }
+                if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
+                    alert(`人員「${p.custom_name}」狀態為「${p.status}」時必須輸入日期`);
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+};
+
+const handleNext = () => {
+    if (validateStep(currentStep.value)) {
+        currentStep.value++;
+    }
+};
 
 const activePickerValue = computed({
     get: () => {
