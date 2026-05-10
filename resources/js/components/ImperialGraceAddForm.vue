@@ -76,29 +76,6 @@
                                 </div>
                             </div>
 
-                            <!-- Step 2: Item Name -->
-                            <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
-                                <div class="max-w-md mx-auto">
-                                    <textarea v-model="form.name" rows="2" 
-                                        @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" 
-                                        placeholder="例如：如意金剛杵..." 
-                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: Purpose -->
-                            <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
-                                <div class="max-w-md mx-auto">
-                                    <input v-model="form.purpose" placeholder="選填：例如 鎮宅避邪..." 
-                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                </div>
-                                <div class="flex justify-center pt-4">
-                                    <button @click="currentStep++" class="text-slate-300 font-bold hover:text-indigo-500 transition-colors">跳過此步驟</button>
-                                </div>
-                            </div>
-
                             <!-- STEP 2 (Single): NAME or (Batch): BATCH TYPE -->
                             <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center w-full">
                                 <template v-if="localMode === 'single'">
