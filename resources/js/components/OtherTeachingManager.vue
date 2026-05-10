@@ -52,9 +52,6 @@
                     <button @click="sortDesc = !sortDesc" class="px-3 py-1.5 text-[16px] text-indigo-600 active:scale-95 transition-all" style="font-size: 16px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
-                    <button v-if="focusedId" @click="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all ml-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
                 </div>
             </div>
 
@@ -74,15 +71,22 @@
             </div>
 
             <!-- Record List -->
-            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full', focusedId ? 'px-0 py-0' : 'px-4 py-6']">
+            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full', focusedId ? 'px-0 py-0' : 'px-4 pt-[10px] pb-6']">
                 <div :class="['max-w-4xl mx-auto space-y-4 pb-32', focusedId ? 'space-y-0' : 'space-y-4']">
                     <div v-for="item in filteredRecords" :key="item.id" 
                          v-show="focusedId === null || focusedId === item.id"
                          @click="toggleExpand(item.id)"
                          :class="[
                              'bg-white border-b border-slate-300 transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'px-6 py-[25px]'
+                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'p-[10px]'
                          ]">
+
+                        <!-- Close button inside expanded card -->
+                        <button v-if="focusedId === item.id"
+                                @click.stop="focusedId = null"
+                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all z-10">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </button>
                         
 
 

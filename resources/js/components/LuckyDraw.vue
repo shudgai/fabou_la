@@ -74,7 +74,7 @@
                 </div>
 
                 <!-- Bottom Button Area -->
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                     <div class="w-full space-y-2">
                         <button @click="confirmSelection" 
                                 :disabled="pendingNames.length === 0" 
@@ -133,7 +133,7 @@
                     </div>
                 </div>
 
-<div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 space-y-4 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+<div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-100 space-y-4 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                     <div class="flex items-center justify-between">
                         <span class="text-[19px] font-black text-slate-800">抽取人數</span>
                         <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
@@ -229,7 +229,7 @@
                 </div>
 
 <!-- Bottom Button Area (Fixed above navigation) -->
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                     <div class="flex gap-2">
                         <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
                          <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>

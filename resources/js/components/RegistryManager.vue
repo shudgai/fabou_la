@@ -325,7 +325,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 ml-[-10px] md:ml-0">
                                             <template v-if="currentCategory === 'major'">
                                                 <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 -mx-4 md:mx-0 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">

@@ -1,7 +1,7 @@
 <template>
-    <div class="h-full bg-slate-100 md:bg-white flex flex-col other-manager-module relative overflow-clip">
+    <div class="h-full bg-white flex flex-col other-manager-module relative overflow-clip">
         <!-- Level 1: Folder Grid View -->
-        <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-slate-100 md:bg-white flex flex-col relative overflow-hidden">
+        <div v-if="!activeFolderId && !showLuckyDraw" class="h-full bg-white flex flex-col relative overflow-hidden">
             <div class="px-6 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 bg-white z-10 shrink-0 w-full">
                 <div class="flex items-center">
                     <button @click="$emit('goHome')" class="p-2 text-slate-400 mr-2">
@@ -13,7 +13,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto custom-scrollbar w-full">
-                <div class="grid grid-cols-1 gap-8 p-6 place-items-center pb-24">
+                <div class="grid grid-cols-1 gap-2 px-6 pt-1 pb-24 place-items-center">
                 <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
                     @click="activeFolderId = folder.id"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
