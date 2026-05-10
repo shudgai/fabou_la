@@ -191,11 +191,10 @@
                                 <div v-for="item in group.items" :key="item.id" 
                                     v-show="focusedId === null || focusedId === item.id"
                                     @click="toggleExpand(item.id)"
-                                    :class="[
-                                        'py-[25px] px-[15px] border-b border-slate-300 relative group transition-all cursor-pointer z-0',
-                                        openMenuId === item.id ? 'z-[50]' : 'z-0',
-                                        { 'border-b-0': focusedId === item.id }
-                                    ]"
+                                     :class="[
+                                         'py-[25px] px-[15px] border-b-2 border-slate-300 relative group transition-all cursor-pointer z-0',
+                                         openMenuId === item.id ? 'z-[50]' : 'z-0'
+                                     ]"
                                 >
                                     <div class="animate-fade-in py-2 bg-white space-y-4 relative px-1.5">
                                         <!-- Collapsed View: Date + Name + Quantity -->
@@ -208,6 +207,7 @@
                                                 </button>
                                             </div>
                                         </div>
+
 
                                         <!-- Three dots menu - far right, aligned with 日期 row (only when expanded) -->
                                         <div v-if="focusedId === item.id" class="absolute right-[-8px] top-[8px] z-20">
@@ -234,9 +234,9 @@
                                                 <div class="military-value whitespace-nowrap">{{ formatWithCommas(item.quantity) }}</div>
                                             </div>
                                         </div>
-
+                                         <div class="border-b-2 border-slate-300 my-4 mx-1"></div>
                                         <!-- Expanded View: Details -->
-                                        <div v-if="focusedId === item.id" class="pt-4 border-t border-slate-100 space-y-4 animate-fade-in relative">
+                                        <div v-if="focusedId === item.id" class="pt-4 border-t-2 border-slate-200 space-y-4 animate-fade-in relative">
 
                                             <!-- Army Breakdown -->
                                             <div v-if="['黑曜軍','耀紫軍'].includes(item.army_type)" class="military-field">

@@ -34,7 +34,7 @@
                                 class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-3 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold">
                         </div>
                     </div>
-
+                    <div class="border-b-2 border-slate-300 my-4 mx-1"></div>
                     <!-- Row 2: 法號 & 備註 -->
                     <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
                         <div class="space-y-1">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="border-b-2 border-slate-300 my-4 mx-1"></div>
                     <!-- Conditional Quantity Row -->
                     <!-- Case 1: 虎甲/虎賁 or Default -->
                     <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">

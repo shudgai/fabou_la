@@ -106,7 +106,7 @@
                      <div class="flex-1 overflow-hidden">
                          <virtual-scroller 
                              :items="sortedItems" 
-                             :item-size="120" 
+                             :item-size="150" 
                              :key-field="'id'"
                              class="w-full"
                          >
@@ -114,13 +114,12 @@
                                  <div v-show="focusedId === null || focusedId === item.id" 
                                      @click.stop="toggleExpand(item.id)"
                                      :class="[
-                                         'py-[25px] px-3 border-b border-slate-300 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
-                                     { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
-                                     { 'border-b-0': focusedId === item.id }
+                                         'py-[10px] px-3 relative group cursor-pointer bg-white active:bg-slate-50',
+                                     { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id }
                                  ]"
                                  >
                                      <!-- List Item Detail (Simplified per user request) -->
-                                     <div class="animate-fade-in py-0 bg-white relative px-1.5">
+                                     <div class="py-0 bg-white relative px-1.5 border-b-2 border-slate-300">
                                          <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
                                              <!-- Date -->
                                              <div class="grudge-field flex flex-row items-center space-x-1.5">
@@ -132,7 +131,6 @@
                                                  <label class="grudge-label">法號:</label>
                                                  <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                              </div>
-                                             <!-- Three dots menu (right side of whole row, expanded only) -->
                                              <div v-if="focusedId === item.id" 
                                                   class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
                                                  <div class="relative">
@@ -163,7 +161,9 @@
                                              </div>
                                          </div>
 
-                                         <!-- Expanded Content (Show Everything when focused) -->
+                                      </div>
+ 
+                                          <!-- Expanded Content (Show Everything when focused) -->
                                          <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
 
                                              <!-- Army Breakdown (if applicable) -->
@@ -202,7 +202,6 @@
                                              </div>
                                          </div>
                                      </div>
-                                 </div>
                              </template>
                          </virtual-scroller>
                      </div>
