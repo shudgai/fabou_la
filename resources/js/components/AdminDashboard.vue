@@ -1,9 +1,9 @@
 <template>
-    <div class="flex flex-col md:flex-row h-[100dvh] bg-slate-100 md:bg-white font-sans overflow-hidden">
+    <div class="flex flex-col md:flex-row h-[100dvh] bg-white font-sans overflow-hidden">
         <!-- Sidebar / Top Nav Container -->
-        <div class="w-full md:w-64 bg-white border-r border-slate-100 flex-shrink-0 flex flex-col shadow-sm z-[50] h-auto md:h-full">
+        <div class="w-full md:w-64 bg-white border-r border-white flex-shrink-0 flex flex-col z-[50] h-auto md:h-full">
             <!-- Logo area -->
-            <div class="p-4 md:p-6 border-b border-slate-50 flex items-center justify-between bg-white">
+            <div class="p-4 md:p-6 border-b border-white flex items-center justify-between bg-white">
                 <div>
                     <logo-imperial-notebook v-if="isNotebookView" :height="44" />
                     <h1 v-else class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
@@ -18,7 +18,7 @@
             </div>
 
             <!-- Menus -->
-            <div class="flex-1 flex md:flex-col items-center md:items-stretch overflow-x-auto md:overflow-y-auto no-scrollbar py-1 md:py-6 bg-slate-100 md:bg-white">
+            <div class="flex-1 flex md:flex-col items-center md:items-stretch overflow-x-auto md:overflow-y-auto no-scrollbar py-1 md:py-6 bg-white">
                 <!-- Notebook Section -->
                 <div v-if="notebookItems.length > 0" class="hidden md:block px-6 mb-2">
                     <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">筆記系統</span>
@@ -27,7 +27,7 @@
                     @click="selectTab(item.id)"
                     :class="[
                         'flex items-center px-4 md:px-6 py-2 md:py-3 transition-all duration-200 group relative whitespace-nowrap md:whitespace-normal',
-                        currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                        currentTab === item.id ? 'text-indigo-600 bg-white' : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
                     <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
@@ -37,13 +37,13 @@
                 <div v-if="adminItems.length > 0" class="hidden md:block px-6 mt-6 mb-2">
                     <span class="text-[10px] md:text-[14px] font-black text-slate-400 uppercase tracking-[0.2em]">系統管理</span>
                 </div>
-                <div v-if="notebookItems.length > 0 && adminItems.length > 0" class="md:h-px md:bg-slate-50 md:mx-4 md:my-2 md:hidden h-4 w-px bg-slate-200 mx-2"></div>
+                <div v-if="notebookItems.length > 0 && adminItems.length > 0" class="md:h-px md:bg-white md:mx-4 md:my-2 md:hidden h-4 w-px bg-slate-200 mx-2"></div>
                 
                 <button v-for="item in adminItems" :key="item.id" 
                     @click="selectTab(item.id)"
                     :class="[
                         'flex items-center px-4 md:px-6 py-2 md:py-3 transition-all duration-200 group relative whitespace-nowrap md:whitespace-normal',
-                        currentTab === item.id ? 'text-indigo-600 bg-indigo-50/30' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                        currentTab === item.id ? 'text-indigo-600 bg-white' : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                     ]">
                     <div v-if="currentTab === item.id" class="hidden md:block absolute left-0 top-1 bottom-1 w-1 bg-indigo-600 rounded-r-full"></div>
                     <span class="text-[13px] md:text-[15px] font-bold">{{ item.label }}</span>
@@ -51,7 +51,7 @@
             </div>
 
             <!-- Footer (Desktop Only) -->
-            <div class="hidden md:block p-6 border-t border-slate-50 mt-auto">
+            <div class="hidden md:block p-6 border-t border-white mt-auto">
                 <div class="flex items-center space-x-3 text-slate-400">
                     <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
                     <span class="text-xs md:text-sm font-bold tracking-tighter">系統運行穩定</span>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Main Content Area -->
-        <main :class="['flex-1 h-full bg-slate-100 custom-scrollbar relative', isNotebookView ? 'overflow-hidden' : 'overflow-y-auto']">
+        <main :class="['flex-1 h-full bg-white custom-scrollbar relative', isNotebookView ? 'overflow-hidden' : 'overflow-y-auto']">
             <div :class="[
                 'max-w-7xl mx-auto w-full pb-32',
                 isNotebookView ? 'p-0' : 'p-4 md:p-6 lg:p-8'

@@ -1,6 +1,6 @@
 <template>
     <div class="bg-white h-full flex flex-col text-slate-900">
-        <div class="bg-slate-100 h-full relative w-full shadow-sm flex flex-col font-sans">
+        <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
         <option v-for="t in instrumentTreasures" :key="t.id" :value="t.name" />
@@ -111,17 +111,14 @@
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px] mb-1">
                         <div class="relative w-[310px] h-[310px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#fbbf24" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#fbbf24" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                            </svg>
+                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>每日開示
                                 </span>
-                                <div class="mt-4">
-                                    <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folderCounts.daily || 0 }} 筆</span>
+                                <div class="mt-4 flex items-center" style="transform: translateY(-8px);">
+                                    <span class="text-[#ff4d4d] font-black tracking-tight drop-shadow-sm" style="font-size: 19px !important; font-weight: 900 !important;">{{ folderCounts.daily || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -132,17 +129,14 @@
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px]">
                         <div class="relative w-[310px] h-[310px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#818cf8" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#818cf8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                            </svg>
+                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10">
-                                <span class="font-black text-white tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 42px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>開示載錄
                                 </span>
-                                <div class="mt-4">
-                                    <span class="text-black text-[17px] font-normal tracking-tight">{{ mastersTotalCount }} 筆</span>
+                                <div class="mt-4 flex items-center" style="transform: translateY(-8px);">
+                                    <span class="text-[#ff4d4d] font-black tracking-tight drop-shadow-sm" style="font-size: 19px !important; font-weight: 900 !important;">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -164,20 +158,18 @@
                 <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] p-2">
-                        <div class="relative w-[163px] h-[163px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                            </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#fbbf24]'"
-                                     style="font-weight: 900 !important; font-size: 24px !important;">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[260px] h-[173px] p-2 bg-transparent">
+                        <div class="relative w-[245px] h-[158px]">
+                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
+                                <div class="font-black text-[#fbbf24] tracking-tighter leading-none text-center opacity-80" style="font-size: 11px !important;">父皇仙師開示載錄</div>
+                                
+                                <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-1"
+                                     style="font-weight: 900 !important; font-size: 25px !important;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="mt-1">
-                                    <span class="text-black text-[17px] font-normal">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-1 flex items-center">
+                                    <span class="text-white font-normal" style="font-size: 14px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>

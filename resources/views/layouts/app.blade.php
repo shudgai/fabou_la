@@ -55,7 +55,7 @@
             <!-- Sidebar backdrop for mobile -->
             <div x-show="sidebarOpen" x-cloak
                 @click="sidebarOpen = false" 
-                class="fixed inset-0 z-[150] bg-slate-900/40 backdrop-blur-sm lg:hidden"
+                class="fixed inset-0 z-[150] bg-slate-900/40 lg:hidden"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
@@ -77,22 +77,27 @@
                 
                 <!-- Sidebar Header -->
                 <div class="h-16 flex items-center justify-between px-4 border-b border-slate-100 shrink-0 overflow-hidden">
-                    <a href="{{ url('/') }}" class="flex items-center space-x-3 transition-transform active:scale-95">
-                        <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
-                            <!-- Taiji SVG (Scaled) -->
-                            <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="50" fill="white"/>
-                                <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                                <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                                <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                                <circle cx="50" cy="75" r="8" fill="white"/>
-                                <circle cx="50" cy="25" r="8" fill="black"/>
-                            </svg>
+                    <a href="{{ url('/') }}" class="inline-flex items-center relative transition-transform active:scale-95 group h-11 px-4 overflow-hidden">
+                        <!-- Rounded Label Background -->
+                        <div class="absolute inset-0 bg-[#FFD700] rounded-2xl shadow-sm border border-amber-500/20"></div>
+                        
+                        <div class="relative flex items-center z-10">
+                            <!-- Taiji SVG -->
+                            <div class="w-7 h-7 shrink-0">
+                                <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="50" cy="50" r="50" fill="white"/>
+                                    <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
+                                    <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
+                                    <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
+                                    <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                                    <circle cx="50" cy="75" r="8" fill="white"/>
+                                    <circle cx="50" cy="25" r="8" fill="black"/>
+                                </svg>
+                            </div>
+                            <span x-show="!sidebarCollapsed" class="text-[19px] font-black font-outfit tracking-tight text-[#dc2626] ml-2 whitespace-nowrap">
+                                皇恩筆記本
+                            </span>
                         </div>
-                        <span x-show="!sidebarCollapsed" class="text-xl md:text-2xl font-outfit tracking-tight text-slate-800 whitespace-nowrap" x-transition:enter="delay-100 transition-opacity" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                            皇恩筆記本
-                        </span>
                     </a>
 
                     <!-- Mobile Close / Desktop Collapse Toggle -->
@@ -201,30 +206,36 @@
             <div class="flex-1 flex flex-col min-w-0 relative">
                 <!-- Mobile Header -->
                 @if(!request()->routeIs('note.index'))
-                <header class="lg:hidden h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-[100] sticky top-0 shrink-0" style="padding-top: env(safe-area-inset-top, 0px); height: calc(3.5rem + env(safe-area-inset-top, 0px));">
-                    <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    
-                    <div class="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center shadow-lg shrink-0 overflow-hidden border border-slate-800">
-                            <svg class="w-full h-full p-0.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="50" fill="white"/>
-                                <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
-                                <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
-                                <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
-                                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
-                                <circle cx="50" cy="75" r="8" fill="white"/>
-                                <circle cx="50" cy="25" r="8" fill="black"/>
+                <header class="lg:hidden h-14 bg-white border-b border-white flex items-center justify-between px-3 z-[100] sticky top-0 shrink-0" style="padding-top: env(safe-area-inset-top, 0px); height: calc(3.5rem + env(safe-area-inset-top, 0px));">
+                    <div class="flex items-center space-x-1">
+                        <button @click="sidebarOpen = true" class="p-2 text-slate-600 hover:bg-slate-50 rounded-lg active:scale-90 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
+                        </button>
+                        
+                        <div class="inline-flex items-center relative h-9 px-3 overflow-hidden">
+                            <!-- Rounded Label Background -->
+                            <div class="absolute inset-0 bg-[#FFD700] rounded-xl shadow-sm border border-amber-500/20"></div>
+
+                            <div class="relative flex items-center z-10">
+                                <!-- Taiji SVG -->
+                                <div class="w-5 h-5 shrink-0">
+                                    <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="50" fill="white"/>
+                                        <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C50 75 50 75 50 50C50 25 50 25 50 0Z" fill="white"/>
+                                        <path d="M50 0C77.6142 0 100 22.3858 100 50C100 77.6142 77.6142 100 50 100V50V0Z" fill="black"/>
+                                        <path d="M50 100C36.1929 100 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V100Z" fill="black"/>
+                                        <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                                        <circle cx="50" cy="75" r="8" fill="white"/>
+                                        <circle cx="50" cy="25" r="8" fill="black"/>
+                                    </svg>
+                                </div>
+                                <span class="text-[15px] font-black font-outfit tracking-tight text-[#dc2626] ml-1.5 whitespace-nowrap">
+                                    皇恩筆記本
+                                </span>
+                            </div>
                         </div>
-                        <span class="text-xl font-bold font-outfit tracking-tight text-slate-800 whitespace-nowrap">
-                            皇恩筆記本
-                        </span>
-                        @auth
-                        @endauth
                     </div>
                     
                     <div class="flex items-center gap-2">

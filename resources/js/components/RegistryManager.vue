@@ -17,7 +17,7 @@
         <div v-if="currentFolder && !addMode" 
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Top Row: Main Title (Clickable) + Actions (X button removed) -->
-            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-slate-50">
+            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white">
                 <div class="app-title !text-[32px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
                     @click="resetToRoot"
                     style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
-            <div class="px-4 bg-white border-b border-slate-50 flex items-baseline gap-x-2 py-[5px] overflow-hidden">
+            <div class="px-4 bg-white border-b border-white flex items-baseline gap-x-2 py-[5px] overflow-hidden">
                 <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                     {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                 </span>
@@ -46,10 +46,10 @@
         </div>
 
         <!-- Main Scrollable Area -->
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto" style="padding-bottom: 150px;">
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto bg-white" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-slate-50 relative min-h-[52px]">
+                <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-white relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <h1 v-if="!currentCategory" class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] !text-[32px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; font-weight: 900 !important;">
                                 法寶登記專區
@@ -63,54 +63,47 @@
                 </div>
 
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
-                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8">
-                    <!-- Removed Major Imperial Grace per request -->
-
-                    <button @click="currentCategory = 'other'" class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
-                        <div class="relative w-[310px] h-[310px]">
-                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
-                            </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 px-2">
-                                <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 42px !important; font-weight: 900 !important;">其他皇恩<br>登記簿</div>
-                                <div class="mt-4 flex items-center">
-                                    <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">{{ categoryCounts.other || 0 }} 筆</span>
+                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
+                    
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-[300px] h-[320px]">
+                            <img src="/image/registry_book_yellow_v2.png" 
+                                 class="w-[300px] h-[300px] object-contain transition-transform group-hover:scale-105" 
+                                 alt="Book Icon">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-16 pb-2 px-2">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6" style="font-size: 21.6px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
+                                <div class="font-black text-red-600 tracking-tight leading-tight text-center !font-black mt-1" style="font-size: 27px !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
+                                <div class="mt-8 flex items-center">
+                                    <span class="text-black font-normal tracking-tight" style="font-size: 18px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
-                        </div>
                     </button>
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
+                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-12 gap-x-6 pb-20 bg-white">
                     <button v-for="folder in folders" :key="folder.id" 
                              @click="currentFolder = folder"
-                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] relative"
-                             :class="[]">
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[189px] h-[189px] relative bg-white hover:bg-white active:bg-white">
                         
-<div class="relative w-[163px] h-[163px]">
-                              <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" 
-                                    fill="#ef4444" />
-                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" 
-                                    fill="#ef4444" 
-                                    stroke="rgba(255,255,255,0.6)" stroke-width="1" />
-                            </svg>
+                        <div class="relative w-[177px] h-[177px]">
+                            <img src="/image/registry_book_yellow_v2.png" 
+                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
+                                 alt="Book Icon">
                             
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-1 pointer-events-none">
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#fbbf24]'"
-                                     style="font-size: 24px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-8 pb-2 px-1 pointer-events-none">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-2 mb-2" style="font-size: 12.6px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
+                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-0.5" style="font-size: 11px !important;">重大皇恩登記簿</div>
+                                
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-4"
+                                     :style="{ fontSize: '17.25px !important', fontWeight: '900 !important', color: folder.name === '閻王仙師' ? '#000000' : '#dc2626' }">
                                      {{ folder.name }}
                                 </div>
-                                <div class="mt-1 flex items-center">
-                                    <span class="font-normal !text-black" style="font-size: 17px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-4 flex items-center">
+                                    <span class="font-normal text-black" style="font-size: 13px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
                     </button>
-
                 </div>
 
                 <div class="mt-12 flex justify-center pb-32">

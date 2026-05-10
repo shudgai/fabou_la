@@ -95,14 +95,11 @@
                 @click="currentCategory = 'masters'"
                 class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
                 <div class="relative w-[310px] h-[310px]">
-                    <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                        <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
-                        <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 px-2">
-                        <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 42px !important; font-weight: 900 !important;">重大皇恩<br>專區</div>
-                        <div class="mt-4 flex items-center">
-                            <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ totalCount }} 筆</span>
+                    <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
+                        <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 38px !important; font-weight: 900 !important;">重大皇恩專區</div>
+                        <div class="mt-6 flex items-center">
+                            <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -113,14 +110,11 @@
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
                     class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
                     <div class="relative w-[310px] h-[310px]">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 px-2">
-                            <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 42px !important; font-weight: 900 !important;">未求得<br>重大皇恩</div>
-                            <div class="mt-4 flex items-center">
-                                <span class="text-black font-normal tracking-tight" style="font-size: 17px !important;">共 {{ unobtainedTotal }} 筆</span>
+                        <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
+                            <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 32px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
+                            <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
+                                <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ unobtainedTotal }} 筆</span>
                             </div>
                         </div>
                     </div>
@@ -134,22 +128,14 @@
             <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
                 <button v-for="(folder, idx) in mastersFolders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[198px] h-[198px] relative group rounded-none">
-                    <div class="relative w-[163px] h-[163px]">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="#ef4444" />
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="#ef4444" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
-                        </svg>
-                        
-                        <!-- Label & Pill Inside -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-6 px-2 pointer-events-none">
-                            <div class="tracking-tight leading-tight text-center whitespace-nowrap mb-2 !font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                                 :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#fbbf24]'"
-                                 style="font-size: 24px !important;">
-                                 {{ folder.id === 'unobtained' ? '未求得' : (folder.name === '父皇仙師' ? '父皇' : folder.name) }}
-                            </div>
-                            <div class="mt-1 flex items-center">
-                                <span class="text-black font-black" style="font-size: 17px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[260px] h-[173px] relative group rounded-none bg-transparent">
+                    <div class="relative w-[245px] h-[158px]">
+                        <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 text-[#fbbf24]">
+                             <div class="text-[14px] opacity-80 mb-0.5 tracking-widest font-bold">重大皇恩專區</div>
+                             <div class="text-[22px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
+                            <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
+                                <span class="text-white font-normal" style="font-size: 14px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                             </div>
                         </div>
                     </div>
