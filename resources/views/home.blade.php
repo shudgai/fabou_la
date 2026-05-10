@@ -36,7 +36,7 @@
                              style="font-size: 25.5px !important; font-weight: 900 !important;">
                              重大皇恩<br>登記簿
                         </div>
-                        <div class="mt-8 flex items-center">
+                        <div class="mt-2 flex items-center">
                             <span class="text-black font-normal tracking-tight" style="font-size: 18px !important;">共 {{ \App\Models\Registry::count() }} 筆</span>
                         </div>
                     </div>
