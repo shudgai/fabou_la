@@ -231,7 +231,7 @@
                                             </div>
                                             <div class="military-field min-w-[130px]">
                                                 <label class="military-label">數量</label>
-                                                <div class="military-value whitespace-nowrap">{{ formatArmyTotal(item.quantity) }}</div>
+                                                <div class="military-value whitespace-nowrap">{{ formatWithCommas(item.quantity) }}</div>
                                             </div>
                                         </div>
 
@@ -248,9 +248,9 @@
                                                         '虎甲軍': { 'yan_jue': item.yan_jue, 'yan_ze': item.yan_ze },
                                                         '虎賁軍': { 'yan_di': item.yan_di, 'yan_yuan': item.yan_yuan }
                                                     }[item.army_type]" :key="label">
-                                                        <div class="flex items-center space-x-2" v-if="val > 0">
+                                                        <div class="flex items-center space-x-2" v-if="isValidBigInt(val) && BigInt(String(val).replace(/,/g, '')) > 0n">
                                                             <span class="w-2 h-2 rounded-full" :class="getBulletColor(label)"></span>
-                                                            <span class="military-value">{{ {yan_zun:'閻尊', yan_an:'閻闇', long_sheng:'龍勝', long_zhan:'龍戰', yan_jue:'閻決', yan_ze:'閻澤', yan_di:'閻地', yan_yuan:'閻源'}[label] }}: {{ formatArmyTotal(val) }}</span>
+                                                            <span class="military-value">{{ {yan_zun:'閻尊', yan_an:'閻闇', long_sheng:'龍勝', long_zhan:'龍戰', yan_jue:'閻決', yan_ze:'閻澤', yan_di:'閻地', yan_yuan:'閻源'}[label] }}: {{ formatWithCommas(val) }}</span>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -434,18 +434,37 @@ const handlePageChange = (page) => {
     loadData(page);
 };
 
+const isValidBigInt = (val) => {
+    if (val === null || val === undefined || val === '') return false;
+    try {
+        BigInt(String(val).replace(/,/g, ''));
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+const formatWithCommas = (val) => {
+    const s = String(val).replace(/,/g, '');
+    if (!/^\d+$/.test(s)) return s;
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const formatArmyTotal = (num) => {
-    num = Number(num) || 0;
-    if (num < 1000000) return `${num.toLocaleString()} 位`;
-    const troops = Math.floor(num / 1000000);
-    const remaining = num % 1000000;
-    if (remaining === 0) return `${troops}隊`;
-    const wan = Math.floor(remaining / 10000);
-    const rest = remaining % 10000;
+    if (!isValidBigInt(num)) return '0';
+    const b = BigInt(String(num).replace(/,/g, ''));
+    if (b < 1000000n) return formatWithCommas(b);
+    
+    const troops = b / 1000000n;
+    const remaining = b % 1000000n;
+    if (remaining === 0n) return `${troops}隊`;
+    
+    const wan = remaining / 10000n;
+    const rest = remaining % 10000n;
     let res = `${troops}隊`;
-    if (wan > 0) res += `${wan}萬`;
-    if (rest > 0) res += `${rest}位`;
-    else if (wan === 0) res += `0位`;
+    if (wan > 0n) res += `${wan}萬`;
+    if (rest > 0n) res += `${rest}位`;
+    else if (wan === 0n) res += `0位`;
     return res;
 };
 

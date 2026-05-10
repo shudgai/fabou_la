@@ -85,9 +85,9 @@
                     <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
                         <div class="flex items-center justify-between ml-1">
                             <label class="app-title">數量</label>
-                            <span v-if="form.quantity >= 1000000" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
+                            <span v-if="quantityBig >= 1000000n" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
                         </div>
-                        <input v-model="form.quantity" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                        <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
@@ -95,17 +95,17 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
                             <span class="app-title">小計</span>
-                            <span class="app-title text-indigo-600 mr-2" v-if="(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) >= 1000000">({{ formatArmyTotal(Number(form.yan_zun || 0) + Number(form.yan_an || 0)) }})</span>
-                            <span class="app-body text-slate-900">{{ (Number(form.yan_zun || 0) + Number(form.yan_an || 0)).toLocaleString() }}</span>
+                            <span class="app-title text-indigo-600 mr-2" v-if="obsidianSubtotalBig >= 1000000n">({{ formatArmyTotal(obsidianSubtotalBig) }})</span>
+                            <span class="app-body text-slate-900">{{ formatWithCommas(obsidianSubtotalBig) }}</span>
                         </div>
                     </div>
 
@@ -116,17 +116,17 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="number" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
                             <span class="app-title">小計</span>
-                            <span class="app-title text-indigo-600 mr-2" v-if="(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) >= 1000000">({{ formatArmyTotal(Number(form.long_sheng || 0) + Number(form.long_zhan || 0)) }})</span>
-                            <span class="app-body text-slate-900">{{ (Number(form.long_sheng || 0) + Number(form.long_zhan || 0)).toLocaleString() }}</span>
+                            <span class="app-title text-indigo-600 mr-2" v-if="purpleSubtotalBig >= 1000000n">({{ formatArmyTotal(purpleSubtotalBig) }})</span>
+                            <span class="app-body text-slate-900">{{ formatWithCommas(purpleSubtotalBig) }}</span>
                         </div>
                     </div>
 
@@ -214,11 +214,21 @@ const filteredDharmaNames = computed(() => {
 const form = ref({ 
     ...props.initialData,
     army_type: props.armyType || props.initialData.army_type,
-    yan_zun: props.initialData.yan_zun || 0,
-    yan_an: props.initialData.yan_an || 0,
-    long_sheng: props.initialData.long_sheng || 0,
-    long_zhan: props.initialData.long_zhan || 0,
-    quantity: props.initialData.quantity || 0
+    yan_zun: String(props.initialData.yan_zun || "0"),
+    yan_an: String(props.initialData.yan_an || "0"),
+    long_sheng: String(props.initialData.long_sheng || "0"),
+    long_zhan: String(props.initialData.long_zhan || "0"),
+    quantity: String(props.initialData.quantity || "0")
+});
+
+const obsidianSubtotalBig = computed(() => tryBigIntSum(form.value.yan_zun, form.value.yan_an));
+const purpleSubtotalBig = computed(() => tryBigIntSum(form.value.long_sheng, form.value.long_zhan));
+const quantityBig = computed(() => {
+    try {
+        return isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
+    } catch (e) {
+        return 0n;
+    }
 });
 
 watch(() => props.initialData, (newVal) => {
@@ -257,18 +267,47 @@ onUnmounted(() => {
 });
 
 
+const isValidBigInt = (val) => {
+    if (val === null || val === undefined || val === '') return false;
+    try {
+        BigInt(String(val).replace(/,/g, ''));
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+const tryBigIntSum = (v1, v2) => {
+    try {
+        const b1 = isValidBigInt(v1) ? BigInt(String(v1).replace(/,/g, '')) : 0n;
+        const b2 = isValidBigInt(v2) ? BigInt(String(v2).replace(/,/g, '')) : 0n;
+        return b1 + b2;
+    } catch (e) {
+        return 0n;
+    }
+};
+
+const formatWithCommas = (val) => {
+    const s = String(val).replace(/,/g, '');
+    if (!/^\d+$/.test(s)) return s;
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const formatArmyTotal = (num) => {
-    num = Number(num) || 0;
-    if (num < 1000000) return num.toLocaleString();
-    const troops = Math.floor(num / 1000000);
-    const remaining = num % 1000000;
-    if (remaining === 0) return `${troops}隊`;
-    const wan = Math.floor(remaining / 10000);
-    const rest = remaining % 10000;
+    if (!isValidBigInt(num)) return '0';
+    const b = BigInt(String(num).replace(/,/g, ''));
+    if (b < 1000000n) return formatWithCommas(b);
+    
+    const troops = b / 1000000n;
+    const remaining = b % 1000000n;
+    if (remaining === 0n) return `${troops}隊`;
+    
+    const wan = remaining / 10000n;
+    const rest = remaining % 10000n;
     let res = `${troops}隊`;
-    if (wan > 0) res += `${wan}萬`;
-    if (rest > 0) res += `${rest}位`;
-    else if (wan === 0) res += `0位`;
+    if (wan > 0n) res += `${wan}萬`;
+    if (rest > 0n) res += `${rest}位`;
+    else if (wan === 0n) res += `0位`;
     return res;
 };
 
@@ -307,18 +346,28 @@ const handleSave = () => {
         return;
     }
 
-    // Auto-calculate quantity for split armies
+    const clean = (val) => String(val || 0).replace(/,/g, '');
+
+    // Auto-calculate quantity for split armies using strings to preserve precision
     if (props.armyType === '黑曜軍') {
-        form.value.quantity = Number(form.value.yan_zun || 0) + Number(form.value.yan_an || 0);
+        form.value.quantity = tryBigIntSum(form.value.yan_zun, form.value.yan_an).toString();
     } else if (props.armyType === '耀紫軍') {
-        form.value.quantity = Number(form.value.long_sheng || 0) + Number(form.value.long_zhan || 0);
+        form.value.quantity = tryBigIntSum(form.value.long_sheng, form.value.long_zhan).toString();
     } else if (props.armyType === '虎甲軍') {
-        form.value.yan_jue = Number(form.value.quantity || 0);
-        form.value.yan_ze = 0;
+        form.value.yan_jue = clean(form.value.quantity);
+        form.value.yan_ze = "0";
     } else if (props.armyType === '虎賁軍') {
-        form.value.yan_di = Number(form.value.quantity || 0);
-        form.value.yan_yuan = 0;
+        form.value.yan_di = clean(form.value.quantity);
+        form.value.yan_yuan = "0";
     }
+
+    // Clean all quantity fields before sending
+    const fields = ['quantity', 'yan_zun', 'yan_an', 'long_sheng', 'long_zhan', 'yan_jue', 'yan_ze', 'yan_di', 'yan_yuan'];
+    fields.forEach(f => {
+        if (form.value[f] !== undefined) {
+            form.value[f] = clean(form.value[f]);
+        }
+    });
 
     console.log('Saving Military Record:', form.value);
     emit('save', form.value);

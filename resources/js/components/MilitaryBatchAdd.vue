@@ -81,7 +81,7 @@
                             <tr v-for="(item, idx) in parsedItems" :key="idx" class="hover:bg-indigo-50/30 transition-colors">
                                 <td class="p-3 text-slate-500 font-bold whitespace-nowrap">{{ item.display_date ? item.display_date.replace(/-/g, '/') : '-' }}</td>
                                 <td class="p-3 text-slate-900 font-black truncate max-w-[120px]">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</td>
-                                <td class="p-3 text-indigo-600 font-black text-right">{{ item.quantity.toLocaleString() }}</td>
+                                <td class="p-3 text-indigo-600 font-black text-right">{{ formatWithCommas(item.quantity) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -275,20 +275,20 @@ const parsedItems = computed(() => {
             let rest = cleanLine.substring(firstDigitIndex).replace(/[\(\（][^\)\）]*[\)\）]/g, ' ');
             
             // Robust Quantity Parsing for Units (隊, 萬, 位) and Commas
-            let totalQty = 0;
+            let totalQty = 0n;
             let foundUnit = false;
             
             // 1. Detect "隊" (1,000,000)
             const troopMatch = rest.match(/(\d+)\s*隊/);
             if (troopMatch) {
-                totalQty += parseInt(troopMatch[1]) * 1000000;
+                totalQty += BigInt(troopMatch[1]) * 1000000n;
                 foundUnit = true;
             }
             
             // 2. Detect "萬" (10,000)
             const wanMatch = rest.match(/(\d+)\s*萬/);
             if (wanMatch) {
-                totalQty += parseInt(wanMatch[1]) * 10000;
+                totalQty += BigInt(wanMatch[1]) * 10000n;
                 foundUnit = true;
             }
             
@@ -299,10 +299,10 @@ const parsedItems = computed(() => {
             remainingRest = remainingRest.replace(/,/g, '');
             const numbers = remainingRest.match(/\d+/g);
             if (numbers) {
-                totalQty += numbers.reduce((sum, n) => sum + parseInt(n), 0);
+                totalQty += numbers.reduce((sum, n) => sum + BigInt(n), 0n);
             }
             
-            qty = (totalQty > 0) ? totalQty : 1;
+            qty = (totalQty > 0n) ? totalQty.toString() : "1";
         }
 
         const skipKeywords = ['法號', '日期', '數量', '結果', '項次', '總計'];
@@ -331,58 +331,65 @@ const parsedItems = computed(() => {
         if (props.armyType === '黑曜軍' || props.armyType === '耀紫軍') {
             const parenPartMatch = normLine.match(/[\(（](.*?)[\)）]/);
             const parenPart = parenPartMatch ? parenPartMatch[1] : '';
-            let part1 = 0, part2 = 0;
+            let part1 = 0n, part2 = 0n;
             let hasParts = false;
 
             if (props.armyType === '黑曜軍') {
                 const p1Match = parenPart.match(/[閻阎]尊[^\d]*(\d+)/);
                 const p2Match = parenPart.match(/[閻阎閰][闇閽][^\d]*(\d+)/);
                 if (p1Match || p2Match) {
-                    part1 = p1Match ? parseInt(p1Match[1]) : 0;
-                    part2 = p2Match ? parseInt(p2Match[1]) : 0;
+                    part1 = p1Match ? BigInt(p1Match[1]) : 0n;
+                    part2 = p2Match ? BigInt(p2Match[1]) : 0n;
                     hasParts = true;
                 }
             } else {
                 const p1Match = parenPart.match(/龍勝[^\d]*(\d+)/);
                 const p2Match = parenPart.match(/龍戰[^\d]*(\d+)/);
                 if (p1Match || p2Match) {
-                    part1 = p1Match ? parseInt(p1Match[1]) : 0;
-                    part2 = p2Match ? parseInt(p2Match[1]) : 0;
+                    part1 = p1Match ? BigInt(p1Match[1]) : 0n;
+                    part2 = p2Match ? BigInt(p2Match[1]) : 0n;
                     hasParts = true;
                 }
             }
             
+            const bQty = BigInt(qty);
             if (hasParts) {
-                if (qty > 1) {
+                if (bQty > 1n) {
                     const sum = part1 + part2;
-                    if (sum !== qty) {
-                        if (part1 > 0 && part1 <= qty && part2 === 0) part2 = qty - part1;
-                        else if (part2 > 0 && part2 <= qty && part1 === 0) part1 = qty - part2;
-                        else if (sum > 0) qty = sum;
+                    if (sum !== bQty) {
+                        if (part1 > 0n && part1 <= bQty && part2 === 0n) part2 = bQty - part1;
+                        else if (part2 > 0n && part2 <= bQty && part1 === 0n) part1 = bQty - part2;
+                        else if (sum > 0n) qty = sum.toString();
                     }
                 } else {
-                    qty = part1 + part2;
+                    qty = (part1 + part2).toString();
                 }
             } else {
-                part1 = Math.ceil(qty / 2); 
-                part2 = Math.floor(qty / 2);
+                part1 = bQty / 2n + (bQty % 2n); 
+                part2 = bQty / 2n;
             }
 
             if (props.armyType === '黑曜軍') {
-                item.yan_zun = part1; item.yan_an = part2;
+                item.yan_zun = part1.toString(); item.yan_an = part2.toString();
             } else {
-                item.long_sheng = part1; item.long_zhan = part2;
+                item.long_sheng = part1.toString(); item.long_zhan = part2.toString();
             }
             item.quantity = qty;
         }
-        else if (props.armyType === '虎甲軍') { item.yan_jue = qty; item.yan_ze = 0; }
-        else if (props.armyType === '虎賁軍') { item.yan_di = qty; item.yan_yuan = 0; }
+        else if (props.armyType === '虎甲軍') { item.yan_jue = qty; item.yan_ze = "0"; }
+        else if (props.armyType === '虎賁軍') { item.yan_di = qty; item.yan_yuan = "0"; }
 
         results.push(item);
     });
     
     return results;
 });
+
+const formatWithCommas = (val) => {
+    const s = String(val).replace(/,/g, '');
+    if (!/^\d+$/.test(s)) return s;
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 const handleFileImport = (event) => {
     const file = event.target.files[0];

@@ -81,7 +81,7 @@
                     <!-- Row 3: 數量 -->
                     <div class="space-y-0.5">
                         <label class="app-title ml-1">數量</label>
-                        <input v-model="form.quantity" type="number" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                        <input v-model="form.quantity" type="text" inputmode="numeric" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
                     </div>
 
                     <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
@@ -124,11 +124,11 @@
                     <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻尊</label>
-                            <input v-model.number="form.remarks.yan_zun" type="number" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.yan_zun" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻闇</label>
-                            <input v-model.number="form.remarks.yan_an" type="number" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.yan_an" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
                         </div>
                     </div>
 
@@ -136,11 +136,11 @@
                     <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍勝</label>
-                            <input v-model.number="form.remarks.long_sheng" type="number" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.long_sheng" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍戰</label>
-                            <input v-model.number="form.remarks.long_zhan" type="number" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.long_zhan" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
                         </div>
                     </div>
 
@@ -323,12 +323,33 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 });
 
-// Auto-sum logic for "二人份" (split quantities)
+// Helpers for BigInt operations on potentially large numeric strings
+const isValidBigInt = (val) => {
+    if (val === null || val === undefined || val === '') return false;
+    try {
+        BigInt(String(val).replace(/,/g, ''));
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+const tryBigIntSum = (v1, v2) => {
+    try {
+        const b1 = isValidBigInt(v1) ? BigInt(String(v1).replace(/,/g, '')) : 0n;
+        const b2 = isValidBigInt(v2) ? BigInt(String(v2).replace(/,/g, '')) : 0n;
+        return b1 + b2;
+    } catch (e) {
+        return 0n;
+    }
+};
+
+// Auto-sum logic for "二人份" (split quantities) using BigInt to prevent overflow
 watch(() => form.value.remarks, (newRemarks) => {
     if (form.value.destination === '黑曜軍') {
-        form.value.quantity = (Number(newRemarks.yan_zun) || 0) + (Number(newRemarks.yan_an) || 0);
+        form.value.quantity = tryBigIntSum(newRemarks.yan_zun, newRemarks.yan_an).toString();
     } else if (form.value.destination === '耀紫軍') {
-        form.value.quantity = (Number(newRemarks.long_sheng) || 0) + (Number(newRemarks.long_zhan) || 0);
+        form.value.quantity = tryBigIntSum(newRemarks.long_sheng, newRemarks.long_zhan).toString();
     }
 }, { deep: true });
 
@@ -337,16 +358,16 @@ const onDestinationChange = () => {
         form.value.process_date = '';
     }
     if (form.value.destination === '黑曜軍') {
-        form.value.remarks.yan_zun = form.value.remarks.yan_zun || 0;
-        form.value.remarks.yan_an = form.value.remarks.yan_an || 0;
+        form.value.remarks.yan_zun = form.value.remarks.yan_zun || "0";
+        form.value.remarks.yan_an = form.value.remarks.yan_an || "0";
     } else {
         delete form.value.remarks.yan_zun;
         delete form.value.remarks.yan_an;
     }
     
     if (form.value.destination === '耀紫軍') {
-        form.value.remarks.long_sheng = form.value.remarks.long_sheng || 0;
-        form.value.remarks.long_zhan = form.value.remarks.long_zhan || 0;
+        form.value.remarks.long_sheng = form.value.remarks.long_sheng || "0";
+        form.value.remarks.long_zhan = form.value.remarks.long_zhan || "0";
     } else {
         delete form.value.remarks.long_sheng;
         delete form.value.remarks.long_zhan;
@@ -373,6 +394,17 @@ const handleSave = () => {
         return;
     }
 
+    const clean = (val) => String(val || 0).replace(/,/g, '');
+
+    // Ensure all quantity fields are cleaned of commas and cast to strings for BigInt support
+    form.value.quantity = clean(form.value.quantity);
+    if (form.value.remarks) {
+        Object.keys(form.value.remarks).forEach(k => {
+            if (['yan_zun', 'yan_an', 'long_sheng', 'long_zhan'].includes(k)) {
+                form.value.remarks[k] = clean(form.value.remarks[k]);
+            }
+        });
+    }
 
     // Ensure we emit a clean object clone to avoid reference issues
     const finalData = JSON.parse(JSON.stringify(form.value));

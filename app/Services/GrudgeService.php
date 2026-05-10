@@ -30,8 +30,8 @@ class GrudgeService
             }
         }
 
-        // Calculate global totals
-        $globalTotalQuantity = (int)$query->sum('quantity');
+        // Calculate global totals - relying on database SUM which returns string for DECIMAL
+        $globalTotalQuantity = $query->sum('quantity') ?: "0";
         
         // Sum JSON fields (Breakdowns) globally
         // Since it's JSON, we can use JSON_EXTRACT or just fetch and sum in PHP
@@ -41,21 +41,21 @@ class GrudgeService
             $r = is_string($i->remarks) ? json_decode($i->remarks, true) : $i->remarks;
             if (!is_array($r)) $r = [];
             
-            $acc['yan_zun'] += (int)($r['yan_zun'] ?? 0);
-            $acc['yan_an'] += (int)($r['yan_an'] ?? 0);
-            $acc['long_sheng'] += (int)($r['long_sheng'] ?? 0);
-            $acc['long_zhan'] += (int)($r['long_zhan'] ?? 0);
-            $acc['yan_jue'] += (int)($r['yan_jue'] ?? 0);
-            $acc['yan_ze'] += (int)($r['yan_ze'] ?? 0);
-            $acc['yan_di'] += (int)($r['yan_di'] ?? 0);
-            $acc['yan_yuan'] += (int)($r['yan_yuan'] ?? 0);
+            $acc['yan_zun'] = bcadd($acc['yan_zun'], (string)($r['yan_zun'] ?? 0));
+            $acc['yan_an'] = bcadd($acc['yan_an'], (string)($r['yan_an'] ?? 0));
+            $acc['long_sheng'] = bcadd($acc['long_sheng'], (string)($r['long_sheng'] ?? 0));
+            $acc['long_zhan'] = bcadd($acc['long_zhan'], (string)($r['long_zhan'] ?? 0));
+            $acc['yan_jue'] = bcadd($acc['yan_jue'], (string)($r['yan_jue'] ?? 0));
+            $acc['yan_ze'] = bcadd($acc['yan_ze'], (string)($r['yan_ze'] ?? 0));
+            $acc['yan_di'] = bcadd($acc['yan_di'], (string)($r['yan_di'] ?? 0));
+            $acc['yan_yuan'] = bcadd($acc['yan_yuan'], (string)($r['yan_yuan'] ?? 0));
             
             // Legacy fallbacks
-            if ($i->destination === '虎甲軍') $acc['yan_jue'] += (int)$i->quantity;
-            if ($i->destination === '虎賁軍') $acc['yan_di'] += (int)$i->quantity;
+            if ($i->destination === '虎甲軍') $acc['yan_jue'] = bcadd($acc['yan_jue'], (string)$i->quantity);
+            if ($i->destination === '虎賁軍') $acc['yan_di'] = bcadd($acc['yan_di'], (string)$i->quantity);
             
             return $acc;
-        }, ['yan_zun'=>0,'yan_an'=>0,'long_sheng'=>0,'long_zhan'=>0,'yan_jue'=>0,'yan_ze'=>0,'yan_di'=>0,'yan_yuan'=>0]);
+        }, ['yan_zun'=>'0','yan_an'=>'0','long_sheng'=>'0','long_zhan'=>'0','yan_jue'=>'0','yan_ze'=>'0','yan_di'=>'0','yan_yuan'=>'0']);
 
         $results = $query->latest()->paginate(10);
         
@@ -81,20 +81,20 @@ class GrudgeService
         }
 
         // Calculate global totals for the top-level view
-        $globalTotalQuantity = (int)$query->sum('quantity');
+        $globalTotalQuantity = $query->sum('quantity') ?: "0";
         
         $allRecords = $query->get(['remarks', 'destination', 'quantity']);
         $globalBreakdowns = $allRecords->reduce(function($acc, $i) {
             $r = is_string($i->remarks) ? json_decode($i->remarks, true) : $i->remarks;
             if (!is_array($r)) $r = [];
-            $acc['yan_zun'] += (int)($r['yan_zun'] ?? 0);
-            $acc['yan_an'] += (int)($r['yan_an'] ?? 0);
-            $acc['long_sheng'] += (int)($r['long_sheng'] ?? 0);
-            $acc['long_zhan'] += (int)($r['long_zhan'] ?? 0);
-            if ($i->destination === '虎甲軍') $acc['yan_jue'] += (int)$i->quantity;
-            if ($i->destination === '虎賁軍') $acc['yan_di'] += (int)$i->quantity;
+            $acc['yan_zun'] = bcadd($acc['yan_zun'], (string)($r['yan_zun'] ?? 0));
+            $acc['yan_an'] = bcadd($acc['yan_an'], (string)($r['yan_an'] ?? 0));
+            $acc['long_sheng'] = bcadd($acc['long_sheng'], (string)($r['long_sheng'] ?? 0));
+            $acc['long_zhan'] = bcadd($acc['long_zhan'], (string)($r['long_zhan'] ?? 0));
+            if ($i->destination === '虎甲軍') $acc['yan_jue'] = bcadd($acc['yan_jue'], (string)$i->quantity);
+            if ($i->destination === '虎賁軍') $acc['yan_di'] = bcadd($acc['yan_di'], (string)$i->quantity);
             return $acc;
-        }, ['yan_zun'=>0,'yan_an'=>0,'long_sheng'=>0,'long_zhan'=>0,'yan_jue'=>0,'yan_ze'=>0,'yan_di'=>0,'yan_yuan'=>0]);
+        }, ['yan_zun'=>'0','yan_an'=>'0','long_sheng'=>'0','long_zhan'=>'0','yan_jue'=>'0','yan_ze'=>'0','yan_di'=>'0','yan_yuan'=>'0']);
 
         $paginator = $query->select('know_date', \Illuminate\Support\Facades\DB::raw('count(*) as count'), \Illuminate\Support\Facades\DB::raw('sum(quantity) as total_qty'))
             ->groupBy('know_date')

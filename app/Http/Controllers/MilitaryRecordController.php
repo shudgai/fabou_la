@@ -66,14 +66,14 @@ class MilitaryRecordController extends Controller
             : null;
 
         $breakdownTotals = [
-            'yan_zun'    => $currentStats ? $currentStats->yan_zun : $armyStats->sum('yan_zun'),
-            'yan_an'     => $currentStats ? $currentStats->yan_an : $armyStats->sum('yan_an'),
-            'long_sheng' => $currentStats ? $currentStats->long_sheng : $armyStats->sum('long_sheng'),
-            'long_zhan'  => $currentStats ? $currentStats->long_zhan : $armyStats->sum('long_zhan'),
-            'yan_jue'    => $currentStats ? $currentStats->yan_jue : $armyStats->sum('yan_jue'),
-            'yan_ze'     => $currentStats ? $currentStats->yan_ze : $armyStats->sum('yan_ze'),
-            'yan_di'     => $currentStats ? $currentStats->yan_di : $armyStats->sum('yan_di'),
-            'yan_yuan'   => $currentStats ? $currentStats->yan_yuan : $armyStats->sum('yan_yuan'),
+            'yan_zun'    => $currentStats ? $currentStats->yan_zun : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_zun ?? 0)), '0'),
+            'yan_an'     => $currentStats ? $currentStats->yan_an : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_an ?? 0)), '0'),
+            'long_sheng' => $currentStats ? $currentStats->long_sheng : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->long_sheng ?? 0)), '0'),
+            'long_zhan'  => $currentStats ? $currentStats->long_zhan : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->long_zhan ?? 0)), '0'),
+            'yan_jue'    => $currentStats ? $currentStats->yan_jue : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_jue ?? 0)), '0'),
+            'yan_ze'     => $currentStats ? $currentStats->yan_ze : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_ze ?? 0)), '0'),
+            'yan_di'     => $currentStats ? $currentStats->yan_di : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_di ?? 0)), '0'),
+            'yan_yuan'   => $currentStats ? $currentStats->yan_yuan : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_yuan ?? 0)), '0'),
         ];
 
         return response()->json([
@@ -145,20 +145,20 @@ class MilitaryRecordController extends Controller
             $validated = $request->validate([
                 'user_name' => 'nullable|string',
                 'army_type' => 'required|string',
-                'quantity' => 'required|numeric',
-                'know_date' => 'nullable|date',
-                'process_date' => 'nullable|date',
+                'quantity' => 'required|regex:/^\d+$/',
+                'know_date' => 'nullable|string',
+                'process_date' => 'nullable|string',
                 'destination' => 'nullable|string',
                 'user_remarks' => 'nullable|string',
                 'remarks_text' => 'nullable|string',
-                'yan_zun' => 'nullable|numeric',
-                'yan_an' => 'nullable|numeric',
-                'long_sheng' => 'nullable|numeric',
-                'long_zhan' => 'nullable|numeric',
-                'yan_jue' => 'nullable|numeric',
-                'yan_ze' => 'nullable|numeric',
-                'yan_di' => 'nullable|numeric',
-                'yan_yuan' => 'nullable|numeric',
+                'yan_zun' => 'nullable|regex:/^\d+$/',
+                'yan_an' => 'nullable|regex:/^\d+$/',
+                'long_sheng' => 'nullable|regex:/^\d+$/',
+                'long_zhan' => 'nullable|regex:/^\d+$/',
+                'yan_jue' => 'nullable|regex:/^\d+$/',
+                'yan_ze' => 'nullable|regex:/^\d+$/',
+                'yan_di' => 'nullable|regex:/^\d+$/',
+                'yan_yuan' => 'nullable|regex:/^\d+$/',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation failed for MilitaryRecord:', [
@@ -195,20 +195,20 @@ class MilitaryRecordController extends Controller
         $validated = $request->validate([
             'user_name' => 'nullable|string',
             'army_type' => 'nullable|string',
-            'quantity' => 'nullable|integer',
+            'quantity' => 'nullable|regex:/^\d+$/',
             'know_date' => 'nullable|date',
             'process_date' => 'nullable|date',
             'destination' => 'nullable|string',
             'user_remarks' => 'nullable|string',
             'remarks_text' => 'nullable|string',
-            'yan_zun' => 'nullable|integer',
-            'yan_an' => 'nullable|integer',
-            'long_sheng' => 'nullable|integer',
-            'long_zhan' => 'nullable|integer',
-            'yan_jue' => 'nullable|integer',
-            'yan_ze' => 'nullable|integer',
-            'yan_di' => 'nullable|integer',
-            'yan_yuan' => 'nullable|integer',
+            'yan_zun' => 'nullable|regex:/^\d+$/',
+            'yan_an' => 'nullable|regex:/^\d+$/',
+            'long_sheng' => 'nullable|regex:/^\d+$/',
+            'long_zhan' => 'nullable|regex:/^\d+$/',
+            'yan_jue' => 'nullable|regex:/^\d+$/',
+            'yan_ze' => 'nullable|regex:/^\d+$/',
+            'yan_di' => 'nullable|regex:/^\d+$/',
+            'yan_yuan' => 'nullable|regex:/^\d+$/',
         ]);
 
         $record->update($validated);

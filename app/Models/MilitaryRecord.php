@@ -35,14 +35,6 @@ class MilitaryRecord extends Model
     protected $casts = [
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',
-        'quantity' => 'integer',
-        'yan_zun' => 'integer',
-        'yan_an' => 'integer',
-        'long_sheng' => 'integer',
-        'long_zhan' => 'integer',
-        'yan_jue' => 'integer',
-        'yan_ze' => 'integer',
-        'yan_di' => 'integer',
-        'yan_yuan' => 'integer',
+        // Quantity fields are kept as strings from DECIMAL(65,0) to prevent overflow
     ];
 }

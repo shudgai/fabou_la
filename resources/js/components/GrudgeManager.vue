@@ -152,7 +152,7 @@
                                              <!-- Quantity -->
                                              <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">
                                                  <label class="grudge-label">數量:</label>
-                                                 <div class="grudge-value whitespace-nowrap">{{ (Number(item.quantity) || 0).toLocaleString() }}位</div>
+                                                 <div class="grudge-value whitespace-nowrap">{{ formatArmyTotal(item.quantity) }}</div>
                                              </div>
                                              <!-- Result -->
                                              <div class="grudge-field flex flex-row items-center space-x-1.5">
@@ -353,19 +353,25 @@ const formatDate = (dateStr) => {
     return s.replace(/-/g, '/');
 };
 
+const isValidBigInt = (val) => {
+    if (val === null || val === undefined || val === '') return false;
+    try {
+        BigInt(String(val).replace(/,/g, ''));
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+const formatWithCommas = (val) => {
+    const s = String(val).replace(/,/g, '');
+    if (!/^\d+$/.test(s)) return s;
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const formatArmyTotal = (num) => {
-    num = Number(num) || 0;
-    if (num < 1000000) return `${num.toLocaleString()} 位`;
-    const troops = Math.floor(num / 1000000);
-    const remaining = num % 1000000;
-    if (remaining === 0) return `${troops}隊`;
-    const wan = Math.floor(remaining / 10000);
-    const rest = remaining % 10000;
-    let res = `${troops}隊`;
-    if (wan > 0) res += `${wan}萬`;
-    if (rest > 0) res += `${rest}位`;
-    else if (wan === 0) res += `0位`;
-    return res;
+    if (!isValidBigInt(num)) return '0';
+    return formatWithCommas(num);
 };
 
 const getTodayStr = () => {
