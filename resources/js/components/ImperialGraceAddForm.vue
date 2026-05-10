@@ -60,7 +60,7 @@
                 <!-- SINGLE MODE: Immersive One-Thing-At-A-Time -->
                 <div v-if="localMode === 'single'" class="flex-1 flex flex-col min-h-0 relative">
                     <!-- Progress Indicator -->
-                    <div class="px-8 pt-2 pb-6">
+                    <div class="px-8 pt-2 pb-[10px]">
                         <div class="flex items-center justify-between gap-1">
                             <div v-for="s in (personnel.length > 0 ? 6 : 5)" :key="s" 
                                  class="h-1 flex-1 rounded-full transition-all duration-500"
@@ -73,13 +73,13 @@
                         </div>
                     </div>
 
-                    <!-- Step Content Container -->
-                    <div class="flex-1 flex flex-col justify-center px-6 pb-20">
+                    <!-- Step Content Container - Standard Padding -->
+                    <div class="flex-1 flex flex-col justify-start pt-[10px] px-6 pb-20">
                         <transition name="step-fade" mode="out-in">
                             <!-- Step 1: Date & Master -->
-                            <div v-if="currentStep === 1" :key="1" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
-                                <div class="space-y-8 max-w-sm mx-auto mt-12">
+                            <div v-if="currentStep === 1" :key="1" class="flex-1 flex flex-col items-center justify-start pt-[10px] space-y-12 animate-fade-in text-center">
+                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
+                                <div class="space-y-10 w-full max-w-sm mt-12">
                                     <div class="relative group">
                                         <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
                                         <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
@@ -99,7 +99,7 @@
 
                             <!-- Step 2: Item Name -->
                             <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
+                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
                                 <div class="max-w-md mx-auto">
                                     <textarea v-model="form.name" rows="2" 
                                         @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" 
@@ -110,7 +110,7 @@
 
                             <!-- Step 3: Purpose -->
                             <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
+                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
                                 <div class="max-w-md mx-auto">
                                     <input v-model="form.purpose" placeholder="選填：例如 鎮宅避邪..." 
                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
@@ -122,7 +122,7 @@
 
                             <!-- Step 4: Mode Selection (Single vs Multi) -->
                             <div v-else-if="currentStep === 4" :key="4" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">由<span class="text-indigo-600">何人</span>承接此法寶？</h2>
+                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">由<span class="text-indigo-600">何人</span>承接此法寶？</h2>
                                 <div class="grid grid-cols-1 gap-4 max-w-sm mx-auto">
                                     <button @click="personnel = []; currentStep++" 
                                             class="group p-6 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
@@ -151,7 +151,7 @@
                             <div v-else-if="currentStep === 5" :key="5" class="space-y-8 animate-fade-in w-full h-full flex flex-col">
                                 <!-- Single Mode Status -->
                                 <div v-if="personnel.length === 0" class="text-center space-y-6">
-                                    <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
+                                    <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
                                     <div class="grid grid-cols-1 gap-8 max-w-sm mx-auto">
                                         <div class="relative">
                                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
@@ -174,7 +174,7 @@
                                 <!-- Multi Mode List -->
                                 <div v-else class="flex-1 flex flex-col min-h-0">
                                     <div class="text-center mb-6">
-                                        <h2 class="text-[28px] font-black text-slate-900 leading-tight tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
+                                        <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
                                     </div>
                                     <div class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-24 space-y-4">
                                         <div v-for="(p, idx) in personnel" :key="idx" 
@@ -222,7 +222,7 @@
 
                             <!-- Final Step: Remarks & Confirm -->
                             <div v-else-if="currentStep === (personnel.length > 0 ? 6 : 6)" :key="6" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">最後，有其他<br><span class="text-indigo-600">補充說明</span>嗎？</h2>
+                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">最後，有其他<br><span class="text-indigo-600">補充說明</span>嗎？</h2>
                                 <div class="max-w-md mx-auto">
                                     <textarea v-model="form.remarks" rows="3" placeholder="例如：法寶現存放於..." 
                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
@@ -236,7 +236,7 @@
                     </div>
 
                     <!-- Immersive Navigation Footer - Fixed above mobile navbar, No gap -->
-                    <div class="absolute bottom-[7dvh] left-0 right-0 px-8 py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100]">
+                    <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 px-8 py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100] md:max-w-xl md:left-1/2 md:-translate-x-1/2">
                         <button v-if="currentStep > 1" @click="currentStep--" 
                                 class="w-12 h-12 rounded-2xl border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
