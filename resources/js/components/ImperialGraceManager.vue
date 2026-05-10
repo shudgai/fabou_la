@@ -157,12 +157,12 @@
                 <div class="flex items-end justify-between w-full px-[15px] pt-1 pb-[6px] bg-white">
                     <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0 ml-4">
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                        <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1.5 active:scale-95 transition-all font-black" style="color: #4f46e5 !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                                :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-[#64748b] border border-transparent'"
-                                class="px-3 py-1.5 rounded-xl font-black transition-all active:scale-95 whitespace-nowrap shadow-sm"
+                                :class="reorderMode ? 'text-emerald-600' : 'text-slate-400'"
+                                class="px-2 py-1.5 font-black transition-all active:scale-95 whitespace-nowrap"
                                 style="font-size: 16px !important;">
                             {{ reorderMode ? '確認排序' : '修改排序' }}
                         </button>
