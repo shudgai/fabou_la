@@ -250,40 +250,39 @@
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
                             <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
                                 <!-- Header -->
-                                <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100">
-                                    <!-- Global Main Title + Master Name (same row) -->
-                                        <div class="flex-1 px-[15px] py-[8px] flex items-end justify-between pr-12">
-                                            <div class="flex items-baseline flex-wrap gap-x-2">
-                                                <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
-                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
-                    </div>
-                                                </div>
-                                                <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
-                                            </div>
-                                            <!-- Three dots menu in expanded view (Moved to title row) -->
-                                            <div class="relative z-[20]">
-                                                <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all rounded-full hover:bg-red-50">
-                                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
+                                    <div class="px-[15px] py-[8px] flex items-end justify-between pr-14">
+                                        <div class="flex items-center gap-2">
+                                            <logo-imperial-notebook :height="36" />
+                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
+                                        </div>
+                                        <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                                    </div>
+
+                                    <!-- Action Buttons Container (Right Side) -->
+                                    <div class="absolute right-2 top-2 z-[100] flex flex-col items-center gap-0">
+                                        <!-- Close Button (X) - Top -->
+                                        <button @click="toggleExpand(reg.id)" class="w-10 h-10 flex items-center justify-center text-slate-400 active:scale-90 transition-all">
+                                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <!-- Three dots menu - Bottom -->
+                                        <div class="relative">
+                                            <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all">
+                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                            </button>
+                                            <div v-if="openMenuId === reg.id" @click.stop 
+                                                 class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                                <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
+                                                    {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                                 </button>
-                                                <div v-if="openMenuId === reg.id" @click.stop 
-                                                     class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
-                                                    <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
-                                                        {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
-                                                    </button>
-                                                    <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                                    <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
-                                                    <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
-                                                    <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
-                                                    <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                                <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                                <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
+                                                <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                                <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                                <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
                                             </div>
                                         </div>
-
-                                    <!-- Close Button moved to top right absolute -->
-                                    <button @click="toggleExpand(reg.id)" class="absolute right-3 top-3 z-[100] w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 active:scale-90 transition-all">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-
+                                    </div>
                                 </div>
                                 <!-- Scrollable Content -->
                                 <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
