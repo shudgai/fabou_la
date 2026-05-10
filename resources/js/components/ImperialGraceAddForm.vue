@@ -179,7 +179,7 @@
                                 <div v-else class="flex-1 flex flex-col min-h-0">
                                     <div class="text-center mb-6">
                                         <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
-                                        <p class="text-[12px] font-black text-indigo-500 mt-1 tracking-tight animate-pulse">手機按『換行』或『確定』鍵可快速新增下一位</p>
+                                        <p class="text-[12px] font-black text-indigo-500 mt-1 tracking-tight animate-pulse">手機按『換行』，電腦按『ENTER』鍵可新增人員</p>
                                     </div>
                                     <div class="flex-1 overflow-y-auto custom-scrollbar px-1 pb-24 space-y-[15px]">
                                         <div v-for="(p, idx) in personnel" :key="idx" 
