@@ -78,7 +78,7 @@
                         <transition name="step-fade" mode="out-in">
                             <!-- Step 1: Date & Master -->
                             <div v-if="currentStep === 1" :key="1" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請問載錄的<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">目標</span>？</h2>
+                                <h2 class="text-[22px] font-black text-slate-900 leading-tight tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
                                 <div class="space-y-8 max-w-sm mx-auto">
                                     <div class="relative group">
                                         <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
@@ -406,7 +406,7 @@ const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '
 // One Thing At A Time State
 const currentStep = ref(1);
 const stepTitles = [
-    '日期與目標',
+    '日期與仙師',
     '法寶名稱',
     '法寶用意',
     '承接模式',
