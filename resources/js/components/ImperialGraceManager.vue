@@ -251,12 +251,14 @@
                             <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
-                                    <div class="px-[15px] py-[8px] flex items-end justify-between pr-14">
+                                    <div class="px-[15px] py-[10px] flex flex-col items-start pr-14">
                                         <div class="flex items-center gap-2">
                                             <logo-imperial-notebook :height="36" />
-                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important; padding-top: 5px !important;">重大皇恩登記簿</h1>
+                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important;">重大皇恩登記簿</h1>
                                         </div>
-                                        <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                                        <div class="mt-1">
+                                            <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                                        </div>
                                     </div>
 
                                     <!-- Action Buttons Container (Right Side) -->
