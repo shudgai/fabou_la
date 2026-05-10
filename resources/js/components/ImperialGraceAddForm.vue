@@ -33,7 +33,7 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain">
+            <div ref="scrollContainer" class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain">
 
                 <!-- COMMON FIELDS (Date & Master) - Hidden in Single Immersive Mode -->
                 <div v-if="localMode !== 'single'" class="grid grid-cols-2 gap-3 bg-white p-1">
@@ -408,7 +408,20 @@ const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
 const activeRelDropdownIdx = ref(null);
+// Scroll Control
+const scrollContainer = ref(null);
+watch(currentStep, () => {
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
+});
+
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
+
+// Personnel & Shared State
+const personnel = ref([]);
+const dharmaNames = ref([]);
+const isMulti = ref(true);
 
 // One Thing At A Time State
 const currentStep = ref(1);
@@ -619,11 +632,6 @@ const excelRows = computed(() => {
         };
     });
 });
-
-const personnel = ref([]);
-const dharmaNames = ref([]);
-const isMulti = ref(true);
-
 const fetchDharmaNames = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
