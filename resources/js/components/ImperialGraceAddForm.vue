@@ -189,6 +189,7 @@
                                                 <div class="space-y-1">
                                                     <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest ml-1">法號</label>
                                                     <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                                        @keyup.enter="handlePersonnelEnter(idx)"
                                                         class="personnel-name-input w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none">
                                                 </div>
                                                 <div class="space-y-1">
@@ -663,32 +664,29 @@ function handleNext() {
     }
 }
 
-function addPersonnelRow() {
-    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.record_date || '', status: '已求得', remarks: '' });
-    
+function focusPersonnelInput(idx) {
     nextTick(() => {
-        // Focus the last input
         const inputs = document.querySelectorAll('.personnel-name-input');
-        if (inputs.length > 0) {
-            inputs[inputs.length - 1].focus();
+        if (inputs[idx]) {
+            inputs[idx].focus();
+            setTimeout(() => {
+                inputs[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 150);
         }
-
-        // Scroll the "Add Personnel" button into view
-        setTimeout(() => {
-            const addBtn = document.querySelector('.btn-add-personnel');
-            if (addBtn) {
-                addBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 100);
     });
 }
 
+function addPersonnelRow() {
+    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.record_date || '', status: '已求得', remarks: '' });
+    focusPersonnelInput(personnel.value.length - 1);
+}
+
 function handlePersonnelEnter(idx) {
-    if (idx === personnel.value.length - 1) addPersonnelRow();
-    nextTick(() => {
-        const inputs = document.querySelectorAll('.personnel-name-input');
-        if (inputs[idx + 1]) inputs[idx + 1].focus();
-    });
+    if (idx === personnel.value.length - 1) {
+        addPersonnelRow();
+    } else {
+        focusPersonnelInput(idx + 1);
+    }
 }
 
 function removePersonnelRow(idx) { personnel.value.splice(idx, 1); }
