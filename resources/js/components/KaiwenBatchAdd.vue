@@ -6,7 +6,10 @@
                 <button @click="$emit('cancel')" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
-                <h2 class="text-[24px] font-black text-slate-900 ml-2 tracking-tight">多筆匯入開文</h2>
+                <div class="flex items-center gap-2 ml-2">
+                    <logo-imperial-notebook :height="36" />
+                    <h2 class="text-[24px] font-black text-slate-900 tracking-tight">多筆匯入開文</h2>
+                </div>
             </div>
             <button @click="handleSave" :disabled="isSaving || parsedPosts.length === 0" 
                 class="bg-indigo-600 text-white px-6 py-2 rounded-2xl font-black text-[15px] active:scale-95 transition-all shadow-lg shadow-indigo-100 disabled:opacity-30" style="color: white !important;">

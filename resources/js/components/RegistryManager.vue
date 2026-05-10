@@ -4,8 +4,9 @@
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 4px; min-height: 52px;">
+            style="padding: 4px 15px; min-height: 52px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
+                <logo-imperial-notebook :height="36" />
                 <div class="app-title !text-[30px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>

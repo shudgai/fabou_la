@@ -8,7 +8,8 @@
             <!-- Header -->
             <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
-                    <div class="text-[26px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black" style="color: #dc2626 !important;">
+                    <div class="text-[26px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black flex items-center gap-2" style="color: #dc2626 !important;">
+                        <logo-imperial-notebook :height="36" />
                         重大皇恩
                     </div>
                 </div>
@@ -60,7 +61,7 @@
                 <!-- SINGLE MODE: Immersive One-Thing-At-A-Time -->
                 <div v-if="localMode === 'single'" class="flex-1 flex flex-col min-h-0 relative">
                     <!-- Progress Indicator -->
-                    <div class="px-8 pt-2 pb-[10px]">
+                    <div class="px-[15px] pt-[15px] pb-[10px]">
                         <div class="flex items-center justify-between gap-1">
                             <div v-for="s in (personnel.length > 0 ? 6 : 5)" :key="s" 
                                  class="h-1 flex-1 rounded-full transition-all duration-500"
@@ -74,11 +75,11 @@
                     </div>
 
                     <!-- Step Content Container - Standard Padding -->
-                    <div class="flex-1 flex flex-col justify-start pt-[10px] px-6 pb-20">
+                    <div class="flex-1 flex flex-col justify-start pt-[15px] px-[15px] pb-20">
                         <transition name="step-fade" mode="out-in">
                             <!-- Step 1: Date & Master -->
-                            <div v-if="currentStep === 1" :key="1" class="flex-1 flex flex-col items-center justify-start pt-[10px] space-y-12 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
+                            <div v-if="currentStep === 1" :key="1" class="flex-1 flex flex-col items-center justify-start pt-[15px] space-y-12 animate-fade-in text-center">
+                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
                                 <div class="space-y-10 w-full max-w-sm mt-12">
                                     <div class="relative group">
                                         <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
@@ -99,7 +100,7 @@
 
                             <!-- Step 2: Item Name -->
                             <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
+                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
                                 <div class="max-w-md mx-auto">
                                     <textarea v-model="form.name" rows="2" 
                                         @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" 
@@ -110,7 +111,7 @@
 
                             <!-- Step 3: Purpose -->
                             <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
+                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>是？</h2>
                                 <div class="max-w-md mx-auto">
                                     <input v-model="form.purpose" placeholder="選填：例如 鎮宅避邪..." 
                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
@@ -122,10 +123,10 @@
 
                             <!-- Step 4: Mode Selection (Single vs Multi) -->
                             <div v-else-if="currentStep === 4" :key="4" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">由<span class="text-indigo-600">何人</span>承接此法寶？</h2>
+                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">由<span class="text-indigo-600">何人</span>承接此法寶？</h2>
                                 <div class="grid grid-cols-1 gap-4 max-w-sm mx-auto">
                                     <button @click="personnel = []; currentStep++" 
-                                            class="group p-6 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
+                                            class="group p-0 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
                                         <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
                                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </div>
@@ -135,23 +136,23 @@
                                         </div>
                                     </button>
                                     <button @click="addPersonnelRow(); currentStep++" 
-                                            class="group p-6 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
+                                            class="group p-0 bg-white border-2 border-slate-100 hover:border-indigo-500 rounded-[32px] transition-all active:scale-95 text-left flex items-center gap-5">
                                         <div class="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center shrink-0">
                                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </div>
                                         <div>
                                             <div class="text-[20px] font-black text-slate-900">多人承接</div>
-                                            <div class="text-[14px] text-slate-400 font-bold">可輸入多位同修法號</div>
+                                            <div class="text-[14px] text-slate-400 font-bold">可輸入多人法號</div>
                                         </div>
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Step 5 (Single): Status & Date OR Step 5 (Multi): Personnel List -->
-                            <div v-else-if="currentStep === 5" :key="5" class="space-y-8 animate-fade-in w-full h-full flex flex-col">
+                            <div v-else-if="currentStep === 5" :key="5" class="space-y-[15px] animate-fade-in w-full h-full flex flex-col">
                                 <!-- Single Mode Status -->
                                 <div v-if="personnel.length === 0" class="text-center space-y-6">
-                                    <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
+                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
                                     <div class="grid grid-cols-1 gap-8 max-w-sm mx-auto">
                                         <div class="relative">
                                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
@@ -177,21 +178,21 @@
                                 <!-- Multi Mode List -->
                                 <div v-else class="flex-1 flex flex-col min-h-0">
                                     <div class="text-center mb-6">
-                                        <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
+                                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-red-600">承接人員</span>名單</h2>
                                     </div>
-                                    <div class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-24 space-y-4">
+                                    <div class="flex-1 overflow-y-auto custom-scrollbar px-1 pb-24 space-y-[15px]">
                                         <div v-for="(p, idx) in personnel" :key="idx" 
-                                            class="p-5 bg-slate-50/50 rounded-[32px] border border-slate-100 space-y-4 relative group animate-fade-in">
+                                            class="p-0 bg-slate-50/50 rounded-[32px] border border-slate-100 space-y-4 relative group animate-fade-in">
                                             <button @click="removePersonnelRow(idx)" class="absolute -top-2 -right-2 w-8 h-8 bg-white border border-slate-100 text-slate-400 rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-all z-10">✕</button>
                                             
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div class="space-y-1">
-                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">法號</label>
+                                                    <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest ml-1">法號</label>
                                                     <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
-                                                        class="w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none">
+                                                        class="personnel-name-input w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none">
                                                 </div>
                                                 <div class="space-y-1">
-                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">狀態</label>
+                                                    <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest ml-1">狀態</label>
                                                     <select v-model="p.status" class="w-full text-[18px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-500 bg-transparent py-2 outline-none appearance-none"
                                                         :style="p.status === '未求得' ? 'color: #dc2626 !important;' : (p.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
                                                         <option value="未求得">未求得</option>
@@ -202,7 +203,7 @@
                                             </div>
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div class="space-y-1">
-                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">日期</label>
+                                                    <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest ml-1">日期</label>
                                                     <div class="relative">
                                                         <input v-model="p.obtained_date" type="text" 
                                                             :disabled="p.status === '未求得'"
@@ -215,12 +216,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="space-y-1">
-                                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">備註對象</label>
+                                                    <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest ml-1">備註對象</label>
                                                     <input v-model="p.relationship" placeholder="選填..." class="w-full text-[16px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-2 outline-none">
                                                 </div>
                                             </div>
                                         </div>
-                                        <button @click="addPersonnelRow" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-[28px] text-slate-400 font-black hover:border-indigo-300 hover:text-indigo-500 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        <button @click="addPersonnelRow" class="btn-add-personnel w-full py-4 border-2 border-dashed border-slate-200 rounded-[28px] text-slate-400 font-black hover:border-indigo-300 hover:text-indigo-500 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4">
                                             <span>＋ 繼續新增人員</span>
                                         </button>
                                     </div>
@@ -229,21 +230,21 @@
 
                             <!-- Final Step: Remarks & Confirm -->
                             <div v-else-if="currentStep === (personnel.length > 0 ? 6 : 6)" :key="6" class="space-y-6 animate-fade-in text-center">
-                                <h2 class="text-[22px] font-black text-slate-900 leading-relaxed tracking-tight">最後，有其他<br><span class="text-indigo-600">補充說明</span>嗎？</h2>
+                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">最後，有其他<br><span class="text-indigo-600">補充說明</span>嗎？</h2>
                                 <div class="max-w-md mx-auto">
                                     <textarea v-model="form.remarks" rows="3" placeholder="例如：法寶現存放於..." 
                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
                                 </div>
-                                <div class="bg-indigo-50 p-6 rounded-[32px] max-w-sm mx-auto space-y-2 border border-indigo-100">
-                                    <div class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">READY TO SAVE</div>
-                                    <div class="text-[18px] font-black text-slate-900">點擊下方按鈕完成載錄</div>
+                                <div class="bg-indigo-50 p-0 rounded-[32px] max-w-sm mx-auto space-y-2 border border-indigo-100">
+                                    <div class="text-[13px] font-black text-indigo-400 uppercase tracking-widest pt-4">READY TO SAVE</div>
+                                    <div class="text-[18px] font-black text-slate-900 pb-4">點擊下方按鈕完成載錄</div>
                                 </div>
                             </div>
                         </transition>
                     </div>
 
                     <!-- Immersive Navigation Footer - Fixed above mobile navbar, No gap -->
-                    <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 px-8 py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100] md:max-w-xl md:left-1/2 md:-translate-x-1/2">
+                    <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 px-[15px] py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100] md:max-w-xl md:left-1/2 md:-translate-x-1/2">
                         <button v-if="currentStep > 1" @click="currentStep--" 
                                 class="w-12 h-12 rounded-2xl border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -392,39 +393,20 @@ const props = defineProps({
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'close']);
 
-// Watch for mode changes to handle body scroll locking
-watch(() => props.mode, (newVal) => {
-    if (newVal) lockBodyScroll();
-    else unlockBodyScroll();
-}, { immediate: true });
-
-onUnmounted(() => {
-    if (props.mode) unlockBodyScroll();
-});
-
+// --- 1. State Declarations (Refs) ---
 const localMode = ref(props.mode || 'single');
-const batchType = ref('single');
-const form = ref({ ...props.initialData });
-const batchInput = ref('');
-const activePicker = ref(null);
-const activeRelDropdownIdx = ref(null);
-// Scroll Control
-const scrollContainer = ref(null);
-watch(currentStep, () => {
-    if (scrollContainer.value) {
-        scrollContainer.value.scrollTop = 0;
-    }
-});
-
-const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
-
-// Personnel & Shared State
+const currentStep = ref(1);
 const personnel = ref([]);
 const dharmaNames = ref([]);
 const isMulti = ref(true);
+const form = ref({ ...props.initialData });
+const batchType = ref('single');
+const batchInput = ref('');
+const activePicker = ref(null);
+const activeRelDropdownIdx = ref(null);
+const scrollContainer = ref(null);
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
-// One Thing At A Time State
-const currentStep = ref(1);
 const stepTitles = [
     '日期與仙師',
     '法寶名稱',
@@ -434,67 +416,21 @@ const stepTitles = [
     '備註確認'
 ];
 
-watch(localMode, () => {
-    currentStep.value = 1;
+// --- 2. Lifecycle & Global Logic ---
+watch(() => props.mode, (newVal) => {
+    if (newVal) lockBodyScroll();
+    else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+    if (props.mode) unlockBodyScroll();
 });
 
-// Status & Date Logic
-watch(() => form.value.status, (newStatus) => {
-    if (newStatus === '未求得') {
-        form.value.obtained_date = '';
-    }
+onMounted(() => {
+    fetchDharmaNames();
 });
 
-watch(personnel, (newVal) => {
-    newVal.forEach(p => {
-        if (p.status === '未求得' && p.obtained_date) {
-            p.obtained_date = '';
-        }
-    });
-}, { deep: true });
-
-const validateStep = (step) => {
-    if (step === 5) {
-        if (personnel.value.length === 0) {
-            // Single Mode
-            if (form.value.status === '未求得' && form.value.obtained_date) {
-                alert('狀態為「未求得」時不可輸入日期');
-                form.value.obtained_date = '';
-                return false;
-            }
-            if ((form.value.status === '已求得' || form.value.status === '已登記') && !form.value.obtained_date) {
-                alert(`狀態為「${form.value.status}」時必須輸入日期`);
-                return false;
-            }
-        } else {
-            // Multi Mode
-            for (let i = 0; i < personnel.value.length; i++) {
-                const p = personnel.value[i];
-                if (!p.custom_name) {
-                    alert(`第 ${i+1} 位人員請輸入法號`);
-                    return false;
-                }
-                if (p.status === '未求得' && p.obtained_date) {
-                    alert(`人員「${p.custom_name}」狀態為「未求得」時不可輸入日期`);
-                    p.obtained_date = '';
-                    return false;
-                }
-                if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
-                    alert(`人員「${p.custom_name}」狀態為「${p.status}」時必須輸入日期`);
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-};
-
-const handleNext = () => {
-    if (validateStep(currentStep.value)) {
-        currentStep.value++;
-    }
-};
-
+// --- 3. Computed Properties ---
 const activePickerValue = computed({
     get: () => {
         if (!activePicker.value) return '';
@@ -518,15 +454,9 @@ const hasPersonnelPattern = computed(() => {
     return /(已登記|已求得|未求得)/.test(batchInput.value);
 });
 
-const excelCols = ref([
-    { key: 'c0', label: '法寶名稱' },
-    { key: 'c1', label: '法寶用意' }
-]);
-
 const excelRows = computed(() => {
     if (!batchInput.value.trim()) return [];
 
-    // HYBRID SMART PARSER: Automatically handles Single & Multi-person blocks
     const lines = batchInput.value.split('\n').map(l => l.trim());
     const records = [];
     let currentRec = null;
@@ -554,9 +484,7 @@ const excelRows = computed(() => {
         const looksLikePlainName = !line.includes('：') && !line.includes(':') && !isStatus && !isDate && !isPurpose && !isNewItemTrigger;
 
         if (isNewItemTrigger) {
-            if (currentRec) {
-                records.push(currentRec);
-            }
+            if (currentRec) records.push(currentRec);
             let name = line.replace(/^法寶名稱[:：]\s*/, '').trim();
             currentRec = { name: name, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
         } else if (looksLikePlainName) {
@@ -580,7 +508,6 @@ const excelRows = computed(() => {
             } else if (isStatus) {
                 const statusStr = isStatus[0];
                 const namePart = line.split(statusStr)[0].replace(/狀態[:：]?/, '').trim();
-
                 if (namePart) {
                     const pDate = isDate ? isDate[0].replace(/\//g, '-') : '';
                     currentRec.personnel.push({ custom_name: namePart, status: statusStr, obtained_date: pDate, remarks: '' });
@@ -632,36 +559,16 @@ const excelRows = computed(() => {
         };
     });
 });
-const fetchDharmaNames = async () => {
-    try {
-        const res = await axios.get('/api/dharma-names-list');
-        dharmaNames.value = res.data;
-    } catch (e) {}
-};
 
-const addPersonnelRow = () => {
-    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.record_date || '', status: '已求得', remarks: '' });
-};
+// --- 4. Watchers ---
+watch(localMode, () => {
+    currentStep.value = 1;
+});
 
-const handlePersonnelEnter = (idx) => {
-    if (idx === personnel.value.length - 1) addPersonnelRow();
-    nextTick(() => {
-        const inputs = document.querySelectorAll('.personnel-name-input');
-        if (inputs[idx + 1]) inputs[idx + 1].focus();
-    });
-};
-
-const removePersonnelRow = (idx) => { personnel.value.splice(idx, 1); };
-const movePersonnel = (idx, dir) => {
-    const target = idx + dir;
-    if (target < 0 || target >= personnel.value.length) return;
-    const item = personnel.value[idx];
-    personnel.value.splice(idx, 1);
-    personnel.value.splice(target, 0, item);
-};
-
-onMounted(() => {
-    fetchDharmaNames();
+watch(currentStep, () => {
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTop = 0;
+    }
 });
 
 watch(() => props.initialData, (newVal) => {
@@ -677,17 +584,20 @@ watch(() => props.initialData, (newVal) => {
     }
 }, { immediate: true });
 
-// Auto-fill date when status changes
+// Combined Status & Date Logic
 watch(() => form.value.status, (newStatus) => {
-    if ((newStatus === '已求得' || newStatus === '已登記') && !form.value.obtained_date) {
+    if (newStatus === '未求得') {
+        form.value.obtained_date = '';
+    } else if ((newStatus === '已求得' || newStatus === '已登記') && !form.value.obtained_date) {
         form.value.obtained_date = new Date().toISOString().split('T')[0];
     }
 });
 
 watch(personnel, (newVal) => {
     newVal.forEach(p => {
-        // Auto-fill date
-        if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
+        if (p.status === '未求得') {
+            p.obtained_date = '';
+        } else if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
             p.obtained_date = new Date().toISOString().split('T')[0];
         }
 
@@ -698,7 +608,6 @@ watch(personnel, (newVal) => {
                 const namePart = relSplitMatch[1].trim();
                 let connector = relSplitMatch[2];
                 let relPart = relSplitMatch[3].trim();
-
                 p.custom_name = namePart;
                 p.relationship = connector + relPart;
             }
@@ -706,12 +615,97 @@ watch(personnel, (newVal) => {
     });
 }, { deep: true });
 
-const handleSubmit = () => {
+// --- 5. Methods ---
+async function fetchDharmaNames() {
+    try {
+        const res = await axios.get('/api/dharma-names-list');
+        dharmaNames.value = res.data;
+    } catch (e) {}
+}
+
+function validateStep(step) {
+    if (step === 5) {
+        if (personnel.value.length === 0) {
+            if (form.value.status === '未求得' && form.value.obtained_date) {
+                alert('狀態為「未求得」時不可輸入日期');
+                form.value.obtained_date = '';
+                return false;
+            }
+            if ((form.value.status === '已求得' || form.value.status === '已登記') && !form.value.obtained_date) {
+                alert(`狀態為「${form.value.status}」時必須輸入日期`);
+                return false;
+            }
+        } else {
+            for (let i = 0; i < personnel.value.length; i++) {
+                const p = personnel.value[i];
+                if (!p.custom_name) {
+                    alert(`第 ${i+1} 位人員請輸入法號`);
+                    return false;
+                }
+                if (p.status === '未求得' && p.obtained_date) {
+                    alert(`人員「${p.custom_name}」狀態為「未求得」時不可輸入日期`);
+                    p.obtained_date = '';
+                    return false;
+                }
+                if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
+                    alert(`人員「${p.custom_name}」狀態為「${p.status}」時必須輸入日期`);
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function handleNext() {
+    if (validateStep(currentStep.value)) {
+        currentStep.value++;
+    }
+}
+
+function addPersonnelRow() {
+    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.record_date || '', status: '已求得', remarks: '' });
+    
+    nextTick(() => {
+        // Focus the last input
+        const inputs = document.querySelectorAll('.personnel-name-input');
+        if (inputs.length > 0) {
+            inputs[inputs.length - 1].focus();
+        }
+
+        // Scroll the "Add Personnel" button into view
+        setTimeout(() => {
+            const addBtn = document.querySelector('.btn-add-personnel');
+            if (addBtn) {
+                addBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    });
+}
+
+function handlePersonnelEnter(idx) {
+    if (idx === personnel.value.length - 1) addPersonnelRow();
+    nextTick(() => {
+        const inputs = document.querySelectorAll('.personnel-name-input');
+        if (inputs[idx + 1]) inputs[idx + 1].focus();
+    });
+}
+
+function removePersonnelRow(idx) { personnel.value.splice(idx, 1); }
+
+function movePersonnel(idx, dir) {
+    const target = idx + dir;
+    if (target < 0 || target >= personnel.value.length) return;
+    const item = personnel.value[idx];
+    personnel.value.splice(idx, 1);
+    personnel.value.splice(target, 0, item);
+}
+
+function handleSubmit() {
     if (localMode.value === 'single') {
         if (!form.value.name?.trim()) { alert('請輸入法寶名稱'); return; }
         const cleaned = personnel.value.filter(p => p.custom_name?.trim());
         const isMulti = cleaned.length > 0;
-
         let finalStatus = form.value.status;
         if (isMulti) {
             const hasUnobtained = cleaned.some(p => p.status === '未求得');
@@ -754,15 +748,12 @@ const handleSubmit = () => {
             }))
         });
     }
-};
+}
 
-const getMasterName = (id) => {
+function getMasterName(id) {
     const m = props.masters?.find(m => String(m.id) === String(id));
     return m ? (m.name === '父皇仙師' ? '父皇' : m.name) : '預設';
-};
-
-const handleFileUpload = (e) => { /* logic */ };
-const handleDirectPaste = async () => { /* logic */ };
+}
 </script>
 
 <style scoped>

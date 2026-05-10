@@ -9,6 +9,7 @@
                 <!-- Header bar -->
                 <div class="flex items-center justify-between px-3 py-1.5 md:pt-[60px]">
                     <div class="flex items-center space-x-2 flex-1 mr-4">
+                        <logo-imperial-notebook :height="36" />
                         <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>

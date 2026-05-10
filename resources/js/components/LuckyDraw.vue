@@ -9,7 +9,8 @@
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex items-center justify-between w-full">
                             <!-- Consolidated Title Row -->
-                            <div class="flex items-center flex-1 min-w-0">
+                            <div class="flex items-center flex-1 min-w-0 gap-2">
+                                <logo-imperial-notebook :height="36" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">
                                      抽籤專區
                                  </div>

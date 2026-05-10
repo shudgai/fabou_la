@@ -7,9 +7,12 @@
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 relative">
-                <h5 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
-                    怨靈載錄專區<br>多筆載錄
-                </h5>
+                <div class="flex items-center gap-2">
+                    <logo-imperial-notebook :height="36" />
+                    <h5 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
+                        怨靈載錄專區<br>多筆載錄
+                    </h5>
+                </div>
                 <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95 absolute right-2 top-1/2 -translate-y-1/2">
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>

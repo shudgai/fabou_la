@@ -10,7 +10,10 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-red-600">法寶登記專區</div>
+                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-red-600 flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" />
+                        法寶登記專區
+                    </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

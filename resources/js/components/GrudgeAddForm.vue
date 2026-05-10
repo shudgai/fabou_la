@@ -8,7 +8,10 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[30px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 30px !important;">怨靈載錄專區-逐筆載錄</div>
+                    <div class="text-[30px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 30px !important;">
+                        <logo-imperial-notebook :height="36" />
+                        怨靈載錄專區-逐筆載錄
+                    </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-2 top-1/2 -translate-y-1/2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

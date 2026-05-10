@@ -8,7 +8,10 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區 - {{ armyType }}</div>
+                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 25px !important;">
+                        <logo-imperial-notebook :height="36" />
+                        軍隊載錄專區 - {{ armyType }}
+                    </div>
                     <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
                         {{ editingId ? '修改載錄' : (isCumulative ? '之前累積數量匯入' : '逐筆新增') }}
                     </div>

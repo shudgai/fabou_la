@@ -4,9 +4,12 @@
         <div class="relative bg-white rounded-[40px] shadow-2xl w-full max-w-md overflow-hidden animate-slide-up border border-slate-100 flex flex-col max-h-[90dvh]">
             <!-- Header -->
             <div class="p-8 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">個人帳號設定</h2>
-                    <p class="text-slate-400 text-[13px] font-bold mt-0.5">管理您的基本資料與密碼</p>
+                <div class="flex items-center gap-3">
+                    <logo-imperial-notebook :height="44" />
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">個人帳號設定</h2>
+                        <p class="text-slate-400 text-[13px] font-bold mt-0.5">管理您的基本資料與密碼</p>
+                    </div>
                 </div>
                 <button @click="$emit('close')" class="p-2 text-slate-300 hover:text-slate-500 active:scale-90 transition-all">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

@@ -11,10 +11,7 @@
             <!-- Central Taiji -->
             <g transform="translate(70, 70)">
                 <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
-                <path d="M50 1C22.936 1 1 22.936 1 50C1 77.064 22.936 99 50 99C50 74.5 50 74.5 50 50C50 25 50 25 50 0Z" fill="white"/>
-                <path d="M50 1C77.6142 1 99 22.936 99 50C99 77.6142 77.6142 99 50 99V50V1Z" fill="black"/>
-                <path d="M50 99C36.1929 99 25 88.8071 25 75C25 61.1929 36.1929 50 50 50V99Z" fill="black"/>
-                <path d="M50 50C63.8071 50 75 38.8071 75 25C75 11.1929 63.8071 0 50 0V50Z" fill="white"/>
+                <path d="M50 1 A 49 49 0 0 1 50 99 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 50 1 Z" fill="black"/>
                 <circle cx="50" cy="75" r="8" fill="white"/>
                 <circle cx="50" cy="25" r="8" fill="black"/>
             </g>
