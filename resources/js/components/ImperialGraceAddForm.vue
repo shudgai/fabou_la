@@ -246,7 +246,8 @@
                     </div>
 
                     <!-- Immersive Navigation Footer - Fixed above mobile navbar, No gap -->
-                    <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 px-[15px] py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100] md:max-w-xl md:left-1/2 md:-translate-x-1/2">
+                    <div class="fixed left-0 right-0 md:absolute md:bottom-0 px-[15px] py-0 flex items-center justify-between gap-4 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[100] md:max-w-xl md:left-1/2 md:-translate-x-1/2"
+                         style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                         <button v-if="currentStep > 1" @click="currentStep--" 
                                 class="w-12 h-12 rounded-2xl border-2 border-slate-100 flex items-center justify-center text-slate-300 active:scale-90 transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
