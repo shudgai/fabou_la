@@ -29,7 +29,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-2 focus:ring-0 outline-none shadow-sm app-body font-bold">
+                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-2 focus:ring-0 outline-none shadow-sm app-body font-bold text-[15px]">
                         </div>
                     </div>
 
@@ -48,10 +48,10 @@
                                 <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <div v-for="u in filteredDharmaNames" :key="u.id"
                                         @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[17px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
                                         {{ u.name }}
                                     </div>
-                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[17px] text-slate-400 text-center">
+                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
                                         無符合的法號
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
                                         {{ opt }}
                                     </div>
                                 </div>
@@ -81,7 +81,7 @@
                     <!-- Row 3: 數量 -->
                     <div class="space-y-0.5">
                         <label class="app-title ml-1">數量</label>
-                        <input v-model="form.quantity" type="text" inputmode="numeric" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                        <input v-model="form.quantity" type="text" inputmode="numeric" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
                     </div>
 
                     <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
@@ -95,7 +95,7 @@
                             </div>
                             <div class="relative flex items-center">
                                 <input v-model="form.process_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-2 focus:ring-0 outline-none app-body">
+                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-2 focus:ring-0 outline-none app-body text-[15px]">
                             </div>
                         </div>
                         <div class="space-y-0.5 relative">
@@ -107,7 +107,7 @@
                                     type="text" 
                                     placeholder="選擇或輸入結果..." 
                                     @click.stop="showResultPicker = true"
-                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-10 focus:ring-0 outline-none app-body font-bold"
+                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-10 focus:ring-0 outline-none app-body font-bold text-[15px]"
                                     :class="[
                                         form.destination === '未處理' ? 'text-slate-400' : 
                                         form.destination === '九天' ? 'text-red-600' : 
@@ -124,11 +124,11 @@
                     <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻尊</label>
-                            <input v-model="form.remarks.yan_zun" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.yan_zun" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">閻闇</label>
-                            <input v-model="form.remarks.yan_an" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.yan_an" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
                         </div>
                     </div>
 
@@ -136,18 +136,18 @@
                     <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍勝</label>
-                            <input v-model="form.remarks.long_sheng" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.long_sheng" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
                         </div>
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">龍戰</label>
-                            <input v-model="form.remarks.long_zhan" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body">
+                            <input v-model="form.remarks.long_zhan" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
                         </div>
                     </div>
 
                     <!-- Row 5: 備註文字 -->
                     <div class="space-y-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-[15px]">
                     </div>
 
                 </div>

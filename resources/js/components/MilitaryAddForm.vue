@@ -8,9 +8,9 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區</div>
+                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區 - {{ armyType }}</div>
                     <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
-                        {{ editingId ? '修改軍隊載錄' : (isCumulative ? '之前累積數量匯入' : armyType + '-逐筆新增') }}
+                        {{ editingId ? '修改載錄' : (isCumulative ? '之前累積數量匯入' : '逐筆新增') }}
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
@@ -31,7 +31,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-3 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold">
+                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-3 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold text-[15px]">
                         </div>
                     </div>
 
@@ -50,10 +50,10 @@
                                 <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <div v-for="u in filteredDharmaNames" :key="u.id"
                                         @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[17px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
                                         {{ u.name }}
                                     </div>
-                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[17px] text-slate-400 text-center">
+                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
                                         無符合的法號
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[15px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
                                         {{ opt }}
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                             <label class="app-title">數量</label>
                             <span v-if="quantityBig >= 1000000n" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
                         </div>
-                        <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                        <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
                     </div>
 
                     <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
@@ -95,11 +95,11 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
@@ -116,11 +116,11 @@
                         <div class="grid grid-cols-2 gap-[5px]">
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
                             </div>
                             <div class="space-y-1">
                                 <label class="app-title ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900">
+                                <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
                             </div>
                         </div>
                         <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
@@ -135,7 +135,7 @@
                     <!-- Row 5: 備註 -->
                     <div class="space-y-1 pt-1">
                         <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900">
+                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900 text-[15px]">
                     </div>
                 </div>
             </div>
@@ -371,6 +371,20 @@ const handleSave = () => {
 
     console.log('Saving Military Record:', form.value);
     emit('save', form.value);
+    
+    // Clear form data after successful emit
+    form.value = {
+        know_date: '', 
+        user_name: '',
+        user_remarks: '',
+        quantity: '0',
+        yan_zun: '0',
+        yan_an: '0',
+        long_sheng: '0',
+        long_zhan: '0',
+        remarks_text: ''
+    };
+    dharmaSearch.value = '';
 };
 </script>
 

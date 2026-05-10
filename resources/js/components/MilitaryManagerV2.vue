@@ -916,6 +916,7 @@ const saveItem = async (formData) => {
         editingId.value = null;
         searchQuery.value = ''; 
         focusedId.value = null;
+        form.value = {};
         
         // Removed auto-hide of cumulative action
         
