@@ -182,7 +182,7 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                          @click="toggleExpand(item.id)"
                              :class="[
-                                 'bg-white px-2 py-[10px] border-b border-slate-50 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
+                                 'bg-white px-4 py-[25px] border-b border-slate-300 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent shadow-none !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:shadow-2xl md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">

@@ -162,7 +162,7 @@
                         <template v-if="!expandedDate && !focusedId && !searchQuery">
                             <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
                                 @click.stop="toggleDateGroup(group.know_date ? formatDate(group.know_date) : '原始數量')"
-                                class="bg-white p-[10px] border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all group overflow-hidden relative">
+                                class="bg-white px-[15px] py-[20px] border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all group overflow-hidden relative">
                                 <div class="flex items-center z-10">
                                     <div class="flex flex-col">
                                         <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
@@ -192,7 +192,7 @@
                                     v-show="focusedId === null || focusedId === item.id"
                                     @click="toggleExpand(item.id)"
                                     :class="[
-                                        'py-[10px] px-[15px] border-b border-slate-200 last:border-b-0 relative group transition-all cursor-pointer z-0',
+                                        'py-[25px] px-[15px] border-b border-slate-300 relative group transition-all cursor-pointer z-0',
                                         openMenuId === item.id ? 'z-[50]' : 'z-0',
                                         { 'border-b-0': focusedId === item.id }
                                     ]"

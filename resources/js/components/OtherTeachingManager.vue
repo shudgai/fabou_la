@@ -80,8 +80,8 @@
                          v-show="focusedId === null || focusedId === item.id"
                          @click="toggleExpand(item.id)"
                          :class="[
-                             'bg-white shadow-sm transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'rounded-[32px] p-6 border border-slate-100 hover:shadow-md'
+                             'bg-white border-b border-slate-300 transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
+                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'px-6 py-[25px]'
                          ]">
                         
 

@@ -29,10 +29,10 @@
             <div v-for="record in (expandedRecordId ? records.filter(r => r.id === expandedRecordId) : records)" :key="record.id"
                 @click="expandedRecordId === record.id ? null : toggleExpand(record.id)"
                 :class="[
-                    'bg-white border rounded-[22px] px-5 transition-all cursor-pointer relative',
+                    'bg-white border-b border-slate-300 px-5 transition-all cursor-pointer relative',
                     expandedRecordId === record.id 
                         ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl shadow-indigo-100/50 z-20 px-[15px] py-4 md:px-[15px]' 
-                        : 'border-slate-100 shadow-sm hover:border-slate-200 z-10 py-4'
+                        : 'z-10 py-[25px]'
                 ]">
                 
                 <div class="flex items-start justify-between">

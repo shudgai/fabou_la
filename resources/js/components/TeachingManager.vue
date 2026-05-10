@@ -1523,7 +1523,7 @@
                             <!-- Date Header: Collapsed by Default -->
                             <div v-show="focusedId === null || isDateOfFocused(dateGroup.date)"
                                  @click.stop="toggleDateExpand(dateGroup.date)" 
-                                 class="px-5 py-4 bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
+                                 class="px-5 py-[20px] bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-100 sticky top-0 z-[10] shadow-sm">
                                  <div class="flex items-center">
                                      <span class="app-title font-outfit uppercase tracking-wider">{{ formatDate(dateGroup.date) }}</span>
                                  </div>
@@ -1537,7 +1537,7 @@
                              <div :id="'teaching-row-' + item.id"
                                   v-show="focusedId === null || focusedId === item.id"
                                   @click.stop="reorderMode ? null : toggleExpand(item.id)"
-                                  class="py-[15px] px-[12px] flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
+                                  class="py-[25px] px-[12px] flex flex-col cursor-pointer active:bg-slate-200 transition-colors bg-white border-b border-slate-300 shadow-sm"
                                   :class="[isSessionFocused(item) ? 'bg-slate-50 ring-2 ring-indigo-50/10' : '']">
                                 
                                 <div class="flex items-center justify-between">

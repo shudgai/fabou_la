@@ -21,17 +21,17 @@
                 </h1>
             </div>
 
-            <div class="flex flex-row items-center ml-3 mt-[3px] animate-fade-in gap-3">
+            <div class="flex flex-row items-center ml-5 mt-[3px] animate-fade-in gap-5">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
                     class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
-                    style="font-size: 17px !important;">
+                    style="font-size: 19px !important;">
                     每週開文
                 </button>
                 <button @click="currentTab = 'self'" 
                     :class="currentTab === 'self' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
                     class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
-                    style="font-size: 17px !important;">
+                    style="font-size: 19px !important;">
                     自行開文
                 </button>
             </div>
@@ -89,7 +89,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white rounded-2xl py-[15px] px-[12px] cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white border-b border-slate-300 py-[25px] px-[12px] cursor-pointer transition-all active:bg-slate-50 relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
@@ -191,7 +191,7 @@
                     :class="[
                         expandedIds[post.id] 
                             ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
-                            : 'bg-white rounded-2xl py-[15px] px-[12px] cursor-pointer transition-all active:scale-[0.99] relative'
+                            : 'bg-white border-b border-slate-300 py-[25px] px-[12px] cursor-pointer transition-all active:bg-slate-50 relative'
                     ]"
                 >
                     <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
@@ -276,7 +276,7 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <div @click="activeDate = 'date'" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-3 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all mt-5 shadow-sm overflow-hidden">
-                                <span :class="form.date ? 'text-slate-900' : 'text-slate-400'" class="leading-tight date-text !font-black" style="font-family: 'Noto Sans TC', sans-serif !important;">
+                                <span :class="form.date ? 'text-slate-900' : 'text-slate-400'" class="leading-tight date-text !font-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-size: 16px !important;">
                                     {{ form.date || '選擇日期' }}
                                 </span>
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -285,7 +285,7 @@
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">類型</label>
-                            <select v-model="form.message_type" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 outline-none shadow-sm !text-[#0f172a] !font-normal" style="font-family: 'Montserrat', sans-serif !important;">
+                            <select v-model="form.message_type" class="w-full h-[36px] rounded-lg bg-white border border-slate-200 px-2 outline-none shadow-sm !text-[#0f172a] !font-normal" style="font-family: 'Montserrat', sans-serif !important; font-size: 16px !important;">
                                 <option value="">待定</option>
                                 <option value="玄訊">玄訊</option>
                                 <option value="非玄訊">非玄訊</option>
@@ -312,16 +312,16 @@
 
                         <div v-if="addMode === 'weekly'" class="space-y-1">
                             <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">抬頭</label>
-                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', lineHeight: '1.4', fontSize: activeFontSizePx }"></textarea>
+                            <textarea v-model="form.title" @paste="handleTitlePaste" rows="2" placeholder="輸入抬頭 (自動分行)..." class="w-full rounded-lg bg-white px-3 py-1 outline-none transition-all resize-none overflow-hidden" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', lineHeight: '1.4', fontSize: '16px !important' }"></textarea>
                         </div>
                         <div v-else-if="addMode === 'weekly_manual'" class="space-y-1">
                              <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">抬頭</label>
-                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', fontSize: activeFontSizePx }">
+                             <input v-model="form.title" type="text" placeholder="輸入抬頭..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '900', color: '#0f172a', fontSize: '16px !important' }">
                         </div>
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: activeFontSizePx }">
+                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
@@ -497,7 +497,7 @@ const props = defineProps({
                 title.style.setProperty('font-size', '30px', 'important');
             }
             tabs.forEach(tab => {
-                tab.style.setProperty('font-size', '14px', 'important');
+                tab.style.setProperty('font-size', '19px', 'important');
             });
         }, 100);
     };

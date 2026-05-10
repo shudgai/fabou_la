@@ -92,9 +92,9 @@
 
         <!-- Global Action Confirm / Toast (Critical for iOS) -->
         <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-            <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
-                <div class="p-8 text-center space-y-6">
-                    <div class="flex flex-col items-center w-full">
+            <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
+                <div class="text-center">
+                    <div class="p-8 pb-4 flex flex-col items-center w-full">
                         <div v-if="persistentToast.type === 'preview'" class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                         </div>
@@ -104,8 +104,12 @@
                         <div v-else class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         </div>
-                        <h3 class="text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-4 rounded-2xl border border-slate-100 overflow-y-auto max-h-[30dvh] custom-scrollbar">{{ persistentToast.msg }}</h3>
-                        <p v-if="persistentToast.type === 'preview'" class="mt-4 text-[15px] font-bold text-slate-400 uppercase tracking-widest">確定繼續匯入嗎？</p>
+                    </div>
+
+                    <h3 class="w-full text-[17px] font-black text-slate-900 leading-tight whitespace-pre-wrap text-left bg-slate-50 p-[10px] border-y border-slate-100 overflow-y-auto max-h-[40dvh] custom-scrollbar">{{ persistentToast.msg }}</h3>
+                    
+                    <div class="p-8 pt-4 flex flex-col items-center w-full">
+                        <p v-if="persistentToast.type === 'preview'" class="mb-4 text-[15px] font-bold text-slate-400 uppercase tracking-widest">確定繼續匯入嗎？</p>
                     </div>
 
                     <div class="flex flex-col space-y-3">

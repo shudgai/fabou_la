@@ -80,7 +80,7 @@
                  <template v-if="!activeDateGroup && !focusedId">
                      <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
                          @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
-                         class="p-[10px] bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
+                         class="px-[15px] py-[20px] bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
                          <div class="flex items-center">
                              <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
                          </div>
@@ -97,7 +97,7 @@
                      <!-- Date Header Back Button -->
                      <div v-if="activeDateGroup && focusedId === null" 
                          @click.stop="activeDateGroup = null" 
-                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
+                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-300 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
                          <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                          <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ activeDateGroup }}</span>
                      </div>
@@ -114,7 +114,7 @@
                                  <div v-show="focusedId === null || focusedId === item.id" 
                                      @click.stop="toggleExpand(item.id)"
                                      :class="[
-                                         'py-3 px-3 border-b border-slate-300 last:border-b-0 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
+                                         'py-[25px] px-3 border-b border-slate-300 relative group transition-all cursor-pointer bg-white active:bg-slate-50',
                                      { 'z-[50]': openMenuId === item.id, 'z-10': openMenuId !== item.id },
                                      { 'border-b-0': focusedId === item.id }
                                  ]"
@@ -228,8 +228,8 @@
         <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
 
         <!-- Floating Pagination above MobileNavbar -->
-        <div v-if="!addMode && !showBatchImport && activePaginationMeta && activePaginationMeta.last_page > 1" 
-             class="fixed z-[100] flex justify-center bg-white border-t border-slate-200 py-0.5" 
+        <div v-if="!loading && !addMode && !showBatchImport && activePaginationMeta && activePaginationMeta.last_page > 1" 
+             class="fixed z-[100] flex justify-center bg-white/95 backdrop-blur-sm border-t border-slate-200 py-1 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]" 
              style="bottom: calc(7dvh + env(safe-area-inset-bottom)); left: 0; right: 0;">
             <pagination-buttons 
                 :meta="activePaginationMeta" 
@@ -570,7 +570,7 @@ const loadData = async (page = 1) => {
         
         if (!activeDateGroup.value) {
             // Fetch Date Groups
-            const params = { page, search: searchQuery.value, t: ts };
+            const params = { page, search: searchQuery.value, t: ts, per_page: 10 };
             const res = await axios.get('/grudges/date-groups', { params });
             const paginator = res.data.paginator;
             dateGroupsData.value = paginator.data || [];
