@@ -31,6 +31,7 @@
             </datalist>
 
             <datalist id="dharma-search-list">
+                <option v-for="dn in sortedDharmaNames" :key="'dn'+dn.id" :value="dn.name">{{ dn.name }}</option>
                 <option value="玄通宮">玄通宮</option>
                 <option value="玄應宮">玄應宮</option>
                 <option value="玄心宮">玄心宮</option>
@@ -44,7 +45,6 @@
                 <option value="玄義宮">玄義宮</option>
                 <option value="宮主">宮主</option>
                 <option value="宮主副宮主">宮主副宮主</option>
-                <option v-for="dn in sortedDharmaNames" :key="'dn'+dn.id" :value="dn.name">{{ dn.name }}</option>
                 <option v-for="g in palacePrioritizedGroups" :key="'g'+g.id" :value="g.name">{{ g.name }}</option>
             </datalist>
 
@@ -184,8 +184,22 @@
 
             <!-- Level 2: List & Add View -->
             <template v-else>
-                <!-- Add View -->
-                <div v-if="addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
+                <!-- New Step-by-Step Add Form -->
+                <teaching-add-form 
+                    v-if="addMode"
+                    :mode="activeEntryTab === 'batch' ? 'batch' : 'single'"
+                    :initial-data="form"
+                    :masters="masters"
+                    :dharma-names="dharmaNames"
+                    :groups="groups"
+                    :unique-treasure-names="uniqueTreasureNames"
+                    :is-saving="saving"
+                    @save="saveItem"
+                    @close="addMode = false"
+                />
+
+                <!-- LEGACY ADD VIEW REMOVED -->
+                <div v-if="false && addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
                     <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
                     <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:rounded-3xl md:shadow-2xl md:overflow-hidden animate-slide-up">
                         <!-- Desktop Header -->
@@ -1949,6 +1963,7 @@
 </template>
 
 <script setup>
+import TeachingAddForm from './TeachingAddForm.vue';
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
 import { debounce } from '../utils/debounce';
 import axios from 'axios';
@@ -4675,7 +4690,21 @@ const exportListTxt = async () => {
     }
 };
 
-const saveItem = async () => {
+const saveItem = async (data = null) => {
+    if (data) {
+        // Sync incoming data from TeachingAddForm
+        form.value.date = data.date;
+        form.value.master_id = data.master_id;
+        form.value.dharma_name_ids = data.dharma_name_ids;
+        form.value.target_remarks = data.target_remarks || '';
+        form.value.content = data.content || '';
+        form.value.items = data.items || [];
+        
+        // Sync masterNameInput for consistency
+        const m = masters.value.find(v => v.id === data.master_id);
+        if (m) masterNameInput.value = m.name;
+    }
+
     if (newFooterRemark.value.trim()) addFooterRemark();
     if (saving.value) return;
 
