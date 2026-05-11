@@ -237,10 +237,7 @@
                                     {{ getMasterName(reg.master_id) }}
                                 </div>
                                 <!-- Row 1.5: Remarks -->
-                                <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" 
-                                     class="text-[13px] text-slate-400 truncate mb-1 font-medium">
-                                    備註：{{ reg.remarks }}
-                                </div>
+
                                 <!-- Row 2: Name -->
                                 <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit">{{ reg.name }}</div>
                             </div>
@@ -425,9 +422,9 @@
                                     <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
                                 </div>
 
-                                <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
+                                <div class="space-y-1">
                                     <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                    <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
+                                    <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose && reg.purpose !== '-' && reg.purpose !== '無' ? reg.purpose : '-' }}</div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">
@@ -668,9 +665,7 @@ const displayTitle = computed(() => {
     return '重大皇恩專區';
 });
 
-const triggerBatchSave = (data) => {
-    saveBatch(data);
-};
+
 
 const loadData = async (page = 1) => {
     loading.value = true;
@@ -1174,12 +1169,12 @@ const changeStatus = async (reg, nextStatus) => {
     }
 };
 
-const saveBatch = async (payload = null) => {
+const triggerBatchSave = async (payload = null) => {
     if (payload && typeof payload === 'object') {
         batchInput.value = payload.input || '';
         batchMasterId.value = payload.masterId || null;
     }
-    if (!batchInput.value || !batchMasterId.value || isSaving.value) return;
+    if (!batchInput.value || isSaving.value) return;
     isSaving.value = true;
     try {
         const finalMasterId = batchMasterId.value === 'unobtained' ? null : batchMasterId.value;
@@ -1195,21 +1190,27 @@ const saveBatch = async (payload = null) => {
             }
             dataToSend.lines = lines;
         }
+        const itemCount = (payload && payload.rows) ? payload.rows.length : 0;
         await axios.post('/imperial-graces/registry/batch', dataToSend);
-        persistentToast.value = { msg: '多筆新增成功', type: 'success' };
-        const targetMaster = masters.value.find(m => String(m.id) === String(finalMasterId));
+        addMode.value = null; // Close form immediately
+        
+        // Success notification
+        persistentToast.value = { msg: `多筆新增成功（共 ${itemCount} 筆）`, type: 'success' };
+        
+        const targetMasterId = finalMasterId || (payload && payload.rows && payload.rows.length > 0 ? payload.rows[0].master_id : null);
+        const targetMaster = masters.value.find(m => String(m.id) === String(targetMasterId));
+        
         if (targetMaster) {
             const matchedFolder = mastersFolders.value.find(f => String(f.id) === String(targetMaster.id));
             if (matchedFolder) {
                 currentCategory.value = 'masters';
                 currentFolder.value = matchedFolder;
             }
-        } else if (!finalMasterId || String(finalMasterId) === 'unobtained') {
+        } else if (!targetMasterId || String(targetMasterId) === 'unobtained') {
             currentCategory.value = 'unobtained';
             currentFolder.value = { id: 'unobtained', name: '未求得' };
         }
-        addMode.value = null;
-        loadData(1);
+        await loadData(1);
     } catch (e) { 
         console.error('批次失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '格式解析錯誤或伺服器連線失敗';

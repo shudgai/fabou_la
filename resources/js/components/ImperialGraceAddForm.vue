@@ -112,10 +112,10 @@
                                                 </thead>
                                                 <tbody class="divide-y divide-slate-50">
                                                     <tr v-for="(row, idx) in excelRows" :key="idx" class="hover:bg-indigo-50/30 transition-colors">
-                                                        <td class="px-4 py-3 font-mono text-slate-500 text-[13px] border-r border-slate-100 align-top">{{ row.record_date || '-' }}</td>
+                                                        <td class="px-4 py-3 font-mono text-slate-500 text-[13px] border-r border-slate-100 align-top">{{ row.date || '-' }}</td>
                                                         <td class="px-4 py-3 align-top">
                                                             <div class="text-[15px] font-black text-slate-900 mb-1">{{ row.name }}</div>
-                                                            <div v-if="row.purpose" class="text-[12px] text-slate-400 font-bold">{{ row.purpose }}</div>
+                                                            <div class="text-[12px] text-red-600 font-bold opacity-80">【{{ getMasterName(row.master_id) }}】</div>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -416,15 +416,22 @@ const excelRows = computed(() => {
     const records = [];
     let currentRec = null;
     let currentMasterId = form.value.master_id;
-    let currentDateInText = null;
+    let blockDate = null;
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
+        
+        // Block separation
         if (!line) { 
-            if (currentRec) { records.push(currentRec); currentRec = null; }
+            if (currentRec) { 
+                records.push(currentRec); 
+                currentRec = null; 
+            }
+            blockDate = null;
             continue; 
         }
 
+        // Master folder override: 【MasterName】
         if (line.startsWith('【') && line.endsWith('】')) {
             const mName = line.replace(/[【】]/g, '');
             const found = props.masters?.find(m => m.name.includes(mName));
@@ -432,108 +439,62 @@ const excelRows = computed(() => {
             continue;
         }
 
-        const isNewItemTrigger = line.startsWith('法寶名稱:') || line.startsWith('法寶名稱：');
-        const isPurpose = line.startsWith('用意') || line.startsWith('用法') || line.startsWith('用途');
-        const isRemark = line.startsWith('備註:') || line.startsWith('備註：');
-        const statusMatch = line.match(/(已登記|已求得|未求得)/);
-        const dateMatch = line.match(/\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/) || line.match(/\b\d{1,2}[\/\-]\d{1,2}\b/);
+        // Check for specific prefixes
+        const isNamePrefix = line.startsWith('法寶名稱') || line.startsWith('名稱');
+        const isPurposePrefix = line.startsWith('法寶用意') || line.startsWith('用意') || line.startsWith('用法') || line.startsWith('用途');
+        const isRemarkPrefix = line.startsWith('備註');
         
-        let cleanedLine = line;
-        let lineDate = '';
-        let lineStatus = '';
+        // Check for standalone date/status line (Exported format Row 2)
+        const dateMatch = line.match(/\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/) || line.match(/\b\d{1,2}[\/\-]\d{1,2}\b/);
+        const statusMatch = line.match(/(已登記|已求得|未求得)/);
 
-        if (dateMatch) {
-            lineDate = dateMatch[0].replace(/\//g, '-');
-            cleanedLine = cleanedLine.replace(dateMatch[0], '').trim();
-        }
-        if (statusMatch) {
-            lineStatus = statusMatch[0];
-            cleanedLine = cleanedLine.replace(statusMatch[0], '').replace(/狀態[:：]?/, '').trim();
+        if (!currentRec && dateMatch && statusMatch && line.length < 30) {
+            blockDate = dateMatch[0].replace(/\//g, '-');
+            continue;
         }
 
-        let remarkFromParens = '';
-        if (cleanedLine && cleanedLine.includes('(') && cleanedLine.endsWith(')')) {
-            const match = cleanedLine.match(/^(.*?)\((.*?)\)$/);
-            if (match) {
-                cleanedLine = match[1].trim();
-                remarkFromParens = match[2].trim();
-            }
-        }
-
-        if (isNewItemTrigger) {
+        // Detect Start of New Record
+        if (isNamePrefix || (!currentRec && !isPurposePrefix && !isRemarkPrefix)) {
             if (currentRec) records.push(currentRec);
-            let name = line.replace(/^法寶名稱[:：]\s*/, '').trim();
-            currentRec = { name: name, purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
-        } else if (isPurpose) {
-            if (!currentRec) currentRec = { name: '未命名', purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
-            currentRec.purpose = line.replace(/.*(用意|用法|用途)[:：]?\s*/, '').trim() || '-';
-        } else if (isRemark) {
-            if (!currentRec) currentRec = { name: '未命名', purpose: '-', personnel: [], remarks: [], status: '已登記', master_id: currentMasterId, date: currentDateInText || '' };
-            currentRec.remarks.push(line.replace(/^備註[:：]\s*/, '').trim());
-        } else {
-            if (localMode.value === 'batch_personal') {
-                if (currentRec) records.push(currentRec);
-                let initialRemarks = remarkFromParens ? [remarkFromParens] : [];
-                currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: initialRemarks, status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
+            
+            let name = line.replace(/^(法寶名稱|名稱)[:：]\s*/, '').trim();
+            currentRec = { 
+                name: name, 
+                purpose: '-', 
+                personnel: [], 
+                remarks: [], 
+                status: '已登記', 
+                master_id: currentMasterId, 
+                date: blockDate || new Date().toLocaleDateString('sv-SE') 
+            };
+            if (statusMatch) currentRec.status = statusMatch[0];
+            continue;
+        }
+
+        if (currentRec) {
+            if (isPurposePrefix) {
+                currentRec.purpose = line.replace(/.*用意[:：]?\s*/, '').trim() || '-';
+            } else if (isRemarkPrefix) {
+                currentRec.remarks.push(line.replace(/^備註[:：\s]*/, '').trim());
             } else {
-                if (!currentRec) {
-                    let initialRemarks = remarkFromParens ? [remarkFromParens] : [];
-                    currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: initialRemarks, status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
-                } else if (!currentRec.name || currentRec.name === '未命名') {
-                    currentRec.name = cleanedLine || line;
-                    if (lineDate) currentRec.date = lineDate;
-                    if (lineStatus) currentRec.status = lineStatus;
-                    if (remarkFromParens) currentRec.remarks.push(remarkFromParens);
-                } else {
-                    if (!cleanedLine && lineDate) {
-                        if (currentRec.personnel.length > 0) {
-                            currentRec.personnel[currentRec.personnel.length - 1].obtained_date = lineDate;
-                            if (lineStatus) currentRec.personnel[currentRec.personnel.length - 1].status = lineStatus;
-                        } else {
-                            currentRec.date = lineDate;
-                            currentDateInText = lineDate;
-                            if (lineStatus) currentRec.status = lineStatus;
-                        }
-                    } else if (cleanedLine) {
-                        if (cleanedLine === '未求得' || cleanedLine.includes('以上沒有資料')) {
-                            if (cleanedLine === '未求得') currentRec.status = '未求得';
-                            if (!cleanedLine.includes('以上沒有資料')) currentRec.remarks.push(line);
-                        } else {
-                            currentRec.personnel.push({ 
-                                custom_name: cleanedLine, 
-                                status: lineStatus || '已求得', 
-                                obtained_date: lineDate, 
-                                remarks: remarkFromParens 
-                            });
-                        }
-                    }
-                }
+                // No keywords found - this is a NEW record name
+                if (currentRec) records.push(currentRec);
+                
+                currentRec = { 
+                    name: line, 
+                    purpose: '-', 
+                    personnel: [], 
+                    remarks: [], 
+                    status: '已登記', 
+                    master_id: currentMasterId, 
+                    date: blockDate || new Date().toLocaleDateString('sv-SE') 
+                };
             }
         }
     }
+
     if (currentRec) records.push(currentRec);
-
-    return records.map(r => {
-        let finalStatus = r.status;
-        if (r.personnel.length > 0) {
-            const hasUnobtained = r.personnel.some(p => p.status === '未求得');
-            const allRegistered = r.personnel.every(p => p.status === '已登記');
-            if (hasUnobtained) finalStatus = '未求得';
-            else if (allRegistered) finalStatus = '已登記';
-            else finalStatus = '已求得';
-        }
-
-        return {
-            c0: r.name,
-            c1: r.purpose,
-            _dharma_name_registries: r.personnel,
-            _manualRemarks: r.remarks.join('\n'),
-            _is_multi: r.personnel.length > 1,
-            _status: finalStatus,
-            _record_date: r.date,
-            _master_id: r.master_id
-        };
-    });
+    return records;
 });
 
 // --- 4. Watchers ---
@@ -669,18 +630,18 @@ function handleSubmit() {
             input: batchInput.value, 
             masterId: form.value.master_id,
             rows: excelRows.value.map(row => ({
-                name: row.c0, 
-                purpose: row.c1, 
-                master_id: row._master_id || form.value.master_id,
-                record_date: row._record_date || '', 
-                obtained_date: row._record_date || '',
-                status: row._status || '已登記', 
+                name: row.name, 
+                purpose: row.purpose && row.purpose !== '-' ? row.purpose : '', 
+                master_id: row.master_id || form.value.master_id,
+                record_date: row.date || form.value.record_date || new Date().toLocaleDateString('sv-SE'), 
+                obtained_date: row.date || form.value.obtained_date || '',
+                status: row.status || form.value.status || '已登記', 
                 count: 1, 
-                remarks: row._manualRemarks || '',
-                is_multi: row._is_multi || false,
-                dharma_name_registries: (row._dharma_name_registries || []).map(p => ({
+                remarks: row.remarks ? row.remarks.join('\n') : '',
+                is_multi: row.personnel ? row.personnel.length > 1 : false,
+                dharma_name_registries: (row.personnel || []).map(p => ({
                     ...p,
-                    obtained_date: p.obtained_date || row._record_date || ''
+                    obtained_date: p.obtained_date || row.date || ''
                 }))
             }))
         });
