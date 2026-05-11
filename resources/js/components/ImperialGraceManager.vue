@@ -236,6 +236,11 @@
                                      :class="getMasterName(reg.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">
                                     {{ getMasterName(reg.master_id) }}
                                 </div>
+                                <!-- Row 1.5: Remarks -->
+                                <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" 
+                                     class="text-[13px] text-slate-400 truncate mb-1 font-medium">
+                                    備註：{{ reg.remarks }}
+                                </div>
                                 <!-- Row 2: Name -->
                                 <div class="text-[17px] font-black text-slate-900 leading-tight truncate font-outfit">{{ reg.name }}</div>
                             </div>
@@ -403,89 +408,44 @@
                             </div>
 
                             <!-- Detail Content Grid (Read Only View) -->
-                            <div v-else class="space-y-4">
+                            <div v-else class="space-y-4 animate-fade-in">
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
                                         <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
                                     </div>
                                     <div class="space-y-1 text-right pr-8">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                        <div class="app-body font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                        <div class="app-body text-[17px] font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
                                     </div>
                                 </div>
 
-                                <!-- IF MULTI-PERSON ASSOCIATION: Show Table Layout (Figure 2) -->
-                                <div v-if="reg.is_multi || (reg.dharma_name_registries && reg.dharma_name_registries.length > 0)" class="mt-4 animate-fade-in">
-                                    <div class="mb-3">
-                                        <label class="app-title tracking-wider text-slate-500 font-bold mr-1">法寶名稱</label>
-                                        <span class="font-outfit !font-medium !text-slate-900" style="font-size: 17px !important;">{{ reg.name }}</span>
-                                    </div>
-
-                                    <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="mb-4">
-                                        <label class="app-title tracking-wider text-slate-500 font-bold mr-1">法寶用意</label>
-                                        <div class="mt-1 text-[17px] font-normal text-slate-900 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">{{ reg.purpose }}</div>
-                                    </div>
-
-                                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
-                                        <table class="w-full text-[17px] border-collapse bg-white">
-                                            <thead class="bg-slate-50/50">
-                                                <tr class="text-slate-600 font-black border-b border-slate-200">
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px] w-[70px]">法號</th>
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 text-[15px] w-[80px]">日期</th>
-                                                    <th class="py-1.5 px-2 text-left border-r border-slate-200 whitespace-nowrap text-[15px] w-[95px]">狀態</th>
-                                                    <th class="py-1.5 px-2 text-left text-[15px]">備註</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="dnr in reg.dharma_name_registries" :key="dnr.id" class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                                                    <td class="py-1.5 px-2 border-r border-slate-100 font-black text-slate-900 text-[17px]">
-                                                        {{ dnr.dharma_name?.name || dnr.custom_name }}{{ dnr.related_personnel && dnr.related_personnel.length > 0 ? '(' + translateRelList(dnr.related_personnel) + ')' : '' }}
-                                                    </td>
-                                                    <td class="py-1.5 px-2 border-r border-slate-100 font-normal text-slate-500 whitespace-nowrap text-[15px]">{{ formatDate(dnr.obtained_date) }}</td>
-                                                    <td class="py-1.5 px-2 border-r border-slate-100 font-black whitespace-nowrap text-[15px]" :class="dnr.status === '未求得' ? '!text-[#dc2626]' : (dnr.status === '已求得' ? '!text-[#2563eb]' : '!text-[#059669]')">{{ dnr.status }}</td>
-                                                    <td class="py-1.5 px-2 text-slate-900 font-bold leading-snug text-[15px]">
-                                                        {{ translateRelList(dnr.remarks) }}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-4 border-t border-slate-50 mt-4">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                        <div class="app-body font-normal text-slate-900 leading-relaxed whitespace-pre-wrap text-[17px]">{{ reg.remarks }}</div>
-                                    </div>
+                                <div class="space-y-1">
+                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                    <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
                                 </div>
 
-                                <div v-else class="space-y-4 animate-fade-in">
+                                <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
+                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                    <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                        <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ reg.name }}</div>
-                                    </div>
-
-                                    <div class="space-y-1" v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                        <div class="app-body font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="space-y-1">
-                                            <label class="app-title tracking-wider block text-slate-500 font-bold">目前狀態</label>
-                                            <div class="app-body font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                                {{ reg.status }}
-                                            </div>
-                                        </div>
-                                        <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
-                                            <label class="app-title tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                            <div class="app-body font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                        <div class="app-body text-[17px] font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                            {{ reg.status }}
                                         </div>
                                     </div>
-
-                                    <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
-                                        <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                        <div class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                    <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                        <div class="app-body text-[15px] font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
                                     </div>
+                                </div>
+
+                                <div class="space-y-1 pt-2 border-t border-slate-50">
+                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                    <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks && reg.remarks !== '-' && reg.remarks !== '無' ? reg.remarks : '-' }}</div>
                                 </div>
                             </div>
                         </div><!-- /animate-fade-in content -->
@@ -684,16 +644,17 @@ const activePickerValue = computed({
 const addActions = computed(() => [
     { 
         label: '逐筆新增', 
-        description: '手動輸入每一項重大皇恩詳細資料',
-        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        handler: () => prepareAdd('single') 
+        description: '手動輸入法寶詳細資料',
+        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => prepareAdd('single_personal') 
     },
     { 
-        label: '多筆貼上新增', 
-        description: '快速解析 LINE 聊天內容紀錄',
-        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        handler: () => prepareAdd('batch') 
+        label: '多筆載錄', 
+        description: '貼上多個法寶名稱，每行自動建立一筆',
+        icon: '<svg class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        handler: () => prepareAdd('batch_personal') 
     },
+
     { 
         label: '複製隨貼 LINE (全部)', 
         description: '將此分類完整清單複製至剪貼簿',
@@ -1137,6 +1098,9 @@ const saveSingle = async (resolutionOrData = null) => {
 
         addMode.value = null;
         await loadData(currentPage.value);
+        if (res && res.data && res.data.id) {
+            expandedId.value = res.data.id;
+        }
     } catch (e) {
         console.error('儲存失敗:', e);
         const serverMsg = e.response?.data?.message || e.message || '資料驗證失敗';
