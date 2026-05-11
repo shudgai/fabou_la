@@ -80,7 +80,7 @@
                                             <button v-if="batchInput" @click="batchInput = ''" class="text-rose-500 text-[12px] font-bold">清除</button>
                                         </div>
                                         <textarea v-model="batchInput" rows="6" placeholder="直接貼上文字內容..." 
-                                            class="w-full text-[17px] font-black border-2 border-slate-100 rounded-[32px] p-6 focus:border-indigo-500 bg-slate-50/50 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
                                     </div>
                                 </template>
                             </div>
@@ -212,10 +212,6 @@
                             <div v-else-if="currentStep === 6 && localMode.startsWith('single')" :key="6" class="space-y-6 animate-fade-in text-center w-full">
                                 <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">預覽<span class="text-indigo-600">載錄資料</span></h2>
                                 <div class="max-w-md mx-auto border border-slate-100 rounded-3xl overflow-hidden shadow-sm bg-white text-left">
-                                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
-                                        <span class="text-[13px] font-black text-slate-500 uppercase tracking-widest">目前資料</span>
-                                        <span class="text-[11px] font-bold text-slate-300">PREVIEW</span>
-                                    </div>
                                     <div class="p-4 space-y-3">
                                         <div class="flex justify-between border-b border-slate-50 pb-2">
                                             <span class="text-[13px] font-black text-slate-400">法寶名稱</span>
@@ -455,6 +451,15 @@ const excelRows = computed(() => {
             cleanedLine = cleanedLine.replace(statusMatch[0], '').replace(/狀態[:：]?/, '').trim();
         }
 
+        let remarkFromParens = '';
+        if (cleanedLine && cleanedLine.includes('(') && cleanedLine.endsWith(')')) {
+            const match = cleanedLine.match(/^(.*?)\((.*?)\)$/);
+            if (match) {
+                cleanedLine = match[1].trim();
+                remarkFromParens = match[2].trim();
+            }
+        }
+
         if (isNewItemTrigger) {
             if (currentRec) records.push(currentRec);
             let name = line.replace(/^法寶名稱[:：]\s*/, '').trim();
@@ -468,14 +473,17 @@ const excelRows = computed(() => {
         } else {
             if (localMode.value === 'batch_personal') {
                 if (currentRec) records.push(currentRec);
-                currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: [], status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
+                let initialRemarks = remarkFromParens ? [remarkFromParens] : [];
+                currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: initialRemarks, status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
             } else {
                 if (!currentRec) {
-                    currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: [], status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
+                    let initialRemarks = remarkFromParens ? [remarkFromParens] : [];
+                    currentRec = { name: cleanedLine || line, purpose: '-', personnel: [], remarks: initialRemarks, status: lineStatus || '已登記', master_id: currentMasterId, date: lineDate || currentDateInText || '' };
                 } else if (!currentRec.name || currentRec.name === '未命名') {
                     currentRec.name = cleanedLine || line;
                     if (lineDate) currentRec.date = lineDate;
                     if (lineStatus) currentRec.status = lineStatus;
+                    if (remarkFromParens) currentRec.remarks.push(remarkFromParens);
                 } else {
                     if (!cleanedLine && lineDate) {
                         if (currentRec.personnel.length > 0) {
@@ -495,7 +503,7 @@ const excelRows = computed(() => {
                                 custom_name: cleanedLine, 
                                 status: lineStatus || '已求得', 
                                 obtained_date: lineDate, 
-                                remarks: '' 
+                                remarks: remarkFromParens 
                             });
                         }
                     }
