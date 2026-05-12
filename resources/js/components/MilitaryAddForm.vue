@@ -8,12 +8,29 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 25px !important;">
+                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-1" style="font-size: 25px !important;">
                         <logo-imperial-notebook :height="36" />
-                        軍隊載錄專區 - {{ armyType }}
+                        <span class="text-indigo-600">軍隊載專區</span>
+                        <span class="text-slate-300">/</span>
+                        <span>{{ armyType }}</span>
+                        <span class="text-slate-300">/</span>
+                        <span class="mx-auto">{{ editingId ? '修改載錄' : (isCumulative ? '之前累積數量匯入' : '逐筆新增') }}</span>
                     </div>
-                    <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
-                        {{ editingId ? '修改載錄' : (isCumulative ? '之前累積數量匯入' : '逐筆新增') }}
+                    <!-- Step Indicator -->
+                    <div class="flex items-center gap-1 mt-1.5">
+                        <template v-for="i in totalSteps" :key="i">
+                            <div class="flex items-center gap-1">
+                                <div class="rounded-full transition-all duration-300 flex items-center justify-center text-white font-bold text-[10px]"
+                                    :class="i === currentStep ? 'bg-indigo-600 w-[18px] h-[18px]' : i < currentStep ? 'bg-indigo-300 w-[14px] h-[14px]' : 'bg-slate-200 w-[14px] h-[14px]'">
+                                    <template v-if="i < currentStep">
+                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </template>
+                                    <template v-else>{{ i }}</template>
+                                </div>
+                                <span class="text-[10px] font-bold whitespace-nowrap" :class="i === currentStep ? 'text-indigo-600' : 'text-slate-300'">{{ stepLabels[i - 1] }}</span>
+                                <svg v-if="i < totalSteps" class="w-2.5 h-2.5 text-slate-200" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" /></svg>
+                            </div>
+                        </template>
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
@@ -22,24 +39,26 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-6 space-y-[5px] custom-scrollbar bg-white">
+            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-6 custom-scrollbar bg-white">
                 <div class="space-y-[5px]">
-                    <!-- Row 1: 日期 -->
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between px-1">
-                            <label class="app-title ml-1">日期</label>
-                            <button @click="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="relative flex items-center">
-                            <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-2xl border border-slate-400 bg-white pl-3 pr-3 focus:ring-0 outline-none shadow-sm app-title leading-tight text-slate-900 font-bold text-[15px]">
+                    <!-- ===== STEP 1: 日期 ===== -->
+                    <div v-if="currentStep === 1" class="animate-fade-in">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between px-1">
+                                <label class="app-title ml-1">日期</label>
+                                <button @click="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <div class="relative flex items-center">
+                                <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: 法號 & 備註 -->
-                    <div v-if="!isCumulative" class="grid grid-cols-2 gap-[5px]">
+                    <!-- ===== STEP 2: 法號 & 備註對象 ===== -->
+                    <div v-if="currentStep === 2 && !isCumulative" class="animate-fade-in space-y-[15px]">
                         <div class="space-y-1">
                             <label class="app-title ml-1">法號</label>
                             <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] dharma-dropdown">
@@ -82,73 +101,144 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Conditional Quantity Row -->
-                    <!-- Case 1: 虎甲/虎賁 or Default -->
-                    <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
-                        <div class="flex items-center justify-between ml-1">
-                            <label class="app-title">數量</label>
-                            <span v-if="quantityBig >= 1000000n" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
-                        </div>
-                        <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                    <div v-if="currentStep === 2 && isCumulative" class="animate-fade-in flex items-center justify-center py-10">
+                        <span class="text-slate-300 text-[16px] font-bold">累積匯入：無需填寫法號</span>
                     </div>
 
-                    <!-- Case 2: 黑曜軍 (閻尊/閻闇) -->
-                    <div v-if="armyType === '黑曜軍'" class="space-y-[5px]">
-                        <div class="grid grid-cols-2 gap-[5px]">
-                            <div class="space-y-1">
-                                <label class="app-title ml-1">閻尊數量</label>
-                                <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                    <!-- ===== STEP 3: 數量 ===== -->
+                    <div v-if="currentStep === 3" class="animate-fade-in">
+                        <!-- 虎甲/虎賁 -->
+                        <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
+                            <div class="flex items-center justify-between ml-1">
+                                <label class="app-title">數量</label>
+                                <span v-if="quantityBig >= 1000000n" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
                             </div>
-                            <div class="space-y-1">
-                                <label class="app-title ml-1">閻闇數量</label>
-                                <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                            <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                        </div>
+
+                        <!-- 黑曜軍 -->
+                        <div v-if="armyType === '黑曜軍'" class="space-y-[5px]">
+                            <div class="grid grid-cols-2 gap-[5px]">
+                                <div class="space-y-1">
+                                    <label class="app-title ml-1">閻尊數量</label>
+                                    <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="app-title ml-1">閻闇數量</label>
+                                    <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                                </div>
+                            </div>
+                            <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
+                                <span class="app-title">小計</span>
+                                <span class="app-title text-indigo-600 mr-2" v-if="obsidianSubtotalBig >= 1000000n">({{ formatArmyTotal(obsidianSubtotalBig) }})</span>
+                                <span class="app-body text-slate-900">{{ formatWithCommas(obsidianSubtotalBig) }}</span>
                             </div>
                         </div>
-                        <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
-                            <span class="app-title">小計</span>
-                            <span class="app-title text-indigo-600 mr-2" v-if="obsidianSubtotalBig >= 1000000n">({{ formatArmyTotal(obsidianSubtotalBig) }})</span>
-                            <span class="app-body text-slate-900">{{ formatWithCommas(obsidianSubtotalBig) }}</span>
+
+                        <!-- 耀紫軍 -->
+                        <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
+                            <div class="grid grid-cols-2 gap-[5px]">
+                                <div class="space-y-1">
+                                    <label class="app-title ml-1">龍勝數量</label>
+                                    <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="app-title ml-1">龍戰數量</label>
+                                    <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+                                </div>
+                            </div>
+                            <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
+                                <span class="app-title">小計</span>
+                                <span class="app-title text-indigo-600 mr-2" v-if="purpleSubtotalBig >= 1000000n">({{ formatArmyTotal(purpleSubtotalBig) }})</span>
+                                <span class="app-body text-slate-900">{{ formatWithCommas(purpleSubtotalBig) }}</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Case 5: 耀紫軍 (龍勝/龍戰) -->
-                    <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
-                        <div class="grid grid-cols-2 gap-[5px]">
-                            <div class="space-y-1">
-                                <label class="app-title ml-1">龍勝數量</label>
-                                <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="app-title ml-1">龍戰數量</label>
-                                <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                            </div>
-                        </div>
-                        <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
-                            <span class="app-title">小計</span>
-                            <span class="app-title text-indigo-600 mr-2" v-if="purpleSubtotalBig >= 1000000n">({{ formatArmyTotal(purpleSubtotalBig) }})</span>
-                            <span class="app-body text-slate-900">{{ formatWithCommas(purpleSubtotalBig) }}</span>
+                    <!-- ===== STEP 4: 備註 ===== -->
+                    <div v-if="currentStep === 4" class="animate-fade-in">
+                        <div class="space-y-1 pt-1">
+                            <label class="app-title ml-1">備註文字</label>
+                            <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900 text-[15px]">
                         </div>
                     </div>
 
-                    <!-- Row 5: 備註 -->
-                    <div class="space-y-1 pt-1">
-                        <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900 text-[15px]">
+                    <!-- ===== STEP 5: 預覽 ===== -->
+                    <div v-if="currentStep === 5" class="animate-fade-in space-y-4">
+                        <div class="text-center mb-2">
+                            <span class="app-title text-indigo-600 text-[16px]">請確認以下內容</span>
+                        </div>
+
+                        <div class="bg-slate-50 rounded-2xl p-4 space-y-3 border border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <span class="app-title text-slate-400 text-[13px]">軍隊類型</span>
+                                <span class="app-body text-slate-900 font-bold">{{ armyType }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="app-title text-slate-400 text-[13px]">日期</span>
+                                <span class="app-body text-slate-900">{{ form.know_date || '未設定' }}</span>
+                            </div>
+
+                            <div v-if="!isCumulative">
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">法號</span>
+                                    <span class="app-body text-slate-900 font-bold">{{ form.user_name || '未填寫' }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">備註對象</span>
+                                    <span class="app-body text-slate-900">{{ form.user_remarks || '無' }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Quantity Breakdown -->
+                            <div v-if="armyType === '黑曜軍'">
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">閻尊數量</span>
+                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.yan_zun) }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">閻闇數量</span>
+                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.yan_an) }}</span>
+                                </div>
+                            </div>
+                            <div v-if="armyType === '耀紫軍'">
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">龍勝數量</span>
+                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.long_sheng) }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="app-title text-slate-400 text-[13px]">龍戰數量</span>
+                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.long_zhan) }}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="app-title text-slate-400 text-[13px]">總數量</span>
+                                <span class="app-body text-indigo-600 font-black text-[18px]">{{ formatWithCommas(previewTotal) }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="app-title text-slate-400 text-[13px]">備註文字</span>
+                                <span class="app-body text-slate-900 text-right max-w-[60%] break-words">{{ form.remarks_text || '無' }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-50 z-[10] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] flex justify-center">
-                <button 
-                    @click="handleSave" 
-                    :disabled="isSaving"
-                    class="w-full max-w-md bg-indigo-600 text-white font-black h-[48px] text-[16px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
-                    style="color: white !important; font-size: 16px !important;"
-                >
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center shrink-0">
+                <button v-if="currentStep > 1" @click="prevStep"
+                    class="w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
+                <button v-if="currentStep < totalSteps" @click="nextStep"
+                    class="flex-1 py-[12px] bg-indigo-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-indigo-100 active:scale-95 transition-all"
+                    style="color: white !important;">下一步</button>
+                <button v-else @click="handleSave" :disabled="isSaving"
+                    class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="color: white !important;">
                     <template v-if="isSaving">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -202,6 +292,14 @@ const activeRemarksDropdown = ref(false);
 const activeDharmaDropdown = ref(false);
 const dharmaSearch = ref('');
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
+const currentStep = ref(1);
+
+const stepLabels = computed(() => {
+    if (props.isCumulative) return ['日期', '數量', '備註', '預覽'];
+    return ['日期', '法號', '數量', '備註', '預覽'];
+});
+
+const totalSteps = computed(() => stepLabels.value.length);
 
 const filteredDharmaNames = computed(() => {
     if (!dharmaSearch.value) return props.users || [];
@@ -229,9 +327,20 @@ const quantityBig = computed(() => {
     }
 });
 
+const previewTotal = computed(() => {
+    if (props.armyType === '黑曜軍') return obsidianSubtotalBig.value;
+    if (props.armyType === '耀紫軍') return purpleSubtotalBig.value;
+    return quantityBig.value;
+});
+
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal, army_type: props.armyType || newVal.army_type };
 }, { deep: true });
+
+// Reset step when form opens
+watch(() => props.show, (newVal) => {
+    if (newVal) currentStep.value = 1;
+});
 
 const selectDharma = (name) => {
     form.value.user_name = name;
@@ -308,34 +417,50 @@ const formatArmyTotal = (num) => {
     return res;
 };
 
-// Auto-detect and parse Name/Relationship pattern removed to prioritize exact input preservation
-/*
-watch(() => form.value.user_name, (newVal) => {
-    if (!newVal) return;
-    const relSplitMatch = newVal.match(/^(.*?)[之的](.+)$/);
-    if (relSplitMatch) {
-        const namePart = relSplitMatch[1].trim();
-        let relPart = relSplitMatch[2].trim();
-        if (relPart === '母') relPart = '母親';
-        if (relPart === '父') relPart = '父親';
-        form.value.user_name = namePart;
-        form.value.user_remarks = relPart;
+const nextStep = () => {
+    // Validate before advancing
+    if (currentStep.value === 1) {
+        // Date is optional, always valid
     }
-});
-*/
+    if (currentStep.value === 2 && !props.isCumulative) {
+        if (!form.value.user_name) {
+            alert('請選擇或輸入「法號」，不可留空。');
+            return;
+        }
+    }
+    if (currentStep.value === 3) {
+        if (props.armyType === '黑曜軍') {
+            const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
+            const an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')) : 0n;
+            if (zun === 0n && an === 0n) {
+                alert('請輸入至少一個數量');
+                return;
+            }
+        } else if (props.armyType === '耀紫軍') {
+            const sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')) : 0n;
+            const zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')) : 0n;
+            if (sheng === 0n && zhan === 0n) {
+                alert('請輸入至少一個數量');
+                return;
+            }
+        } else {
+            const qty = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
+            if (qty === 0n) {
+                alert('請輸入數量');
+                return;
+            }
+        }
+    }
+    if (currentStep.value < totalSteps.value) {
+        currentStep.value++;
+    }
+};
 
-// Auto-correct terminology for relatives removed to preserve original terms as requested
-/*
-watch(() => form.value.user_remarks, (newVal) => {
-    if (!newVal) return;
-    let rel = newVal.trim();
-    if (rel === '之母' || rel === '母') form.value.user_remarks = '母親';
-    else if (rel === '之父' || rel === '父') form.value.user_remarks = '父親';
-    else if (rel.startsWith('之') || rel.startsWith('的')) {
-        form.value.user_remarks = rel.substring(1);
+const prevStep = () => {
+    if (currentStep.value > 1) {
+        currentStep.value--;
     }
-});
-*/
+};
 
 const handleSave = () => {
     if (!props.isCumulative && !form.value.user_name) {
@@ -382,6 +507,7 @@ const handleSave = () => {
         remarks_text: ''
     };
     dharmaSearch.value = '';
+    currentStep.value = 1;
 };
 </script>
 
@@ -392,5 +518,13 @@ const handleSave = () => {
 @keyframes slideUp {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.25s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
