@@ -173,6 +173,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Active folder title span at `OtherManager.vue:115` — `margin-left: 14px` to align with KaiwenApproval content
 - KaiwenApproval and RandomGroup rendered as child components with `v-if` on folder name
 - Folder buttons follow same 198×198 pattern with SVG icons
+- "抽順序" (Draw Sequence) button is explicitly rendered as the second item in the grid, immediately following the first folder (usually 開文核定表).
 
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
@@ -182,3 +183,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Bottom action bar at `bottom: calc(7dvh + env(safe-area-inset-bottom))` for mobile
 - Copy to LINE: exports formatted results to clipboard (✓ / × notation)
 - Font size overrides via `:global(body.font-*)` selectors for accessibility
+
+### RandomGroup.vue
+- 隨機分組 — 5-step wizard flow: Personnel Selection → Guardians → Seeds → Rules & Size → Results
+- Group Size configuration located at the bottom of Step 4 for better ergonomic flow
+- Distribute logic uses safe size parameter (`Math.max(1, parseInt(size) || 1)`) to prevent infinite `while` loop freeze if the size input is manually cleared.
+- Results view (Step 5) utilizes standard administrative layout and dynamically fills container height correctly utilizing flex.

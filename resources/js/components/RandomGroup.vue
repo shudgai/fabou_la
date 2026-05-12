@@ -81,70 +81,56 @@
                </div>
         </div>
 
-        <!-- STEP 2: GROUPING & RESULTS -->
+        <!-- STEP 2: GUARDIANS (關主設定) -->
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-            <!-- Navigation Header -->
-            <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
-                <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-                <div class="flex items-center space-x-2">
-                    <div class="flex items-center space-x-1 text-slate-400">
-                        <span class="font-bold" style="font-size: 16px !important;">總計</span>
-                        <span class="font-black text-indigo-600" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
+                <!-- Navigation Header -->
+                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                    <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <div class="flex items-center justify-between w-full">
+                        <span class="font-black text-[20px] text-slate-800">步驟 2：關主設定</span>
+                        <div class="flex items-center space-x-1 text-slate-400">
+                            <span class="font-bold" style="font-size: 16px !important;">總計</span>
+                            <span class="font-black text-indigo-600" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Main Content Container -->
-            <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
+                <!-- Main Content Container -->
+                <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
+                    <div class="bg-amber-50/10 border border-amber-200 p-3 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between px-0.5">
+                            <label class="font-black uppercase tracking-wider text-amber-600" style="font-size: 16px !important;">🌟 指定關主</label>
+                            <span class="font-black text-amber-400 uppercase tracking-widest" style="font-size: 16px !important;">⚠️ 全場抽選</span>
+                        </div>
 
-                <!-- AREA 1: DESIGNATED GUARDIANS (指定關主) -->
-                <div class="bg-amber-50/10 border border-amber-200 p-2.5 rounded-2xl space-y-1.5">
-                    <div class="flex items-center justify-between px-0.5">
-                        <label class="font-black uppercase tracking-wider text-amber-600" style="font-size: 16px !important;">🌟 指定關主</label>
-                        <span class="font-black text-amber-400 uppercase tracking-widest" style="font-size: 16px !important;">⚠️ 全場抽選</span>
-                    </div>
-
-                    <div class="flex items-start space-x-2">
-                        <!-- Left: Search & Tags (Unified) -->
-                        <div class="flex-[1.5] space-y-1.5 min-w-0">
-                            <div class="relative">
-                                <div class="flex items-center bg-white border border-amber-100 rounded-xl px-3 h-10 shadow-sm">
+                        <div class="flex flex-col space-y-3">
+                            <div class="relative w-full">
+                                <div class="flex items-center bg-white border border-amber-100 rounded-xl px-3 h-12 shadow-sm">
                                     <input type="text" v-model="guardianQuery" placeholder="搜尋或選取關主..." @focus="isGDropdownOpen = true" 
-                                        class="w-full bg-transparent outline-none text-[15px] font-black text-amber-700 placeholder:text-amber-200">
-                                    <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        class="w-full bg-transparent outline-none text-[16px] font-black text-amber-700 placeholder:text-amber-200">
+                                    <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
-                                <div v-show="isGDropdownOpen && filteredGDropdown.length > 0 && !isDrawing" class="absolute top-[42px] left-0 right-0 bg-white border border-amber-100 rounded-xl shadow-2xl z-[50] max-h-[160px] overflow-y-auto custom-scrollbar">
+                                <div v-show="isGDropdownOpen && filteredGDropdown.length > 0 && !isDrawing" class="absolute top-[52px] left-0 right-0 bg-white border border-amber-100 rounded-xl shadow-2xl z-[50] max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <button v-for="name in filteredGDropdown" :key="'gopt'+name" @click="addManualGuardian(name)" 
-                                        class="w-full text-left px-4 py-2 text-[15px] font-black text-slate-700 hover:bg-amber-50 hover:text-amber-700 border-b border-slate-50 last:border-0">{{ name }}</button>
+                                        class="w-full text-left px-4 py-3 text-[16px] font-black text-slate-700 hover:bg-amber-50 hover:text-amber-700 border-b border-slate-50 last:border-0">{{ name }}</button>
                                 </div>
 
-                                <!-- Dedicated Guardian Animation Overlay -->
                                 <div v-if="isDrawing && currentType === 'guardian'" class="absolute inset-0 bg-amber-50/90 rounded-xl flex items-center justify-center space-x-3 z-[60] border border-amber-200 animate-pulse">
-                                    <span class="dot bg-amber-400 w-2.5 h-2.5"></span>
-                                    <span class="dot bg-amber-500 w-2.5 h-2.5"></span>
-                                    <span class="dot bg-amber-600 w-2.5 h-2.5"></span>
-                                    <span class="text-[12px] font-black text-amber-600 uppercase tracking-widest">抽選中...</span>
+                                    <span class="dot bg-amber-400 w-3 h-3"></span>
+                                    <span class="dot bg-amber-500 w-3 h-3"></span>
+                                    <span class="dot bg-amber-600 w-3 h-3"></span>
+                                    <span class="text-[14px] font-black text-amber-600 uppercase tracking-widest">抽選中...</span>
                                 </div>
 
                                 <div v-if="isGDropdownOpen" @click="isGDropdownOpen = false" class="fixed inset-0 z-[40]"></div>
                             </div>
-                            <!-- Tags are now smaller and closer to the 'search' area -->
-                            <div v-if="guardianResults.length > 0" class="flex flex-wrap gap-1">
-                                <div v-for="name in guardianResults" :key="'glist'+name" 
-                                    class="flex items-center space-x-1 bg-amber-500 text-white text-[14px] font-black px-2 py-0.5 rounded-lg animate-fade-in shadow-sm">
-                                    <span>{{ name }}</span>
-                                    <button @click="removeGuardian(name)" class="text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-[12px] shadow-none">×</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex-1 flex flex-col space-y-1 pt-0.5">
-                            <div class="flex items-center space-x-1">
-                                <div class="flex items-center border border-amber-200 rounded-lg overflow-hidden h-9 bg-white shadow-none w-36">
-                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-10 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
+                            
+                            <div class="flex items-center space-x-2 w-full pt-1">
+                                <div class="flex items-center border border-amber-200 rounded-xl overflow-hidden h-12 bg-white shadow-none flex-1">
+                                    <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-12 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
                                     <input 
                                         type="number" 
                                         v-model.number="pickSize" 
@@ -152,172 +138,210 @@
                                         class="flex-1 font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
                                         style="font-size: 24px !important;"
                                     >
-                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-10 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
+                                    <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-12 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
                                 </div>
                                 <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
-                                    class="py-[10px] px-3 font-black text-[13px] rounded-lg bg-amber-200 text-white shadow-sm active:scale-95 disabled:opacity-30 whitespace-nowrap"
+                                    class="h-12 px-5 font-black text-[16px] rounded-xl bg-amber-400 text-white shadow-sm active:scale-95 disabled:opacity-30 whitespace-nowrap transition-all hover:bg-amber-500"
                                     style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
                                     {{ guardianResults.length > 0 ? '加抽人員' : '隨機抽' }}
                                 </button>
                             </div>
-                            <div v-if="guardianResults.length > 0" class="text-right px-1">
+                        </div>
+
+                        <div v-if="guardianResults.length > 0" class="pt-4 border-t border-amber-100">
+                            <div class="flex items-center justify-between mb-2">
                                 <span class="text-[14px] font-black text-amber-500/80 uppercase tracking-tighter">* 已抽 {{ guardianResults.length }} 位</span>
+                                <button @click="guardianResults = []" class="text-[13px] font-black text-red-400 uppercase tracking-wider">清空關主</button>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <div v-for="name in guardianResults" :key="'glist'+name" 
+                                    class="flex items-center space-x-1.5 bg-amber-500 text-white text-[16px] font-black px-3 py-1.5 rounded-xl animate-fade-in shadow-sm">
+                                    <span>{{ name }}</span>
+                                    <button @click="removeGuardian(name)" class="text-white bg-red-500 rounded-full w-6 h-6 flex items-center justify-center text-[14px] shadow-none">×</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- AREA 2: PERSONNEL ROLES & CALCULATION -->
-                <div class="bg-white p-3 rounded-2xl border border-slate-100 space-y-3 shadow-sm">
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                    <div class="w-full">
+                        <button
+                            @click="currentStep = 3"
+                            :disabled="isDrawing"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm bg-indigo-600"
+                            :style="{
+                                color: '#ffffff !important',
+                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                fontSize: '18px !important',
+                                paddingTop: '13px',
+                                paddingBottom: '13px'
+                            }"
+                        >
+                            下一步：種子組設定 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- 2A. SEED SELECTION (ROLE ASSIGNMENT) -->
-                    <div class="space-y-1.5 pb-1">
-                        <label class="font-bold text-slate-400 uppercase tracking-wider px-1" style="font-size: 16px !important;">🌟 指定種子組 (優先扣除)</label>
-                        <div class="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-slate-100 rounded-xl min-h-[44px]">
-                            <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-amber-50 text-amber-900 text-[16px] font-black px-3 py-1 rounded-lg border border-amber-100">
-                                <span>{{ name }}</span>
-                                <button @click="removeSeed(name)" class="text-amber-300 hover:text-amber-500">×</button>
-                            </div>
-                            <div class="relative flex-1 min-w-[120px]">
-                                <select @change="addSeedFromSelect($event)" class="w-full h-full bg-transparent outline-none text-[16px] font-black text-slate-400 cursor-pointer">
-                                    <option value="" disabled selected>查詢在場人員...</option>
-                                    <option v-for="name in availableSeeds" :key="'opt'+name" :value="name">{{ name }}</option>
-                                </select>
+        <!-- STEP 3: SEEDS (種子組設定) -->
+        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
+                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                    <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <span class="font-black text-[20px] text-slate-800">步驟 3：種子組設定</span>
+                </div>
+
+                <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                        <div class="space-y-2">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider px-1" style="font-size: 16px !important;">🌟 指定種子組 (優先扣除)</label>
+                            <div class="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl min-h-[60px]">
+                                    <input 
+                                        type="text" 
+                                        list="available-seeds-list" 
+                                        @change="addSeedFromSelect($event)" 
+                                        placeholder="查詢在場人員加入種子組..." 
+                                        class="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 outline-none text-[16px] font-black text-slate-600 cursor-pointer shadow-sm text-center"
+                                    >
+                                    <datalist id="available-seeds-list">
+                                        <option v-for="name in availableSeeds" :key="'dlopt'+name" :value="name"></option>
+                                    </datalist>
+                                <div v-if="seedNames.length > 0" class="flex flex-wrap gap-2 mt-2">
+                                    <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-indigo-50 text-indigo-900 text-[16px] font-black px-3 py-1.5 rounded-xl border border-indigo-100">
+                                        <span>{{ name }}</span>
+                                        <button @click="removeSeed(name)" class="text-indigo-400 hover:text-indigo-600 text-[18px]">×</button>
+                                    </div>
+                                </div>
+                                <div v-else class="text-[14px] font-bold text-slate-400 text-center py-2">
+                                    目前無指定種子
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 2B. RULES & SUMMARY (CALCULATION) -->
-                    <div class="space-y-3 border-t border-slate-50 pt-3">
-                        <div class="flex items-center justify-between px-1">
-                            <label class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">⚙️ 分組規則</label>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[15px] font-black text-slate-700 uppercase tracking-tight">包含關主分組</span>
-                                <button @click="includeGuardians = !includeGuardians" :class="['w-9 h-5 rounded-full transition-all relative', includeGuardians ? 'bg-indigo-500' : 'bg-slate-300']">
-                                    <div :class="['absolute top-[4px] w-3 h-3 bg-white rounded-full transition-all shadow-sm', includeGuardians ? 'left-[20px]' : 'left-[4px]']"></div>
-                                </button>
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                    <div class="w-full">
+                        <button
+                            @click="currentStep = 4"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm bg-indigo-600"
+                            :style="{
+                                color: '#ffffff !important',
+                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                fontSize: '18px !important',
+                                paddingTop: '13px',
+                                paddingBottom: '13px'
+                            }"
+                        >
+                            下一步：分組規則 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: RULES & SIZE (分組規則與人數) -->
+        <div v-show="currentStep === 4" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
+                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                    <button @click="currentStep = 3" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <span class="font-black text-[20px] text-slate-800">步驟 4：分組規則</span>
+                </div>
+
+                <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                        <!-- Rules & Calculation -->
+                        <div class="space-y-3 pb-4 border-b border-slate-50">
+                            <div class="flex items-center justify-between px-1">
+                                <label class="text-[15px] font-black text-indigo-500 uppercase tracking-widest">⚙️ 分組規則試算</label>
+                                <div class="flex items-center space-x-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                    <span class="text-[14px] font-black text-slate-700">包含關主</span>
+                                    <button @click="includeGuardians = !includeGuardians" :class="['w-10 h-6 rounded-full transition-all relative', includeGuardians ? 'bg-indigo-500' : 'bg-slate-300']">
+                                        <div :class="['absolute top-[4px] w-4 h-4 bg-white rounded-full transition-all shadow-sm', includeGuardians ? 'left-[22px]' : 'left-[4px]']"></div>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="p-3 space-y-3 transition-all duration-300">
-                            <div class="flex items-center justify-between mb-2 flex-nowrap overflow-hidden">
-                                <span class="text-[14px] font-black text-slate-500 whitespace-nowrap truncate mr-2">📋 分派人數試算</span>
-                                <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full shrink-0', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '包含關主模式' : '排除關主模式' }}</span>
-                            </div>
-                            <div class="space-y-1 px-0.5">
-                                <div class="flex items-center justify-between font-black" style="font-size: 16px !important;"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
-
-                                <!-- Detailed Deduction Rows -->
-                                <div class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
-                                    <span>− 種子組名單 <span v-if="guardianSeedsCount > 0" class="text-[11px] opacity-60 font-black ml-1">(含 {{ guardianSeedsCount }} 位關主)</span></span>
-                                    <span>{{ seedNames.length }} 人</span>
+                            <div class="p-3 bg-slate-50 rounded-xl space-y-3 transition-all duration-300 border border-slate-100">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[14px] font-black text-slate-500">📋 分派人數</span>
+                                    <span :class="['text-[11px] font-black px-2 py-0.5 rounded-full', includeGuardians ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600']">{{ includeGuardians ? '包含關主模式' : '排除關主模式' }}</span>
                                 </div>
-                                <div v-if="!includeGuardians && nonSeedGuardiansCount > 0" class="flex items-center justify-between text-[14px] font-bold text-slate-300 pl-4 py-0.5 border-l-2 border-slate-100 ml-1">
-                                    <span>− 指定關主名單 <span class="text-[10px] opacity-40 ml-1">(扣除重複種子)</span></span>
-                                    <span>{{ nonSeedGuardiansCount }} 人</span>
-                                </div>
+                                <div class="space-y-2 px-1">
+                                    <div class="flex items-center justify-between font-black" style="font-size: 16px !important;"><span class="text-slate-400">❶ 在場總計</span><span class="text-slate-800">{{ selectedNames.length }} 人</span></div>
 
-                                <div class="flex items-center justify-between text-[14px] font-black pt-1 border-t border-dashed border-slate-100 mt-1">
-                                    <span class="text-rose-400/80">❷ 總計排除</span>
-                                    <span class="text-rose-500">{{ totalExclusionCount }} 人</span>
-                                </div>
+                                    <div class="flex items-center justify-between text-[14px] font-bold text-slate-400 pl-4 py-0.5 border-l-2 border-slate-200 ml-1">
+                                        <span>− 種子組名單 <span v-if="guardianSeedsCount > 0" class="text-[11px] opacity-60 font-black ml-1">(含 {{ guardianSeedsCount }} 位關主)</span></span>
+                                        <span>{{ seedNames.length }} 人</span>
+                                    </div>
+                                    <div v-if="!includeGuardians && nonSeedGuardiansCount > 0" class="flex items-center justify-between text-[14px] font-bold text-slate-400 pl-4 py-0.5 border-l-2 border-slate-200 ml-1">
+                                        <span>− 指定關主名單 <span class="text-[10px] opacity-40 ml-1">(扣除重複)</span></span>
+                                        <span>{{ nonSeedGuardiansCount }} 人</span>
+                                    </div>
 
-                                <div class="border-t border-slate-200 mt-2.5 pt-2.5">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex flex-col">
-                                            <span class="text-slate-900 font-black text-[17px]">❸ 實際隨機分派</span>
-                                             <span class="text-[10px] font-bold text-slate-400">❶ 在場總計 − ❷ 總計排除</span>
+                                    <div class="flex items-center justify-between text-[15px] font-black pt-2 border-t border-dashed border-slate-200 mt-2">
+                                        <span class="text-rose-400">❷ 總計排除</span>
+                                        <span class="text-rose-500">{{ totalExclusionCount }} 人</span>
+                                    </div>
+
+                                    <div class="border-t border-slate-200 mt-3 pt-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex flex-col">
+                                                <span class="text-slate-900 font-black text-[18px]">❸ 實際隨機分派</span>
+                                                <span class="text-[11px] font-bold text-slate-400">❶ 總計 − ❷ 排除</span>
+                                            </div>
+                                            <span :class="['text-[24px] font-black leading-none', includeGuardians ? 'text-indigo-600' : 'text-amber-600']">{{ activePoolCount }} 人</span>
                                         </div>
-                                        <span :class="['text-[20px] font-black leading-none drop-shadow-sm', includeGuardians ? 'text-indigo-600' : 'text-amber-600']">{{ activePoolCount }} 人</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 2C. GROUP SIZE & ACTION -->
-                    <div class="space-y-2 pt-1 border-t border-slate-50 mt-1">
-                        <div class="space-y-1.5">
-                            <label class="text-[17px] font-black text-slate-400 uppercase tracking-wider px-1">每組固定人數</label>
-                            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-14 bg-slate-50/50">
-                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-14 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
+                        <!-- Group Size -->
+                        <div class="space-y-3">
+                            <label class="text-[17px] font-black text-slate-700 uppercase tracking-wider px-1">每組固定人數</label>
+                            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden h-16 bg-slate-50/50 shadow-sm">
+                                <button @click="groupSize = Math.max(2, groupSize - 1)" class="w-16 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 28px !important;">−</button>
                                 <div class="flex-1 flex flex-col items-center justify-center">
                                     <input 
                                         type="number" 
                                         v-model.number="groupSize" 
                                         @blur="groupSize = Math.max(2, Math.min(selectedNames.length, groupSize || 2))"
                                         class="font-black text-slate-800 leading-none bg-transparent outline-none text-center w-full"
-                                        style="font-size: 24px !important;"
+                                        style="font-size: 30px !important;"
                                     >
                                 </div>
-                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-14 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
+                                <button @click="groupSize = Math.min(20, groupSize + 1)" class="w-16 h-full text-white bg-slate-300 font-black transition-colors shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 28px !important;">＋</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Results Display Area -->
-                <div class="animate-fade-in space-y-3 pb-32 px-1 -mt-4 min-h-[100px]">
-                    <div class="border-t border-slate-100 w-16 mx-auto mb-1"></div>
-
-                    <!-- Suspense Animation (Relocated here for visibility) -->
-                    <div v-if="isDrawing" class="flex flex-col items-center justify-center py-8 space-y-4 animate-pulse">
-                        <div class="flex gap-3">
-                            <span class="dot bg-indigo-400 w-4 h-4 shadow-lg shadow-indigo-200"></span>
-                            <span class="dot bg-indigo-500 w-4 h-4 shadow-lg shadow-indigo-200"></span>
-                            <span class="dot bg-indigo-600 w-4 h-4 shadow-lg shadow-indigo-200"></span>
-                        </div>
-                        <p class="text-[13px] font-black text-indigo-400 uppercase tracking-widest">{{ currentType === 'guardian' ? '關主抽選中...' : '隨機演算中...' }}</p>
-                    </div>
-
-                    <div v-if="guardianResults.length > 0 && !isDrawing" class="bg-amber-50 p-1.5 rounded-2xl border border-amber-200/50">
-                        <div class="flex items-center justify-between mb-1">
-                            <h4 class="text-[15px] font-black text-amber-600 tracking-wider uppercase">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
-
-                        </div>
-                        <div class="flex flex-wrap gap-x-4 gap-y-0.5">
-                            <div v-for="name in guardianResults" :key="'guard'+name" class="text-amber-700 font-black text-[17px]">{{ name }}</div>
-                        </div>
-                    </div>
-                    <div v-if="groups.length > 0" class="space-y-3">
-                        <div class="flex items-center justify-between py-3">
-                            <h4 class="text-[13px] font-black text-slate-400 tracking-wider uppercase">分組名冊</h4>
-                            <div class="flex items-center space-x-2">
-                                <button @click="redrawAll" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">重抽</button>
-                                <button @click="copyResult" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">複製名單</button>
-                                <button @click="groups = []" class="w-[68px] h-[32px] flex items-center justify-center text-[12px] font-black text-white bg-slate-300 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">隱藏</button>
-                            </div>
-                        </div>
-                        <div class="grid gap-1">
-                            <div v-for="(group, idx) in groups" :key="idx" class="p-1.5 px-3 rounded-2xl border transition-all bg-white border-slate-300 shadow-sm">
-                                <div class="flex items-center justify-between mb-0.5"><span class="text-[15px] font-black uppercase tracking-tight text-slate-900">{{ group.name }}</span><span class="text-[12px] font-bold text-slate-600">{{ group.members.length }} 人</span></div>
-                                <div class="flex flex-wrap gap-x-4 gap-y-0.5"><span v-for="member in group.members" :key="member" class="text-[17px] font-black text-black">{{ member }}</span></div>
-                            </div>
-                        </div>
+                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                    <div class="w-full">
+                        <button
+                            @click="doGrouping"
+                            :disabled="selectedNames.length < 1 || isDrawing"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
+                            :style="{
+                                background: selectedNames.length < 1 || isDrawing ? '#94a3b8' : 'rgb(0,255,0)',
+                                color: '#ffffff !important',
+                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                fontSize: '18px !important',
+                                paddingTop: '13px',
+                                paddingBottom: '13px'
+                            }"
+                        >
+                            <span style="color: #ffffff !important;">開始分組演算</span>
+                        </button>
                     </div>
                 </div>
-            </div>
-
-<!-- Fixed Bottom Action Area aligned with desktop container -->
-             <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
-                 <div class="w-full">
-                     <button
-                         @click="doGrouping"
-                         :disabled="selectedNames.length < 1 || isDrawing"
-                         class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
-                         :style="{
-                             background: selectedNames.length < 1 || isDrawing ? '#94a3b8' : 'rgb(0,255,0)',
-                             color: '#ffffff !important',
-                             textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                             fontSize: '16px !important',
-                             paddingTop: '13px',
-                             paddingBottom: '13px'
-                         }"
-                     >
-                         <span style="color: #ffffff !important;">開始分組演算</span>
-                     </button>
-                 </div>
-             </div>
             </div>
         </div>
 
@@ -382,10 +406,10 @@
             </div>
         </div>
 
-        <!-- STEP 3: RESULTS -->
-        <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-white overflow-hidden">
-            <div class="bg-white border-b border-slate-100 p-3 px-4 flex items-center justify-between sticky top-0 z-10">
-                <button @click="currentStep = 2" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
+        <!-- STEP 5: RESULTS (分組結果) -->
+        <div v-show="currentStep === 5" class="flex flex-col w-full h-full bg-white overflow-hidden">
+            <div class="bg-white border-b border-slate-100 p-3 px-4 flex items-center justify-between sticky top-0 z-10 md:mt-[60px]">
+                <button @click="currentStep = 4" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <h2 class="flex-1 whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">分組結果</h2>
@@ -482,7 +506,7 @@ const currentStep = ref(1);
 const handleNextRound = () => {
     groups.value = [];
     guardianResults.value = [];
-    currentStep.value = 2;
+    currentStep.value = 2; // Return to guardians selection
 };
 
 const guardianQuery = ref('');
@@ -537,9 +561,6 @@ const stopDrag = () => {
     window.removeEventListener('mouseup', stopDrag);
 };
 
-// Storage Logic Removed for clean state on load
-
-// Show all users, or only selected ones after first confirm
 const selectionFiltered = ref(false);
 const manualName = ref('');
 const addManualName = () => {
@@ -568,7 +589,6 @@ const selectAll = () => {
     pendingNames.value = users.value.map(u => u.name.trim());
 };
 
-// Style for pending selection: blue = selected, dim = not selected
 const getPendingStyle = (name) => {
     const t = name.trim();
     const isSelected = pendingNames.value.includes(t);
@@ -597,7 +617,6 @@ const toggleSelectionFilter = () => {
     }
 };
 
-// Toggle a name in the pending list
 const togglePending = (name) => {
     if (!name) return;
     const t = name.trim();
@@ -609,17 +628,12 @@ const togglePending = (name) => {
     }
 };
 
-// Confirm Step 1 — two stages:
-// Stage 1: filter grid to show only selected names
-// Stage 2: move to Step 2 grouping
 const confirmSelection = () => {
     if (pendingNames.value.length === 0) return;
     if (!selectionFiltered.value) {
-        // First confirm: filter the grid
         selectionFiltered.value = true;
         return;
     }
-    // Second confirm: go to Step 2
     const ordered = users.value
         .map(u => u.name.trim())
         .filter(n => pendingNames.value.includes(n));
@@ -627,7 +641,7 @@ const confirmSelection = () => {
     seedNames.value = [];
     groups.value = [];
     guardianResults.value = [];
-    currentStep.value = 2;
+    currentStep.value = 2; // Move to Guardians
 };
 
 const availableSeeds = computed(() => {
@@ -677,14 +691,11 @@ const removeGuardian = (name) => {
     guardianResults.value = guardianResults.value.filter(n => n !== name);
 };
 
-// Storage Logic Removed for clean state on load
-
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
         let rawUsers = res.data;
 
-        // Custom sorting: Ensure 靈奇, 靈傾 are after 靈情
         let processed = [...rawUsers];
         const qingIdx = processed.findIndex(u => u.name === '靈情');
         if (qingIdx > -1) {
@@ -697,12 +708,11 @@ const loadUsers = async () => {
         }
         users.value = processed;
 
-        // Reset to clean state as requested: no pre-selection
         pendingNames.value = [];
         selectedNames.value = [];
 
         selectionFiltered.value = false;
-        currentStep.value = 1; // Always start on Step 1 as requested
+        currentStep.value = 1;
     } catch (e) { console.error('Failed to load users', e); }
 };
 
@@ -745,7 +755,6 @@ const totalExclusionCount = computed(() => {
     if (!includeGuardians.value) {
         guardianResults.value.forEach(g => combined.add(g));
     }
-    // Only count people who are actually marked as present
     let count = 0;
     combined.forEach(name => {
         if (selectedNames.value.includes(name)) count++;
@@ -763,10 +772,8 @@ const distributePlayers = (players, size) => {
         guardianResults.value.forEach(g => exclusionSet.add(g));
     }
 
-    // Strictly shuffle only those NOT in the exclusion set
     let candidates = players.filter(p => !exclusionSet.has(p));
 
-    // Shuffle candidates
     for (let i = candidates.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
@@ -775,18 +782,18 @@ const distributePlayers = (players, size) => {
     const result = [];
     let groupNum = 1;
 
-    // 1. Seed Groups get the "第 1 組" designation as requested
     const seedsInPlay = seedNames.value.filter(s => players.includes(s));
     if (seedsInPlay.length > 0) {
         result.push({ name: `第 ${groupNum} 組 (種子組)`, members: seedsInPlay, isSeed: true });
         groupNum++;
     }
 
-    // 2. Remaining candidates follow from group 2 onwards
+    const safeSize = Math.max(1, parseInt(size) || 1);
+
     while (candidates.length > 0) {
         result.push({ 
             name: `第 ${groupNum} 組`, 
-            members: candidates.splice(0, size), 
+            members: candidates.splice(0, safeSize), 
             isSeed: false 
         });
         groupNum++;
@@ -827,10 +834,8 @@ const doGrouping = () => {
     currentType.value = 'group';
     groups.value = [];
 
-    // Build flying sticks from current selected names
     buildFlyingSticks([...selectedNames.value]);
 
-    // Start cycling names for animation
     const pool = [...selectedNames.value];
     let idx = 0;
     lotteryDisplayNames.value = [pool[0]];
@@ -845,7 +850,7 @@ const doGrouping = () => {
         groups.value = distributePlayers([...selectedNames.value], groupSize.value);
         isDrawing.value = false;
         lotteryDisplayNames.value = [];
-        currentStep.value = 3;
+        currentStep.value = 5; // Move to Results
     }, 3000);
 };
 

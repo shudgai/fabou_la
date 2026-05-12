@@ -17,52 +17,74 @@
 
             <div class="flex-1 overflow-y-auto custom-scrollbar w-full">
                 <div class="grid grid-cols-1 gap-2 px-6 pt-1 pb-24 place-items-center">
-                <button v-for="(folder, idx) in sortedFolders" :key="folder.id" 
-                    @click="activeFolderId = folder.id"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
-                    style="background-color: white;">
-
-                    <!-- Folder Delete Button (Top Right) -->
-                    <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
-                        @click.stop="deleteFolder(folder.id)"
-                        class="absolute top-10 right-2 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 z-20 border border-rose-100">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-
-                    <div class="relative w-[310px] h-[310px]">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none">
-                            <div :class="[
-                                 'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
-                                 folder.name === '閻王仙師' ? 'text-black' : 'text-[#fbbf24]'
-                             ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
-                            <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
-                                <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
+                <template v-if="sortedFolders.length === 0">
+                    <!-- Lucky Draw - Direct Sort (RED FOLDER STYLE) -->
+                    <button @click="luckyDrawInitialMode = false; showLuckyDraw = true"
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                        style="background-color: white;">
+                        <div class="relative w-[310px] h-[310px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
+                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                                    抽順序
+                                </span>
                             </div>
                         </div>
-                    </div>
-                </button>
+                    </button>
+                </template>
 
-                <!-- Lucky Draw - Direct Sort (RED FOLDER STYLE) -->
-                <button @click="luckyDrawInitialMode = false; showLuckyDraw = true"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
-                    style="background-color: white;">
-                    <div class="relative w-[310px] h-[310px]">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                        </svg>
-                        <!-- Label Inside -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
-<span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
-                                  抽順序
-                              </span>
+                <template v-for="(folder, idx) in sortedFolders" :key="folder.id">
+                    <button 
+                        @click="activeFolderId = folder.id"
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                        style="background-color: white;">
+
+                        <!-- Folder Delete Button (Top Right) -->
+                        <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
+                            @click.stop="deleteFolder(folder.id)"
+                            class="absolute top-10 right-2 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 z-20 border border-rose-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+
+                        <div class="relative w-[310px] h-[310px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3 pointer-events-none">
+                                <div :class="[
+                                     'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
+                                     folder.name === '閻王仙師' ? 'text-black' : 'text-[#fbbf24]'
+                                 ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
+                                <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
+                                    <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </button>
+                    </button>
+
+                    <!-- Lucky Draw - Direct Sort (RED FOLDER STYLE) -->
+                    <button v-if="idx === 0" @click="luckyDrawInitialMode = false; showLuckyDraw = true"
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
+                        style="background-color: white;">
+                        <div class="relative w-[310px] h-[310px]">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
+                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                                    抽順序
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                </template>
 
                 <!-- Lucky Draw - Round Lottery (EMERALD FOLDER STYLE) -->
                 <button @click="luckyDrawInitialMode = true; showLuckyDraw = true"
