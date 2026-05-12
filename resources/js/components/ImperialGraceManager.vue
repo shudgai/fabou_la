@@ -147,15 +147,15 @@
             <div class="flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[110]">
                 <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
                 <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" />
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px !important; font-weight: 900 !important;">
+                <div class="flex items-center gap-2">
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
 
                 <!-- Row 2: Folder Name + Actions (Sticky on all devices) -->
                 <div class="flex items-end justify-between w-full px-[15px] pt-1 pb-[6px] bg-white">
-                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
+                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 24px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0 ml-4">
                         <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1.5 active:scale-95 transition-all font-black" style="color: #4f46e5 !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}

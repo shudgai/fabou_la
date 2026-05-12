@@ -62,6 +62,15 @@
                         </div>
                         <div class="space-y-8">
                             <div class="relative group">
+                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                                <button @click="showMasterDropdown = true"
+                                    class="w-full py-4 px-4 rounded-2xl border-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
+                                    :class="form.master_id ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-400'">
+                                    <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
+                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <div class="relative group">
                                 <div class="flex items-center justify-between mb-2">
                                     <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">得知日期</label>
                                     <button @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" class="text-slate-300 hover:text-blue-500 p-1 active:scale-90">
@@ -70,35 +79,6 @@
                                 </div>
                                 <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字"
                                     class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
-                            </div>
-                            <div class="relative group">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                                <button @click="showMasterDropdown = true"
-                                    class="w-full py-4 border-0 border-b-2 border-slate-100 bg-transparent text-[17px] font-black flex items-center justify-between outline-none transition-all"
-                                    :class="form.master_id ? 'text-slate-900 border-blue-500' : 'text-slate-200'">
-                                    <span class="flex-1 text-center">{{ selectedMasterName || '請選擇仙師...' }}</span>
-                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <!-- Bottom Sheet -->
-                                <teleport to="body">
-                                    <div v-if="showMasterDropdown" class="fixed inset-0 z-[5000] flex items-end justify-center">
-                                        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px]" @click="showMasterDropdown = false"></div>
-                                        <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
-                                            <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
-                                                <span class="text-[20px] font-black text-slate-900">選擇仙師</span>
-                                                <button @click="showMasterDropdown = false" class="p-2 text-slate-300 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                                            </div>
-                                            <div class="flex-1 overflow-y-auto p-3 space-y-2 pb-10">
-                                                <button v-for="m in masters" :key="m.id" @click="form.master_id = m.id; showMasterDropdown = false"
-                                                    class="w-full p-5 text-left rounded-2xl transition-all flex items-center justify-between border-2"
-                                                    :class="form.master_id === m.id ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50/50 border-transparent text-slate-700 hover:bg-slate-100'">
-                                                    <span class="text-[18px] font-bold">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</span>
-                                                    <div v-if="form.master_id === m.id" class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </teleport>
                             </div>
                         </div>
                     </div>
@@ -166,8 +146,8 @@
                             </div>
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-red-400 ml-1 font-bold">法號/群組</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號/群組" list="dharma-names"
+                                    <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
+                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
@@ -305,6 +285,27 @@
             @close="activePicker = null"
         />
     </div>
+
+        <!-- Master Bottom Sheet (root-level teleport to avoid transition interference) -->
+        <teleport to="body">
+            <div v-if="showMasterDropdown" class="fixed inset-0 z-[5500] flex items-end justify-center">
+                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px]" @click="showMasterDropdown = false"></div>
+                <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
+                    <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
+                        <span class="text-[20px] font-black text-slate-900">選擇仙師</span>
+                        <button @click="showMasterDropdown = false" class="p-2 text-slate-300 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-3 space-y-1 pb-10">
+                        <button v-for="m in masters" :key="m.id" @click="form.master_id = m.id; showMasterDropdown = false"
+                            class="w-full py-3.5 px-4 text-left rounded-xl transition-all flex items-center justify-between border-2"
+                            :class="form.master_id === m.id ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50/50 border-transparent text-slate-700 hover:bg-slate-100'">
+                            <span class="text-[18px] font-bold">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</span>
+                            <div v-if="form.master_id === m.id" class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </teleport>
     </teleport>
 </template>
 
@@ -594,7 +595,10 @@ watch(() => props.initialData, (newVal) => {
 }, { deep: true, immediate: true });
 
 watch(() => props.mode, (newVal) => {
-    if (newVal) localMode.value = newVal;
+    if (newVal) {
+        localMode.value = newVal;
+        currentStep.value = 1;
+    }
 });
 
 // Intelligent Date Auto-conversion and Auto-newline for Batch Mode

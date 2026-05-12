@@ -17,33 +17,27 @@
         <div v-if="currentFolder && !addMode" 
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Row 1: Global Title (Now visible on mobile to replace redundant Header 1) -->
-            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white" @click="resetToRoot">
-                <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white">
+                <div class="flex items-center gap-2 cursor-pointer" @click="resetToRoot">
                     <logo-imperial-notebook :height="36" />
-                    <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap cursor-pointer" 
+                    <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap" 
                         style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                         法寶登記專區
                     </div>
                 </div>
             </div>
 
-            <!-- Row 2: Category Name + Master Name + Actions (Consolidated 2-row Header) -->
-            <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px] overflow-hidden">
-                <div class="flex items-baseline gap-x-2 overflow-hidden">
+            <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
+            <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px]">
+                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
                     <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                         {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                     </span>
-                    <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal whitespace-nowrap truncate" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
+                    <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal break-words" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
                 </div>
-                <div class="flex items-center space-x-2 shrink-0 ml-4">
-                    <button v-if="!reorderMode" @click="toggleSort" class="px-3 py-1 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 14px !important;">
+                <div class="flex flex-col items-end justify-center shrink-0 ml-2 gap-0.5">
+                    <button v-if="!reorderMode" @click="toggleSort" class="px-1 py-0.5 active:scale-95 transition-all font-black leading-none" style="color: #4f46e5 !important; font-size: 13px !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
-                    </button>
-                    <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
-                            class="font-black transition-all active:scale-95 whitespace-nowrap px-3 py-1 rounded-xl shadow-sm"
-                            :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500' : 'bg-slate-50 text-slate-400 border border-transparent'"
-                            style="font-size: 14px !important;">
-                        {{ reorderMode ? '確認排序' : '修改排序' }}
                     </button>
                 </div>
             </div>
@@ -56,8 +50,7 @@
                 <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-white relative min-h-[52px]">
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <div class="flex items-center gap-2">
-                                <logo-imperial-notebook :height="36" />
-                                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
+                                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 900 !important;">
                                     {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
                                     <br>
                                     <span v-if="currentFolder" class="text-[26px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 26px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
@@ -209,9 +202,15 @@
 
                             <div class="flex-1 min-w-0 pr-[10px]">
                             <!-- Action Dropdown Trigger -->
-                            <div class="absolute top-[24px] right-4 z-30 translate-x-0">
+                            <button v-if="expandedIds.has(item.id)" @click.stop="toggleExpand(item.id)" 
+                                    class="absolute top-[30px] right-4 z-30 p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
+                                <svg class="w-[19px] h-[19px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="absolute right-4 z-30 translate-x-0" :class="expandedIds.has(item.id) ? 'top-[60px]' : 'top-[24px]'">
                                 <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
-                                        class="p-2 active:scale-90 transition-all rounded-full bg-slate-50/50 !text-[#dc1428]">
+                                        class="p-2 active:scale-90 transition-all !text-[#dc1428]">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                         <circle cx="5" cy="12" r="2" />
                                         <circle cx="12" cy="12" r="2" />
@@ -264,17 +263,14 @@
 
                                     <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative">
                                         <!-- Detailed Record View -->
-                                        <div v-if="!editingIds.has(item.id)" class="space-y-4 px-0 mb-4 animate-fade-in">
+                                        <div v-if="!editingIds.has(item.id)" class="space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
                                             <!-- Row 1: Date and Master -->
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div class="space-y-1 md:hidden">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
                                                     <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                                 </div>
-                                                <div class="space-y-1 md:col-span-2 md:text-left">
-                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                                    <div class="app-body font-bold" :class="getMasterName(item.master_id) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ getMasterName(item.master_id) }}</div>
-                                                </div>
+
                                             </div>
 
                                             <!-- Row 2: Name -->
@@ -328,14 +324,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 ml-[-10px] md:ml-0">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 ml-[-15px]">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 -mx-4 md:mx-0 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="px-2 py-1.5 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號/群組</th>
-                                                                <th class="px-2 py-1.5 text-center font-black w-[130px] whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="w-[80px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
+                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
@@ -347,10 +343,10 @@
                                                                         <input v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
                                                                             type="text"
-                                                                            class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#dc1428]">
+                                                                            class="w-full bg-white border border-slate-300 rounded-md pl-1 pr-6 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#dc1428]">
                                                                         <button v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
                                                                             @click.stop="activePicker = { id: item.id + '-' + (recipient.id), field: 'obtained_date', title: recipient.name }"
-                                                                            class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
+                                                                            class="absolute right-[10px] text-slate-300 hover:text-indigo-600 p-0.5">
                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                         </button>
                                                                         <span v-else :class="editMap[item.id + '-' + recipient.id]?.obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit !text-[#dc1428]" style="font-family: 'PMingLiU', serif;">
@@ -372,13 +368,13 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 -mx-4 md:mx-0 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                 <th class="px-2 py-1.5 text-center font-black w-[110px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
-                                                                 <th class="px-2 py-1.5 text-left font-black w-[80px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
-                                                                 <th class="px-2 py-1.5 text-left font-black w-[90px] whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
+                                                                 <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
+                                                                 <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
+                                                                 <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
                                                                  <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                              </tr>
                                                          </thead>
@@ -389,10 +385,10 @@
                                                                         <input v-if="editingIds.has(item.id)" 
                                                                             v-model="editMap[item.id + '-' + dnr.dharma_name_id].obtained_date" 
                                                                             type="text"
-                                                                            class="w-full bg-white border border-slate-300 rounded-md px-1 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#1e293b]">
+                                                                            class="w-full bg-white border border-slate-300 rounded-md pl-1 pr-6 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#1e293b]">
                                                                         <button v-if="editingIds.has(item.id)" 
                                                                             @click.stop="activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }"
-                                                                            class="absolute right-0 text-slate-300 hover:text-indigo-600 p-0.5">
+                                                                            class="absolute right-[10px] text-slate-300 hover:text-indigo-600 p-0.5">
                                                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                         </button>
                                                                         <span v-else class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>

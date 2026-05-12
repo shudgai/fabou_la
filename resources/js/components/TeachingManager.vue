@@ -114,14 +114,14 @@
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px] mb-1">
                         <div class="relative w-[310px] h-[310px]">
-                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>每日開示
                                 </span>
-                                <div class="mt-4 flex items-center" style="transform: translateY(-8px);">
-                                    <span class="text-[#ff4d4d] font-black tracking-tight drop-shadow-sm" style="font-size: 19px !important; font-weight: 900 !important;">{{ folderCounts.daily || 0 }} 筆</span>
+                                <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
+                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 14px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -132,14 +132,14 @@
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px]">
                         <div class="relative w-[310px] h-[310px]">
-                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>開示載錄
                                 </span>
-                                <div class="mt-4 flex items-center" style="transform: translateY(-8px);">
-                                    <span class="text-[#ff4d4d] font-black tracking-tight drop-shadow-sm" style="font-size: 19px !important; font-weight: 900 !important;">{{ mastersTotalCount }} 筆</span>
+                                <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
+                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 14px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -163,16 +163,21 @@
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[260px] h-[173px] p-2 bg-transparent">
                         <div class="relative w-[245px] h-[158px]">
-                            <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2 px-2 pointer-events-none">
-                                <div class="font-black text-[#fbbf24] tracking-tighter leading-none text-center opacity-80" style="font-size: 11px !important;">父皇仙師開示載錄</div>
+                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-12 px-2 pointer-events-none overflow-visible">
+                                <div class="font-black tracking-tighter leading-none text-center" 
+                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'"
+                                     style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-1"
-                                     style="font-weight: 900 !important; font-size: 25px !important;">
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-2"
+                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'"
+                                     style="font-weight: 900 !important; font-size: 22px !important; -webkit-text-stroke: 0.5px currentColor;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="mt-1 flex items-center">
-                                    <span class="text-white font-normal" style="font-size: 14px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-0 flex items-center pb-8" style="transform: translateY(-2px);">
+                                    <span class="font-black whitespace-nowrap drop-shadow-sm" 
+                                          :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#8b0000]'"
+                                          style="font-size: 14px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -1566,7 +1571,7 @@
                                             <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <div class="text-[17px] font-bold leading-none">
+                                            <div class="text-[17px] font-black leading-none">
                                                 <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span class="text-slate-900">開示給{{ getRecipientName(item) }}</span>
                                             </div>
                                             <!-- Content/Item Summary in List Header -->
