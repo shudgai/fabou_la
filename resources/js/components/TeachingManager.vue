@@ -307,11 +307,11 @@
                                             <!-- Group Mode (Only if more than 1 person or global group) -->
                                             <template v-if="(activeModalGroup || currentMatchedGroup || dharmaSearchQuery === '在場全體') && (form.dharma_name_ids.length > 1 || dharmaSearchQuery === '在場全體')">
                                                 <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
-                                                     class="bg-white border border-indigo-600 text-slate-900 px-4 py-3 rounded-2xl app-body flex items-center shadow-sm cursor-pointer active:scale-95 transition-all">
-                                                    <span class="mr-2 w-2.5 h-2.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                                                    <span class="font-black text-[17px]">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name || dharmaSearchQuery) }} <span v-if="form.dharma_name_ids.length > 0">({{ form.dharma_name_ids.length }}人)</span></span>
-                                                    <span class="ml-2 text-[12px] underline font-black tracking-tight text-indigo-600">查看明細</span>
-                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-slate-400 hover:text-red-500 transition-colors">
+                                                     class="bg-indigo-600 text-white px-4 py-3 rounded-2xl app-body flex items-center shadow-md cursor-pointer active:scale-95 transition-all">
+                                                    <span class="mr-2 w-2.5 h-2.5 bg-white rounded-full animate-pulse"></span>
+                                                    <span class="font-black text-[17px] !text-white" style="color: white !important;">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name || dharmaSearchQuery) }} <span v-if="form.dharma_name_ids.length > 0" class="!text-white" style="color: white !important;">({{ form.dharma_name_ids.length }}人)</span></span>
+                                                    <span class="ml-2 text-[12px] underline font-black tracking-tight text-white/60">查看明細</span>
+                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-white/60 hover:text-white transition-colors">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                     </button>
                                                 </div>
@@ -764,7 +764,7 @@
                                                     <input v-model="newItemSubDetails" 
                                                            @focus="activeDaysDropdownId = 'subDetails'" @click.stop
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
-                                                    <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
+                                                    <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
 
                                                     <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
@@ -1059,7 +1059,7 @@
                                                             <input v-model="newItemDetailsExtraDays" 
                                                                    @focus="activeDaysDropdownId = 'extraDaysModal'" @click.stop
                                                                    class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
-                                                            <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天份</span>
+                                                            <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
 
                                                             <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="n in 9" :key="n" 
@@ -1567,7 +1567,7 @@
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
                                             <div class="text-[17px] font-bold leading-none">
-                                                <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span v-if="item.content?.trim()" class="text-slate-900">開示</span><span class="text-slate-900">給：{{ getRecipientName(item) }}</span>
+                                                <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span class="text-slate-900">開示給{{ getRecipientName(item) }}</span>
                                             </div>
                                             <!-- Content/Item Summary in List Header -->
                                             <div class="mt-[3px] text-[17px] font-semibold text-slate-500 truncate leading-none">
@@ -1756,7 +1756,7 @@
                 </div>
 
                 <!-- Master Mismatch Warning Modal -->
-                <div v-if="masterMismatchModal.show" class="fixed inset-0 z-[1300] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.55);backdrop-filter:blur(4px)">
+                <div v-if="masterMismatchModal.show" class="fixed inset-0 z-[3100] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.55);backdrop-filter:blur(4px)">
                     <div class="bg-white rounded-[28px] shadow-2xl w-full max-w-sm mx-auto p-6 animate-fade-in text-left">
                         <div class="flex items-center space-x-3 mb-4">
                             <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center shrink-0">
@@ -1793,7 +1793,7 @@
                 </div>
 
                 <!-- Full Page Save Confirmation Overlay -->
-                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[1200] bg-white animate-fade-in flex flex-col font-sans text-left">
+                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[3000] bg-white animate-fade-in flex flex-col font-sans text-left">
                     <!-- High-Density Header -->
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
                         <div class="flex items-center space-x-3">
@@ -4403,10 +4403,17 @@ const processBatchText = () => {
         const lines = contentToParse.split('\n');
         let contentLines = [];
         let parsingTreasures = false;
+        let remarks = [];
 
         lines.forEach(line => {
             const l = line.trim();
             if (!l) return;
+
+            // Detect special footer remarks
+            if (l.includes('允同享皇恩') || l.includes('完畢')) {
+                remarks.push(l);
+                return;
+            }
 
             if (l.includes('賜降：')) {
                 parsingTreasures = true;
@@ -4420,11 +4427,12 @@ const processBatchText = () => {
                                        l.includes('疏文');
 
             // Only auto-detect as item if we are in treasures section OR it's a short line with keywords
-            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+*])/)) || 
-                           (hasTreasureKeywords && l.length < 60);
+            // Ensure we don't catch remarks that start with * by the previous check
+            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+])/)) || 
+                           (hasTreasureKeywords && l.length < 60 && !l.startsWith('*'));
 
             if (isItem) {
-                const tMatch = l.match(/^(\d+\.|[+*])?\s*(.*?)([:：]\s*(.*))?$/);
+                const tMatch = l.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
                 if (tMatch) {
                     record.items.push({
                         uid: Date.now() + Math.random(),
@@ -4437,6 +4445,12 @@ const processBatchText = () => {
                 contentLines.push(l);
             }
         });
+
+        // Sync detected remarks to items_footer_remarks
+        if (remarks.length > 0) {
+            record.items_footer_remarks = remarks.join('\n');
+        }
+
         // Final record content: Split by "賜降：" to avoid duplication in the items list
         let contentPart = text;
         const treasureStart = text.indexOf('賜降：');
@@ -4448,9 +4462,11 @@ const processBatchText = () => {
         }
 
         let cleanedRecordContent = stripContentHeaders(contentPart);
-        if (block.includes('完畢') && !cleanedRecordContent.includes('完畢')) {
-            cleanedRecordContent += "\n\n完畢";
-        }
+        // Remove detected remarks from main content if they were joined in by stripContentHeadersfallback
+        remarks.forEach(r => {
+            cleanedRecordContent = cleanedRecordContent.replace(r, '').trim();
+        });
+
         record.content = cleanedRecordContent;
 
         newRecords.push(record);
@@ -4692,6 +4708,14 @@ const exportListTxt = async () => {
 
 const saveItem = async (data = null) => {
     if (data) {
+        if (data.mode === 'batch') {
+            activeEntryTab.value = 'batch';
+            batchRecords.value = data.records || [];
+            batchImportContent.value = data.importContent || '';
+            await executeDistributionSave('distribute');
+            return;
+        }
+
         // Sync incoming data from TeachingAddForm
         form.value.date = data.date;
         form.value.master_id = data.master_id;
@@ -4699,6 +4723,7 @@ const saveItem = async (data = null) => {
         form.value.target_remarks = data.target_remarks || '';
         form.value.content = data.content || '';
         form.value.items = data.items || [];
+        form.value.items_footer_remarks = data.items_footer_remarks || '';
         
         // Sync masterNameInput for consistency
         const m = masters.value.find(v => v.id === data.master_id);
@@ -4835,9 +4860,9 @@ const saveItem = async (data = null) => {
             dharma_name_ids: [...form.value.dharma_name_ids],
             content: form.value.content,
             items: [...form.value.items],
+            items_footer_remarks: form.value.items_footer_remarks,
             master_name: currentMasterName,
             target_remarks: form.value.target_remarks,
-            items_footer_remarks: form.value.items_footer_remarks,
             date: form.value.date
         }];
         saveConfirmModal.value.show = true;

@@ -10,7 +10,7 @@
                 <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
                     <div class="text-[26px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black flex items-center gap-2" style="color: #dc2626 !important;">
                         <logo-imperial-notebook :height="36" />
-                        {{ mode === 'batch' ? '智慧載錄' : '逐筆載錄' }}
+                        {{ mode === 'batch' ? '多筆載錄' : '逐筆載錄' }}
                     </div>
                 </div>
                 <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors py-[5px] absolute right-4 top-1/2 -translate-y-1/2">
@@ -44,6 +44,9 @@
                                       placeholder="在此貼上資料...&#10;&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
                                       class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
                         </div>
+                        <div class="px-5 pb-4 flex justify-end">
+                            <button @click="processBatchParsing" class="bg-[#FFB266] text-white px-6 py-2.5 rounded-2xl text-[14px] font-black active:scale-95 transition-all shadow-sm">智慧解析</button>
+                        </div>
                     </div>
                     <!-- Batch Records Preview -->
                     <div v-if="batchRecords.length > 0" class="space-y-4">
@@ -57,7 +60,16 @@
                                 <button @click="batchRecords.splice(index, 1)" class="text-slate-200 hover:text-red-400 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg></button>
                             </div>
                             <div class="font-black text-slate-900 text-[17px]">{{ record.dharmaSearchQuery }}</div>
-                            <div class="text-slate-800 text-[17px] font-black leading-relaxed">{{ record.content }}</div>
+                            <div v-if="record.content" class="text-slate-800 text-[17px] font-black leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
+                            <div v-if="record.items.length > 0" class="pt-2 space-y-1 border-t border-slate-50 mt-2">
+                                <div v-for="(it, iIdx) in record.items" :key="iIdx" class="text-[16px] font-black text-slate-600 flex items-start gap-2">
+                                    <span class="text-indigo-400 shrink-0">{{ iIdx + 1 }}.</span>
+                                    <span>{{ it.treasure_name }} <span v-if="it.details" class="text-slate-400 font-normal">：{{ it.details }}</span></span>
+                                </div>
+                            </div>
+                            <div v-if="record.items_footer_remarks" class="text-[16px] font-black text-slate-400 pt-2 border-t border-slate-50 border-dashed mt-2 whitespace-pre-wrap italic">
+                                {{ record.items_footer_remarks }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -67,7 +79,7 @@
                     <!-- STEP 1: Basic Info -->
                     <div v-if="currentStep === 1" :key="'step-1'" class="space-y-10 animate-fade-in max-w-md mx-auto w-full pt-4">
                         <div class="text-center space-y-3 mb-12">
-                            <h2 class="text-[22px] font-black text-slate-900 tracking-tight leading-tight">請確認<span class="text-indigo-600">日期</span>與<span class="text-red-600">對象</span></h2>
+                            <h2 class="text-[17px] font-black text-slate-900 tracking-tight leading-tight">請確認<span class="text-indigo-600">日期</span>與<span class="text-red-600">對象</span></h2>
                             <p class="text-slate-400 text-[14px] font-bold uppercase tracking-widest">Basic Information</p>
                         </div>
 
@@ -100,20 +112,20 @@
                                 </div>
                                 <div class="relative flex items-center h-[60px] border-0 border-b-2 border-slate-100 focus-within:border-indigo-600 transition-all">
                                     <input type="text" 
-                                   @input="handleDharmaSearchInput" 
+                                           @input="handleDharmaSearchInput" 
                                            @focus="activePractitionerDropdown = true"
                                            v-model="dharmaSearchQuery"
                                            list="teaching-dharma-search"
                                            placeholder="搜尋法號或群組..." 
                                             class="w-full bg-transparent border-none text-center text-[17px] font-black text-slate-900 focus:ring-0 outline-none placeholder:text-slate-100">
                                     <div v-if="activePractitionerDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
-                                        <div v-if="filteredDharmaNames.length > 0" class="px-5 py-2 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] bg-slate-50/50 mt-1 mb-1 rounded-xl">法號</div>
+                                        <div v-if="filteredDharmaNames.length > 0" class="px-5 py-2 text-[17px] font-black text-slate-300 uppercase tracking-[0.2em] bg-slate-50/50 mt-1 mb-1 rounded-xl">法號</div>
                                         <div v-for="dn in filteredDharmaNames" :key="'dn'+dn.id"
                                              @click.stop="selectDharmaName(dn)"
                                              class="px-5 h-[44px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                             {{ dn.name }}
                                         </div>
-                                        <div v-if="filteredGroups.length > 0" class="px-5 py-2 text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] bg-slate-50/50 mb-1 rounded-xl">群組</div>
+                                        <div v-if="filteredGroups.length > 0" class="px-5 py-2 text-[17px] font-black text-indigo-300 uppercase tracking-[0.2em] bg-slate-50/50 mb-1 rounded-xl">群組</div>
                                         <div v-for="g in filteredGroups" :key="'g'+g.id"
                                              @click.stop="selectGroup(g)"
                                              class="px-5 h-[44px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -128,12 +140,21 @@
                                 <div class="relative">
                                     <input v-model="form.target_remarks" @focus="activeRelDropdown = true" placeholder="例：之母親..." 
                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                    <div v-if="activeRelDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
-                                         <div v-for="opt in relationshipOptions" :key="opt"
-                                             @click.stop="form.target_remarks = opt; activeRelDropdown = false"
-                                             class="px-4 h-[44px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                            {{ opt }}
-                                        </div>
+                                    <button v-if="form.target_remarks" @click="form.target_remarks = ''" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                <div v-if="activeRelDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                     <div class="flex items-center justify-between px-4 py-2 border-b border-slate-50 mb-1 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
+                                         <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">選擇備註</span>
+                                         <button @click.stop="activeRelDropdown = false" class="p-1 text-slate-300 hover:text-red-500 transition-colors">
+                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                         </button>
+                                     </div>
+                                     <div v-for="opt in relationshipOptions" :key="opt"
+                                         @click.stop="form.target_remarks = opt; activeRelDropdown = false"
+                                         class="px-4 h-[44px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                        {{ opt }}
                                     </div>
                                 </div>
                             </div>
@@ -141,9 +162,11 @@
                             <div v-if="form.dharma_name_ids.length > 0 || dharmaSearchQuery === '在場全體'" class="pt-4 space-y-4">
                                 <div class="flex flex-wrap gap-2.5 justify-center">
                                     <template v-if="isGroupSelected">
-                                        <div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl flex items-center shadow-md animate-scale-in">
-                                            <span class="font-black text-[17px]">群組：{{ formatGroupName(selectedGroupLabel) }} ({{ form.dharma_name_ids.length }}人)</span>
-                                            <button @click="clearSelection" class="ml-3 text-white/60 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg></button>
+                                        <div class="bg-sky-500 text-white px-5 py-3 rounded-2xl flex items-center shadow-lg animate-scale-in">
+                                            <span class="font-black text-[17px]" style="color: white !important;">群組：{{ formatGroupName(selectedGroupLabel) }} ({{ form.dharma_name_ids.length }}人)</span>
+                                            <button @click="clearSelection" class="ml-3 active:scale-90 transition-transform" style="color: rgba(255, 255, 255, 0.8) !important;">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="stroke: white !important;"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
+                                            </button>
                                         </div>
                                     </template>
                                     <template v-else>
@@ -165,7 +188,7 @@
                     <!-- STEP 2: Content -->
                     <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in max-w-md mx-auto w-full pt-4">
                         <div class="text-center space-y-3 mb-10">
-                            <h2 class="text-[22px] font-black text-slate-900 tracking-tight leading-tight">請輸入<span class="text-indigo-600">開示內容</span></h2>
+                            <h2 class="text-[17px] font-black text-slate-900 tracking-tight leading-tight">請輸入<span class="text-indigo-600">開示內容</span></h2>
                             <p class="text-slate-400 text-[14px] font-bold uppercase tracking-widest">Teaching Content</p>
                         </div>
 
@@ -175,26 +198,12 @@
                                 <textarea v-model="form.content" rows="6" placeholder="請輸入開示內容..." 
                                     class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-600 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
                             </div>
-
-                            <div class="space-y-4">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block">結尾備註</label>
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    <div v-for="(r, idx) in footerRemarks" :key="idx" class="bg-slate-50 px-3 py-2 rounded-xl flex items-center border border-slate-100">
-                                        <span class="font-black text-[14px] text-slate-600">{{ r }}</span>
-                                        <button @click="removeFooterRemark(idx)" class="ml-2 text-slate-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
-                                    </div>
-                                </div>
-                                <div class="relative">
-                                    <input v-model="newFooterRemark" list="footer-remark-options" @keyup.enter="addFooterRemark" placeholder="例：完畢..." 
-                                        class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-400">
-                                </div>
-                            </div>
                         </div>
                     </div>
 
                     <!-- STEP 3: Magic Items Detail -->
-                    <div v-else-if="currentStep === 3" :key="'step-3'" class="animate-fade-in w-full h-full flex flex-col pt-4">
-                         <div class="space-y-10 max-w-md mx-auto w-full">
+                    <div v-else-if="currentStep === 3" :key="'step-3'" class="animate-fade-in w-full pt-4 pb-10">
+                         <div class="space-y-12 max-w-md mx-auto w-full">
                              <div class="space-y-4">
                                  <div v-if="form.items.length > 0" class="space-y-3">
                                      <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">降寶明細</span>
@@ -219,16 +228,17 @@
                              </div>
 
                              <div class="space-y-4">
-                                 <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block">結尾備註</label>
-                                 <div class="flex flex-wrap gap-2 mb-4">
-                                     <div v-for="(r, idx) in footerRemarks" :key="idx" class="bg-slate-50 px-3 py-2 rounded-xl flex items-center border border-slate-100">
-                                         <span class="font-black text-[14px] text-slate-600">{{ r }}</span>
-                                         <button @click="removeFooterRemark(idx)" class="ml-2 text-slate-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
+                                 <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block">結尾備註 (選填)</label>
+                                 <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-2 mb-4">
+                                     <div v-for="(r, idx) in footerRemarks" :key="idx" class="bg-indigo-50 px-3 py-2 rounded-xl flex items-center border border-indigo-100 shadow-sm">
+                                         <span class="font-black text-[14px] text-indigo-700">{{ r }}</span>
+                                         <button @click="removeFooterRemark(idx)" class="ml-2 text-indigo-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
                                      </div>
                                  </div>
-                                 <div class="relative">
-                                     <input v-model="newFooterRemark" list="footer-remark-options" @keyup.enter="addFooterRemark" placeholder="例：完畢..." 
-                                         class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-400">
+                                 <div class="relative bg-slate-50/50 rounded-2xl border border-slate-100 p-1">
+                                     <input v-model="newFooterRemark" list="footer-remark-options" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
+                                         class="w-full text-left text-[17px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-white rounded-xl py-4 px-4 outline-none transition-all placeholder:text-slate-300">
+                                     <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg></button>
                                  </div>
                              </div>
                          </div>
@@ -237,7 +247,7 @@
                     <!-- STEP 4: Review -->
                     <div v-else-if="currentStep === 4" :key="'step-4'" class="space-y-8 animate-fade-in max-w-md mx-auto w-full pt-4">
                         <div class="text-center space-y-3 mb-10">
-                            <h2 class="text-[22px] font-black text-slate-900 tracking-tight leading-tight">確認並<span class="text-emerald-600">完成存檔</span></h2>
+                            <h2 class="text-[17px] font-black text-slate-900 tracking-tight leading-tight">確認並<span class="text-emerald-600">完成存檔</span></h2>
                             <p class="text-slate-400 text-[14px] font-bold uppercase tracking-widest">Final Review</p>
                         </div>
 
@@ -254,20 +264,35 @@
                                     </div>
                                 </div>
 
-                                <div class="space-y-2">
-                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block">開示內容</span>
-                                    <p class="text-[17px] font-bold text-slate-700 leading-relaxed whitespace-pre-wrap">{{ finalContent || '(無內容)' }}</p>
+                                <div class="space-y-4">
+                                    <div v-if="form.content" class="space-y-2">
+                                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block">開示主文</span>
+                                        <p class="text-[17px] font-bold text-slate-700 leading-relaxed whitespace-pre-wrap">{{ form.content }}</p>
+                                    </div>
+                                    <div v-if="!form.content && !form.items.length && !footerRemarks.length" class="text-slate-300 text-[15px] font-bold italic">
+                                        (無內容)
+                                    </div>
                                 </div>
 
                                 <div v-if="form.items.length > 0" class="space-y-4 pt-4 border-t border-slate-50">
-                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block">降寶明細 ({{ form.items.length }})</span>
-                                    <div class="space-y-2.5">
-                                        <div v-for="item in form.items" :key="item.uid" class="flex items-start gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-100/50">
-                                            <span class="text-indigo-500 font-black text-[14px] mt-0.5">✦</span>
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block">賜降明細 ({{ form.items.length }})</span>
+                                    <div class="space-y-2">
+                                        <div v-for="(item, idx) in form.items" :key="idx" class="flex items-start gap-3">
+                                            <span class="w-5 h-5 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ idx + 1 }}</span>
                                             <div class="flex-1 min-w-0">
-                                                <div class="text-[17px] font-black text-slate-800">{{ item.treasure_name }}</div>
-                                                <div v-if="item.details" class="text-[12px] text-slate-400 font-bold">{{ item.details }}</div>
+                                                <div class="text-[17px] font-black text-slate-900">{{ item.treasure_name }}</div>
+                                                <div v-if="item.details" class="text-[13px] text-slate-400 font-bold">{{ item.details }}</div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="footerRemarks.length > 0" class="space-y-2 pt-4 border-t border-slate-50 border-dashed">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block">結尾備註</span>
+                                    <div class="space-y-1">
+                                        <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="text-[16px] font-black text-slate-500 flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
+                                            {{ r }}
                                         </div>
                                     </div>
                                 </div>
@@ -303,38 +328,38 @@
              <div class="bg-white px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                  <div class="flex items-center gap-3">
                      <button @click="showItemsSelector = false" class="p-2 bg-slate-50 rounded-full active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3"/></svg></button>
-                     <h1 class="text-[22px] font-black text-slate-900 tracking-tight">錄入法寶</h1>
+                     <h1 class="text-[17px] font-black text-slate-900 tracking-tight">錄入法寶</h1>
                  </div>
              </div>
              <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
                  <div class="space-y-2">
                      <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest">法寶名稱</label>
-                     <input v-model="newItemName" list="item-name-list" placeholder="輸入或選擇法寶..." class="w-full text-[22px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-600 py-4 outline-none transition-all placeholder:text-slate-100">
+                     <input v-model="newItemName" list="item-name-list" placeholder="輸入或選擇法寶..." class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-600 py-4 outline-none transition-all placeholder:text-slate-100">
                  </div>
                  
                  <!-- Dynamic Contextual Inputs Based on Item Name -->
                  <div v-if="itemCategory === '三光金丹' || itemCategory === '金丹'" class="bg-indigo-50/50 p-6 rounded-[32px] space-y-6 animate-fade-in border border-indigo-100/50">
-                      <div class="grid grid-cols-2 gap-4">
+                      <div class="grid grid-cols-3 gap-3">
                           <div class="space-y-2">
-                              <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">天份</span>
-                              <input v-model="newItemDays" type="number" class="w-full bg-white rounded-2xl h-12 text-center text-[20px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-200 outline-none border-none">
+                              <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest"> 顆吃</span>
+                              <input v-model="newItemPillsEat" type="number" class="w-full bg-transparent border-0 border-b-2 border-slate-200/50 focus:border-indigo-600 h-12 text-center text-[20px] font-black text-slate-900 outline-none transition-all">
                           </div>
                           <div class="space-y-2">
-                              <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">顆數</span>
-                              <input v-model="newItemTimes" type="number" class="w-full bg-white rounded-2xl h-12 text-center text-[20px] font-black text-slate-900 focus:ring-2 focus:ring-indigo-200 outline-none border-none">
+                              <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest"> 顆洗</span>
+                              <input v-model="newItemPillsWash" type="number" class="w-full bg-transparent border-0 border-b-2 border-slate-200/50 focus:border-indigo-600 h-12 text-center text-[20px] font-black text-slate-900 outline-none transition-all">
+                          </div>
+                          <div v-if="!newItemRemarks.trim()" class="space-y-2">
+                              <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest"> 天份</span>
+                              <input v-model="newItemDays" type="number" class="w-full bg-transparent border-0 border-b-2 border-slate-200/50 focus:border-indigo-600 h-12 text-center text-[20px] font-black text-slate-900 outline-none transition-all">
                           </div>
                       </div>
                  </div>
 
                  <div v-else-if="itemCategory === '符令' || newItemName.includes('張')" class="bg-amber-50/50 p-6 rounded-[32px] space-y-6 animate-fade-in border border-amber-100/50">
-                      <div class="grid grid-cols-2 gap-4">
-                          <div class="space-y-2">
-                              <span class="text-[11px] font-black text-amber-500 uppercase tracking-widest">天份</span>
-                              <input v-model="newItemDays" type="number" class="w-full bg-white rounded-2xl h-12 text-center text-[20px] font-black text-slate-900 focus:ring-2 focus:ring-amber-200 outline-none border-none">
-                          </div>
-                          <div class="space-y-2">
-                              <span class="text-[11px] font-black text-amber-500 uppercase tracking-widest">張數</span>
-                              <input v-model="newItemSheets" type="number" class="w-full bg-white rounded-2xl h-12 text-center text-[20px] font-black text-slate-900 focus:ring-2 focus:ring-amber-200 outline-none border-none">
+                      <div class="grid grid-cols-1 gap-4">
+                          <div v-if="!newItemRemarks.trim()" class="space-y-2">
+                              <span class="text-[11px] font-black text-amber-500 uppercase tracking-widest"> 天份</span>
+                              <input v-model="newItemDays" type="number" class="w-full bg-transparent border-0 border-b-2 border-slate-200/50 focus:border-amber-500 h-12 text-center text-[20px] font-black text-slate-900 outline-none transition-all">
                           </div>
                       </div>
                  </div>
@@ -342,9 +367,9 @@
                  <div v-else class="space-y-6 pt-4">
                      <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest block">詳細參數</label>
                      <div class="grid grid-cols-1 gap-4">
-                         <div class="bg-slate-50 p-4 rounded-3xl space-y-2 border border-slate-100">
-                             <span class="text-[12px] font-black text-slate-400">天份 (天)</span>
-                             <input v-model="newItemDays" type="number" class="bg-transparent border-none text-[22px] font-black text-slate-900 w-full focus:ring-0">
+                         <div v-if="!newItemRemarks.trim()" class="space-y-2">
+                             <span class="text-[12px] font-black text-slate-400"> 天份 (天)</span>
+                             <input v-model="newItemDays" type="number" class="w-full bg-transparent border-0 border-b-2 border-slate-200/50 focus:border-indigo-600 text-[17px] font-black text-slate-900 outline-none transition-all">
                          </div>
                      </div>
                  </div>
@@ -363,8 +388,8 @@
             <option v-for="name in uniqueTreasureNames" :key="name" :value="name" />
         </datalist>
         <datalist id="footer-remark-options">
-            <option value="完畢" />
             <option value="*允同享皇恩" />
+            <option value="完畢" />
         </datalist>
         <datalist id="teaching-dharma-search">
             <option v-for="dn in dharmaNames" :key="'dl-dn'+dn.id" :value="dn.name" />
@@ -397,13 +422,26 @@ const totalSteps = 4;
 const stepTitles = ['基礎資料', '開示內容', '降寶詳情', '預覽確認'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1]);
 
+const scrollContainer = ref(null);
+
+function scrollToTop() {
+    if (scrollContainer.value) {
+        scrollContainer.value.scrollTo({ top: 0, behavior: 'auto' });
+    }
+}
+
+watch(currentStep, () => {
+    scrollToTop();
+});
+
 const form = ref({
     date: props.initialData?.date || new Date().toLocaleDateString('sv-SE'),
     master_id: props.initialData?.master_id || null,
     dharma_name_ids: [],
     target_remarks: '',
     content: '',
-    items: []
+    items: [],
+    items_footer_remarks: ''
 });
 
 const masterNameInput = ref('');
@@ -423,9 +461,9 @@ const batchRecords = ref([]);
 
 // Item Builder State
 const newItemName = ref('');
-const newItemDays = ref(0);
-const newItemTimes = ref(0);
-const newItemSheets = ref(0);
+const newItemDays = ref('');
+const newItemPillsEat = ref('');
+const newItemPillsWash = ref('');
 const newItemRemarks = ref('');
 
 // --- 2. Computed ---
@@ -456,8 +494,16 @@ const itemCategory = computed(() => {
     return 'default';
 });
 
+const sortedFooterRemarks = computed(() => {
+    return [...footerRemarks.value].sort((a, b) => {
+        if (a.startsWith('*') && !b.startsWith('*')) return -1;
+        if (!a.startsWith('*') && b.startsWith('*')) return 1;
+        return 0;
+    });
+});
+
 const finalContent = computed(() => {
-    return [form.value.content, ...footerRemarks.value].filter(Boolean).join('\n') || '';
+    return [form.value.content, ...sortedFooterRemarks.value].filter(Boolean).join('\n') || '';
 });
 
 // --- 3. Methods ---
@@ -542,6 +588,12 @@ function handleNext() {
         if (!form.value.master_id) { alert('請選擇仙師'); return; }
         if (form.value.dharma_name_ids.length === 0 && dharmaSearchQuery.value !== '在場全體') { alert('請選擇對象'); return; }
     }
+    
+    // Auto-capture pending footer remark when moving from step 3
+    if (currentStep.value === 3 && newFooterRemark.value.trim()) {
+        addFooterRemark();
+    }
+
     if (currentStep.value < totalSteps) currentStep.value++;
 }
 
@@ -549,14 +601,15 @@ function confirmAddItem() {
     if (!newItemName.value.trim()) { alert('請輸入法寶名稱'); return; }
     
     let detailsArr = [];
+    const hasRemarks = newItemRemarks.value.trim() !== '';
     if (itemCategory.value === '三光金丹' || itemCategory.value === '金丹') {
-        if (newItemDays.value > 0) detailsArr.push(`${newItemDays.value}天份`);
-        if (newItemTimes.value > 0) detailsArr.push(`${newItemTimes.value}顆`);
+        if (newItemPillsEat.value > 0) detailsArr.push(`${newItemPillsEat.value} 顆吃`);
+        if (newItemPillsWash.value > 0) detailsArr.push(`${newItemPillsWash.value} 顆洗`);
+        if (newItemDays.value > 0 && !hasRemarks) detailsArr.push(`${newItemDays.value} 天份`);
     } else if (itemCategory.value === '符令') {
-        if (newItemDays.value > 0) detailsArr.push(`${newItemDays.value}天份`);
-        if (newItemSheets.value > 0) detailsArr.push(`${newItemSheets.value}張`);
+        if (newItemDays.value > 0 && !hasRemarks) detailsArr.push(`${newItemDays.value} 天份`);
      } else {
-         if (newItemDays.value > 0) detailsArr.push(`${newItemDays.value}天份`);
+         if (newItemDays.value > 0 && !hasRemarks) detailsArr.push(`${newItemDays.value} 天份`);
      }
     if (newItemRemarks.value.trim()) detailsArr.push(newItemRemarks.value.trim());
 
@@ -569,9 +622,9 @@ function confirmAddItem() {
 
     // Reset item fields
     newItemName.value = '';
-     newItemDays.value = 0;
-     newItemTimes.value = 0;
-     newItemSheets.value = 0;
+     newItemDays.value = '';
+     newItemPillsEat.value = '';
+     newItemPillsWash.value = '';
      newItemRemarks.value = '';
     showItemsSelector.value = false;
 }
@@ -581,27 +634,116 @@ function removeItem(idx) {
 }
 
 function handleBatchPaste(e) {
+    e.preventDefault();
     const text = e.clipboardData.getData('text');
     if (!text) return;
-    batchImportContent.value = text;
-    // Heuristic parse (Simplified version of TeachingManager.processBatchText)
-    const blocks = text.split(/\n\s*\n/);
-    batchRecords.value = blocks.filter(b => b.trim()).map(b => ({
-        master_name: '父皇',
-        dharmaSearchQuery: '對象',
-        content: b.trim()
-    }));
+
+    // Get cursor position to insert text correctly
+    const textarea = e.target;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentVal = batchImportContent.value;
+
+    // Manual update to avoid doubling
+    batchImportContent.value = currentVal.substring(0, start) + text + currentVal.substring(end);
+
+    // Reset cursor position after Vue update
+    setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
+    }, 0);
+}
+
+function processBatchParsing() {
+    if (!batchImportContent.value.trim()) return;
+    const blocks = batchImportContent.value.split(/\n\s*\n/);
+    batchRecords.value = blocks.filter(b => b.trim()).map(block => {
+        const lines = block.split('\n');
+        let record = {
+            master_name: '父皇',
+            dharmaSearchQuery: '對象',
+            content: '',
+            items: [],
+            dharma_name_ids: [],
+            items_footer_remarks: ''
+        };
+
+        let contentLines = [];
+        let parsingTreasures = false;
+        let remarks = [];
+
+        lines.forEach(line => {
+            const l = line.trim();
+            if (!l) return;
+
+            // Detect special footer remarks
+            if (l.includes('允同享皇恩') || l.includes('完畢')) {
+                remarks.push(l);
+                return;
+            }
+
+            if (l.includes('賜降：')) {
+                parsingTreasures = true;
+                return;
+            }
+
+            // Recipient Detection
+            const recMatch = l.match(/開示給\s*([^：:\n\r]*)/);
+            if (recMatch) {
+                record.dharmaSearchQuery = recMatch[1].trim();
+                return;
+            }
+
+            // Heuristic for items
+            const hasTreasureKeywords = l.includes('法寶') || l.includes('天份') || l.includes('金丹') || l.includes('符') || l.includes('疏文');
+            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+])/)) || (hasTreasureKeywords && l.length < 60 && !l.startsWith('*'));
+
+            if (isItem) {
+                const tMatch = l.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
+                if (tMatch) {
+                    record.items.push({
+                        uid: Date.now() + Math.random(),
+                        treasure_name: tMatch[2].trim(),
+                        details: tMatch[4] || '',
+                        quantity: 1
+                    });
+                }
+            } else {
+                contentLines.push(l);
+            }
+        });
+
+        record.content = contentLines.join('\n');
+        record.items_footer_remarks = remarks.join('\n');
+        return record;
+    });
 }
 
 function handleSubmit() {
+    // Auto-capture pending footer remark if any
+    if (newFooterRemark.value.trim()) {
+        addFooterRemark();
+    }
+
     if (props.mode === 'batch') {
-        emit('close'); 
+        if (batchRecords.value.length === 0 && !batchImportContent.value.trim()) {
+            alert('請先貼上資料或解析紀錄');
+            return;
+        }
+        emit('save', {
+            mode: 'batch',
+            records: batchRecords.value,
+            importContent: batchImportContent.value
+        });
+        // Clear after emit (Parent handles closing)
+        batchImportContent.value = '';
+        batchRecords.value = [];
         return;
     }
 
     emit('save', {
         ...form.value,
-        content: finalContent.value
+        content: form.value.content, // Pass main content only
+        items_footer_remarks: sortedFooterRemarks.value.filter(Boolean).join('\n') // Pass remarks separately to appear at bottom
     });
 }
 
