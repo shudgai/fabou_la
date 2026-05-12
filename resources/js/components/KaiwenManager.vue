@@ -617,18 +617,6 @@ watch(() => form.value.original_content, (newVal) => {
     }
 });
 
-// Draft auto-save
-watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), (newVal) => {
-    if (addMode.value && !form.value.id && !isSaving.value) {
-        localStorage.setItem('kaiwen_draft', JSON.stringify({
-            type: addMode.value,
-            form: form.value,
-            weeklyLines: weeklyLines.value,
-            isManualWeekly: isManualWeekly.value
-        }));
-    }
-}, { deep: true });
-
 const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());
 
 const fontSizeValue = computed(() => {
@@ -722,6 +710,18 @@ const collapseAll = () => {
 
 // Weekly Acrostic Handling
 const weeklyLines = ref(Array(14).fill(null).map(() => Array(6).fill('')));
+
+// Draft auto-save (must be after weeklyLines declaration)
+watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), (newVal) => {
+    if (addMode.value && !form.value.id && !isSaving.value) {
+        localStorage.setItem('kaiwen_draft', JSON.stringify({
+            type: addMode.value,
+            form: form.value,
+            weeklyLines: weeklyLines.value,
+            isManualWeekly: isManualWeekly.value
+        }));
+    }
+}, { deep: true });
 
 // Helper: set one character cell in a weeklyLine
 const setWeeklyCell = (row, col, val) => {

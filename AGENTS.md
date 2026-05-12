@@ -131,6 +131,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Header: title "開文專區" + two tabs side by side (17px, purple active color)
 - Form footer: `grid grid-cols-2 gap-4` for cancel/save buttons
 - `mt-[3px]` on tab container
+- TDZ bug fixed: draft auto-save watch must be placed AFTER `weeklyLines` declaration (line ~712), not before
 
 ### GrudgeBatchImport.vue
 - Batch import UI for 怨靈載錄
@@ -146,6 +147,19 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 ### GrudgeAddForm.vue / MilitaryAddForm.vue
 - All inputs: `border-0 border-b-2 border-slate-300 bg-transparent` (underline)
 - Dharma name dropdown items: 17px to match content text
+- All content text (labels, inputs, dropdowns) unified to `text-[17px]`
+- All inputs `text-center`
+
+### MilitaryAddForm.vue (2026-05-12 rewrite)
+- Step-based form: 日期 → 法號 → 數量 → 備註 → 預覽 (5 steps)
+- Cumulative mode: 日期 → 數量 → 備註 → 預覽 (4 steps)
+- 法號 and 備註對象 are separate fields (matching GrudgeAddForm pattern)
+- CompactDatePicker rendered at root level with `v-if`/`@close`, triggered by calendar icon
+- 3 dot action menu at `top-[48px]` in manager
+- Dropdowns: clean white bg + shadow, no `rounded-xl border` to avoid boxy look on mobile
+- Footer buttons: `absolute bottom-[7dvh]` on mobile (above navbar), `md:relative` on desktop
+- 黑曜軍 labels: 閻尊 / 閻閽
+- 耀紫軍 labels: 龍勝 / 龍戰
 
 ### GrudgeManager.vue
 - List items: `py-3 px-3` with `border-slate-300` between items

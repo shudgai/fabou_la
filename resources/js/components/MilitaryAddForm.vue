@@ -1,345 +1,215 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
-        <!-- Backdrop -->
-        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
+    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="handleCancel"></div>
 
-        <!-- Form Container -->
-        <div class="relative w-full h-full md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-lg bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden">
             <!-- Header -->
-            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
-                <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-1" style="font-size: 25px !important;">
-                        <logo-imperial-notebook :height="36" />
-                        <span class="text-indigo-600">軍隊載專區</span>
-                        <span class="text-slate-300">/</span>
-                        <span>{{ armyType }}</span>
-                        <span class="text-slate-300">/</span>
-                        <span class="mx-auto">{{ editingId ? '修改載錄' : (isCumulative ? '之前累積數量匯入' : '逐筆新增') }}</span>
-                    </div>
-                    <!-- Step Indicator -->
-                    <div class="flex items-center gap-1 mt-1.5">
-                        <template v-for="i in totalSteps" :key="i">
-                            <div class="flex items-center gap-1">
-                                <div class="rounded-full transition-all duration-300 flex items-center justify-center text-white font-bold text-[10px]"
-                                    :class="i === currentStep ? 'bg-indigo-600 w-[18px] h-[18px]' : i < currentStep ? 'bg-indigo-300 w-[14px] h-[14px]' : 'bg-slate-200 w-[14px] h-[14px]'">
-                                    <template v-if="i < currentStep">
-                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </template>
-                                    <template v-else>{{ i }}</template>
-                                </div>
-                                <span class="text-[10px] font-bold whitespace-nowrap" :class="i === currentStep ? 'text-indigo-600' : 'text-slate-300'">{{ stepLabels[i - 1] }}</span>
-                                <svg v-if="i < totalSteps" class="w-2.5 h-2.5 text-slate-200" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" /></svg>
-                            </div>
-                        </template>
+            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
+                <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <logo-imperial-notebook :height="36" />
+                    <div class="flex flex-col justify-center min-w-0">
+                        <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">
+                            軍隊載錄專區
+                        </div>
+                        <div class="flex items-center gap-1 mt-2">
+                            <span class="font-bold truncate font-outfit text-slate-900" style="font-size: 24px !important;">
+                                {{ props.armyType || '虎甲軍' }}
+                            </span>
+                            <span class="font-bold font-outfit text-slate-400" style="font-size: 24px !important;">｜</span>
+                            <span class="font-bold font-outfit text-slate-900" style="font-size: 24px !important;">
+                                {{ props.isCumulative ? '原始數量' : (editingId ? '修改內容' : '逐筆新增') }}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="handleCancel" class="text-black hover:text-slate-600 transition-colors p-2 absolute right-4 top-0">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
-            <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-6 custom-scrollbar bg-white">
-                <div class="space-y-[5px]">
-                    <!-- ===== STEP 1: 日期 ===== -->
-                    <div v-if="currentStep === 1" class="animate-fade-in">
-                        <div class="space-y-1">
-                            <div class="flex items-center justify-between px-1">
-                                <label class="app-title ml-1">日期</label>
-                                <button @click="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                            <div class="relative flex items-center">
-                                <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
+            <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 text-[17px]" style="padding-bottom: calc(7dvh + 70px);">
+                <!-- Step indicator -->
+                <div class="flex items-center gap-1">
+                    <template v-for="(label, idx) in stepLabels" :key="idx">
+                        <div :class="['px-1.5 py-0.5 text-xs font-bold rounded', currentStep === idx + 1 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500']">
+                            {{ label }}
+                        </div>
+                        <div v-if="idx < stepLabels.length - 1" class="text-xs text-slate-300">→</div>
+                    </template>
+                </div>
+
+                <!-- Step 1: Date -->
+                <div v-if="currentStep === 1" class="space-y-1">
+                    <div class="flex items-center justify-between">
+                        <label class="font-bold text-slate-400 uppercase tracking-wider">得知日期</label>
+                        <button @click.stop="showDatePicker = true" class="text-slate-300 hover:text-slate-600 transition-colors p-1 active:scale-90">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                    <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字"
+                           class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none text-center">
+                </div>
+
+                <!-- Step 2: 法號與備註對象 (skip if cumulative) -->
+                <div v-if="currentStep === 2 && !props.isCumulative" class="space-y-4">
+                    <!-- 法號 -->
+                    <div class="space-y-1 relative dharma-dropdown">
+                        <label class="font-bold text-slate-400 uppercase tracking-wider">法號</label>
+                        <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
+                            <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..."
+                                   @focus="activeDharmaDropdown = true"
+                                   class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
+                            <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1 text-slate-300 hover:text-slate-600 transition-all shrink-0">
+                                <svg class="w-4 h-4" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <input type="hidden" v-model="form.user_name" />
+                            <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white shadow-xl z-[2100] overflow-hidden animate-fade-in max-h-48 overflow-y-auto">
+                                <div v-for="u in filteredDharmaNames" :key="u.id"
+                                     @click.stop="selectDharma(u.name)"
+                                     class="px-3 py-2 text-slate-700 cursor-pointer transition-colors">
+                                    {{ u.name }}
+                                </div>
+                                <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2 text-slate-400 text-center">
+                                    無符合的法號
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ===== STEP 2: 法號 & 備註對象 ===== -->
-                    <div v-if="currentStep === 2 && !isCumulative" class="animate-fade-in space-y-[15px]">
-                        <div class="space-y-1">
-                            <label class="app-title ml-1">法號</label>
-                            <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] dharma-dropdown">
-                                <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
-                                    @focus="activeDharmaDropdown = true"
-                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
-                                <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
-                                    <svg class="w-5 h-5" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <input type="hidden" v-model="form.user_name">
-                                <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                    <div v-for="u in filteredDharmaNames" :key="u.id"
-                                        @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[17px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
-                                        {{ u.name }}
-                                    </div>
-                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
-                                        無符合的法號
-                                    </div>
+                    <!-- 備註對象 -->
+                    <div class="space-y-1 relative remarks-dropdown">
+                        <label class="font-bold text-slate-400 uppercase tracking-wider">備註對象</label>
+                        <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
+                            <input v-model="form.user_remarks" type="text" placeholder="備註對象（例如：母親）..."
+                                   @focus="activeRemarksDropdown = true"
+                                   class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
+                            <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1 text-slate-300 hover:text-slate-600 transition-all shrink-0">
+                                <svg class="w-4 h-4" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white shadow-xl z-[2100] overflow-hidden animate-fade-in max-h-48 overflow-y-auto">
+                                <div v-for="opt in relationshipOptions" :key="opt"
+                                     @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
+                                     class="px-3 py-2 text-slate-700 cursor-pointer transition-colors">
+                                    {{ opt }}
                                 </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="app-title ml-1">備註對象</label>
-                            <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] remarks-dropdown">
-                                <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
-                                    @focus="activeRemarksDropdown = true"
-                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body leading-tight text-slate-900 font-bold">
-                                <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
-                                    <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-
-                                <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
-                                    <div v-for="opt in relationshipOptions" :key="opt"
-                                        @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[17px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-2xl cursor-pointer transition-colors font-medium">
-                                        {{ opt }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="currentStep === 2 && isCumulative" class="animate-fade-in flex items-center justify-center py-10">
-                        <span class="text-slate-300 text-[16px] font-bold">累積匯入：無需填寫法號</span>
-                    </div>
-
-                    <!-- ===== STEP 3: 數量 ===== -->
-                    <div v-if="currentStep === 3" class="animate-fade-in">
-                        <!-- 虎甲/虎賁 -->
-                        <div v-if="armyType === '虎甲軍' || armyType === '虎賁軍'" class="space-y-1">
-                            <div class="flex items-center justify-between ml-1">
-                                <label class="app-title">數量</label>
-                                <span v-if="quantityBig >= 1000000n" class="app-title text-indigo-500 bg-indigo-50 px-2 rounded-2xl">{{ formatArmyTotal(form.quantity) }}</span>
-                            </div>
-                            <input v-model="form.quantity" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                        </div>
-
-                        <!-- 黑曜軍 -->
-                        <div v-if="armyType === '黑曜軍'" class="space-y-[5px]">
-                            <div class="grid grid-cols-2 gap-[5px]">
-                                <div class="space-y-1">
-                                    <label class="app-title ml-1">閻尊數量</label>
-                                    <input v-model="form.yan_zun" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="app-title ml-1">閻闇數量</label>
-                                    <input v-model="form.yan_an" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                                </div>
-                            </div>
-                            <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
-                                <span class="app-title">小計</span>
-                                <span class="app-title text-indigo-600 mr-2" v-if="obsidianSubtotalBig >= 1000000n">({{ formatArmyTotal(obsidianSubtotalBig) }})</span>
-                                <span class="app-body text-slate-900">{{ formatWithCommas(obsidianSubtotalBig) }}</span>
-                            </div>
-                        </div>
-
-                        <!-- 耀紫軍 -->
-                        <div v-if="armyType === '耀紫軍'" class="space-y-[5px]">
-                            <div class="grid grid-cols-2 gap-[5px]">
-                                <div class="space-y-1">
-                                    <label class="app-title ml-1">龍勝數量</label>
-                                    <input v-model="form.long_sheng" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="app-title ml-1">龍戰數量</label>
-                                    <input v-model="form.long_zhan" type="text" inputmode="numeric" class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body leading-tight text-slate-900 text-[15px]">
-                                </div>
-                            </div>
-                            <div class="w-full px-4 flex items-center justify-end py-[10px] border-t border-slate-50 mt-1 space-x-2">
-                                <span class="app-title">小計</span>
-                                <span class="app-title text-indigo-600 mr-2" v-if="purpleSubtotalBig >= 1000000n">({{ formatArmyTotal(purpleSubtotalBig) }})</span>
-                                <span class="app-body text-slate-900">{{ formatWithCommas(purpleSubtotalBig) }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ===== STEP 4: 備註 ===== -->
-                    <div v-if="currentStep === 4" class="animate-fade-in">
-                        <div class="space-y-1 pt-1">
-                            <label class="app-title ml-1">備註文字</label>
-                            <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-slate-900 text-[15px]">
-                        </div>
-                    </div>
-
-                    <!-- ===== STEP 5: 預覽 ===== -->
-                    <div v-if="currentStep === 5" class="animate-fade-in space-y-4">
-                        <div class="text-center mb-2">
-                            <span class="app-title text-indigo-600 text-[16px]">請確認以下內容</span>
-                        </div>
-
-                        <div class="bg-slate-50 rounded-2xl p-4 space-y-3 border border-slate-100">
-                            <div class="flex items-center justify-between">
-                                <span class="app-title text-slate-400 text-[13px]">軍隊類型</span>
-                                <span class="app-body text-slate-900 font-bold">{{ armyType }}</span>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="app-title text-slate-400 text-[13px]">日期</span>
-                                <span class="app-body text-slate-900">{{ form.know_date || '未設定' }}</span>
-                            </div>
-
-                            <div v-if="!isCumulative">
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">法號</span>
-                                    <span class="app-body text-slate-900 font-bold">{{ form.user_name || '未填寫' }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">備註對象</span>
-                                    <span class="app-body text-slate-900">{{ form.user_remarks || '無' }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Quantity Breakdown -->
-                            <div v-if="armyType === '黑曜軍'">
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">閻尊數量</span>
-                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.yan_zun) }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">閻闇數量</span>
-                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.yan_an) }}</span>
-                                </div>
-                            </div>
-                            <div v-if="armyType === '耀紫軍'">
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">龍勝數量</span>
-                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.long_sheng) }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="app-title text-slate-400 text-[13px]">龍戰數量</span>
-                                    <span class="app-body text-slate-900">{{ formatWithCommas(form.long_zhan) }}</span>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="app-title text-slate-400 text-[13px]">總數量</span>
-                                <span class="app-body text-indigo-600 font-black text-[18px]">{{ formatWithCommas(previewTotal) }}</span>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="app-title text-slate-400 text-[13px]">備註文字</span>
-                                <span class="app-body text-slate-900 text-right max-w-[60%] break-words">{{ form.remarks_text || '無' }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center shrink-0">
-                <button v-if="currentStep > 1" @click="prevStep"
-                    class="w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
-                <button v-if="currentStep < totalSteps" @click="nextStep"
-                    class="flex-1 py-[12px] bg-indigo-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-indigo-100 active:scale-95 transition-all"
-                    style="color: white !important;">下一步</button>
-                <button v-else @click="handleSave" :disabled="isSaving"
-                    class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    style="color: white !important;">
-                    <template v-if="isSaving">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        處理中...
+                <!-- Step 3 (cumulative: quantity; non-cumulative: army-specific quantity) -->
+                <div v-if="(props.isCumulative && currentStep === 3) || (!props.isCumulative && currentStep === 3)" class="space-y-2">
+                    <template v-if="props.armyType === '黑曜軍'">
+                        <div class="flex gap-2 items-center">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">閻尊</label>
+                            <input type="text" v-model="form.yan_zun" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">閻閽</label>
+                            <input type="text" v-model="form.yan_an" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                        </div>
+                    </template>
+                    <template v-else-if="props.armyType === '耀紫軍'">
+                        <div class="flex gap-2 items-center">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">龍勝</label>
+                            <input type="text" v-model="form.long_sheng" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">龍戰</label>
+                            <input type="text" v-model="form.long_zhan" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                        </div>
                     </template>
                     <template v-else>
-                        {{ editingId ? '確認修改' : '確認載錄' }}
+                        <label class="font-bold text-slate-400 uppercase tracking-wider">數量</label>
+                        <input type="text" v-model="form.quantity" placeholder="輸入數量" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
                     </template>
-                </button>
+                </div>
+
+                <!-- Step: Remarks (3 for cumulative, 4 for non-cumulative) -->
+                <div v-if="(props.isCumulative && currentStep === (hasQuantity ? 4 : 3)) || (!props.isCumulative && currentStep === 4)" class="space-y-1">
+                    <label class="font-bold text-slate-400 uppercase tracking-wider">備註文字</label>
+                    <input type="text" v-model="form.remarks_text" placeholder="備註文字" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                </div>
+
+                <!-- Last step: Preview -->
+                <div v-if="currentStep === totalSteps" class="p-3 bg-slate-50 rounded-xl space-y-1 text-slate-900 text-[17px]">
+                    <div v-if="form.know_date">日期：<span class="font-bold">{{ form.know_date }}</span></div>
+                    <div v-if="form.user_name">法號：<span class="font-bold">{{ form.user_name }}</span><span v-if="form.user_remarks">（{{ form.user_remarks }}）</span></div>
+                    <div v-if="form.quantity && form.quantity !== '0'">數量：<span class="font-bold">{{ formatWithCommas(form.quantity) }}</span></div>
+                    <div v-if="form.yan_zun && form.yan_zun !== '0'">閻尊：<span class="font-bold">{{ formatWithCommas(form.yan_zun) }}</span></div>
+                    <div v-if="form.yan_an && form.yan_an !== '0'">閻閽：<span class="font-bold">{{ formatWithCommas(form.yan_an) }}</span></div>
+                    <div v-if="form.long_sheng && form.long_sheng !== '0'">龍勝：<span class="font-bold">{{ formatWithCommas(form.long_sheng) }}</span></div>
+                    <div v-if="form.long_zhan && form.long_zhan !== '0'">龍戰：<span class="font-bold">{{ formatWithCommas(form.long_zhan) }}</span></div>
+                    <div v-if="form.remarks_text">備註：<span class="font-bold">{{ form.remarks_text }}</span></div>
+                </div>
             </div>
 
-            <!-- Global Mobile Navbar -->
-            <mobile-navbar 
-                class="md:hidden"
-                :can-back="false"
-                @home="$emit('cancel')"
-                :show-action="false"
-                :can-search="false"
-                is-absolute
-            />
-
+            <!-- Navigation footer -->
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-4 py-3 bg-white border-t border-slate-100 flex gap-3 text-[17px] z-10">
+                <button v-if="currentStep > 1" @click="prevStep" class="flex-1 py-3 border border-slate-300 text-slate-600 rounded-xl font-bold active:scale-95 transition-all">
+                    上一步
+                </button>
+                <button v-if="currentStep < totalSteps" @click="nextStep" class="flex-1 py-3 bg-slate-900 text-white rounded-xl font-bold active:scale-95 transition-all">
+                    下一步
+                </button>
+                <button v-else @click="handleSave" :disabled="props.isSaving" class="flex-1 py-3 bg-green-700 text-white rounded-xl font-bold active:scale-95 transition-all">
+                    {{ props.isSaving ? '儲存中...' : '提交' }}
+                </button>
+            </div>
         </div>
-        <!-- Custom Date Picker -->
-        <compact-date-picker 
-            v-if="activeDate"
-            v-model="form[activeDate]"
-            :title="'日期'"
-            @close="activeDate = null"
-        />
+
+        <mobile-navbar class="md:hidden" :can-back="false" @home="handleCancel" :show-action="false" :can-search="false" is-absolute />
+
+        <compact-date-picker v-if="showDatePicker" v-model="form.know_date" @close="showDatePicker = false" />
     </div>
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     show: Boolean,
-    initialData: Object,
-    editingId: [Number, String],
-    users: Array,
-    armyType: String,
-    isCumulative: Boolean,
-    isSaving: Boolean
+    initialData: { type: Object, default: () => ({}) },
+    editingId: { type: [Number, String], default: null },
+    users: { type: Array, default: () => [] },
+    armyType: { type: String, default: '虎甲軍' },
+    isCumulative: { type: Boolean, default: false },
+    isSaving: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['save', 'cancel']);
-const activeDate = ref(null);
-const activeRemarksDropdown = ref(false);
-const activeDharmaDropdown = ref(false);
-const dharmaSearch = ref('');
-const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
-const currentStep = ref(1);
+
+const hasQuantity = computed(() => {
+    return !['黑曜軍', '耀紫軍'].includes(props.armyType);
+});
 
 const stepLabels = computed(() => {
-    if (props.isCumulative) return ['日期', '數量', '備註', '預覽'];
+    if (props.isCumulative) {
+        const labels = ['日期'];
+        labels.push('數量');
+        labels.push('備註');
+        labels.push('預覽');
+        return labels;
+    }
     return ['日期', '法號', '數量', '備註', '預覽'];
 });
 
 const totalSteps = computed(() => stepLabels.value.length);
 
+const currentStep = ref(1);
+const showDatePicker = ref(false);
+const activeDharmaDropdown = ref(false);
+const activeRemarksDropdown = ref(false);
+const dharmaSearch = ref('');
+
+const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
+
 const filteredDharmaNames = computed(() => {
     if (!dharmaSearch.value) return props.users || [];
     const search = dharmaSearch.value.toLowerCase();
     return (props.users || []).filter(u => u.name.toLowerCase().includes(search));
-});
-
-const form = ref({ 
-    ...props.initialData,
-    army_type: props.armyType || props.initialData.army_type,
-    yan_zun: String(props.initialData.yan_zun || "0"),
-    yan_an: String(props.initialData.yan_an || "0"),
-    long_sheng: String(props.initialData.long_sheng || "0"),
-    long_zhan: String(props.initialData.long_zhan || "0"),
-    quantity: String(props.initialData.quantity || "0")
-});
-
-const obsidianSubtotalBig = computed(() => tryBigIntSum(form.value.yan_zun, form.value.yan_an));
-const purpleSubtotalBig = computed(() => tryBigIntSum(form.value.long_sheng, form.value.long_zhan));
-const quantityBig = computed(() => {
-    try {
-        return isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
-    } catch (e) {
-        return 0n;
-    }
-});
-
-const previewTotal = computed(() => {
-    if (props.armyType === '黑曜軍') return obsidianSubtotalBig.value;
-    if (props.armyType === '耀紫軍') return purpleSubtotalBig.value;
-    return quantityBig.value;
-});
-
-watch(() => props.initialData, (newVal) => {
-    form.value = { ...newVal, army_type: props.armyType || newVal.army_type };
-}, { deep: true });
-
-// Reset step when form opens
-watch(() => props.show, (newVal) => {
-    if (newVal) currentStep.value = 1;
 });
 
 const selectDharma = (name) => {
@@ -348,14 +218,6 @@ const selectDharma = (name) => {
     activeDharmaDropdown.value = false;
 };
 
-// Watch form.user_name to sync with dharmaSearch
-watch(() => form.value.user_name, (newVal) => {
-    if (newVal && !dharmaSearch.value) {
-        dharmaSearch.value = newVal;
-    }
-}, { immediate: true });
-
-// Close dropdowns when clicking outside
 const handleClickOutside = (e) => {
     if (activeDharmaDropdown.value && !e.target.closest('.dharma-dropdown')) {
         activeDharmaDropdown.value = false;
@@ -365,66 +227,70 @@ const handleClickOutside = (e) => {
     }
 };
 
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside);
+onMounted(() => document.addEventListener('click', handleClickOutside));
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
+
+const form = ref({
+    user_name: '',
+    user_remarks: '',
+    know_date: '',
+    quantity: '',
+    yan_zun: '',
+    yan_an: '',
+    long_sheng: '',
+    long_zhan: '',
+    remarks_text: '',
 });
 
-onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside);
+watch(() => props.show, (val) => {
+    if (val) {
+        currentStep.value = 1;
+        if (props.editingId && props.initialData) {
+            form.value = {
+                user_name: props.initialData.user_name || '',
+                user_remarks: props.initialData.user_remarks || '',
+                know_date: props.initialData.know_date || '',
+                quantity: props.initialData.quantity || '',
+                yan_zun: props.initialData.yan_zun || '',
+                yan_an: props.initialData.yan_an || '',
+                long_sheng: props.initialData.long_sheng || '',
+                long_zhan: props.initialData.long_zhan || '',
+                remarks_text: props.initialData.remarks_text || '',
+            };
+            dharmaSearch.value = props.initialData.user_name || '';
+        } else {
+            form.value = {
+                user_name: '', user_remarks: '', know_date: '', quantity: '',
+                yan_zun: '', yan_an: '', long_sheng: '', long_zhan: '', remarks_text: '',
+            };
+            dharmaSearch.value = '';
+        }
+    }
 });
 
 const isValidBigInt = (val) => {
-    if (val === null || val === undefined || val === '') return false;
-    try {
-        BigInt(String(val).replace(/,/g, ''));
-        return true;
-    } catch (e) {
-        return false;
-    }
-};
-
-const tryBigIntSum = (v1, v2) => {
-    try {
-        const b1 = isValidBigInt(v1) ? BigInt(String(v1).replace(/,/g, '')) : 0n;
-        const b2 = isValidBigInt(v2) ? BigInt(String(v2).replace(/,/g, '')) : 0n;
-        return b1 + b2;
-    } catch (e) {
-        return 0n;
-    }
+    if (!val && val !== 0) return false;
+    try { BigInt(String(val).replace(/,/g, '')); return true; }
+    catch { return false; }
 };
 
 const formatWithCommas = (val) => {
+    if (!val && val !== 0) return '';
     const s = String(val).replace(/,/g, '');
     if (!/^\d+$/.test(s)) return s;
-    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-const formatArmyTotal = (num) => {
-    if (!isValidBigInt(num)) return '0';
-    const b = BigInt(String(num).replace(/,/g, ''));
-    if (b < 1000000n) return formatWithCommas(b);
-
-    const troops = b / 1000000n;
-    const remaining = b % 1000000n;
-    if (remaining === 0n) return `${troops}隊`;
-
-    const wan = remaining / 10000n;
-    const rest = remaining % 10000n;
-    let res = `${troops}隊`;
-    if (wan > 0n) res += `${wan}萬`;
-    if (rest > 0n) res += `${rest}位`;
-    else if (wan === 0n) res += `0位`;
-    return res;
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 const nextStep = () => {
-    // Validate before advancing
     if (currentStep.value === 1) {
-        // Date is optional, always valid
+        if (!form.value.know_date) {
+            alert('請選擇日期');
+            return;
+        }
     }
     if (currentStep.value === 2 && !props.isCumulative) {
         if (!form.value.user_name) {
-            alert('請選擇或輸入「法號」，不可留空。');
+            alert('請選擇或輸入法號');
             return;
         }
     }
@@ -432,99 +298,62 @@ const nextStep = () => {
         if (props.armyType === '黑曜軍') {
             const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
             const an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')) : 0n;
-            if (zun === 0n && an === 0n) {
-                alert('請輸入至少一個數量');
-                return;
-            }
+            if (zun === 0n && an === 0n) { alert('請輸入至少一個數量'); return; }
         } else if (props.armyType === '耀紫軍') {
             const sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')) : 0n;
             const zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')) : 0n;
-            if (sheng === 0n && zhan === 0n) {
-                alert('請輸入至少一個數量');
-                return;
-            }
+            if (sheng === 0n && zhan === 0n) { alert('請輸入至少一個數量'); return; }
         } else {
             const qty = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
-            if (qty === 0n) {
-                alert('請輸入數量');
-                return;
-            }
+            if (qty === 0n) { alert('請輸入數量'); return; }
         }
     }
-    if (currentStep.value < totalSteps.value) {
-        currentStep.value++;
-    }
+    if (currentStep.value < totalSteps.value) currentStep.value++;
 };
 
 const prevStep = () => {
-    if (currentStep.value > 1) {
-        currentStep.value--;
-    }
+    if (currentStep.value > 1) currentStep.value--;
 };
 
 const handleSave = () => {
-    if (!props.isCumulative && !form.value.user_name) {
-        alert('請選擇或輸入「法號」，不可留空。');
-        return;
-    }
-
-    const clean = (val) => String(val || 0).replace(/,/g, '');
-
-    // Auto-calculate quantity for split armies using strings to preserve precision
-    if (props.armyType === '黑曜軍') {
-        form.value.quantity = tryBigIntSum(form.value.yan_zun, form.value.yan_an).toString();
-    } else if (props.armyType === '耀紫軍') {
-        form.value.quantity = tryBigIntSum(form.value.long_sheng, form.value.long_zhan).toString();
-    } else if (props.armyType === '虎甲軍') {
-        form.value.yan_jue = clean(form.value.quantity);
-        form.value.yan_ze = "0";
-    } else if (props.armyType === '虎賁軍') {
-        form.value.yan_di = clean(form.value.quantity);
-        form.value.yan_yuan = "0";
-    }
-
-    // Clean all quantity fields before sending
-    const fields = ['quantity', 'yan_zun', 'yan_an', 'long_sheng', 'long_zhan', 'yan_jue', 'yan_ze', 'yan_di', 'yan_yuan'];
-    fields.forEach(f => {
-        if (form.value[f] !== undefined) {
-            form.value[f] = clean(form.value[f]);
-        }
-    });
-
-    console.log('Saving Military Record:', form.value);
-    emit('save', form.value);
-
-    // Clear form data after successful emit
-    form.value = {
-        know_date: '', 
-        user_name: '',
-        user_remarks: '',
-        quantity: '0',
-        yan_zun: '0',
-        yan_an: '0',
-        long_sheng: '0',
-        long_zhan: '0',
-        remarks_text: ''
+    const payload = {
+        know_date: form.value.know_date || null,
+        user_name: form.value.user_name || null,
+        user_remarks: form.value.user_remarks || null,
+        army_type: props.armyType,
+        remarks_text: form.value.remarks_text || null,
     };
-    dharmaSearch.value = '';
-    currentStep.value = 1;
+
+    if (props.armyType === '黑曜軍') {
+        payload.yan_zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')).toString() : '0';
+        payload.yan_an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')).toString() : '0';
+        const zun = BigInt(payload.yan_zun);
+        const an = BigInt(payload.yan_an);
+        payload.quantity = (zun + an).toString();
+    } else if (props.armyType === '耀紫軍') {
+        payload.long_sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')).toString() : '0';
+        payload.long_zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')).toString() : '0';
+        const sheng = BigInt(payload.long_sheng);
+        const zhan = BigInt(payload.long_zhan);
+        payload.quantity = (sheng + zhan).toString();
+    } else {
+        payload.quantity = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')).toString() : '0';
+    }
+
+    // For cumulative mode, set defaults
+    if (props.isCumulative) {
+        payload.destination = '已處理';
+    }
+
+    emit('save', payload);
+};
+
+const handleCancel = () => {
+    emit('cancel');
 };
 </script>
 
 <style scoped>
-.animate-slide-up {
-    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.25s ease-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>

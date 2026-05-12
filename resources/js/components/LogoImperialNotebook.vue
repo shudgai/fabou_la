@@ -11,9 +11,9 @@
             <!-- Central Taiji -->
             <g transform="translate(70, 70)">
                 <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
-                <path d="M50 1 A 49 49 0 0 1 50 99 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 50 1 Z" fill="black"/>
-                <circle cx="50" cy="75" r="8" fill="white"/>
-                <circle cx="50" cy="25" r="8" fill="black"/>
+                <path d="M 1 50 A 49 49 0 0 1 99 50 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 1 50 Z" fill="black"/>
+                <circle cx="74.5" cy="50" r="8" fill="white"/>
+                <circle cx="25.5" cy="50" r="8" fill="black"/>
             </g>
 
             <!-- Circular Text wrapping around -->

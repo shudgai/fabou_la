@@ -41,6 +41,14 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
+
     /**
      * 驗證登入請求，加入法號必填驗證，電子郵件改為非必填（若法號可唯一識別）。
      */

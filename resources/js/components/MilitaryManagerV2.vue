@@ -59,10 +59,10 @@
                     </h2>
                 </div>
                 <div class="flex items-center space-x-2 shrink-0 ml-4">
-                    <button @click.stop="sortDesc = !sortDesc" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                    <button @click.stop="sortDesc = !sortDesc" class="font-black active:scale-95 transition-all" style="font-size: 16px !important; color: #0f172a !important;">
                         {{ sortDesc ? '新→舊' : '舊→新' }}
                     </button>
-                    <button @click="toggleFullTotal" class="px-3 py-1.5 bg-slate-900 text-white rounded-xl font-black transition-all active:scale-95 shadow-md whitespace-nowrap" style="color: white !important; font-size: 16px !important;">
+                    <button @click="toggleFullTotal" class="font-black active:scale-95 transition-all whitespace-nowrap" style="font-size: 16px !important; color: #0f172a !important;">
                         總數
                     </button>
                 </div>
@@ -221,7 +221,7 @@
                                         </div>
 
                                         <!-- Three dots menu - far right, aligned with 日期 row (only when expanded) -->
-                                        <div v-if="focusedId === item.id" class="absolute right-[-8px] top-[8px] z-20">
+                                        <div v-if="focusedId === item.id" class="absolute right-[-8px] top-[48px] z-20">
                                             <button @click.stop="openMenuId === item.id ? openMenuId = null : openMenuId = item.id" class="w-9 h-9 flex items-center justify-center text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
                                                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
@@ -261,7 +261,7 @@
                                                     }[item.army_type]" :key="label">
                                                         <div class="flex items-center space-x-2" v-if="isValidBigInt(val) && BigInt(String(val).replace(/,/g, '')) > 0n">
                                                             <span class="w-2 h-2 rounded-full" :class="getBulletColor(label)"></span>
-                                                            <span class="military-value">{{ {yan_zun:'閻尊', yan_an:'閻闇', long_sheng:'龍勝', long_zhan:'龍戰', yan_jue:'閻決', yan_ze:'閻澤', yan_di:'閻地', yan_yuan:'閻源'}[label] }}: {{ formatWithCommas(val) }}</span>
+                                                            <span class="military-value">{{ {yan_zun:'閻尊', yan_an:'閻閽', long_sheng:'龍勝', long_zhan:'龍戰', yan_jue:'閻決', yan_ze:'閻澤', yan_di:'閻地', yan_yuan:'閻源'}[label] }}: {{ formatWithCommas(val) }}</span>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -1078,14 +1078,11 @@ onMounted(() => {
 :deep(body.font-large) .app-title.text-\[14px\] { font-size: 15px !important; }
 
 /* Custom Military Scaling Logic */
-:deep(body.font-small) .military-label, :deep(body.font-small) .military-date-value { font-size: 13px !important; }
-:deep(body.font-small) .military-value, :deep(body.font-small) .military-value-name { font-size: 15px !important; }
+:deep(body.font-small) .military-label, :deep(body.font-small) .military-date-value, :deep(body.font-small) .military-value, :deep(body.font-small) .military-value-name { font-size: 15px !important; }
 
-:deep(body.font-medium) .military-label, :deep(body.font-medium) .military-date-value { font-size: 15px !important; }
-:deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
+:deep(body.font-medium) .military-label, :deep(body.font-medium) .military-date-value, :deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
 
-:deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value { font-size: 15px !important; }
-:deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
+:deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value, :deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
 
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
