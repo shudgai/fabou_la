@@ -25,7 +25,7 @@
                     <!-- Folder Delete Button (Top Right) -->
                     <button v-if="folder.name !== '抽籤紀錄' && !folder.name.includes('開文核定') && !folder.name.includes('隨機分組')"
                         @click.stop="deleteFolder(folder.id)"
-                        class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 z-20 border border-rose-100">
+                        class="absolute top-10 right-2 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-sm text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 z-20 border border-rose-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </button>
 
@@ -100,40 +100,21 @@
         <div v-else class="flex-grow flex flex-col bg-slate-100 md:bg-white overflow-hidden w-full relative md:h-[90dvh]">
             <!-- Global Dual Header System -->
             <!-- Header 1: Module Level -->
-            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 8px 2px; min-height: 52px;">
+            <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full" style="padding: 0 2px 4px; min-height: 52px;">
                 <div class="flex items-center justify-between w-full">
                     <!-- Consolidated Title Row -->
-                    <div class="flex items-center flex-1 min-w-0">
-                        <div class="flex-1 flex items-center min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-<div class="flex items-center gap-2">
+                    <div class="flex items-center flex-1 min-w-0 cursor-pointer" @click="resetToRoot">
+<div class="flex items-center gap-1">
                         <logo-imperial-notebook :height="36" />
-                        <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                                  抽籤專區
-                             </h1>
+                              </h1>
+                              <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important;">{{ activeFolder.name }}</span>
                     </div>
-                        </div>
-                        <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important; margin-left: 10px;">{{ activeFolder.name }}</span>
                     </div>
 
                     <!-- Right Side Functional Controls -->
                     <div v-if="activeFolder" class="flex items-center ml-2 shrink-0 space-x-2">
-                        <!-- Trash Icon (Clear/Reset) moved to the far right -->
-<template v-if="activeFolder.name.includes('隨機分組')">
-                             <!-- Invert Selection Button for Random Group -->
-                             <button @click="randomGroupRef?.invertSelection()" 
-                                 class="px-[6px] py-[5px] bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border-none whitespace-nowrap"
-                                 style="font-size: 16px !important;">
-                                 反選
-                             </button>
-                             <button @click="randomGroupRef?.resetAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
-                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                             </button>
-                        </template>
-                        <template v-else-if="activeFolder.name.includes('開文核定')">
-<button @click="kaiwenRef?.clearAll()" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
-                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                             </button>
-                        </template>
                     </div>
                 </div>
             </div>
@@ -148,7 +129,7 @@
                     @saved="loadData(); showLuckyDraw = false" />
 
                 <!-- Special View: 開文核定表 -->
-                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" />
+                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" class="mt-5" />
                 <!-- Special View: 隨機分組 -->
                 <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
 

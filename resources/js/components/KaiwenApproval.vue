@@ -7,19 +7,19 @@
                 <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-40 w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
                     <!-- Selection Grid matched to RandomGroup -->
                     <div class="flex items-center justify-between px-3 py-3 md:pt-[32px]">
-                        <div class="flex items-center gap-2">
-                            <logo-imperial-notebook :height="36" />
-                            <div class="flex items-center">
-                                <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                </button>
-                                <span class="font-black" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8', fontSize: '16px !important' }">
-                                    {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
-                                </span>
-                            </div>
+                        <div class="flex items-center">
+                            <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                            <span class="font-black" :style="{ color: selectionFiltered ? '#1d4ed8' : '#94a3b8', fontSize: '16px !important', marginTop: '10px' }">
+                                {{ selectionFiltered ? '已確認排序名單' : '點選待定法號' }}
+                            </span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="font-bold shrink-0" :style="{ color: selectionList.length > 0 ? '#1d4ed8' : '#94a3b8', fontSize: '16px !important' }">已選 {{ selectionList.length }} 人</span>
+                            <button @click="clearAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
                         </div>
                     </div>
 

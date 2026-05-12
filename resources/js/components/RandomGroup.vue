@@ -7,27 +7,28 @@
 <!-- Main scrollable selection grid -->
              <div class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
                 <!-- Header bar -->
-                <div class="flex items-center justify-between px-3 py-1.5 md:pt-[60px]">
-                    <div class="flex items-center space-x-2 flex-1 mr-4">
-                        <logo-imperial-notebook :height="36" />
-                        <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-                        <div class="flex flex-col">
-                            <span class="shrink-0 leading-tight font-black" style="font-size: 26px !important; color: #0f172a !important;">
+                <div class="flex items-start justify-between px-3 py-1.5 md:pt-[60px]">
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                            <span class="shrink-0 leading-tight font-black" style="font-size: 17px !important; color: #0f172a !important;">
                                 {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
                             </span>
-                            <span v-if="!selectionFiltered" class="text-[12px] text-slate-400 -mt-0.5">
-                                滑動游標選取人員
-                            </span>
                         </div>
-                        <!-- Manual Add Input -->
-                        <div v-if="!selectionFiltered" class="flex items-center bg-slate-100 rounded-lg px-2 py-1 flex-1 max-w-[150px]">
-                            <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="手動輸入..." class="bg-transparent border-none outline-none text-[10px] font-bold w-full">
-                            <button @click="addManualName" class="text-blue-500 font-black text-xl ml-1">+</button>
+                        <div v-if="!selectionFiltered" class="flex items-center gap-1 mt-1">
+                            <span class="text-[12px] text-slate-400 whitespace-nowrap">滑動游標選取人員</span>
+                            <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="" class="bg-transparent border-none outline-none text-[10px] font-bold w-16 shrink-0">
                         </div>
+                        <span v-if="!selectionFiltered" class="font-bold text-slate-800 mt-1" style="font-size: 16px !important;">已選 {{ pendingNames.length }} 人</span>
                     </div>
-                    <span class="font-bold" :style="{ color: pendingNames.length > 0 ? '#1d4ed8' : '#94a3b8', fontSize: '16px !important' }">已選 {{ pendingNames.length }} 人</span>
+                    <div class="flex items-center space-x-2 shrink-0 mt-1">
+                        <button @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
+                        <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Grid evenly distributed, stretching boxes -->
@@ -59,23 +60,25 @@
             </div>
 
 <!-- Confirm button — FIXED above mobile nav -->
-             <div class="fixed bottom-[60px] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+             <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                  <button
                      @click="confirmSelection"
                      :disabled="pendingNames.length === 0"
-                     class="w-full py-[5px] rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
+                     class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
                      :style="{
                          background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
                          color: '#ffffff !important',
                          textShadow: '0 1px 3px rgba(0,0,0,0.3)',
                          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                         fontSize: '16px !important'
+                         fontSize: '16px !important',
+                         paddingTop: '13px',
+                         paddingBottom: '13px'
                      }"
                  >
                      <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
-                     <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
-                 </button>
-             </div>
+                      <span v-else style="color: #ffffff !important;">確定 → 進入分組設定</span>
+                   </button>
+               </div>
         </div>
 
         <!-- STEP 2: GROUPING & RESULTS -->
@@ -223,7 +226,7 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex flex-col">
                                             <span class="text-slate-900 font-black text-[17px]">❸ 實際隨機分派</span>
-                                            <span class="text-[10px] font-bold text-slate-400">❶ 在場總計 − ❷ 總計排除</span>
+                                             <span class="text-[10px] font-bold text-slate-400">❶ 在場總計 − ❷ 總計排除</span>
                                         </div>
                                         <span :class="['text-[20px] font-black leading-none drop-shadow-sm', includeGuardians ? 'text-indigo-600' : 'text-amber-600']">{{ activePoolCount }} 人</span>
                                     </div>
@@ -296,13 +299,20 @@
             </div>
 
 <!-- Fixed Bottom Action Area aligned with desktop container -->
-             <div class="fixed bottom-[60px] left-0 right-0 md:absolute md:bottom-[72px] md:left-1/2 md:-translate-x-1/2 md:max-w-xl px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full">
+             <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
                  <div class="w-full">
                      <button
                          @click="doGrouping"
                          :disabled="selectedNames.length < 1 || isDrawing"
-                         class="w-full py-[5px] rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
-                         style="background: #c7d2fe; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;"
+                         class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
+                         :style="{
+                             background: selectedNames.length < 1 || isDrawing ? '#94a3b8' : 'rgb(0,255,0)',
+                             color: '#ffffff !important',
+                             textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                             fontSize: '16px !important',
+                             paddingTop: '13px',
+                             paddingBottom: '13px'
+                         }"
                      >
                          <span style="color: #ffffff !important;">開始分組演算</span>
                      </button>

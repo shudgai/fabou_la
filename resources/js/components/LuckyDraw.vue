@@ -9,28 +9,14 @@
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex items-center justify-between w-full">
                             <!-- Consolidated Title Row -->
-                            <div class="flex items-center flex-1 min-w-0 gap-2">
-                                <logo-imperial-notebook :height="36" />
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">
                                      抽籤專區
                                  </div>
-                                <div class="flex items-center ml-3 min-w-0">
-<span class="text-slate-500 truncate" style="font-size: 23px !important; font-weight: 400 !important;">
-                                          {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
-                                      </span>
-                                </div>
-                            </div>
-
-                            <!-- Right Side Functional Controls -->
-                            <div class="flex items-center ml-2 shrink-0 space-x-2">
-<button @click="invertSelection()" 
-                                      class="px-[6px] py-[10px] bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-black active:scale-95 transition-all shadow-sm border-none whitespace-nowrap"
-                                      style="font-size: 16px !important;">
-                                      反選
-                                  </button>
-                                <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
-                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                 </button>
+<span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">
+                                     {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
+                                 </span>
                             </div>
                         </div>
                     </div>
@@ -41,6 +27,12 @@
                     <div class="p-4 space-y-6">
 <div class="flex items-center flex-wrap gap-2 mb-2">
                              <label class="text-[18px] font-black text-slate-800 shrink-0">{{ currentStep === 1 ? '滑動游標選取固定人員' : '滑動游標選取其他抽籤人員' }}</label>
+                             <span @click="invertSelection()" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all cursor-pointer shrink-0">
+                                       反選
+                                   </span>
+                                 <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                 </button>
                             <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 border border-slate-100">
                                 <span class="text-[11px] font-bold text-slate-300 whitespace-nowrap shrink-0 mr-1">手動:</span>
                                 <input v-model="manualName" @keyup.enter="addManualName" class="w-16 bg-transparent border-none text-[12px] font-bold h-6 outline-none">
@@ -91,12 +83,27 @@
         <!-- STEP 3: DRAW CONFIGURATION -->
         <div v-if="currentStep === 3" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="border-b border-slate-100 p-4 bg-white sticky top-0 z-10 w-full md:pt-[60px]">
+                <div v-if="lotteryMode" class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                    <div class="flex flex-col w-full gap-1">
+                        <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                            <div class="w-full text-center">
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                                <span v-if="currentStep === 3" class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;"> - 點選本輪人員</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="border-b border-slate-100 p-4 bg-white sticky top-0 z-10 w-full md:pt-[60px]">
                     <div class="flex items-center">
                         <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 mr-2 active:scale-90 transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
-                        <h2 class="text-[24px] font-black text-slate-800">{{ lotteryMode ? '回合抽籤 - 本輪挑選' : '步驟 3：抽籤設定' }}</h2>
+                        <h2 class="text-[24px] font-black text-slate-800">步驟 3：抽籤設定</h2>
                     </div>
                 </div>
                 <div class="flex-1 overflow-y-auto p-4 space-y-8">
@@ -144,10 +151,10 @@
                                      class="w-12 h-[44px] flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
                         </div>
                     </div>
-                    <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
-                             class="w-full py-[10px] rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
-                             :class="lotteryMode ? 'bg-emerald-100 text-white' : 'bg-indigo-600 text-white'"
-                             :style="lotteryMode ? 'color: white !important;' : 'color: white !important;'">
+                     <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
+                              class="w-full py-[10px] rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
+                              :class="lotteryMode ? 'text-white' : 'bg-indigo-600 text-white'"
+                              :style="lotteryMode ? { background: 'rgb(0,255,0)' } : {}">
                         {{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}
                     </button>
                 </div>
@@ -206,7 +213,19 @@
         <!-- STEP 4: RESULTS -->
         <div v-if="currentStep === 4" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex flex-col space-y-2">
+                <div v-if="lotteryMode" class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                    <div class="flex flex-col w-full gap-1">
+                        <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="p-4 border-b border-slate-100 flex flex-col space-y-2">
                     <div class="flex items-center">
                         <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -359,6 +378,7 @@ const getPendingStyle = (name) => {
 const confirmSelection = () => {
     if (lotteryMode.value === true) {
         selectedNames.value = [...pendingNames.value];
+        roundParticipants.value = [...pendingNames.value];
         drawCount.value = 1;
         currentStep.value = 3;
         return;
@@ -515,7 +535,7 @@ const handleReselect = () => {
 const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [];
+    roundParticipants.value = [...pendingNames.value];
     currentStep.value = 3;
 };
 

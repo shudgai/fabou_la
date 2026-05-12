@@ -143,6 +143,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - 抽籤專區 — lottery/draw system
 - Step 1 label: "滑動游標選取固定人員"; Step 2 label: "滑動游標選取其他抽籤人員"
 - Flow: 抽順序 (step1 → step2 → step3), 回合抽籤 (step1 → step3)
+- 回合抽籤 mode: `roundParticipants` auto-populated with all selected names on step 3 entry and new round
+- step 3 & 4 lotteryMode headers show LogoImperialNotebook + 抽籤專區 + subtitle with logo header bar
+- step 3 subtitle on its own centered row: "回合抽籤 - 點選本輪人員"
 
 ### GrudgeAddForm.vue / MilitaryAddForm.vue
 - All inputs: `border-0 border-b-2 border-slate-300 bg-transparent` (underline)
@@ -163,3 +166,19 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 
 ### GrudgeManager.vue
 - List items: `py-3 px-3` with `border-slate-300` between items
+
+### OtherManager.vue
+- Module for 其他 (miscellaneous) records with special sub-views (開文核定表, 隨機分組, 抽籤)
+- Header uses dual-line layout: module title (30px) + active folder name (23px)
+- Active folder title span at `OtherManager.vue:115` — `margin-left: 14px` to align with KaiwenApproval content
+- KaiwenApproval and RandomGroup rendered as child components with `v-if` on folder name
+- Folder buttons follow same 198×198 pattern with SVG icons
+
+### KaiwenApproval.vue
+- 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
+- Step 1: grid of dharma names (4 cols mobile, 5 cols desktop), toggle selection, confirm order
+- Step 2: approval table with per-row expandable slot count, V/X toggle per slot
+- "點選待定法號" header has `marginTop: 10px` for vertical alignment
+- Bottom action bar at `bottom: calc(7dvh + env(safe-area-inset-bottom))` for mobile
+- Copy to LINE: exports formatted results to clipboard (✓ / × notation)
+- Font size overrides via `:global(body.font-*)` selectors for accessibility
