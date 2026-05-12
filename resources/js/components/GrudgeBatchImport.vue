@@ -39,12 +39,7 @@
                 <div class="space-y-1 relative group/textarea">
                     <div class="flex items-center justify-between mb-2 ml-1">
                         <label class="app-title">貼上資料</label>
-                        <div class="flex items-center space-x-2">
-                            <button @click.stop="triggerFileUpload" class="text-[14px] font-black text-indigo-600 flex items-center space-x-1 active:scale-95 transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13h6m-6-4h6m-6 8h3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                <span>載入他檔</span>
-                            </button>
-                        </div>
+
                     </div>
                     <div class="relative">
                         <textarea 
@@ -187,19 +182,7 @@ const getTodayStr = () => {
 };
 const batchDate = ref(null);
 
-const triggerFileUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls, .doc, .docx';
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            persistentToast.value = { msg: `✓ 已讀取檔案「${file.name}」\n(解析功能串接中)`, type: 'success' };
-            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
-        }
-    };
-    input.click();
-};
+
 
 const nameAliasMap = {
     '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',

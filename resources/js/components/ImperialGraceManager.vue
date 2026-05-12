@@ -24,7 +24,7 @@
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
                     <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
                         <logo-imperial-notebook :height="36" />
-                        新增重大皇恩
+                        {{ form.id ? '修改重大皇恩' : '重大皇恩專區' }}
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 </button>
         </div>
 
-        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white max-w-xl mx-auto">
+        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white w-full">
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
@@ -120,7 +120,7 @@
                     @click="currentFolder = folder"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[260px] h-[173px] relative group rounded-none bg-transparent">
                     <div class="relative w-[245px] h-[158px]">
-                        <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                        <img src="/image/imperial_grace_book_v5.png" loading="lazy" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 text-[#fbbf24]">
                              <div class="text-[14px] opacity-80 mb-0.5 tracking-widest font-bold">重大皇恩專區</div>
                              <div class="text-[22px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
@@ -142,12 +142,12 @@
         </div>
 
         <!-- Level 2: Folder Contents -->
-        <div v-else-if="currentFolder && !addMode" class="px-0 bg-white w-full md:max-w-xl md:mx-auto">
+        <div v-else-if="currentFolder && !addMode" class="px-0 bg-white w-full pb-32">
             <!-- Consolidated Header Section -->
             <div class="flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[110]">
                 <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
                 <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
-                <div class="flex items-center gap-2">
+                    <logo-imperial-notebook :height="36" />
                     <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
@@ -250,7 +250,7 @@
                             <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
-                            <div class="w-full h-full md:h-auto bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto">
+                            <div class="w-full h-full bg-white flex flex-col animate-slide-up pointer-events-auto">
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
                                     <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
@@ -287,165 +287,52 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 <!-- Scrollable Content -->
-                                <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
-                        <div class="animate-fade-in bg-white space-y-4 relative">
-
-                            <!-- INLINE EDITING FORM -->
-                            <div v-if="inlineEditId === reg.id" class="space-y-4 animate-fade-in pb-4">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-400 font-bold">得知日期</label>
-                                        <div class="relative">
-                                            <input v-model="inlineEditData.record_date" type="text" class="w-full p-2 border rounded-xl text-[16px] font-bold">
-                                            <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-400 font-bold">載錄目標仙師</label>
-                                        <select v-model="inlineEditData.master_id" class="w-full p-2 border rounded-xl text-[16px] font-bold">
-                                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-400 font-bold">法寶名稱</label>
-                                    <input v-model="inlineEditData.name" type="text" class="w-full p-2 border rounded-xl text-[17px] font-black text-indigo-700">
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-400 font-bold">法寶用意</label>
-                                    <textarea v-model="inlineEditData.purpose" rows="2" class="w-full p-2 border rounded-xl text-[16px] font-bold"></textarea>
-                                </div>
-
-                                <!-- Inline Personnel Editor (For Multi-person) -->
-                                <div v-if="inlineEditData.is_multi || (inlineEditData.dharma_name_registries && inlineEditData.dharma_name_registries.length > 0)" class="space-y-2">
-                                    <div class="flex items-center justify-between">
-                                        <label class="app-title tracking-wider text-slate-400 font-bold">人員名單</label>
-                                        <button @click="addPersonnelInline" class="text-[12px] bg-indigo-600 px-2 py-1 rounded-lg font-bold shadow-sm active:scale-95" style="color: white !important;">＋ 新增人員</button>
-                                    </div>
-                                    <div class="space-y-2 border-t pt-2">
-                                        <div v-for="(p, idx) in inlineEditData.dharma_name_registries" :key="idx" class="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-2">
-                                            <div class="flex items-center space-x-2">
-                                                <input v-model="p.custom_name" placeholder="法號" class="flex-1 p-2 border rounded-lg text-[16px] font-bold">
-                                                <select v-model="p.status" class="w-24 p-2 border rounded-lg text-[16px] font-bold">
-                                                    <option>已登記</option>
-                                                    <option>已求得</option>
-                                                    <option>未求得</option>
-                                                </select>
-                                                <button @click="inlineEditData.dharma_name_registries.splice(idx, 1)" class="text-red-400 p-1">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </button>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-2">
-                                                <div class="relative">
-                                                    <input v-model="p.obtained_date" placeholder="求得日期" class="w-full p-2 border rounded-lg text-[16px] pr-8">
-                                                    <button @click="activePicker = { idx, field: 'obtained_date', title: (p.custom_name || '人員') + '求得日期' }" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 p-1">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
+                                <div class="flex-1 overflow-y-auto overscroll-contain px-[15px] pt-2 pb-32 custom-scrollbar">
+                                    <div class="animate-fade-in bg-white space-y-4 relative">
+                                        <!-- Detail Content Grid (Read Only View) -->
+                                        <div class="space-y-4 animate-fade-in">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-1">
+                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                                    <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
                                                 </div>
-                                                <div class="relative flex items-center border rounded-lg bg-white overflow-visible">
-                                                    <input v-model="p.remarks" placeholder="備註" 
-                                                        @focus="activeRelDropdownIdx = idx"
-                                                        class="w-full bg-transparent border-none p-2 text-[16px] focus:ring-0 outline-none">
-                                                    <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-1 text-slate-400 hover:text-indigo-500 transition-all">
-                                                        <svg class="w-4 h-4" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
-                                                    <div v-if="activeRelDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                                        <div v-for="opt in relationshipOptions" :key="opt"
-                                                             @click.stop="p.remarks = opt; activeRelDropdownIdx = null"
-                                                             class="px-3 py-2 flex items-center rounded-lg hover:bg-indigo-50 font-bold text-[12px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                                            {{ opt }}
-                                                        </div>
+                                                <div class="space-y-1 text-right pr-8">
+                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                                    <div class="app-body text-[17px] font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="space-y-1">
+                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                                <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                                            </div>
+
+                                            <div class="space-y-1">
+                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                                <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose && reg.purpose !== '-' && reg.purpose !== '無' ? reg.purpose : '-' }}</div>
+                                            </div>
+
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-1">
+                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                                    <div class="app-body text-[17px] font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                                        {{ reg.status }}
                                                     </div>
                                                 </div>
+                                                <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                                    <div class="app-body text-[15px] font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="space-y-1 pt-2 border-t border-slate-50">
+                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                                <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks && reg.remarks !== '-' && reg.remarks !== '無' ? reg.remarks : '-' }}</div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div v-else class="grid grid-cols-2 gap-3">
-                                    <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-400 font-bold">目前狀態</label>
-                                        <select v-model="inlineEditData.status" class="w-full p-2 border rounded-xl text-[16px] font-bold">
-                                            <option>已登記</option>
-                                            <option>已求得</option>
-                                            <option>未求得</option>
-                                        </select>
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="app-title tracking-wider block text-slate-400 font-bold">求得日期</label>
-                                        <div class="relative">
-                                            <input v-model="inlineEditData.obtained_date" type="text" class="w-full p-2 border rounded-xl text-[16px] font-bold">
-                                            <button @click="activePicker = { field: 'obtained_date', title: '修改求得日期' }" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title tracking-wider block text-slate-400 font-bold">備註</label>
-                                    <textarea v-model="inlineEditData.remarks" rows="2" class="w-full p-2 border rounded-xl text-[16px]"></textarea>
-                                </div>
-
-                                <div class="flex space-x-2 pt-2">
-                                    <button @click="saveInlineEdit" :disabled="isSaving" 
-                                        class="flex-1 py-3 bg-indigo-600 rounded-xl font-black text-[17px] shadow-lg active:scale-95 transition-all" style="color: white !important;">
-                                        {{ isSaving ? '儲存中...' : '確認儲存' }}
-                                    </button>
-                                    <button @click="cancelInlineEdit" class="px-6 py-3 bg-slate-400 rounded-xl font-bold shadow-sm active:scale-95 transition-all" style="color: white !important;">
-                                        取消
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Detail Content Grid (Read Only View) -->
-                            <div v-else class="space-y-4 animate-fade-in">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-1">
-                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                        <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
-                                    </div>
-                                    <div class="space-y-1 text-right pr-8">
-                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                        <div class="app-body text-[17px] font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                    <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                    <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose && reg.purpose !== '-' && reg.purpose !== '無' ? reg.purpose : '-' }}</div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-1">
-                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">目前狀態</label>
-                                        <div class="app-body text-[17px] font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                            {{ reg.status }}
-                                        </div>
-                                    </div>
-                                    <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
-                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                        <div class="app-body text-[15px] font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1 pt-2 border-t border-slate-50">
-                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                    <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks && reg.remarks !== '-' && reg.remarks !== '無' ? reg.remarks : '-' }}</div>
-                                </div>
-                            </div>
-                        </div><!-- /animate-fade-in content -->
                                 </div><!-- /scrollable content area -->
 
                                 <!-- Action bar removed, using header 3-dots menu instead -->
@@ -610,31 +497,15 @@ const searchQuery = ref('');
 const form = ref({
     id: null, master_id: null, name: '', purpose: '', remarks: '', record_date: '', obtained_date: '', status: '未求得'
 });
-const inlineEditId = ref(null);
-const inlineEditData = ref({});
 const activePicker = ref(null); 
 const activePickerValue = computed({
     get: () => {
         if (!activePicker.value) return '';
-        if (activePicker.value.isAddForm) {
-            return form.value[activePicker.value.field];
-        }
-        if (activePicker.value.idx !== undefined) {
-            return inlineEditData.value.dharma_name_registries[activePicker.value.idx][activePicker.value.field];
-        }
-        return inlineEditData.value[activePicker.value.field];
+        return form.value[activePicker.value.field];
     },
     set: (val) => {
         if (!activePicker.value) return;
-        if (activePicker.value.isAddForm) {
-            form.value[activePicker.value.field] = val;
-            return;
-        }
-        if (activePicker.value.idx !== undefined) {
-            inlineEditData.value.dharma_name_registries[activePicker.value.idx][activePicker.value.field] = val;
-        } else {
-            inlineEditData.value[activePicker.value.field] = val;
-        }
+        form.value[activePicker.value.field] = val;
     }
 });
 
@@ -820,28 +691,6 @@ const toggleExpand = (id) => {
     }
 };
 
-const cancelInlineEdit = () => {
-    inlineEditId.value = null;
-    expandedId.value = null;
-};
-
-const saveInlineEdit = async () => {
-    if (isSaving.value) return;
-    isSaving.value = true;
-    try {
-        await axios.post(`/imperial-graces/registry/${inlineEditId.value}`, { ...inlineEditData.value, _method: 'PATCH' });
-        persistentToast.value = { msg: '已更新載錄', type: 'success' };
-        inlineEditId.value = null;
-        expandedId.value = null;
-        await loadData(currentPage.value);
-    } catch (e) {
-        console.error('Inline save failed', e);
-        persistentToast.value = { msg: '✖ 更新失敗', type: 'error' };
-    } finally {
-        isSaving.value = false;
-    }
-};
-
 const handleBack = () => {
     if (addMode.value) {
         addMode.value = null;
@@ -866,24 +715,12 @@ const handleBack = () => {
 const handleStatusChange = () => { if (form.value.status === '未求得') form.value.obtained_date = ''; };
 
 const editItem = (reg) => { 
-    inlineEditId.value = reg.id;
-    inlineEditData.value = JSON.parse(JSON.stringify(reg));
-    if (!inlineEditData.value.dharma_name_registries) inlineEditData.value.dharma_name_registries = [];
-    inlineEditData.value.dharma_name_registries = inlineEditData.value.dharma_name_registries.map(d => ({
-        ...d,
-        custom_name: d.dharma_name?.name || d.custom_name,
-        remarks: Array.isArray(d.remarks) ? d.remarks.join(' ') : (d.remarks || '')
-    }));
+    form.value = JSON.parse(JSON.stringify(reg));
+    if (!form.value.dharma_name_registries) form.value.dharma_name_registries = [];
+    addSessionKey.value++;
+    addMode.value = 'single';
     openMenuId.value = null; 
-};
-
-const addPersonnelInline = () => {
-    inlineEditData.value.dharma_name_registries.push({
-        custom_name: '',
-        status: '已登記',
-        obtained_date: '',
-        remarks: ''
-    });
+    expandedId.value = null; // Close the overlay since form will open
 };
 
 const confirmDelete = (id) => {
@@ -1050,10 +887,13 @@ const saveSingle = async (resolutionOrData = null) => {
         return;
     }
 
+    // Date is now optional for all statuses as requested
+    /*
     if (['已登記', '已求得'].includes(form.value.status) && !form.value.obtained_date) {
         persistentToast.value = { msg: '請輸入求得日期', type: 'error' };
         return;
     }
+    */
 
     isSaving.value = true;
     persistentToast.value = null;
@@ -1170,18 +1010,22 @@ const changeStatus = async (reg, nextStatus) => {
 };
 
 const triggerBatchSave = async (payload = null) => {
-    if (payload && typeof payload === 'object') {
-        batchInput.value = payload.input || '';
-        batchMasterId.value = payload.masterId || null;
-    }
-    if (!batchInput.value || isSaving.value) return;
+    if (!payload || isSaving.value) return;
     isSaving.value = true;
     try {
-        const finalMasterId = batchMasterId.value === 'unobtained' ? null : batchMasterId.value;
-        const dataToSend = { master_id: finalMasterId };
-        if (payload && payload.rows) {
+        const dataToSend = { 
+            master_id: form.value.master_id === 'unobtained' ? null : form.value.master_id 
+        };
+
+        if (Array.isArray(payload)) {
+            // New Wizard Format: payload is the array of rows directly
+            dataToSend.items = payload;
+        } else if (payload && payload.rows) {
+            // Legacy/Alternative Format
             dataToSend.items = payload.rows;
+            if (payload.masterId) dataToSend.master_id = payload.masterId;
         } else {
+            // Raw Input Parsing Fallback
             const lines = batchInput.value.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('【')); 
             if (lines.length === 0) {
                 persistentToast.value = { msg: '內容格式不正確', type: 'error' };
@@ -1190,14 +1034,13 @@ const triggerBatchSave = async (payload = null) => {
             }
             dataToSend.lines = lines;
         }
-        const itemCount = (payload && payload.rows) ? payload.rows.length : 0;
+
+        const itemCount = dataToSend.items ? dataToSend.items.length : (dataToSend.lines ? dataToSend.lines.length : 0);
         await axios.post('/imperial-graces/registry/batch', dataToSend);
-        addMode.value = null; // Close form immediately
-        
-        // Success notification
+        addMode.value = null; 
         persistentToast.value = { msg: `多筆新增成功（共 ${itemCount} 筆）`, type: 'success' };
         
-        const targetMasterId = finalMasterId || (payload && payload.rows && payload.rows.length > 0 ? payload.rows[0].master_id : null);
+        const targetMasterId = dataToSend.master_id || (payload && payload.rows && payload.rows.length > 0 ? payload.rows[0].master_id : null);
         const targetMaster = masters.value.find(m => String(m.id) === String(targetMasterId));
         
         if (targetMaster) {

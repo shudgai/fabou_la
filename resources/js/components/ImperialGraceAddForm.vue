@@ -1,292 +1,244 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0 imperial-grace-module" style="overscroll-behavior: contain;">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
-
-        <!-- Form Container -->
-        <div class="relative w-full h-[100dvh] md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
-            <!-- Header -->
-            <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 relative">
-                <div class="flex-1 flex flex-col justify-center min-w-0 pr-6">
-                    <div class="text-[26px] font-black leading-tight font-outfit tracking-widest text-red-600 uppercase !font-black flex items-center gap-2" style="color: #dc2626 !important;">
-                        <logo-imperial-notebook :height="36" />
-                        重大皇恩
-                    </div>
+    <div v-if="mode" class="fixed inset-0 z-[2000] bg-white flex flex-col overflow-hidden">
+        <!-- Header -->
+        <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 shrink-0 relative">
+            <div class="flex-1 flex flex-col items-center justify-center min-w-0">
+                <div class="leading-tight font-outfit tracking-widest break-words flex items-center justify-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
+                    <logo-imperial-notebook :height="36" />
+                    重大皇恩專區
                 </div>
-                <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors py-[5px] absolute right-4 top-1/2 -translate-y-1/2">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-            </div>
-
-
-
-            <!-- Scrollable Content -->
-            <div ref="scrollContainer" class="flex-1 overflow-y-auto px-3 pt-4 pb-32 space-y-5 custom-scrollbar overscroll-contain">
-
-                <!-- IMMERSIVE ENTRY: One-Thing-At-A-Time -->
-                <div class="flex-1 flex flex-col min-h-0 relative">
-                    <!-- Progress Indicator -->
-                    <div class="px-[15px] pt-[15px] pb-[10px]">
-                        <div class="flex items-center justify-between gap-1">
-                            <div v-for="s in totalSteps" :key="s" 
-                                 class="h-1 flex-1 rounded-full transition-all duration-500"
-                                 :class="s <= currentStep ? 'bg-indigo-500' : 'bg-slate-100'">
-                            </div>
-                        </div>
-                        <div class="flex justify-between mt-2">
-                            <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">Step {{ currentStep }} of {{ totalSteps }}</span>
-                            <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">{{ currentStepTitles[currentStep - 1] }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Step Content Container - Standard Padding -->
-                    <div class="flex-1 flex flex-col justify-start pt-[15px] px-[15px] pb-20">
-                        <transition name="step-fade" mode="out-in">
-                            <!-- Step 1: Date & Master -->
-                            <div v-if="currentStep === 1" :key="1" class="flex-1 flex flex-col items-center justify-start pt-[15px] space-y-12 animate-fade-in text-center">
-                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<br><span class="text-indigo-600">日期</span>與<span class="text-red-600">父皇仙師</span></h2>
-                                <div class="space-y-10 w-full max-w-sm mt-12">
-                                    <div class="relative group">
-                                        <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">得知日期</label>
-                                        <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
-                                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                        <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-200 hover:text-indigo-500 transition-colors">
-                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
-                                    </div>
-                                    <div class="relative group">
-                                        <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">載錄目標</label>
-                                        <select v-model="form.master_id" class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
-                                            <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- STEP 2: Name (Single) or Input (Batch) -->
-                            <div v-else-if="currentStep === 2" :key="2" class="space-y-6 animate-fade-in text-center w-full">
-                                <template v-if="localMode.startsWith('single')">
-                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
-                                    <div class="max-w-sm mx-auto">
-                                        <input v-model="form.name" type="text" placeholder="例如：淨化法水..." 
-                                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請貼入<span class="text-indigo-600">載錄內容</span></h2>
-                                    <div class="max-w-md mx-auto space-y-4 text-left">
-                                        <div class="flex items-center justify-between px-1">
-                                            <span class="text-[12px] font-black text-slate-300 uppercase tracking-widest">多筆法寶請以空白行分隔</span>
-                                            <button v-if="batchInput" @click="batchInput = ''" class="text-rose-500 text-[12px] font-bold">清除</button>
-                                        </div>
-                                        <textarea v-model="batchInput" rows="6" placeholder="直接貼上文字內容..." 
-                                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
-                                    </div>
-                                </template>
-                            </div>
-
-                            <!-- STEP 3: Purpose (Single) or Preview (Batch) -->
-                            <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center w-full">
-                                <template v-if="localMode.startsWith('single')">
-                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>為何？</h2>
-                                    <p class="text-[13px] font-bold text-slate-400 mt-1">※ 若沒有用意可直接按下一步跳過</p>
-                                    <div class="max-w-md mx-auto mt-4">
-                                        <textarea v-model="form.purpose" rows="3" placeholder="請簡述用途..." 
-                                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none"></textarea>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">預覽<span class="text-indigo-600">載錄資料</span></h2>
-                                    <div v-if="excelRows.length > 0" class="max-w-md mx-auto border border-slate-100 rounded-3xl overflow-hidden shadow-sm bg-white animate-fade-in text-left">
-                                        <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
-                                            <span class="text-[13px] font-black text-slate-500 uppercase tracking-widest">目前解析 ({{ excelRows.length }} 筆)</span>
-                                            <span class="text-[11px] font-bold text-slate-300">PREVIEW</span>
-                                        </div>
-                                        <div class="overflow-x-auto max-h-[300px] custom-scrollbar">
-                                            <table class="w-full text-left">
-                                                <thead class="bg-slate-50/50 text-[11px] text-slate-400 font-black uppercase tracking-widest sticky top-0 backdrop-blur-sm">
-                                                    <tr>
-                                                        <th class="px-4 py-2 border-r border-slate-100">日期</th>
-                                                        <th class="px-4 py-2">法寶內容</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="divide-y divide-slate-50">
-                                                    <tr v-for="(row, idx) in excelRows" :key="idx" class="hover:bg-indigo-50/30 transition-colors">
-                                                        <td class="px-4 py-3 font-mono text-slate-500 text-[13px] border-r border-slate-100 align-top">{{ row.date || '-' }}</td>
-                                                        <td class="px-4 py-3 align-top">
-                                                            <div class="text-[15px] font-black text-slate-900 mb-1">{{ row.name }}</div>
-                                                            <div class="text-[12px] text-red-600 font-bold opacity-80">【{{ getMasterName(row.master_id) }}】</div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div v-else class="py-12 text-slate-200 font-black text-[18px] italic">尚未輸入載錄內容</div>
-                                </template>
-                            </div>
-
-                            <!-- STEP 4 (Single Only): STATUS & DATE -->
-                            <div v-else-if="currentStep === 4 && localMode.startsWith('single')" :key="4" class="space-y-[15px] animate-fade-in w-full h-full flex flex-col">
-                                <div class="text-center space-y-6">
-                                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
-                                    <div class="grid grid-cols-1 gap-8 max-w-sm mx-auto mt-6">
-                                        <!-- single_multi: per-person cards -->
-                                        <template v-if="localMode === 'single_multi'">
-                                            <div class="flex items-center border-0 border-b-2 border-slate-100 focus-within:border-indigo-500 transition-all">
-                                                <input v-model="tempPersonnelName" type="text" placeholder="輸入法號" list="dharma-names" @keydown.enter.prevent="addPersonnelName"
-                                                    class="w-full text-center text-[18px] font-black bg-transparent py-4 outline-none placeholder:text-slate-100 border-none">
-                                                <button type="button" @click="addPersonnelName" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg whitespace-nowrap active:scale-95 transition-all text-[15px] ml-2">
-                                                    加入
-                                                </button>
-                                            </div>
-
-                                            <div v-if="addedPersonnel.length > 0" class="mt-6 space-y-4">
-                                                <div v-for="(person, idx) in addedPersonnel" :key="idx" class="border border-slate-100 rounded-2xl p-4 bg-slate-50/50">
-                                                    <div class="flex justify-between items-center mb-4">
-                                                        <span class="font-black text-[17px] text-slate-800">{{ person.name }}</span>
-                                                        <button type="button" @click="removePersonnelName(idx)" class="text-red-400 font-bold text-[13px] active:scale-95 transition-all">刪除</button>
-                                                    </div>
-                                                    <div class="grid grid-cols-1 gap-5">
-                                                        <div class="relative">
-                                                            <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
-                                                            <select v-model="person.status" class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-3 outline-none transition-all appearance-none mt-1">
-                                                                <option value="未求得">未求得</option>
-                                                                <option value="已求得">已求得</option>
-                                                                <option value="已登記">已登記</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="relative">
-                                                            <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest">日期</label>
-                                                            <div class="flex items-center border-0 border-b-2 border-slate-100 focus-within:border-red-400 transition-all mt-1">
-                                                                <input v-model="person.obtained_date" type="text" placeholder="YYYY-MM-DD"
-                                                                    :disabled="person.status === '未求得'"
-                                                                    class="w-full text-center text-[17px] font-black bg-transparent py-3 outline-none transition-all disabled:text-slate-200 border-none">
-                                                                <button @click="activePicker = { field: 'obtained_date', personIdx: idx, title: person.name + '日期' }"
-                                                                    :disabled="person.status === '未求得'"
-                                                                    type="button"
-                                                                    class="text-slate-200 hover:text-red-500 transition-colors disabled:opacity-30">
-                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div v-else class="py-6 text-slate-200 font-black text-[15px] text-center">尚未加入任何法號</div>
-                                        </template>
-                                        <div class="relative">
-                                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
-                                            <select v-model="form.status" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all appearance-none">
-                                                <option value="未求得">未求得</option>
-                                                <option value="已求得">已求得</option>
-                                                <option value="已登記">已登記</option>
-                                            </select>
-                                        </div>
-                                        <div class="relative">
-                                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}</label>
-                                            <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" 
-                                                :disabled="form.status === '未求得'"
-                                                class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-red-500 bg-transparent py-4 outline-none transition-all disabled:text-slate-200">
-                                            <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" 
-                                                :disabled="form.status === '未求得'"
-                                                class="absolute right-0 bottom-4 text-slate-200 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- STEP 5 (Single Only): REMARKS -->
-                            <div v-else-if="currentStep === 5 && localMode.startsWith('single')" :key="5" class="space-y-6 animate-fade-in text-center w-full">
-                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">有其他<span class="text-indigo-600">補充說明</span>嗎？</h2>
-                                <p class="text-[13px] font-bold text-slate-400 mt-1">※ 若無備註可直接按下一步跳過</p>
-                                <div class="max-w-md mx-auto mt-4">
-                                    <textarea v-model="form.remarks" rows="3" placeholder="例如：法寶現存放於..." 
-                                        class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-100 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- STEP 6 (Single Only): PREVIEW & CONFIRM -->
-                            <div v-else-if="currentStep === 6 && localMode.startsWith('single')" :key="6" class="space-y-6 animate-fade-in text-center w-full">
-                                <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">預覽<span class="text-indigo-600">載錄資料</span></h2>
-                                <div class="max-w-md mx-auto border border-slate-100 rounded-3xl overflow-hidden shadow-sm bg-white text-left">
-                                    <div class="p-4 space-y-3">
-                                        <div class="flex justify-between border-b border-slate-50 pb-2">
-                                            <span class="text-[13px] font-black text-slate-400">法寶名稱</span>
-                                            <span class="text-[17px] font-black text-slate-900">{{ form.name || '-' }}</span>
-                                        </div>
-                                        <div class="flex justify-between border-b border-slate-50 pb-2">
-                                            <span class="text-[13px] font-black text-slate-400">法寶用意</span>
-                                            <span class="text-[17px] font-bold text-slate-700">{{ form.purpose || '-' }}</span>
-                                        </div>
-                                        <div class="flex justify-between border-b border-slate-50 pb-2">
-                                            <span class="text-[13px] font-black text-slate-400">狀態 / 日期</span>
-                                            <div class="text-right">
-                                                <span class="text-[17px] font-black mr-2 text-indigo-500">{{ form.status }}</span>
-                                                <span class="text-[17px] font-bold text-slate-700">{{ form.obtained_date || '-' }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-col border-b border-slate-50 pb-2">
-                                            <span class="text-[13px] font-black text-slate-400 mb-1">備註</span>
-                                            <span class="text-[17px] font-bold text-slate-700 whitespace-pre-wrap">{{ form.remarks || '-' }}</span>
-                                        </div>
-                                        <div v-if="localMode === 'single_multi' && addedPersonnel.length > 0" class="flex flex-col">
-                                            <span class="text-[13px] font-black text-slate-400 mb-2">承接法號 ({{ addedPersonnel.length }}位)</span>
-                                            <div class="space-y-2">
-                                                <div v-for="p in addedPersonnel" :key="p.name" class="flex justify-between items-center border-b border-slate-50 pb-1">
-                                                    <span class="font-black text-[15px] text-slate-700">{{ p.name }}</span>
-                                                    <div class="text-right">
-                                                        <span class="text-[12px] font-black text-indigo-500 mr-1">{{ p.status }}</span>
-                                                        <span class="text-[13px] text-slate-500">{{ p.obtained_date || '-' }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bg-indigo-50/50 p-4 rounded-[30px] max-w-sm mx-auto border border-indigo-100 mt-6">
-                                    <div class="text-[15px] font-black text-slate-900">請確認資料無誤後點擊下方按鈕</div>
-                                </div>
-                            </div>
-                        </transition>
-                    </div>
+                <div class="text-[24px] font-black text-slate-400 mt-1 leading-tight text-center">
+                    {{ localMode.startsWith('batch') ? '多筆載錄' : '逐筆載錄' }}
                 </div>
             </div>
+            <button @click="$emit('close')" class="text-slate-200 hover:text-slate-400 transition-colors py-[5px] absolute right-4 top-[27px] scale-[0.8] z-[50]">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
 
-            <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center">
+        <!-- Progress Bar -->
+        <div class="px-[15px] pt-[15px] pb-[10px] shrink-0 border-b border-slate-50">
+            <div class="flex items-center justify-between gap-1">
+                <div v-for="s in totalSteps" :key="s" 
+                        class="h-1 flex-1 rounded-full transition-all duration-500"
+                        :class="s <= currentStep ? 'bg-indigo-500' : 'bg-slate-100'">
+                </div>
+            </div>
+            <div class="flex justify-between mt-2">
+                <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">Step {{ currentStep }} of {{ totalSteps }}</span>
+                <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">{{ currentStepTitles[currentStep - 1] }}</span>
+            </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div ref="scrollContainer" class="flex-1 overflow-y-auto px-4 pt-4 pb-20 custom-scrollbar overscroll-contain bg-white">
+            <transition name="step-fade" mode="out-in">
+                <!-- STEP 1: Metadata -->
+                <div v-if="currentStep === 1" :key="1" class="flex flex-col items-center justify-start pt-[15px] space-y-8 animate-fade-in text-center">
+                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">
+                        <template v-if="localMode.startsWith('batch')">
+                            請選擇<span class="text-red-600">載錄目標仙師</span>
+                        </template>
+                        <template v-else>
+                            請輸入<span class="text-indigo-600">得知日期</span>
+                        </template>
+                    </h2>
+                    <div class="space-y-10 w-full max-w-sm mt-8">
+                        <div v-if="localMode.startsWith('single')" class="relative group">
+                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">日期</label>
+                            <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
+                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                            <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-300 hover:text-indigo-500 transition-colors">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div v-if="localMode.startsWith('batch')" class="relative group mt-12">
+                            <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">載錄目標仙師</label>
+                            <select v-model="form.master_id" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
+                                <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Content Input -->
+                <div v-else-if="currentStep === 2" :key="2" class="flex flex-col items-center justify-start pt-[15px] space-y-8 animate-fade-in text-center">
+                    <template v-if="localMode.startsWith('single')">
+                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請選擇<span class="text-red-600">載錄目標仙師</span></h2>
+                        <div class="space-y-10 w-full max-w-sm mt-12">
+                            <div class="relative group">
+                                <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">仙師名稱</label>
+                                <select v-model="form.master_id" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
+                                    <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請貼入<span class="text-indigo-600">多筆載錄內容</span></h2>
+                        <div class="w-full mx-auto mt-12 px-2">
+                            <div class="bg-slate-50/50 rounded-3xl p-4 border border-slate-100">
+                                <textarea v-model="batchInput" rows="12" placeholder="請將內容貼於此處...&#10;&#10;法寶名稱&#10;用意...&#10;備註..." 
+                                    class="w-full bg-transparent border-none focus:ring-0 outline-none text-[17px] font-black text-slate-700 custom-scrollbar leading-relaxed text-left placeholder:text-slate-200"></textarea>
+                            </div>
+                            <p class="text-[12px] font-bold text-slate-300 mt-6 leading-relaxed">※ 每筆資料間「務必」空一行 (雙換行) <br> 以免系統誤判為同一項</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- STEP 3: Preview/Detail -->
+                <div v-else-if="currentStep === 3" :key="3" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                    <template v-if="localMode.startsWith('single')">
+                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
+                        <div class="max-w-sm mx-auto mt-12">
+                            <input v-model="form.name" type="text" placeholder="" 
+                                class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                        </div>
+                    </template>
+                    <template v-else>
+                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">多筆載錄內容<span class="text-indigo-600">預覽</span></h2>
+                        <div class="max-w-xl mx-auto mt-6 bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
+                            <div class="bg-indigo-50/30 px-4 py-2 flex justify-between items-center border-b border-slate-100">
+                                <span class="text-[13px] font-black text-indigo-600">得知日期：{{ form.record_date || '-' }}</span>
+                                <span class="text-[13px] font-black text-red-600">{{ getMasterName(form.master_id) }}</span>
+                            </div>
+                            <div class="divide-y divide-slate-50">
+                                <div v-for="(row, idx) in excelRows" :key="idx" class="p-4 hover:bg-slate-50 transition-colors text-left">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="w-6 h-6 flex items-center justify-center bg-indigo-50 text-indigo-600 rounded-lg text-[12px] font-black">{{ idx + 1 }}</span>
+                                        <span class="font-black text-[18px] text-slate-900">{{ row.name }}</span>
+                                    </div>
+                                    <div v-if="row.purpose && row.purpose !== '-'" class="pl-9 text-[14px] font-bold text-slate-600 leading-relaxed mb-1">
+                                        <span class="text-indigo-400">用意：</span>{{ row.purpose }}
+                                    </div>
+                                    <div v-if="row.remarks && row.remarks.length" class="mt-1 pl-9 text-[13px] font-bold text-slate-400 leading-tight">
+                                        <span class="text-slate-300">備註：</span>{{ Array.isArray(row.remarks) ? row.remarks.join(' ') : row.remarks }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-[14px] font-black text-slate-900 mt-6 bg-indigo-50/50 p-4 rounded-3xl max-w-sm mx-auto border border-indigo-100">
+                            確認無誤後點擊「開始載錄」
+                        </div>
+                    </template>
+                </div>
+
+                <!-- STEPS 4-7: Immersive Details -->
+                <div v-else-if="currentStep === 4 && localMode.startsWith('single')" :key="4" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>為何？</h2>
+
+                    <div class="max-w-md mx-auto mt-12">
+                        <textarea v-model="form.purpose" rows="3" placeholder="請簡述用途..." 
+                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                    </div>
+                </div>
+
+                <div v-else-if="currentStep === 5 && localMode.startsWith('single')" :key="5" class="space-y-[15px] animate-fade-in w-full pt-[15px]">
+                    <div class="text-center space-y-6">
+                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">目前的<span class="text-indigo-600">狀態</span>與<span class="text-red-600">日期</span>？</h2>
+                        <div class="grid grid-cols-1 gap-12 max-w-sm mx-auto mt-12">
+                            <div class="relative">
+                                <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">狀態</label>
+                                <select v-model="form.status" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all appearance-none">
+                                    <option value="未求得">未求得</option>
+                                    <option value="已求得">已求得</option>
+                                    <option value="已登記">已登記</option>
+                                </select>
+                            </div>
+                            <div class="relative">
+                                <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}</label>
+                                <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" 
+                                    :disabled="form.status === '未求得'"
+                                    class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all disabled:text-slate-200">
+                                <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" 
+                                    :disabled="form.status === '未求得'"
+                                    class="absolute right-0 bottom-4 text-slate-300 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else-if="currentStep === 6 && localMode.startsWith('single')" :key="6" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">最後的<span class="text-indigo-600">補充說明</span></h2>
+                    <div class="max-w-md mx-auto mt-12">
+                        <textarea v-model="form.remarks" rows="6" placeholder="請輸入補充備註 (選填)..." 
+                            class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                    </div>
+                </div>
+
+                <div v-else-if="currentStep === 7 && localMode.startsWith('single')" :key="7" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">載錄內容<span class="text-indigo-600">預覽確認</span></h2>
+                    <div class="max-w-md mx-auto border border-slate-100 rounded-3xl overflow-hidden shadow-sm bg-white text-left mt-12">
+                        <div class="p-6 space-y-4">
+                            <div class="flex items-center gap-2 border-b border-slate-50 pb-2">
+                                <span v-if="form.record_date" class="text-[18px] font-black text-slate-900">{{ form.record_date }}</span>
+                                <span class="text-[18px] font-black text-slate-900">{{ getMasterName(form.master_id) }}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                <span class="text-[17px] font-black text-slate-900">{{ form.name || '-' }}</span>
+                            </div>
+                            <div v-if="form.purpose" class="pt-1 flex flex-col items-start border-b border-slate-50 pb-2">
+                                <span class="text-[13px] font-black text-slate-300 uppercase tracking-widest mb-1">用意</span>
+                                <span class="text-[17px] font-black text-slate-700 leading-relaxed text-left">{{ form.purpose }}</span>
+                            </div>
+                            <div v-if="form.remarks" class="pt-1 flex flex-col items-start pb-2">
+                                <span class="text-[13px] font-black text-slate-300 uppercase tracking-widest mb-1">備註</span>
+                                <div class="text-[15px] font-bold text-slate-400 leading-relaxed text-left">
+                                    {{ form.remarks }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50/50 p-4 rounded-[30px] max-w-sm mx-auto border border-indigo-100 mt-8">
+                        <div class="text-[14px] font-black text-slate-900">確認無誤後點擊「確認載錄」</div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+
+        <!-- Combined Footer & Navbar (Zero Gap) -->
+        <div class="mt-auto shrink-0 bg-white border-t border-slate-50">
+            <!-- Buttons -->
+            <div class="px-3 pt-4 pb-1 bg-white flex gap-2 justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.02)] relative z-[20]">
                 <button v-if="currentStep > 1" @click="handleBack"
-                    class="w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[18px] active:scale-95 transition-all">
+                    class="w-[90px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[18px] active:scale-95 transition-all">
                     上一步
                 </button>
                 <button v-if="currentStep < totalSteps" @click="handleNext"
                     class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] shadow-lg shadow-indigo-100 active:scale-95 transition-all"
                     style="color: white !important;">
-                    下一步
+                    <span class="!text-white" style="color: white !important;">下一步</span>
                 </button>
                 <button v-else @click="handleSubmit" :disabled="isSaving || (localMode === 'batch' && excelRows.length === 0)"
-                    class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] shadow-lg shadow-indigo-100 active:scale-95 transition-all disabled:bg-slate-300"
+                    class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black shadow-lg shadow-indigo-100 active:scale-95 transition-all disabled:bg-slate-300"
                     style="color: white !important;">
-                    {{ isSaving ? '處理中...' : (localMode.startsWith('single') ? '確認載錄' : `開始載錄這 ${excelRows.length} 筆資料`) }}
+                    <span :class="[localMode.startsWith('batch') ? 'text-[15px]' : 'text-[18px]']" 
+                        class="whitespace-nowrap px-1 !text-white"
+                        style="color: white !important;">
+                        {{ isSaving ? '處理中...' : (localMode.startsWith('single') ? '確認載錄' : `開始載錄這 ${excelRows.length} 筆資料`) }}
+                    </span>
                 </button>
             </div>
 
-            <mobile-navbar class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
-
-            <datalist id="dharma-names">
-                <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
-            </datalist>
+            <!-- Navbar Wrapper -->
+            <div class="relative w-full" style="height: calc(7dvh + env(safe-area-inset-bottom));">
+                <mobile-navbar is-absolute class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" />
+            </div>
         </div>
 
-        <!-- LOCAL DATE PICKER FOR THE ADD FORM -->
+        <!-- Date Picker Overlay -->
         <compact-date-picker 
             v-if="activePicker"
             v-model="activePickerValue"
             :title="activePicker.title"
             @close="activePicker = null"
         />
+
+        <datalist id="dharma-names">
+            <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
+        </datalist>
     </div>
 </template>
 
@@ -295,7 +247,6 @@ import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
-import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
     mode: String,
@@ -306,372 +257,163 @@ const props = defineProps({
 
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'close']);
 
-// --- 1. State Declarations (Refs) ---
+// --- 1. State Declarations ---
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
-const personnel = ref([]);
-const dharmaNames = ref([]);
-const isMulti = ref(true);
 const form = ref({ ...props.initialData });
-const batchType = ref('single');
 const batchInput = ref('');
 const activePicker = ref(null);
-const activeRelDropdownIdx = ref(null);
 const scrollContainer = ref(null);
 
-const tempPersonnelName = ref('');
-const addedPersonnel = ref([]);
+onMounted(() => {
+    document.body.style.overflow = 'hidden';
+});
 
-function addPersonnelName() {
-    if (tempPersonnelName.value.trim()) {
-        const name = tempPersonnelName.value.trim();
-        if (!addedPersonnel.value.find(p => p.name === name)) {
-            addedPersonnel.value.push({
-                name,
-                status: '已求得',
-                obtained_date: new Date().toISOString().split('T')[0]
-            });
-        }
-        tempPersonnelName.value = '';
-    }
-}
+onUnmounted(() => {
+    document.body.style.overflow = '';
+});
 
-function removePersonnelName(idx) {
-    addedPersonnel.value.splice(idx, 1);
-}
-const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
-
+// --- 2. Computed Properties ---
 const stepTitles = [
-    '日期與仙師',
+    '得知日期',
+    '載錄目標',
     '法寶名稱',
     '法寶用意',
     '狀態與日期',
-    '補充備註',
+    '補充說明',
     '預覽確認'
 ];
 
 const batchStepTitles = [
-    '日期與仙師',
-    '輸入內容',
+    '載錄目標',
+    '多筆載錄',
     '預覽確認'
 ];
 
 const currentStepTitles = computed(() => {
-    return localMode.value.startsWith('single') ? stepTitles : batchStepTitles;
+    return localMode.value.startsWith('batch') ? batchStepTitles : stepTitles;
 });
 
-const totalSteps = computed(() => {
-    return currentStepTitles.value.length;
+const totalSteps = computed(() => currentStepTitles.value.length);
+
+const excelRows = computed(() => {
+    if (!batchInput.value.trim()) return [];
+    
+    const rawText = batchInput.value.trim();
+    let sections = rawText.split(/\n\s*\n+/).filter(s => s.trim());
+
+    // Fallback: If only one section was found but there are multiple non-empty lines,
+    // and no explicit separators like double-newlines were useful, treat each line as a name.
+    if (sections.length === 1 && rawText.split('\n').filter(l => l.trim()).length > 1) {
+        // Only fallback if the single section doesn't seem to have structured data (labels)
+        if (!rawText.match(/(用意|備註|日期|得知日期)[:：]/)) {
+            sections = rawText.split('\n').filter(l => l.trim());
+        }
+    }
+    
+    return sections.map(section => {
+        let lines = section.split('\n').map(l => l.trim()).filter(l => l);
+        if (lines.length === 0) return null;
+        
+        // Data Cleaning: Remove common prefixes if user pasted them
+        lines = lines.map(line => {
+            return line.replace(/^(用意|備註|得知日期|日期|仙師)[:：\s]*/, '').trim();
+        });
+
+        return {
+            name: lines[0],
+            purpose: lines[1] || '-',
+            remarks: lines.slice(2).join(' '),
+            master_id: form.value.master_id
+        };
+    }).filter(row => row && row.name);
 });
 
-// --- 2. Lifecycle & Global Logic ---
-watch(() => props.mode, (newVal) => {
-    if (newVal) lockBodyScroll();
-    else unlockBodyScroll();
-}, { immediate: true });
-
-onUnmounted(() => {
-    if (props.mode) unlockBodyScroll();
-});
-
-onMounted(() => {
-    fetchDharmaNames();
-});
-
-// --- 3. Computed Properties ---
 const activePickerValue = computed({
     get: () => {
         if (!activePicker.value) return '';
-        if (activePicker.value.personIdx !== undefined) {
-            return addedPersonnel.value[activePicker.value.personIdx]?.[activePicker.value.field] ?? '';
-        }
-        if (activePicker.value.idx !== undefined) {
-            return personnel.value[activePicker.value.idx][activePicker.value.field];
-        }
-        return form.value[activePicker.value.field];
+        return form.value[activePicker.value.field] || '';
     },
     set: (val) => {
-        if (!activePicker.value) return;
-        if (activePicker.value.personIdx !== undefined) {
-            if (addedPersonnel.value[activePicker.value.personIdx]) {
-                addedPersonnel.value[activePicker.value.personIdx][activePicker.value.field] = val;
-            }
-        } else if (activePicker.value.idx !== undefined) {
-            personnel.value[activePicker.value.idx][activePicker.value.field] = val;
-        } else {
+        if (activePicker.value) {
             form.value[activePicker.value.field] = val;
         }
     }
 });
 
-const hasPersonnelPattern = computed(() => {
-    if (!batchInput.value.trim()) return false;
-    return /(已登記|已求得|未求得)/.test(batchInput.value);
-});
-
-const excelRows = computed(() => {
-    if (!batchInput.value.trim()) return [];
-
-    const lines = batchInput.value.split('\n').map(l => l.trim());
-    const records = [];
-    let currentRec = null;
-    let currentMasterId = form.value.master_id;
-    let blockDate = null;
-
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        
-        // Block separation
-        if (!line) { 
-            if (currentRec) { 
-                records.push(currentRec); 
-                currentRec = null; 
-            }
-            blockDate = null;
-            continue; 
-        }
-
-        // Master folder override: 【MasterName】
-        if (line.startsWith('【') && line.endsWith('】')) {
-            const mName = line.replace(/[【】]/g, '');
-            const found = props.masters?.find(m => m.name.includes(mName));
-            if (found) currentMasterId = found.id;
-            continue;
-        }
-
-        // Check for specific prefixes
-        const isNamePrefix = line.startsWith('法寶名稱') || line.startsWith('名稱');
-        const isPurposePrefix = line.startsWith('法寶用意') || line.startsWith('用意') || line.startsWith('用法') || line.startsWith('用途');
-        const isRemarkPrefix = line.startsWith('備註');
-        
-        // Check for standalone date/status line (Exported format Row 2)
-        const dateMatch = line.match(/\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/) || line.match(/\b\d{1,2}[\/\-]\d{1,2}\b/);
-        const statusMatch = line.match(/(已登記|已求得|未求得)/);
-
-        if (!currentRec && dateMatch && statusMatch && line.length < 30) {
-            blockDate = dateMatch[0].replace(/\//g, '-');
-            continue;
-        }
-
-        // Detect Start of New Record
-        if (isNamePrefix || (!currentRec && !isPurposePrefix && !isRemarkPrefix)) {
-            if (currentRec) records.push(currentRec);
-            
-            let name = line.replace(/^(法寶名稱|名稱)[:：]\s*/, '').trim();
-            currentRec = { 
-                name: name, 
-                purpose: '-', 
-                personnel: [], 
-                remarks: [], 
-                status: '已登記', 
-                master_id: currentMasterId, 
-                date: blockDate || new Date().toLocaleDateString('sv-SE') 
-            };
-            if (statusMatch) currentRec.status = statusMatch[0];
-            continue;
-        }
-
-        if (currentRec) {
-            if (isPurposePrefix) {
-                currentRec.purpose = line.replace(/.*用意[:：]?\s*/, '').trim() || '-';
-            } else if (isRemarkPrefix) {
-                currentRec.remarks.push(line.replace(/^備註[:：\s]*/, '').trim());
-            } else {
-                // No keywords found - this is a NEW record name
-                if (currentRec) records.push(currentRec);
-                
-                currentRec = { 
-                    name: line, 
-                    purpose: '-', 
-                    personnel: [], 
-                    remarks: [], 
-                    status: '已登記', 
-                    master_id: currentMasterId, 
-                    date: blockDate || new Date().toLocaleDateString('sv-SE') 
-                };
-            }
-        }
+// --- 3. Methods ---
+function handleNext() {
+    if (validateStep()) {
+        currentStep.value++;
+        scrollToTop();
     }
-
-    if (currentRec) records.push(currentRec);
-    return records;
-});
-
-// --- 4. Watchers ---
-watch(localMode, () => {
-    currentStep.value = 1;
-});
-
-watch(currentStep, () => {
-    if (scrollContainer.value) {
-        scrollContainer.value.scrollTop = 0;
-    }
-});
-
-watch(() => props.initialData, (newVal) => {
-    form.value = { ...newVal };
-    if (newVal.dharma_name_registries && newVal.dharma_name_registries.length > 0) {
-        form.value.owner_dharma_name = newVal.dharma_name_registries[0].dharma_name?.name || newVal.dharma_name_registries[0].custom_name || '';
-    }
-}, { immediate: true });
-
-// Combined Status & Date Logic
-watch(() => form.value.status, (newStatus) => {
-    if (newStatus === '未求得') {
-        form.value.obtained_date = '';
-    } else if ((newStatus === '已求得' || newStatus === '已登記') && !form.value.obtained_date) {
-        form.value.obtained_date = new Date().toISOString().split('T')[0];
-    }
-});
-
-watch(personnel, (newVal) => {
-    newVal.forEach(p => {
-        if (p.status === '未求得') {
-            p.obtained_date = '';
-        } else if ((p.status === '已求得' || p.status === '已登記') && !p.obtained_date) {
-            p.obtained_date = new Date().toISOString().split('T')[0];
-        }
-
-        // Relationship Rule: "Name之Relative" split
-        if (p.custom_name && p.custom_name.trim()) {
-            const relSplitMatch = p.custom_name.match(/^(.*?)([之的])(.+)$/);
-            if (relSplitMatch) {
-                const namePart = relSplitMatch[1].trim();
-                let connector = relSplitMatch[2];
-                let relPart = relSplitMatch[3].trim();
-                p.custom_name = namePart;
-                p.relationship = connector + relPart;
-            }
-        }
-    });
-}, { deep: true });
+}
 
 function handleBack() {
     if (currentStep.value > 1) {
         currentStep.value--;
+        scrollToTop();
     }
 }
 
-async function fetchDharmaNames() {
-    try {
-        const res = await axios.get('/api/dharma-names-list');
-        dharmaNames.value = res.data;
-    } catch (e) {}
-}
-
-function validateStep(step) {
+function validateStep() {
     if (localMode.value.startsWith('single')) {
-        if (step === 2 && !form.value.name?.trim()) {
-            alert('請輸入法寶名稱');
-            return false;
-        }
+        if (currentStep.value === 1) return true; // Date is optional
+        if (currentStep.value === 2 && !form.value.master_id) return false;
+        if (currentStep.value === 3 && !form.value.name) return false;
     } else {
-        if (step === 2 && !batchInput.value.trim()) {
-            alert('請貼入載錄內容');
-            return false;
-        }
-    }
-
-    if (step === 4 && localMode.value.startsWith('single')) {
-        if (form.value.status === '未求得' && form.value.obtained_date) {
-            alert('狀態為「未求得」時不可輸入日期');
-            form.value.obtained_date = '';
-            return false;
-        }
-        if ((form.value.status === '已求得' || form.value.status === '已登記') && !form.value.obtained_date) {
-            alert(`狀態為「${form.value.status}」時必須輸入日期`);
-            return false;
-        }
+        if (currentStep.value === 1 && !form.value.master_id) return false;
+        if (currentStep.value === 2 && !batchInput.value.trim()) return false;
     }
     return true;
 }
 
-function handleNext() {
-    if (validateStep(currentStep.value)) {
-        currentStep.value++;
-    }
+function scrollToTop() {
+    nextTick(() => {
+        if (scrollContainer.value) {
+            scrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
 }
-
-
 
 function handleSubmit() {
     if (localMode.value.startsWith('single')) {
-        if (!form.value.name?.trim()) { alert('請輸入法寶名稱'); return; }
-
-        let registries = [];
-        
-        const allExplicitNames = [...addedPersonnel.value];
-        if (tempPersonnelName.value?.trim() && !allExplicitNames.includes(tempPersonnelName.value.trim())) {
-            allExplicitNames.push(tempPersonnelName.value.trim());
-        }
-        
-        allExplicitNames.forEach(p => {
-            registries.push({
-                custom_name: p.name ?? p,
-                status: p.status ?? form.value.status,
-                obtained_date: p.obtained_date ?? form.value.obtained_date,
-                remarks: '',
-                related_personnel: []
-            });
-        });
-        
-        let finalRemarks = form.value.remarks?.trim() ? [form.value.remarks.trim()] : [];
-
-        
-        emit('saveSingle', { 
-            ...form.value,
-            status: form.value.status,
-            remarks: finalRemarks.join('\n'),
-            is_multi: registries.length > 1,
-            dharma_name_registries: registries
-        });
+        emit('saveSingle', { ...form.value });
     } else {
-        emit('saveBatch', { 
-            input: batchInput.value, 
-            masterId: form.value.master_id,
-            rows: excelRows.value.map(row => ({
-                name: row.name, 
-                purpose: row.purpose && row.purpose !== '-' ? row.purpose : '', 
-                master_id: row.master_id || form.value.master_id,
-                record_date: row.date || form.value.record_date || new Date().toLocaleDateString('sv-SE'), 
-                obtained_date: row.date || form.value.obtained_date || '',
-                status: row.status || form.value.status || '已登記', 
-                count: 1, 
-                remarks: row.remarks ? row.remarks.join('\n') : '',
-                is_multi: row.personnel ? row.personnel.length > 1 : false,
-                dharma_name_registries: (row.personnel || []).map(p => ({
-                    ...p,
-                    obtained_date: p.obtained_date || row.date || ''
-                }))
-            }))
-        });
+        emit('saveBatch', excelRows.value);
     }
 }
 
 function getMasterName(id) {
-    const m = props.masters?.find(m => String(m.id) === String(id));
-    return m ? (m.name === '父皇仙師' ? '父皇' : m.name) : '預設';
+    const m = props.masters.find(m => m.id === id);
+    return m ? (m.name === '父皇仙師' ? '父皇' : m.name) : '-';
 }
+
+watch(() => props.initialData, (newVal) => {
+    form.value = { ...newVal };
+}, { deep: true });
 </script>
 
 <style scoped>
-.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Step Transitions */
-.step-fade-enter-active,
-.step-fade-leave-active {
-    transition: all 0.3s ease-in-out;
+.step-fade-enter-active, .step-fade-leave-active {
+    transition: all 0.3s ease;
 }
 .step-fade-enter-from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(10px);
 }
 .step-fade-leave-to {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-10px);
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
 }
 </style>

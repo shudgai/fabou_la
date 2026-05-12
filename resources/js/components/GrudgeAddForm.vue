@@ -8,9 +8,9 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[30px] font-bold leading-none font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 30px !important;">
+                    <div class="text-[30px] font-bold leading-tight font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 30px !important;">
                         <logo-imperial-notebook :height="36" />
-                        怨靈載錄專區-逐筆載錄
+                        <span>怨靈載錄專區<br>逐筆載錄</span>
                     </div>
                 </div>
                 <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-2 top-1/2 -translate-y-1/2">
@@ -19,26 +19,40 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-4 space-y-[15px] custom-scrollbar bg-white">
-                <!-- New Organized Layout -->
-                <div class="space-y-[15px]">
-                    <!-- Row 1: 得知日期 -->
-                    <div class="space-y-0.5 mt-[-5px]">
-                        <div class="flex items-center justify-between px-1">
-                            <label class="app-title ml-1">得知日期</label>
-                            <button @click.stop="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="relative flex items-center">
-                            <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
-                                class="w-full py-[10px] rounded-lg border border-slate-400 bg-white pl-2 pr-2 focus:ring-0 outline-none shadow-sm app-body font-bold text-[15px]">
+            <div class="flex-1 overflow-y-auto px-[10px] pt-6 pb-[250px] space-y-[15px] custom-scrollbar bg-white">
+                <!-- Step Progress -->
+                <div class="px-2 pb-4 bg-white shrink-0">
+                    <div class="flex items-center gap-1.5">
+                        <div v-for="s in 6" :key="s" class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                             :class="s <= currentStep ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'bg-slate-100'"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 px-1">
+                        <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">Step {{ currentStep }} / 6</span>
+                        <span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em]">{{ stepTitles[currentStep - 1] }}</span>
+                    </div>
+                </div>
+
+                <transition name="step-fade" mode="out-in">
+                    <!-- STEP 1: 得知日期 -->
+                    <div v-if="currentStep === 1" :key="'s1'" class="space-y-[15px] animate-fade-in">
+                        <div class="space-y-0.5 mt-[-5px]">
+                            <div class="flex items-center justify-between px-1">
+                                <label class="app-title ml-1">得知日期</label>
+                                <button @click.stop="activeDate = 'know_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <div class="relative flex items-center">
+                                <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字" 
+                                    class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body font-bold text-[15px]">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: 法號 & 相關人備註 -->
-                    <div class="grid grid-cols-2 gap-[15px]">
-                        <div class="space-y-0.5">
+                    <!-- STEP 2: 法號與對象 -->
+                    <div v-else-if="currentStep === 2" :key="'s2'" class="space-y-[15px] animate-fade-in">
+                        <!-- 法號 -->
+                        <div class="space-y-0.5 mt-[-5px]">
                             <label class="app-title ml-1">法號</label>
                             <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] dharma-dropdown">
                                 <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
@@ -60,6 +74,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- 備註對象 -->
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">備註對象</label>
                             <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] remarks-dropdown">
@@ -81,15 +97,18 @@
                         </div>
                     </div>
 
-                    <!-- Row 3: 數量 -->
-                    <div class="space-y-0.5">
-                        <label class="app-title ml-1">數量</label>
-                        <input v-model="form.quantity" type="text" inputmode="numeric" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                    <!-- STEP 3: 載錄數量 -->
+                    <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-[15px] animate-fade-in">
+                        <div class="space-y-0.5 mt-[-5px]">
+                            <label class="app-title ml-1">載錄數量</label>
+                            <input v-model="form.quantity" type="text" inputmode="numeric" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                        </div>
                     </div>
 
-                    <!-- Row 4: 處理日期 & 處理結果 (Conditional Grid) -->
-                    <div :class="form.destination === '未處理' ? 'space-y-0.5' : 'grid grid-cols-2 gap-[15px]'">
-                        <div v-if="form.destination !== '未處理'" class="space-y-0.5">
+                    <!-- STEP 4: 處理結果 -->
+                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-[15px] animate-fade-in">
+                        <!-- 處理日期 -->
+                        <div class="space-y-0.5 mt-[-5px]">
                             <div class="flex items-center justify-between px-1">
                                 <label class="app-title ml-1">處理日期</label>
                                 <button @click.stop="activeDate = 'process_date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
@@ -101,10 +120,10 @@
                                     class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] pl-2 pr-2 focus:ring-0 outline-none app-body text-[15px]">
                             </div>
                         </div>
+
+                        <!-- 處理結果 -->
                         <div class="space-y-0.5 relative">
                             <label class="app-title ml-1">處理結果</label>
-
-                            <!-- Input with Picker Trigger -->
                             <div class="relative">
                                 <input v-model="form.destination" 
                                     type="text" 
@@ -121,48 +140,87 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Sub-options for 黑曜軍 -->
+                        <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
+                            <div class="space-y-0.5">
+                                <label class="app-title ml-1">閻尊</label>
+                                <input v-model="form.remarks.yan_zun" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                            </div>
+                            <div class="space-y-0.5">
+                                <label class="app-title ml-1">閻闇</label>
+                                <input v-model="form.remarks.yan_an" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                            </div>
+                        </div>
+
+                        <!-- Sub-options for 耀紫軍 -->
+                        <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
+                            <div class="space-y-0.5">
+                                <label class="app-title ml-1">龍勝</label>
+                                <input v-model="form.remarks.long_sheng" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                            </div>
+                            <div class="space-y-0.5">
+                                <label class="app-title ml-1">龍戰</label>
+                                <input v-model="form.remarks.long_zhan" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Row 4.1: Sub-options for 黑曜軍 -->
-                    <div v-if="form.destination === '黑曜軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
-                        <div class="space-y-0.5">
-                            <label class="app-title ml-1">閻尊</label>
-                            <input v-model="form.remarks.yan_zun" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
-                        </div>
-                        <div class="space-y-0.5">
-                            <label class="app-title ml-1">閻闇</label>
-                            <input v-model="form.remarks.yan_an" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                    <!-- STEP 5: 備註文字 -->
+                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-[15px] animate-fade-in">
+                        <div class="space-y-1 mt-[-5px]">
+                            <label class="app-title ml-1">備註文字</label>
+                            <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-[17px] font-bold">
                         </div>
                     </div>
 
-                    <!-- Row 4.2: Sub-options for 耀紫軍 -->
-                    <div v-if="form.destination === '耀紫軍'" class="grid grid-cols-2 gap-[5px] animate-fade-in">
-                        <div class="space-y-0.5">
-                            <label class="app-title ml-1">龍勝</label>
-                            <input v-model="form.remarks.long_sheng" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
-                        </div>
-                        <div class="space-y-0.5">
-                            <label class="app-title ml-1">龍戰</label>
-                            <input v-model="form.remarks.long_zhan" type="text" inputmode="numeric" placeholder="0" @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none app-body text-[15px]">
+                    <!-- STEP 6: 預覽與確認 -->
+                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-[15px] animate-fade-in">
+                        <div class="bg-white p-5 rounded-[32px] border border-slate-100 shadow-xl space-y-3">
+                            <div class="text-[13px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-50 pb-1.5">最終載錄預覽</div>
+                            
+                            <div class="space-y-1.5">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">得知日期</span>
+                                    <span class="text-[17px] font-black text-slate-900 leading-none">{{ form.know_date }}</span>
+                                </div>
+
+                                <div class="flex flex-col border-t border-slate-50 pt-1">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">載錄對象</span>
+                                    <div class="flex items-baseline gap-1.5 leading-none">
+                                        <span class="text-[17px] font-black text-indigo-600">{{ form.user_name }}</span>
+                                        <span v-if="form.user_remarks" class="text-[17px] font-black text-slate-400">({{ form.user_remarks }})</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col border-t border-slate-50 pt-1">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">載錄數量</span>
+                                    <span class="text-[17px] font-black text-slate-900 leading-none">{{ form.quantity }}</span>
+                                </div>
+
+                                <div class="flex flex-col border-t border-slate-50 pt-1">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">處理結果</span>
+                                    <div class="flex items-center gap-2 leading-none">
+                                        <span class="text-[17px] font-black" :class="form.destination === '九天' ? 'text-red-600' : 'text-slate-900'">{{ form.destination }}</span>
+                                        <span v-if="form.process_date" class="text-slate-400 text-[17px] font-black">({{ form.process_date }})</span>
+                                    </div>
+                                </div>
+
+                                <div v-if="form.remarks_text" class="flex flex-col border-t border-slate-50 pt-1">
+                                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">備註內容</span>
+                                    <span class="text-[17px] font-black text-slate-600 leading-tight">{{ form.remarks_text }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Row 5: 備註文字 -->
-                    <div class="space-y-1">
-                        <label class="app-title ml-1">備註文字</label>
-                        <input v-model="form.remarks_text" type="text" placeholder="輸入相關備註..." @click.stop class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-3 focus:ring-0 outline-none app-body text-[15px]">
-                    </div>
-
-                </div>
+                </transition>
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[10]">
-                <button 
-                    @click="handleSave" 
-                    class="w-full bg-indigo-600 !text-white font-black py-[12px] text-[20px] rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.98] transition-all flex items-center justify-center tracking-widest"
-                    style="color: white !important;"
-                >
+            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center shrink-0">
+                <button v-if="currentStep > 1" @click="currentStep--" class="w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
+                <button v-if="currentStep < 6" @click="handleNext" class="flex-1 py-[12px] bg-indigo-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-indigo-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
+                <button v-else @click="handleSave" class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all" style="color: white !important;">
                     {{ editingId ? '確認修改' : '確認載錄' }}
                 </button>
             </div>
@@ -269,7 +327,41 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['save', 'cancel']);
+const currentStep = ref(1);
+const stepTitles = ['得知日期', '法號與對象', '載錄數量', '處理結果', '備註文字', '預覽確認'];
 const activeDate = ref(null);
+
+const handleNext = () => {
+    if (currentStep.value === 1) {
+        if (!form.value.know_date) {
+            persistentToast.value = { msg: '請輸入得知日期', type: 'error' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+            return;
+        }
+    }
+    if (currentStep.value === 2) {
+        if (!form.value.user_name) {
+            persistentToast.value = { msg: '請選擇或輸入法號', type: 'error' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+            return;
+        }
+    }
+    if (currentStep.value === 3) {
+        if (!form.value.quantity && form.value.destination !== '黑曜軍' && form.value.destination !== '耀紫軍') {
+            persistentToast.value = { msg: '請輸入數量', type: 'error' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+            return;
+        }
+    }
+    if (currentStep.value === 4) {
+        if (!form.value.destination) {
+            persistentToast.value = { msg: '請選擇處理結果', type: 'error' };
+            setTimeout(() => { persistentToast.value = null; }, 2000);
+            return;
+        }
+    }
+    if (currentStep.value < 6) currentStep.value++;
+};
 const showResultPicker = ref(false);
 const activeRemarksDropdown = ref(false);
 const activeDharmaDropdown = ref(false);
@@ -422,5 +514,12 @@ const handleSave = () => {
 @keyframes slideUp {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
+}
+.step-fade-enter-active, .step-fade-leave-active {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.step-fade-enter-from, .step-fade-leave-to {
+    opacity: 0;
+    transform: translateX(10px);
 }
 </style>

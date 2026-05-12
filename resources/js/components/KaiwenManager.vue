@@ -24,7 +24,7 @@
                     </div>
             </div>
 
-            <div class="flex flex-row items-center ml-5 mt-[3px] animate-fade-in gap-5">
+            <div class="flex flex-col items-start ml-4 mt-[2px] animate-fade-in gap-1.5">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
                     class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
@@ -617,6 +617,18 @@ watch(() => form.value.original_content, (newVal) => {
     }
 });
 
+// Draft auto-save
+watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), (newVal) => {
+    if (addMode.value && !form.value.id && !isSaving.value) {
+        localStorage.setItem('kaiwen_draft', JSON.stringify({
+            type: addMode.value,
+            form: form.value,
+            weeklyLines: weeklyLines.value,
+            isManualWeekly: isManualWeekly.value
+        }));
+    }
+}, { deep: true });
+
 const currentFontSize = ref((function() { try { return localStorage.getItem('fabou_font_size') || 'font-medium'; } catch(e) { return 'font-medium'; } })());
 
 const fontSizeValue = computed(() => {
@@ -834,6 +846,20 @@ const getMasterName = (id) => {
 const openAddMode = (type) => {
     addMode.value = type;
     formTab.value = 'original';
+    
+    const draftStr = localStorage.getItem('kaiwen_draft');
+    if (draftStr) {
+        try {
+            const draft = JSON.parse(draftStr);
+            if (draft.type === type && window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                form.value = draft.form;
+                weeklyLines.value = draft.weeklyLines || Array(14).fill(null).map(() => Array(6).fill(''));
+                isManualWeekly.value = draft.isManualWeekly || false;
+                return;
+            }
+        } catch (e) {}
+    }
+
     weeklyLines.value = Array(14).fill(null).map(() => Array(6).fill(''));
     form.value = {
         date: getTodayStr(),
@@ -1200,6 +1226,9 @@ const saveForm = async () => {
             : (form.value.id ? `/kaiwen/self/${form.value.id}` : `/kaiwen/self`);
         const method = form.value.id ? 'PUT' : 'POST';
         await axios({ method, url, data: form.value });
+        
+        if (!form.value.id) localStorage.removeItem('kaiwen_draft');
+        
         persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
         addMode.value = null;

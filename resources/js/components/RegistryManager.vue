@@ -84,6 +84,7 @@
 
                         <div class="relative w-[177px] h-[177px]">
                             <img src="/image/registry_book_yellow_v2.png" 
+                                 loading="lazy"
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
                                  alt="Book Icon">
 
