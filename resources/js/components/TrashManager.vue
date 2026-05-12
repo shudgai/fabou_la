@@ -5,7 +5,7 @@
             <div>
                 <div class="flex items-center space-x-2">
                     <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="font-black text-slate-900 tracking-tight" style="font-size: 26px !important;">回收站專區</h1>
                     </div>
                     <div v-if="items.length > 0" class="px-2 py-0.5 bg-slate-900 text-white rounded-lg text-[14px] font-normal animate-fade-in shadow-sm">

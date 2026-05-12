@@ -8,7 +8,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                     <!-- Consolidated Title Row -->
                     <div class="flex items-center flex-1 min-w-0 cursor-pointer" @click="resetToRoot">
 <div class="flex items-center gap-1">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                                  抽籤專區
                               </h1>

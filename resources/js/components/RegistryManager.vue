@@ -6,7 +6,7 @@
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 15px; min-height: 52px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <logo-imperial-notebook :height="36" />
+                <logo-imperial-notebook :height="36" class="md:hidden" />
                 <div class="app-title !text-[30px] leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                     法寶登記專區
                 </div>
@@ -19,7 +19,7 @@
             <!-- Row 1: Global Title (Now visible on mobile to replace redundant Header 1) -->
             <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white">
                 <div class="flex items-center gap-2 cursor-pointer" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap" 
                         style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                         法寶登記專區
@@ -64,6 +64,8 @@
 
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-[300px] h-[320px]">
                             <img src="/image/registry_book_yellow_v2.png" 
+                                 fetchpriority="high"
+                                 loading="eager"
                                  class="w-[300px] h-[300px] object-contain transition-transform group-hover:scale-105" 
                                  alt="Book Icon">
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-16 pb-2 px-2">
@@ -84,7 +86,8 @@
 
                         <div class="relative w-[177px] h-[177px]">
                             <img src="/image/registry_book_yellow_v2.png" 
-                                 loading="lazy"
+                                 fetchpriority="high"
+                                 loading="eager"
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
                                  alt="Book Icon">
 
@@ -124,7 +127,7 @@
                     <!-- Top Row: Main Title + All Action Buttons -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
                         <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">法寶登記專區</h1>
                     </div>
                         <div class="flex items-center space-x-3">

@@ -8,7 +8,7 @@
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 relative">
                 <div class="flex items-center gap-2">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <h5 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
                         怨靈載錄專區<br>多筆載錄
                     </h5>

@@ -6,7 +6,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="font-black tracking-widest font-outfit !font-black" style="font-size: 30px !important; color: #0f172a !important; font-weight: 900 !important;">其他記錄專區</h1>
                     </div>
         </div>
@@ -86,7 +86,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 style="font-size: 30px !important; font-weight: 900; color: #0f172a !important;">{{ editingRecordId ? '修改文件記錄' : '新增文件記錄' }}</h1>
                     </div>
             </div>

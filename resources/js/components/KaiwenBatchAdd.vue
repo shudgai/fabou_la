@@ -1,5 +1,10 @@
 <template>
-    <div class="fixed inset-0 z-[5000] flex flex-col bg-white animate-slide-up">
+    <div class="fixed inset-0 z-[5000] flex items-end md:items-center justify-center">
+        <!-- Backdrop -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
+        
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
         <!-- Header -->
         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-20">
             <div class="flex items-center">
@@ -7,7 +12,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex items-center gap-2 ml-2">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <h2 class="text-[24px] font-black text-slate-900 tracking-tight">多筆匯入開文</h2>
                 </div>
             </div>
@@ -68,6 +73,7 @@
             @back="$emit('cancel')"
         />
     </div>
+    </div>
 </template>
 <script setup>
 import { ref, computed, watch } from 'vue';
@@ -122,7 +128,7 @@ const handleSave = () => {
 };
 </script>
 <style scoped>
-.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

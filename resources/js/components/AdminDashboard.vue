@@ -5,7 +5,7 @@
             <!-- Logo area -->
             <div class="p-4 md:p-6 border-b border-white flex items-center justify-between bg-white">
                 <div class="flex items-center gap-3">
-                    <logo-imperial-notebook :height="44" />
+                    <logo-imperial-notebook :height="44" class="md:hidden" />
                     <h1 v-if="!isNotebookView" class="text-xl md:text-[24px] font-black text-slate-900 tracking-tight">{{ dashboardTitle }}</h1>
                 </div>
                 <div class="flex items-center gap-2">

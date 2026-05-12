@@ -189,3 +189,14 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Group Size configuration located at the bottom of Step 4 for better ergonomic flow
 - Distribute logic uses safe size parameter (`Math.max(1, parseInt(size) || 1)`) to prevent infinite `while` loop freeze if the size input is manually cleared.
 - Results view (Step 5) utilizes standard administrative layout and dynamically fills container height correctly utilizing flex.
+
+## Performance & Optimization
+
+| Technique | Implementation |
+|---|---|
+| Image Priority | `fetchpriority="high"`, `loading="eager"` on critical module icons |
+| Preloading | Critical assets (`imperial_grace_book_v5.png`, etc.) preloaded in `app.blade.php` |
+| Animation Speed | Snappy 0.25s transitions (`animate-slide-up`, `animate-fade-in`) |
+| Modal Standard | `fixed inset-0` centered desktop modals with `backdrop-blur-sm` |
+| Z-Index | Standardized levels: Modals (`z-[2000]`), Toasts (`z-[6000]`), Nav (`z-[100]`) |
+

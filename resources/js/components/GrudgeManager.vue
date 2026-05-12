@@ -25,7 +25,7 @@
         <div class="border-b border-gray-100 flex items-center bg-white sticky top-0 z-30 px-[15px] w-full pb-2">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="leading-tight font-outfit tracking-widest whitespace-nowrap !font-black !text-[#0f172a] pt-[5px]" style="color: #0f172a !important; font-size: 26px !important; font-weight: 900 !important;">{{ displayTitle }}</h1>
                     </div>
             </div>

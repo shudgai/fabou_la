@@ -6,7 +6,7 @@
             class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300 min-h-[40px] md:min-h-0"
             style="padding: 4px 15px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
@@ -23,7 +23,7 @@
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
                     <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         {{ form.id ? '修改重大皇恩' : '重大皇恩專區' }}
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                 @click="currentCategory = 'masters'"
                 class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
                 <div class="relative w-[310px] h-[310px]">
-                    <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
                         <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 38px !important; font-weight: 900 !important;">重大皇恩專區</div>
                         <div class="mt-6 flex items-center">
@@ -100,7 +100,7 @@
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
                     class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
                     <div class="relative w-[310px] h-[310px]">
-                        <img src="/image/imperial_grace_book_v5.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
                             <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 30px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
                             <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
@@ -120,7 +120,7 @@
                     @click="currentFolder = folder"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[260px] h-[173px] relative group rounded-none bg-transparent">
                     <div class="relative w-[245px] h-[158px]">
-                        <img src="/image/imperial_grace_book_v5.png" loading="lazy" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 text-[#fbbf24]">
                              <div class="text-[14px] opacity-80 mb-0.5 tracking-widest font-bold">重大皇恩專區</div>
                              <div class="text-[22px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
@@ -147,7 +147,7 @@
             <div class="flex flex-col border-b border-slate-100 bg-white sticky top-0 z-[110]">
                 <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
                 <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
@@ -255,7 +255,7 @@
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
                                     <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
                                         <div class="flex items-center gap-2">
-                                            <logo-imperial-notebook :height="36" />
+                                            <logo-imperial-notebook :height="36" class="md:hidden" />
                                             <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important;">重大皇恩登記簿</h1>
                                         </div>
                                         <div class="mt-1">

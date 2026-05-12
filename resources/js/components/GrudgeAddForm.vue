@@ -9,7 +9,7 @@
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
                     <div class="text-[30px] font-bold leading-tight font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 30px !important;">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <span>怨靈載錄專區<br>逐筆載錄</span>
                     </div>
                 </div>
@@ -509,7 +509,7 @@ const handleSave = () => {
 
 <style scoped>
 .animate-slide-up {
-    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes slideUp {
     from { transform: translateY(100%); }

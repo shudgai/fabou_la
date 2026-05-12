@@ -4,14 +4,14 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-[100dvh] md:h-full bg-white md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
             
             <!-- Unified Header System (Immersive Wizard Style) -->
             <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative pt-2">
                 <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
                     <!-- Title Row -->
                     <div class="flex items-center justify-center gap-3 w-full mb-1">
-                        <logo-imperial-notebook :height="38" />
+                        <logo-imperial-notebook :height="38" class="md:hidden" />
                         <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
                             父皇仙師每日開示
                         </h1>
@@ -673,7 +673,7 @@ onUnmounted(() => unlockBodyScroll());
 </script>
 
 <style scoped>
-.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }

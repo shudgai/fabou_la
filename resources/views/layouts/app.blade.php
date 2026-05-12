@@ -35,6 +35,11 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Preload critical images -->
+    <link rel="preload" href="/image/imperial_grace_book_v5.png" as="image">
+    <link rel="preload" href="/image/registry_book_yellow_v2.png" as="image">
+    <link rel="preload" href="/image/registry_book_yellow_v6.png" as="image">
+
     <style>
         body {
             font-family: 'Outfit', 'Noto Sans TC', sans-serif;

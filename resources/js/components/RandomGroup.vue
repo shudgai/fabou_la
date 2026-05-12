@@ -1,5 +1,11 @@
 <template>
-    <div class="flex h-full bg-white overflow-hidden font-sans relative">
+    <div class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+        <!-- Backdrop -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
+
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <div class="flex h-full bg-white overflow-hidden font-sans relative">
 
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
@@ -480,6 +486,8 @@
                 </div>
             </div>
         </div>
+        </div>
+    </div>
     </div>
 </template>
 
@@ -1164,4 +1172,6 @@ defineExpose({
     }
 }
 * { -webkit-tap-highlight-color: transparent; }
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 </style>

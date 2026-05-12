@@ -2,7 +2,7 @@
     <div class="h-[100dvh] bg-white flex flex-col overflow-hidden">
         <!-- 標題區域 -->
         <div style="padding: 8px 20px 4px 20px;" class="flex items-center justify-between bg-white border-b border-slate-50 min-h-[50px] shrink-0">
-            <logo-imperial-notebook :height="40" />
+            <logo-imperial-notebook :height="40" class="md:hidden" />
 
             <div class="flex items-center">
                 <button @click="handleLogout" class="p-2 text-red-500 active:scale-90 transition-transform">

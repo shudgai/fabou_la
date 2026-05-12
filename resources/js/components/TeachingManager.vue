@@ -63,7 +63,7 @@
             <div v-if="!currentFolder && !addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                     <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                 <!-- Header Row -->
                 <div class="flex items-center justify-between px-3 py-2">
                     <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h2 class="text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                             父皇仙師開示專區
                         </h2>
@@ -114,7 +114,7 @@
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px] mb-1">
                         <div class="relative w-[310px] h-[310px]">
-                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
@@ -132,7 +132,7 @@
                         @click="currentCategory = 'masters'"
                         class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px]">
                         <div class="relative w-[310px] h-[310px]">
-                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
@@ -163,7 +163,7 @@
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[260px] h-[173px] p-2 bg-transparent">
                         <div class="relative w-[245px] h-[158px]">
-                            <img src="/image/registry_book_yellow_v6.png" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
                              <div class="absolute inset-0 flex flex-col items-center justify-start pt-12 px-2 pointer-events-none overflow-visible">
                                 <div class="font-black tracking-tighter leading-none text-center" 
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'"
@@ -550,7 +550,7 @@
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
                             <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="text-[26px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">降寶詳情</h1>
                     </div>
                         </div>
@@ -1598,7 +1598,7 @@
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 30px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
                     </div>
                                                 </div>
@@ -1804,7 +1804,7 @@
                         <div class="flex items-center space-x-3">
                         <div class="flex flex-col">
                             <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
                     </div>
                             <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">請核對以下內容是否正確</span>

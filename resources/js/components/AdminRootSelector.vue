@@ -82,9 +82,9 @@
         <div class="hidden md:flex flex-row h-full w-full overflow-hidden">
             <!-- Sidebar -->
             <div class="w-[285px] h-full bg-white border-r border-slate-100 flex flex-col px-[10px] overflow-y-auto custom-scrollbar shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]"
-    style="padding-top: calc(67px + env(safe-area-inset-top, 0px)); padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));">
+    style="padding-top: 15px; padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));">
                 <!-- Sidebar Logo Area -->
-                <div class="mb-10 px-2">
+                <div class="mb-10 px-2 md:hidden">
                     <logo-imperial-notebook :height="52" />
                 </div>
 

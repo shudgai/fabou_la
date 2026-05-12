@@ -42,25 +42,24 @@
                     </button>
                 </div>
 
-                <!-- Import Button -->
-                <button @click="$refs.fileInput.click()" class="bg-emerald-600 text-white px-4 h-[52px] rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-md" style="color: white !important;">
-                    <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    <span class="text-[11px] font-black" style="color: white !important;">匯入他檔</span>
-                </button>
-                <input type="file" ref="fileInput" @change="handleFileImport" accept=".xlsx, .xls" class="hidden">
-
             </div>
         </div>
 
         <!-- Input Area -->
         <div class="flex-1 flex flex-col p-4 relative min-h-0">
-            <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-white bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all">
+            <div class="absolute left-8 top-8 z-10 pointer-events-none flex items-center">
+                <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest flex items-center bg-white/80 backdrop-blur-sm px-3 py-1 rounded-xl shadow-sm border border-indigo-50">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    輸入模式
+                </span>
+            </div>
+            <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-white bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all shadow-sm">
                 清空全部
             </button>
             <textarea 
                 v-model="batchText" 
                 :placeholder="placeholderText"
-                class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner min-h-[500px]"
+                class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 pt-16 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner min-h-[500px]"
             ></textarea>
 
             <!-- Preview Section (Enhanced Table Style) -->

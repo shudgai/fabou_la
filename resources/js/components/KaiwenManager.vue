@@ -17,7 +17,7 @@
         <div class="flex items-start bg-white sticky top-0 z-[200] w-full" style="padding: 6px 10px;">
             <div class="cursor-pointer shrink-0 pt-[2px]" @click="resetToRoot">
                 <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
                     開文專區
                 </h1>

@@ -1,10 +1,15 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[2000] bg-white flex flex-col overflow-hidden">
+    <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+        <!-- Backdrop -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
+
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
         <!-- Header -->
         <div class="px-4 py-3 flex items-center bg-white border-b border-slate-50 shrink-0 relative">
             <div class="flex-1 flex flex-col items-center justify-center min-w-0">
                 <div class="leading-tight font-outfit tracking-widest break-words flex items-center justify-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     重大皇恩專區
                 </div>
                 <div class="text-[24px] font-black text-slate-400 mt-1 leading-tight text-center">
@@ -223,7 +228,7 @@
             </div>
 
             <!-- Navbar Wrapper -->
-            <div class="relative w-full" style="height: calc(7dvh + env(safe-area-inset-bottom));">
+            <div class="relative w-full md:hidden" style="height: calc(7dvh + env(safe-area-inset-bottom));">
                 <mobile-navbar is-absolute class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" />
             </div>
         </div>
@@ -239,6 +244,7 @@
         <datalist id="dharma-names">
             <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
         </datalist>
+    </div>
     </div>
 </template>
 

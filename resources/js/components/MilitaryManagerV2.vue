@@ -26,7 +26,7 @@
         <div v-if="!currentFolder" class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full" style="padding: 4px 10px; min-height: 32px;">
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                     軍隊記錄專區
                 </h1>
@@ -44,7 +44,7 @@
             <!-- Row 1: Logo + Module Title -->
             <div class="flex items-center justify-between px-3 py-1 bg-white border-b border-white" @click="resetToRoot">
                 <div class="flex items-center gap-2">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <h1 class="leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                         軍隊記錄專區
                     </h1>

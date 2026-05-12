@@ -1,5 +1,11 @@
 <template>
-    <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
+    <div class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+        <!-- Backdrop -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="selectionFiltered = false; $emit('close')"></div>
+
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
 
         <!-- Step 1: Selection Page -->
         <div v-if="step === 1" class="flex flex-col h-full overflow-hidden relative">
@@ -182,6 +188,8 @@
                     </div>
                 </div>
             </div>
+    </div>
+    </div>
     </div>
 </template>
 
@@ -405,6 +413,9 @@ onMounted(loadUsers);
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.3s, transform 0.3s;

@@ -1,8 +1,13 @@
 <template>
-    <div v-if="show" class="fixed inset-0 h-[100dvh] md:relative md:h-full md:w-full z-[500] md:z-auto bg-white overflow-hidden animate-fade-in font-sans">
+    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+        <!-- Backdrop -->
+        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
+
+        <!-- Form Container -->
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
 
         <!-- STEP 1 & 2: PERSONNEL SELECTION -->
-        <div v-if="currentStep === 1 || currentStep === 2" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <div v-if="currentStep === 1 || currentStep === 2" class="absolute inset-0 flex flex-col bg-white overflow-hidden z-[150]">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <!-- Header bar -->
                 <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
@@ -294,6 +299,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -648,6 +654,8 @@ onMounted(loadUsers);
     60%  { transform: translateY(-60vh) translateX(var(--drift)) rotate(var(--rotate)) scale(1); opacity: 1; }
     100% { transform: translateY(-90vh) translateX(var(--drift)) rotate(var(--rotate)) scale(0.9); opacity: 0; }
 }
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .stick-body {
     width: 24px;
     height: 110px;

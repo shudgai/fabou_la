@@ -11,7 +11,7 @@
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
                 <div class="flex-1 flex flex-col justify-center min-w-0">
                     <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-red-600 flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" />
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
                         {{ localMode === 'batch' ? '多筆載錄' : '逐筆載錄' }}
                     </div>
                 </div>
@@ -888,7 +888,7 @@ defineExpose({ updatePersonnelRemarks });
 .save-button { background-color: #2563eb; color: white; height: 52px; font-size: 18px; }
 .add-personnel-button { background-color: #4f46e5; color: white; font-size: 18px; }
 .btn { font-size: 18px; }
-.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 .animate-pop-in { animation: popIn 0.25s cubic-bezier(0.2, 1, 0.3, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }

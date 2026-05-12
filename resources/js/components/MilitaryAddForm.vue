@@ -6,7 +6,7 @@
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
                 <div class="flex-1 flex items-center gap-2 min-w-0">
-                    <logo-imperial-notebook :height="36" />
+                    <logo-imperial-notebook :height="36" class="md:hidden" />
                     <div class="flex flex-col justify-center min-w-0">
                         <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">
                             軍隊載錄專區
@@ -354,6 +354,6 @@ const handleCancel = () => {
 </script>
 
 <style scoped>
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
