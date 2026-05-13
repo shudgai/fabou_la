@@ -1,10 +1,15 @@
 <template>
-    <div class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+    <teleport to="body">
+    <div class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <!-- Global Close Button -->
+            <button @click="$emit('close')" class="absolute right-4 top-4 z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-sm md:shadow-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
             <div class="flex h-full bg-white overflow-hidden font-sans relative">
 
         <!-- STEP 1: PERSONNEL SELECTION -->
@@ -66,7 +71,7 @@
             </div>
 
 <!-- Confirm button — FIXED above mobile nav -->
-             <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+             <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full md:left-1/2 md:-translate-x-1/2 md:max-w-xl bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                  <button
                      @click="confirmSelection"
                      :disabled="pendingNames.length === 0"
@@ -170,7 +175,7 @@
                     </div>
                 </div>
 
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full md:left-1/2 md:-translate-x-1/2 md:max-w-xl bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="w-full">
                         <button
                             @click="currentStep = 3"
@@ -230,7 +235,7 @@
                     </div>
                 </div>
 
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full md:left-1/2 md:-translate-x-1/2 md:max-w-xl bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="w-full">
                         <button
                             @click="currentStep = 4"
@@ -329,7 +334,7 @@
                     </div>
                 </div>
 
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[200] w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:max-w-xl" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full md:left-1/2 md:-translate-x-1/2 md:max-w-xl bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="w-full">
                         <button
                             @click="doGrouping"
@@ -489,6 +494,7 @@
         </div>
     </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>

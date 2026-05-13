@@ -1,5 +1,6 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0">
+    <teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
 
@@ -13,7 +14,7 @@
                         <span>怨靈載錄專區<br>逐筆載錄</span>
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-2 top-1/2 -translate-y-1/2">
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -225,15 +226,8 @@
                 </button>
             </div>
 
-            <!-- Global Mobile Navbar -->
-            <mobile-navbar 
-                class="md:hidden"
-                :can-back="false"
-                @home="$emit('cancel')"
-                :show-action="false"
-                :can-search="false"
-                is-absolute
-            />
+            <!-- Navbar Wrapper Removed for Modal UX -->
+            <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
 
             <!-- Custom Modal Picker -->
             <div v-if="showResultPicker" class="fixed inset-0 z-[110] flex items-center justify-center px-4">
@@ -312,6 +306,7 @@
             </div>
         </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>

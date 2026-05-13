@@ -1,5 +1,6 @@
 <template>
-    <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+    <teleport to="body">
+    <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
@@ -16,7 +17,7 @@
                     {{ localMode.startsWith('batch') ? '多筆載錄' : '逐筆載錄' }}
                 </div>
             </div>
-            <button @click="$emit('close')" class="text-slate-200 hover:text-slate-400 transition-colors py-[5px] absolute right-4 top-[27px] scale-[0.8] z-[50]">
+            <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
         </div>
@@ -227,10 +228,8 @@
                 </button>
             </div>
 
-            <!-- Navbar Wrapper -->
-            <div class="relative w-full md:hidden" style="height: calc(7dvh + env(safe-area-inset-bottom));">
-                <mobile-navbar is-absolute class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" />
-            </div>
+            <!-- Navbar Wrapper Removed for Modal UX -->
+            <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
         </div>
 
         <!-- Date Picker Overlay -->
@@ -246,18 +245,19 @@
         </datalist>
     </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
-import MobileNavbar from './MobileNavbar.vue';
 
 const props = defineProps({
     mode: String,
     initialData: Object,
     masters: Array,
+    dharmaNames: { type: Array, default: () => [] },
     isSaving: Boolean
 });
 

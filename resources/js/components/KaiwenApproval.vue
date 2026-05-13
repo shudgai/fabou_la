@@ -1,10 +1,15 @@
 <template>
-    <div class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+    <teleport to="body">
+    <div class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="selectionFiltered = false; $emit('close')"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <!-- Global Close Button -->
+            <button @click="$emit('close')" class="absolute right-4 top-4 z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-sm md:shadow-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
             <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
 
         <!-- Step 1: Selection Page -->
@@ -55,7 +60,7 @@
             </div>
 
             <!-- Confirm Action -->
-            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+            <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                 <button @click="!selectionFiltered ? toggleSelectionFilter() : goToStep2()" 
                     :disabled="selectionList.length === 0" 
                     class="w-full font-black py-[10px] rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center shadow-lg" 
@@ -144,8 +149,8 @@
                 </div>
             </div>
 
-<!-- Bottom Action Button aligned with desktop container -->
-            <div class="fixed left-0 right-0 px-4 py-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+            <!-- Bottom Action Button aligned with desktop container -->
+            <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                 <button @click="copyToLine" class="w-full bg-emerald-600 py-[10px] rounded-2xl font-black transition-all active:scale-[0.98] tracking-widest flex items-center justify-center space-x-2 shadow-lg" style="box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2); font-size: 16px !important;">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: white !important;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     <span style="color: #ffffff !important;">複製給 LINE</span>
@@ -191,6 +196,7 @@
     </div>
     </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>

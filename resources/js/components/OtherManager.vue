@@ -143,7 +143,7 @@
 
             <div v-if="activeFolder || showLuckyDraw" class="h-full">
                 <!-- Special View: 抽籤工具 (LuckyDraw) -->
-                <lucky-draw v-if="showLuckyDraw" ref="luckyDrawRef" 
+                <lucky-draw
                     :show="showLuckyDraw" 
                     :initial-mode="luckyDrawInitialMode" 
                     :folder-id="lotteryFolderId"
@@ -151,9 +151,9 @@
                     @saved="loadData(); showLuckyDraw = false" />
 
                 <!-- Special View: 開文核定表 -->
-                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" class="mt-5" />
+                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" class="mt-5" @close="activeFolderId = null" />
                 <!-- Special View: 隨機分組 -->
-                <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" />
+                <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" @close="activeFolderId = null" />
 
                 <!-- Default View: Standard Records -->
                 <div v-else-if="activeFolder" class="max-w-4xl mx-auto w-full px-[10px] pt-6 pb-32">
@@ -200,39 +200,44 @@
         </div>
 
         <!-- Add Folder Modal -->
-        <div v-if="showAddFolder" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-[40px] p-8 w-full max-w-md shadow-2xl">
-                <h3 class="text-xl font-bold mb-6">新增資料夾</h3>
-                <input v-model="newFolderName" @keyup.enter="saveFolder" placeholder="輸入名稱..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
-                <div class="flex items-center space-x-3 mb-8">
-                    <span class="text-sm font-bold text-slate-400">主題色：</span>
-                    <button v-for="c in ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#64748b']" :key="c" 
-                        @click="newFolderColor = c"
-                        :class="['w-8 h-8 rounded-full border-4', newFolderColor === c ? 'border-indigo-100' : 'border-transparent']"
-                        :style="{ backgroundColor: c }"></button>
-                </div>
-                <div class="flex space-x-3 mt-4">
-                    <button @click="showAddFolder = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
-                    <button @click="saveFolder" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">建立資料夾</button>
+        <teleport to="body">
+            <div v-if="showAddFolder" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[4000] flex items-center justify-center p-4">
+                <div class="bg-white rounded-[40px] p-8 w-full max-w-md shadow-2xl">
+                    <h3 class="text-xl font-bold mb-6">新增資料夾</h3>
+                    <input v-model="newFolderName" @keyup.enter="saveFolder" placeholder="輸入名稱..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
+                    <div class="flex items-center space-x-3 mb-8">
+                        <span class="text-sm font-bold text-slate-400">主題色：</span>
+                        <button v-for="c in ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#64748b']" :key="c" 
+                            @click="newFolderColor = c"
+                            :class="['w-8 h-8 rounded-full border-4', newFolderColor === c ? 'border-indigo-100' : 'border-transparent']"
+                            :style="{ backgroundColor: c }"></button>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <button @click="showAddFolder = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                        <button @click="saveFolder" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">建立資料夾</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </teleport>
 
         <!-- Add Record Modal -->
-        <div v-if="showAddRecord" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-[40px] p-8 w-full max-w-xl shadow-2xl">
-                <h3 class="text-xl font-bold mb-6">新增記事</h3>
-                <input v-model="newRecord.title" placeholder="標題 (選填)" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-4 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
-                <textarea v-model="newRecord.content" rows="6" placeholder="內容..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium resize-none"></textarea>
-                <div class="flex space-x-3 mt-4">
-                    <button @click="showAddRecord = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
-                    <button @click="saveRecord" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">儲存記事</button>
+        <teleport to="body">
+            <div v-if="showAddRecord" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[4000] flex items-center justify-center p-4">
+                <div class="bg-white rounded-[40px] p-8 w-full max-w-xl shadow-2xl">
+                    <h3 class="text-xl font-bold mb-6">新增記事</h3>
+                    <input v-model="newRecord.title" placeholder="標題 (選填)" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-4 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
+                    <textarea v-model="newRecord.content" rows="6" placeholder="內容..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium resize-none"></textarea>
+                    <div class="flex space-x-3 mt-4">
+                        <button @click="showAddRecord = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                        <button @click="saveRecord" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">儲存記事</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </teleport>
 
-        <!-- Global Action Confirm / Toast (Critical for iOS deletion) -->
-        <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+        <!-- Global Action Confirm / Toast -->
+        <teleport to="body">
+            <div v-if="persistentToast" class="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
             <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden animate-slide-up border border-white/20">
                 <div class="p-8 text-center space-y-6">
                     <div class="flex flex-col items-center">
@@ -265,6 +270,7 @@
                 </div>
             </div>
         </div>
+        </teleport>
         <!-- LuckyDraw moved inside content area -->
     </div>
 </template>

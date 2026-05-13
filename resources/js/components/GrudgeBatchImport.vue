@@ -1,5 +1,6 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[70] flex items-end md:items-center justify-center px-0">
+    <teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
 
@@ -13,7 +14,7 @@
                         怨靈載錄專區<br>多筆載錄
                     </h5>
                 </div>
-                <button @click="$emit('cancel')" class="p-2 text-black hover:text-slate-600 active:scale-95 absolute right-2 top-1/2 -translate-y-1/2">
+                <button @click="$emit('cancel')" class="p-2 text-slate-300 hover:text-slate-600 transition-colors absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                     <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -71,14 +72,8 @@
                 </button>
             </div>
 
-            <!-- Global Mobile Navbar -->
-            <mobile-navbar 
-                @back="$emit('cancel')"
-                @home="$emit('cancel')"
-                :show-action="false"
-                :can-search="false"
-                is-absolute
-            />
+            <!-- Navbar Wrapper Removed for Modal UX -->
+            <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
         </div>
 
         <compact-date-picker 
@@ -128,6 +123,7 @@
             </div>
         </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>

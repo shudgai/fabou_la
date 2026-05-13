@@ -1,5 +1,6 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
+    <teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="handleCancel"></div>
 
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-lg bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden">
@@ -22,20 +23,22 @@
                         </div>
                     </div>
                 </div>
-                <button @click="handleCancel" class="text-black hover:text-slate-600 transition-colors p-2 absolute right-4 top-0">
+                <button @click="handleCancel" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 text-[17px]" style="padding-bottom: calc(7dvh + 70px);">
-                <!-- Step indicator -->
-                <div class="flex items-center gap-1">
-                    <template v-for="(label, idx) in stepLabels" :key="idx">
-                        <div :class="['px-1.5 py-0.5 text-xs font-bold rounded', currentStep === idx + 1 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500']">
-                            {{ label }}
-                        </div>
-                        <div v-if="idx < stepLabels.length - 1" class="text-xs text-slate-300">→</div>
-                    </template>
+                <!-- Step indicator (Matches GrudgeAddForm style) -->
+                <div class="px-2 pb-4 bg-white shrink-0">
+                    <div class="flex items-center gap-1.5">
+                        <div v-for="s in totalSteps" :key="s" class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                             :class="s <= currentStep ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'bg-slate-100'"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 px-1">
+                        <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">Step {{ currentStep }} / {{ totalSteps }}</span>
+                        <span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em]">{{ stepLabels[currentStep - 1] }}</span>
+                    </div>
                 </div>
 
                 <!-- Step 1: Date -->
@@ -158,10 +161,12 @@
             </div>
         </div>
 
-        <mobile-navbar class="md:hidden" :can-back="false" @home="handleCancel" :show-action="false" :can-search="false" is-absolute />
+        <!-- Navbar Wrapper Removed for Modal UX -->
+        <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
 
         <compact-date-picker v-if="showDatePicker" v-model="form.know_date" @close="showDatePicker = false" />
     </div>
+    </teleport>
 </template>
 
 <script setup>

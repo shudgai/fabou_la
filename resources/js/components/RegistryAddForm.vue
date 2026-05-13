@@ -15,7 +15,7 @@
                         {{ localMode === 'batch' ? '多筆載錄' : '逐筆載錄' }}
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -54,22 +54,13 @@
                 <!-- SINGLE MODE: Step-by-Step -->
                 <transition v-if="localMode === 'single'" name="step-fade" mode="out-in">
 
-                    <!-- STEP 1: 日期 & 仙師 -->
+                    <!-- STEP 1: 得知日期 -->
                     <div v-if="currentStep === 1" :key="'s1'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請確認<span class="text-blue-600">日期</span>與<span class="text-red-600">仙師</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Basic Info</p>
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">得知日期</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Date Info</p>
                         </div>
                         <div class="space-y-8">
-                            <div class="relative group">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                                <button @click="showMasterDropdown = true"
-                                    class="w-full py-4 px-4 rounded-2xl border-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
-                                    :class="form.master_id ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-400'">
-                                    <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
-                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
                             <div class="relative group">
                                 <div class="flex items-center justify-between mb-2">
                                     <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">得知日期</label>
@@ -83,8 +74,27 @@
                         </div>
                     </div>
 
-                    <!-- STEP 2: 法寶名稱 -->
-                    <div v-else-if="currentStep === 2" :key="'s2'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 2: 載錄仙師 -->
+                    <div v-else-if="currentStep === 2" :key="'s2'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-black text-slate-900">請確認<span class="text-red-600">載錄仙師</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Master Selection</p>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="relative group">
+                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                                <button @click="showMasterDropdown = true"
+                                    class="w-full py-4 border-0 border-b-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
+                                    :class="form.master_id ? 'border-blue-500 text-blue-700' : 'border-slate-100 text-slate-400'">
+                                    <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
+                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: 法寶名稱 -->
+                    <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶名稱</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Treasure Name</p>
@@ -96,8 +106,8 @@
                         </div>
                     </div>
 
-                    <!-- STEP 3: 法寶用意 -->
-                    <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 4: 法寶用意 -->
+                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶用意</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Purpose</p>
@@ -109,8 +119,8 @@
                         </div>
                     </div>
 
-                    <!-- STEP 4: 求寶方式 -->
-                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 5: 求寶方式 -->
+                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">求寶方式</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Method</p>
@@ -129,8 +139,8 @@
                         </div>
                     </div>
 
-                    <!-- STEP 5: 承接師兄姐 -->
-                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 6: 承接師兄姐 -->
+                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-6">
                             <h2 class="text-[17px] font-black text-slate-900">承接<span class="text-blue-600">皇恩的師兄姐</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Personnel</p>
@@ -205,8 +215,8 @@
                             <span>清空</span>
                         </button>
                     </div>
-                    <textarea v-model="batchInput" rows="10" class="w-full rounded-2xl border border-slate-300 text-[15px] font-normal text-slate-900 bg-white focus:ring-2 focus:ring-blue-100 p-4" placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
-                    <div v-if="parsedItemsCount > 0" class="border border-blue-100 rounded-[24px] overflow-hidden bg-white animate-fade-in">
+                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
+                    <div v-if="parsedItemsCount > 0" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
                         <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                             <div class="flex flex-col">
                                 <span class="text-[15px] font-bold text-blue-600">偵測到 {{ parsedItemsCount }} 筆資料</span>
@@ -261,15 +271,8 @@
             </div>
 
 
-            <!-- Global Mobile Navbar -->
-            <mobile-navbar 
-                class="md:hidden"
-                :can-back="false"
-                @home="$emit('cancel')"
-                :show-action="false"
-                :can-search="false"
-                is-absolute
-            />
+            <!-- Navbar Wrapper Removed for Modal UX -->
+            <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
         </div>
 
         <compact-date-picker 
@@ -327,13 +330,14 @@ import CompactDatePicker from './CompactDatePicker.vue';
 
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
-const totalSteps = 5;
-const stepTitles = ['日期與仙師', '法寶名稱', '法寶用意', '求寶方式', '承接師兄姐'];
+const totalSteps = 6;
+const stepTitles = ['得知日期', '載錄仙師', '法寶名稱', '法寶用意', '求寶方式', '承接師兄姐'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 
 function handleNext() {
-    if (currentStep.value === 1 && !form.value.master_id) { alert('請選擇仙師'); return; }
-    if (currentStep.value === 2 && !treasureNamesText.value.trim()) { alert('請輸入法寶名稱'); return; }
+    if (currentStep.value === 1 && !form.value.record_date) { alert('請輸入得知日期'); return; }
+    if (currentStep.value === 2 && !form.value.master_id) { alert('請選擇仙師'); return; }
+    if (currentStep.value === 3 && !treasureNamesText.value.trim()) { alert('請輸入法寶名稱'); return; }
     if (currentStep.value < totalSteps) currentStep.value++;
 }
 function handleBack() {

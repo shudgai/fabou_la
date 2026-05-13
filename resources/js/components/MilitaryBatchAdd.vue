@@ -1,5 +1,6 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[2000] flex md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
+    <teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[3500] flex md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
         <!-- Backdrop (Desktop Only) -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel', false)"></div>
 
@@ -16,7 +17,7 @@
                         </div>
                     </div>
                 </div>
-                <button @click="$emit('cancel', false)" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2">
+                <button @click="$emit('cancel', false)" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -104,14 +105,8 @@
             </button>
         </div>
 
-        <mobile-navbar 
-            class="md:hidden"
-            :can-back="false"
-            @home="$emit('cancel', false)"
-            :show-action="false"
-            :can-search="false"
-            is-absolute
-        />
+        <!-- Navbar Wrapper Removed for Modal UX -->
+        <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
 
         <!-- Global Action Confirm / Toast (Critical for iOS) -->
         <div v-if="persistentToast" class="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
@@ -137,8 +132,9 @@
                 </div>
             </div>
         </div>
-        </div>
     </div>
+    </div>
+    </teleport>
 </template>
 
 <script setup>

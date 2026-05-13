@@ -1,25 +1,32 @@
 <template>
-    <div v-if="show" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center">
+    <teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center">
         <!-- Backdrop -->
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <!-- Global Close Button -->
+            <button @click="$emit('close')" class="absolute right-1 top-1 md:top-2 md:right-2 z-[9999] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full md:bg-transparent md:backdrop-filter-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
 
         <!-- STEP 1 & 2: PERSONNEL SELECTION -->
-        <div v-if="currentStep === 1 || currentStep === 2" class="absolute inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <div v-if="currentStep === 1 || currentStep === 2" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <!-- Header bar -->
                 <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
-                        <div class="flex items-center justify-between w-full">
-                            <!-- Consolidated Title Row -->
+                        <div class="flex items-center justify-between w-full relative">
                             <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button v-if="currentStep === 2" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                                  <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">
                                      抽籤專區
                                  </div>
-<span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">
                                      {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
                                  </span>
                             </div>
@@ -72,7 +79,7 @@
                 </div>
 
                 <!-- Bottom Button Area -->
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="w-full space-y-2">
                         <button @click="confirmSelection" 
                                 :disabled="pendingNames.length === 0" 
@@ -86,9 +93,9 @@
         </div>
 
         <!-- STEP 3: DRAW CONFIGURATION -->
-        <div v-if="currentStep === 3" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[150]">
+        <div v-if="currentStep === 3" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div v-if="lotteryMode" class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
                             <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
@@ -96,19 +103,9 @@
                             </button>
                             <logo-imperial-notebook :height="40" />
                             <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
-                            <div class="w-full text-center">
-                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
-                                <span v-if="currentStep === 3" class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;"> - 點選本輪人員</span>
-                            </div>
+                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">{{ lotteryMode === true ? '回合抽籤' : '抽順序' }}</span>
+                            <span v-if="lotteryMode" class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;"> - 點選本輪人員</span>
                         </div>
-                    </div>
-                </div>
-                <div v-else class="border-b border-slate-100 p-4 bg-white sticky top-0 z-10 w-full md:pt-[60px]">
-                    <div class="flex items-center">
-                        <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 mr-2 active:scale-90 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <h2 class="text-[24px] font-black text-slate-800">步驟 3：抽籤設定</h2>
                     </div>
                 </div>
                 <div class="flex-1 overflow-y-auto p-4 space-y-8">
@@ -146,7 +143,7 @@
                     </div>
                 </div>
 
-<div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-100 space-y-4 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+<div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 space-y-4 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="flex items-center justify-between">
                         <span class="text-[19px] font-black text-slate-800">抽取人數</span>
                         <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
@@ -216,26 +213,19 @@
             </div>
         </div>
         <!-- STEP 4: RESULTS -->
-        <div v-if="currentStep === 4" class="fixed inset-0 md:absolute md:inset-0 flex flex-col bg-white overflow-hidden z-[1000]">
+        <div v-if="currentStep === 4" class="flex-1 flex flex-col bg-white overflow-hidden z-[1000] min-h-[600px] md:min-h-0">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div v-if="lotteryMode" class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
                             <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                             <logo-imperial-notebook :height="40" />
                             <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
-                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">{{ lotteryMode === true ? '回合抽籤' : '抽順序' }}</span>
+                            <span v-if="!lotteryMode" class="text-slate-900 font-black ml-auto mr-8" style="font-size: 19px !important;">抽籤結果 ({{ results.length }}人)</span>
                         </div>
-                    </div>
-                </div>
-                <div v-else class="p-4 border-b border-slate-100 flex flex-col space-y-2">
-                    <div class="flex items-center">
-                        <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-                        <h2 class="text-[19px] font-black mx-auto">抽籤結果 ({{ results.length }}人)</h2>
                     </div>
                 </div>
                 <div class="flex-1 overflow-y-auto p-4">
@@ -254,7 +244,7 @@
                 </div>
 
 <!-- Bottom Button Area (Fixed above navigation) -->
-                <div class="fixed left-0 right-0 px-4 py-0 bg-white border-t border-slate-50 z-[200] w-full" style="bottom: calc(7dvh + env(safe-area-inset-bottom));">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                     <div class="flex gap-2">
                         <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
                          <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
@@ -265,8 +255,7 @@
             </div>
         </div>
 
-        <!-- NAVIGATION -->
-        <mobile-navbar v-if="!isDrawing" :can-back="true" :can-home="true" @back="handleBack" @home="$emit('close')" />
+
 
         <!-- Global Action Confirm / Toast (Critical for iOS) -->
         <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
@@ -301,6 +290,7 @@
         </div>
     </div>
     </div>
+    </teleport>
 </template>
 
 <script setup>
