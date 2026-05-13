@@ -228,7 +228,7 @@
                     <input v-model="newRecord.title" placeholder="標題 (選填)" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-4 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
                     <textarea v-model="newRecord.content" rows="6" placeholder="內容..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium resize-none"></textarea>
                     <div class="flex space-x-3 mt-4">
-                        <button @click="showAddRecord = false; localStorage.removeItem('other_manager_record_draft')" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                        <button @click="showAddRecord = false; safeLocalStorage.removeItem('other_manager_record_draft')" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
                         <button @click="saveRecord" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">儲存記事</button>
                     </div>
                 </div>
@@ -282,7 +282,7 @@ import KaiwenApproval from './KaiwenApproval.vue';
 import RandomGroup from './RandomGroup.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import LuckyDraw from './LuckyDraw.vue';
-import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -439,7 +439,7 @@ const prepareAddFolder = () => {
 
 const prepareAddRecord = () => {
     newRecord.value = { title: '', content: '', record_date: getTodayStr() };
-    const draftStr = localStorage.getItem('other_manager_record_draft');
+    const draftStr = safeLocalStorage.getItem('other_manager_record_draft');
     if (draftStr) {
         try {
             const draft = JSON.parse(draftStr);
@@ -462,7 +462,7 @@ const saveRecord = async () => {
             content: newRecord.value.content.trim(),
             record_date: newRecord.value.record_date
         });
-        localStorage.removeItem('other_manager_record_draft');
+        safeLocalStorage.removeItem('other_manager_record_draft');
         showAddRecord.value = false;
         await loadData();
     } catch (e) { console.error(e); }
@@ -480,7 +480,7 @@ const getFolderSum = (id) => {
 // Draft auto-save for add record
 watch(() => ({ t: newRecord.value.title, c: newRecord.value.content, d: newRecord.value.record_date }), (newVal) => {
     if (showAddRecord.value) {
-        localStorage.setItem('other_manager_record_draft', JSON.stringify({
+        safeLocalStorage.setItem('other_manager_record_draft', JSON.stringify({
             title: newVal.t,
             content: newVal.c,
             record_date: newVal.d
@@ -507,7 +507,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.custom-scrollbar { overscroll-behavior-y: contain; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

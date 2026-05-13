@@ -524,7 +524,7 @@ onMounted(loadData);
     to { opacity: 1; transform: scale(1); }
 }
 
-.custom-scrollbar { overscroll-behavior-y: contain; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

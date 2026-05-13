@@ -1087,6 +1087,7 @@ onMounted(() => {
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

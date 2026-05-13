@@ -1179,6 +1179,7 @@ onUnmounted(() => {
 @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
 /* Custom Scrollbar for a cleaner mobile look */
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }

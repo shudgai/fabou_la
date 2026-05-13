@@ -1149,6 +1149,7 @@ defineExpose({
 }
 
 .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
 }
 .custom-scrollbar::-webkit-scrollbar {

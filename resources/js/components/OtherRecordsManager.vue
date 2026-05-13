@@ -175,7 +175,7 @@
 import { ref, onMounted, reactive, computed, watch, onUnmounted } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 import CompactDatePicker from './CompactDatePicker.vue';
 
@@ -220,7 +220,7 @@ const toggleExpand = (id) => {
 const prepareAdd = () => {
     editingRecordId.value = null;
 
-    const draftStr = localStorage.getItem('other_records_draft');
+    const draftStr = safeLocalStorage.getItem('other_records_draft');
     if (draftStr) {
         try {
             const draft = JSON.parse(draftStr);
@@ -250,7 +250,7 @@ const handleMenuEdit = (record) => {
 
 const closeModal = () => {
     showAddModal.value = false;
-    localStorage.removeItem('other_records_draft');
+    safeLocalStorage.removeItem('other_records_draft');
     newTitle.value = '';
     newContent.value = '';
     newDate.value = '';
@@ -313,7 +313,7 @@ const saveRecord = async () => {
             await axios.post(`/other-folders/${folderId}/records`, payload);
             showToast('✓ 已儲存紀錄');
         }
-        localStorage.removeItem('other_records_draft');
+        safeLocalStorage.removeItem('other_records_draft');
         closeModal();
         await loadData();
     } catch (e) { console.error(e); } finally { saving.value = false; }
@@ -357,7 +357,7 @@ onUnmounted(() => {
 // Draft auto-save
 watch(() => ({ t: newTitle.value, c: newContent.value, d: newDate.value }), (newVal) => {
     if (showAddModal.value && !editingRecordId.value) {
-        localStorage.setItem('other_records_draft', JSON.stringify({
+        safeLocalStorage.setItem('other_records_draft', JSON.stringify({
             title: newVal.t,
             content: newVal.c,
             date: newVal.d
@@ -385,6 +385,7 @@ onMounted(() => {
     100% { transform: translate(-50%, -20px); opacity: 0; }
 }
 .animate-toast { animation: toast 2s forwards; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>

@@ -132,6 +132,7 @@ const handleSave = () => {
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }

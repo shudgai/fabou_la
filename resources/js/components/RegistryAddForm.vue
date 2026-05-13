@@ -902,6 +902,7 @@ defineExpose({ updatePersonnelRemarks });
 .dropdown-enter-active, .dropdown-leave-active { transition: all 0.2s ease; }
 .dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-10px) scale(0.95); }
 
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 

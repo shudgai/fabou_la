@@ -297,7 +297,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import { writeClipboard, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { writeClipboard, lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const props = defineProps({
     show: Boolean,
@@ -331,7 +331,7 @@ watch(() => props.show, (val) => {
     if (val) {
         loadUsers();
 
-        const draftStr = localStorage.getItem(DRAFT_KEY);
+        const draftStr = safeLocalStorage.getItem(DRAFT_KEY);
         if (draftStr) {
             try {
                 const draft = JSON.parse(draftStr);
@@ -352,7 +352,7 @@ watch(() => props.show, (val) => {
         resetAll(true);
         lotteryMode.value = props.initialMode;
     } else {
-        localStorage.removeItem(DRAFT_KEY);
+        safeLocalStorage.removeItem(DRAFT_KEY);
     }
 });
 
@@ -643,7 +643,7 @@ watch(() => ({
     mode: lotteryMode.value
 }), (val) => {
     if (props.show) {
-        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        safeLocalStorage.setItem(DRAFT_KEY, JSON.stringify({
             currentStep: val.step,
             pendingNames: val.pending,
             fixedParticipants: val.fixed,
@@ -662,6 +662,7 @@ onMounted(loadUsers);
 <style scoped>
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
 }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }

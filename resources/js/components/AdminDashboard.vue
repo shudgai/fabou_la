@@ -264,6 +264,7 @@ onMounted(async () => {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
 }

@@ -2020,7 +2020,7 @@ onUnmounted(() => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.custom-scrollbar { overscroll-behavior-y: contain; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }

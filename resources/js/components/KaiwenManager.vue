@@ -466,7 +466,7 @@ import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import KaiwenBatchAdd from './KaiwenBatchAdd.vue';
 import MobileNavbar from './MobileNavbar.vue';
-import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -714,7 +714,7 @@ const weeklyLines = ref(Array(14).fill(null).map(() => Array(6).fill('')));
 // Draft auto-save (must be after weeklyLines declaration)
 watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), (newVal) => {
     if (addMode.value && !form.value.id && !isSaving.value) {
-        localStorage.setItem('kaiwen_draft', JSON.stringify({
+        safeLocalStorage.setItem('kaiwen_draft', JSON.stringify({
             type: addMode.value,
             form: form.value,
             weeklyLines: weeklyLines.value,
@@ -847,7 +847,7 @@ const openAddMode = (type) => {
     addMode.value = type;
     formTab.value = 'original';
     
-    const draftStr = localStorage.getItem('kaiwen_draft');
+    const draftStr = safeLocalStorage.getItem('kaiwen_draft');
     if (draftStr) {
         try {
             const draft = JSON.parse(draftStr);
@@ -1227,7 +1227,7 @@ const saveForm = async () => {
         const method = form.value.id ? 'PUT' : 'POST';
         await axios({ method, url, data: form.value });
         
-        if (!form.value.id) localStorage.removeItem('kaiwen_draft');
+        if (!form.value.id) safeLocalStorage.removeItem('kaiwen_draft');
         
         persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 2000);
@@ -1268,7 +1268,7 @@ const executeDelete = async () => {
 </script>
 
 <style scoped>
-.custom-scrollbar { overscroll-behavior-y: contain; }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }

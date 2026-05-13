@@ -412,6 +412,7 @@ watch(() => props.initialData, (newVal) => {
     opacity: 0;
     transform: translateX(-10px);
 }
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
 }

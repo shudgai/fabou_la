@@ -205,6 +205,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Bottom Button Bar | `fixed md:absolute left-0 right-0 ... bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0` with `z-[200]` |
 | Mobile Safe Area | Replace `<mobile-navbar>` in modals with `<div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>` |
 | Dropdown mobile style | All custom dropdown items use `md:rounded-*` so mobile renders flat rows (no per-item boxes); desktop keeps `rounded-*` |
+| Scroll iOS smoothness | All `.custom-scrollbar` must include `-webkit-overflow-scrolling: touch` for inertial scrolling on iPhone |
+| localStorage iOS safe | Use `safeLocalStorage` from `iosCompat.js` instead of raw `localStorage` (Private Browsing throws SecurityError) |
 
 ## Draft Auto-Save Pattern (localStorage)
 
@@ -212,9 +214,9 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 
 | Step | Implementation |
 |---|---|
-| Save | `watch(() => ({...form fields...}), (val) => { if (addMode/visible) localStorage.setKey(JSON.stringify(val)) }, { deep: true })` |
-| Restore | On add/open, check `localStorage.getItem(key)`, parse, `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`, restore fields |
-| Clear | On save success and on close/cancel: `localStorage.removeItem(key)` |
+| Save | `watch(() => ({...form fields...}), (val) => { if (addMode/visible) safeLocalStorage.setKey(JSON.stringify(val)) }, { deep: true })` |
+| Restore | On add/open, check `safeLocalStorage.getItem(key)`, parse, `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`, restore fields |
+| Clear | On save success and on close/cancel: `safeLocalStorage.removeItem(key)` |
 
 | Component | Draft Key | Data Saved |
 |---|---|---|

@@ -382,6 +382,7 @@ onMounted(loadUsers);
 </script>
 
 <style scoped>
+.custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
     height: 4px;
