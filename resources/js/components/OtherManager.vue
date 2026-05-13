@@ -99,7 +99,7 @@
                         <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 px-3">
 <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
                                   回合抽籤
-                              </span>
+                               </span>
                         </div>
                     </div>
                 </button> 
@@ -128,7 +128,7 @@
                     <div class="flex items-center flex-1 min-w-0 cursor-pointer" @click="resetToRoot">
 <div class="flex items-center gap-1">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-slate-900 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h1 class="text-slate-900 leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                                  抽籤專區
                               </h1>
                               <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important;">{{ activeFolder.name }}</span>

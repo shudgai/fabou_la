@@ -22,23 +22,6 @@
         </div>
 
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans overflow-hidden">
-            <datalist id="target-datalist">
-                <option v-for="dn in dharmaNames" :key="'dn'+dn.id" :value="dn.name" />
-                <option v-for="g in groups" :key="'g'+g.id" :value="g.name" />
-            </datalist>
-
-            <datalist id="master-datalist">
-                <option value="老祖仙師" />
-                <option value="元始仙師" />
-                <option value="道祖仙師" />
-                <option value="靈寶仙師" />
-                <option value="父皇" />
-                <option value="太宰仙師" />
-                <option value="太子" />
-                <option value="閻王仙師" />
-                <option v-for="m in masters" :key="m.id" :value="m.name" />
-            </datalist>
-
             <!-- Header -->
             <div class="border-b border-slate-300 flex items-center bg-white sticky top-0 z-[110] w-full shrink-0" style="padding: 8px 10px; min-height: 52px;">
                 <div class="flex-1 min-w-0">
@@ -143,77 +126,166 @@
                 @back="$emit('goHome')" 
                 :can-back="true" />
 
-            <!-- Add/Edit Modal -->
+            <!-- Add/Edit Modal (Wizard) -->
             <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-end md:items-center justify-center px-0 bg-slate-900/20 backdrop-blur-sm">
-                <!-- Desktop Backdrop Click Area -->
                 <div class="absolute inset-0" @click="showModal = false"></div>
 
                 <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl flex flex-col bg-white animate-slide-up overflow-hidden md:rounded-[32px] shadow-2xl">
+                    <!-- Header -->
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
-                        <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增紀錄' }}</h3>
+                        <h3 class="text-[20px] font-black text-slate-900">{{ isEditing ? '編輯紀錄' : '新增記錄專區' }}</h3>
                         <button @click="showModal = false" class="text-slate-300 hover:text-slate-500 p-2">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round"/></svg>
                         </button>
                     </div>
 
-                <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar pb-32">
-                    <!-- Date Input -->
-                    <div class="space-y-2">
-                        <label class="text-[14px] font-black text-slate-400 uppercase tracking-widest ml-1">錄入日期</label>
-                        <input type="date" v-model="form.date" 
-                               class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
-                    </div>
-
-                    <div class="space-y-2 relative">
-                        <label class="text-[14px] font-black text-slate-400 uppercase tracking-widest ml-1">對象仙師</label>
-                        <div class="relative">
-                            <input v-model="masterNameInput" 
-                                   list="master-datalist"
-                                   placeholder="搜尋或輸入仙師..." 
-                                   class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                    <!-- Progress Bar -->
+                    <div class="px-8 pt-6 pb-2 bg-white shrink-0">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div v-for="s in totalSteps" :key="s" 
+                                 class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                                 :class="s <= currentStep ? 'bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.4)]' : 'bg-slate-100'">
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-3 px-1">
+                            <span class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">STEP {{ currentStep }} / {{ totalSteps }}</span>
+                            <span class="text-[12px] font-black text-indigo-500 uppercase tracking-[0.2em]">{{ stepLabels[currentStep - 1] }}</span>
                         </div>
                     </div>
 
-                    <div class="space-y-2 relative">
-                        <label class="text-[14px] font-black text-slate-400 uppercase tracking-widest ml-1">針對對象</label>
-                        <div class="relative">
-                            <input v-model="targetRemarksInput" 
-                                   list="target-datalist"
-                                   placeholder="搜尋法號、群組或全體..." 
-                                   class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
+                    <!-- Scrollable Content -->
+                    <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain bg-white">
+                        <transition name="step-fade" mode="out-in">
+                            <!-- STEP 1: Date -->
+                            <div v-if="currentStep === 1" :key="'step-1'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
+                                <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">請選擇<span class="text-indigo-600">錄入日期</span></h2>
+                                <div class="max-w-md mx-auto mt-12 relative">
+                                    <input type="date" v-model="form.date" 
+                                           class="w-full text-center text-[22px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-6 outline-none transition-all">
+                                </div>
+                            </div>
+
+                            <!-- STEP 2: Master -->
+                            <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
+                                <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">選擇<span class="text-red-600">對象仙師</span></h2>
+                                <div class="max-w-md mx-auto mt-12 relative">
+                                    <div @click="showMasterModal = true" 
+                                         class="w-full flex items-center justify-between text-center text-[22px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-6 outline-none transition-all cursor-pointer">
+                                        <span :class="masterNameInput ? 'text-slate-900' : 'text-slate-100'">{{ masterNameInput || '點擊選擇仙師...' }}</span>
+                                        <svg class="w-6 h-6 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: Target -->
+                            <div v-else-if="currentStep === 3" :key="'step-3'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
+                                <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">選擇<span class="text-indigo-600">法號或群組</span></h2>
+                                <div class="max-w-md mx-auto mt-12 relative">
+                                    <div @click="showTargetModal = true" 
+                                         class="w-full flex items-center justify-between text-center text-[22px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-6 outline-none transition-all cursor-pointer">
+                                        <span :class="targetRemarksInput ? 'text-slate-900' : 'text-slate-100'">{{ targetRemarksInput || '點擊選擇對象...' }}</span>
+                                        <svg class="w-6 h-6 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 4: Content -->
+                            <div v-else-if="currentStep === 4" :key="'step-4'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
+                                <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">請輸入<span class="text-indigo-600">記錄內容</span></h2>
+                                <div class="max-w-md mx-auto mt-12 relative">
+                                    <textarea v-model="form.content" rows="8" placeholder="輸入記錄內容..." 
+                                              class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+
+                    <!-- Footer Buttons -->
+                    <div class="mt-auto shrink-0 bg-white border-t border-slate-50">
+                        <div class="px-3 pt-4 pb-1 bg-white flex gap-2 justify-center">
+                            <button v-if="currentStep > 1" @click="currentStep--"
+                                class="min-w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[18px] active:scale-95 transition-all">
+                                上一步
+                            </button>
+                            <button v-if="currentStep < totalSteps" @click="handleNext"
+                                class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] shadow-lg shadow-indigo-100 active:scale-95 transition-all"
+                                style="color: white !important;">
+                                <span class="!text-white" style="color: white !important;">下一步</span>
+                            </button>
+                            <button v-else @click="saveRecord" :disabled="saving"
+                                class="flex-1 py-4 bg-indigo-600 !text-white rounded-2xl font-black text-[18px] shadow-lg shadow-indigo-100 active:scale-95 transition-all disabled:bg-slate-300"
+                                style="color: white !important;">
+                                <span class="!text-white" style="color: white !important;">{{ saving ? '儲存中...' : (isEditing ? '確認修改' : '確認存檔') }}</span>
+                            </button>
                         </div>
+                        <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
                     </div>
-
-                    <!-- Content Textarea -->
-                    <div class="space-y-2">
-                        <label class="text-[14px] font-black text-slate-400 uppercase tracking-widest ml-1">記錄內容</label>
-                        <textarea v-model="form.content" rows="8" placeholder="輸入記錄內容..." 
-                                  class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none resize-none custom-scrollbar"></textarea>
-                    </div>
-
-                    <!-- Remarks -->
-                    <div class="space-y-2">
-                        <label class="text-[14px] font-black text-slate-400 uppercase tracking-widest ml-1">結尾備註</label>
-                        <input v-model="form.remarks" placeholder="例如：完畢 (選填)" 
-                               class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-[17px] font-bold text-slate-900 focus:ring-2 focus:ring-indigo-100 outline-none">
-                    </div>
-                </div>
-
-                <!-- Footer Actions -->
-                <div class="p-6 border-t border-slate-50 bg-white sticky bottom-0 flex space-x-4 shrink-0 pb-8">
-                    <button @click="showModal = false" class="flex-1 h-[52px] rounded-2xl font-black text-[18px] bg-slate-100 text-slate-500 active:bg-slate-200 transition-all">取消</button>
-                    <button @click="saveRecord" :disabled="saving" class="flex-[2] h-[52px] rounded-2xl font-black text-[18px] bg-blue-600 shadow-lg shadow-blue-100 active:scale-95 disabled:opacity-50 transition-all" style="color: white !important;">
-                        {{ saving ? '儲存中...' : (isEditing ? '確認修改' : '確認存檔') }}
-                    </button>
-                </div>
                 </div>
             </div>
+
+            <!-- Master Selection Modal -->
+            <teleport to="body">
+                <div v-if="showMasterModal" class="fixed inset-0 z-[9000] flex items-end md:items-center justify-center" @click.self="showMasterModal = false">
+                    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showMasterModal = false"></div>
+                    <div class="relative w-full md:max-w-lg bg-white rounded-t-[32px] md:rounded-[32px] shadow-xl overflow-hidden flex flex-col max-h-[70dvh] animate-slide-up">
+                        <div class="shrink-0 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                            <h2 class="text-[20px] font-black text-slate-900">選擇仙師</h2>
+                            <button @click="showMasterModal = false" class="p-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="shrink-0 px-6 py-3">
+                            <input v-model="masterSearchQuery" placeholder="搜尋仙師..." class="w-full text-[17px] font-black border-0 border-b-2 border-slate-200 focus:border-red-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-100">
+                        </div>
+                        <div class="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4">
+                            <div v-for="m in masterModalList" :key="m"
+                                 @click="selectMasterModal(m); showMasterModal = false"
+                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                {{ m }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </teleport>
+
+            <!-- Target Selection Modal -->
+            <teleport to="body">
+                <div v-if="showTargetModal" class="fixed inset-0 z-[9000] flex items-end md:items-center justify-center" @click.self="showTargetModal = false">
+                    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showTargetModal = false"></div>
+                    <div class="relative w-full md:max-w-lg bg-white rounded-t-[32px] md:rounded-[32px] shadow-xl overflow-hidden flex flex-col max-h-[70dvh] animate-slide-up">
+                        <div class="shrink-0 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                            <h2 class="text-[20px] font-black text-slate-900">選擇法號或群組</h2>
+                            <button @click="showTargetModal = false" class="p-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="shrink-0 px-6 py-3">
+                            <input v-model="targetSearchQuery" placeholder="搜尋法號或群組..." class="w-full text-[17px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-100">
+                        </div>
+                        <div class="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4">
+                            <div v-if="targetModalNames.length > 0" class="px-4 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest">法號</div>
+                            <div v-for="dn in targetModalNames" :key="'dn'+dn.id"
+                                 @click="selectTargetModal(dn); showTargetModal = false"
+                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                {{ dn.name }}
+                            </div>
+                            <div v-if="targetModalGroups.length > 0" class="px-4 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest">群組</div>
+                            <div v-for="g in targetModalGroups" :key="'g'+g.id"
+                                 @click="selectTargetModal(g); showTargetModal = false"
+                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                                {{ g.name }}
+                            </div>
+                            <div v-if="targetModalNames.length === 0 && targetModalGroups.length === 0" class="px-4 py-8 text-center text-[16px] font-black text-slate-300">無符合項目</div>
+                        </div>
+                    </div>
+                </div>
+            </teleport>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
@@ -236,13 +308,21 @@ const activeActionMenuId = ref(null);
 const showModal = ref(false);
 const isEditing = ref(false);
 const saving = ref(false);
-const showMasterDropdown = ref(false);
-const showTargetDropdown = ref(false);
 const masterNameInput = ref('');
 const targetRemarksInput = ref('');
 const persistentToast = ref(null);
 const deleteConfirmId = ref(null);
 const focusedId = ref(null);
+
+// Wizard state
+const currentStep = ref(1);
+const totalSteps = 4;
+const stepLabels = ['日期', '對象仙師', '法號群組', '記錄內容'];
+const showMasterModal = ref(false);
+const showTargetModal = ref(false);
+const masterSearchQuery = ref('');
+const targetSearchQuery = ref('');
+const scrollContainer = ref(null);
 
 const staticMasters = [
     { name: '老祖仙師' }, { name: '元始仙師' }, { name: '道祖仙師' }, { name: '靈寶仙師' },
@@ -302,32 +382,28 @@ const filteredRecords = computed(() => {
     return result;
 });
 
-// Suggestions for dropdowns
-const filteredMasterSuggestions = computed(() => {
-    const q = masterNameInput.value.toLowerCase();
-    const all = [...staticMasters, ...masters.value];
-    // Remove duplicates by name
-    const unique = [];
-    const seen = new Set();
-    for (const m of all) {
-        if (!seen.has(m.name)) {
-            seen.add(m.name);
-            unique.push(m);
-        }
-    }
-    if (!q) return unique;
-    return unique.filter(m => m.name.toLowerCase().includes(q));
+// Wizard modal filter computeds
+const masterModalList = computed(() => {
+    const q = masterSearchQuery.value;
+    const names = new Set();
+    staticMasters.forEach(m => names.add(m.name));
+    masters.value.forEach(m => names.add(m.name));
+    const result = [...names];
+    if (!q) return result;
+    return result.filter(name => name.includes(q));
 });
 
-const filteredTargetSuggestions = computed(() => {
-    const q = targetRemarksInput.value.toLowerCase();
-    const all = [
-        { name: '全體', type: '系統' },
-        ...dharmaNames.value.map(dn => ({ name: dn.name, type: '法號' })),
-        ...groups.value.map(g => ({ name: g.name, type: '群組' }))
-    ];
-    if (!q) return all;
-    return all.filter(t => t.name.toLowerCase().includes(q));
+const targetModalNames = computed(() => {
+    const q = targetSearchQuery.value;
+    let items = [{ id: 'all', name: '全體' }, ...dharmaNames.value];
+    if (!q) return items;
+    return items.filter(item => item.name.includes(q));
+});
+
+const targetModalGroups = computed(() => {
+    const q = targetSearchQuery.value;
+    if (!q) return groups.value;
+    return groups.value.filter(g => g.name.includes(q));
 });
 
 // Methods
@@ -364,6 +440,7 @@ const openAddModal = () => {
     };
     masterNameInput.value = '';
     targetRemarksInput.value = '';
+    currentStep.value = 1;
     showModal.value = true;
 };
 
@@ -372,6 +449,7 @@ const startEdit = (item) => {
     form.value = { ...item };
     masterNameInput.value = item.master?.name || '';
     targetRemarksInput.value = item.target_remarks || '';
+    currentStep.value = 1;
     activeActionMenuId.value = null;
     showModal.value = true;
 };
@@ -384,6 +462,27 @@ const selectMaster = (m) => {
 const selectTarget = (t) => {
     form.value.target_remarks = t.name;
     targetRemarksInput.value = t.name;
+};
+
+const selectMasterModal = (name) => {
+    masterNameInput.value = name;
+    const match = masters.value.find(m => m.name === name);
+    form.value.master_id = match ? match.id : null;
+};
+
+const selectTargetModal = (item) => {
+    targetRemarksInput.value = item.name;
+    form.value.target_remarks = item.name;
+};
+
+const handleNext = () => {
+    if (currentStep.value === 2) {
+        if (!masterNameInput.value) { alert('請選擇對象仙師'); return; }
+    }
+    if (currentStep.value === 3) {
+        if (!targetRemarksInput.value) { alert('請選擇法號或群組'); return; }
+    }
+    if (currentStep.value < totalSteps) currentStep.value++;
 };
 
 const saveRecord = async () => {
@@ -489,6 +588,18 @@ watch(isAnyModalOpen, (newVal) => {
     else unlockBodyScroll();
 });
 
+watch(currentStep, () => {
+    nextTick(() => {
+        if (scrollContainer.value) {
+            scrollContainer.value.scrollTo({ top: 0, behavior: 'auto' });
+        }
+    });
+});
+
+watch(showModal, (val) => {
+    if (!val) currentStep.value = 1;
+});
+
 onUnmounted(() => {
     if (isAnyModalOpen.value) unlockBodyScroll();
 });
@@ -529,4 +640,17 @@ onMounted(loadData);
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 * { -webkit-tap-highlight-color: transparent; }
+
+.step-fade-enter-active,
+.step-fade-leave-active {
+    transition: all 0.2s ease;
+}
+.step-fade-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+}
+.step-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
 </style>

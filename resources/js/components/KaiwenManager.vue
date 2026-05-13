@@ -328,7 +328,7 @@
 
                         <div class="space-y-1">
                             <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5 overflow-x-hidden">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5 overflow-x-auto">
                                 <div v-for="(char, i) in titleChars" :key="i" class="grid grid-cols-7 gap-1">
                                     <!-- Acrostic char box (1st cell) -->
                                     <div class="aspect-square flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 

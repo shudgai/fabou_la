@@ -5,7 +5,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-[7dvh]">
+        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
 
             <!-- Header -->
             <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
@@ -256,7 +256,7 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center">
+            <div class="shrink-0 px-6 pt-4 pb-1 bg-white border-t border-slate-50 flex gap-3 justify-center">
                 <!-- Single Mode Navigation -->
                 <template v-if="localMode === 'single'">
                     <button v-if="currentStep > 1" @click="handleBack" class="w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>

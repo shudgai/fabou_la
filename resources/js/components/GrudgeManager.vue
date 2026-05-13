@@ -79,30 +79,103 @@
             </div>
             <div v-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
              <div v-else class="flex flex-col flex-1 px-2 pt-0">
-                 <!-- Drill-down: Date Groups List (Level 1) -->
-                 <template v-if="!activeDateGroup && !focusedId">
-                     <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
-                         @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
-                         class="px-[15px] py-[20px] bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
-                         <div class="flex items-center">
-                             <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
-                         </div>
-                         <div class="flex items-center space-x-2">
-                             <div class="flex items-center">
-                                 <span class="text-black text-[14px] font-normal drop-shadow-sm">{{ formatArmyTotal(group.total_qty) }}</span>
-                             </div>
-                             <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                         </div>
-                     </div>
-                 </template>
+                  <!-- Solo View: Focus on a specific record (Solo Mode) -->
+                  <div v-if="focusedId" class="flex flex-col flex-1 px-1">
+                      <div v-for="item in items.filter(i => i.id === focusedId)" :key="item.id"
+                           @click.stop="toggleExpand(item.id)"
+                           class="py-[10px] px-3 relative group cursor-pointer bg-white z-10">
+                          <div class="py-2 bg-white relative px-1.5 border-b-2 border-slate-300">
+                              <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5 relative">
+                                  <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                      <label class="grudge-label">日期:</label>
+                                      <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
+                                  </div>
+                                  <div class="grudge-field flex flex-col">
+                                      <label class="grudge-label">法號:</label>
+                                      <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                  </div>
+                                  <div class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
+                                      <div class="relative">
+                                          <button @click.stop="toggleMenu(item.id)" class="flex items-center justify-center w-8 h-8 text-red-400 active:scale-90 transition-all rounded-full hover:bg-red-50">
+                                              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                          </button>
+                                          <div v-if="openMenuId === item.id" @click.stop class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                              <button @click.stop="toggleExpand(item.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">收起詳情</button>
+                                              <button @click.stop="editItem(item); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
+                                              <button @click.stop="copyItem(item)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                              <button @click.stop="deleteItem(item.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="grudge-field flex flex-row items-center space-x-1.5 min-w-[130px]">
+                                      <label class="grudge-label">數量:</label>
+                                      <div class="grudge-value whitespace-nowrap">{{ formatArmyTotal(item.quantity) }}</div>
+                                  </div>
+                                  <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                      <label class="grudge-label">結果:</label>
+                                      <div class="grudge-value" :class="item.destination === '未處理' ? '!text-[#ef4444]' : '!text-[#0f172a]'">{{ item.destination || '已處理' }}</div>
+                                  </div>
+                              </div>
+                              <!-- Expanded Content -->
+                              <div class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative pb-4">
+                                  <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
+                                      <label class="grudge-label uppercase tracking-widest">軍隊細目</label>
+                                      <div class="flex items-center space-x-6">
+                                          <template v-if="item.destination === '黑曜軍'">
+                                              <div class="flex items-center space-x-2">
+                                                  <span class="w-2 h-2 rounded-full bg-slate-900"></span>
+                                                  <span class="grudge-value font-bold">閻尊: {{ parseRemarks(item.remarks).yan_zun || 0 }}</span>
+                                              </div>
+                                              <div class="flex items-center space-x-2">
+                                                  <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                  <span class="grudge-value font-bold">閻闇: {{ parseRemarks(item.remarks).yan_an || 0 }}</span>
+                                              </div>
+                                          </template>
+                                          <template v-else-if="item.destination === '耀紫軍'">
+                                              <div class="flex items-center space-x-2">
+                                                  <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                                                  <span class="grudge-value font-bold">龍勝: {{ parseRemarks(item.remarks).long_sheng || 0 }}</span>
+                                              </div>
+                                              <div class="flex items-center space-x-2">
+                                                  <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                                  <span class="grudge-value font-bold">龍戰: {{ parseRemarks(item.remarks).long_zhan || 0 }}</span>
+                                              </div>
+                                          </template>
+                                      </div>
+                                  </div>
+                                  <div v-if="item.remarks_text" class="space-y-2">
+                                      <label class="grudge-label uppercase tracking-widest">詳細備註</label>
+                                      <div class="grudge-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">{{ item.remarks_text }}</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Level 1: Date Groups List -->
+                  <template v-else-if="!activeDateGroup">
+                      <div v-for="group in dateGroupsData" :key="group.know_date || 'historical'"
+                          @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
+                          class="px-[15px] py-[20px] bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
+                          <div class="flex items-center">
+                              <span class="font-outfit tracking-wider font-black text-slate-800 grudge-label" style="color: #1e293b !important;">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
+                          </div>
+                          <div class="flex items-center space-x-2">
+                              <div class="flex items-center">
+                                  <span class="text-black font-black drop-shadow-sm grudge-value">{{ formatArmyTotal(group.total_qty) }}</span>
+                              </div>
+                              <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                          </div>
+                      </div>
+                  </template>
                  <!-- Drill-down: Specific Date Records List (Level 2) with Virtual Scrolling -->
                  <template v-else>
                      <!-- Date Header Back Button -->
                      <div v-if="activeDateGroup && focusedId === null" 
                          @click.stop="activeDateGroup = null" 
-                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-300 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors">
+                         class="px-4 py-2.5 bg-slate-50 border-y border-slate-300 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors mb-4 rounded-xl">
                          <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                         <span class="app-title font-outfit tracking-wider text-[14px] font-normal text-slate-800">{{ activeDateGroup }}</span>
+                         <span class="font-outfit tracking-wider font-black text-slate-800 grudge-label" style="color: #1e293b !important;">{{ activeDateGroup }}</span>
                      </div>
 
                      <!-- Virtual Scroller for Records -->

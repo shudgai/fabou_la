@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-full flex flex-col relative overflow-clip text-slate-900 imperial-grace-module overscroll-none">
+    <div class="bg-white h-full flex flex-col relative text-slate-900 imperial-grace-module overscroll-none">
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
@@ -83,10 +83,10 @@
         <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
             <button 
                 @click="currentCategory = 'masters'"
-                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
-                <div class="relative w-[310px] h-[310px]">
+                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                <div class="relative w-full max-w-[310px] aspect-square">
                     <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2" style="font-family: 'DFKai-SB', '標楷體', serif;">
                         <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 38px !important; font-weight: 900 !important;">重大皇恩專區</div>
                         <div class="mt-6 flex items-center">
                             <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ totalCount }} 筆</span>
@@ -98,10 +98,10 @@
             <!-- 第二個按鈕：未求得重大皇恩 (直接進入內容) -->
                 <button 
                     @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
-                    class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-[310px] h-[310px]">
-                    <div class="relative w-[310px] h-[310px]">
+                    class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                    <div class="relative w-full max-w-[310px] aspect-square">
                     <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2" style="font-family: 'DFKai-SB', '標楷體', serif;">
                             <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 30px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
                             <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
                                 <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ unobtainedTotal }} 筆</span>
@@ -115,17 +115,17 @@
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
-            <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-[10px] p-2 place-items-center">
                 <button v-for="(folder, idx) in mastersFolders" :key="folder.id" 
                     @click="currentFolder = folder"
-                    class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[260px] h-[173px] relative group rounded-none bg-transparent">
-                    <div class="relative w-[245px] h-[158px]">
+                    class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-full max-w-[390px] relative group rounded-none bg-transparent">
+                    <div class="relative w-full max-w-[368px] aspect-[245/158]">
                         <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 text-[#fbbf24]">
-                             <div class="text-[14px] opacity-80 mb-0.5 tracking-widest font-bold">重大皇恩專區</div>
-                             <div class="text-[22px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
-                            <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
-                                <span class="text-white font-normal" style="font-size: 14px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-3 text-[#fbbf24]" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                             <div class="text-[21px] opacity-80 mb-[3px] tracking-widest font-bold">重大皇恩專區</div>
+                             <div class="text-[33px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
+                            <div class="mt-1.5 flex items-center" style="transform: translateY(-12px);">
+                                <span class="text-white font-normal" style="font-size: 21px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                             </div>
                         </div>
                     </div>
@@ -148,14 +148,14 @@
                 <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
                 <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
                     <logo-imperial-notebook :height="36" class="md:hidden" />
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
 
                 <!-- Row 2: Folder Name + Actions (Sticky on all devices) -->
                 <div class="flex items-end justify-between w-full px-[15px] pt-1 pb-[6px] bg-white">
-                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 24px !important;">{{ currentFolder?.name }}</span>
+                    <span :class="currentFolder?.name === '閻王仙師' ? 'text-slate-900' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap truncate !font-medium" style="font-size: 24px !important;">{{ currentFolder?.name }}</span>
                     <div class="flex items-center space-x-2 shrink-0 ml-4">
                         <button v-if="!reorderMode" @click="toggleSort" class="px-2 py-1.5 active:scale-95 transition-all font-black" style="color: #4f46e5 !important; font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}

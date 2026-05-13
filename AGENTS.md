@@ -106,6 +106,13 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Vite build warning | Pre-existing CSS `text-[13px]` warning is minor/ignorable |
 | Vue parser | `h-[198px]` cannot be inside `:class` — use static `class` instead |
 | Overflow | Avoid `overflow-x-clip` on containers that hold fixed-width folder buttons |
+| Responsive grids | Use `grid-cols-1 sm:grid-cols-2` for mobile-first 2-col; use `w-full max-w-[Xpx] aspect-square` for fluid buttons |
+| Folder image overlay font | `font-family: 'DFKai-SB', '標楷體', serif` (cascade via inline `style` on parent div) |
+| Sub-folder scaling | 150% of original: container `w-[284px] h-[284px]`, SVG `w-[266px] h-[266px]`; text/ spacing scaled proportionally |
+| Lucky Draw (OtherManager) | Grid `grid-cols-1` with `w-[310px] h-[310px]` fixed buttons; 4 units: 抽順序(empty), 資料夾, 抽順序(in-list), 回合抽籤 |
+| Folder overlay text positioning | `justify-start pt-[72px]` (not `justify-center`) for Teaching sub-folders with tall images |
+| Home view title spacing | `tracking-tighter` (not `tracking-widest`) for consistency between home and list views |
+| Back button | `w-[100px]` → `min-w-[100px]` to prevent text truncation on mobile |
 
 ## Component-Specific Notes
 
@@ -114,17 +121,20 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Folder grid: `flex flex-col items-center gap-[4px]`
 - Folder icon fill: `#ef4444` (red)
 - Has `*允同享皇恩` in remark-list datalist
+- Sub-folder images scaled 150% (btn 260→390px, img 245→368px)
+- Home title uses `tracking-tighter`
 
 ### RegistryManager.vue
 - 法寶登記專區
 - Folder grid: same as Teaching
 - Folder text: `#fbbf24` (yellow)
 - Folder icon fill: `#b91c1c` (dark red)
-- `overflow-visible` on outer wrapper
+- Sub-folder images scaled 150% (btn 189→284px, img 177→266px)
 
 ### ImperialGraceManager.vue
 - 皇恩 module — reference for folder sizing (198×198 buttons, 163×163 SVG, `overflow-clip` on wrapper)
 - `overflow-y-auto` on scroll container
+- Sub-folder images scaled 150% (btn 260→390px, img 245→368px)
 
 ### KaiwenManager.vue
 - 開文專區 — weekly + self posts
@@ -132,6 +142,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Form footer: `grid grid-cols-2 gap-4` for cancel/save buttons
 - `mt-[3px]` on tab container
 - TDZ bug fixed: draft auto-save watch must be placed AFTER `weeklyLines` declaration (line ~712), not before
+- Acrostic grid container: `overflow-x-hidden` → `overflow-x-auto` to prevent cutting content
 
 ### GrudgeBatchImport.vue
 - Batch import UI for 怨靈載錄
@@ -171,11 +182,13 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 ### OtherManager.vue
 - Module for 其他 (miscellaneous) records with special sub-views (開文核定表, 隨機分組, 抽籤)
 - Header uses dual-line layout: module title (30px) + active folder name (23px)
-- Active folder title span at `OtherManager.vue:115` — `margin-left: 14px` to align with KaiwenApproval content
+- Active folder title span: `margin-left: 14px` to align with KaiwenApproval content
 - KaiwenApproval and RandomGroup rendered as child components with `v-if` on folder name
 - Folder buttons follow same 198×198 pattern with SVG icons
-- "抽順序" (Draw Sequence) button is explicitly rendered as the second item in the grid, immediately following the first folder (usually 開文核定表).
+- Lucky Draw section uses `grid-cols-1` with 4 fixed `w-[310px] h-[310px]` folder buttons
+- "抽順序" always appears after first folder (idx===0), plus standalone "回合抽籤"
 - **Close button fix**: Don't use `v-if` on parent for modals with `<teleport to="body">` — use `:show` prop + inner `v-if="show"` instead (see LuckyDraw). KaiwenApproval and RandomGroup must have `@close="activeFolderId = null"` handler.
+- `overflow-visible` removed from root wrappers to prevent layout bleed
 
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots

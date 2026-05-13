@@ -60,9 +60,10 @@
                         </div>
                         <div v-if="localMode.startsWith('batch')" class="relative group mt-12">
                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">載錄目標仙師</label>
-                            <select v-model="form.master_id" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
-                                <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
-                            </select>
+                            <button @click="showMasterModal = true"
+                                class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 bg-transparent py-4 outline-none transition-all">
+                                {{ displayMasterName || '點選選擇仙師...' }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -74,9 +75,10 @@
                         <div class="space-y-10 w-full max-w-sm mt-12">
                             <div class="relative group">
                                 <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">仙師名稱</label>
-                                <select v-model="form.master_id" class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all appearance-none">
-                                    <option v-for="m in masters" :key="m.id" :value="m.id">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</option>
-                                </select>
+                                <button @click="showMasterModal = true"
+                                    class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 bg-transparent py-4 outline-none transition-all">
+                                    {{ displayMasterName || '點選選擇仙師...' }}
+                                </button>
                             </div>
                         </div>
                     </template>
@@ -97,11 +99,8 @@
                     <template v-if="localMode.startsWith('single')">
                         <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
                         <div class="max-w-sm mx-auto mt-12">
-                            <input v-model="form.name" type="text" placeholder="" list="imperial-treasure-names"
+                            <input v-model="form.name" type="text" placeholder=""
                                 class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
-                            <datalist id="imperial-treasure-names">
-                                <option v-for="name in uniqueTreasureNames" :key="name" :value="name" />
-                            </datalist>
                         </div>
                     </template>
                     <template v-else>
@@ -243,6 +242,25 @@
             @close="activePicker = null"
         />
 
+        <div v-if="showMasterModal" class="fixed inset-0 z-[5500] flex items-end md:items-center justify-center">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px]" @click="showMasterModal = false"></div>
+            <div class="relative w-full md:max-w-sm bg-white md:rounded-[32px] rounded-t-[32px] shadow-2xl max-h-[70dvh] flex flex-col animate-slide-up">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
+                    <span class="text-[17px] font-black text-slate-900">選擇仙師</span>
+                    <button @click="showMasterModal = false" class="p-2 text-slate-300 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+                <div class="overflow-y-auto custom-scrollbar p-2 flex-1">
+                    <div v-for="m in masters" :key="m.id"
+                        @click="form.master_id = m.id; showMasterModal = false"
+                        class="px-4 h-[48px] flex items-center hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                        {{ m.name === '父皇仙師' ? '父皇' : m.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <datalist id="dharma-names">
             <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
         </datalist>
@@ -253,7 +271,6 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 
 const props = defineProps({
@@ -273,22 +290,17 @@ const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
 const scrollContainer = ref(null);
-const treasureNames = ref([]);
+const showMasterModal = ref(false);
 
-const uniqueTreasureNames = computed(() => {
-    return [...new Set(treasureNames.value.map(t => t.name).filter(Boolean))].sort();
+const displayMasterName = computed(() => {
+    if (!form.value.master_id) return '';
+    const m = props.masters.find(m => m.id === form.value.master_id);
+    return m ? (m.name === '父皇仙師' ? '父皇' : m.name) : '';
 });
 
-const loadTreasures = async () => {
-    try {
-        const res = await axios.get('/api/treasures-list');
-        treasureNames.value = res.data;
-    } catch (e) { console.error(e); }
-};
 
 onMounted(() => {
     document.body.style.overflow = 'hidden';
-    loadTreasures();
 });
 
 onUnmounted(() => {

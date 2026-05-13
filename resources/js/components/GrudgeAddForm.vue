@@ -7,16 +7,26 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-0">
             <!-- Header -->
-            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
-                <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[30px] font-bold leading-tight font-outfit uppercase tracking-wider text-slate-900 flex items-center gap-2" style="font-size: 30px !important;">
+            <div class="px-[10px] py-[8px] bg-white border-b border-slate-50 relative shrink-0">
+                <div class="flex flex-col items-center w-full">
+                    <!-- Title Row -->
+                    <div class="flex items-center justify-center gap-2 w-full mb-0.5">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <span>怨靈載錄專區<br>逐筆載錄</span>
+                        <div class="text-[30px] font-bold leading-tight font-outfit uppercase tracking-wider text-slate-900" style="font-size: 30px !important;">
+                            怨靈載錄專區
+                        </div>
+                    </div>
+                    <!-- Subtitle Row with Close Button -->
+                    <div class="flex items-center w-full mt-0.5">
+                        <div class="w-10 shrink-0"></div>
+                        <div class="flex-1 text-center text-[20px] font-black text-slate-400 tracking-[0.3em] font-outfit">
+                            逐筆載錄
+                        </div>
+                        <button @click="$emit('cancel')" class="shrink-0 w-10 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors p-1 z-[50]">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
             </div>
 
             <!-- Scrollable Content -->
@@ -219,7 +229,7 @@
 
             <!-- Footer Action -->
             <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center shrink-0">
-                <button v-if="currentStep > 1" @click="currentStep--" class="w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
+                <button v-if="currentStep > 1" @click="currentStep--" class="min-w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
                 <button v-if="currentStep < 6" @click="handleNext" class="flex-1 py-[12px] bg-indigo-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-indigo-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
                 <button v-else @click="handleSave" class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all" style="color: white !important;">
                     {{ editingId ? '確認修改' : '確認載錄' }}
@@ -436,10 +446,13 @@ const tryBigIntSum = (v1, v2) => {
 
 // Auto-sum logic for "二人份" (split quantities) using BigInt to prevent overflow
 watch(() => form.value.remarks, (newRemarks) => {
-    if (form.value.destination === '黑曜軍') {
-        form.value.quantity = tryBigIntSum(newRemarks.yan_zun, newRemarks.yan_an).toString();
-    } else if (form.value.destination === '耀紫軍') {
-        form.value.quantity = tryBigIntSum(newRemarks.long_sheng, newRemarks.long_zhan).toString();
+    const sumBlack = tryBigIntSum(newRemarks.yan_zun, newRemarks.yan_an);
+    const sumPurple = tryBigIntSum(newRemarks.long_sheng, newRemarks.long_zhan);
+
+    if (form.value.destination === '黑曜軍' && sumBlack > 0n) {
+        form.value.quantity = sumBlack.toString();
+    } else if (form.value.destination === '耀紫軍' && sumPurple > 0n) {
+        form.value.quantity = sumPurple.toString();
     }
 }, { deep: true });
 

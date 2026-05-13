@@ -64,7 +64,7 @@
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-tighter font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                         {{ currentFolder ? (currentFolder.id === 0 ? '每日開示' : (currentFolder.name === '父皇' ? '父皇仙師' : currentFolder.name)) : '每日開示' }}
                     </span>
                     <div v-if="currentFolder !== null" class="flex items-center space-x-2 shrink-0 ml-4">
-                        <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                        <button v-if="!reorderMode" @click="toggleSort" class="active:scale-95 transition-all font-black text-indigo-600" style="font-size: 16px !important;">
                             {{ sortDesc ? '新→舊' : '舊→新' }}
                         </button>
                         <button v-if="!focusedId" @click="reorderMode = !reorderMode" 
@@ -112,11 +112,11 @@
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px] mb-1">
-                        <div class="relative w-[310px] h-[310px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[310px] mb-1">
+                        <div class="relative w-full max-w-[310px] aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>每日開示
                                 </span>
@@ -130,11 +130,11 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-[310px] h-[310px]">
-                        <div class="relative w-[310px] h-[310px]">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[310px]">
+                        <div class="relative w-full max-w-[310px] aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>開示載錄
                                 </span>
@@ -158,26 +158,26 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[260px] h-[173px] p-2 bg-transparent">
-                        <div class="relative w-[245px] h-[158px]">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-full max-w-[390px] p-2 bg-transparent">
+                        <div class="relative w-full max-w-[368px] aspect-[245/158]">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-12 px-2 pointer-events-none overflow-visible">
+                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 <div class="font-black tracking-tighter leading-none text-center" 
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'"
-                                     style="font-size: 11px !important;">父皇仙師開示載錄</div>
+                                     style="font-size: 17px !important;">父皇仙師開示載錄</div>
 
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-2"
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-3"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'"
-                                     style="font-weight: 900 !important; font-size: 22px !important; -webkit-text-stroke: 0.5px currentColor;">
+                                     style="font-weight: 900 !important; font-size: 33px !important; -webkit-text-stroke: 0.5px currentColor;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="mt-0 flex items-center pb-8" style="transform: translateY(-2px);">
+                                <div class="mt-0 flex items-center pb-12" style="transform: translateY(-3px);">
                                     <span class="font-black whitespace-nowrap drop-shadow-sm" 
                                           :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#8b0000]'"
-                                          style="font-size: 14px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                          style="font-size: 21px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +237,7 @@
                                             </button>
 
                                             <!-- Custom Dropdown Menu -->
-                                            <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                             <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                                      @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
                                                      class="px-4 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -4837,6 +4837,7 @@ const saveItem = async (data = null) => {
                     saveConfirmModal.value.records = blocksToProcess.map(r => ({
                         ...r, items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
                     }));
+                    addMode.value = false;
                     masterMismatchModal.value = {
                         show: true,
                         detectedMasterName: mismatchName,
@@ -4855,6 +4856,7 @@ const saveItem = async (data = null) => {
                 ...r,
                 items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
             }));
+            addMode.value = false;
             saveConfirmModal.value.show = true;
             itemsDetailMode.value = false;
             return;
@@ -4870,8 +4872,9 @@ const saveItem = async (data = null) => {
             target_remarks: form.value.target_remarks,
             date: form.value.date
         }];
+        addMode.value = false;
         saveConfirmModal.value.show = true;
-        showPreviewRecipients.value.clear(); // Reset for fresh preview
+        showPreviewRecipients.value.clear();
         itemsDetailMode.value = false;
         return;
     }

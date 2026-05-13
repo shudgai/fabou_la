@@ -44,7 +44,7 @@
                 <!-- Step 1: Date -->
                 <div v-if="currentStep === 1" class="space-y-1">
                     <div class="flex items-center justify-between">
-                        <label class="font-bold text-slate-400 uppercase tracking-wider">得知日期</label>
+                        <label class="font-black text-slate-400 uppercase tracking-wider">得知日期</label>
                         <button @click.stop="showDatePicker = true" class="text-slate-300 hover:text-slate-600 transition-colors p-1 active:scale-90">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
@@ -111,6 +111,10 @@
                             <label class="font-bold text-slate-400 uppercase tracking-wider w-12">閻閽</label>
                             <input type="text" v-model="form.yan_an" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
                         </div>
+                        <div class="flex gap-2 items-center mt-2 pt-2 border-t border-slate-50">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">總量</label>
+                            <input type="text" v-model="form.quantity" placeholder="總計數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center font-bold" />
+                        </div>
                     </template>
                     <template v-else-if="props.armyType === '耀紫軍'">
                         <div class="flex gap-2 items-center">
@@ -120,6 +124,10 @@
                         <div class="flex gap-2 items-center">
                             <label class="font-bold text-slate-400 uppercase tracking-wider w-12">龍戰</label>
                             <input type="text" v-model="form.long_zhan" placeholder="輸入數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                        </div>
+                        <div class="flex gap-2 items-center mt-2 pt-2 border-t border-slate-50">
+                            <label class="font-bold text-slate-400 uppercase tracking-wider w-12">總量</label>
+                            <input type="text" v-model="form.quantity" placeholder="總計數量" class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center font-bold" />
                         </div>
                     </template>
                     <template v-else>
@@ -135,15 +143,42 @@
                 </div>
 
                 <!-- Last step: Preview -->
-                <div v-if="currentStep === totalSteps" class="p-3 bg-slate-50 rounded-xl space-y-1 text-slate-900 text-[17px]">
-                    <div v-if="form.know_date">日期：<span class="font-bold">{{ form.know_date }}</span></div>
-                    <div v-if="form.user_name">法號：<span class="font-bold">{{ form.user_name }}</span><span v-if="form.user_remarks">（{{ form.user_remarks }}）</span></div>
-                    <div v-if="form.quantity && form.quantity !== '0'">數量：<span class="font-bold">{{ formatWithCommas(form.quantity) }}</span></div>
-                    <div v-if="form.yan_zun && form.yan_zun !== '0'">閻尊：<span class="font-bold">{{ formatWithCommas(form.yan_zun) }}</span></div>
-                    <div v-if="form.yan_an && form.yan_an !== '0'">閻閽：<span class="font-bold">{{ formatWithCommas(form.yan_an) }}</span></div>
-                    <div v-if="form.long_sheng && form.long_sheng !== '0'">龍勝：<span class="font-bold">{{ formatWithCommas(form.long_sheng) }}</span></div>
-                    <div v-if="form.long_zhan && form.long_zhan !== '0'">龍戰：<span class="font-bold">{{ formatWithCommas(form.long_zhan) }}</span></div>
-                    <div v-if="form.remarks_text">備註：<span class="font-bold">{{ form.remarks_text }}</span></div>
+                <div v-if="currentStep === totalSteps" :key="'preview'" class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-xl space-y-4">
+                    <div class="text-[14px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-50 pb-2 text-center">最終載錄預覽</div>
+                    <div class="space-y-3">
+                        <div v-if="form.know_date" class="flex flex-col items-center">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">得知日期</span>
+                            <span class="text-[17px] font-black text-slate-900">{{ form.know_date }}</span>
+                        </div>
+                        <div v-if="form.user_name" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">法號</span>
+                            <span class="text-[17px] font-black text-indigo-600 leading-none">{{ form.user_name }}<span v-if="form.user_remarks" class="text-slate-400">（{{ form.user_remarks }}）</span></span>
+                        </div>
+                        <div v-if="form.quantity && form.quantity !== '0'" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">數量</span>
+                            <span class="text-[17px] font-black text-slate-900 leading-none">{{ formatWithCommas(form.quantity) }}</span>
+                        </div>
+                        <div v-if="form.yan_zun && form.yan_zun !== '0'" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">閻尊</span>
+                            <span class="text-[17px] font-black text-slate-900 leading-none">{{ formatWithCommas(form.yan_zun) }}</span>
+                        </div>
+                        <div v-if="form.yan_an && form.yan_an !== '0'" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">閻閽</span>
+                            <span class="text-[17px] font-black text-slate-900 leading-none">{{ formatWithCommas(form.yan_an) }}</span>
+                        </div>
+                        <div v-if="form.long_sheng && form.long_sheng !== '0'" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">龍勝</span>
+                            <span class="text-[17px] font-black text-slate-900 leading-none">{{ formatWithCommas(form.long_sheng) }}</span>
+                        </div>
+                        <div v-if="form.long_zhan && form.long_zhan !== '0'" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">龍戰</span>
+                            <span class="text-[17px] font-black text-slate-900 leading-none">{{ formatWithCommas(form.long_zhan) }}</span>
+                        </div>
+                        <div v-if="form.remarks_text" class="flex flex-col items-center border-t border-slate-50 pt-2">
+                            <span class="text-[14px] font-black text-slate-300 uppercase tracking-widest">備註內容</span>
+                            <span class="text-[17px] font-black text-slate-600 leading-tight text-center">{{ form.remarks_text }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -273,6 +308,25 @@ watch(() => props.show, (val) => {
     }
 });
 
+// Auto-sum logic matching GrudgeAddForm
+watch([() => form.value.yan_zun, () => form.value.yan_an], () => {
+    if (props.armyType === '黑曜軍') {
+        const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
+        const an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')) : 0n;
+        const sum = zun + an;
+        if (sum > 0n) form.value.quantity = sum.toString();
+    }
+});
+
+watch([() => form.value.long_sheng, () => form.value.long_zhan], () => {
+    if (props.armyType === '耀紫軍') {
+        const sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')) : 0n;
+        const zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')) : 0n;
+        const sum = sheng + zhan;
+        if (sum > 0n) form.value.quantity = sum.toString();
+    }
+});
+
 const isValidBigInt = (val) => {
     if (!val && val !== 0) return false;
     try { BigInt(String(val).replace(/,/g, '')); return true; }
@@ -300,16 +354,16 @@ const nextStep = () => {
         }
     }
     if (currentStep.value === 3) {
+        const qty = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
         if (props.armyType === '黑曜軍') {
             const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
             const an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')) : 0n;
-            if (zun === 0n && an === 0n) { alert('請輸入至少一個數量'); return; }
+            if (zun === 0n && an === 0n && qty === 0n) { alert('請輸入至少一個數量或總量'); return; }
         } else if (props.armyType === '耀紫軍') {
             const sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')) : 0n;
             const zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')) : 0n;
-            if (sheng === 0n && zhan === 0n) { alert('請輸入至少一個數量'); return; }
+            if (sheng === 0n && zhan === 0n && qty === 0n) { alert('請輸入至少一個數量或總量'); return; }
         } else {
-            const qty = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
             if (qty === 0n) { alert('請輸入數量'); return; }
         }
     }
@@ -330,17 +384,19 @@ const handleSave = () => {
     };
 
     if (props.armyType === '黑曜軍') {
-        payload.yan_zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')).toString() : '0';
-        payload.yan_an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')).toString() : '0';
-        const zun = BigInt(payload.yan_zun);
-        const an = BigInt(payload.yan_an);
-        payload.quantity = (zun + an).toString();
+        const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
+        const an = isValidBigInt(form.value.yan_an) ? BigInt(String(form.value.yan_an).replace(/,/g, '')) : 0n;
+        payload.yan_zun = zun.toString();
+        payload.yan_an = an.toString();
+        const sum = zun + an;
+        payload.quantity = (sum > 0n) ? sum.toString() : (isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')).toString() : '0');
     } else if (props.armyType === '耀紫軍') {
-        payload.long_sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')).toString() : '0';
-        payload.long_zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')).toString() : '0';
-        const sheng = BigInt(payload.long_sheng);
-        const zhan = BigInt(payload.long_zhan);
-        payload.quantity = (sheng + zhan).toString();
+        const sheng = isValidBigInt(form.value.long_sheng) ? BigInt(String(form.value.long_sheng).replace(/,/g, '')) : 0n;
+        const zhan = isValidBigInt(form.value.long_zhan) ? BigInt(String(form.value.long_zhan).replace(/,/g, '')) : 0n;
+        payload.long_sheng = sheng.toString();
+        payload.long_zhan = zhan.toString();
+        const sum = sheng + zhan;
+        payload.quantity = (sum > 0n) ? sum.toString() : (isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')).toString() : '0');
     } else {
         payload.quantity = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')).toString() : '0';
     }
