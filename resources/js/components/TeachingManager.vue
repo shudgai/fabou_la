@@ -240,7 +240,7 @@
                                             <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                                      @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
-                                                     class="px-4 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                     class="px-4 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ m }}
                                                 </div>
                                             </div>
@@ -272,13 +272,13 @@
                                                 <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
                                                 <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn'+dn.id"
                                                      @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                     {{ dn.name }}
                                                 </div>
                                                 <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
                                                 <div v-for="g in mainSearchFilteredGroups" :key="'g'+g.id"
                                                      @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                     {{ formatGroupName(g.name) }}
                                                 </div>
                                             </div>
@@ -298,7 +298,7 @@
                                             <div v-if="activeTargetRemarksDropdown === 'single'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="opt in relationshipOptions" :key="opt"
                                                      @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                     {{ opt }}
                                                 </div>
                                             </div>
@@ -438,7 +438,7 @@
                                                 <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="opt in relationshipOptions" :key="opt"
                                                          @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
-                                                         class="px-4 h-[36px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
+                                                         class="px-4 h-[36px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
                                                         {{ opt }}
                                                     </div>
                                                 </div>
@@ -595,7 +595,7 @@
                                         <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                             <div v-for="name in uniqueTreasureNames.filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
                                                  @click.stop="newItemName = name; activeTreasureDropdownId = null" 
-                                                 class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                 class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                 {{ name }}
                                             </div>
                                         </div>
@@ -621,7 +621,7 @@
                                             <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="n in 9" :key="n" 
                                                      @click.stop="newItemDays = n; activeDaysDropdownId = null" 
-                                                     class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                     class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                     {{ n }}
                                                 </div>
                                             </div>
@@ -690,7 +690,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -711,7 +711,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mt'+n" 
                                                          @click.stop="newItemMainTimes = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -729,7 +729,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mh'+n" 
                                                          @click.stop="newItemMainHours = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -746,7 +746,7 @@
                                                 <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                         {{ n }}
                                                     </div>
                                                 </div>
@@ -774,7 +774,7 @@
                                                     <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemSubDetails = n; activeDaysDropdownId = null" 
-                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                             {{ n }}
                                                         </div>
                                                     </div>
@@ -789,7 +789,7 @@
                                             <div v-if="activePractitionerDropdownId === 'mainFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="dn in detailModalFilteredDharmaNames" :key="'mainfp'+dn.id" 
                                                      @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
-                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                     {{ dn.name }}
                                                 </div>
                                             </div>
@@ -835,7 +835,7 @@
                                                 <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="dn in detailModalFilteredDharmaNames" :key="'pract2'+dn.id" 
                                                          @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                         class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                         {{ dn.name }}
                                                     </div>
                                                 </div>
@@ -903,7 +903,7 @@
                                                 <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="name in uniqueTreasureNames.filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
                                                          @click.stop="newItemSubName = name; activeSubTreasureDropdownId = null" 
-                                                         class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                         class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                         {{ name }}
                                                     </div>
                                                 </div>
@@ -933,7 +933,7 @@
                                                     <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                             {{ n }}
                                                         </div>
                                                     </div>
@@ -980,7 +980,7 @@
                                                     <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="'ses'+n" 
                                                              @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                             class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                             {{ n }}
                                                         </div>
                                                     </div>
@@ -1001,7 +1001,7 @@
                                                         <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'st'+n" 
                                                                  @click.stop="newItemSubTimes = n; activeDaysDropdownId = null" 
-                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                                 {{ n }}
                                                             </div>
                                                         </div>
@@ -1019,7 +1019,7 @@
                                                         <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'sh'+n" 
                                                                  @click.stop="newItemSubHours = n; activeDaysDropdownId = null" 
-                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                                 {{ n }}
                                                             </div>
                                                         </div>
@@ -1040,7 +1040,7 @@
                                                         <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'se2'+n" 
                                                                  @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                                 class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                                 {{ n }}
                                                             </div>
                                                         </div>
@@ -1069,7 +1069,7 @@
                                                             <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="n in 9" :key="n" 
                                                                      @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
-                                                                     class="px-5 h-[38px] flex items-center justify-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                     class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                                                     {{ n }}
                                                                 </div>
                                                             </div>
@@ -1084,7 +1084,7 @@
                                                         <div v-if="activeSubPractitionerDropdownId === 'subFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'spsub'+dn.id" 
                                                                  @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
-                                                                 class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                                 class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                                 {{ dn.name }}
                                                             </div>
                                                         </div>
@@ -1126,7 +1126,7 @@
                                                             <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp2'+dn.id" 
                                                                      @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
-                                                                     class="px-5 h-[38px] flex items-center rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
                                                                     {{ dn.name }}
                                                                 </div>
                                                             </div>

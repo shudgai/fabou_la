@@ -66,7 +66,7 @@
                                 <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                     <div v-for="u in filteredDharmaNames" :key="u.id"
                                         @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
                                         {{ u.name }}
                                     </div>
                                     <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
@@ -90,7 +90,7 @@
                                 <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
                                     <div v-for="opt in relationshipOptions" :key="opt"
                                         @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg cursor-pointer transition-colors font-medium">
+                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
                                         {{ opt }}
                                     </div>
                                 </div>

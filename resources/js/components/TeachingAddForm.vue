@@ -104,7 +104,7 @@
                             <div v-if="activeMasterDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-2 animate-fade-in max-h-[350px] overflow-y-auto custom-scrollbar">
                                 <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
                                  @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdown = false"
-                                 class="px-6 h-[50px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                 class="px-6 h-[50px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                     {{ m }}
                                 </div>
                             </div>
@@ -129,13 +129,13 @@
                                     <div v-if="filteredDharmaNames.length > 0" class="px-6 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-xl">法號</div>
                                     <div v-for="dn in filteredDharmaNames" :key="'dn'+dn.id"
                                          @click.stop="selectDharmaName(dn)"
-                                         class="px-6 h-[48px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                         class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
                                         {{ dn.name }}
                                     </div>
                                     <div v-if="filteredGroups.length > 0" class="px-6 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-xl">群組</div>
                                     <div v-for="g in filteredGroups" :key="'g'+g.id"
                                          @click.stop="selectGroup(g)"
-                                         class="px-6 h-[48px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                                         class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
                                         {{ formatGroupName(g.name) }}
                                     </div>
                                 </div>
@@ -154,7 +154,7 @@
                                 <div v-if="activeRelDropdown" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] p-2 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar text-left">
                                      <div v-for="opt in relationshipOptions" :key="opt"
                                          @click.stop="form.target_remarks = opt; activeRelDropdown = false"
-                                         class="px-6 h-[48px] flex items-center rounded-2xl hover:bg-emerald-50 font-black text-[18px] text-slate-900 active:bg-emerald-100 transition-all cursor-pointer">
+                                         class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-emerald-50 font-black text-[18px] text-slate-900 active:bg-emerald-100 transition-all cursor-pointer">
                                         {{ opt }}
                                     </div>
                                 </div>

@@ -325,11 +325,34 @@ const currentType = ref('');
 const lotteryDisplayNames = ref([]);
 const flyingSticks = ref([]);
 
+const DRAFT_KEY = 'lucky_draw_draft';
+
 watch(() => props.show, (val) => {
     if (val) {
         loadUsers();
+
+        const draftStr = localStorage.getItem(DRAFT_KEY);
+        if (draftStr) {
+            try {
+                const draft = JSON.parse(draftStr);
+                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                    currentStep.value = draft.currentStep || 1;
+                    pendingNames.value = draft.pendingNames || [];
+                    fixedParticipants.value = draft.fixedParticipants || [];
+                    selectedNames.value = draft.selectedNames || [];
+                    roundParticipants.value = draft.roundParticipants || [];
+                    drawCount.value = draft.drawCount || 1;
+                    manualName.value = draft.manualName || '';
+                    lotteryMode.value = draft.lotteryMode !== undefined ? draft.lotteryMode : props.initialMode;
+                    return;
+                }
+            } catch (e) {}
+        }
+
         resetAll(true);
         lotteryMode.value = props.initialMode;
+    } else {
+        localStorage.removeItem(DRAFT_KEY);
     }
 });
 
@@ -607,6 +630,31 @@ watch(persistentToast, (newVal) => {
     if (newVal) lockBodyScroll();
     else unlockBodyScroll();
 });
+
+// Draft auto-save
+watch(() => ({
+    step: currentStep.value,
+    pending: pendingNames.value,
+    fixed: fixedParticipants.value,
+    selected: selectedNames.value,
+    round: roundParticipants.value,
+    count: drawCount.value,
+    manual: manualName.value,
+    mode: lotteryMode.value
+}), (val) => {
+    if (props.show) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+            currentStep: val.step,
+            pendingNames: val.pending,
+            fixedParticipants: val.fixed,
+            selectedNames: val.selected,
+            roundParticipants: val.round,
+            drawCount: val.count,
+            manualName: val.manual,
+            lotteryMode: val.mode
+        }));
+    }
+}, { deep: true });
 
 onMounted(loadUsers);
 </script>

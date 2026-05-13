@@ -204,4 +204,22 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Z-Index | Standardized levels: Modals (`z-[3500]`), Toasts (`z-[6000]`), Nav (`z-[100]`), Close buttons inside modals (`z-[50]/z-[500]/z-[9999]`) |
 | Bottom Button Bar | `fixed md:absolute left-0 right-0 ... bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0` with `z-[200]` |
 | Mobile Safe Area | Replace `<mobile-navbar>` in modals with `<div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>` |
+| Dropdown mobile style | All custom dropdown items use `md:rounded-*` so mobile renders flat rows (no per-item boxes); desktop keeps `rounded-*` |
+
+## Draft Auto-Save Pattern (localStorage)
+
+All draft auto-save features follow this pattern (see KaiwenManager.vue line ~714, OtherRecordsManager.vue, LuckyDraw.vue, OtherManager.vue):
+
+| Step | Implementation |
+|---|---|
+| Save | `watch(() => ({...form fields...}), (val) => { if (addMode/visible) localStorage.setKey(JSON.stringify(val)) }, { deep: true })` |
+| Restore | On add/open, check `localStorage.getItem(key)`, parse, `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`, restore fields |
+| Clear | On save success and on close/cancel: `localStorage.removeItem(key)` |
+
+| Component | Draft Key | Data Saved |
+|---|---|---|
+| KaiwenManager | `kaiwen_draft` | form, weeklyLines, isManualWeekly, type |
+| OtherRecordsManager | `other_records_draft` | title, content, date |
+| LuckyDraw | `lucky_draw_draft` | currentStep, pendingNames, fixedParticipants, selectedNames, roundParticipants, drawCount, manualName, lotteryMode |
+| OtherManager | `other_manager_record_draft` | title, content, record_date |
 

@@ -173,7 +173,7 @@
                                         </button>
                                         <div v-if="activeRelationshipDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-lg border border-slate-100 z-[610] p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                             <div v-for="opt in relationshipOptions" :key="opt" @click.stop="p.relationship = opt; activeRelationshipDropdownIdx = null"
-                                                class="px-4 h-[36px] flex items-center rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
+                                                class="px-4 h-[36px] flex items-center md:rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
                                         </div>
                                     </div>
                                 </div>

@@ -219,6 +219,21 @@ const toggleExpand = (id) => {
 
 const prepareAdd = () => {
     editingRecordId.value = null;
+
+    const draftStr = localStorage.getItem('other_records_draft');
+    if (draftStr) {
+        try {
+            const draft = JSON.parse(draftStr);
+            if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                newTitle.value = draft.title || '';
+                newContent.value = draft.content || '';
+                newDate.value = draft.date || new Date().toISOString().split('T')[0];
+                showAddModal.value = true;
+                return;
+            }
+        } catch (e) {}
+    }
+
     newTitle.value = '';
     newContent.value = '';
     newDate.value = new Date().toISOString().split('T')[0];
@@ -235,6 +250,7 @@ const handleMenuEdit = (record) => {
 
 const closeModal = () => {
     showAddModal.value = false;
+    localStorage.removeItem('other_records_draft');
     newTitle.value = '';
     newContent.value = '';
     newDate.value = '';
@@ -297,6 +313,7 @@ const saveRecord = async () => {
             await axios.post(`/other-folders/${folderId}/records`, payload);
             showToast('✓ 已儲存紀錄');
         }
+        localStorage.removeItem('other_records_draft');
         closeModal();
         await loadData();
     } catch (e) { console.error(e); } finally { saving.value = false; }
@@ -336,6 +353,17 @@ watch(isAnyModalOpen, (newVal) => {
 onUnmounted(() => {
     if (isAnyModalOpen.value) unlockBodyScroll();
 });
+
+// Draft auto-save
+watch(() => ({ t: newTitle.value, c: newContent.value, d: newDate.value }), (newVal) => {
+    if (showAddModal.value && !editingRecordId.value) {
+        localStorage.setItem('other_records_draft', JSON.stringify({
+            title: newVal.t,
+            content: newVal.c,
+            date: newVal.d
+        }));
+    }
+}, { deep: true });
 
 onMounted(() => {
     loadData();

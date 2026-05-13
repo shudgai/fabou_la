@@ -228,7 +228,7 @@
                     <input v-model="newRecord.title" placeholder="標題 (選填)" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-4 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium">
                     <textarea v-model="newRecord.content" rows="6" placeholder="內容..." class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl mb-6 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium resize-none"></textarea>
                     <div class="flex space-x-3 mt-4">
-                        <button @click="showAddRecord = false" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
+                        <button @click="showAddRecord = false; localStorage.removeItem('other_manager_record_draft')" class="flex-1 h-[52px] rounded-2xl font-black text-slate-400 bg-slate-50 active:bg-slate-100 transition-all text-[18px]">取消</button>
                         <button @click="saveRecord" class="flex-[2] h-[52px] rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-100 active:scale-95 transition-all text-[18px]" style="color: white !important;">儲存記事</button>
                     </div>
                 </div>
@@ -438,7 +438,34 @@ const prepareAddFolder = () => {
 };
 
 const prepareAddRecord = () => {
+    newRecord.value = { title: '', content: '', record_date: getTodayStr() };
+    const draftStr = localStorage.getItem('other_manager_record_draft');
+    if (draftStr) {
+        try {
+            const draft = JSON.parse(draftStr);
+            if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                newRecord.value = draft;
+                showAddRecord.value = true;
+                return;
+            }
+        } catch (e) {}
+    }
     showAddRecord.value = true;
+};
+
+const saveRecord = async () => {
+    if (!newRecord.value.content.trim() && !newRecord.value.title.trim()) return;
+    if (!activeFolder.value || !activeFolder.value.id) return;
+    try {
+        await axios.post(`/other-folders/${activeFolder.value.id}/records`, {
+            title: newRecord.value.title.trim(),
+            content: newRecord.value.content.trim(),
+            record_date: newRecord.value.record_date
+        });
+        localStorage.removeItem('other_manager_record_draft');
+        showAddRecord.value = false;
+        await loadData();
+    } catch (e) { console.error(e); }
 };
 
 const handleMore = () => {
@@ -449,6 +476,17 @@ const getFolderSum = (id) => {
     const folder = folders.value.find(f => String(f.id) === String(id));
     return folder?.other_records?.length || 0;
 };
+
+// Draft auto-save for add record
+watch(() => ({ t: newRecord.value.title, c: newRecord.value.content, d: newRecord.value.record_date }), (newVal) => {
+    if (showAddRecord.value) {
+        localStorage.setItem('other_manager_record_draft', JSON.stringify({
+            title: newVal.t,
+            content: newVal.c,
+            record_date: newVal.d
+        }));
+    }
+}, { deep: true });
 
 onMounted(loadData);
 const isAnyModalOpen = computed(() => {
