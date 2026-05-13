@@ -89,7 +89,7 @@
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2" style="font-family: 'DFKai-SB', '標楷體', serif;">
                         <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 38px !important; font-weight: 900 !important;">重大皇恩專區</div>
                         <div class="mt-6 flex items-center">
-                            <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ totalCount }} 筆</span>
+                            <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 24px !important;">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2" style="font-family: 'DFKai-SB', '標楷體', serif;">
                             <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] !font-black" style="font-size: 30px !important; font-weight: 900 !important;"><span class="text-[24px] opacity-90">未求得</span><br>重大皇恩專區</div>
                             <div class="mt-1 flex items-center" style="transform: translateY(-8px);">
-                                <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 14px !important;">共 {{ unobtainedTotal }} 筆</span>
+                                <span class="text-white font-normal tracking-tight drop-shadow-sm" style="font-size: 24px !important;">共 {{ unobtainedTotal }} 筆</span>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                              <div class="text-[21px] opacity-80 mb-[3px] tracking-widest font-bold">重大皇恩專區</div>
                              <div class="text-[33px] font-black">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
                             <div class="mt-1.5 flex items-center" style="transform: translateY(-12px);">
-                                <span class="text-white font-normal" style="font-size: 21px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <span class="text-white font-normal" style="font-size: 16px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                             </div>
                         </div>
                     </div>

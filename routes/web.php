@@ -144,6 +144,10 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/api/teaching-rules', [App\Http\Controllers\TeachingController::class, 'rules']);
     
+    // Image Generation (标楷体 folder images)
+    Route::get('folder-image/{template}', [App\Http\Controllers\ImageController::class, 'folder'])->name('folder.image');
+    Route::get('folder-image/generate-all', [App\Http\Controllers\ImageController::class, 'generateAll'])->name('folder.generate-all');
+
     // Trash / Recycle Bin System
     Route::get('/api/trash', [App\Http\Controllers\TrashController::class, 'index']);
     Route::post('/api/trash/restore', [App\Http\Controllers\TrashController::class, 'restore']);

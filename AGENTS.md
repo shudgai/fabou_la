@@ -123,6 +123,18 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Has `*允同享皇恩` in remark-list datalist
 - Sub-folder images scaled 150% (btn 260→390px, img 245→368px)
 - Home title uses `tracking-tighter`
+- Homepage image text: `pt-[72px]` (not `pt-24`) for vertical positioning
+- All dropdowns use `bottom-full mb-*` to expand upward (replaces `top-full mt-*`)
+
+### TeachingAddForm.vue
+- Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 預覽)
+- Modal container: `overflow-hidden` removed to prevent dropdown clipping
+- **Upward-expanding teleported dropdowns**: Master, Practitioner, Treasure dropdowns use `<teleport to="body">` with `position: fixed` + `transform: translateY(-100%)` to expand upward without being clipped by scroll container
+- Each teleported dropdown has a corresponding `open*Dropdown()` function using `getBoundingClientRect()` for positioning
+- Master and Practitioner inputs: dropdown only opens on arrow button click or on input typing (not on focus alone)
+- Master input: no pre-fill on mount (removed `onMounted` auto-fill logic)
+- Homepage image text: `pt-[72px]` (not `pt-24`) for vertical positioning
+- All dropdowns use `bottom-full mb-*` to expand upward (replaces `top-full mt-*`)
 
 ### RegistryManager.vue
 - 法寶登記專區

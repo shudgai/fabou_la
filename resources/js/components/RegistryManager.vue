@@ -72,7 +72,7 @@
                                 <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6" style="font-size: 21.6px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
                                 <div class="font-black text-red-600 tracking-tight leading-tight text-center !font-black mt-1" style="font-size: 27px !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
                                 <div class="mt-8 flex items-center">
-                                    <span class="text-black font-normal tracking-tight" style="font-size: 18px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="text-black font-normal tracking-tight" style="font-size: 24px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                     </button>
@@ -100,7 +100,7 @@
                                      {{ folder.name }}
                                 </div>
                                 <div class="mt-6 flex items-center">
-                                    <span class="font-normal text-black" style="font-size: 20px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                    <span class="font-normal text-black" style="font-size: 16px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>

@@ -116,12 +116,12 @@
                         <div class="relative w-full max-w-[310px] aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>每日開示
                                 </span>
                                 <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
-                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 14px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
+                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 24px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -134,12 +134,12 @@
                         <div class="relative w-full max-w-[310px] aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-24 px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
                                     父皇仙師<br>開示載錄
                                 </span>
                                 <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
-                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 14px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
+                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 24px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                                 <div class="mt-0 flex items-center pb-12" style="transform: translateY(-3px);">
                                     <span class="font-black whitespace-nowrap drop-shadow-sm" 
                                           :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#8b0000]'"
-                                          style="font-size: 21px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                          style="font-size: 16px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -268,7 +268,7 @@
                                             <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainPract' ? null : 'mainPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
                                                 <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn'+dn.id"
                                                      @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
@@ -295,7 +295,7 @@
                                             <button @click.stop="activeTargetRemarksDropdown = (activeTargetRemarksDropdown === 'single' ? null : 'single')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                 <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown === 'single' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activeTargetRemarksDropdown === 'single'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activeTargetRemarksDropdown === 'single'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="opt in relationshipOptions" :key="opt"
                                                      @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
                                                      class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -435,7 +435,7 @@
                                                 <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-slate-400 hover:text-indigo-600 transition-all">
                                                     <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
-                                                <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 bottom-full mb-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="opt in relationshipOptions" :key="opt"
                                                          @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
                                                          class="px-4 h-[36px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
@@ -592,7 +592,7 @@
                                             </div>
                                         </div>
                                         <!-- Custom Treasure Dropdown -->
-                                        <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                        <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                             <div v-for="name in uniqueTreasureNames.filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
                                                  @click.stop="newItemName = name; activeTreasureDropdownId = null" 
                                                  class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -618,7 +618,7 @@
                                             <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
 
                                             <!-- Custom Days Dropdown (Showing above) -->
-                                            <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="n in 9" :key="n" 
                                                      @click.stop="newItemDays = n; activeDaysDropdownId = null" 
                                                      class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -687,7 +687,7 @@
                                                        class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
 
-                                                <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -708,7 +708,7 @@
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
 
                                                 <!-- Custom Times Dropdown -->
-                                                <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mt'+n" 
                                                          @click.stop="newItemMainTimes = n; activeDaysDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -726,7 +726,7 @@
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
 
                                                 <!-- Custom Hours Dropdown -->
-                                                <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="'mh'+n" 
                                                          @click.stop="newItemMainHours = n; activeDaysDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -743,7 +743,7 @@
                                                        class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
                                                 <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天</span>
 
-                                                <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="n in 9" :key="n" 
                                                          @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -771,7 +771,7 @@
                                                            class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                     <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
 
-                                                    <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemSubDetails = n; activeDaysDropdownId = null" 
                                                              class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -786,7 +786,7 @@
                                             <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainFulingPract' ? null : 'mainFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                 <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activePractitionerDropdownId === 'mainFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                            <div v-if="activePractitionerDropdownId === 'mainFulingPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                 <div v-for="dn in detailModalFilteredDharmaNames" :key="'mainfp'+dn.id" 
                                                      @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
                                                      class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -832,7 +832,7 @@
                                                 <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'pract2' ? null : 'pract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                     <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
-                                                <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="dn in detailModalFilteredDharmaNames" :key="'pract2'+dn.id" 
                                                          @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -900,7 +900,7 @@
                                                     </div>
                                                 </div>
                                                 <!-- Custom Sub-Treasure Dropdown -->
-                                                <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                     <div v-for="name in uniqueTreasureNames.filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
                                                          @click.stop="newItemSubName = name; activeSubTreasureDropdownId = null" 
                                                          class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -930,7 +930,7 @@
                                                     <span class="text-slate-400 font-black mr-0.5 shrink-0 text-[12px]">天</span>
 
                                                     <!-- Custom Days Dropdown (Showing above) -->
-                                                    <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="n" 
                                                              @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
                                                              class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -977,7 +977,7 @@
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
 
                                                     <!-- Custom Days Dropdown -->
-                                                    <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                         <div v-for="n in 9" :key="'ses'+n" 
                                                              @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
                                                              class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -998,7 +998,7 @@
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
 
                                                         <!-- Custom Times Dropdown -->
-                                                        <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'st'+n" 
                                                                  @click.stop="newItemSubTimes = n; activeDaysDropdownId = null" 
                                                                  class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -1016,7 +1016,7 @@
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
 
                                                         <!-- Custom Hours Dropdown -->
-                                                        <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'sh'+n" 
                                                                  @click.stop="newItemSubHours = n; activeDaysDropdownId = null" 
                                                                  class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -1037,7 +1037,7 @@
                                                         <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
 
                                                         <!-- Custom Days Dropdown -->
-                                                        <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="n in 9" :key="'se2'+n" 
                                                                  @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
                                                                  class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -1066,7 +1066,7 @@
                                                                    class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
                                                             <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
 
-                                                            <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="n in 9" :key="n" 
                                                                      @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
                                                                      class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
@@ -1081,7 +1081,7 @@
                                                         <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subFulingPract' ? null : 'subFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                             <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                         </button>
-                                                        <div v-if="activeSubPractitionerDropdownId === 'subFulingPract'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                        <div v-if="activeSubPractitionerDropdownId === 'subFulingPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                             <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'spsub'+dn.id" 
                                                                  @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
                                                                  class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -1123,7 +1123,7 @@
                                                             <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract2' ? null : 'subPract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
                                                                 <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                             </button>
-                                                            <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 top-full mt-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                            <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
                                                                 <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp2'+dn.id" 
                                                                      @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
                                                                      class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
@@ -1625,7 +1625,7 @@
                                                         <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-[#dc1428] active:scale-95 transition-transform">
                                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                                         </button>
-                                                        <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] overflow-hidden p-1.5 focus:outline-none">
+                                                        <div v-if="activeDropdownId === item.id" class="absolute right-0 bottom-full mb-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] overflow-hidden p-1.5 focus:outline-none">
                                                             <div class="flex flex-col space-y-1">
                                                                 <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
                                                                     <span class="text-[17px] font-black text-slate-900">修改</span>

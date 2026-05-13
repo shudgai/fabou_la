@@ -5,7 +5,7 @@
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
+        <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] animate-slide-up flex flex-col">
             
             <!-- Unified Header System (Immersive Wizard Style) -->
             <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative pt-2">
@@ -100,22 +100,17 @@
                     <!-- STEP 2: Master -->
                     <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">錄入哪位<span class="text-red-600">仙師</span>的開示？</h2>
-                        <div class="max-w-md mx-auto mt-12 relative">
+                        <div class="max-w-md mx-auto mt-12 relative flex items-center">
                             <input v-model="masterNameInput" 
                                 ref="masterInputEl"
                                 @change="resolveMasterId"
-                                @focus="showMasterDropdown = true"
-                                @blur="setTimeout(() => showMasterDropdown = false, 150)"
+                                @blur="setTimeout(() => showMasterDropdown = false, 200)"
                                 autocomplete="off"
                                 placeholder="選擇仙師..." 
                                 class="w-full text-center text-[22px] font-black border-0 border-b-2 border-slate-200 focus:border-red-600 bg-transparent py-6 outline-none transition-all placeholder:text-slate-100">
-                            <div v-if="showMasterDropdown && masterFilteredList.length > 0" class="absolute left-0 right-0 top-full mt-1 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar p-1.5 text-left">
-                                <div v-for="m in masterFilteredList" :key="m"
-                                     @mousedown.prevent @click.stop="masterNameInput = m; resolveMasterId(); showMasterDropdown = false"
-                                     class="px-4 h-[48px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                    {{ m }}
-                                </div>
-                            </div>
+                            <button @click.prevent="showMasterDropdown = !showMasterDropdown; if (showMasterDropdown) openMasterDropdown()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-600 active:scale-90 transition-all">
+                                <svg class="w-5 h-5 transition-transform" :class="showMasterDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
                         </div>
                     </div>
 
@@ -124,30 +119,18 @@
                         <div class="space-y-4">
                             <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">此次開示的<span class="text-indigo-600">對象</span>與<span class="text-emerald-600">群組</span></h2>
                             
-                            <div class="max-w-md mx-auto mt-8 relative">
+                            <div class="max-w-md mx-auto mt-8 relative flex items-center">
                                 <input ref="dharmaSearchInputEl"
                                        type="text"
-                                       @input="handleDharmaSearchInput" 
+                                        @input="handleDharmaSearchInput; if (!showPractitionerDropdown) openPractitionerDropdown()" 
                                        v-model="dharmaSearchQuery"
-                                       @focus="showPractitionerDropdown = true"
                                        @blur="setTimeout(() => showPractitionerDropdown = false, 200)"
                                        autocomplete="off"
                                        placeholder="搜尋法號或群組..." 
                                        class="w-full bg-transparent border-0 border-b-2 border-slate-200 focus:border-indigo-600 text-center text-[20px] font-black text-slate-900 py-4 outline-none transition-all placeholder:text-slate-100">
-                                <div v-if="showPractitionerDropdown && (practitionerFilteredNames.length > 0 || practitionerFilteredGroups.length > 0)" class="absolute left-0 right-0 top-full mt-1 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[9000] overflow-y-auto max-h-[280px] custom-scrollbar p-1.5 text-left">
-                                    <div v-if="practitionerFilteredNames.length > 0" class="px-4 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest">法號</div>
-                                    <div v-for="dn in practitionerFilteredNames" :key="'dn'+dn.id"
-                                         @mousedown.prevent @click.stop="selectDharmaName(dn); showPractitionerDropdown = false"
-                                         class="px-4 h-[48px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                        {{ dn.name }}
-                                    </div>
-                                    <div v-if="practitionerFilteredGroups.length > 0" class="px-4 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest">群組</div>
-                                    <div v-for="g in practitionerFilteredGroups" :key="'g'+g.id"
-                                         @mousedown.prevent @click.stop="selectGroup(g); showPractitionerDropdown = false"
-                                         class="px-4 h-[48px] flex items-center rounded-xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
-                                        {{ formatGroupName(g.name) }}
-                                    </div>
-                                </div>
+                                <button @click.prevent="showPractitionerDropdown = !showPractitionerDropdown; if (showPractitionerDropdown) openPractitionerDropdown()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-indigo-600 active:scale-90 transition-all">
+                                    <svg class="w-5 h-5 transition-transform" :class="showPractitionerDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
                         </div>
 
@@ -336,20 +319,13 @@
                      <div class="space-y-4">
                          <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest">法宝名稱</label>
                           <div class="relative">
-                              <input v-model="newItemName" 
-                                  ref="treasureInputEl"
-                                  @focus="showTreasureDropdown = true"
-                                  @blur="setTimeout(() => showTreasureDropdown = false, 150)"
-                                  autocomplete="off"
-                                  placeholder="輸入或選擇法宝..." 
-                                  class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
-                              <div v-if="showTreasureDropdown && treasureFilteredList.length > 0" class="absolute left-0 right-0 top-full mt-1 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar p-1.5 text-left">
-                                  <div v-for="name in treasureFilteredList" :key="name"
-                                       @mousedown.prevent @click.stop="newItemName = name; showTreasureDropdown = false"
-                                       class="px-4 h-[48px] flex items-center rounded-xl hover:bg-amber-50 font-black text-[17px] text-slate-900 active:bg-amber-100 transition-all cursor-pointer">
-                                      {{ name }}
-                                  </div>
-                              </div>
+                               <input v-model="newItemName" 
+                                   ref="treasureInputEl"
+                                   @focus="openTreasureDropdown"
+                                   @blur="setTimeout(() => showTreasureDropdown = false, 200)"
+                                   autocomplete="off"
+                                   placeholder="輸入或選擇法宝..." 
+                                   class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
                           </div>
                      </div>
 
@@ -387,6 +363,34 @@
                      @mousedown.prevent @click.stop="form.target_remarks = opt; activeRelDropdown = false"
                      class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-emerald-50 font-black text-[18px] text-slate-900 active:bg-emerald-100 transition-all cursor-pointer">
                     {{ opt }}
+                </div>
+            </div>
+            <div v-if="showMasterDropdown && masterFilteredList.length > 0" :style="masterDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar text-left p-2 animate-fade-in">
+                <div v-for="m in masterFilteredList" :key="m"
+                     @mousedown.prevent @click.stop="masterNameInput = m; resolveMasterId(); showMasterDropdown = false"
+                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                    {{ m }}
+                </div>
+            </div>
+            <div v-if="showTreasureDropdown && treasureFilteredList.length > 0" :style="treasureDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar text-left p-2 animate-fade-in">
+                <div v-for="name in treasureFilteredList" :key="name"
+                     @mousedown.prevent @click.stop="newItemName = name; showTreasureDropdown = false"
+                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-amber-50 font-black text-[18px] text-slate-900 active:bg-amber-100 transition-all cursor-pointer">
+                    {{ name }}
+                </div>
+            </div>
+            <div v-if="showPractitionerDropdown && (practitionerFilteredNames.length > 0 || practitionerFilteredGroups.length > 0)" :style="practitionerDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[280px] custom-scrollbar text-left p-2 animate-fade-in">
+                <div v-if="practitionerFilteredNames.length > 0" class="px-4 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest">法號</div>
+                <div v-for="dn in practitionerFilteredNames" :key="'dn'+dn.id"
+                     @mousedown.prevent @click.stop="selectDharmaName(dn); showPractitionerDropdown = false"
+                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                    {{ dn.name }}
+                </div>
+                <div v-if="practitionerFilteredGroups.length > 0" class="px-4 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest">群組</div>
+                <div v-for="g in practitionerFilteredGroups" :key="'g'+g.id"
+                     @mousedown.prevent @click.stop="selectGroup(g); showPractitionerDropdown = false"
+                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
+                    {{ formatGroupName(g.name) }}
                 </div>
             </div>
         </teleport>
@@ -461,6 +465,9 @@ const relInputEl = ref(null);
 const treasureInputEl = ref(null);
 
 const relDropdownStyle = ref({});
+const masterDropdownStyle = ref({});
+const treasureDropdownStyle = ref({});
+const practitionerDropdownStyle = ref({});
 
 function openRelDropdown() {
     activeRelDropdown.value = true;
@@ -474,6 +481,57 @@ function openRelDropdown() {
                 top: (rect.top - 8) + 'px',
                 transform: 'translateY(-100%)',
                 maxHeight: Math.min(spaceAbove, 300) + 'px',
+            };
+        }
+    });
+}
+
+function openMasterDropdown() {
+    showMasterDropdown.value = true;
+    nextTick(() => {
+        if (masterInputEl.value) {
+            const rect = masterInputEl.value.getBoundingClientRect();
+            const spaceAbove = rect.top - 8;
+            masterDropdownStyle.value = {
+                left: rect.left + 'px',
+                width: rect.width + 'px',
+                top: (rect.top - 8) + 'px',
+                transform: 'translateY(-100%)',
+                maxHeight: Math.min(spaceAbove, 240) + 'px',
+            };
+        }
+    });
+}
+
+function openTreasureDropdown() {
+    showTreasureDropdown.value = true;
+    nextTick(() => {
+        if (treasureInputEl.value) {
+            const rect = treasureInputEl.value.getBoundingClientRect();
+            const spaceAbove = rect.top - 8;
+            treasureDropdownStyle.value = {
+                left: rect.left + 'px',
+                width: rect.width + 'px',
+                top: (rect.top - 8) + 'px',
+                transform: 'translateY(-100%)',
+                maxHeight: Math.min(spaceAbove, 240) + 'px',
+            };
+        }
+    });
+}
+
+function openPractitionerDropdown() {
+    showPractitionerDropdown.value = true;
+    nextTick(() => {
+        if (dharmaSearchInputEl.value) {
+            const rect = dharmaSearchInputEl.value.getBoundingClientRect();
+            const spaceAbove = rect.top - 8;
+            practitionerDropdownStyle.value = {
+                left: rect.left + 'px',
+                width: rect.width + 'px',
+                top: (rect.top - 8) + 'px',
+                transform: 'translateY(-100%)',
+                maxHeight: Math.min(spaceAbove, 280) + 'px',
             };
         }
     });
@@ -711,10 +769,6 @@ function handleSubmit() {
 
 onMounted(() => {
     lockBodyScroll();
-    if (props.initialData?.master_id) {
-        const m = props.masters.find(v => v.id === props.initialData.master_id);
-        if (m) masterNameInput.value = m.name;
-    }
 });
 onUnmounted(() => unlockBodyScroll());
 </script>
