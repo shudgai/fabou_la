@@ -97,8 +97,11 @@
                     <template v-if="localMode.startsWith('single')">
                         <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請輸入<span class="text-indigo-600">法寶名稱</span></h2>
                         <div class="max-w-sm mx-auto mt-12">
-                            <input v-model="form.name" type="text" placeholder="" 
+                            <input v-model="form.name" type="text" placeholder="" list="imperial-treasure-names"
                                 class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                            <datalist id="imperial-treasure-names">
+                                <option v-for="name in uniqueTreasureNames" :key="name" :value="name" />
+                            </datalist>
                         </div>
                     </template>
                     <template v-else>
@@ -270,9 +273,22 @@ const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
 const scrollContainer = ref(null);
+const treasureNames = ref([]);
+
+const uniqueTreasureNames = computed(() => {
+    return [...new Set(treasureNames.value.map(t => t.name).filter(Boolean))].sort();
+});
+
+const loadTreasures = async () => {
+    try {
+        const res = await axios.get('/api/treasures-list');
+        treasureNames.value = res.data;
+    } catch (e) { console.error(e); }
+};
 
 onMounted(() => {
     document.body.style.overflow = 'hidden';
+    loadTreasures();
 });
 
 onUnmounted(() => {
