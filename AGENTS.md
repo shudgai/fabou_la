@@ -146,6 +146,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - 回合抽籤 mode: `roundParticipants` auto-populated with all selected names on step 3 entry and new round
 - step 3 & 4 lotteryMode headers show LogoImperialNotebook + 抽籤專區 + subtitle with logo header bar
 - step 3 subtitle on its own centered row: "回合抽籤 - 點選本輪人員"
+- Modal pattern: parent must NOT use `v-if` — use `:show` prop with inner `v-if="show"` (teleport compat)
 
 ### GrudgeAddForm.vue / MilitaryAddForm.vue
 - All inputs: `border-0 border-b-2 border-slate-300 bg-transparent` (underline)
@@ -174,6 +175,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - KaiwenApproval and RandomGroup rendered as child components with `v-if` on folder name
 - Folder buttons follow same 198×198 pattern with SVG icons
 - "抽順序" (Draw Sequence) button is explicitly rendered as the second item in the grid, immediately following the first folder (usually 開文核定表).
+- **Close button fix**: Don't use `v-if` on parent for modals with `<teleport to="body">` — use `:show` prop + inner `v-if="show"` instead (see LuckyDraw). KaiwenApproval and RandomGroup must have `@close="activeFolderId = null"` handler.
 
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
@@ -197,6 +199,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Image Priority | `fetchpriority="high"`, `loading="eager"` on critical module icons |
 | Preloading | Critical assets (`imperial_grace_book_v5.png`, etc.) preloaded in `app.blade.php` |
 | Animation Speed | Snappy 0.25s transitions (`animate-slide-up`, `animate-fade-in`) |
-| Modal Standard | `fixed inset-0` centered desktop modals with `backdrop-blur-sm` |
-| Z-Index | Standardized levels: Modals (`z-[2000]`), Toasts (`z-[6000]`), Nav (`z-[100]`) |
+| Modal Standard | All modals wrapped in `<teleport to="body">`, `fixed inset-0 z-[3500] flex items-end md:items-center justify-center` |
+| Close Button | `absolute right-* top-* z-[50] p-2 text-slate-300 hover:text-slate-600` with X SVG inside `<button @click="$emit('close')">` |
+| Z-Index | Standardized levels: Modals (`z-[3500]`), Toasts (`z-[6000]`), Nav (`z-[100]`), Close buttons inside modals (`z-[50]/z-[500]/z-[9999]`) |
+| Bottom Button Bar | `fixed md:absolute left-0 right-0 ... bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0` with `z-[200]` |
+| Mobile Safe Area | Replace `<mobile-navbar>` in modals with `<div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>` |
 
