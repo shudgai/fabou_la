@@ -337,7 +337,7 @@
                                                         <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
                                                             class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
                                                     </div>
-                                                    <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1 px-4">
+                                                    <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1">
                                                         <template v-for="dn in filteredEditDharmaNames" :key="dn.id">
                                                             <!-- Normal buttons -->
                                                             <button v-if="dn.name !== '金巧'"
@@ -391,13 +391,13 @@
                                                 </div>
 
                                                 <!-- Table Layout (Matching Image) -->
-                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm bg-white">
+                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm bg-white -ml-[10px]">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
                                                                 <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
                                                                 <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
-                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap">備註</th>
+                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap pl-[5px]">備註</th>
                                                                 <th class="w-[30px]"></th>
                                                             </tr>
                                                         </thead>
@@ -419,7 +419,7 @@
                                                                 <td class="p-0">
                                                                     <input v-model="dnr.remarks"
                                                                         placeholder="備註"
-                                                                        class="w-full text-center text-[14px] font-bold text-slate-400 bg-transparent py-2 outline-none">
+                                                                        class="w-full text-center text-[14px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
