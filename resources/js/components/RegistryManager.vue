@@ -357,7 +357,7 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
+                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[10px]">法號</th>
                                                                 <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap pl-[5px]">備註</th>
                                                                 <th class="w-[30px]"></th>
@@ -365,7 +365,7 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-2 py-1.5 font-black text-blue-700 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit">
+                                                                <td class="px-2 py-1.5 font-black text-blue-700 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit pl-[10px]">
                                                                     {{ dnr.custom_name }}
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
@@ -484,7 +484,7 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">
+                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit pl-[10px]">
                                                                       <div class="flex items-center justify-between">
                                                                           <span>法號</span>
                                                                           <button @click.stop="openEdit(item); showDharmaSelector = true" class="p-1 bg-indigo-50 text-indigo-600 rounded-full active:scale-95 transition-all">
@@ -499,7 +499,7 @@
                                                           </thead>
                                                         <tbody>
                                                             <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
-                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors border-r border-slate-50">{{ getDharmaNameText(dnr) }}</td>
+                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors border-r border-slate-50 pl-[10px]">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="flex items-center px-2 py-1.5 justify-center relative">
                                                                         <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
