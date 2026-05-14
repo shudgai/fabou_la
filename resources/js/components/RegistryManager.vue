@@ -290,7 +290,7 @@
                                                 </button>
                                             </div>
                                             <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
                                                 <input v-model="editData.name" type="text" placeholder="輸入內容"
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                             </div>
@@ -453,7 +453,7 @@
                                                 </div>
                                             </div>
                                             <div class="space-y-1 md:hidden px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
                                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
                                             <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1 px-4">

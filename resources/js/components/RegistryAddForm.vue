@@ -180,7 +180,7 @@
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
-                                    <compact-datalist v-model="p.custom_name" :options="dharmaNames.map(dn => dn.name)" />
+                                    <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
@@ -258,7 +258,7 @@
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容</label>
+                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
                         <textarea v-model="treasureNamesText" rows="3" placeholder="輸入內容..."
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                     </div>
@@ -899,7 +899,7 @@ const processExcelFile = (file) => {
 
 const validateSingle = () => {
     // 只有法寶名稱是必填
-    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入求寶內容';
+    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入法寶名稱';
 
     // Auto-fill main record_date if empty but first personnel has a date
     if (!form.value.record_date && personnel.value.length > 0 && personnel.value[0].obtained_date) {
@@ -1011,6 +1011,24 @@ const handleSubmit = async () => {
             }))
         });
     }
+};
+
+const getDharmaOptions = (currentVal) => {
+    let names = dharmaNames.value.map(dn => dn.name);
+    
+    // Ensure both are present in the pool if either is present (for selection)
+    const hasGold = names.includes('金巧');
+    const hasDao = names.includes('道霞龍妃');
+    
+    if (hasGold && !hasDao) names.push('道霞龍妃');
+    if (hasDao && !hasGold) names.push('金巧');
+
+    // Logic: "沒選到的自動隱藏"
+    // If the input already exactly matches one, hide the other from the suggestion list
+    if (currentVal === '金巧') return names.filter(n => n !== '道霞龍妃');
+    if (currentVal === '道霞龍妃') return names.filter(n => n !== '金巧');
+
+    return names;
 };
 
 const updatePersonnelRemarks = (idx, content) => {
