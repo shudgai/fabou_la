@@ -161,6 +161,12 @@ const notebookItems = computed(() => {
     if (!user.value) return items;
 
     return items.filter(item => {
+        if (!user.value) return true;
+        
+        // Specific Permission Overrides
+        const forbiddenNamesForRegistry = ['赤峰', '閻闇'];
+        if (item.id === 'treasure' && forbiddenNamesForRegistry.includes(user.value.name)) return false;
+
         if (item.id === 'teaching') return user.value.permissions?.can_see_teaching_folders;
         if (item.id === 'treasure') return user.value.permissions?.can_see_treasures;
         if (item.id === 'military') return user.value.permissions?.can_see_military;

@@ -677,22 +677,8 @@ const rawLines = computed(() => {
 
 const fetchDharmaNames = async () => {
     try {
-        const res = await axios.get('/api/dharma-names-list');
-        let list = res.data;
-        
-        // Special case for Registries: inject 道霞龍妃 if 金巧 exists
-        const gq = list.find(dn => dn.name === '金巧');
-        if (gq) {
-            const gqIdx = list.indexOf(gq);
-            if (!list.some(dn => dn.name === '道霞龍妃')) {
-                list.splice(gqIdx + 1, 0, { 
-                    id: gq.id, // Same ID as 金巧
-                    name: '道霞龍妃',
-                    isAlias: true
-                });
-            }
-        }
-        dharmaNames.value = list;
+        const res = await axios.get('/api/dharma-names-list?all=1');
+        dharmaNames.value = res.data;
     } catch (e) {
         console.error('Failed to load dharma names', e);
     }
