@@ -274,7 +274,7 @@
 
                                     <!-- EDIT MODE: Inline editable fields -->
                                     <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
-                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
+                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
                                             <div class="space-y-1 relative group">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
                                                 <input v-model="editData.record_date" type="text" placeholder="年/月/日"
@@ -310,7 +310,7 @@
                                             </div>
 
                                             <!-- 承接師兄姐 — Dharma Name Table Layout -->
-                                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
+                                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 px-1">
                                                 <div class="flex items-center justify-between px-1">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
                                                     <button @click.stop="showDharmaSelector = !showDharmaSelector" 
@@ -395,7 +395,7 @@
 
                                     <!-- VIEW MODE: Read-only expanded details -->
                                     <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
-                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
+                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div class="space-y-1 md:hidden">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
@@ -423,9 +423,9 @@
                                                 <div @click.stop="openRemarks(item.remarks)" class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                             </div>
                                         </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 px-1">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white ml-[-55px] pl-[35px]">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white -mx-4 md:mx-0">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
@@ -464,7 +464,7 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white ml-[-45px] pl-[25px]">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white -mx-4 md:mx-0">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
