@@ -678,7 +678,21 @@ const rawLines = computed(() => {
 const fetchDharmaNames = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
-        dharmaNames.value = res.data;
+        let list = res.data;
+        
+        // Special case for Registries: inject 道霞龍妃 if 金巧 exists
+        const gq = list.find(dn => dn.name === '金巧');
+        if (gq) {
+            const gqIdx = list.indexOf(gq);
+            if (!list.some(dn => dn.name === '道霞龍妃')) {
+                list.splice(gqIdx + 1, 0, { 
+                    id: gq.id, // Same ID as 金巧
+                    name: '道霞龍妃',
+                    isAlias: true
+                });
+            }
+        }
+        dharmaNames.value = list;
     } catch (e) {
         console.error('Failed to load dharma names', e);
     }
@@ -918,11 +932,14 @@ const handleSubmit = async () => {
         let expandedPersonnel = [];
         personnel.value.forEach(p => {
             if (!p.custom_name || !p.custom_name.trim()) return;
-            // Split names by common delimiters
+            // Split names by common delimiters, but protect '道霞龍妃' as a single unit if it's there
+            // Actually standard split might be fine if we don't use space/comma inside it.
             const names = p.custom_name.split(/[，、, \s\t]+/).map(n => n.trim()).filter(n => n);
             names.forEach(name => {
+                const dnMatch = dharmaNames.value.find(dn => dn.name === name);
                 expandedPersonnel.push({
                     ...p,
+                    dharma_name_id: dnMatch ? dnMatch.id : null,
                     custom_name: name
                 });
             });

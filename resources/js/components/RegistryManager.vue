@@ -958,6 +958,7 @@ const dynamicHeaderTitle = computed(() => {
 });
 
 const getDharmaNameText = (dnr) => {
+    if (dnr.custom_name === '道霞龍妃') return '道霞龍妃';
     if (dnr.dharma_name_id) {
         const dn = dharmaNames.value.find(d => d.id === dnr.dharma_name_id);
         if (dn) return dn.name;
@@ -1175,12 +1176,35 @@ const handlePickerConfirm = (date) => {
 
 const filteredEditDharmaNames = computed(() => {
     const q = dharmaEditSearch.value?.toLowerCase().trim();
-    if (!q) return dharmaNames.value;
-    return dharmaNames.value.filter(dn => dn.name.toLowerCase().includes(q));
+    let list = [...dharmaNames.value];
+
+    // Special case for Registries: inject 道霞龍妃 if 金巧 exists
+    const gq = list.find(dn => dn.name === '金巧');
+    if (gq) {
+        const gqIdx = list.indexOf(gq);
+        // Only inject if not already present (unlikely but safe)
+        if (!list.some(dn => dn.name === '道霞龍妃')) {
+            list.splice(gqIdx + 1, 0, { 
+                id: 'virtual_dxlf', 
+                name: '道霞龍妃', 
+                isVirtual: true, 
+                baseId: gq.id 
+            });
+        }
+    }
+
+    if (!q) return list;
+    return list.filter(dn => dn.name.toLowerCase().includes(q));
 });
 
-const isDharmaSelected = (dnId) => {
-    return (editData.value?.dharma_name_registries || []).some(r => r.dharma_name_id === dnId);
+const isDharmaSelected = (dn) => {
+    if (!editData.value?.dharma_name_registries) return false;
+    return editData.value.dharma_name_registries.some(r => {
+        if (dn.isVirtual) return r.custom_name === '道霞龍妃';
+        // If checking normal的金巧, exclude the virtual one
+        if (dn.name === '金巧') return r.dharma_name_id === dn.id && r.custom_name !== '道霞龍妃';
+        return r.dharma_name_id === dn.id;
+    });
 };
 
 const sortRegistries = (arr) => {
@@ -1202,12 +1226,17 @@ const sortRegistries = (arr) => {
 
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
-    const idx = registries.findIndex(r => r.dharma_name_id === dn.id);
+    const idx = registries.findIndex(r => {
+        if (dn.isVirtual) return r.custom_name === '道霞龍妃';
+        if (dn.name === '金巧') return r.dharma_name_id === dn.id && r.custom_name !== '道霞龍妃';
+        return r.dharma_name_id === dn.id;
+    });
+
     if (idx >= 0) {
         registries.splice(idx, 1);
     } else {
         registries.push({
-            dharma_name_id: dn.id,
+            dharma_name_id: dn.isVirtual ? dn.baseId : dn.id,
             custom_name: dn.name,
             obtained_date: editData.value.record_date || '',
             related_personnel: [],
