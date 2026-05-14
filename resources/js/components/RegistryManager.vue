@@ -306,30 +306,53 @@
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                             </div>
 
+                                            <!-- 承接師兄姐 — Dharma Name Grid Selector -->
                                             <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
-                                                <div v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="flex flex-wrap items-center gap-2 py-2 border-b border-slate-100">
-                                                    <div class="flex items-center gap-1 ml-4">
-                                                        <span class="text-[13px] text-slate-400 font-bold">{{ dnrIdx + 1 }}.</span>
-                                                        <input v-model="dnr.custom_name" type="text" placeholder="法號"
-                                                            class="w-[100px] text-[15px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none">
-                                                    </div>
-                                                    <div class="flex items-center gap-1">
-                                                        <label class="text-[11px] text-slate-400 font-bold">日期</label>
-                                                        <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
-                                                            @input="e => { const v = e.target.value.trim(); if (v) dnr.obtained_date = v.replace(/\//g, '-'); }"
-                                                            placeholder="年/月/日"
-                                                            class="w-[110px] text-[14px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
-                                                    </div>
-                                                    <div class="flex items-center gap-1">
-                                                        <label class="text-[11px] text-slate-400 font-bold">親友</label>
-                                                        <input :value="Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '')"
-                                                            @input="e => { const v = e.target.value.trim(); dnr.related_personnel = v ? v.split(/[、, ]+/).filter(x => x) : []; }"
-                                                            type="text" placeholder="如：父親"
-                                                            class="w-[80px] text-[14px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
+                                                <div class="relative">
+                                                    <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
+                                                        class="w-full text-center text-[15px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                </div>
+                                                <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[200px] overflow-y-auto custom-scrollbar py-2">
+                                                    <button v-for="dn in filteredEditDharmaNames" :key="dn.id"
+                                                        @click.stop="toggleDharmaSelection(dn)"
+                                                        :style="{
+                                                            backgroundColor: isDharmaSelected(dn.id) ? '#bfdbfe' : '#ffffff',
+                                                            borderColor: isDharmaSelected(dn.id) ? '#93c5fd' : '#d1d5db',
+                                                            borderWidth: isDharmaSelected(dn.id) ? '2px' : '1px',
+                                                        }"
+                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                        <span class="truncate leading-none">{{ dn.name }}</span>
+                                                    </button>
+                                                </div>
+                                                <div v-if="filteredEditDharmaNames.length === 0" class="text-center py-2 text-slate-300 text-[13px]">無符合法號</div>
+
+                                                <!-- Selected Dharma Names Detail -->
+                                                <div v-if="editData.dharma_name_registries?.length" class="space-y-2 pt-2">
+                                                    <label class="text-[11px] text-slate-400 font-bold block">已選法號詳細資料</label>
+                                                    <div v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="flex flex-wrap items-center gap-2 py-2 border-b border-slate-100">
+                                                        <span class="text-[13px] text-slate-400 font-bold ml-2 w-[20px]">{{ dnrIdx + 1 }}.</span>
+                                                        <span class="text-[15px] font-black text-blue-700 w-[80px] truncate">{{ dnr.custom_name }}</span>
+                                                        <div class="flex items-center gap-1">
+                                                            <label class="text-[11px] text-slate-400 font-bold">日期</label>
+                                                            <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
+                                                                @input="e => { const v = e.target.value.trim(); if (v) dnr.obtained_date = v.replace(/\//g, '-'); }"
+                                                                placeholder="年/月/日"
+                                                                class="w-[105px] text-[13px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
+                                                        </div>
+                                                        <div class="flex items-center gap-1">
+                                                            <label class="text-[11px] text-slate-400 font-bold">親友</label>
+                                                            <input :value="Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '')"
+                                                                @input="e => { const v = e.target.value.trim(); dnr.related_personnel = v ? v.split(/[、, ]+/).filter(x => x) : []; }"
+                                                                type="text" placeholder="如：父親"
+                                                                class="w-[70px] text-[13px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
+                                                        </div>
+                                                        <button @click.stop="removeDharmaSelection(dnrIdx)" class="ml-auto text-slate-300 hover:text-red-500 p-1">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div v-if="!editData.dharma_name_registries?.length" class="text-center py-4 text-slate-300 text-[13px]">尚無人員紀錄</div>
+                                                <div v-if="!editData.dharma_name_registries?.length" class="text-center py-3 text-slate-300 text-[13px]">尚未選擇法號</div>
                                             </div>
 
                                             <!-- Save/Cancel Buttons -->
@@ -768,6 +791,7 @@ const paginationMeta = ref(null);
 const currentPage = ref(1);
 const editItemId = ref(null);
 const editData = ref(null);
+const dharmaEditSearch = ref('');
 
 const handlePageChange = (page) => {
     currentPage.value = page;
@@ -1075,6 +1099,36 @@ const saveEdit = async () => {
     } finally {
         isSaving.value = false;
     }
+};
+
+const filteredEditDharmaNames = computed(() => {
+    const q = dharmaEditSearch.value?.toLowerCase().trim();
+    if (!q) return dharmaNames.value;
+    return dharmaNames.value.filter(dn => dn.name.toLowerCase().includes(q));
+});
+
+const isDharmaSelected = (dnId) => {
+    return (editData.value?.dharma_name_registries || []).some(r => r.dharma_name_id === dnId);
+};
+
+const toggleDharmaSelection = (dn) => {
+    const registries = editData.value.dharma_name_registries || [];
+    const idx = registries.findIndex(r => r.dharma_name_id === dn.id);
+    if (idx >= 0) {
+        registries.splice(idx, 1);
+    } else {
+        registries.push({
+            dharma_name_id: dn.id,
+            custom_name: dn.name,
+            obtained_date: editData.value.record_date || '',
+            related_personnel: [],
+            remarks: ''
+        });
+    }
+};
+
+const removeDharmaSelection = (idx) => {
+    editData.value.dharma_name_registries.splice(idx, 1);
 };
 
 const getMasterName = (id) => {
