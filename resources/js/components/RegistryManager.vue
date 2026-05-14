@@ -306,53 +306,77 @@
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                             </div>
 
-                                            <!-- 承接師兄姐 — Dharma Name Grid Selector -->
+                                            <!-- 承接師兄姐 — Dharma Name Table Layout -->
                                             <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
-                                                <div class="relative">
-                                                    <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
-                                                        class="w-full text-center text-[15px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
-                                                </div>
-                                                <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[200px] overflow-y-auto custom-scrollbar py-2">
-                                                    <button v-for="dn in filteredEditDharmaNames" :key="dn.id"
-                                                        @click.stop="toggleDharmaSelection(dn)"
-                                                        :style="{
-                                                            backgroundColor: isDharmaSelected(dn.id) ? '#bfdbfe' : '#ffffff',
-                                                            borderColor: isDharmaSelected(dn.id) ? '#93c5fd' : '#d1d5db',
-                                                            borderWidth: isDharmaSelected(dn.id) ? '2px' : '1px',
-                                                        }"
-                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
-                                                        <span class="truncate leading-none">{{ dn.name }}</span>
+                                                <div class="flex items-center justify-between px-1">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
+                                                    <button @click.stop="showDharmaSelector = !showDharmaSelector" 
+                                                        class="flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[13px] font-black active:scale-95 transition-all">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        新增
                                                     </button>
                                                 </div>
-                                                <div v-if="filteredEditDharmaNames.length === 0" class="text-center py-2 text-slate-300 text-[13px]">無符合法號</div>
 
-                                                <!-- Selected Dharma Names Detail -->
-                                                <div v-if="editData.dharma_name_registries?.length" class="space-y-2 pt-2">
-                                                    <label class="text-[11px] text-slate-400 font-bold block">已選法號詳細資料</label>
-                                                    <div v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="flex flex-wrap items-center gap-2 py-2 border-b border-slate-100">
-                                                        <span class="text-[13px] text-slate-400 font-bold ml-2 w-[20px]">{{ dnrIdx + 1 }}.</span>
-                                                        <span class="text-[15px] font-black text-blue-700 w-[80px] truncate">{{ dnr.custom_name }}</span>
-                                                        <div class="flex items-center gap-1">
-                                                            <label class="text-[11px] text-slate-400 font-bold">日期</label>
-                                                            <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
-                                                                @input="e => { const v = e.target.value.trim(); if (v) dnr.obtained_date = v.replace(/\//g, '-'); }"
-                                                                placeholder="年/月/日"
-                                                                class="w-[105px] text-[13px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
-                                                        </div>
-                                                        <div class="flex items-center gap-1">
-                                                            <label class="text-[11px] text-slate-400 font-bold">親友</label>
-                                                            <input :value="Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '')"
-                                                                @input="e => { const v = e.target.value.trim(); dnr.related_personnel = v ? v.split(/[、, ]+/).filter(x => x) : []; }"
-                                                                type="text" placeholder="如：父親"
-                                                                class="w-[70px] text-[13px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
-                                                        </div>
-                                                        <button @click.stop="removeDharmaSelection(dnrIdx)" class="ml-auto text-slate-300 hover:text-red-500 p-1">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                <!-- Selector Grid (Toggleable) -->
+                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                                    <div class="relative">
+                                                        <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
+                                                            class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
+                                                    </div>
+                                                    <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1">
+                                                        <button v-for="dn in filteredEditDharmaNames" :key="dn.id"
+                                                            @click.stop="toggleDharmaSelection(dn)"
+                                                            :style="{
+                                                                backgroundColor: isDharmaSelected(dn.id) ? '#bfdbfe' : '#ffffff',
+                                                                borderColor: isDharmaSelected(dn.id) ? '#93c5fd' : '#d1d5db',
+                                                                borderWidth: isDharmaSelected(dn.id) ? '2px' : '1px',
+                                                            }"
+                                                            class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                            <span class="truncate leading-none">{{ dn.name }}</span>
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div v-if="!editData.dharma_name_registries?.length" class="text-center py-3 text-slate-300 text-[13px]">尚未選擇法號</div>
+
+                                                <!-- Table Layout (Matching Image) -->
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white -mx-4 md:mx-0">
+                                                    <table class="w-full border-collapse bg-white text-[16px]">
+                                                        <thead>
+                                                            <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
+                                                                <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[40px]"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                                <td class="px-2 py-1.5 font-black text-blue-700 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit">
+                                                                    {{ dnr.custom_name }}
+                                                                </td>
+                                                                <td class="p-0 border-r border-slate-50">
+                                                                    <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
+                                                                        @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
+                                                                        placeholder="年/月/日"
+                                                                        class="w-full text-center text-[15px] font-black !text-[#dc1428] bg-transparent py-2 outline-none"
+                                                                        style="font-family: 'PMingLiU', serif;">
+                                                                </td>
+                                                                <td class="p-0">
+                                                                    <input v-model="dnr.remarks"
+                                                                        placeholder="備註"
+                                                                        class="w-full text-center text-[14px] font-bold text-slate-400 bg-transparent py-2 outline-none">
+                                                                </td>
+                                                                <td class="px-1 text-center">
+                                                                    <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
+                                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr v-if="!editData.dharma_name_registries?.length">
+                                                                <td colspan="4" class="py-8 text-center text-slate-300 text-[14px] font-black">尚未選擇承接人員</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
 
                                             <!-- Save/Cancel Buttons -->
@@ -399,7 +423,14 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
+                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">
+                                                                    <div class="flex items-center justify-between">
+                                                                        <span>法號</span>
+                                                                        <button @click.stop="openEdit(item); showDharmaSelector = true" class="p-1 bg-indigo-50 text-indigo-600 rounded-full active:scale-95 transition-all">
+                                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg>
+                                                                        </button>
+                                                                    </div>
+                                                                </th>
                                                                 <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
@@ -431,20 +462,27 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">
+                                                                      <div class="flex items-center justify-between">
+                                                                          <span>法號</span>
+                                                                          <button @click.stop="openEdit(item); showDharmaSelector = true" class="p-1 bg-indigo-50 text-indigo-600 rounded-full active:scale-95 transition-all">
+                                                                              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg>
+                                                                          </button>
+                                                                      </div>
+                                                                  </th>
                                                                   <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
-                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
                                                                   <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
                                                                   <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                               </tr>
                                                           </thead>
                                                         <tbody>
                                                             <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
+                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors border-r border-slate-50">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="flex items-center px-2 py-1.5 justify-center relative">
                                                                         <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
-                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="w-full py-1.5 px-2 flex items-center">
                                                                         <span class="text-[14px] text-slate-600 font-bold font-outfit">
@@ -792,6 +830,7 @@ const currentPage = ref(1);
 const editItemId = ref(null);
 const editData = ref(null);
 const dharmaEditSearch = ref('');
+const showDharmaSelector = ref(false);
 
 const handlePageChange = (page) => {
     currentPage.value = page;
@@ -1049,6 +1088,7 @@ const openEdit = (item) => {
     expandedIds.value = new Set([item.id]);
     editItemId.value = item.id;
     editData.value = JSON.parse(JSON.stringify(item));
+    showDharmaSelector.value = false;
 };
 
 const cancelEdit = () => {

@@ -116,6 +116,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Batch import preview | Show raw pasted lines as-is (use `rawLines` computed: `split('\n').map(l => l.trim()).filter(l => l !== '')`); never modify `batchInput`/`batchText` textarea content with watchers |
 | Batch integrity (WYPIWYS) | For batch-pasted records, preserve the FULL original content in the database; do NOT strip headers or item lines. List view should render raw content with `whitespace-pre-wrap` and hide synthetic headers when `isContentLiteral` is true. |
 | Dropdown/Menu state | Use `activeDropdownId` (reactive) to track which item menu/dropdown is open; ensure `activeDropdownId = null` is called on delete/edit/close. |
+| CompactDatalist (Mobile) | Replace native `<datalist>` on mobile with boxed buttons below input; only visible on mobile (`md:hidden`); caps at 15 items for performance. |
 
 ## Component-Specific Notes
 
@@ -241,6 +242,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Bottom Button Bar | `fixed md:absolute left-0 right-0 ... bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0` with `z-[200]` |
 | Mobile Safe Area | Replace `<mobile-navbar>` in modals with `<div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>` |
 | Dropdown mobile style | All custom dropdown items use `md:rounded-*` so mobile renders flat rows (no per-item boxes); desktop keeps `rounded-*` |
+| CompactDatalist Pattern | Use for all inputs requiring suggestions on mobile to prevent keyboard overlay issues; handles filtering and boxed layout. |
 | Scroll iOS smoothness | All `.custom-scrollbar` must include `-webkit-overflow-scrolling: touch` for inertial scrolling on iPhone |
 | localStorage iOS safe | Use `safeLocalStorage` from `iosCompat.js` instead of raw `localStorage` (Private Browsing throws SecurityError) |
 
