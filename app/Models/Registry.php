@@ -21,6 +21,7 @@ class Registry extends Model
         'purpose',
         'effect',
         'acquisition_method',
+        'content',
         'remarks',
         'category',
         'record_date',

@@ -112,6 +112,7 @@ class RegistryController extends Controller
                     'purpose'            => $request->purpose,
                     'effect'             => $request->effect,
                     'acquisition_method' => $request->acquisition_method,
+                    'content'            => $request->content,
                     'remarks'            => $request->remarks,
                     'record_date'        => $request->record_date,
                     'obtained_date'      => $request->obtained_date,
@@ -122,6 +123,7 @@ class RegistryController extends Controller
             } else {
                 $registry->update(array_filter([
                     'acquisition_method' => $request->acquisition_method,
+                    'content'            => $request->content,
                     'purpose'            => $request->purpose,
                     'effect'             => $request->effect,
                     'remarks'            => $request->remarks,
@@ -349,6 +351,7 @@ class RegistryController extends Controller
                 } else {
                     $registry->update(array_filter([
                         'acquisition_method' => $recordData['acquisition_method'] ?? null,
+                        'content'            => $recordData['content'] ?? null,
                         'purpose'            => $recordData['purpose'] ?? null,
                         'effect'             => $recordData['effect'] ?? null,
                         'remarks'            => $recordData['remarks'] ?? null,

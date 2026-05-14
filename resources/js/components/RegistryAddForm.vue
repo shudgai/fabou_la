@@ -127,7 +127,7 @@
                         </div>
                     </div>
 
-                    <!-- STEP 6: 作法 (Moved from step 5) -->
+                    <!-- STEP 6: 作法 -->
                     <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">作法</span></h2>
@@ -139,8 +139,20 @@
                         </div>
                     </div>
 
-                    <!-- STEP 7: 備註與承接師兄姐 -->
-                    <div v-else-if="currentStep === 7" :key="'s7'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 7: 法寶內容 (NEW) -->
+                    <div v-else-if="currentStep === 7" :key="'s7'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶內容</span></h2>
+                        </div>
+                        <div class="relative group">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
+                            <textarea v-model="form.content" rows="5" placeholder="輸入內容..."
+                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 8: 備註與承接師兄姐 -->
+                    <div v-else-if="currentStep === 8" :key="'s8'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-6">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">備註及人員</span></h2>
                         </div>
@@ -249,6 +261,11 @@
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容</label>
                         <textarea v-model="treasureNamesText" rows="3" placeholder="輸入內容..."
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                    </div>
+                    <div class="relative group">
+                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
+                        <textarea v-model="form.content" rows="3" placeholder="輸入內容..."
+                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
@@ -427,8 +444,8 @@ import CompactDatePicker from './CompactDatePicker.vue';
 
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
-const totalSteps = 7;
-const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '備註'];
+const totalSteps = 8;
+const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '法寶內容', '備註'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 const isEditing = computed(() => !!props.initialData?.id);
 

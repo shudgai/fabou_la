@@ -310,6 +310,11 @@
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
                                             <div class="space-y-1 px-4">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容 (選填)</label>
+                                                <textarea v-model="editData.content" rows="2" placeholder="輸入法寶內容..."
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                            </div>
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
                                                 <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
@@ -462,6 +467,10 @@
                                             <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">作法</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.acquisition_method }}</div>
+                                            </div>
+                                            <div v-if="item.content && item.content !== '-' && item.content !== '無'" class="space-y-1 px-4">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容</label>
+                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.content }}</div>
                                             </div>
                                             <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">備註</label>
@@ -2015,7 +2024,7 @@ const copyAllToLine = () => {
             const name = dn?.name || r.custom_name || '未知人員';
             return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
         }).join('\n') || '尚無紀錄';
-        return `【${item.name}】\n用意：${item.purpose || '-'}\n登記狀況：\n${dnrText}`;
+        return `【${item.name}】\n用意：${item.purpose || '-'}\n內容：${item.content || '-'}\n登記狀況：\n${dnrText}`;
     }).join('\n\n------------------\n\n');
 
     navigator.clipboard.writeText(text);
@@ -2037,7 +2046,7 @@ const downloadAllData = () => {
             return `● ${name} | ${formatToROC(r.obtained_date)}${r.remarks ? ' | ' + r.remarks : ''}`;
         }).join('\r\n') || '尚無紀錄';
 
-        return `【${item.name}】\r\n用意：${item.purpose || '-'}\r\n登記狀況：\r\n${dnrText}`;
+        return `【${item.name}】\r\n用意：${item.purpose || '-'}\r\n內容：${item.content || '-'}\r\n登記狀況：\r\n${dnrText}`;
     }).join('\r\n\r\n--------------------------------\r\n\r\n');
 
     const finalContent = `【法寶登記專區 - ${currentFolder.value.name} 完整清單】\r\n\r\n${contents}`;
