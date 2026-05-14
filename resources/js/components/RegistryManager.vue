@@ -273,7 +273,7 @@
                             </div>
 
                                     <!-- EDIT MODE: Inline editable fields -->
-                                    <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4">
+                                    <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -ml-[40px] -mr-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
                                             <div class="space-y-1 relative group px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
@@ -394,7 +394,7 @@
                                     </div>
 
                                     <!-- VIEW MODE: Read-only expanded details -->
-                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4">
+                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -ml-[40px] -mr-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
                                                 <div class="space-y-1 md:hidden">
