@@ -273,45 +273,45 @@
                             </div>
 
                                     <!-- EDIT MODE: Inline editable fields -->
-                                    <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
+                                    <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
-                                            <div class="space-y-1 relative group">
+                                            <div class="space-y-1 relative group px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
                                                 <input v-model="editData.record_date" type="text" placeholder="年/月/日"
                                                     class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
-                                                <button @click="activePicker = { field: 'record_date' }" class="absolute right-0 bottom-2 text-slate-300 hover:text-indigo-500">
+                                                <button @click="activePicker = { field: 'record_date' }" class="absolute right-4 bottom-2 text-slate-300 hover:text-indigo-500">
                                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
                                                 <input v-model="editData.name" type="text" placeholder="輸入內容"
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">用意 (選填)</label>
                                                 <textarea v-model="editData.purpose" rows="2" placeholder="輸入用意..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">功效 (選填)</label>
                                                 <textarea v-model="editData.effect" rows="2" placeholder="輸入功效..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">作法 (選填)</label>
                                                 <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
                                                 <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                             </div>
 
                                             <!-- 承接師兄姐 — Dharma Name Table Layout -->
-                                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 px-1">
-                                                <div class="flex items-center justify-between px-1">
+                                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
+                                                <div class="flex items-center justify-between px-4">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
                                                     <button @click.stop="showDharmaSelector = !showDharmaSelector" 
                                                         class="flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[13px] font-black active:scale-95 transition-all">
@@ -321,12 +321,12 @@
                                                 </div>
 
                                                 <!-- Selector Grid (Toggleable) -->
-                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-2xl border border-slate-100 -mx-4 md:mx-0">
-                                                    <div class="relative">
+                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-none border-y border-slate-100">
+                                                    <div class="relative px-4">
                                                         <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
                                                             class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
                                                     </div>
-                                                    <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1">
+                                                    <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1 px-4">
                                                         <button v-for="dn in filteredEditDharmaNames" :key="dn.id"
                                                             @click.stop="toggleDharmaSelection(dn)"
                                                             :style="{
@@ -341,7 +341,7 @@
                                                 </div>
 
                                                 <!-- Table Layout (Matching Image) -->
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white -mx-4 md:mx-0">
+                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
@@ -394,38 +394,38 @@
                                     </div>
 
                                     <!-- VIEW MODE: Read-only expanded details -->
-                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
+                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
                                                 <div class="space-y-1 md:hidden">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
                                                     <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                                 </div>
                                             </div>
-                                            <div class="space-y-1 md:hidden">
+                                            <div class="space-y-1 md:hidden px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
                                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
-                                            <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1">
+                                            <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">用意</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.purpose }}</div>
                                             </div>
-                                            <div v-if="item.effect && item.effect !== '-' && item.effect !== '無'" class="space-y-1">
+                                            <div v-if="item.effect && item.effect !== '-' && item.effect !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">功效</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.effect }}</div>
                                             </div>
-                                            <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1">
+                                            <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">作法</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.acquisition_method }}</div>
                                             </div>
-                                            <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1">
+                                            <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1 px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">備註</label>
                                                 <div @click.stop="openRemarks(item.remarks)" class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                             </div>
                                         </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 px-1">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white -mx-4 md:mx-0">
+                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
@@ -464,7 +464,7 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white -mx-4 md:mx-0">
+                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
