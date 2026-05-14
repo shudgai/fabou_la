@@ -76,23 +76,14 @@
                 </div>
             </div>
             <div v-if="(currentCategory !== null || currentFolder !== null || addMode) && !(currentCategory === 'masters' && !currentFolder && !addMode)" class="flex flex-col border-b border-slate-300 bg-white sticky top-0 z-[110] w-full">
-                <!-- Header Row -->
-                <div class="flex items-center justify-between px-3 py-2">
-                    <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h2 class="text-red-600 leading-tight font-outfit tracking-tighter whitespace-nowrap font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
-                            父皇仙師開示專區
-                        </h2>
-                    </div>
-                    <div class="flex items-center space-x-2 shrink-0 ml-2" style="padding-top: 5px;">
-                        <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-2xl active:scale-90 transition-all border border-red-100">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-
-                        <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-                    </div>
+                <!-- Header Row (only when close/back button is needed) -->
+                <div v-if="focusedId || addMode" class="flex items-center justify-end px-3 py-2">
+                    <button v-if="focusedId" @click.stop="focusedId = null" class="w-8 h-8 flex items-center justify-center bg-red-50 text-white rounded-2xl active:scale-90 transition-all border border-red-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <button v-if="addMode" @click="addMode = false" class="text-slate-400 p-2 active:scale-90 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
                 </div>
                 <!-- Sub-header Row -->
                 <div v-if="!addMode" class="px-[15px] pt-1 pb-[6px] bg-white flex items-end justify-between w-full">
@@ -115,45 +106,45 @@
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
-                <div class="px-[15px] pb-24 grid grid-cols-2 gap-4 justify-items-center w-full max-w-lg mx-auto">
-                    <!-- Category 1: Daily Teaching (Large Folder Style) -->
-                    <button v-if="user?.permissions?.can_see_daily_teachings"
-                        @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[220px]">
-                        <div class="relative w-full aspect-square">
-                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                            <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[52px] px-2 pointer-events-none overflow-visible font-biaokai">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 26px !important; color: white !important; -webkit-text-stroke: 0.5px white;">
-                                     父皇仙師<br>每日開示
-                                 </span>
-                                 <div class="mt-2 flex items-center pb-8 font-biaokai" style="transform: translateY(-5px);">
-                                     <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 16px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
-                                 </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
-                    <button v-if="user?.permissions?.can_see_teaching_folders"
-                        @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[220px]">
-                        <div class="relative w-full aspect-square">
-                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                            <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[52px] px-2 pointer-events-none overflow-visible font-biaokai">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 26px !important; color: white !important; -webkit-text-stroke: 0.5px white;">
-                                    父皇仙師<br>開示載錄
-                                </span>
-                                <div class="mt-2 flex items-center pb-8 font-biaokai" style="transform: translateY(-5px);">
-                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 16px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
+                    <div class="flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
+                        <!-- Category 1: Daily Teaching (Large Folder Style) -->
+                        <button v-if="user?.permissions?.can_see_daily_teachings"
+                            @click="currentCategory = 'daily'"
+                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                            <div class="relative w-full max-w-[310px] aspect-square">
+                                <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                                <!-- Label Inside -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai pt-2">
+                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
+                                         父皇仙師<br>每日開示
+                                     </span>
+                                     <div class="mt-6 flex items-center font-biaokai">
+                                         <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
+                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </button>
+                        </button>
+
+                        <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
+                        <button v-if="user?.permissions?.can_see_teaching_folders"
+                            @click="currentCategory = 'masters'"
+                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                            <div class="relative w-full max-w-[310px] aspect-square">
+                                <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
+                                <!-- Label Inside -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai pt-2">
+                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
+                                        父皇仙師<br>開示載錄
+                                    </span>
+                                    <div class="mt-6 flex items-center font-biaokai">
+                                        <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </template>
+            </template>
 
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
@@ -165,28 +156,25 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
+                <div class="grid grid-cols-2 gap-1 justify-items-center w-full max-w-[400px] mx-auto">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-2 bg-transparent">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-2 bg-white">
                         <div class="relative w-full max-w-[180px] aspect-[245/158]">
-                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-[30px] px-2 pointer-events-none overflow-visible font-biaokai">
-                                <div class="font-black tracking-tighter leading-none text-center font-biaokai" 
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'"
-                                     style="font-size: 11px !important;">父皇仙師開示載錄</div>
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                             <div class="absolute inset-0 flex flex-col items-center justify-end pb-4 font-biaokai">
+                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+                                      style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-1 font-biaokai"
-                                     :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'"
-                                     style="font-weight: 900 !important; font-size: 26px !important; -webkit-text-stroke: 0.5px white;">
-                                     {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
-                                </div>
-                                <div class="mt-0 flex items-center pb-12 font-biaokai" style="transform: translateY(-2px);">
-                                    <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai" 
-                                          :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#8b0000]'"
-                                          style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
-                                </div>
-                            </div>
+                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[2px] font-biaokai text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                      style="font-weight: 900 !important; font-size: 26px !important;">
+                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
+                                 </div>
+                                 <div class="mt-[2px] flex items-center font-biaokai">
+                                     <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai text-red-600"
+                                           style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                 </div>
+                             </div>
                         </div>
                     </button>
                 </div>
@@ -1877,7 +1865,7 @@
             </div>
             <mobile-navbar 
                 :can-back="currentFolder !== null || currentCategory !== null || addMode"
-                :show-action="(currentFolder !== null || (currentCategory === 'masters' && !currentFolder) || (currentFolder === null && currentCategory === null)) && !addMode"
+                :show-action="(currentFolder !== null || currentCategory !== null || (currentFolder === null && currentCategory === null)) && !addMode"
                 :action-active="showAddMenu"
                 :search-active="showSearch"
                 :can-more="!!currentFolder && !addMode"
@@ -1996,7 +1984,6 @@ const resetToRoot = () => {
     addMode.value = false;
     searchQuery.value = '';
     focusedId.value = null;
-    expandedId.value = null;
     reorderMode.value = false;
     activeDropdownId.value = null;
 };
@@ -2042,12 +2029,13 @@ const stripMasterPrefix = (name) => {
 };
 
 const formatGroupName = (name) => {
-    const groupToPalace = {
-        '第一組': '玄通宮', '第二組': '玄應宮', '第三組': '玄心宮', '第四組': '玄妙宮',
-        '第五組': '玄昇宮', '第六組': '玄願宮', '第七組': '玄法宮', '第八組': '玄閻宮',
-        '第九組': '玄窕宮', '第十組': '玄瑤宮', '第十一組': '玄義宮'
-    };
-    return groupToPalace[name] || name;
+    return name;
+};
+
+const palaceToGroupName = {
+    '玄通宮': '第一組', '玄應宮': '第二組', '玄心宮': '第三組', '玄妙宮': '第四組',
+    '玄昇宮': '第五組', '玄願宮': '第六組', '玄法宮': '第七組', '玄閻宮': '第八組',
+    '玄窕宮': '第九組', '玄瑤宮': '第十組', '玄義宮': '第十一組'
 };
 
 const getMainDetails = (items) => {
@@ -3114,7 +3102,7 @@ const instrumentTreasures = computed(() => {
 const groupedPendingItems = computed(() => groupItems(form.value.items));
 
 const addActions = computed(() => {
-    const isDaily = currentFolder.value?.id === 0 || currentFolder.value?.id === '0';
+    const isDaily = currentFolder.value?.id === 0 || currentFolder.value?.id === '0' || currentCategory.value === 'daily';
     const actions = [];
 
     if (!isDaily && currentFolder.value === null) {
@@ -3381,7 +3369,7 @@ const handleDharmaSearchInput = (e) => {
     if (!val) { form.value.dharma_name_ids = []; activeModalGroup.value = null; return; }
     const matchedDN = dharmaNames.value.find(dn => dn.name === val);
     if (matchedDN) { form.value.dharma_name_ids = [matchedDN.id]; return; }
-    const matchedGroup = groups.value.find(g => g.name === val || formatGroupName(g.name) === val);
+    const matchedGroup = groups.value.find(g => g.name === val || g.name === palaceToGroupName[val]);
     if (matchedGroup) {
         triggerGroupSelection(matchedGroup);
         return;
@@ -3404,7 +3392,7 @@ const selectPalaceGroup = (pName) => {
             form.value.dharma_name_ids = (g.dharma_names || []).map(dn => dn.id);
         }
     } else {
-        const g = (groups.value || []).find(g => g.name === pName || formatGroupName(g.name) === pName);
+        const g = (groups.value || []).find(g => g.name === pName || g.name === palaceToGroupName[pName]);
         if (g) {
             form.value.dharma_name_ids = (g.dharma_names || []).map(dn => dn.id);
         }
@@ -3968,7 +3956,11 @@ const getRecipientName = (item) => {
 
     let res = "";
     if (listInfo.groupName) {
-        res = `${listInfo.groupName}${remarks}`;
+        if (pastedName && listInfo.names.includes(pastedName)) {
+            res = `${pastedName}${remarks}`;
+        } else {
+            res = `${listInfo.groupName}${remarks}`;
+        }
     } else {
         res = listInfo.names.join(', ') + remarks;
     }
@@ -4014,16 +4006,7 @@ const getFullRecipientList = (item) => {
     }
 
     if (groupName === '各宮') {
-        groupName = '玄通宮、玄應宮、玄心宮、玄妙宮、玄昇宮、玄願宮、玄法宮、玄閻宮、玄窕宮、玄瑤宮、玄義宮';
-    } else {
-        const groupToPalace = {
-            '第一組': '玄通宮', '第二組': '玄應宮', '第三組': '玄心宮', '第四組': '玄妙宮',
-            '第五組': '玄昇宮', '第六組': '玄願宮', '第七組': '玄法宮', '第八組': '玄閻宮',
-            '第九組': '玄窕宮', '第十組': '玄瑤宮', '第十一組': '玄義宮'
-        };
-        if (groupToPalace[groupName]) {
-            groupName = groupToPalace[groupName];
-        }
+        groupName = '各宮 (玄通宮、玄應宮、玄心宮、玄妙宮、玄昇宮、玄願宮、玄法宮、玄閻宮、玄窕宮、玄瑤宮、玄義宮)';
     }
 
     // Sort names by official database order
@@ -4670,6 +4653,7 @@ const saveItem = async (data = null) => {
         form.value.content = data.content || '';
         form.value.items = data.items || [];
         form.value.items_footer_remarks = data.items_footer_remarks || '';
+        dharmaSearchQuery.value = data.dharmaSearchQuery || '';
         
         // Sync masterNameInput for consistency
         const m = masters.value.find(v => v.id === data.master_id);
@@ -4809,6 +4793,7 @@ const saveItem = async (data = null) => {
             content: form.value.content,
             items: [...form.value.items],
             items_footer_remarks: form.value.items_footer_remarks,
+            dharmaSearchQuery: dharmaSearchQuery.value || '',
             master_name: currentMasterName,
             target_remarks: form.value.target_remarks,
             date: form.value.date
@@ -4849,8 +4834,9 @@ const performActualSave = async () => {
     // Single item save logic
     saving.value = true;
     try {
+        const { master_name: _mn, ...formClean } = form.value;
         const payload = {
-            ...form.value,
+            ...formClean,
             master_id: form.value.master_id || currentFolder.value?.id,
             is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
         };
@@ -4860,8 +4846,10 @@ const performActualSave = async () => {
         } else {
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
+                const mObj = masters.value.find(v => v.id == payload.master_id);
                 const newRecord = {
                     ...res.data,
+                    master: mObj || null,
                     items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
                     dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
                 };
@@ -5031,8 +5019,10 @@ const executeDistributionSave = async (mode) => {
 
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
+                const mObj = masters.value.find(v => v.id == blockMasterId);
                 const newRecord = {
                     ...res.data,
+                    master: mObj || null,
                     items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
                     dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
                 };
@@ -5081,10 +5071,13 @@ const showAdd = () => {
     masterNameInput.value = '';
     batchImportContent.value = ''; // Reset the collective paste area
 
+    const dailyMaster = masters.value.find(m => m.name === '父皇' || m.name === '父皇仙師');
+    const dailyMasterId = dailyMaster?.id || null;
+
     if (currentFolder.value) {
         const isDaily = currentFolder.value.id === 0 || currentFolder.value.id === '0';
         const mName = isDaily ? '父皇' : currentFolder.value.name;
-        const mId = isDaily ? 5 : currentFolder.value.id;
+        const mId = isDaily ? dailyMasterId : currentFolder.value.id;
 
         form.value.master_id = mId;
         form.value.master_name = mName;
@@ -5097,6 +5090,15 @@ const showAdd = () => {
 
         if (isDaily) activeEntryTab.value = 'single';
         else activeEntryTab.value = 'batch';
+    } else if (currentCategory.value === 'daily') {
+        form.value.master_id = dailyMasterId;
+        form.value.master_name = '父皇';
+        masterNameInput.value = '父皇';
+        batchRecords.value = [{
+            dharma_name_ids: [], content: '', dharmaSearchQuery: '',
+            target_remarks: '', relatives: '', items: [], master_name: '父皇'
+        }];
+        activeEntryTab.value = 'single';
     }
     addMode.value = true;
 };
@@ -5146,7 +5148,7 @@ watch(() => form.value.dharma_name_ids, (newIds) => {
             dharmaSearchQuery.value = '';
         }
     } else {
-        const isGroupMatch = (groups.value || []).some(g => g.name === dharmaSearchQuery.value || formatGroupName(g.name) === dharmaSearchQuery.value);
+        const isGroupMatch = (groups.value || []).some(g => g.name === dharmaSearchQuery.value || g.name === palaceToGroupName[dharmaSearchQuery.value]);
         if (!isGroupMatch && dharmaSearchQuery.value !== '在場全體') {
             dharmaSearchQuery.value = '';
         }

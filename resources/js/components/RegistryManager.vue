@@ -69,19 +69,21 @@
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
 
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                        <div class="relative w-full max-w-[310px] aspect-square">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-full max-w-[310px] aspect-square object-contain transition-transform group-hover:scale-105" 
+                                 class="w-full h-full object-contain transition-transform group-hover:scale-105" 
                                  alt="Book Icon">
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 pb-2 px-2 font-biaokai">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai" style="font-size: 21.6px !important; color: #fbbf24 !important;">法寶登記專區</div>
-                                <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center !font-black mt-1 font-biaokai" style="font-size: 27px !important; font-weight: 900 !important; color: #fbbf24 !important; -webkit-text-stroke: 0.5px #fbbf24;">特殊法寶<br>登記簿</div>
+                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai" style="font-size: 21.6px !important; color: #8B0000 !important;">法寶登記專區</div>
+                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-1 font-biaokai" style="font-size: 27px !important; font-weight: 900 !important; color: #8B0000 !important;">特殊法寶<br>登記簿</div>
                                 <div class="mt-2 flex items-center font-biaokai">
-                                    <span class="text-white font-normal tracking-tight font-biaokai" style="font-size: 17px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="font-normal tracking-tight font-biaokai text-red-600" style="font-size: 17px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
+                        </div>
                     </button>
                 </div>
 
@@ -91,23 +93,23 @@
                              @click="currentFolder = folder"
                               class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] flex-shrink-0 relative bg-white hover:bg-white active:bg-white">
 
-                        <div class="relative w-full max-w-[180px] aspect-square">
+                        <div class="relative w-full max-w-[180px] aspect-square bg-white">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply" 
+                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2]" 
                                  alt="Book Icon">
 
-                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-8 pb-3 px-1 pointer-events-none font-biaokai">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-3 mb-2 font-biaokai" style="font-size: 11px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
-                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[2px] font-biaokai" style="font-size: 10px !important;">特殊法寶登記簿</div>
+                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-14 pb-3 px-1 pointer-events-none font-biaokai">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-3 mb-2 font-biaokai" style="font-size: 14px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
+                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[2px] font-biaokai" style="font-size: 13px !important;">特殊法寶登記簿</div>
 
                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-3 font-biaokai"
                                      :style="{ fontSize: '20px !important', fontWeight: '900 !important', color: folder.name === '閻王仙師' ? '#000000' : '#dc2626' }">
                                      {{ folder.name }}
                                 </div>
-                                <div class="mt-1 flex items-center font-biaokai">
-                                    <span class="font-normal text-black font-biaokai" style="font-size: 10px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-6 flex items-center font-biaokai">
+                                    <span class="font-normal text-black font-biaokai" style="font-size: 13px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>

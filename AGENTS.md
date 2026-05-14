@@ -130,6 +130,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - All dropdowns use `bottom-full mb-*` to expand upward (replaces `top-full mt-*`)
 - **Full Fidelity (WYPIWYS)**: Literal batch records bypass synthetic header generation and truncation. List view detects these via `isContentLiteral(item)` and renders `item.content` raw with `whitespace-pre-wrap`.
 - **Reference Fix**: All deletion/menu logic must use `activeDropdownId` (defined in script) to avoid `ReferenceError` on `openMenuId`.
+- **master_name Leak Bug (frontend fix)**: `showAdd()` (line 5082) sets `form.value.master_name = mName` as pre-fill. This leaks into `performActualSave` payload via `...form.value` spread, causing PHP backend's `resolveRelations()` to override master_id. Fix: destructure out `master_name` before spreading (`const { master_name: _mn, ...formClean } = form.value`). Single-item save at `performActualSave` line 4837.
+- **master_id Fallback Trap**: `performActualSave` line 4840: `master_id: form.value.master_id || currentFolder.value?.id` — 0 is falsy in JS, so `master_id=0` (daily folder) would fall through to `currentFolder.value?.id`. Always ensure explicit master_id is set.
 
 ### TeachingAddForm.vue
 - Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 預覽)
@@ -140,6 +142,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Master input: no pre-fill on mount (removed `onMounted` auto-fill logic)
 - Homepage image text: `pt-[72px]` (not `pt-24`) for vertical positioning
 - All dropdowns use `bottom-full mb-*` to expand upward (replaces `top-full mt-*`)
+- **Template setTimeout 替代**: Vue 模版中不可用 `setTimeout`/`window.setTimeout`（編譯為 `_ctx.setTimeout` 而報錯）。一律用 `delayClose(ref, ms)` helper function 取代。
+- **resolveMasterId 回退**: 當 `props.masters` 搜尋不到時，使用硬編碼 map: `{ '老祖仙師': 1, '元始仙師': 2, ... '閻王仙師': 8 }` 作為ID回退。`handleNext()` 在第2步時也會呼叫 resolveMasterId()。
 
 ### RegistryManager.vue
 - 法寶登記專區
@@ -237,6 +241,17 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Dropdown mobile style | All custom dropdown items use `md:rounded-*` so mobile renders flat rows (no per-item boxes); desktop keeps `rounded-*` |
 | Scroll iOS smoothness | All `.custom-scrollbar` must include `-webkit-overflow-scrolling: touch` for inertial scrolling on iPhone |
 | localStorage iOS safe | Use `safeLocalStorage` from `iosCompat.js` instead of raw `localStorage` (Private Browsing throws SecurityError) |
+
+## PHP Backend: `resolveRelations` 陷阱
+
+`TeachingService.php` 的 `resolveRelations()` 會檢查 `$data['master_name']` 並用其**覆蓋** `master_id`：
+```php
+if (isset($data['master_name']) && !empty($data['master_name'])) {
+    $master = Master::where('name', $data['master_name'])->first();
+    if ($master) $data['master_id'] = $master->id;  // 覆蓋原本的 master_id!
+}
+```
+前端傳 payload 時若 `form.value` 中殘留 `master_name`（如 `showAdd()` 的 pre-fill），會導致 `master_id` 被錯誤覆蓋。**前後端都要注意**：前端 payload 須 destructure 移除 `master_name`；後端若有明確 `master_id` 應優先使用。
 
 ## Draft Auto-Save Pattern (localStorage)
 

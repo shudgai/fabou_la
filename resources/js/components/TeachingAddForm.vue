@@ -106,7 +106,7 @@
                                 @focus="showMasterDropdown = true; openMasterDropdown()"
                                 @input="showMasterDropdown = true; openMasterDropdown()"
                                 @change="resolveMasterId"
-                                @blur="setTimeout(() => showMasterDropdown = false, 200)"
+                                @blur="delayClose(showMasterDropdown, 200)"
                                 autocomplete="off"
                                 placeholder="選擇仙師..." 
                                 class="w-full text-center text-[22px] font-black border-0 border-b-2 border-slate-200 focus:border-red-600 bg-transparent py-6 outline-none transition-all placeholder:text-slate-100">
@@ -128,7 +128,7 @@
                                         @focus="showPractitionerDropdown = true; openPractitionerDropdown()"
                                         @input="handleDharmaSearchInput; if (!showPractitionerDropdown) openPractitionerDropdown()" 
                                        v-model="dharmaSearchQuery"
-                                       @blur="setTimeout(() => showPractitionerDropdown = false, 200)"
+                                       @blur="delayClose(showPractitionerDropdown, 200)"
                                        autocomplete="off"
                                        placeholder="搜尋法號或群組..." 
                                        class="w-full bg-transparent border-0 border-b-2 border-slate-200 focus:border-indigo-600 text-center text-[20px] font-black text-slate-900 py-4 outline-none transition-all placeholder:text-slate-100">
@@ -146,7 +146,7 @@
                                     @click="activeRelDropdown = true; openRelDropdown()"
                                     @input="activeRelDropdown = true; openRelDropdown()"
                                     @focus="openRelDropdown"
-                                    @blur="setTimeout(() => activeRelDropdown = false, 150)"
+                                    @blur="delayClose(activeRelDropdown, 150)"
                                     autocomplete="off"
                                     placeholder="例：之母親 / 長輩..." 
                                     class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-emerald-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
@@ -325,15 +325,15 @@
                      <div class="space-y-4">
                          <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest">法宝名稱</label>
                           <div class="relative">
-                               <input v-model="newItemName" class="pr-10" 
-                                   ref="treasureInputEl"
-                                   @click="showTreasureDropdown = true; openTreasureDropdown()"
-                                   @input="showTreasureDropdown = true; openTreasureDropdown()"
-                                   @focus="openTreasureDropdown"
-                                   @blur="setTimeout(() => showTreasureDropdown = false, 200)"
-                                   autocomplete="off"
-                                   placeholder="輸入或選擇法宝..." 
-                                   class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
+                                <input v-model="newItemName"
+                                    ref="treasureInputEl"
+                                    @click="showTreasureDropdown = true; openTreasureDropdown()"
+                                    @input="showTreasureDropdown = true; openTreasureDropdown()"
+                                    @focus="openTreasureDropdown"
+                                    @blur="delayClose(showTreasureDropdown, 200)"
+                                    autocomplete="off"
+                                    placeholder="輸入或選擇法宝..." 
+                                    class="w-full pr-10 text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
                                 <button v-if="newItemName" @click="newItemName = ''" class="absolute right-2 p-2 text-slate-300 hover:text-red-500 transition-all active:scale-90 top-3">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
@@ -413,15 +413,19 @@ import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
     mode: String,
-    initialData: Object,
     masters: Array,
     dharmaNames: Array,
     groups: Array,
     uniqueTreasureNames: Array,
+    initialData: Object,
     isSaving: Boolean
 });
 
 const emit = defineEmits(['save', 'close']);
+
+function delayClose(ref, ms) {
+    window.setTimeout(() => { ref.value = false; }, ms);
+}
 
 // --- 1. State ---
 const currentStep = ref(1);
@@ -600,8 +604,12 @@ const sortedFooterRemarks = computed(() => {
 
 // --- 3. Methods ---
 function resolveMasterId() {
-    const m = props.masters.find(m => m.name === masterNameInput.value || (m.name === '父皇' && masterNameInput.value === '父皇仙師'));
-    if (m) form.value.master_id = m.id;
+    const input = (masterNameInput.value || '').trim();
+    const m = props.masters.find(m => m.name === input || m.name === input.replace('仙師', '').trim() || (m.name === '父皇' && (input === '父皇仙師' || input === '父皇')));
+    if (m) { form.value.master_id = m.id; return; }
+    const hardcoded = { '老祖仙師': 1, '元始仙師': 2, '道祖仙師': 3, '靈寶仙師': 4, '父皇仙師': 5, '父皇': 5, '太宰仙師': 6, '太子': 7, '閻王仙師': 8 };
+    if (hardcoded[input]) { form.value.master_id = hardcoded[input]; return; }
+    form.value.master_id = null;
 }
 
 function selectDharmaName(dn) {
@@ -609,6 +617,7 @@ function selectDharmaName(dn) {
         form.value.dharma_name_ids.push(dn.id);
     }
     dharmaSearchQuery.value = dn.name;
+    selectedGroup.value = null;
 }
 
 function selectGroup(g) {
@@ -671,6 +680,7 @@ function handleBack() {
 
 function handleNext() {
     if (currentStep.value === 2) {
+        resolveMasterId();
         if (!form.value.master_id) { alert('請選擇仙師'); return; }
     }
     if (currentStep.value === 3) {
@@ -803,7 +813,7 @@ function handleSubmit() {
         batchImportContent.value = ''; batchRecords.value = [];
         return;
     }
-    emit('save', { ...form.value, items_footer_remarks: sortedFooterRemarks.value.filter(Boolean).join('\n') });
+    emit('save', { ...form.value, dharmaSearchQuery: dharmaSearchQuery.value, items_footer_remarks: sortedFooterRemarks.value.filter(Boolean).join('\n') });
 }
 
 onMounted(() => {
