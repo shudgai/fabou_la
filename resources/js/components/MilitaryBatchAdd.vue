@@ -63,31 +63,19 @@
                 class="flex-1 w-full bg-slate-50 rounded-[28px] border-none p-6 pt-16 text-[16px] leading-relaxed focus:ring-2 focus:ring-indigo-100 outline-none resize-none font-medium shadow-inner min-h-[500px]"
             ></textarea>
 
-            <!-- Preview Section (Enhanced Table Style) -->
-            <div v-if="parsedItems.length > 0" class="mt-4 border border-indigo-100 rounded-[24px] overflow-hidden bg-white animate-fade-in shrink-0">
+            <!-- Preview Section (Raw Lines) -->
+            <div v-if="batchText.trim()" class="mt-4 border border-indigo-100 rounded-[24px] overflow-hidden bg-white animate-fade-in shrink-0">
                 <div class="bg-indigo-50/50 px-4 py-3 border-b border-indigo-100 flex justify-between items-center">
                     <div class="flex flex-col">
-                        <span class="text-[15px] font-black text-indigo-600">偵測到 {{ parsedItems.length }} 筆資料</span>
-                        <span class="text-[11px] text-indigo-400 font-bold">即將載錄至 {{ armyType }}</span>
+                        <span class="text-[15px] font-black text-indigo-600">預覽清單 ({{ rawLines.length }} 筆資料)</span>
+                        <span class="text-[11px] text-indigo-400 font-bold">貼上內容原始顯示</span>
                     </div>
                 </div>
-                <div class="max-h-48 overflow-y-auto custom-scrollbar no-scrollbar">
-                    <table class="w-full text-[13px] text-left">
-                        <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tight border-b border-slate-100 z-10">
-                            <tr>
-                                <th class="p-3 font-black">日期</th>
-                                <th class="p-3 font-black">法號</th>
-                                <th class="p-3 font-black text-right">數量</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            <tr v-for="(item, idx) in parsedItems" :key="idx" class="hover:bg-indigo-50/30 transition-colors">
-                                <td class="p-3 text-slate-500 font-bold whitespace-nowrap">{{ item.display_date ? item.display_date.replace(/-/g, '/') : '-' }}</td>
-                                <td class="p-3 text-slate-900 font-black truncate max-w-[120px]">{{ item.user_name }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</td>
-                                <td class="p-3 text-indigo-600 font-black text-right">{{ formatWithCommas(item.quantity) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-slate-50">
+                    <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-bold text-slate-900 flex items-start gap-3 hover:bg-indigo-50/30">
+                        <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                        <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,6 +152,10 @@ const batchText = ref('');
 const processing = ref(false);
 const showDatePicker = ref(false);
 const persistentToast = ref(null);
+
+const rawLines = computed(() => {
+    return batchText.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+});
 
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {

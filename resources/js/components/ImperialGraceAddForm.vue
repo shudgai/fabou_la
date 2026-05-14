@@ -110,18 +110,10 @@
                                 <span class="text-[13px] font-black text-indigo-600">得知日期：{{ form.record_date || '-' }}</span>
                                 <span class="text-[13px] font-black text-red-600">{{ getMasterName(form.master_id) }}</span>
                             </div>
-                            <div class="divide-y divide-slate-50">
-                                <div v-for="(row, idx) in excelRows" :key="idx" class="p-4 hover:bg-slate-50 transition-colors text-left">
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <span class="w-6 h-6 flex items-center justify-center bg-indigo-50 text-indigo-600 rounded-lg text-[12px] font-black">{{ idx + 1 }}</span>
-                                        <span class="font-black text-[18px] text-slate-900">{{ row.name }}</span>
-                                    </div>
-                                    <div v-if="row.purpose && row.purpose !== '-'" class="pl-9 text-[14px] font-bold text-slate-600 leading-relaxed mb-1">
-                                        <span class="text-indigo-400">用意：</span>{{ row.purpose }}
-                                    </div>
-                                    <div v-if="row.remarks && row.remarks.length" class="mt-1 pl-9 text-[13px] font-bold text-slate-400 leading-tight">
-                                        <span class="text-slate-300">備註：</span>{{ Array.isArray(row.remarks) ? row.remarks.join(' ') : row.remarks }}
-                                    </div>
+                            <div class="divide-y divide-slate-50 max-h-64 overflow-y-auto custom-scrollbar">
+                                <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-bold text-slate-900 flex items-start gap-3 hover:bg-slate-50 text-left">
+                                    <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                    <span class="break-all whitespace-pre-wrap">{{ line }}</span>
                                 </div>
                             </div>
                         </div>
@@ -329,6 +321,10 @@ const currentStepTitles = computed(() => {
 });
 
 const totalSteps = computed(() => currentStepTitles.value.length);
+
+const rawLines = computed(() => {
+    return batchInput.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+});
 
 const excelRows = computed(() => {
     if (!batchInput.value.trim()) return [];

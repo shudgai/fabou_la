@@ -113,6 +113,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Folder overlay text positioning | `justify-start pt-[72px]` (not `justify-center`) for Teaching sub-folders with tall images |
 | Home view title spacing | `tracking-tighter` (not `tracking-widest`) for consistency between home and list views |
 | Back button | `w-[100px]` → `min-w-[100px]` to prevent text truncation on mobile |
+| Batch import preview | Show raw pasted lines as-is (use `rawLines` computed: `split('\n').map(l => l.trim()).filter(l => l !== '')`); never modify `batchInput`/`batchText` textarea content with watchers |
+| Batch integrity (WYPIWYS) | For batch-pasted records, preserve the FULL original content in the database; do NOT strip headers or item lines. List view should render raw content with `whitespace-pre-wrap` and hide synthetic headers when `isContentLiteral` is true. |
+| Dropdown/Menu state | Use `activeDropdownId` (reactive) to track which item menu/dropdown is open; ensure `activeDropdownId = null` is called on delete/edit/close. |
 
 ## Component-Specific Notes
 
@@ -125,6 +128,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Home title uses `tracking-tighter`
 - Homepage image text: `pt-[72px]` (not `pt-24`) for vertical positioning
 - All dropdowns use `bottom-full mb-*` to expand upward (replaces `top-full mt-*`)
+- **Full Fidelity (WYPIWYS)**: Literal batch records bypass synthetic header generation and truncation. List view detects these via `isContentLiteral(item)` and renders `item.content` raw with `whitespace-pre-wrap`.
+- **Reference Fix**: All deletion/menu logic must use `activeDropdownId` (defined in script) to avoid `ReferenceError` on `openMenuId`.
 
 ### TeachingAddForm.vue
 - Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 預覽)

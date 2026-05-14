@@ -216,35 +216,18 @@
                         </button>
                     </div>
                     <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
-                    <div v-if="parsedItemsCount > 0" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
+                    <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
                         <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                             <div class="flex flex-col">
-                                <span class="text-[15px] font-bold text-blue-600">偵測到 {{ parsedItemsCount }} 筆資料</span>
-                                <span class="text-[11px] text-blue-400 font-medium">包含日期與法寶自動識別</span>
+                                <span class="text-[15px] font-bold text-blue-600">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</span>
+                                <span class="text-[11px] text-blue-400 font-medium">貼上內容原始顯示</span>
                             </div>
                         </div>
-                        <div class="px-4 py-2 bg-white flex flex-wrap gap-1.5 border-b border-blue-50 max-h-[100px] overflow-y-auto">
-                            <span v-for="(item, idx) in previewItems" :key="idx" class="px-2 py-0.5 bg-slate-50 border border-slate-200 rounded-lg text-[12px] font-bold text-slate-600">{{ item }}</span>
-                        </div>
-                        <div class="max-h-48 overflow-y-auto custom-scrollbar">
-                            <table class="w-full text-[13px] text-left">
-                                <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase tracking-tight border-b border-slate-100">
-                                    <tr>
-                                        <th class="p-2 font-bold">預計存入仙師</th>
-                                        <th class="p-2 font-bold">法寶名稱</th>
-                                        <th v-if="batchParsedRows.some(r => r.date)" class="p-2 font-bold">記載日期</th>
-                                        <th class="p-2 font-bold">內容摘要</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(item, idx) in batchParsedRows" :key="idx" class="border-b border-slate-50 last:border-0 hover:bg-slate-50">
-                                        <td class="py-3 px-2 text-blue-500 font-black text-[10px] whitespace-nowrap">{{ getMasterName(item.master_id) }}</td>
-                                        <td class="py-3 px-2 text-slate-900 font-black truncate max-w-[100px]">{{ item.name }}</td>
-                                        <td v-if="batchParsedRows.some(r => r.date)" class="py-3 px-2 text-slate-500 whitespace-nowrap">{{ item.date ? item.date.replace(/-/g, '/') : '-' }}</td>
-                                        <td class="py-3 px-2 text-slate-500 truncate max-w-[150px]">{{ item.remarks || item.purpose || '-' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
+                            <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-bold text-slate-900 flex items-start gap-3 hover:bg-slate-50">
+                                <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -539,6 +522,10 @@ const previewItems = computed(() => {
     return batchParsedRows.value.slice(0, 20).map(r => r.name);
 });
 
+const rawLines = computed(() => {
+    return batchInput.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+});
+
 // Methods for row management removed as we use textarea now
 
 const fetchDharmaNames = async () => {
@@ -602,42 +589,6 @@ watch(() => props.mode, (newVal) => {
     if (newVal) {
         localMode.value = newVal;
         currentStep.value = 1;
-    }
-});
-
-// Intelligent Date Auto-conversion and Auto-newline for Batch Mode
-watch(batchInput, (newVal, oldVal) => {
-    if (newVal.length <= oldVal.length) return;
-
-    // Pattern: 2-3 digit ROC year followed by date separators
-    // Removed $ anchor to handle text following date
-    const rocRegex = /(\b\d{2,3})([/.-])(\d{1,2})\2(\d{1,2})(?!\d)/;
-    const ceRegex = /(\b\d{4})([/.-])(\d{1,2})\2(\d{1,2})(?!\d)/;
-
-    let match = newVal.match(rocRegex);
-    if (match) {
-        const fullMatch = match[0];
-        const y = parseInt(match[1]) + 1911;
-        const s = match[2];
-        const m = match[3].padStart(2, '0');
-        const d = match[4].padStart(2, '0');
-        // Only replace if it hasn't been converted yet
-        if (fullMatch.startsWith(match[1])) {
-            batchInput.value = newVal.replace(fullMatch, `${y}${s}${m}${s}${d}\n`);
-        }
-    } else {
-        const ceMatch = newVal.match(ceRegex);
-        if (ceMatch) {
-            const fullMatch = ceMatch[0];
-            const y = ceMatch[1];
-            const s = ceMatch[2];
-            const m = ceMatch[3].padStart(2, '0');
-            const d = ceMatch[4].padStart(2, '0');
-            // If it's CE, just ensure formatting and add newline
-            if (ceMatch[3].length === 1 || ceMatch[4].length === 1 || !newVal.includes(fullMatch + '\n')) {
-                batchInput.value = newVal.replace(fullMatch, `${y}${s}${m}${s}${d}\n`);
-            }
-        }
     }
 });
 

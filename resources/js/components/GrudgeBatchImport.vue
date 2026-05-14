@@ -59,6 +59,19 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Raw Lines Preview -->
+                <div v-if="batchText.trim()" class="space-y-2 animate-fade-in">
+                    <div class="flex items-center justify-between ml-1">
+                        <label class="app-title">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</label>
+                    </div>
+                    <div class="max-h-48 overflow-y-auto custom-scrollbar bg-slate-50/50 rounded-2xl border border-slate-100 divide-y divide-slate-100">
+                        <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[15px] font-bold text-slate-900 flex items-center gap-3">
+                            <span class="text-[11px] font-black text-slate-300 w-6 shrink-0">{{ idx + 1 }}</span>
+                            <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[2px] bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-[1100] shrink-0">
@@ -127,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
@@ -178,7 +191,9 @@ const getTodayStr = () => {
 };
 const batchDate = ref(null);
 
-
+const rawLines = computed(() => {
+    return batchText.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+});
 
 const nameAliasMap = {
     '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',

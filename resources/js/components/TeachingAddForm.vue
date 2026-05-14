@@ -56,9 +56,6 @@
                                       placeholder="在此貼上資料...&#10;&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
                                       class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
                         </div>
-                        <div class="px-5 pb-4 flex justify-end">
-                            <button @click="processBatchParsing" class="bg-[#FFB266] text-white px-6 py-2.5 rounded-2xl text-[14px] font-black active:scale-95 transition-all shadow-sm">智慧解析</button>
-                        </div>
                     </div>
                     <!-- Batch Records Preview -->
                     <div v-if="batchRecords.length > 0" class="space-y-4">
@@ -66,21 +63,16 @@
                             <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
                             已解析紀錄 ({{ batchRecords.length }} 筆)
                         </div>
-                        <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-3">
-                             <div class="flex items-center justify-between">
+                        <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-4 animate-fade-in text-left">
+                            <div class="flex items-center justify-between">
                                 <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
-                                <button @click="batchRecords.splice(index, 1)" class="text-slate-200 hover:text-red-400 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg></button>
+                                <button @click="batchRecords.splice(index, 1)" class="text-slate-300 hover:text-red-500 p-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                             </div>
-                            <div class="font-black text-slate-900 text-[17px]">{{ record.dharmaSearchQuery }}</div>
-                            <div v-if="record.content" class="text-slate-800 text-[17px] font-black leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
-                            <div v-if="record.items.length > 0" class="pt-2 space-y-1 border-t border-slate-50 mt-2">
-                                <div v-for="(it, iIdx) in record.items" :key="iIdx" class="text-[16px] font-black text-slate-600 flex items-start gap-2">
-                                    <span class="text-indigo-400 shrink-0">{{ iIdx + 1 }}.</span>
-                                    <span>{{ it.treasure_name }} <span v-if="it.details" class="text-slate-400 font-normal">：{{ it.details }}</span></span>
-                                </div>
-                            </div>
-                            <div v-if="record.items_footer_remarks" class="text-[16px] font-black text-slate-400 pt-2 border-t border-slate-50 border-dashed mt-2 whitespace-pre-wrap italic">
-                                {{ record.items_footer_remarks }}
+                            
+                            <div v-if="record.content && record.content.trim()" class="text-slate-800 text-[17px] font-black leading-relaxed whitespace-pre-wrap">
+                                {{ record.content }}
                             </div>
                         </div>
                     </div>
@@ -103,6 +95,9 @@
                         <div class="max-w-md mx-auto mt-12 relative flex items-center">
                             <input v-model="masterNameInput" 
                                 ref="masterInputEl"
+                                @click="showMasterDropdown = true; openMasterDropdown()"
+                                @focus="showMasterDropdown = true; openMasterDropdown()"
+                                @input="showMasterDropdown = true; openMasterDropdown()"
                                 @change="resolveMasterId"
                                 @blur="setTimeout(() => showMasterDropdown = false, 200)"
                                 autocomplete="off"
@@ -122,6 +117,8 @@
                             <div class="max-w-md mx-auto mt-8 relative flex items-center">
                                 <input ref="dharmaSearchInputEl"
                                        type="text"
+                                        @click="showPractitionerDropdown = true; openPractitionerDropdown()"
+                                        @focus="showPractitionerDropdown = true; openPractitionerDropdown()"
                                         @input="handleDharmaSearchInput; if (!showPractitionerDropdown) openPractitionerDropdown()" 
                                        v-model="dharmaSearchQuery"
                                        @blur="setTimeout(() => showPractitionerDropdown = false, 200)"
@@ -139,6 +136,8 @@
                             <div class="max-w-md mx-auto relative">
                                 <input v-model="form.target_remarks" 
                                     ref="relInputEl"
+                                    @click="activeRelDropdown = true; openRelDropdown()"
+                                    @input="activeRelDropdown = true; openRelDropdown()"
                                     @focus="openRelDropdown"
                                     @blur="setTimeout(() => activeRelDropdown = false, 150)"
                                     autocomplete="off"
@@ -321,6 +320,8 @@
                           <div class="relative">
                                <input v-model="newItemName" 
                                    ref="treasureInputEl"
+                                   @click="showTreasureDropdown = true; openTreasureDropdown()"
+                                   @input="showTreasureDropdown = true; openTreasureDropdown()"
                                    @focus="openTreasureDropdown"
                                    @blur="setTimeout(() => showTreasureDropdown = false, 200)"
                                    autocomplete="off"
@@ -335,21 +336,11 @@
                          class="w-full text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 bg-transparent py-2 outline-none transition-all placeholder:text-slate-100 resize-none"></textarea>
                  </div>
 
-                 <div v-if="itemCategory === '三光金丹' || itemCategory === '金丹'" class="grid grid-cols-2 gap-8 animate-fade-in">
-                      <div class="space-y-4">
-                          <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest block">服用數量</label>
-                          <input v-model.number="newItemPillsEat" type="number" placeholder="0" class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all bg-transparent">
-                      </div>
-                      <div class="space-y-4">
-                          <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest block">洗浴數量</label>
-                          <input v-model.number="newItemPillsWash" type="number" placeholder="0" class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all bg-transparent">
-                      </div>
-                 </div>
-
-                 <div v-if="itemCategory !== '三光金丹'" class="space-y-4 animate-fade-in">
+                 <div v-if="!newItemRemarks.trim()" class="space-y-4 animate-fade-in">
                       <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest block">天份數量 (選填)</label>
                       <input v-model.number="newItemDays" type="number" placeholder="天數..." class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all bg-transparent">
                  </div>
+
 
                  <button @click="confirmAddItem" class="w-full py-6 bg-amber-500 text-white rounded-[32px] font-black text-[20px] active:scale-95 shadow-xl shadow-amber-100">加入降寶清單</button>
              </div>
@@ -474,13 +465,12 @@ function openRelDropdown() {
     nextTick(() => {
         if (relInputEl.value) {
             const rect = relInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 8;
+            const spaceBelow = window.innerHeight - rect.bottom - 40;
             relDropdownStyle.value = {
                 left: rect.left + 'px',
                 width: rect.width + 'px',
-                top: (rect.top - 8) + 'px',
-                transform: 'translateY(-100%)',
-                maxHeight: Math.min(spaceAbove, 300) + 'px',
+                top: (rect.bottom + 8) + 'px',
+                maxHeight: Math.min(spaceBelow, 300) + 'px',
             };
         }
     });
@@ -491,13 +481,13 @@ function openMasterDropdown() {
     nextTick(() => {
         if (masterInputEl.value) {
             const rect = masterInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 8;
+            const spaceAbove = rect.top - 20;
             masterDropdownStyle.value = {
                 left: rect.left + 'px',
                 width: rect.width + 'px',
                 top: (rect.top - 8) + 'px',
                 transform: 'translateY(-100%)',
-                maxHeight: Math.min(spaceAbove, 240) + 'px',
+                maxHeight: Math.min(spaceAbove, 400) + 'px',
             };
         }
     });
@@ -508,13 +498,12 @@ function openTreasureDropdown() {
     nextTick(() => {
         if (treasureInputEl.value) {
             const rect = treasureInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 8;
+            const spaceBelow = window.innerHeight - rect.bottom - 40;
             treasureDropdownStyle.value = {
                 left: rect.left + 'px',
                 width: rect.width + 'px',
-                top: (rect.top - 8) + 'px',
-                transform: 'translateY(-100%)',
-                maxHeight: Math.min(spaceAbove, 240) + 'px',
+                top: (rect.bottom + 8) + 'px',
+                maxHeight: Math.min(spaceBelow, 240) + 'px',
             };
         }
     });
@@ -525,7 +514,7 @@ function openPractitionerDropdown() {
     nextTick(() => {
         if (dharmaSearchInputEl.value) {
             const rect = dharmaSearchInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 8;
+            const spaceAbove = rect.top - 20;
             practitionerDropdownStyle.value = {
                 left: rect.left + 'px',
                 width: rect.width + 'px',
@@ -728,33 +717,73 @@ function handleBatchPaste(e) {
 
 function processBatchParsing() {
     if (!batchImportContent.value.trim()) return;
-    const blocks = batchImportContent.value.split(/\n\s*\n/);
-    batchRecords.value = blocks.filter(b => b.trim()).map(block => {
-        const lines = block.split('\n');
-        let record = { master_name: '父皇', dharmaSearchQuery: '對象', content: '', items: [], dharma_name_ids: [], items_footer_remarks: '' };
-        let contentLines = [];
-        let parsingTreasures = false;
-        let remarks = [];
+    
+    // Match everything up to "完畢" as a single block
+    const rawBlocks = batchImportContent.value.match(/[\s\S]*?完畢[！!]?/g) || [batchImportContent.value];
+    
+    batchRecords.value = rawBlocks.filter(b => b.trim()).map(block => {
+        const fullBlockText = block.trim();
+        const lines = fullBlockText.split('\n');
+        
+        let record = { 
+            master_name: '父皇', 
+            dharmaSearchQuery: '對象', 
+            rawRecipientLine: '',
+            content: fullBlockText, // Keep the FULL original text here
+            items: [], 
+            dharma_name_ids: [], 
+            items_footer_remarks: '' 
+        };
 
         lines.forEach(line => {
             const l = line.trim();
             if (!l) return;
-            if (l.includes('允同享皇恩') || l.includes('完畢')) { remarks.push(l); return; }
-            if (l.includes('賜降：')) { parsingTreasures = true; return; }
-            const recMatch = l.match(/開示給\s*([^：:\n\r]*)/);
-            if (recMatch) { record.dharmaSearchQuery = recMatch[1].trim(); return; }
-            const hasTreasureKeywords = l.includes('法寶') || l.includes('天份') || l.includes('金丹') || l.includes('符') || l.includes('疏文');
-            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+])/)) || (hasTreasureKeywords && l.length < 60 && !l.startsWith('*'));
-            if (isItem) {
-                const tMatch = l.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
-                if (tMatch) record.items.push({ uid: Date.now() + Math.random(), treasure_name: tMatch[2].trim(), details: tMatch[4] || '', quantity: 1 });
-            } else contentLines.push(l);
+            
+            // Footer remarks (Still parse for logic, but don't separate for display)
+            if (l.includes('允同享皇恩') || l.includes('完畢')) {
+                if (!record.items_footer_remarks.includes(l)) {
+                    record.items_footer_remarks += (record.items_footer_remarks ? '\n' : '') + l;
+                }
+            }
+
+            // Master detection
+            const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
+            masters.forEach(m => {
+                if (l.includes(m) && record.master_name === '父皇') {
+                    record.master_name = m;
+                }
+            });
+
+            // Recipient detection
+            const recMatch = l.match(/(?:開示給|給|開示給對象)\s*[:：]?\s*(.*)/);
+            if (recMatch && !record.rawRecipientLine) {
+                let recipient = recMatch[1].trim();
+                recipient = recipient.replace(/[:：]$/, '').trim();
+                record.rawRecipientLine = l;
+                record.dharmaSearchQuery = recipient || '對象';
+            }
+
+            // Item detection (For database only)
+            if (l.includes('賜降') && l.length > 3 && !l.endsWith('：') && !l.endsWith(':')) {
+                const tMatch = l.match(/^(\d+[\.、]|[+\-•])?\s*(.*?)([:：]\s*(.*))?$/);
+                if (tMatch && tMatch[2].trim()) {
+                    record.items.push({ 
+                        uid: Date.now() + Math.random(), 
+                        treasure_name: tMatch[2].trim(), 
+                        details: tMatch[4] || '', 
+                        quantity: 1 
+                    });
+                }
+            }
         });
-        record.content = contentLines.join('\n');
-        record.items_footer_remarks = remarks.join('\n');
+        
         return record;
     });
 }
+
+watch(batchImportContent, () => {
+    processBatchParsing();
+});
 
 function handleSubmit() {
     if (newFooterRemark.value.trim()) addFooterRemark();

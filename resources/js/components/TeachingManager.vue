@@ -395,65 +395,16 @@
                                     </div>
                                 </div>
 
-                                <!-- Preview of parsed blocks if any -->
-                                <div v-if="batchRecords.length > 0 && batchRecords[0].content" class="mt-8 space-y-4">
+                                <!-- Preview of raw lines -->
+                                <div v-if="batchImportContent.trim()" class="mt-8 space-y-4">
                                     <div class="text-[14px] text-slate-400 font-bold px-2 flex items-center">
                                         <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
-                                        已解析紀錄 ({{ batchRecords.length }} 筆)
+                                        預覽清單 ({{ rawLines.length }} 行)
                                     </div>
-                                    <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-3">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center space-x-2">
-                                                <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
-                                                <!-- Reorder Buttons -->
-                                                <div class="flex items-center space-x-1 ml-2">
-                                                    <button @click="moveBatchRecord(index, -1)" :disabled="index === 0" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
-                                                    <button @click="moveBatchRecord(index, 1)" :disabled="index === batchRecords.length - 1" class="p-1 text-slate-300 hover:text-indigo-500 disabled:opacity-20 transition-all active:scale-90">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <button @click="batchRecords.splice(index, 1)" class="text-slate-200 hover:text-red-400 p-1">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between">
-                                            <div class="font-black text-slate-900 text-[17px] whitespace-pre-wrap">{{ record.dharmaSearchQuery || getRecipientName(record) }}</div>
-                                            <div v-if="record.date" class="text-[12px] font-bold text-slate-400 flex items-center">
-                                                <span class="mr-1">📅</span> {{ record.date }}
-                                            </div>
-                                        </div>
-                                        <!-- Batch Record Target Remarks Dropdown -->
-                                        <div class="space-y-0.5 mt-1">
-                                            <div class="relative flex items-center border border-slate-200 rounded-2xl bg-slate-50 overflow-visible min-h-[44px]">
-                                                <input v-model="record.target_remarks" 
-                                                       @focus="activeBatchTargetRemarksIdx = index"
-                                                       placeholder="備註對象..." 
-                                                       class="w-full bg-transparent border-none text-[16px] text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[8px] font-bold placeholder:text-slate-400">
-                                                <button @click.stop="activeBatchTargetRemarksIdx = (activeBatchTargetRemarksIdx === index ? null : index)" class="p-1.5 mr-1 text-slate-400 hover:text-indigo-600 transition-all">
-                                                    <svg class="w-5 h-5" :class="activeBatchTargetRemarksIdx === index ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </button>
-                                                <div v-if="activeBatchTargetRemarksIdx === index" class="absolute left-0 bottom-full mb-1 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                                    <div v-for="opt in relationshipOptions" :key="opt"
-                                                         @click.stop="record.target_remarks = opt; activeBatchTargetRemarksIdx = null"
-                                                         class="px-4 h-[36px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-bold text-[15px] text-slate-900 active:bg-indigo-700 transition-all cursor-pointer">
-                                                        {{ opt }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-slate-800 text-[17px] font-black leading-relaxed whitespace-pre-wrap">{{ record.content }}</div>
-                                        <!-- Item Preview inside card -->
-                                        <div v-if="record.items && record.items.length > 0" class="mt-2 pt-2 border-t border-slate-100 space-y-1">
-                                            <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">已識別清單：</div>
-                                            <div v-for="(it, iIdx) in record.items" :key="it.uid" class="text-[13px] text-indigo-600 font-bold flex items-center">
-                                                <span class="text-indigo-400/80 mr-1.5 font-sans font-black text-[12px]">{{ iIdx + 1 }}.</span> {{ it.treasure_name }}{{ it.details ? ' : ' + it.details : '' }}
-                                                <button @click="record.items.splice(record.items.indexOf(it), 1)" class="ml-2 text-slate-300 hover:text-red-500">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg>
-                                                </button>
-                                            </div>
+                                    <div class="bg-white border border-slate-200 rounded-3xl shadow-lg divide-y divide-slate-100 custom-scrollbar">
+                                        <div v-for="(line, idx) in rawLines" :key="idx" class="px-5 py-3 text-[15px] font-bold text-slate-900 flex items-start gap-3 hover:bg-slate-50">
+                                            <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                            <span class="break-all whitespace-pre-wrap">{{ line }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1568,17 +1519,26 @@
 
                                         <svg v-if="!reorderMode" :class="focusedId == item.id ? '' : 'rotate-[-90deg]'" class="w-4 h-4 text-slate-400 mr-2 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                         <div class="flex flex-col min-w-0">
-                                            <div v-if="false" class="text-[18px] mb-0.5 font-black font-outfit tracking-tighter" style="color: #0d0d0d !important; font-weight: 900 !important;">
+                                            <div class="text-[14px] mb-1 font-bold text-slate-400 font-outfit tracking-tighter">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <div class="text-[17px] font-black leading-none">
-                                                <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ item.master?.name || item.master_name || '仙師' }}</span><span class="text-slate-900">開示給{{ getRecipientName(item) }}</span>
-                                            </div>
-                                            <!-- Content/Item Summary in List Header -->
-                                            <div class="mt-[3px] text-[17px] font-semibold text-slate-500 truncate leading-none">
-                                                <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
-                                                <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
-                                            </div>
+                                            <!-- Literal Record Content (Full) -->
+                                            <template v-if="isContentLiteral(item)">
+                                                <div class="text-[17px] font-black text-slate-900 leading-relaxed whitespace-pre-wrap mt-1 text-left">
+                                                    {{ item.content.trim() }}
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <!-- Title Row (Black Bold) -->
+                                                <div class="text-[17px] font-black leading-none mb-1 text-slate-900">
+                                                    <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ formatMasterName(item.master?.name || item.master_name) }}</span>開示給:{{ getRecipientName(item) }}
+                                                </div>
+                                                <!-- Content Summary Row (Grey) -->
+                                                <div class="text-[17px] font-semibold text-slate-500 truncate leading-none">
+                                                    <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
+                                                    <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
+                                                </div>
+                                            </template>
                                         </div>
                                     </div>
 
@@ -1613,11 +1573,11 @@
                                             </div>
 
                                             <!-- Header (Sub-title Style) -->
-                                            <div class="px-[15px] py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+                                            <div class="px-[15px] flex items-center justify-between shrink-0 bg-white" :class="isContentLiteral(item) ? 'pt-4 pb-0' : 'py-4 border-b border-slate-100'">
                                                 <div class="flex flex-col">
                                                     <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
-                                                    <div class="text-[17px] font-black text-slate-900 leading-tight">
-                                                        {{ item.master?.name || item.master_name || '仙師' }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
+                                                    <div v-if="!isContentLiteral(item)" class="text-[17px] font-black text-slate-900 leading-tight">
+                                                        {{ formatMasterName(item.master?.name || item.master_name) }}開示給:{{ getRecipientName(item) }}
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center space-x-1">
@@ -1625,7 +1585,7 @@
                                                         <button @click.stop="activeDropdownId = activeDropdownId === item.id ? null : item.id" class="w-10 h-10 flex items-center justify-center text-[#dc1428] active:scale-95 transition-transform">
                                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                                         </button>
-                                                        <div v-if="activeDropdownId === item.id" class="absolute right-0 bottom-full mb-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] overflow-hidden p-1.5 focus:outline-none">
+                                                        <div v-if="activeDropdownId === item.id" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-50 z-[600] p-1.5 focus:outline-none">
                                                             <div class="flex flex-col space-y-1">
                                                                 <button @click.stop="handleMenuEdit(item)" class="w-full px-4 py-2 text-left flex items-center hover:bg-slate-50 rounded-2xl transition-all">
                                                                     <span class="text-[17px] font-black text-slate-900">修改</span>
@@ -1646,16 +1606,16 @@
                                     </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto px-[15px] pt-2 pb-32 custom-scrollbar">
+                                            <div class="flex-1 overflow-y-auto px-[15px] pb-32 custom-scrollbar" :class="isContentLiteral(item) ? 'pt-0' : 'pt-2'">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
-                                                    <div v-if="getFullRecipientList(item)" class="space-y-2">
+                                                    <div v-if="getFullRecipientList(item)" class="space-y-2 mb-4">
                                                         <button @click.stop="toggleRecipientDetails(item.id)" 
-                                                                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group">
-                                                            <div class="w-6 h-6 bg-indigo-50 rounded-2xl flex items-center justify-center">
-                                                                <svg class="w-3.5 h-3.5" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group py-1">
+                                                            <div class="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
+                                                                <svg class="w-4 h-4 text-indigo-500" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                             </div>
-                                                            <span class="text-[13px] font-black uppercase tracking-wider">點選查看對象詳情</span>
+                                                            <span class="text-[17px] font-black text-slate-900">點選查看對象詳情</span>
                                                         </button>
                                                         <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
                                                             <div v-if="getFullRecipientList(item).groupName" class="app-body text-indigo-700 leading-tight">{{ getFullRecipientList(item).groupName }}</div>
@@ -1664,10 +1624,10 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{{ stripContentHeaders(item.content).trim() }}</div>
+                                                    <div v-if="item.content?.trim()" class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.content.trim() }}</div>
 
-                                                    <div v-if="item.items?.length > 0" class="mt-2">
-                                                        <label v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
+                                                    <div v-if="item.items?.length > 0 && !isContentLiteral(item)" class="mt-2">
+                                                        <label class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
                                                         <div class="space-y-1">
                                                             <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
                                                                 <div class="text-[17px] font-semibold text-slate-800 leading-relaxed">
@@ -1693,8 +1653,8 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="item.items_footer_remarks" class="text-[17px] font-normal text-slate-600 leading-relaxed pt-1 whitespace-pre-wrap">{{ item.items_footer_remarks }}</div>
-                                                    <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item)"><span class="text-[17px] font-normal text-slate-700">完畢</span></div>
+                                                    <div v-if="item.items_footer_remarks && !isContentLiteral(item)" class="text-[17px] font-normal text-slate-600 leading-relaxed pt-1 whitespace-pre-wrap">{{ item.items_footer_remarks }}</div>
+                                                    <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item) && !isContentLiteral(item)"><span class="text-[17px] font-normal text-slate-700">完畢</span></div>
                                                 </div>
 
                                                 <!-- Edit Mode -->
@@ -1826,7 +1786,7 @@
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
                                 <span class="text-[17px] font-normal text-slate-900 leading-tight">
-                                    {{ item.master_name }}<span v-if="item.content?.trim()">開示</span>給：{{ getRecipientName(item) }}
+                                    {{ formatMasterName(item.master_name) }}開示給:{{ getRecipientName(item) }}
                                 </span>
                             </div>
 
@@ -1986,6 +1946,13 @@ const getTodayStr = () => {
 
 // Reactive State
 const props = defineProps(['user']);
+const formatMasterName = (name) => {
+    if (!name) return '仙師';
+    let clean = name.replace('每日開示', '').replace('開示記錄', '').replace('專區', '').trim();
+    if (['老祖', '元始', '道祖', '靈寶', '太宰', '閻王'].includes(clean)) return clean + '仙師';
+    return clean;
+};
+
 const formatDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr || '-';
     const s = String(dateStr).split('T')[0].trim();
@@ -2001,6 +1968,19 @@ const formatDate = (dateStr) => {
     return s.replace(/-/g, '/');
 };
 
+const isContentLiteral = (item) => {
+    if (!item.content || item.content.trim().length < 5) return false;
+    const c = item.content.trim();
+    // Detect if content contains full record structure or is multi-line
+    const lines = c.split('\n');
+    if (lines.length > 1) return true; // Most batch records are multi-line
+    
+    const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
+    const hasMaster = masters.some(m => c.includes(m));
+    const hasMarkers = c.includes('開示') || c.includes('給') || c.includes('：') || c.includes(':');
+    return hasMaster && hasMarkers;
+};
+
 const emit = defineEmits(['goHome']);
 
 const resetToRoot = () => {
@@ -2011,7 +1991,7 @@ const resetToRoot = () => {
     focusedId.value = null;
     expandedId.value = null;
     reorderMode.value = false;
-    openMenuId.value = null;
+    activeDropdownId.value = null;
 };
 const activeEntryTab = ref('single');
 const batchImportContent = ref('');
@@ -2647,10 +2627,6 @@ const stashAndContinue = () => {
     itemsDetailMode.value = false;
 };
 
-const formatMasterName = (name) => {
-    if (!name) return '';
-    return name.replace('每日開示', '').replace('開示記錄', '').replace('專區', '').trim();
-};
 
 const uniqueTreasureNames = computed(() => {
     const names = (treasures.value || []).filter(t => {
@@ -2869,6 +2845,10 @@ const batchRecords = ref([
     { dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', relatives: '', items: [], items_footer_remarks: '', master_name: '' }
 ]);
 
+const rawLines = computed(() => {
+    return batchImportContent.value.split('\n').filter(l => l.trim() !== '');
+});
+
 const removeBatchBlock = (index) => {
     if (batchRecords.value.length > 1) batchRecords.value.splice(index, 1);
 };
@@ -3079,6 +3059,9 @@ const folders_list = [
     { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
     { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇仙師每日開示' }
 ];
+
+
+
 const mastersTotalCount = computed(() => {
     return Object.entries(folderCounts.value)
         .filter(([key]) => key !== 'daily' && key !== '0')
@@ -3572,7 +3555,7 @@ const editItem = (item) => {
 const deleteItem = (id) => { 
     deleteConfirmId.value = id;
     persistentToast.value = { msg: '確定要刪除這筆教導紀錄嗎？', type: 'deleteConfirm' };
-    openMenuId.value = null;
+    activeDropdownId.value = null;
 };
 
 const executeToastAction = async () => {
@@ -3951,10 +3934,13 @@ const getItemCount = (id) => markings.value?.[id] || 0; // Simplified
 const markings = ref({});
 
 const getRecipientName = (item) => {
-    const listInfo = getFullRecipientList(item);
     const pastedName = (item.dharmaSearchQuery || item.target_remarks || '').trim();
+    const isGroup = pastedName.includes('全體') || pastedName.includes('成員') || (item.dharma_name_ids && item.dharma_name_ids.length > 5);
+    if (isGroup) return '點選查看對象詳情';
 
-    if (!listInfo) return (pastedName || '全體成員');
+    const listInfo = getFullRecipientList(item);
+
+    if (!listInfo) return (pastedName || '對象');
 
     if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) {
         // Deduplicate if pastedName is just repeated groupName (e.g., "在場全體 在場全體")
@@ -4295,19 +4281,8 @@ const copyToLine = (item, index = null, allRecords = []) => {
 const processBatchText = () => {
     if (!batchImportContent.value.trim()) return;
 
-    // Split by common delimiters (e.g., "完畢", horizontal lines, or multiple newlines)
-    const rawBlocks = batchImportContent.value.split(/完畢[！!]?|--+|==+/);
+    const rawBlocks = batchImportContent.value.match(/[\s\S]*?完畢[！!]?/g) || [batchImportContent.value];
     const newRecords = [];
-
-    const nameAliasMap = {
-        '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-        '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
-        '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
-        '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
-        '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
-        '金翎': '鳳尊', '金妙': '鳳媓'
-    };
-    const translateName = (n) => nameAliasMap[n] || n;
 
     const masterNames = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const masterOptions = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師'];
@@ -4319,15 +4294,14 @@ const processBatchText = () => {
         if (!text || text.length < 5) return;
 
         const record = { 
-            // Apply global picker defaults (Added per user request)
             dharma_name_ids: [...(form.value.dharma_name_ids || [])],
             dharmaSearchQuery: dharmaSearchQuery.value || '',
             target_remarks: form.value.target_remarks || '',
-            content: '', 
+            content: text, // Set content to FULL text
             items: [], 
             master_name: '', 
             date: null,
-            items_footer_remarks: form.value.items_footer_remarks || ''
+            items_footer_remarks: ''
         };
 
         // 0. Date Detection (Look for date patterns anywhere in the text)
@@ -4368,16 +4342,14 @@ const processBatchText = () => {
             }
         });
         // We do NOT fallback to currentFolder name here to avoid locking records to the current view during shunting
-
         // 2. Recipient Detection (Highly Robust Regex)
-        // Match "開示給" followed by any characters until a colon, newline, or specific terminator
         const recMatch = text.match(/開示給\s*([^：:\n\r]*)/);
         let contentToParse = text;
 
         if (recMatch && recMatch[1].trim()) {
-            const nameField = translateName(recMatch[1].trim());
+            const nameField = recMatch[1].trim();
             record.dharmaSearchQuery = nameField;
-            record.target_remarks = nameField; // Essential for persistence
+            record.target_remarks = nameField;
 
             const foundDN = dharmaNames.value.find(dn => dn.name === nameField);
             if (foundDN) record.dharma_name_ids = [foundDN.id];
@@ -4389,19 +4361,6 @@ const processBatchText = () => {
                     record.dharma_name_ids = (foundGroup.dharma_names || []).map(dn => dn.id);
                 }
             }
-            // Clean content to remove the recipient line if it's a distinct line
-            const fullMatch = recMatch[0];
-            contentToParse = text.replace(fullMatch, '').trim();
-            // Handle optional trailing colon if it was outside the capture group
-            if (contentToParse.startsWith('：') || contentToParse.startsWith(':')) {
-                contentToParse = contentToParse.substring(1).trim();
-            }
-        }
-
-        // Clean up any remaining instances of the master name (headers/repetitions) 
-        // to avoid duplication with the UI's fixed master header.
-        if (matchedKeywordInText) {
-            // Master name is extracted but NOT stripped to preserve "exactly same" content
         }
 
         // 3. Line-by-line Parsing (Heuristic for content vs items)
@@ -4425,16 +4384,8 @@ const processBatchText = () => {
                 return;
             }
 
-            // Heuristic: If it has a prefix (1. or +) AND (parsingTreasures OR contains treasure keywords)
-            // OR it contains keywords like "法寶", "天份", "金丹", "符", "疏文"
-            const hasTreasureKeywords = l.includes('法寶') || l.includes('天份') || 
-                                       l.includes('金丹') || l.includes('符') || 
-                                       l.includes('疏文');
-
-            // Only auto-detect as item if we are in treasures section OR it's a short line with keywords
-            // Ensure we don't catch remarks that start with * by the previous check
-            const isItem = (parsingTreasures && l.match(/^(\d+\.|[+])/)) || 
-                           (hasTreasureKeywords && l.length < 60 && !l.startsWith('*'));
+            // Only detect items when explicitly under "賜降：" section
+            const isItem = parsingTreasures && l.match(/^(\d+\.|[+])/);
 
             if (isItem) {
                 const tMatch = l.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
@@ -4456,23 +4407,8 @@ const processBatchText = () => {
             record.items_footer_remarks = remarks.join('\n');
         }
 
-        // Final record content: Split by "賜降：" to avoid duplication in the items list
-        let contentPart = text;
-        const treasureStart = text.indexOf('賜降：');
-        if (treasureStart > -1) {
-            contentPart = text.substring(0, treasureStart);
-        } else if (record.items.length > 0) {
-            // Heuristic: If we parsed items but no "賜降" header, remove detected item lines from content
-            contentPart = contentLines.join('\n');
-        }
-
-        let cleanedRecordContent = stripContentHeaders(contentPart);
-        // Remove detected remarks from main content if they were joined in by stripContentHeadersfallback
-        remarks.forEach(r => {
-            cleanedRecordContent = cleanedRecordContent.replace(r, '').trim();
-        });
-
-        record.content = cleanedRecordContent;
+        // Requirement: Save the FULL original text in the content field for literal records
+        record.content = text;
 
         newRecords.push(record);
     });
@@ -5006,9 +4942,9 @@ const executeDistributionSave = async (mode) => {
                                 name: '', sub_name: ''
                             });
                         }
-                    } else {
-                        remainingContent.push(l);
                     }
+                    // We NO LONGER strip item lines from content to ensure the list view shows the FULL pasted text
+                    remainingContent.push(l);
                 });
                 content = remainingContent.join('\n');
             }
