@@ -3931,11 +3931,11 @@ const getRecipientName = (item) => {
     const isGroup = pastedName.includes('全體') || pastedName.includes('成員') || (item.dharma_name_ids && item.dharma_name_ids.length > 5);
     if (isGroup) return '點選查看對象詳情';
 
-    const listInfo = getFullRecipientList(item);
+    const listInfo = getFullRecipientList(item, pastedName);
 
     if (!listInfo) return (pastedName || '對象');
 
-    if (listInfo.groupName && pastedName && pastedName.includes(listInfo.groupName)) {
+    if (listInfo.groupName && pastedName && (pastedName.includes(listInfo.groupName) || listInfo.groupName.includes(pastedName))) {
         // Deduplicate if pastedName is just repeated groupName (e.g., "在場全體 在場全體")
         if (pastedName.trim() === `${listInfo.groupName} ${listInfo.groupName}`) return listInfo.groupName;
         return pastedName;
@@ -3972,7 +3972,7 @@ const getRecipientName = (item) => {
     return res;
 };
 
-const getFullRecipientList = (item) => {
+const getFullRecipientList = (item, hintName = null) => {
     const names = (item.dharma_names || []).map(dn => dn.name);
     const pendingIds = item.dharma_name_ids || [];
 
@@ -3997,11 +3997,23 @@ const getFullRecipientList = (item) => {
     let groupName = null;
 
     if (searchIds && (groups.value || []).length > 0) {
-        const matched = groups.value.find(g => {
-            const gIds = (g.dharma_names || []).map(dn => Number(dn.id)).sort((a, b) => a - b).join(',');
+        const matched = (groups.value || []).find(g => {
+            const gDn = g.dharma_names || g.dharmaNames || [];
+            const gIds = gDn.map(dn => Number(dn.id)).sort((a, b) => a - b).join(',');
             return gIds === searchIds;
         });
-        if (matched) groupName = matched.name;
+        
+        if (matched) {
+            const members = matched.dharma_names || matched.dharmaNames || [];
+            if (members.length > 1) {
+                groupName = matched.name;
+            } else if (members.length === 1 && hintName) {
+                const h = hintName.trim();
+                if (h === matched.name || h === palaceToGroupName[matched.name] || matched.name === palaceToGroupName[h]) {
+                    groupName = matched.name;
+                }
+            }
+        }
         else if ((pendingIds.length > 0 && pendingIds.length === dharmaNames.value.length) || (resolvedNames.length > 0 && resolvedNames.length === dharmaNames.value.length)) groupName = '全體殿生';
     }
 
@@ -4998,6 +5010,7 @@ const executeDistributionSave = async (mode) => {
                     const foundGroup = (groups.value || []).find(g => g.name === nameField);
                     if (foundGroup) {
                         finalDharmaIds = (foundGroup.dharma_names || []).map(dn => dn.id);
+                        finalTargetRemarks = foundGroup.name;
                     } else {
                         // If still not found, put it in target_remarks so user can see who it's for
                         finalTargetRemarks = (finalTargetRemarks ? finalTargetRemarks + ' ' : '') + nameField;

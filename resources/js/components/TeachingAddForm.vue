@@ -618,12 +618,14 @@ function selectDharmaName(dn) {
     }
     dharmaSearchQuery.value = dn.name;
     selectedGroup.value = null;
+    form.value.target_remarks = '';
 }
 
 function selectGroup(g) {
     selectedGroup.value = g;
     form.value.dharma_name_ids = (g.dharma_names || g.dharmaNames || []).map(dn => dn.id);
     dharmaSearchQuery.value = g.name;
+    form.value.target_remarks = g.name;
 }
 
 function handleDharmaSearchInput(e) {
@@ -652,6 +654,7 @@ function clearSelection() {
     form.value.dharma_name_ids = [];
     dharmaSearchQuery.value = '';
     selectedGroup.value = null;
+    form.value.target_remarks = '';
 }
 
 function addFooterRemark() {
