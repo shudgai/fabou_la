@@ -132,6 +132,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Reference Fix**: All deletion/menu logic must use `activeDropdownId` (defined in script) to avoid `ReferenceError` on `openMenuId`.
 - **master_name Leak Bug (frontend fix)**: `showAdd()` (line 5082) sets `form.value.master_name = mName` as pre-fill. This leaks into `performActualSave` payload via `...form.value` spread, causing PHP backend's `resolveRelations()` to override master_id. Fix: destructure out `master_name` before spreading (`const { master_name: _mn, ...formClean } = form.value`). Single-item save at `performActualSave` line 4837.
 - **master_id Fallback Trap**: `performActualSave` line 4840: `master_id: form.value.master_id || currentFolder.value?.id` — 0 is falsy in JS, so `master_id=0` (daily folder) would fall through to `currentFolder.value?.id`. Always ensure explicit master_id is set.
+- **Single-Member Group Suppression**: To prevent individual dharma names (e.g., "閻願") from being automatically "upgraded" to their single-member group name (e.g., "玄義宮") after saving/reloading, `getFullRecipientList` now requires a `hintName`. It only auto-resolves groups with >1 member unless the `hintName` exactly matches the group name.
+- **Group Identity Persistence**: Selecting a group in `TeachingAddForm.vue` now populates `form.value.target_remarks` with the group name. This acts as a persistent hint in the database so that after a page refresh, the system knows whether the user intended to record for the "Group" or the "Individual".
 
 ### TeachingAddForm.vue
 - Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 預覽)
