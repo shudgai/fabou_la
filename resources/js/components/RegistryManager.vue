@@ -1103,7 +1103,11 @@ const openAdd = (mode = 'single') => {
 const openEdit = (item) => {
     expandedIds.value = new Set([item.id]);
     editItemId.value = item.id;
-    editData.value = JSON.parse(JSON.stringify(item));
+    const cloned = JSON.parse(JSON.stringify(item));
+    if (cloned.dharma_name_registries) {
+        sortRegistries(cloned.dharma_name_registries);
+    }
+    editData.value = cloned;
     showDharmaSelector.value = false;
 };
 
@@ -1179,6 +1183,23 @@ const isDharmaSelected = (dnId) => {
     return (editData.value?.dharma_name_registries || []).some(r => r.dharma_name_id === dnId);
 };
 
+const sortRegistries = (arr) => {
+    if (!arr) return [];
+    const getSortIndex = (dnr) => {
+        const name = getDharmaNameText(dnr);
+        const searchName = name === '道霞龍妃' ? '金巧' : name;
+        return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
+    };
+    return arr.sort((a, b) => {
+        const indexA = getSortIndex(a);
+        const indexB = getSortIndex(b);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
+    });
+};
+
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
     const idx = registries.findIndex(r => r.dharma_name_id === dn.id);
@@ -1192,6 +1213,7 @@ const toggleDharmaSelection = (dn) => {
             related_personnel: [],
             remarks: ''
         });
+        sortRegistries(editData.value.dharma_name_registries);
     }
 };
 
