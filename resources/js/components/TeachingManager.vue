@@ -608,6 +608,7 @@
                                             <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
                                             <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                 <input v-model="newItemSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemSun" :options="[1,2,3,4,5,6,7,8,9]" />
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
@@ -615,6 +616,7 @@
                                             <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
                                             <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                 <input v-model="newItemMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemMoon" :options="[1,2,3,4,5,6,7,8,9]" />
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
@@ -622,6 +624,7 @@
                                             <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
                                             <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                 <input v-model="newItemLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemLight" :options="[1,2,3,4,5,6,7,8,9]" />
                                                 <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                             </div>
                                         </div>
@@ -794,6 +797,7 @@
                                         <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="使用的法器...">
                                         </div>
+                                        <compact-datalist v-model="newItemSubInstrumentName" :options="instrumentTreasures.map(t => t.name)" />
                                     </div>
                                     <!-- 3. Body Part -->
                                     <div class="space-y-1.5">
@@ -801,6 +805,7 @@
                                         <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
                                             <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入部位...">
                                         </div>
+                                        <compact-datalist v-model="newItemSubBodyPart" :options="['患處', '五大穴', '第一大穴', '第二大穴', '第三大穴', '第四大穴', '第五大穴', '前身三大穴', '後身二大穴']" />
                                     </div>
                                 </div>
 
@@ -894,6 +899,7 @@
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
                                                 <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                     <input v-model="newItemSubSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubSun" :options="[1,2,3,4,5,6,7,8,9]" />
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
@@ -901,6 +907,7 @@
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
                                                 <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                     <input v-model="newItemSubMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubMoon" :options="[1,2,3,4,5,6,7,8,9]" />
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
@@ -908,6 +915,7 @@
                                                 <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
                                                 <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
                                                     <input v-model="newItemSubLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubLight" :options="[1,2,3,4,5,6,7,8,9]" />
                                                     <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
                                                 </div>
                                             </div>
@@ -1924,6 +1932,7 @@
 
 <script setup>
 import TeachingAddForm from './TeachingAddForm.vue';
+import CompactDatalist from './CompactDatalist.vue';
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
 import { debounce } from '../utils/debounce';
 import axios from 'axios';

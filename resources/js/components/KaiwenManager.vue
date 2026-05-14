@@ -321,6 +321,7 @@
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">仙師</label>
                             <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
+                            <compact-datalist v-model="form.master_name" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" />
                             <datalist id="master-list">
                                 <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
                             </datalist>
@@ -466,6 +467,7 @@ import CompactDatePicker from './CompactDatePicker.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import KaiwenBatchAdd from './KaiwenBatchAdd.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import CompactDatalist from './CompactDatalist.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const getTodayStr = () => {

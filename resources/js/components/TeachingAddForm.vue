@@ -230,6 +230,7 @@
                                          class="w-full text-center text-[18px] font-black bg-transparent py-4 px-4 outline-none transition-all placeholder:text-slate-100">
                                      <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg></button>
                                  </div>
+                                 <compact-datalist v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" />
                              </div>
                          </div>
                     </div>
@@ -409,6 +410,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import LogoImperialNotebook from './LogoImperialNotebook.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import CompactDatalist from './CompactDatalist.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({

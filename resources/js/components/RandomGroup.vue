@@ -213,11 +213,13 @@
                             <div class="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl min-h-[60px]">
                                     <input 
                                         type="text" 
+                                        v-model="seedInput"
                                         list="available-seeds-list" 
                                         @change="addSeedFromSelect($event)" 
                                         placeholder="查詢在場人員加入種子組..." 
                                         class="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 outline-none text-[16px] font-black text-slate-600 cursor-pointer shadow-sm text-center"
                                     >
+                                    <compact-datalist v-model="seedInput" :options="availableSeeds" @update:modelValue="onSeedSelected" />
                                     <datalist id="available-seeds-list">
                                         <option v-for="name in availableSeeds" :key="'dlopt'+name" :value="name"></option>
                                     </datalist>
@@ -500,6 +502,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
+import CompactDatalist from './CompactDatalist.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const users = ref([]);
@@ -514,6 +517,14 @@ const currentType = ref('');
 const pickSize = ref(1);
 const includeGuardians = ref(false);
 const persistentToast = ref(null);
+const seedInput = ref('');
+
+const onSeedSelected = (name) => {
+    if (name && !seedNames.value.includes(name)) {
+        seedNames.value.push(name);
+    }
+    seedInput.value = '';
+};
 
 const currentStep = ref(1);
 

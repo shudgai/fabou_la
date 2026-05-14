@@ -175,6 +175,7 @@
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                    <compact-datalist v-model="p.custom_name" :options="dharmaNames.map(dn => dn.name)" />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
@@ -418,6 +419,7 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import CompactDatalist from './CompactDatalist.vue';
 
 const props = defineProps({
     mode: String,
