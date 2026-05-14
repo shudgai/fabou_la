@@ -327,16 +327,55 @@
                                                             class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
                                                     </div>
                                                     <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1 px-4">
-                                                        <button v-for="dn in filteredEditDharmaNames" :key="dn.id"
-                                                            @click.stop="toggleDharmaSelection(dn)"
-                                                            :style="{
-                                                                backgroundColor: isDharmaSelected(dn.id) ? '#bfdbfe' : '#ffffff',
-                                                                borderColor: isDharmaSelected(dn.id) ? '#93c5fd' : '#d1d5db',
-                                                                borderWidth: isDharmaSelected(dn.id) ? '2px' : '1px',
-                                                            }"
-                                                            class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
-                                                            <span class="truncate leading-none">{{ dn.name }}</span>
-                                                        </button>
+                                                        <template v-for="dn in filteredEditDharmaNames" :key="dn.id">
+                                                            <!-- Normal buttons -->
+                                                            <button v-if="dn.name !== '金巧'"
+                                                                @click.stop="toggleDharmaSelection(dn)"
+                                                                :style="{
+                                                                    backgroundColor: isDharmaSelected(dn) ? '#bfdbfe' : '#ffffff',
+                                                                    borderColor: isDharmaSelected(dn) ? '#93c5fd' : '#d1d5db',
+                                                                    borderWidth: isDharmaSelected(dn) ? '2px' : '1px',
+                                                                }"
+                                                                class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                                <span class="truncate leading-none">{{ dn.name }}</span>
+                                                            </button>
+
+                                                            <!-- Special Gold Qiao Expandable -->
+                                                            <div v-else class="col-span-2 grid grid-cols-2 gap-1.5 animate-fade-in">
+                                                                <button v-if="!goldQiaoExpanded"
+                                                                    @click.stop="goldQiaoExpanded = true"
+                                                                    :style="{
+                                                                        backgroundColor: isDharmaSelected(dn) || isDharmaSelected({ name: '道霞龍妃', isVirtual: true }) ? '#bfdbfe' : '#ffffff',
+                                                                        borderColor: '#d1d5db',
+                                                                        borderWidth: '1px',
+                                                                    }"
+                                                                    class="col-span-2 flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                                    <span class="truncate leading-none">金巧...</span>
+                                                                </button>
+                                                                <template v-else>
+                                                                    <button @click.stop="toggleDharmaSelection(dn)"
+                                                                        :style="{
+                                                                            backgroundColor: isDharmaSelected(dn) ? '#3b82f6' : '#ffffff',
+                                                                            color: isDharmaSelected(dn) ? 'white' : 'black',
+                                                                            borderColor: isDharmaSelected(dn) ? '#2563eb' : '#d1d5db',
+                                                                            borderWidth: '1px',
+                                                                        }"
+                                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                                        金巧
+                                                                    </button>
+                                                                    <button @click.stop="toggleDharmaSelection({ name: '道霞龍妃', isVirtual: true, baseId: dn.id })"
+                                                                        :style="{
+                                                                            backgroundColor: isDharmaSelected({ name: '道霞龍妃', isVirtual: true }) ? '#3b82f6' : '#ffffff',
+                                                                            color: isDharmaSelected({ name: '道霞龍妃', isVirtual: true }) ? 'white' : 'black',
+                                                                            borderColor: isDharmaSelected({ name: '道霞龍妃', isVirtual: true }) ? '#2563eb' : '#d1d5db',
+                                                                            borderWidth: '1px',
+                                                                        }"
+                                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                                        道霞龍妃
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </template>
                                                     </div>
                                                 </div>
 
@@ -1162,6 +1201,7 @@ const saveEdit = async () => {
     }
 };
 
+const goldQiaoExpanded = ref(false);
 const handlePickerConfirm = (date) => {
     if (!activePicker.value) return;
     const { field, index } = activePicker.value;
@@ -1178,21 +1218,8 @@ const filteredEditDharmaNames = computed(() => {
     const q = dharmaEditSearch.value?.toLowerCase().trim();
     let list = [...dharmaNames.value];
 
-    // Special case for Registries: inject 道霞龍妃 if 金巧 exists
-    const gq = list.find(dn => dn.name === '金巧');
-    if (gq) {
-        const gqIdx = list.indexOf(gq);
-        // Only inject if not already present (unlikely but safe)
-        if (!list.some(dn => dn.name === '道霞龍妃')) {
-            list.splice(gqIdx + 1, 0, { 
-                id: 'virtual_dxlf', 
-                name: '道霞龍妃', 
-                isVirtual: true, 
-                baseId: gq.id 
-            });
-        }
-    }
-
+    // Note: virtual 道霞龍妃 is now handled in the template to allow expansion toggle
+    
     if (!q) return list;
     return list.filter(dn => dn.name.toLowerCase().includes(q));
 });
