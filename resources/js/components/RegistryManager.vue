@@ -54,16 +54,22 @@
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto bg-white" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <div v-if="currentCategory" class="w-full px-[15px] py-[2px] flex items-center bg-white border-b border-white relative min-h-[52px]">
-                        <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                            <div class="flex items-center gap-2">
-                                <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 900 !important;">
-                                    {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                                    <br>
-                                    <span v-if="currentFolder" class="text-[26px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 26px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
-                                </h1>
+                <!-- Consolidated Header for Masters Grid (Matching List View) -->
+                <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-slate-100">
+                    <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white cursor-pointer" @click="resetToRoot">
+                        <div class="flex items-center gap-2">
+                            <logo-imperial-notebook :height="36" />
+                            <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap" 
+                                style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
+                                法寶登記專區
                             </div>
                         </div>
+                    </div>
+                    <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
+                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
+                            {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
@@ -119,7 +125,7 @@
                 <div class="mt-12 flex justify-center pb-32">
                     <button @click="$emit('goHome')" class="text-slate-300 hover:text-slate-500 transition-colors flex items-center space-x-2 active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="text-xs font-medium tracking-widest uppercase">返回專區列表</span>
+                        <span class="text-xs font-medium tracking-widest">返回專區列表</span>
                     </button>
                 </div>
             </div>
@@ -137,7 +143,7 @@
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
                         <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">法寶登記專區</h1>
+                        <h1 class="tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">法寶登記專區</h1>
                     </div>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
@@ -185,7 +191,7 @@
 
                         <!-- Empty State -->
                         <div v-if="filteredTreasures.length === 0 && !loading" class="flex flex-col items-center justify-center py-24 px-6 text-center">
-                            <h3 class="text-[17px] font-black text-slate-300 font-outfit uppercase tracking-widest">尚無資料</h3>
+                            <h3 class="text-[17px] font-black text-slate-300 font-outfit tracking-widest">尚無資料</h3>
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 

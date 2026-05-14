@@ -43,7 +43,7 @@
                          :class="s <= currentStep ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-slate-100'"></div>
                 </div>
                 <div class="flex justify-between mt-2 px-1">
-                    <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">Step {{ currentStep }} / {{ totalSteps }}</span>
+                    <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">第 {{ currentStep }} 步 / 共 {{ totalSteps }} 步</span>
                     <span class="text-[11px] font-black text-blue-500 uppercase tracking-[0.2em]">{{ currentStepTitle }}</span>
                 </div>
             </div>
@@ -58,7 +58,6 @@
                     <div v-if="currentStep === 1" :key="'s1'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">日期</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Date Info</p>
                         </div>
                         <div class="space-y-8">
                             <div class="relative group">
@@ -74,11 +73,10 @@
                         </div>
                     </div>
 
-                    <!-- STEP 2: 載錄仙師 -->
+                    <!-- STEP 2: 載錄仙師 (Moved from step 3) -->
                     <div v-else-if="currentStep === 2" :key="'s2'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請確認<span class="text-red-600">載錄仙師</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Master Selection</p>
                         </div>
                         <div class="space-y-8">
                             <div class="relative group">
@@ -93,11 +91,22 @@
                         </div>
                     </div>
 
-                    <!-- STEP 3: 用意 -->
+                    <!-- STEP 3: 法寶名稱 (Moved from step 2) -->
                     <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶名稱</span></h2>
+                        </div>
+                        <div class="relative group">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
+                            <textarea v-model="treasureNamesText" rows="5" placeholder="輸入內容..."
+                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: 用意 (Moved from step 3) -->
+                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">用意</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Purpose</p>
                         </div>
                         <div class="relative group">
                             <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
@@ -106,11 +115,10 @@
                         </div>
                     </div>
 
-                    <!-- STEP 4: 功效 -->
-                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 5: 功效 (Moved from step 4) -->
+                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">功效</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Effect</p>
                         </div>
                         <div class="relative group">
                             <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
@@ -119,11 +127,10 @@
                         </div>
                     </div>
 
-                    <!-- STEP 5: 作法 -->
-                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 6: 作法 (Moved from step 5) -->
+                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">作法</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Method</p>
                         </div>
                         <div class="relative group">
                             <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法 (選填)</label>
@@ -132,24 +139,10 @@
                         </div>
                     </div>
 
-                    <!-- STEP 6: 求寶內容 -->
-                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
-                        <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">求寶內容</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Content</p>
-                        </div>
-                        <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容</label>
-                            <textarea v-model="treasureNamesText" rows="5" placeholder="輸入內容..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
-                        </div>
-                    </div>
-
                     <!-- STEP 7: 備註與承接師兄姐 -->
                     <div v-else-if="currentStep === 7" :key="'s7'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-6">
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">備註及人員</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Remarks & Personnel</p>
                         </div>
 
                         <div class="relative group mb-8">
@@ -435,13 +428,13 @@ import CompactDatePicker from './CompactDatePicker.vue';
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
 const totalSteps = 7;
-const stepTitles = ['日期', '仙師', '用意', '功效', '作法', '求寶內容', '備註'];
+const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '備註'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 const isEditing = computed(() => !!props.initialData?.id);
 
 function handleNext() {
-    // 根據用戶要求：只有法寶名稱是必填 (Step 6)
-    if (currentStep.value === 6 && !treasureNamesText.value.trim()) { alert('請輸入求寶內容'); return; }
+    // 根據用戶要求：只有法寶名稱是必填 (Step 3)
+    if (currentStep.value === 3 && !treasureNamesText.value.trim()) { alert('請輸入法寶名稱'); return; }
     if (currentStep.value < totalSteps) currentStep.value++;
 }
 function handleBack() {
