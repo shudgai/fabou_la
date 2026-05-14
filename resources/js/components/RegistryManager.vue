@@ -356,7 +356,7 @@
                                                 <div class="overflow-x-auto border-y border-slate-200 shadow-sm bg-white -ml-[10px]">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
-                                                            <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                            <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
                                                                 <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[10px]">法號</th>
                                                                 <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap pl-[5px]">備註</th>
@@ -483,7 +483,7 @@
                                                 <div class="overflow-x-auto border-y border-slate-200 shadow-sm mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
-                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
+                                                             <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
                                                                   <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit pl-[10px]">
                                                                       <div class="flex items-center justify-between">
                                                                           <span>法號</span>
@@ -502,7 +502,7 @@
                                                                 <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors border-r border-slate-50 pl-[10px]">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="flex items-center px-2 py-1.5 justify-center relative">
-                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
+                                                                        <span class="text-[15px] font-bold font-outfit whitespace-nowrap" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
