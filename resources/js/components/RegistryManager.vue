@@ -346,9 +346,9 @@
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
                                                                 <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
-                                                                <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap">備註</th>
-                                                                <th class="w-[40px]"></th>
+                                                                <th class="w-[30px]"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -373,7 +373,7 @@
                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
-                                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                     </button>
                                                                 </td>
                                                             </tr>
@@ -437,7 +437,7 @@
                                                                         </button>
                                                                     </div>
                                                                 </th>
-                                                                <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
+                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
