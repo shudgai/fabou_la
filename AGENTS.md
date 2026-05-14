@@ -154,6 +154,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Folder text: `#fbbf24` (yellow)
 - Folder icon fill: `#b91c1c` (dark red)
 - Sub-folder images scaled 150% (btn 189→284px, img 177→266px)
+- **Edit Interface Refinement**: Dharma name selection moved below main Remarks field; uses a 3-column table (法號, 日期, 備註) for both View and Edit modes.
+- **Table Headers**: "法號" header includes an "Add" (新增) button in both modes; Edit mode toggles a grid selector; View mode triggers Edit mode with selector open.
+- **Others Category**: Table columns reordered to [法號, 日期, 親友, 備註] to prioritize dharma name visibility.
 
 ### ImperialGraceManager.vue
 - 皇恩 module — reference for folder sizing (198×198 buttons, 163×163 SVG, `overflow-clip` on wrapper)

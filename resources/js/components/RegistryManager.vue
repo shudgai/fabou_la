@@ -275,10 +275,13 @@
                                     <!-- EDIT MODE: Inline editable fields -->
                                     <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
-                                            <div class="space-y-1">
+                                            <div class="space-y-1 relative group">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
                                                 <input v-model="editData.record_date" type="text" placeholder="年/月/日"
                                                     class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                <button @click="activePicker = { field: 'record_date' }" class="absolute right-0 bottom-2 text-slate-300 hover:text-indigo-500">
+                                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
                                             </div>
                                             <div class="space-y-1">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
@@ -318,7 +321,7 @@
                                                 </div>
 
                                                 <!-- Selector Grid (Toggleable) -->
-                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-2xl border border-slate-100 -mx-4 md:mx-0">
                                                     <div class="relative">
                                                         <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
                                                             class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
@@ -344,7 +347,7 @@
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
                                                                 <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
                                                                 <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
-                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap">備註</th>
                                                                 <th class="w-[40px]"></th>
                                                             </tr>
                                                         </thead>
@@ -353,12 +356,15 @@
                                                                 <td class="px-2 py-1.5 font-black text-blue-700 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit">
                                                                     {{ dnr.custom_name }}
                                                                 </td>
-                                                                <td class="p-0 border-r border-slate-50">
+                                                                <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
                                                                         placeholder="年/月/日"
-                                                                        class="w-full text-center text-[15px] font-black !text-[#dc1428] bg-transparent py-2 outline-none"
+                                                                        class="w-full text-center text-[15px] font-black !text-[#dc1428] bg-transparent py-2 outline-none pl-6"
                                                                         style="font-family: 'PMingLiU', serif;">
+                                                                    <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-1 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
+                                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                    </button>
                                                                 </td>
                                                                 <td class="p-0">
                                                                     <input v-model="dnr.remarks"
@@ -615,6 +621,15 @@
             @close="showAddMenu = false"
             :actions="addActions"
         />
+
+        <!-- Date Picker for Registry Rows -->
+        <compact-date-picker 
+            v-if="activePicker"
+            :show="true"
+            :title="activePicker.field === 'record_date' ? '得知日期' : '取得日期'"
+            @close="activePicker = null"
+            @confirm="handlePickerConfirm"
+        />
     </div>
 </template>
 
@@ -831,6 +846,7 @@ const editItemId = ref(null);
 const editData = ref(null);
 const dharmaEditSearch = ref('');
 const showDharmaSelector = ref(false);
+const activePicker = ref(null);
 
 const handlePageChange = (page) => {
     currentPage.value = page;
@@ -1139,6 +1155,18 @@ const saveEdit = async () => {
     } finally {
         isSaving.value = false;
     }
+};
+
+const handlePickerConfirm = (date) => {
+    if (!activePicker.value) return;
+    const { field, index } = activePicker.value;
+    const dateStr = date.replace(/\//g, '-');
+    if (field === 'record_date') {
+        editData.value.record_date = dateStr;
+    } else if (field === 'obtained_date' && index !== null) {
+        editData.value.dharma_name_registries[index].obtained_date = dateStr;
+    }
+    activePicker.value = null;
 };
 
 const filteredEditDharmaNames = computed(() => {
