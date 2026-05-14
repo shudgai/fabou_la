@@ -24,15 +24,6 @@
         <div v-if="currentFolder && !addMode" 
             class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Row 1: Global Title (Now visible on mobile to replace redundant Header 1) -->
-            <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white">
-                <div class="flex items-center gap-2 cursor-pointer" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" class="md:hidden" />
-                    <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap" 
-                        style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
-                        法寶登記專區
-                    </div>
-                </div>
-            </div>
 
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px]">
@@ -56,15 +47,6 @@
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <!-- Consolidated Header for Masters Grid (Matching List View) -->
                 <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-slate-100">
-                    <div class="flex items-center justify-between py-[5px] px-3 bg-white border-b border-white cursor-pointer" @click="resetToRoot">
-                        <div class="flex items-center gap-2">
-                            <logo-imperial-notebook :height="36" />
-                            <div class="app-title !text-[30px] leading-tight !font-black !text-[#dc2626] whitespace-nowrap" 
-                                style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
-                                法寶登記專區
-                            </div>
-                        </div>
-                    </div>
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
                         <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
                             {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
