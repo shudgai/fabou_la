@@ -22,6 +22,7 @@ class RegistryController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('effect', 'like', "%{$search}%")
                   ->orWhereHas('dharmaNameRegistries', function($sq) use ($search) {
                       $sq->where('custom_name', 'like', "%{$search}%")
                         ->orWhereHas('dharmaName', function($ssq) use ($search) {
@@ -35,6 +36,11 @@ class RegistryController extends Controller
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
+
+        if ($request->has('master_id')) {
+            $query->where('master_id', $request->master_id);
+        }
+
         $direction = filter_var($request->input('sortDesc', true), FILTER_VALIDATE_BOOLEAN) ? 'desc' : 'asc';
         $query->orderByRaw('CASE WHEN sort_order = 0 THEN 999999 ELSE sort_order END ASC')
               ->orderBy('id', $direction);
@@ -104,6 +110,7 @@ class RegistryController extends Controller
                     'master_id'          => $request->master_id,
                     'category'           => $request->category ?? 'major',
                     'purpose'            => $request->purpose,
+                    'effect'             => $request->effect,
                     'acquisition_method' => $request->acquisition_method,
                     'remarks'            => $request->remarks,
                     'record_date'        => $request->record_date,
@@ -116,6 +123,7 @@ class RegistryController extends Controller
                 $registry->update(array_filter([
                     'acquisition_method' => $request->acquisition_method,
                     'purpose'            => $request->purpose,
+                    'effect'             => $request->effect,
                     'remarks'            => $request->remarks,
                 ]));
             }
@@ -157,15 +165,17 @@ class RegistryController extends Controller
                             if ($relPart === '父') $relPart = '父';
                             $relationshipMatch[0] = $custom_name . '之' . $relPart; // Keep the '之'
                         } else {
-                            $dnNames = DharmaName::pluck('name')->toArray();
+                            $dnNames = \App\Models\DharmaName::pluck('name')->toArray();
                             usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                            $recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
                             foreach ($dnNames as $dnName) {
                                 if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
                                     $relPart = mb_substr($custom_name, mb_strlen($dnName));
-                                    if ($relPart === '母') $relPart = '母';
-                                    if ($relPart === '父') $relPart = '父';
-                                    $relationshipMatch = [$dnName . '之' . $relPart, $dnName, $relPart];
-                                    break;
+                                    $relClean = preg_replace('/^[之的]/u', '', $relPart);
+                                    if (in_array($relClean, $recognizedRels)) {
+                                        $relationshipMatch = [$dnName . '之' . $relClean, $dnName, $relClean];
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -331,9 +341,6 @@ class RegistryController extends Controller
                     ->first();
 
                 $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
-                if ($registry && !in_array($cleanName, $allowedDuplicates)) {
-                    continue; // Skip duplicates for batch
-                }
 
                 if (!$registry || in_array($cleanName, $allowedDuplicates)) {
                     $recordData['name'] = $cleanName;
@@ -343,6 +350,7 @@ class RegistryController extends Controller
                     $registry->update(array_filter([
                         'acquisition_method' => $recordData['acquisition_method'] ?? null,
                         'purpose'            => $recordData['purpose'] ?? null,
+                        'effect'             => $recordData['effect'] ?? null,
                         'remarks'            => $recordData['remarks'] ?? null,
                     ]));
                 }
@@ -384,10 +392,15 @@ class RegistryController extends Controller
                             } else {
                                 $dnNames = DharmaName::pluck('name')->toArray();
                                 usort($dnNames, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+                                $recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆', '之父', '之母', '之嬤', '之夫'];
                                 foreach ($dnNames as $dnName) {
                                     if (str_starts_with($custom_name, $dnName) && mb_strlen($custom_name) > mb_strlen($dnName)) {
-                                        $relationshipMatch = [$custom_name, $dnName, mb_substr($custom_name, mb_strlen($dnName))];
-                                        break;
+                                        $relRaw = mb_substr($custom_name, mb_strlen($dnName));
+                                        $relClean = preg_replace('/^[之的]/u', '', $relRaw);
+                                        if (in_array($relClean, $recognizedRels) || in_array($relRaw, $recognizedRels)) {
+                                            $relationshipMatch = [$custom_name, $dnName, $relRaw];
+                                            break;
+                                        }
                                     }
                                 }
                             }

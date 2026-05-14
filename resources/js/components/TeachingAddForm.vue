@@ -50,6 +50,13 @@
                 <!-- BATCH MODE UI -->
                 <div v-if="mode === 'batch'" class="px-6 pt-6 pb-32 space-y-8">
                      <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
+                        <!-- Floating Clear Cross Button -->
+                        <button v-if="batchImportContent" @click="batchImportContent = ''" 
+                            class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur shadow-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white active:scale-90 transition-all border border-slate-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
                         <div class="p-5 flex-1 flex flex-col">
                             <textarea v-model="batchImportContent" 
                                       @paste="handleBatchPaste"
@@ -318,7 +325,7 @@
                      <div class="space-y-4">
                          <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest">法宝名稱</label>
                           <div class="relative">
-                               <input v-model="newItemName" 
+                               <input v-model="newItemName" class="pr-10" 
                                    ref="treasureInputEl"
                                    @click="showTreasureDropdown = true; openTreasureDropdown()"
                                    @input="showTreasureDropdown = true; openTreasureDropdown()"
@@ -327,6 +334,9 @@
                                    autocomplete="off"
                                    placeholder="輸入或選擇法宝..." 
                                    class="w-full text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
+                                <button v-if="newItemName" @click="newItemName = ''" class="absolute right-2 p-2 text-slate-300 hover:text-red-500 transition-all active:scale-90 top-3">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
                           </div>
                      </div>
 

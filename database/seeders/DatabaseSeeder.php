@@ -21,5 +21,11 @@ class DatabaseSeeder extends Seeder
             TreasureSeeder::class,
             RegistrySeeder::class,
         ]);
+
+        if (app()->environment('local', 'testing')) {
+            $this->call([
+                TeachingSampleSeeder::class,
+            ]);
+        }
     }
 }

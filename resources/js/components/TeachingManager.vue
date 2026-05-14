@@ -1,5 +1,12 @@
 <template>
     <div class="bg-white h-full flex flex-col text-slate-900">
+        <!-- Transition Logo Overlay -->
+        <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" class="animate-spin-slow" />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
+            </div>
+        </div>
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans">
             <!-- Global Datalists -->
             <datalist id="instrument-list">
@@ -108,21 +115,21 @@
 
             <template v-if="currentCategory === null && currentFolder === null && !addMode">
                 <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
-                    <div class="px-[15px] pb-24 flex flex-col items-center max-w-lg mx-auto">
+                <div class="px-[15px] pb-24 grid grid-cols-2 gap-4 justify-items-center w-full max-w-lg mx-auto">
                     <!-- Category 1: Daily Teaching (Large Folder Style) -->
                     <button v-if="user?.permissions?.can_see_daily_teachings"
                         @click="currentFolder = folders_list.find(f => f.id === 0); currentCategory = 'daily'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[310px] mb-1">
-                        <div class="relative w-full max-w-[310px] aspect-square">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[220px]">
+                        <div class="relative w-full aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
-                                    父皇仙師<br>每日開示
-                                </span>
-                                <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
-                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 24px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
-                                </div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[52px] px-2 pointer-events-none overflow-visible font-biaokai">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 26px !important; color: white !important; -webkit-text-stroke: 0.5px white;">
+                                     父皇仙師<br>每日開示
+                                 </span>
+                                 <div class="mt-2 flex items-center pb-8 font-biaokai" style="transform: translateY(-5px);">
+                                     <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 16px !important; line-height: 2;">{{ folderCounts.daily || 0 }} 筆</span>
+                                 </div>
                             </div>
                         </div>
                     </button>
@@ -130,16 +137,16 @@
                     <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                     <button v-if="user?.permissions?.can_see_teaching_folders"
                         @click="currentCategory = 'masters'"
-                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[310px]">
-                        <div class="relative w-full max-w-[310px] aspect-square">
+                        class="flex flex-col items-center justify-center p-0 active:scale-95 transition-all group relative bg-white rounded-none w-full max-w-[220px]">
+                        <div class="relative w-full aspect-square">
                             <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
-                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tight leading-tight text-center" style="font-weight: 900 !important; font-size: 38px !important; -webkit-text-stroke: 1px white;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-start pt-[52px] px-2 pointer-events-none overflow-visible font-biaokai">
+                                <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 26px !important; color: white !important; -webkit-text-stroke: 0.5px white;">
                                     父皇仙師<br>開示載錄
                                 </span>
-                                <div class="mt-4 flex items-center pb-12" style="transform: translateY(-10px);">
-                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap" style="font-size: 24px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
+                                <div class="mt-2 flex items-center pb-8 font-biaokai" style="transform: translateY(-5px);">
+                                    <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 16px !important; line-height: 2;">{{ mastersTotalCount }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -158,26 +165,26 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
+                <div class="grid grid-cols-2 justify-items-center w-full max-w-lg mx-auto">
                     <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-full max-w-[390px] p-2 bg-transparent">
-                        <div class="relative w-full max-w-[368px] aspect-[245/158]">
-                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-[72px] px-2 pointer-events-none overflow-visible" style="font-family: 'DFKai-SB', '標楷體', serif;">
-                                <div class="font-black tracking-tighter leading-none text-center" 
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-2 bg-transparent">
+                        <div class="relative w-full max-w-[180px] aspect-[245/158]">
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply drop-shadow-[0_8px_15px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                             <div class="absolute inset-0 flex flex-col items-center justify-start pt-[30px] px-2 pointer-events-none overflow-visible font-biaokai">
+                                <div class="font-black tracking-tighter leading-none text-center font-biaokai" 
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'"
-                                     style="font-size: 17px !important;">父皇仙師開示載錄</div>
+                                     style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-3"
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-1 font-biaokai"
                                      :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'"
-                                     style="font-weight: 900 !important; font-size: 33px !important; -webkit-text-stroke: 0.5px currentColor;">
+                                     style="font-weight: 900 !important; font-size: 26px !important; -webkit-text-stroke: 0.5px white;">
                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                 </div>
-                                <div class="mt-0 flex items-center pb-12" style="transform: translateY(-3px);">
-                                    <span class="font-black whitespace-nowrap drop-shadow-sm" 
+                                <div class="mt-0 flex items-center pb-12 font-biaokai" style="transform: translateY(-2px);">
+                                    <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai" 
                                           :class="folder.name === '閻王仙師' ? 'text-slate-900' : 'text-[#8b0000]'"
-                                          style="font-size: 16px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                          style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -2749,22 +2756,20 @@ const palaceDharmaMapping = computed(() => {
 const sortedDharmaNames = computed(() => {
     const list = (dharmaNames.value || []).slice();
     return list.sort((a, b) => {
-        if (a.order !== undefined && b.order !== undefined) {
-            if (a.order !== b.order) return a.order - b.order;
-        }
+        const getSortIndex = (dn) => {
+            const name = dn.name;
+            const searchName = name === '道霞龍妃' ? '金巧' : name;
+            // Use the original dharmaNames order (which follows database)
+            return dharmaNames.value.findIndex(d => d.id === dn.id || d.name === searchName);
+        };
 
-        const idxA = palaceDharmaMapping.value.get(String(a.id));
-        const idxB = palaceDharmaMapping.value.get(String(b.id));
+        const indexA = getSortIndex(a);
+        const indexB = getSortIndex(b);
 
-        if (idxA !== undefined && idxB !== undefined) {
-            if (idxA !== idxB) return idxA - idxB;
-        } else if (idxA !== undefined) {
-            return -1;
-        } else if (idxB !== undefined) {
-            return 1;
-        }
-
-        return (a.name || '').localeCompare(b.name || '', 'zh-TW', { collation: 'stroke' });
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return (a.name || '').localeCompare(b.name || '', 'zh-Hant');
     });
 });
 

@@ -1,5 +1,12 @@
 <template>
     <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module">
+        <!-- Transition Logo Overlay -->
+        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" class="animate-spin-slow" />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
+            </div>
+        </div>
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
@@ -31,7 +38,7 @@
             <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px]">
                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
                     <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                        {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                     </span>
                     <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal break-words" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
                 </div>
@@ -51,7 +58,7 @@
                         <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                             <div class="flex items-center gap-2">
                                 <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#dc2626] pt-[5px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 900 !important;">
-                                    {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                                    {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                                     <br>
                                     <span v-if="currentFolder" class="text-[26px] text-red-600 font-normal whitespace-nowrap overflow-hidden text-ellipsis block w-full" style="font-size: 26px !important; font-weight: 400 !important;">- {{ currentFolder.name }} -</span>
                                 </h1>
@@ -62,45 +69,45 @@
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
 
-                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-full max-w-[300px]">
+                    <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-transparent active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-full max-w-[300px] aspect-square object-contain transition-transform group-hover:scale-105" 
+                                 class="w-full max-w-[310px] aspect-square object-contain transition-transform group-hover:scale-105" 
                                  alt="Book Icon">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-16 pb-2 px-2" style="font-family: 'DFKai-SB', '標楷體', serif;">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6" style="font-size: 21.6px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
-                                <div class="font-black text-red-600 tracking-tight leading-tight text-center !font-black mt-1" style="font-size: 27px !important; font-weight: 900 !important;">重大皇恩<br>登記簿</div>
-                                <div class="mt-8 flex items-center">
-                                    <span class="text-black font-normal tracking-tight" style="font-size: 24px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 pb-2 px-2 font-biaokai">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai" style="font-size: 21.6px !important; color: #fbbf24 !important;">法寶登記專區</div>
+                                <div class="font-black text-[#fbbf24] tracking-tight leading-tight text-center !font-black mt-1 font-biaokai" style="font-size: 27px !important; font-weight: 900 !important; color: #fbbf24 !important; -webkit-text-stroke: 0.5px #fbbf24;">特殊法寶<br>登記簿</div>
+                                <div class="mt-2 flex items-center font-biaokai">
+                                    <span class="text-white font-normal tracking-tight font-biaokai" style="font-size: 17px !important;">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                     </button>
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-1 sm:grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-12 gap-x-6 pb-20 bg-white">
+                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-12 gap-x-6 pb-20 bg-white">
                     <button v-for="folder in folders" :key="folder.id" 
                              @click="currentFolder = folder"
-                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-full max-w-[284px] aspect-square relative bg-white hover:bg-white active:bg-white">
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-2 w-[198px] h-[198px] flex-shrink-0 relative bg-white hover:bg-white active:bg-white">
 
-                        <div class="relative w-full max-w-[266px] aspect-square">
+                        <div class="relative w-full max-w-[180px] aspect-square">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
+                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply" 
                                  alt="Book Icon">
 
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-12 pb-3 px-1 pointer-events-none" style="font-family: 'DFKai-SB', '標楷體', serif;">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-3 mb-3" style="font-size: 19px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
-                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[3px]" style="font-size: 17px !important;">重大皇恩登記簿</div>
+                             <div class="absolute inset-0 flex flex-col items-center justify-center pt-8 pb-3 px-1 pointer-events-none font-biaokai">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-3 mb-2 font-biaokai" style="font-size: 11px !important; color: rgb(139, 0, 0) !important;">法寶登記專區</div>
+                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[2px] font-biaokai" style="font-size: 10px !important;">特殊法寶登記簿</div>
 
-                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-6"
-                                     :style="{ fontSize: '26px !important', fontWeight: '900 !important', color: folder.name === '閻王仙師' ? '#000000' : '#dc2626' }">
+                                <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-3 font-biaokai"
+                                     :style="{ fontSize: '20px !important', fontWeight: '900 !important', color: folder.name === '閻王仙師' ? '#000000' : '#dc2626' }">
                                      {{ folder.name }}
                                 </div>
-                                <div class="mt-6 flex items-center">
-                                    <span class="font-normal text-black" style="font-size: 16px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                <div class="mt-1 flex items-center font-biaokai">
+                                    <span class="font-normal text-black font-biaokai" style="font-size: 10px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -151,17 +158,13 @@
                     <!-- Bottom Row: Dynamic Sub-title + Folder Name (same line, adjacent) -->
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
                         <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
-                            {{ currentCategory === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿' }}
+                            {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                         </span>
                         <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>
                     </div>
                 </div>
 
                 <div :class="[focusedId ? 'p-0 pb-[120px] md:p-[10px]' : 'px-2 py-[10px]']" class="mt-0 relative">
-                    <!-- Loading overlay (keeps DOM intact so input keeps focus) -->
-                    <div v-if="loading" class="absolute inset-0 bg-white/60 z-30 flex items-start justify-center pt-20 pointer-events-none">
-                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-100 border-t-indigo-600"></div>
-                    </div>
 
                     <div v-if="showSearch && !focusedId" class="mb-4 sticky top-0 z-40 bg-white/80 backdrop-blur-md pb-2 px-1 animate-fade-in">
                             <div class="relative group">
@@ -179,7 +182,7 @@
                         <!-- Pagination (Moved to headers for both mobile and desktop) -->
 
                         <!-- Empty State -->
-                        <div v-if="filteredTreasures.length === 0" class="flex flex-col items-center justify-center py-24 px-6 text-center">
+                        <div v-if="filteredTreasures.length === 0 && !loading" class="flex flex-col items-center justify-center py-24 px-6 text-center">
                             <h3 class="text-[17px] font-black text-slate-300 font-outfit uppercase tracking-widest">尚無資料</h3>
                         </div>
 
@@ -228,7 +231,7 @@
                                             class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedIds.has(item.id) ? '收起' : '展開' }}
                                     </button>
-                                    <button @click.stop="openAndEdit(item.id); openMenuId = null" 
+                                    <button @click.stop="openEdit(item); openMenuId = null" 
                                             class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                         修改
                                     </button>
@@ -263,11 +266,13 @@
                                         </svg>
                                     </div>
                                 </div>
+
+
                             </div>
 
-                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative">
+                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
                                         <!-- Detailed Record View -->
-                                        <div v-if="!editingIds.has(item.id)" class="space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
+                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
                                             <!-- Row 1: Date and Master -->
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div class="space-y-1 md:hidden">
@@ -279,133 +284,83 @@
 
                                             <!-- Row 2: Name -->
                                             <div class="space-y-1 md:hidden">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
                                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
 
                                             <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">用意</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.purpose }}</div>
                                             </div>
+                                            <div v-if="item.effect && item.effect !== '-' && item.effect !== '無'" class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">功效</label>
+                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.effect }}</div>
+                                            </div>
                                             <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶方式</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.acquisition_method }}</div>
                                             </div>
                                             <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">備註</label>
                                                 <div @click.stop="openRemarks(item.remarks)" class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
                                             </div>
                                         </div>
-
-                                        <!-- Edit Mode Fields -->
-                                        <div v-if="editingIds.has(item.id)" class="p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 space-y-5 shadow-inner mb-8">
-                                            <div class="grid grid-cols-1 gap-4">
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">日期</label>
-                                                    <div @click.stop="activePicker = { id: item.id, field: 'record_date', title: '修改日期' }" 
-                                                        class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] flex items-center justify-between cursor-pointer">
-                                                        <span :class="editMap[item.id].record_date ? 'text-black' : 'text-slate-300'" class="text-[17px] font-black font-outfit uppercase">
-                                                            {{ formatDisplayDate(editMap[item.id].record_date) || '未設定' }}
-                                                        </span>
-                                                        <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    </div>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶名稱</label>
-                                                    <input type="text" v-model="editMap[item.id].name" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">法寶用意</label>
-                                                    <textarea rows="2" v-model="editMap[item.id].purpose" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit custom-scrollbar"></textarea>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">求寶方式</label>
-                                                    <textarea rows="2" v-model="editMap[item.id].acquisition_method" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit custom-scrollbar"></textarea>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[11px] text-red-400 uppercase tracking-widest font-black font-outfit">備註</label>
-                                                    <input type="text" v-model="editMap[item.id].remarks" class="w-full bg-white border border-slate-400 rounded-xl px-3 py-[5px] text-[17px] font-black outline-none font-outfit">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6 ml-[-15px]">
+                                        <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white ml-[-55px] pl-[35px]">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="w-[80px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
-                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
+                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">法號</th>
+                                                                <th class="w-[130px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="recipient in getFilteredDharmaNames" :key="recipient.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ recipient.name }}</td>
+                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id || dnr.dharma_name_id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                                <td class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-50">
                                                                     <div class="flex items-center px-2 py-1.5 justify-center relative">
-                                                                        <input v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
-                                                                            v-model="editMap[item.id + '-' + (recipient.id)]['obtained_date']" 
-                                                                            type="text"
-                                                                            class="w-full bg-white border border-slate-300 rounded-md pl-1 pr-6 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#dc1428]">
-                                                                        <button v-if="editingIds.has(item.id) && editMap[item.id + '-' + recipient.id]" 
-                                                                            @click.stop="activePicker = { id: item.id + '-' + (recipient.id), field: 'obtained_date', title: recipient.name }"
-                                                                            class="absolute right-[10px] text-slate-300 hover:text-indigo-600 p-0.5">
-                                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                        </button>
-                                                                        <span v-else :class="editMap[item.id + '-' + recipient.id]?.obtained_date ? '' : 'opacity-30'" class="text-[15px] font-black font-outfit !text-[#dc1428]" style="font-family: 'PMingLiU', serif;">
-                                                                            {{ formatDisplayDate(editMap[item.id + '-' + recipient.id]?.obtained_date) || '-' }}
+                                                                        <span class="text-[15px] font-black font-outfit !text-[#dc1428]" style="font-family: 'PMingLiU', serif;">
+                                                                            {{ formatDisplayDate(dnr.obtained_date) || '-' }}
                                                                         </span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-0 text-black">
-                                                                    <div @click.stop="triggerRemarksEdit(item, recipient.id)" 
+                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" 
                                                                         class="w-full py-1.5 px-2 flex items-center justify-center transition-colors">
-                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400">...</span>
-                                                                        <span v-else-if="item.dharma_name_registries?.find(r => (getDharmaNameText(r).replace('升','昇') === (typeof recipient.name === 'string' ? recipient.name.replace('升','昇') : recipient.name)))?.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
+                                                                        <span v-if="dnr.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
                                                                         <span v-else class="text-[15px] text-slate-200">-</span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
+
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white">
+                                                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-20 bg-white ml-[-45px] pl-[25px]">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                 <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">日期</th>
-                                                                 <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
+                                                                 <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
+                                                                 <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
                                                                  <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
                                                                  <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
                                                              </tr>
                                                          </thead>
                                                         <tbody>
-                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
+                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="flex items-center px-2 py-1.5 justify-center relative">
-                                                                        <input v-if="editingIds.has(item.id)" 
-                                                                            v-model="editMap[item.id + '-' + dnr.dharma_name_id].obtained_date" 
-                                                                            type="text"
-                                                                            class="w-full bg-white border border-slate-300 rounded-md pl-1 pr-6 py-0.5 text-[14px] font-black font-outfit text-center focus:ring-1 focus:ring-indigo-300 outline-none !text-[#1e293b]">
-                                                                        <button v-if="editingIds.has(item.id)" 
-                                                                            @click.stop="activePicker = { id: item.id + '-' + dnr.dharma_name_id, field: 'obtained_date', title: dnr.dharma_name?.name || dnr.custom_name }"
-                                                                            class="absolute right-[10px] text-slate-300 hover:text-indigo-600 p-0.5">
-                                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                        </button>
-                                                                        <span v-else class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(editMap[item.id + '-' + dnr.dharma_name_id]?.obtained_date) || formatDisplayDate(dnr.obtained_date) || '-' }}</span>
+                                                                        <span class="text-[15px] font-bold font-outfit" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors">{{ getDharmaNameText(dnr) }}</td>
                                                                 <td class="p-0 text-black border-r border-slate-200">
                                                                     <div class="w-full py-1.5 px-2 flex items-center">
-                                                                        <input v-if="editingIds.has(item.id)" 
-                                                                            v-model="editMap[item.id + '-' + (dnr.dharma_name_id || dnr.custom_name)].relationship"
-                                                                            class="w-full h-[32px] bg-white border border-slate-100 rounded-lg px-2 text-[14px] outline-none focus:ring-1 focus:ring-indigo-100"
-                                                                            placeholder="親友">
-                                                                        <span v-else class="text-[14px] text-slate-600 font-bold font-outfit">
+                                                                        <span class="text-[14px] text-slate-600 font-bold font-outfit">
                                                                             {{ translateRelList(dnr.related_personnel) }}
                                                                         </span>
                                                                     </div>
@@ -413,45 +368,22 @@
                                                                 <td class="p-0 text-black">
                                                                     <div @click.stop="triggerRemarksEdit(item, dnr)" 
                                                                         class="w-full py-1.5 px-2 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
-                                                                        <span v-if="editingIds.has(item.id)" class="text-[15px] font-black text-indigo-400 font-outfit">...</span>
-                                                                        <span v-else-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
+                                                                        <span v-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
                                                                              :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black font-outfit' : 'text-[18px] text-amber-500 animate-pulse font-outfit'">
                                                                              {{ (Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? '多重' : '●' }}
                                                                          </span>
-                                                                        <span v-else class="text-[14px] text-slate-300 font-outfit">
-                                                                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                                        </span>
+                                                                        <span v-else class="text-[14px] text-slate-300 font-outfit">-</span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="editingIds.has(item.id)" class="bg-indigo-50/20 border-t-2 border-indigo-100/50">
-                                                                <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click.stop="activePicker = { id: item.id + '-new', field: 'obtained_date', title: '設定新加入日期' }" class="w-full h-[46px] px-3 flex items-center justify-between cursor-pointer">
-                                                                        <span class="text-[14px] font-black font-outfit text-[#1e293b]">{{ editMap[item.id + '-new']?.obtained_date || '設定日期' }}</span>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="p-2 border-b border-indigo-100">
-                                                                    <select @change="addPersonRowFromSelect(item.id, $event)" class="w-full h-9 rounded-xl border border-indigo-200 font-outfit">
-                                                                        <option value="">＋ 點此加入人員</option>
-                                                                        <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.id">{{ dn.name }}</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td class="p-0 border-b border-indigo-100">
-                                                                    <div @click="triggerRemarksEdit(item, 'new')" class="w-full h-[46px] px-3 flex items-center text-[14px] text-slate-300 font-black truncate font-outfit">
-                                                                        {{ editMap[item.id + '-new']?.remarks || '輸入備註...' }}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
+
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </template>
                                         </div>
 
-                                        <!-- Sticky Save Button Bar (Inside expansion) -->
-                                        <div v-if="editingIds.has(item.id)" class="fixed bottom-[3dvh] left-0 right-0 p-4 pb-6 bg-white/95 border-t border-slate-100 z-[200] flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                                            <button @click.stop="saveItemInPlace(item)" class="w-full max-w-md h-[48px] bg-blue-600 !text-white rounded-2xl font-black text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all tracking-widest" style="color: white !important; font-size: 16px !important;">儲存修改</button>
-                                        </div>
+
                                     </div>
                             </div>
                         </div>
@@ -521,25 +453,14 @@
             </div>
         </teleport>
 
-        <!-- Backdrops & Pickers -->
-        <teleport to="body">
-            <div v-if="openMenuId" @click="openMenuId = null" class="fixed inset-0 z-[25] bg-black/5 backdrop-blur-[1px]"></div>
-        </teleport>
 
-        <compact-date-picker 
-            v-if="activePicker"
-            v-model="editMap[activePicker.id][activePicker.field]"
-            :title="activePicker.title"
-            :scale="0.8"
-            @close="activePicker = null"
-        />
 
         <!-- Remarks Viewer -->
         <remarks-viewer 
             v-model="showRemarksModal"
             :remarks="activeRemarks"
-            :editable="currentRemarksKey !== null || currentDnrId !== null || currentAddFormIdx !== null"
-            :forceEdit="currentRemarksKey !== null || currentAddFormIdx !== null"
+            :editable="currentAddFormIdx !== null"
+            :forceEdit="currentAddFormIdx !== null"
             :dnrId="currentDnrId"
             @save="handleRemarksViewerSave"
         />
@@ -576,7 +497,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, defineEmits, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
 import { debounce } from '../utils/debounce';
 import axios from 'axios';
 
@@ -612,8 +533,8 @@ const resetToRoot = () => {
     focusedId.value = null;
     openMenuId.value = null;
     expandedIds.value = new Set();
-    editingIds.value = new Set();
     reorderMode.value = false;
+    dharmaPickerItemId.value = null;
     if (scrollContainer.value) {
         scrollContainer.value.scrollTop = 0;
     }
@@ -654,7 +575,7 @@ const formatDisplayDate = (dateStr) => {
     if (!dateStr || dateStr === '-' || dateStr === '未設定') return dateStr;
     // Strip time part if present (e.g., T16:00:00.000000Z)
     const s = String(dateStr).split('T')[0].trim();
-    const parts = s.split(/[-/]/);
+    const parts = s.split(/[-\/]/);
     if (parts.length === 3) {
         let y = parts[0];
         let m = parts[1].padStart(2, '0');
@@ -681,13 +602,22 @@ const formatRegistryForFile = (item) => {
     let registries = [...(item.dharma_name_registries || [])];
 
     registries.sort((a, b) => {
-        const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
-        const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
+        const getSortIndex = (dnr) => {
+            const name = getDharmaNameText(dnr);
+            const searchName = name === '道霞龍妃' ? '金巧' : name;
+            return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
+        };
+
+        const indexA = getSortIndex(a);
+        const indexB = getSortIndex(b);
+
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
         return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
     });
 
-    let res = `法寶：${item.name}\n用意：${item.purpose || ''}\n日期：${formatDisplayDate(getEarliestDate(item))}\n------------------\n`;
+    let res = `法寶內容：${item.name}\n用意：${item.purpose || ''}\n功效：${item.effect || ''}\n作法：${item.acquisition_method || ''}\n日期：${formatDisplayDate(getEarliestDate(item))}\n------------------\n`;
     registries.forEach(r => {
         res += `${getDharmaNameText(r)} | ${formatDisplayDate(r.obtained_date) || '-'} | ${r.remarks || ''}\n`;
     });
@@ -709,10 +639,10 @@ const dharmaNames = ref([]);
 const loading = ref(false);
 const persistentToast = ref(null);
 const isSaving = ref(false);
+const dharmaPickerItemId = ref(null);
 const sortDesc = ref(true);
 const openMenuId = ref(null);
 const expandedIds = ref(new Set());
-const editingIds = ref(new Set());
 const focusedId = ref(null);
 const scrollContainer = ref(null);
 const showAddMenu = ref(false);
@@ -768,12 +698,10 @@ watch(searchQuery, debounce((newVal) => {
 }, 300));
 const showExportMenu = ref(false);
 const deleteConfirmId = ref(null);
-const activePicker = ref(null); // { id, field, title }
+
 const showRemarksModal = ref(false);
 const activeRemarks = ref('');
-const currentRemarksKey = ref(null);
 const currentDnrId = ref(null);
-const showItemDetails = ref(false);
 const reorderMode = ref(false);
 const paginationMeta = ref(null);
 const currentPage = ref(1);
@@ -783,117 +711,17 @@ const handlePageChange = (page) => {
     loadData(page);
 };
 
-const editMap = ref({}); // { 'itemId-dnId': { obtained_date, remarks } }
 
-// Sync editMap for existing records to enable inline editing
-watch(allTreasures, (newVal) => {
-    // Sync editMap with fresh data
-    newVal.forEach(item => {
-        // Sync treasure metadata
-        if (!editMap.value[item.id]) {
-            editMap.value[item.id] = {
-                name: item.name,
-                purpose: item.purpose,
-                acquisition_method: item.acquisition_method,
-                remarks: item.remarks,
-                record_date: item.record_date || '',
-                related_map: {}
-            };
-        } else {
-            if (!editingIds.value.has(item.id)) {
-                editMap.value[item.id].name = item.name;
-                editMap.value[item.id].purpose = item.purpose;
-                editMap.value[item.id].acquisition_method = item.acquisition_method;
-                editMap.value[item.id].remarks = item.remarks;
-                editMap.value[item.id].record_date = item.record_date || '';
-            }
-        }
 
-        dharmaNames.value.forEach(dn => {
-            const key = `${item.id}-${dn.id}`;
-            const existing = item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id);
-            const r   = existing?.remarks;
-            const rel = existing?.related_personnel;
-            const newRemarks      = Array.isArray(r)   ? r.join('\n')   : (r   || '');
-            const newRelationship = Array.isArray(rel) ? rel.join('、') : (rel || '');
 
-            if (!editMap.value[key]) {
-                // 建立新的 key
-                editMap.value[key] = {
-                    obtained_date: existing?.obtained_date || '',
-                    remarks:       newRemarks,
-                    relationship:  newRelationship,
-                    related_personnel: rel || []
-                };
-            } else if (!editingIds.value.has(item.id)) {
-                // 非編輯模式下強制同步最新資料（修復：避免備註一閃而過）
-                editMap.value[key].obtained_date    = existing?.obtained_date || '';
-                editMap.value[key].remarks          = newRemarks;
-                editMap.value[key].relationship     = newRelationship;
-                editMap.value[key].related_personnel = rel || [];
-            }
-        });
 
-        // 同步 custom_name 人員（非 dharma_name_id 的自訂名稱）
-        (item.dharma_name_registries || []).forEach(dnr => {
-            if (!dnr.dharma_name_id && dnr.custom_name) {
-                const key = `${item.id}-${dnr.custom_name}`;
-                const r   = dnr.remarks;
-                const rel = dnr.related_personnel;
-                const newRemarks      = Array.isArray(r)   ? r.join('\n')   : (r   || '');
-                const newRelationship = Array.isArray(rel) ? rel.join('、') : (rel || '');
-
-                if (!editMap.value[key]) {
-                    editMap.value[key] = {
-                        obtained_date: dnr.obtained_date || '',
-                        remarks:       newRemarks,
-                        relationship:  newRelationship,
-                        related_personnel: rel || []
-                    };
-                } else if (!editingIds.value.has(item.id)) {
-                    editMap.value[key].obtained_date    = dnr.obtained_date || '';
-                    editMap.value[key].remarks          = newRemarks;
-                    editMap.value[key].relationship     = newRelationship;
-                    editMap.value[key].related_personnel = rel || [];
-                }
-            }
-        });
-
-    });
-}, { immediate: true, deep: false });
-
-watch(dharmaNames, (newDns) => {
-    allTreasures.value.forEach(item => {
-        // Ensure metadata exists
-        if (!editMap.value[item.id]) {
-            editMap.value[item.id] = {
-                name: item.name,
-                purpose: item.purpose,
-                acquisition_method: item.acquisition_method,
-                remarks: item.remarks,
-                record_date: item.record_date || ''
-            };
-        }
-
-        newDns.forEach(dn => {
-            const key = `${item.id}-${dn.id}`;
-            const existing = item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id);
-            if (!editMap.value[key]) {
-                const r = existing?.remarks;
-                editMap.value[key] = {
-                    obtained_date: existing?.obtained_date?.replace(/-/g, '/') || '',
-                    remarks: Array.isArray(r) ? r.join('\n') : (r || '')
-                };
-            }
-        });
-    });
-}, { immediate: true });
 
 const form = ref({
     master_id: null,
     category: 'major',
     name: '',
     purpose: '',
+    effect: '',
     acquisition_method: '',
     remarks: '',
     record_date: '',
@@ -918,6 +746,9 @@ const folders = computed(() => {
 
 const loadData = async (page = 1) => {
     loading.value = true;
+    // Clear existing treasures to prevent showing stale data from other folders
+    if (page === 1) allTreasures.value = [];
+    
     try {
         const ts = new Date().getTime();
         const params = {
@@ -928,6 +759,12 @@ const loadData = async (page = 1) => {
         if (currentFolder.value) params.master_id = currentFolder.value.id;
         if (currentCategory.value) params.category = currentCategory.value;
         params.sortDesc = sortDesc.value ? 1 : 0;
+
+        // If no folder is selected, we only need the metadata (counts and lists)
+        // We can skip the main records list to avoid "showing everything" briefly
+        if (!currentFolder.value && !searchQuery.value) {
+            params.per_page = 1; // Minimum fetch just for counts
+        }
 
         const [res, mres, dres] = await Promise.all([
             axios.get('/registries', { params }),
@@ -974,12 +811,11 @@ const filteredTreasures = computed(() => {
 const dynamicHeaderTitle = computed(() => {
     if (!currentFolder.value) return '法寶登記專區';
 
-    const catName = currentCategory.value === 'major' ? '重大皇恩登記簿' : '其他皇恩登記簿';
+    const catName = currentCategory.value === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿';
     return `${catName}-${currentFolder.value.name}`;
 });
 
 const getDharmaNameText = (dnr) => {
-    if (dnr.dharma_name?.name) return dnr.dharma_name.name;
     if (dnr.dharma_name_id) {
         const dn = dharmaNames.value.find(d => d.id === dnr.dharma_name_id);
         if (dn) return dn.name;
@@ -987,22 +823,61 @@ const getDharmaNameText = (dnr) => {
     return dnr.custom_name || '-';
 };
 
-const getSortedRegistries = (item) => {
-    let registries = [...(item.dharma_name_registries || [])];
+const getPeopleSummary = (item) => {
+    if (!item.dharma_name_registries) return '';
+    return item.dharma_name_registries.map(r => getDharmaNameText(r)).join('、');
+};
 
+const getSortedRegistries = (item) => {
+    let rawRegistries = [...(item.dharma_name_registries || [])];
+    let expanded = [];
+
+    // Virtually split entries that contain multiple names
+    rawRegistries.forEach(r => {
+        const nameText = r.custom_name || '';
+        const recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
+        const isRel = recognizedRels.some(rel => nameText.endsWith(rel));
+        
+        if (!isRel && (nameText.includes(',') || nameText.includes('，') || nameText.includes('、'))) {
+            const names = nameText.split(/[，、, \t]+/).map(n => n.trim()).filter(n => n);
+            names.forEach(name => {
+                expanded.push({ ...r, custom_name: name });
+            });
+        } else {
+            expanded.push(r);
+        }
+    });
+
+    // Deduplicate: Each person (by ID or name) should only appear once per treasure block
+    const uniqueMap = new Map();
+    expanded.forEach(r => {
+        // Create a unique key: priority to dharma_name_id, then fallback to custom_name
+        const key = r.dharma_name_id ? `id_${r.dharma_name_id}` : `name_${(r.custom_name || '').trim()}`;
+        if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, r);
+        }
+    });
+    
+    let registries = Array.from(uniqueMap.values());
+
+    // Sort based on master list order
     return registries.sort((a, b) => {
-        const indexA = dharmaNames.value.findIndex(dn => dn.id === a.dharma_name_id);
-        const indexB = dharmaNames.value.findIndex(dn => dn.id === b.dharma_name_id);
+        const getSortIndex = (dnr) => {
+            const name = getDharmaNameText(dnr);
+            const searchName = name === '道霞龍妃' ? '金巧' : name;
+            return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
+        };
+
+        const indexA = getSortIndex(a);
+        const indexB = getSortIndex(b);
+
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        
         return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
     });
 };
-
-const getFilteredDharmaNames = computed(() => {
-    const q = searchQuery.value?.toLowerCase().trim();
-    if (!q) return dharmaNames.value;
-    return dharmaNames.value.filter(dn => dn.name?.toLowerCase().includes(q));
-});
 
 const getFilteredSortedRegistries = (item) => {
     let list = getSortedRegistries(item);
@@ -1016,53 +891,7 @@ const getFilteredSortedRegistries = (item) => {
     });
 };
 
-const addPersonRowFromSelect = (itemId, event) => {
-    const dnId = parseInt(event.target.value);
-    if (!dnId) return;
 
-    const item = allTreasures.value.find(t => t.id === itemId);
-    if (!item) return;
-
-    // Initialize the new person in editMap using the data from the 'new' row if any
-    const newRowKey = `${itemId}-new`;
-    const newDate = editMap.value[newRowKey]?.obtained_date || editMap.value[itemId]?.record_date || '';
-    const newRemarks = editMap.value[newRowKey]?.remarks || '';
-
-    const key = `${itemId}-${dnId}`;
-    if (!editMap.value[key]) {
-        editMap.value[key] = {
-            obtained_date: newDate,
-            remarks: newRemarks
-        };
-    }
-
-    // Add to local registries if not already there so it shows up in the table immediately
-    if (!item.dharma_name_registries) item.dharma_name_registries = [];
-    if (!item.dharma_name_registries.find(r => r.dharma_name_id === dnId)) {
-        const dn = dharmaNames.value.find(d => d.id === dnId);
-        item.dharma_name_registries.push({
-            dharma_name_id: dnId,
-            dharma_name: dn,
-            obtained_date: newDate,
-            remarks: newRemarks
-        });
-    }
-
-    // Reset the 'new' row fields
-    editMap.value[newRowKey] = { obtained_date: '', remarks: '' };
-    event.target.value = ""; // Reset select
-};
-
-const removePersonFromEdit = (itemId, dnId) => {
-    const item = allTreasures.value.find(t => t.id === itemId);
-    if (!item) return;
-
-    // Remove from editMap
-    delete editMap.value[`${itemId}-${dnId}`];
-
-    // Remove from local list so it disappears visually
-    item.dharma_name_registries = item.dharma_name_registries.filter(r => r.dharma_name_id !== dnId);
-};
 
 const personCentricList = computed(() => {
     if (currentCategory.value !== 'other' || !currentFolder.value) return [];
@@ -1086,9 +915,13 @@ const personCentricList = computed(() => {
             });
         });
     const sortedPersons = Array.from(personMap.values()).sort((a,b) => {
-        const indexA = dharmaNames.value.findIndex(d => d.name === a.name);
-        const indexB = dharmaNames.value.findIndex(d => d.name === b.name);
+        const nameA = a.name === '道霞龍妃' ? '金巧' : a.name;
+        const nameB = b.name === '道霞龍妃' ? '金巧' : b.name;
+        const indexA = dharmaNames.value.findIndex(d => d.name === nameA);
+        const indexB = dharmaNames.value.findIndex(d => d.name === nameB);
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
         return a.name.localeCompare(b.name, 'zh-Hant');
     });
     sortedPersons.forEach(p => p.records.sort((a,b) => (b.obtained_date||'').localeCompare(a.obtained_date||'')));
@@ -1114,6 +947,7 @@ const openAdd = (mode = 'single') => {
         category: currentCategory.value || 'major',
         name: '',
         purpose: '',
+        effect: '',
         acquisition_method: '',
         remarks: '',
         record_date: mode === 'single' ? getTodayStr() : '',
@@ -1122,6 +956,23 @@ const openAdd = (mode = 'single') => {
         dharma_name_registries: []
     };
     addMode.value = mode;
+};
+
+const openEdit = (item) => {
+    form.value = {
+        id: item.id,
+        master_id: item.master_id,
+        category: item.category,
+        name: item.name,
+        purpose: item.purpose,
+        effect: item.effect,
+        acquisition_method: item.acquisition_method,
+        remarks: item.remarks,
+        record_date: item.record_date,
+        obtained_date: item.obtained_date,
+        dharma_name_registries: item.dharma_name_registries || []
+    };
+    addMode.value = 'single';
 };
 
 const getMasterName = (id) => {
@@ -1137,13 +988,10 @@ const toggleExpand = (id) => {
     if (nextExpanded.has(id)) {
         nextExpanded.delete(id);
         focusedId.value = null;
-        showItemDetails.value = false;
     } else {
         nextExpanded.clear();
         nextExpanded.add(id);
-        // 點擊後進入焦點模式 (Solo Mode)，隱藏其他資料
         focusedId.value = id;
-        showItemDetails.value = false;
     }
     expandedIds.value = nextExpanded;
 };
@@ -1162,7 +1010,7 @@ const handleBack = () => {
 
 const saveSingle = async (data, shuntAction = null) => {
     if (!data.name?.trim()) {
-        persistentToast.value = { msg: '✖ 請輸入法寶名稱', type: 'error' };
+        persistentToast.value = { msg: '✖ 請輸入求寶內容', type: 'error' };
         return;
     }
     if (!data.master_id) {
@@ -1274,16 +1122,16 @@ const triggerBatchSave = async (batchData) => {
             }
 
             // Priority 1: 4-digit CE
-            const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+            const ceMatch = str.match(/\b(\d{4})[\/\-\s](\d{1,2})[\/\-\s](\d{1,2})\b/);
             if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
             // Priority 2: 2-3 digit ROC
-            const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
+            const rocMatch = str.match(/\b(\d{2,3})[\/\-\s](\d{1,2})[\/\-\s](\d{1,2})\b/);
             if (rocMatch) {
                 const y = parseInt(rocMatch[1]) + 1911;
                 return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
             }
             // Priority 3: Month/Day only (Uses contextYear or Current Year)
-            const mdMatch = str.match(/\b(\d{1,2})[/\-\s](\d{1,2})\b/);
+            const mdMatch = str.match(/\b(\d{1,2})[\/\-\s](\d{1,2})\b/);
             if (mdMatch) {
                 const y = ctxYear || new Date().getFullYear();
                 return `${y}-${mdMatch[1].padStart(2,'0')}-${mdMatch[2].padStart(2,'0')}`;
@@ -1336,7 +1184,7 @@ const triggerBatchSave = async (batchData) => {
                 }
 
                 const lineDateParsed = parseDateStr(line, currentContextYear);
-                const isPureDateStr = line.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
+                const isPureDateStr = line.replace(/[\d\/.\-年月日時分秒\s]/g, '').length === 0;
                 if (lineDateParsed && !line.includes('|') && !line.includes('│') && !line.includes('\t') && isPureDateStr) {
                     blockDate = lineDateParsed;
                     activeRecord = null; // Clear context on new date header
@@ -1375,13 +1223,28 @@ const triggerBatchSave = async (batchData) => {
                         if (firstWord === '登記日期' || firstWord === '求得日期') target.obtained_date = d;
                     }
                     else if (firstWord === '求寶方式' || firstWord === '求寶') target.acquisition_method = val;
-                    else if (firstWord === '備註') target.remarks = (target.remarks ? target.remarks + '\n' : '') + val;
+                    else if (firstWord === '備註') {
+                        // Check if this remark is specific to a person (e.g. "赤覺: ...")
+                        const nameMatch = val.match(/^([^：:]+)[：:](.*)/);
+                        if (nameMatch && activeRecord && activeRecord.dharma_name_registries) {
+                            const pName = nameMatch[1].trim();
+                            const pContent = nameMatch[2].trim();
+                            const person = activeRecord.dharma_name_registries.find(r => r.custom_name === pName);
+                            if (person) {
+                                person.remarks = (person.remarks ? person.remarks + '\n' : '') + pContent;
+                            } else {
+                                target.remarks = (target.remarks ? target.remarks + '\n' : '') + val;
+                            }
+                        } else {
+                            target.remarks = (target.remarks ? target.remarks + '\n' : '') + val;
+                        }
+                    }
                     continue;
                 }
 
                 // 3. Main Parsing logic
                 // Extract date from start of line if present
-                const lineStartDateMatch = line.match(/^(\d{1,4}[/.-]\d{1,2}[/.-]\d{1,2}|\d{1,2}[/.-]\d{1,2})\s+/);
+                const lineStartDateMatch = line.match(/^(\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,2}|\d{1,2}[\/.-]\d{1,2})\s+/);
                 if (lineStartDateMatch) {
                     const parsed = parseDateStr(lineStartDateMatch[1], currentContextYear);
                     if (parsed) lineDate = parsed;
@@ -1402,7 +1265,8 @@ const triggerBatchSave = async (batchData) => {
 
                     const content = kwMatch[4].trim();
                     if (content) {
-                        recipients = content.split(/[，、, \s]+/).filter(n => n.trim());
+                        // Robust splitting including multiple delimiters
+                        recipients = content.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                         if (content.includes('已登記')) lineObtainedDate = lineDate;
                     } else {
                         pendingTreasureName = treasureName;
@@ -1412,9 +1276,8 @@ const triggerBatchSave = async (batchData) => {
                 else if (line.match(/^(允求|賜降|得知|賜予|賜|求得)\s+/)) {
                     // Handle lines like "允求 森羅戒 金了、閻爵"
                     const parts = line.split(/\s+/);
-                    const prefix = parts[0];
                     treasureName = parts[1];
-                    recipients = parts.slice(2).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
+                    recipients = parts.slice(2).join(' ').split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                     if (line.includes('已登記')) lineObtainedDate = lineDate;
                 }
                 else if (line.includes('求得')) {
@@ -1443,9 +1306,10 @@ const triggerBatchSave = async (batchData) => {
                 }
                 else if (line.includes(' ') && !line.includes('：') && !line.includes(':')) {
                     const spaceParts = line.split(/\s+/);
-                    if (spaceParts.length >= 2 && spaceParts[1].length <= 10) {
+                    const hasSeparators = line.includes('，') || line.includes('、') || line.includes(',') || line.includes('.');
+                    if (spaceParts.length >= 2 && (spaceParts[1].length <= 20 || hasSeparators)) {
                         treasureName = spaceParts[0];
-                        recipients = spaceParts.slice(1).join(' ').split(/[，、, \s]+/).filter(n => n.trim());
+                        recipients = spaceParts.slice(1).join(' ').split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                     } else {
                         treasureName = line.trim();
                     }
@@ -1464,8 +1328,6 @@ const triggerBatchSave = async (batchData) => {
                         let extraRemarkFromParen = '';
 
                         if (parenMatch) {
-                            // 範例：閻尊(玄閻宮) -> name=閻尊, extra=玄閻宮
-                            // 範例：(元續之夫) -> name=元續之夫, extra=""
                             if (parenMatch[1].trim()) {
                                 nameForProcessing = parenMatch[1].trim();
                                 extraRemarkFromParen = parenMatch[2].trim();
@@ -1478,11 +1340,34 @@ const triggerBatchSave = async (batchData) => {
                         if (!translated) return null;
 
                         let relMatch = translated.match(/^(.*?)([之的].+)$/);
+                        
+                        // Strict relationship detection for names starting with a Dharma Name
                         if (!relMatch) {
                             const dnsList = dharmaNames.value || [];
                             const sortedDns = [...dnsList].sort((a, b) => (b.name?.length || 0) - (a.name?.length || 0));
-                            const matchedDn = sortedDns.find(dn => dn.name && translated.startsWith(dn.name) && translated.length > dn.name.length);
-                            if (matchedDn) relMatch = [translated, matchedDn.name, translated.substring(matchedDn.name.length)];
+                            const recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
+                            
+                            const matchedDn = sortedDns.find(dn => {
+                                if (dn.name && translated.startsWith(dn.name) && translated.length > dn.name.length) {
+                                    const suffix = translated.substring(dn.name.length);
+                                    const cleanSuffix = suffix.replace(/^[之的]/, '').trim();
+                                    return recognizedRels.includes(cleanSuffix);
+                                }
+                                return false;
+                            });
+
+                            if (matchedDn) {
+                                const relPart = translated.substring(matchedDn.name.length);
+                                relMatch = [translated, matchedDn.name, relPart];
+                            }
+                        }
+
+                        if (relMatch) {
+                            const rel = relMatch[2].replace(/^[之的]/, '').trim();
+                            const recognized = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
+                            if (!recognized.includes(rel)) {
+                                relMatch = null; 
+                            }
                         }
 
                         const finalDate = lineDate || blockDate || getTodayStr();
@@ -1604,64 +1489,29 @@ const triggerBatchSave = async (batchData) => {
     }
 };
 
-const openAndEdit = (id) => {
-    const nextEditing = new Set(editingIds.value);
-    const nextExpanded = new Set(expandedIds.value);
 
-    if (nextEditing.has(id)) {
-        nextEditing.delete(id);
-    } else {
-        nextEditing.add(id);
-        if (!nextExpanded.has(id)) {
-            nextExpanded.clear();
-            nextExpanded.add(id);
-        }
-    }
-
-    editingIds.value = nextEditing;
-    expandedIds.value = nextExpanded;
-    openMenuId.value = null;
-};
 
 const triggerRemarksEdit = (item, personIdentifier) => {
-    // personIdentifier can be dnId (Number), dnr object, or 'new'
-    if (editingIds.value.has(item.id)) {
-        // In Edit Mode, we sync with editMap
-        let key = '';
-        if (personIdentifier === 'new') {
-            key = `${item.id}-new`;
-        } else if (typeof personIdentifier === 'object') {
-            // It's a dnr object
-            key = personIdentifier.dharma_name_id ? `${item.id}-${personIdentifier.dharma_name_id}` : `${item.id}-${personIdentifier.custom_name}`;
-        } else {
-            // It's a dnId
-            key = `${item.id}-${personIdentifier}`;
-        }
+    const dnr = typeof personIdentifier === 'object' 
+        ? personIdentifier 
+        : (item.dharma_name_registries || []).find(r => r.dharma_name_id === personIdentifier);
 
-        currentRemarksKey.value = key;
-        currentDnrId.value = null; // We save via the main form's save, but let's see
-        activeRemarks.value = editMap.value[key]?.remarks || '';
-    } else {
-        // In View Mode, we use openRemarks logic
-        const dnr = typeof personIdentifier === 'object' 
-            ? personIdentifier 
-            : item.dharma_name_registries?.find(r => r.dharma_name_id === personIdentifier);
-
-        if (dnr) {
-            openRemarks(dnr);
-        } else {
-            // Fallback or item-level remarks if needed? 
-            // For now, only personnel
-        }
+    if (dnr) {
+        openRemarks(dnr);
     }
     showRemarksModal.value = true;
 };
+
+
+
+
+
+
 
 const handleAddFormRemarksEdit = ({ idx, remarks }) => {
     currentAddFormIdx.value = idx;
     activeRemarks.value = remarks;
     currentDnrId.value = null;
-    currentRemarksKey.value = null;
     showRemarksModal.value = true;
 };
 
@@ -1674,7 +1524,6 @@ const openRemarks = (dnrOrContent) => {
         activeRemarks.value = Array.isArray(r) ? r.join('\n') : (r || '');
         currentDnrId.value = dnrOrContent.id;
     }
-    currentRemarksKey.value = null;
     showRemarksModal.value = true;
 };
 
@@ -1869,69 +1718,7 @@ const downloadAllData = () => {
     document.body.removeChild(link);
 };
 
-const saveItemInPlace = async (item) => {
-    isSaving.value = true;
-    try {
-        const registries = [];
 
-        // Handle all existing and potential registries
-        // We use the item.dharma_name_registries as the source of truth for what exists
-        // and editMap for the updates.
-
-        // 1. Process standard dharma names (from master list)
-        dharmaNames.value.forEach(dn => {
-            const key = `${item.id}-${dn.id}`;
-            const data = editMap.value[key];
-            // If we have edit data OR there was already a record for this person
-            const wasExisting = item.dharma_name_registries?.some(r => r.dharma_name_id === dn.id);
-
-            if (data && (data.obtained_date || data.remarks || data.relationship || wasExisting)) {
-                registries.push({
-                    dharma_name_id: dn.id,
-                    obtained_date: (data && data.obtained_date) ? data.obtained_date.replace(/\//g, '-') : null,
-                    remarks: (data && data.remarks !== undefined) ? data.remarks : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.remarks || ''),
-                    related_personnel: (data && data.relationship !== undefined) ? (data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : []) : (item.dharma_name_registries?.find(r => r.dharma_name_id === dn.id)?.related_personnel || [])
-                });
-            }
-        });
-
-        // 2. Process custom names (things added via text but not in system list)
-        (item.dharma_name_registries || []).forEach(r => {
-            if (!r.dharma_name_id && r.custom_name) {
-                const data = editMap.value[item.id + '-' + r.custom_name] || {};
-                registries.push({
-                    custom_name: r.custom_name,
-                    obtained_date: (data && data.obtained_date) ? data.obtained_date.replace(/\//g, '-') : null,
-                    remarks: (data && data.remarks !== undefined) ? data.remarks : (r.remarks || ''),
-                    related_personnel: (data && data.relationship !== undefined) ? (data.relationship ? data.relationship.split(/[、, ]+/).filter(x => x) : []) : (r.related_personnel || [])
-                });
-            }
-        });
-
-        const metadata = editMap.value[item.id] || {};
-        await axios.post(`/registries/${item.id}`, { 
-            ...item, 
-            ...metadata,
-            record_date: metadata.record_date || null,
-            dharma_name_registries: registries,
-            _method: 'PATCH' 
-        });
-
-        const nextEditing = new Set(editingIds.value);
-        nextEditing.delete(item.id);
-        editingIds.value = nextEditing;
-        persistentToast.value = { msg: '✓ 儲存成功', type: 'success' };
-        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
-        await loadData();
-        openMenuId.value = null;
-    } catch (e) {
-        console.error(e);
-        const errorMsg = e.response?.data?.error || '儲存失敗';
-        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
-    } finally {
-        isSaving.value = false;
-    }
-};
 const handleRemarksViewerSave = async ({ dnrId, content }) => {
     if (currentAddFormIdx.value !== null) {
         if (addFormRef.value) {
@@ -1942,15 +1729,7 @@ const handleRemarksViewerSave = async ({ dnrId, content }) => {
         return;
     }
 
-    if (currentRemarksKey.value) {
-        // Updating editMap (Form Edit Mode)
-        if (editMap.value[currentRemarksKey.value]) {
-            editMap.value[currentRemarksKey.value].remarks = content;
-        }
-        showRemarksModal.value = false;
-        currentRemarksKey.value = null;
-        return;
-    }
+
 
     if (!dnrId) return;
     isSaving.value = true;
@@ -2003,8 +1782,7 @@ const isAnyModalOpen = computed(() => {
            !!deleteConfirmId.value || 
            !!showRemarksModal.value || 
            !!showLuckyDraw.value || 
-           !!showAddMenu.value ||
-           (editingIds.value && editingIds.value.size > 0);
+           !!showAddMenu.value;
 });
 
 watch(isAnyModalOpen, (newVal) => {
@@ -2020,6 +1798,15 @@ onUnmounted(() => {
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.animate-spin-slow {
+  animation: spin-slow 1.5s linear infinite;
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .custom-scrollbar { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }

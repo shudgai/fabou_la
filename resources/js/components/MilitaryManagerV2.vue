@@ -1,5 +1,12 @@
 <template>
     <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip">
+        <!-- Transition Logo Overlay -->
+        <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" class="animate-spin-slow" />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
+            </div>
+        </div>
         <!-- Delete Confirmation / Status Toast -->
         <div v-if="persistentToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto">
             <div class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] flex flex-col border border-slate-100 overflow-hidden" style="padding: 28px; min-width: 320px; max-width: calc(100vw - 32px);">
@@ -1090,6 +1097,14 @@ onMounted(() => {
 
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-spin-slow {
+  animation: spin-slow 1.5s linear infinite;
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 .custom-scrollbar { -webkit-overflow-scrolling: touch; }
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }

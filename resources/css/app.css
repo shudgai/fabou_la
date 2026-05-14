@@ -211,3 +211,8 @@ html, body {
 body .kaiwen-module h1 {
     font-size: 30px !important;
 }
+
+/* 標楷體強制 class */
+.font-biaokai {
+    font-family: 'DFKai-SB', '標楷體', 'BiauKai', serif !important;
+}

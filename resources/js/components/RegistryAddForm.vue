@@ -54,10 +54,10 @@
                 <!-- SINGLE MODE: Step-by-Step -->
                 <transition v-if="localMode === 'single'" name="step-fade" mode="out-in">
 
-                    <!-- STEP 1: 得知日期 -->
+                    <!-- STEP 1: 日期 -->
                     <div v-if="currentStep === 1" :key="'s1'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">得知日期</span></h2>
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">日期</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Date Info</p>
                         </div>
                         <div class="space-y-8">
@@ -93,59 +93,73 @@
                         </div>
                     </div>
 
-                    <!-- STEP 3: 法寶名稱 -->
+                    <!-- STEP 3: 用意 -->
                     <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶名稱</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Treasure Name</p>
-                        </div>
-                        <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶名稱 (可多筆，換行分隔)</label>
-                            <textarea v-model="treasureNamesText" rows="5" placeholder="輸入法寶名稱..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- STEP 4: 法寶用意 -->
-                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
-                        <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶用意</span></h2>
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">用意</span></h2>
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Purpose</p>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶用意 (選填)</label>
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
                             <textarea v-model="form.purpose" rows="5" placeholder="輸入用意..."
                                 class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                         </div>
                     </div>
 
-                    <!-- STEP 5: 求寶方式 -->
-                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                    <!-- STEP 4: 功效 -->
+                    <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">求寶方式</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Method</p>
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">功效</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Effect</p>
                         </div>
-                        <div class="space-y-8">
-                            <div class="relative group">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶方式 (選填)</label>
-                                <textarea v-model="form.acquisition_method" rows="4" placeholder="輸入求寶方式..."
-                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
-                            </div>
-                            <div class="relative group">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
-                                <input v-model="form.remarks" type="text" placeholder="輸入備註..."
-                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
-                            </div>
+                        <div class="relative group">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
+                            <textarea v-model="form.effect" rows="5" placeholder="輸入功效..."
+                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                         </div>
                     </div>
 
-                    <!-- STEP 6: 承接師兄姐 -->
-                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
-                        <div class="text-center space-y-2 mb-6">
-                            <h2 class="text-[17px] font-black text-slate-900">承接<span class="text-blue-600">皇恩的師兄姐</span></h2>
-                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Personnel</p>
+                    <!-- STEP 5: 作法 -->
+                    <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">作法</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Method</p>
                         </div>
-                        <div class="flex justify-end">
+                        <div class="relative group">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法 (選填)</label>
+                            <textarea v-model="form.acquisition_method" rows="5" placeholder="輸入作法..."
+                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 6: 求寶內容 -->
+                    <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">求寶內容</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Content</p>
+                        </div>
+                        <div class="relative group">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容 (可多筆，換行分隔)</label>
+                            <textarea v-model="treasureNamesText" rows="5" placeholder="輸入內容..."
+                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 7: 備註與承接師兄姐 -->
+                    <div v-else-if="currentStep === 7" :key="'s7'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-6">
+                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">備註及人員</span></h2>
+                            <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Remarks & Personnel</p>
+                        </div>
+
+                        <div class="relative group mb-8">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
+                            <input v-model="form.remarks" type="text" placeholder="輸入備註..."
+                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">承接師兄姐</label>
                             <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[15px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增人員</button>
                         </div>
                         <div v-for="(p, idx) in personnel" :key="idx" class="p-4 bg-slate-50/30 rounded-2xl border border-slate-200 space-y-3 relative animate-fade-in">
@@ -209,7 +223,7 @@
                 <!-- BATCH MODE (unchanged) -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
                     <div class="flex items-center justify-between ml-1">
-                        <label class="text-[17px] font-bold text-slate-800">貼入法寶名稱明細</label>
+                        <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
                         <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-red-400 rounded-lg text-[13px] font-bold active:scale-95 flex items-center space-x-1 border border-red-100">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             <span>清空</span>
@@ -313,14 +327,14 @@ import CompactDatePicker from './CompactDatePicker.vue';
 
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
-const totalSteps = 6;
-const stepTitles = ['得知日期', '載錄仙師', '法寶名稱', '法寶用意', '求寶方式', '承接師兄姐'];
+const totalSteps = 7;
+const stepTitles = ['日期', '仙師', '用意', '功效', '作法', '求寶內容', '備註'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 
 function handleNext() {
-    if (currentStep.value === 1 && !form.value.record_date) { alert('請輸入得知日期'); return; }
+    if (currentStep.value === 1 && !form.value.record_date) { alert('請輸入日期'); return; }
     if (currentStep.value === 2 && !form.value.master_id) { alert('請選擇仙師'); return; }
-    if (currentStep.value === 3 && !treasureNamesText.value.trim()) { alert('請輸入法寶名稱'); return; }
+    if (currentStep.value === 6 && !treasureNamesText.value.trim()) { alert('請輸入求寶內容'); return; }
     if (currentStep.value < totalSteps) currentStep.value++;
 }
 function handleBack() {
@@ -426,13 +440,35 @@ const batchParsedRows = computed(() => {
         }
 
         // 3. Detect Attribute Keywords
-        const attrKeywords = ['用意', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
+        const attrKeywords = ['用意', '功效', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
         const firstWord = normLine.split(/[\s：:]/)[0];
 
         if (attrKeywords.includes(firstWord) && results.length > 0) {
-            const prev = results[results.length - 1];
             const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
+            
+            // Try to find if this attribute (especially '備註') belongs to a specific person in the last group
+            let targetRows = [results[results.length - 1]];
+            
+            // Check for "Name: " prefix in the value
+            const namePrefixMatch = val.match(/^([^：:]+)[：:](.*)/);
+            if (namePrefixMatch) {
+                const potentialName = namePrefixMatch[1].trim();
+                const content = namePrefixMatch[2].trim();
+                // Look back through the most recent block of results (with same treasure name)
+                const lastTreasureName = results[results.length - 1].name;
+                const match = results.slice().reverse().find(r => r.name === lastTreasureName && r.recipient_name === potentialName);
+                if (match) {
+                    if (firstWord === '用意') match.purpose = content;
+                    else if (firstWord === '功效') match.effect = content;
+                    else match.person_remarks = (match.person_remarks ? match.person_remarks + '；' : '') + content;
+                    return;
+                }
+            }
+
+            // Default: apply to last row
+            const prev = results[results.length - 1];
             if (firstWord === '用意') prev.purpose = val;
+            else if (firstWord === '功效') prev.effect = val;
             else if (firstWord === '狀態') {
                 prev.status = val;
                 if (val.includes('已登記')) prev.obtained_date = prev.date || currentDate;
@@ -449,7 +485,7 @@ const batchParsedRows = computed(() => {
                 }
             }
             else if (firstWord === '求寶方式' || firstWord === '求寶') prev.acquisition_method = val;
-            else prev.remarks = (prev.remarks ? prev.remarks + ' ' : '') + val;
+            else prev.person_remarks = (prev.person_remarks ? prev.person_remarks + '；' : '') + val;
             return;
         }
 
@@ -463,54 +499,54 @@ const batchParsedRows = computed(() => {
         }
 
         const kwMatch = normLine.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容|求得)\s*)?(.*?)[：:](.*)/);
+        let treasureName = '';
+        let recipientsText = '';
+        let lineDate = currentDateInText || '';
+
         if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
             let rawName = kwMatch[3].trim();
             rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
-            const name = rawName;
-            const val = kwMatch[4].trim();
-
-            const item = { 
-                name, 
-                remarks: val, 
-                master_id: currentMasterId, 
-                date: currentDateInText || '', 
-                purpose: '',
-                acquisition_method: '',
-                obtained_date: currentDateInText || form.value.record_date || '',
-                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
-            };
-
-            if (val.includes('已登記')) {
-                item.status = '已登記';
-                item.obtained_date = currentDate;
-                item.remarks = val.replace('已登記', '').replace(/[，、, \s]+$/, '').trim();
-            }
-            results.push(item);
+            treasureName = rawName;
+            recipientsText = kwMatch[4].trim();
         } else if (normLine.match(/^(允求|賜降|得知|賜予|賜|求得)\s+/)) {
             const parts = normLine.split(/\s+/);
-            const item = { 
-                name: parts[1], 
-                remarks: parts.slice(2).join(' '), 
-                master_id: currentMasterId, 
-                date: currentDateInText || '', 
-                purpose: '',
-                acquisition_method: '',
-                obtained_date: currentDateInText || form.value.record_date || '',
-                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
-            };
-            results.push(item);
+            treasureName = parts[1];
+            recipientsText = parts.slice(2).join(' ');
+        } else if (normLine.includes(' ') && !normLine.includes('：') && !normLine.includes(':')) {
+            const spaceParts = normLine.split(/\s+/);
+            const hasSeparators = normLine.includes('，') || normLine.includes('、') || normLine.includes(',') || normLine.includes('.');
+            if (spaceParts.length >= 2 && (spaceParts[1].length <= 20 || hasSeparators)) {
+                treasureName = spaceParts[0];
+                recipientsText = spaceParts.slice(1).join(' ');
+            } else {
+                treasureName = normLine;
+            }
         } else if (normLine.length < 50) {
-            const item = { 
-                name: normLine, 
-                remarks: '', 
-                master_id: currentMasterId, 
-                date: currentDateInText || '', 
-                purpose: '',
-                acquisition_method: '',
-                obtained_date: currentDateInText || form.value.record_date || '',
-                status: (currentDateInText || form.value.record_date) ? '已登記' : '未求得'
-            };
-            results.push(item);
+            treasureName = normLine;
+        }
+
+        if (treasureName) {
+            const recipients = recipientsText ? recipientsText.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n) : [''];
+            recipients.forEach(r => {
+                const item = { 
+                    name: treasureName, 
+                    recipient_name: r, 
+                    person_remarks: '',
+                    master_id: currentMasterId, 
+                    date: lineDate, 
+                    purpose: '',
+                    effect: '',
+                    acquisition_method: '',
+                    obtained_date: lineDate || form.value.record_date || '',
+                    status: (lineDate || form.value.record_date) ? '已登記' : '未求得'
+                };
+                if (r.includes('已登記')) {
+                    item.status = '已登記';
+                    item.obtained_date = lineDate || form.value.record_date;
+                    item.recipient_name = r.replace('已登記', '').replace(/[，、, \s]+$/, '').trim();
+                }
+                results.push(item);
+            });
         }
     });
     return results;
@@ -519,7 +555,10 @@ const batchParsedRows = computed(() => {
 const parsedItemsCount = computed(() => batchParsedRows.value.length);
 
 const previewItems = computed(() => {
-    return batchParsedRows.value.slice(0, 20).map(r => r.name);
+    return batchParsedRows.value.slice(0, 20).map(r => {
+        const recipient = r.recipient_name ? ` (${r.recipient_name})` : '';
+        return `${r.name}${recipient}`;
+    });
 });
 
 const rawLines = computed(() => {
@@ -753,7 +792,7 @@ const validateSingle = () => {
         form.value.record_date = new Date().toISOString().split('T')[0];
     }
 
-    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入法寶名稱';
+    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入求寶內容';
     if (!form.value.record_date) return '請輸入頂部的「得知日期」';
 
     return null;
@@ -767,8 +806,20 @@ const handleSubmit = async () => {
             return;
         }
 
-        // Clean up personnel: remove empty rows
-        let cleanedPersonnel = personnel.value.filter(p => p.custom_name && p.custom_name.trim() !== '');
+        // Clean up personnel: split multiple names and remove empty rows
+        let expandedPersonnel = [];
+        personnel.value.forEach(p => {
+            if (!p.custom_name || !p.custom_name.trim()) return;
+            // Split names by common delimiters
+            const names = p.custom_name.split(/[，、, \s\t]+/).map(n => n.trim()).filter(n => n);
+            names.forEach(name => {
+                expandedPersonnel.push({
+                    ...p,
+                    custom_name: name
+                });
+            });
+        });
+        const cleanedPersonnel = expandedPersonnel;
 
         // If multiple names entered in textarea, handle them
         if (cleanedTreasureNames.value.length > 0) {
@@ -823,7 +874,10 @@ const handleSubmit = async () => {
                 name: row.name,
                 master_id: row.master_id || form.value.master_id,
                 record_date: row.date || form.value.record_date || '',
-                remarks: row.remarks || form.value.remarks || ''
+                purpose: row.purpose || form.value.purpose || '',
+                effect: row.effect || form.value.effect || '',
+                recipient_name: row.recipient_name,
+                person_remarks: row.person_remarks || ''
             }))
         });
     }

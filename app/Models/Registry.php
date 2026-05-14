@@ -19,6 +19,7 @@ class Registry extends Model
         'sort_order',
         'name',
         'purpose',
+        'effect',
         'acquisition_method',
         'remarks',
         'category',

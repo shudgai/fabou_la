@@ -22,8 +22,8 @@
                         <th class="p-6 font-bold text-right">操作</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
-                    <tr v-for="item in items" :key="item.id" class="hover:bg-slate-50/50 transition-colors group">
+<tbody class="divide-y divide-slate-50">
+                     <tr v-for="item in sortedItems" :key="item.id" class="hover:bg-slate-50/50 transition-colors group">
                         <td class="p-6 font-mono text-slate-400 text-sm">{{ item.order }}</td>
                         <td class="p-6">
                             <div class="text-[17px] font-bold text-slate-800">{{ item.name }}</div>
@@ -100,6 +100,10 @@ const loading = ref(false);
 const showModal = ref(false);
 const editMode = ref(false);
 const form = ref({ id: null, name: '', alias: '', order: 100 });
+
+const sortedItems = computed(() => {
+  return [...items.value].sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+});
 
 const load = async () => {
     const res = await axios.get('/api/dharma-names-list');
