@@ -189,7 +189,7 @@
                         </div>
 
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
-                         @click="toggleExpand(item.id)"
+                         @click="editItemId === item.id ? null : toggleExpand(item.id)"
                              :class="[
                                  'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent shadow-none !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:shadow-2xl md:border md:border-slate-100 md:mt-4' : '',
@@ -253,7 +253,7 @@
                             </div>
 
                             <!-- Card Header (Toggle Expansion) - Standardized to Imperial Grace Style -->
-                            <div :class="[!expandedIds.has(item.id) ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
+                            <div :class="[!expandedIds.has(item.id) && editItemId !== item.id ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
                                 <!-- Row 1: Date -->
                                 <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="app-title font-bold mb-0.5">
                                     日期：<span class="app-title !font-normal !text-[#0d0d0d]">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
@@ -272,24 +272,87 @@
 
                             </div>
 
-                                    <div v-if="expandedIds.has(item.id)" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
-                                        <!-- Detailed Record View -->
+                                    <!-- EDIT MODE: Inline editable fields -->
+                                    <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
-                                            <!-- Row 1: Date and Master -->
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
+                                                <input v-model="editData.record_date" type="text" placeholder="年/月/日"
+                                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
+                                                <input v-model="editData.name" type="text" placeholder="輸入內容"
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">用意 (選填)</label>
+                                                <textarea v-model="editData.purpose" rows="2" placeholder="輸入用意..."
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">功效 (選填)</label>
+                                                <textarea v-model="editData.effect" rows="2" placeholder="輸入功效..."
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法 (選填)</label>
+                                                <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
+                                                <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
+                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                            </div>
+
+                                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
+                                                <div v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="flex flex-wrap items-center gap-2 py-2 border-b border-slate-100">
+                                                    <div class="flex items-center gap-1 ml-4">
+                                                        <span class="text-[13px] text-slate-400 font-bold">{{ dnrIdx + 1 }}.</span>
+                                                        <input v-model="dnr.custom_name" type="text" placeholder="法號"
+                                                            class="w-[100px] text-[15px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none">
+                                                    </div>
+                                                    <div class="flex items-center gap-1">
+                                                        <label class="text-[11px] text-slate-400 font-bold">日期</label>
+                                                        <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
+                                                            @input="e => { const v = e.target.value.trim(); if (v) dnr.obtained_date = v.replace(/\//g, '-'); }"
+                                                            placeholder="年/月/日"
+                                                            class="w-[110px] text-[14px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
+                                                    </div>
+                                                    <div class="flex items-center gap-1">
+                                                        <label class="text-[11px] text-slate-400 font-bold">親友</label>
+                                                        <input :value="Array.isArray(dnr.related_personnel) ? dnr.related_personnel.join('、') : (dnr.related_personnel || '')"
+                                                            @input="e => { const v = e.target.value.trim(); dnr.related_personnel = v ? v.split(/[、, ]+/).filter(x => x) : []; }"
+                                                            type="text" placeholder="如：父親"
+                                                            class="w-[80px] text-[14px] font-bold border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none text-center">
+                                                    </div>
+                                                </div>
+                                                <div v-if="!editData.dharma_name_registries?.length" class="text-center py-4 text-slate-300 text-[13px]">尚無人員紀錄</div>
+                                            </div>
+
+                                            <!-- Save/Cancel Buttons -->
+                                            <div class="flex gap-3 justify-center pt-4 pb-8">
+                                                <button @click="cancelEdit" class="w-[100px] py-3 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
+                                                <button @click="saveEdit" :disabled="isSaving" class="flex-1 max-w-[200px] py-3 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- VIEW MODE: Read-only expanded details -->
+                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -mx-4 px-4">
+                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px] -ml-[25px]">
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div class="space-y-1 md:hidden">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
                                                     <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
                                                 </div>
-
                                             </div>
-
-                                            <!-- Row 2: Name -->
                                             <div class="space-y-1 md:hidden">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">求寶內容</label>
                                                 <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
                                             </div>
-
                                             <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">用意</label>
                                                 <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.purpose }}</div>
@@ -336,7 +399,6 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
-
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -346,12 +408,12 @@
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                 <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
-                                                                 <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
-                                                                 <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
-                                                                 <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
-                                                             </tr>
-                                                         </thead>
+                                                                  <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
+                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">法號</th>
+                                                                  <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
+                                                                  <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
+                                                              </tr>
+                                                          </thead>
                                                         <tbody>
                                                             <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
                                                                 <td class="p-0 text-black border-r border-slate-200">
@@ -378,14 +440,11 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
-
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </template>
                                         </div>
-
-
                                     </div>
                             </div>
                         </div>
@@ -707,6 +766,8 @@ const currentDnrId = ref(null);
 const reorderMode = ref(false);
 const paginationMeta = ref(null);
 const currentPage = ref(1);
+const editItemId = ref(null);
+const editData = ref(null);
 
 const handlePageChange = (page) => {
     currentPage.value = page;
@@ -961,20 +1022,59 @@ const openAdd = (mode = 'single') => {
 };
 
 const openEdit = (item) => {
-    form.value = {
-        id: item.id,
-        master_id: item.master_id,
-        category: item.category,
-        name: item.name,
-        purpose: item.purpose,
-        effect: item.effect,
-        acquisition_method: item.acquisition_method,
-        remarks: item.remarks,
-        record_date: item.record_date,
-        obtained_date: item.obtained_date,
-        dharma_name_registries: item.dharma_name_registries || []
-    };
-    addMode.value = 'single';
+    expandedIds.value = new Set([item.id]);
+    editItemId.value = item.id;
+    editData.value = JSON.parse(JSON.stringify(item));
+};
+
+const cancelEdit = () => {
+    editItemId.value = null;
+    editData.value = null;
+};
+
+const saveEdit = async () => {
+    if (!editData.value) return;
+    isSaving.value = true;
+    try {
+        const data = editData.value;
+        const registries = (data.dharma_name_registries || []).map(r => ({
+            id: r.id,
+            dharma_name_id: r.dharma_name_id,
+            custom_name: r.custom_name,
+            obtained_date: r.obtained_date,
+            remarks: typeof r.remarks === 'string' ? r.remarks : (Array.isArray(r.remarks) ? r.remarks.join('\n') : ''),
+            related_personnel: Array.isArray(r.related_personnel) ? r.related_personnel : (r.related_personnel ? r.related_personnel.split(/[、, ]+/).filter(x => x) : [])
+        }));
+        const payload = {
+            id: data.id,
+            master_id: data.master_id,
+            category: data.category,
+            name: data.name,
+            purpose: data.purpose,
+            effect: data.effect,
+            acquisition_method: data.acquisition_method,
+            remarks: data.remarks,
+            record_date: data.record_date,
+            obtained_date: data.obtained_date,
+            status: data.status,
+            dharma_name_registries: registries,
+            _method: 'PATCH'
+        };
+        await axios.post(`/registries/${data.id}`, payload);
+        editItemId.value = null;
+        editData.value = null;
+        expandedIds.value.clear();
+        focusedId.value = null;
+        loadData();
+        persistentToast.value = { msg: '✓ 修改成功', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
+    } catch (e) {
+        console.error(e);
+        const errorMsg = e.response?.data?.error || e.response?.data?.message || '儲存失敗';
+        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+    } finally {
+        isSaving.value = false;
+    }
 };
 
 const getMasterName = (id) => {
