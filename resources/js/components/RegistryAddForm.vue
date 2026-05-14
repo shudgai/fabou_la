@@ -139,7 +139,7 @@
                             <p class="text-slate-400 text-[13px] font-bold uppercase tracking-widest">Content</p>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容 (可多筆，換行分隔)</label>
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容</label>
                             <textarea v-model="treasureNamesText" rows="5" placeholder="輸入內容..."
                                 class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                         </div>
@@ -253,7 +253,7 @@
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容 (可多筆，換行分隔)</label>
+                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">求寶內容</label>
                         <textarea v-model="treasureNamesText" rows="3" placeholder="輸入內容..."
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                     </div>
@@ -440,8 +440,7 @@ const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '�
 const isEditing = computed(() => !!props.initialData?.id);
 
 function handleNext() {
-    if (currentStep.value === 1 && !form.value.record_date) { alert('請輸入日期'); return; }
-    if (currentStep.value === 2 && !form.value.master_id) { alert('請選擇仙師'); return; }
+    // 根據用戶要求：只有法寶名稱是必填 (Step 6)
     if (currentStep.value === 6 && !treasureNamesText.value.trim()) { alert('請輸入求寶內容'); return; }
     if (currentStep.value < totalSteps) currentStep.value++;
 }
@@ -889,7 +888,8 @@ const processExcelFile = (file) => {
 };
 
 const validateSingle = () => {
-    if (!form.value.master_id) return '請選擇仙師';
+    // 只有法寶名稱是必填
+    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入求寶內容';
 
     // Auto-fill main record_date if empty but first personnel has a date
     if (!form.value.record_date && personnel.value.length > 0 && personnel.value[0].obtained_date) {
@@ -899,9 +899,6 @@ const validateSingle = () => {
     if (!form.value.record_date) {
         form.value.record_date = new Date().toISOString().split('T')[0];
     }
-
-    if (!form.value.name && !treasureNamesText.value.trim()) return '請輸入求寶內容';
-    if (!form.value.record_date) return '請輸入頂部的「得知日期」';
 
     return null;
 };

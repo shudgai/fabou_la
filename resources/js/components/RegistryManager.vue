@@ -1335,9 +1335,14 @@ const saveSingle = async (data, shuntAction = null) => {
         persistentToast.value = { msg: '✖ 請輸入求寶內容', type: 'error' };
         return;
     }
+    // 如果沒有選擇仙師，預設存入當前資料夾
     if (!data.master_id) {
-        persistentToast.value = { msg: '✖ 請選擇仙師', type: 'error' };
-        return;
+        if (currentFolder.value) {
+            data.master_id = currentFolder.value.id;
+        } else {
+            persistentToast.value = { msg: '✖ 請選擇仙師', type: 'error' };
+            return;
+        }
     }
 
     // Master Mismatch Routing (Shunting)
