@@ -339,9 +339,7 @@
                                                     </div>
                                                     <div class="grid grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1">
                                                         <template v-for="dn in filteredEditDharmaNames" :key="dn.id">
-                                                            <!-- Normal buttons -->
-                                                            <button v-if="dn.name !== '金巧'"
-                                                                @click.stop="toggleDharmaSelection(dn)"
+                                                            <button @click.stop="toggleDharmaSelection(dn)"
                                                                 :style="{
                                                                     backgroundColor: isDharmaSelected(dn) ? '#bfdbfe' : '#ffffff',
                                                                     borderColor: isDharmaSelected(dn) ? '#93c5fd' : '#d1d5db',
@@ -350,42 +348,6 @@
                                                                 class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
                                                                 <span class="truncate leading-none">{{ dn.name }}</span>
                                                             </button>
-
-                                                            <!-- Special Gold Qiao Expandable -->
-                                                            <div v-else :class="(isDharmaSelected(dn) || isDharmaSelected({ name: '道霞龍妃', isVirtual: true })) ? 'col-span-1' : 'col-span-2 grid grid-cols-2 gap-1.5'">
-                                                                <!-- Case 1: Nothing selected, not expanded -->
-                                                                <button v-if="!isDharmaSelected(dn) && !isDharmaSelected({ name: '道霞龍妃', isVirtual: true }) && !goldQiaoExpanded"
-                                                                    @click.stop="goldQiaoExpanded = true"
-                                                                    class="col-span-2 flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border border-slate-300 shadow-sm w-full min-h-[36px] bg-white text-slate-900">
-                                                                    <span class="truncate leading-none">金巧...</span>
-                                                                </button>
-
-                                                                <!-- Case 2: 金巧 selected -->
-                                                                <button v-else-if="isDharmaSelected(dn)"
-                                                                    @click.stop="toggleDharmaSelection(dn)"
-                                                                    class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border border-blue-500 shadow-sm w-full min-h-[36px] bg-blue-500 text-white">
-                                                                    <span class="truncate leading-none">金巧</span>
-                                                                </button>
-
-                                                                <!-- Case 3: 道霞龍妃 selected -->
-                                                                <button v-else-if="isDharmaSelected({ name: '道霞龍妃', isVirtual: true })"
-                                                                    @click.stop="toggleDharmaSelection({ name: '道霞龍妃', isVirtual: true, baseId: dn.id })"
-                                                                    class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border border-blue-500 shadow-sm w-full min-h-[36px] bg-blue-500 text-white">
-                                                                    <span class="truncate leading-none">道霞龍妃</span>
-                                                                </button>
-
-                                                                <!-- Case 4: Expanded, neither selected -->
-                                                                <template v-else>
-                                                                    <button @click.stop="toggleDharmaSelection(dn); goldQiaoExpanded = false"
-                                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border border-slate-300 shadow-sm w-full min-h-[36px] bg-white text-slate-900">
-                                                                        金巧
-                                                                    </button>
-                                                                    <button @click.stop="toggleDharmaSelection({ name: '道霞龍妃', isVirtual: true, baseId: dn.id }); goldQiaoExpanded = false"
-                                                                        class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border border-slate-300 shadow-sm w-full min-h-[36px] bg-white text-slate-900">
-                                                                        道霞龍妃
-                                                                    </button>
-                                                                </template>
-                                                            </div>
                                                         </template>
                                                     </div>
                                                 </div>
