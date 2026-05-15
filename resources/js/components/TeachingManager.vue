@@ -2619,9 +2619,6 @@ const markings = ref({});
 
 const getRecipientName = (item) => {
     const pastedName = (item.dharmaSearchQuery || item.target_remarks || '').trim();
-    const isGroup = pastedName.includes('全體') || pastedName.includes('成員') || (item.dharma_name_ids && item.dharma_name_ids.length > 5);
-    if (isGroup) return '點選查看對象詳情';
-
     const listInfo = getFullRecipientList(item, pastedName);
 
     if (!listInfo) return (pastedName || '對象');
