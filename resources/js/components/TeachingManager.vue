@@ -55,7 +55,7 @@
                             @click="currentCategory = 'daily'"
                             class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                             <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示">
                                 <!-- Label Inside -->
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2" style="transform: translateY(-10px);">
                                     <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
@@ -73,7 +73,7 @@
                             @click="currentCategory = 'masters'"
                             class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                             <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示">
                                 <!-- Label Inside -->
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2" style="transform: translateY(-10px);">
                                     <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
@@ -104,7 +104,7 @@
                             @click="currentFolder = folder"
                             class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[175px] h-[138px] flex-shrink-0 p-0 overflow-visible">
                             <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="書籍圖示">
                                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked" style="transform: translateY(-20px);">
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>

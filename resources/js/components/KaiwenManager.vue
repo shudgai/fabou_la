@@ -395,7 +395,7 @@
                                     </div>
                                 </template>
                                 <template v-else>
-                                    <textarea v-model="form.modified_content" @paste="onImagePaste" placeholder="在此直接貼上 (Ctrl+V) 文字或截圖..." class="w-full h-full min-h-[300px] bg-transparent p-6 app-body font-bold text-purple-900 outline-none resize-none cursor-text placeholder:text-purple-200 leading-relaxed"></textarea>
+                                    <textarea v-model="form.modified_content" @paste="onImagePaste" placeholder="在此直接貼上文字或截圖..." class="w-full h-full min-h-[300px] bg-transparent p-6 app-body font-bold text-purple-900 outline-none resize-none cursor-text placeholder:text-purple-200 leading-relaxed"></textarea>
                                 </template>
                                 <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                             </div>
@@ -455,7 +455,7 @@
 
         <!-- Image Zoom Overlay -->
         <div v-if="viewerImage" class="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4 md:p-12 animate-fade-in" @click="viewerImage = null">
-            <img :src="viewerImage" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-scale-in" alt="Zoomed view">
+            <img :src="viewerImage" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-scale-in" alt="放大檢視">
             <button @click="viewerImage = null" class="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-all">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>

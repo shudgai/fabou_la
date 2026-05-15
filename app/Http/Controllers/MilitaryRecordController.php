@@ -229,6 +229,6 @@ class MilitaryRecordController extends Controller
         }
 
         $record->delete();
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => '已刪除']);
     }
 }

@@ -90,7 +90,7 @@ class TeachingController extends Controller
             return response()->json(['message' => '您無權修改此紀錄'], 403);
         }
         $success = $this->teachingService->update($id, $request->all());
-        return $success ? response()->json(['message' => 'Updated']) : response()->json(['message' => 'Error'], 400);
+        return $success ? response()->json(['message' => '已更新']) : response()->json(['message' => '錯誤'], 400);
     }
 
     public function destroy(string $id)
@@ -100,7 +100,7 @@ class TeachingController extends Controller
             return response()->json(['message' => '您無權刪除此紀錄'], 403);
         }
         $success = $this->teachingService->delete($id);
-        return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
+        return $success ? response()->json(['message' => '已刪除']) : response()->json(['message' => '錯誤'], 400);
     }
 
     public function reorder(Request $request)

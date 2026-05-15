@@ -71,7 +71,7 @@
 
                 <h1 class="sr-only">皇恩筆記本</h1>
                 <p class="text-slate-400 text-sm font-medium tracking-[0.2em] uppercase mb-12">
-                    Imperial Grace System
+                    法寶管理系統
                 </p>
 
                 {{-- Decorative divider --}}
@@ -202,7 +202,7 @@
 
                         <input id="email" type="email" name="email" x-model="email" x-ref="emailInput" required autocomplete="email"
                             class="immersive-input w-full bg-transparent border-0 border-b-2 border-slate-200 text-slate-900 text-[22px] font-bold py-3 px-0 focus:border-red-500 focus:outline-none transition-colors placeholder-slate-200 tracking-wide"
-                            placeholder="example@mail.com">
+                            placeholder="請輸入您的電子郵件">
 
                         <div class="mt-10">
                             <button type="button" @click="nextStep" :disabled="!email.trim() || !email.includes('@')"

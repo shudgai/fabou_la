@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="flex justify-between mt-2">
-                <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">Step {{ currentStep }} of {{ totalSteps }}</span>
+                <span class="text-[11px] font-black text-slate-300 uppercase tracking-widest">步驟 {{ currentStep }} / {{ totalSteps }}</span>
                 <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">{{ currentStepTitles[currentStep - 1] }}</span>
             </div>
         </div>
@@ -52,7 +52,7 @@
                     <div class="space-y-10 w-full max-w-sm mt-8">
                         <div v-if="localMode.startsWith('single')" class="relative group">
                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">日期</label>
-                            <input v-model="form.record_date" type="text" placeholder="YYYY-MM-DD" 
+                            <input v-model="form.record_date" type="text" placeholder="日期格式 年-月-日" 
                                 class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
                             <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-300 hover:text-indigo-500 transition-colors">
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -147,7 +147,7 @@
                             </div>
                             <div class="relative">
                                 <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記日期' : (form.status === '已求得' ? '求得日期' : '日期') }}</label>
-                                <input v-model="form.obtained_date" type="text" placeholder="YYYY-MM-DD" 
+                                <input v-model="form.obtained_date" type="text" placeholder="日期格式 年-月-日" 
                                     :disabled="form.status === '未求得'"
                                     class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-red-500 bg-transparent py-4 outline-none transition-all disabled:text-slate-200">
                                 <button @click="activePicker = { field: 'obtained_date', title: '修改日期' }" 

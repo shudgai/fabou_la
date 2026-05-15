@@ -98,7 +98,7 @@
         </div>
 
         <!-- Footer Decor -->
-        <p class="text-center mt-12 text-slate-300 text-xs font-bold uppercase tracking-[0.2em]">© {{ date('Y') }} FABOU SYSTEM v2.0</p>
+        <p class="text-center mt-12 text-slate-300 text-xs font-bold uppercase tracking-[0.2em]">© {{ date('Y') }} 法寶管理系統</p>
     </div>
 </div>
 

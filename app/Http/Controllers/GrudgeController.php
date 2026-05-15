@@ -43,12 +43,12 @@ class GrudgeController extends Controller
     public function update(Request $request, string $id)
     {
         $success = $this->grudgeService->update((int)$id, $request->all());
-        return $success ? response()->json(['message' => 'Updated']) : response()->json(['message' => 'Error'], 400);
+        return $success ? response()->json(['message' => '已更新']) : response()->json(['message' => '錯誤'], 400);
     }
 
     public function destroy(string $id)
     {
         $success = $this->grudgeService->delete((int)$id);
-        return $success ? response()->json(['message' => 'Deleted']) : response()->json(['message' => 'Error'], 400);
+        return $success ? response()->json(['message' => '已刪除']) : response()->json(['message' => '錯誤'], 400);
     }
 }

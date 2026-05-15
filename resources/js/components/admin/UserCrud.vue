@@ -15,7 +15,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-slate-400 text-[13px] uppercase tracking-widest border-b border-slate-50">
-                        <th class="p-6 font-bold">法號 / Email</th>
+                        <th class="p-6 font-bold">法號 / 電子郵件</th>
                         <th class="p-6 font-bold">對應法號</th>
                         <th class="p-6 font-bold">角色權限</th>
                         <th class="p-6 font-bold text-right">操作</th>
@@ -39,7 +39,7 @@
                                 'px-2.5 py-1 rounded-full text-xs font-bold border',
                                 item.role === 'admin' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-slate-500 border-slate-100'
                             ]">
-                                {{ item.role || 'user' }}
+                                {{ item.role === 'admin' ? '管理員' : '使用者' }}
                             </span>
                         </td>
                         <td class="p-6 text-right space-x-2">
@@ -70,18 +70,18 @@
                             <div class="space-y-1.5">
                                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">權限角色</label>
                                 <select v-model="form.role" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800 font-bold">
-                                    <option value="user">一般使用者 (User)</option>
-                                    <option value="admin">管理員 (Admin)</option>
+                                    <option value="user">一般使用者</option>
+                                    <option value="admin">管理員</option>
                                 </select>
                             </div>
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">登入 Email</label>
-                            <input v-model="form.email" type="email" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800" placeholder="example@mail.com">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">登入電子郵件</label>
+                            <input v-model="form.email" type="email" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800" placeholder="請輸入電子郵件">
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">設定密碼 (留空則不修改)</label>
-                            <input v-model="form.password" type="password" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800" placeholder="********">
+                            <input v-model="form.password" type="password" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 text-slate-800" placeholder="輸入密碼">
                         </div>
                         <div class="space-y-1.5 border-t border-slate-50 pt-4">
                             <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">連結法號 (對應身分)</label>

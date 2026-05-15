@@ -48,7 +48,7 @@
                             rows="15"
                             @click.stop
                             class="w-full app-body p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 min-h-[500px] leading-relaxed pr-12"
-                            placeholder="多筆新增如下列:&#10;日期(yyyy/mm/dd)&#10;法號總數"
+                            placeholder="多筆新增如下列:&#10;日期(年/月/日)&#10;法號總數"
                         ></textarea>
                         <!-- Floating Clear Cross Button -->
                         <button v-if="batchText" @click="batchText = ''" 

@@ -12,7 +12,7 @@
                         {{ items.length }}
                     </div>
                 </div>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Recycle Bin</p>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">資源回收筒</p>
             </div>
             <div class="flex items-center space-x-3">
                 <button @click="cleanup" class="bg-rose-50 text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-rose-100 transition-all border border-rose-100">

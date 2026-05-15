@@ -159,15 +159,15 @@ const rawLines = computed(() => {
 
 const placeholderText = computed(() => {
     if (props.armyType === '黑曜軍') {
-        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數";
+        return "多筆新增如下列:\n日期(年/月/日)\n法號總數";
     }
     if (props.armyType === '耀紫軍') {
-        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數(龍勝數量龍戰數量)";
+        return "多筆新增如下列:\n日期(年/月/日)\n法號總數(龍勝數量龍戰數量)";
     }
     if (props.armyType === '虎賁軍' || props.armyType === '虎甲軍') {
-        return "多筆新增如下列:\n日期(yyyy/mm/dd)\n法號數量";
+        return "多筆新增如下列:\n日期(年/月/日)\n法號數量";
     }
-    return "請貼上文字或 Excel 複製之內容...";
+    return "請貼上文字或試算表複製之內容...";
 });
 
 const translateRel = (rel) => {

@@ -42,9 +42,9 @@
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">屬性分類</label>
                             <select v-model="form.category" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-100 transition-all">
-                                <option value="imperial">重大皇恩 (Imperial)</option>
-                                <option value="others">其餘皇恩 (Others)</option>
-                                <option value="teaching">仙師開示 (Teaching)</option>
+                                <option value="imperial">重大皇恩</option>
+                                <option value="others">其餘皇恩</option>
+                                <option value="teaching">仙師開示</option>
                             </select>
                         </div>
                     </div>

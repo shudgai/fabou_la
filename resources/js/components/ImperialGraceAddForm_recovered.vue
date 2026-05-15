@@ -105,7 +105,7 @@
                         <div class="flex items-center justify-between ml-1">
                             <div class="flex flex-col">
                                 <label class="text-[15px] font-black text-red-600 uppercase tracking-tight">憭犖?踵?</label>
-                                <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">MULTI-PERSON MODE</span>
+                                <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">多筆人員模式</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <button @click="personnel = []" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-2xl text-[16px] font-black active:scale-95 transition-all border border-slate-100 shadow-sm">
@@ -236,7 +236,7 @@
                     <div v-if="excelRows.length > 0 && batchType === 'single'" class="mt-4 border border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white animate-fade-in">
                         <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-100 flex justify-between items-center">
                             <span class="text-[13px] font-black text-slate-600">?桀?閫??嚗?({{ excelRows.length }} 蝑?</span>
-                            <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">PREVIEW</span>
+                            <span class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">預覽</span>
                         </div>
                         <div class="overflow-x-auto max-h-[400px] overscroll-contain">
                             <table class="w-full text-left border-collapse">

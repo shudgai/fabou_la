@@ -450,6 +450,6 @@ class ImperialGraceController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $grace->delete();
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => '已刪除']);
     }
 }

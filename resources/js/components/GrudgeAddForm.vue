@@ -38,7 +38,7 @@
                              :class="s <= currentStep ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'bg-slate-100'"></div>
                     </div>
                     <div class="flex justify-between mt-2 px-1">
-                        <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">Step {{ currentStep }} / 6</span>
+                        <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">步驟 {{ currentStep }} / 6</span>
                         <span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em]">{{ stepTitles[currentStep - 1] }}</span>
                     </div>
                 </div>

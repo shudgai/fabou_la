@@ -43,7 +43,7 @@
                         </span>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
                             class="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-base focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-300 @error('email') ring-2 ring-red-500/20 @enderror"
-                            placeholder="example@mail.com">
+                            placeholder="請輸入您的電子郵件">
                     </div>
                     @error('email')
                         <p class="text-red-500 text-sm font-bold mt-1 ml-1">{{ $message }}</p>
@@ -65,7 +65,7 @@
         </div>
 
         <!-- Footer Decor -->
-        <p class="text-center mt-12 text-slate-300 text-xs font-bold uppercase tracking-[0.2em]">© {{ date('Y') }} FABOU SYSTEM v2.0</p>
+        <p class="text-center mt-12 text-slate-300 text-xs font-bold uppercase tracking-[0.2em]">© {{ date('Y') }} 法寶管理系統</p>
     </div>
 </div>
 @endsection

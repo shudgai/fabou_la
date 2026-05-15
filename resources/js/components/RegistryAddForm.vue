@@ -341,7 +341,7 @@
                             <span>清空</span>
                         </button>
                     </div>
-                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="支援直接貼上或輸入 Excel 或 LINE 內容... 第一行若是日期將自動作為登記日期！"></textarea>
+                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="支援直接貼上或輸入內容... 第一行若是日期將自動作為登記日期！"></textarea>
                     <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
                         <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                             <div class="flex flex-col">

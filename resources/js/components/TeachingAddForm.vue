@@ -91,7 +91,7 @@
                     <div v-if="currentStep === 1" :key="'step-1'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">請確認<span class="text-indigo-600">得知日期</span></h2>
                         <div class="max-w-md mx-auto mt-12 relative group">
-                            <input v-model="form.date" type="text" placeholder="YYYY-MM-DD" 
+                            <input v-model="form.date" type="text" placeholder="日期格式 年-月-日" 
                                 class="w-full text-center text-[22px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-6 outline-none transition-all placeholder:text-slate-100">
                         </div>
                     </div>

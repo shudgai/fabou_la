@@ -80,7 +80,7 @@
             <div class="p-6 bg-slate-50/50 flex justify-center items-center shrink-0">
                 <div class="flex items-center space-x-2">
                     <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
-                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Secure Account Management</span>
+                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">帳號安全管理</span>
                     <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
                 </div>
             </div>

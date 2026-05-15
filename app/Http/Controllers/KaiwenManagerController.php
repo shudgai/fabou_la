@@ -58,7 +58,7 @@ class KaiwenManagerController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $post->delete();
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => '已刪除']);
     }
 
     public function storeSelf(Request $request)
@@ -111,7 +111,7 @@ class KaiwenManagerController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $post->delete();
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => '已刪除']);
     }
 
     public function reorderWeekly(Request $request)

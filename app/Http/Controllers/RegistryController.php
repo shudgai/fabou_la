@@ -498,7 +498,7 @@ class RegistryController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $registry->delete();
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => '已刪除']);
     }
 
     public function reorder(Request $request)
