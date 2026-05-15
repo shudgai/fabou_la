@@ -147,7 +147,7 @@
             </template>
 
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
-                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full">
+                <div class="flex-1 overflow-auto custom-scrollbar w-full">
                     <div class="flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
                         <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -159,9 +159,9 @@
                     <div class="grid grid-cols-2 gap-[2px] p-2 place-items-center">
                         <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                             @click="currentFolder = folder"
-                            class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 bg-white p-0 overflow-visible">
-                            <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                            class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-0 overflow-visible">
+                            <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
+                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked">
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>

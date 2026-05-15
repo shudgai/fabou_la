@@ -78,7 +78,7 @@
             </div>
         </div>
         </teleport>
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
+        <div ref="scrollContainer" class="flex-1 overflow-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
             <button 
@@ -111,16 +111,16 @@
             </button>
         </div>
 
-        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="bg-white w-full">
+        <div v-if="currentCategory === 'masters' && !currentFolder && !addMode" class="w-full">
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
             <div class="grid grid-cols-2 gap-[2px] p-2 place-items-center">
                 <button v-for="folder in mastersFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none bg-white hover:bg-white active:bg-white overflow-visible">
-                    <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
-                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none overflow-visible">
+                    <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
+                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked">
                               <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
                               <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked mt-[24px]">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
