@@ -386,5 +386,11 @@ imagewebp($dstImg, $outputPath, 80);
 ### Scratch Directory
 - `/scratch` added to `.gitignore` — 116 temporary/test files untracked from repo
 
+## Session Notes (2026-05-15)
+
+### LuckyDraw 回合抽籤 — 法號框清空
+- `handleNextRound`: `roundParticipants` 改為 `[]`，新回合時法號框不再自動全選，讓使用者自行點選本輪人員
+- `confirmSelection` (lotteryMode): `roundParticipants` 改為 `[]`，選完固定人員進入 step 3 時法號框保持清空
+
 
 

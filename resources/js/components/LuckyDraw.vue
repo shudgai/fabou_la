@@ -407,7 +407,7 @@ const getPendingStyle = (name) => {
 const confirmSelection = () => {
     if (lotteryMode.value === true) {
         selectedNames.value = [...pendingNames.value];
-        roundParticipants.value = [...pendingNames.value];
+        roundParticipants.value = [];
         drawCount.value = 1;
         currentStep.value = 3;
         return;
@@ -462,7 +462,7 @@ const toggleRoundParticipant = (name) => {
 const getStep2RoundStyle = (name) => {
     const active = roundParticipants.value.includes(name);
     if (active) return { background: '#2563eb', color: '#ffffff !important', borderColor: '#2563eb', borderWidth: '1px' };
-    return { background: 'white', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
+    return { background: 'transparent', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
 };
 
 let lotteryInterval = null;
@@ -564,7 +564,7 @@ const handleReselect = () => {
 const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [...pendingNames.value];
+    roundParticipants.value = [];
     currentStep.value = 3;
 };
 
