@@ -81,26 +81,26 @@
                 </div>
 
                 <!-- Masters Grid -->
-                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-1.5 gap-x-1 pb-20 bg-white">
+                <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-1.5 gap-x-0 pb-20 bg-white">
                     <button v-for="folder in folders" :key="folder.id" 
                              @click="currentFolder = folder"
-                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[198px] h-[198px] flex-shrink-0 relative overflow-visible">
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[175px] h-[198px] flex-shrink-0 relative overflow-visible">
 
-                        <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
+                        <div class="relative w-[175px] h-[198px] flex items-center justify-center overflow-visible">
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-[275px] h-[177px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
+                                 class="w-[240px] h-[155px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
                                  alt="Book Icon">
 
-                             <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[49px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-15px);">
+                             <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-15px);">
                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai" style="font-size: 14px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
                                 <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[7px] font-biaokai" style="font-size: 12.35px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
 
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-0">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai -mt-4"
-                                         :style="`font-size: 21px !important; font-weight: 900 !important; color: ${folder.name === '閻王仙師' ? '#000000' : '#dc2626'} !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; -webkit-text-stroke: 0.5px ${folder.name === '閻王仙師' ? '#000000' : '#dc2626'} !important;`">
+                                         :style="'font-size: 21px !important; font-weight: 900 !important; color: ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important; font-family: \'DFKai-SB\', \'標楷體\', \'BiauKai\', \'Kaiti TC\', serif !important; -webkit-text-stroke: 0.5px ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important;'">>
                                          {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                     </div>
                                     <div class="mt-[14px] flex items-center font-biaokai-locked" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">
