@@ -298,3 +298,30 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 - Textarea rows: `:rows="props.isDesktop ? 2 : 6"`
 - Tab buttons: `md:flex-row` side-by-side on desktop
 
+## Session Notes (2026-05-15)
+
+### Registry AddForm UI: label 作法 → 作法/求寶方式
+- `RegistryAddForm.vue:147`, `RegistryAddForm.vue:277`, `RegistryManager.vue:286`: `作法 (選填)` → `作法/求寶方式`
+
+### Registry Batch Add Fix (重大 bug 修復)
+
+#### Root cause: `batchParsedRows` 解析器回傳 0 筆
+- `batchParsedRows` computed 要求所有法號必須存在於 `dharmaNames` 中 (`knownNames.length > 0 && names.length === knownNames.length`)，若 `dharmaNames` 尚未載入（非同步）則全部拒絕
+- `triggerBatchSave` 忽略表單的 `batchData.rows`，對原始文字進行不相容的二次區塊解析
+
+#### 修復清單 (`RegistryAddForm.vue:572-730`)
+
+| 問題 | 修復 |
+|---|---|
+| `dharmaNames` 未載入時法號驗證全拒 | Step 6: `dharmaNames.value.length === 0` 時改用 heuristic（排除含冒號的文字），不再強依賴 DB |
+| tab 分隔格式不支援 (`日期\t允求:法寶\t法號`) | 新增 Step 5: `\t` 分割後直接建立記錄，不驗證 dharmaNames（欄位位置明確） |
+| `允求:法寶 法號1,法號2` 前綴單行格式 | Step 4: prefixKeywords 處理器在 `prefixKeywords.includes(key)` 時，直接解析 val 中的法寶 + 法號 |
+| 屬性殘留（前筆用意洩漏到後筆） | Step 7 新法寶名稱時重置 `pendingTreasure = { name: '', purpose: '', ... }` |
+| `triggerBatchSave` 二次解析 | 優先使用 `batchData.rows`（表單已解析資料），老解析器保留為 fallback |
+
+#### 支援的批次格式
+1. **Tab 分隔**: `日期\t前綴:法寶名稱\t法號1,法號2` （最推薦）
+2. **前綴單行**: `允求:法寶名稱 法號1,法號2`
+3. **多行屬性**: `日期` → `法寶名稱` → `用意:xxx` → `法號1,法號2`
+4. **民國年**: `113.10.6` 自動轉西元 `2024-10-06`
+

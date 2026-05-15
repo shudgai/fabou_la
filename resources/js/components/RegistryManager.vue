@@ -10,18 +10,24 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
-            class="border-b border-transparent flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
-            style="padding: 4px 15px; min-height: 52px;">
-            <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
-                <logo-imperial-notebook :height="36" class="md:hidden" />
-                <div class="app-title !text-[30px] leading-tight font-outfit tracking-widest !font-black !text-[#dc2626] pt-[5px] whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; font-weight: 900 !important;">
-                    法寶登記專區
+            class="border-b border-transparent flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300">
+            <!-- Row 1: Global Title -->
+            <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
+                <logo-imperial-notebook :height="30" />
+                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+            </div>
+            <!-- Row 2: Category Name (if selected) -->
+            <div v-if="currentCategory" class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
+                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
+                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
+                    </span>
                 </div>
             </div>
         </div>
 
         <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
-        <div v-if="currentFolder && !addMode" 
+        <div v-if="currentFolder && !addMode && !focusedId" 
             class="border-b border-white flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Row 1: Global Title -->
             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
@@ -34,7 +40,9 @@
                     <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                         {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                     </span>
-                    <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit font-normal break-words" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">{{ currentFolder.name }}</span>
+                    <span class="font-outfit font-normal text-slate-900" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
+                        {{ currentFolder.name === '父皇仙師' ? '父皇' : currentFolder.name }}
+                    </span>
                 </div>
                 <div class="flex flex-col items-end justify-center shrink-0 ml-2 gap-0.5">
                     <button v-if="!reorderMode" @click="toggleSort" class="px-1 py-0.5 active:scale-95 transition-all font-black leading-none" style="color: #4f46e5 !important; font-size: 13px !important;">
@@ -129,7 +137,7 @@
                 ]"
                 style="">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
-                <div class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
+                <div v-if="!focusedId" class="hidden md:flex flex-col items-center border-b border-slate-100 bg-white sticky top-0 z-[50]">
                     <!-- Top Row: Main Title + All Action Buttons -->
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
                         <div class="flex items-center gap-2">
@@ -159,7 +167,9 @@
                         <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
                             {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                         </span>
-                        <span :class="currentFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="font-outfit whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">{{ currentFolder.name }}</span>
+                        <span class="font-outfit font-normal text-slate-900" style="font-size: 23px !important; transform: translateY(1.5px);">
+                            {{ currentFolder.name === '父皇仙師' ? '父皇' : currentFolder.name }}
+                        </span>
                     </div>
                 </div>
 
@@ -207,56 +217,15 @@
                             </div>
 
                             <div class="flex-1 min-w-0 pr-[10px]">
-                            <!-- Action Dropdown Trigger -->
-                            <button v-if="expandedIds.has(item.id)" @click.stop="toggleExpand(item.id)" 
-                                    class="absolute top-[30px] right-4 z-30 p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
-                                <svg class="w-[19px] h-[19px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <div class="absolute right-4 z-30 translate-x-0" :class="expandedIds.has(item.id) ? 'top-[60px]' : 'top-[24px]'">
-                                <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
-                                        class="p-2 active:scale-90 transition-all !text-[#dc1428]">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="5" cy="12" r="2" />
-                                        <circle cx="12" cy="12" r="2" />
-                                        <circle cx="19" cy="12" r="2" />
-                                    </svg>
-                                </button>
+                            <div v-if="!expandedIds.has(item.id)" class="flex items-center gap-2 pr-2">
+                                <!-- Collapsed state buttons if any -->
+                            </div>
 
-                                <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-24 bg-white opacity-100 border border-slate-100 rounded-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
-                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" 
-                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        {{ expandedIds.has(item.id) ? '收起' : '展開' }}
-                                    </button>
-                                    <button @click.stop="openEdit(item); openMenuId = null" 
-                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        修改
-                                    </button>
-                                    <button @click.stop="copyAsTextFile(item); openMenuId = null" 
-                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        複製
-                                    </button>
-                                    <button @click.stop="downloadItemData(item); openMenuId = null" 
-                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
-                                        下載
-                                    </button>
-                                    <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
-                                            class="w-full text-left px-3 py-2.5 text-[14px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
-                                        刪除
-                                    </button>
-                                </div>
                             </div>
 
                             <!-- Card Header (Toggle Expansion) - Standardized to Imperial Grace Style -->
                             <div :class="[!expandedIds.has(item.id) && editItemId !== item.id ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
-                                <!-- Row 1: Date -->
-                                <div v-if="getEarliestDate(item) && getEarliestDate(item) !== '-'" class="app-title font-bold mb-0.5">
-                                    日期：<span class="app-title !font-normal !text-[#0d0d0d]">{{ formatDisplayDate(getEarliestDate(item)) }}</span>
-                                </div>
-
-                                <!-- Row 2: Name + (Expansion Indicator) -->
+                                <!-- Row 1: Name + (Expansion Indicator) -->
                                 <div class="flex items-center justify-between">
                                     <div class="app-body font-bold text-slate-900 leading-tight truncate">{{ item.name }}</div>
                                     <div v-if="!expandedIds.has(item.id)" class="ml-2 text-slate-300 transition-colors md:hidden">
@@ -265,17 +234,35 @@
                                         </svg>
                                     </div>
                                 </div>
-
-
                             </div>
 
                                     <!-- EDIT MODE: Inline editable fields -->
                                     <div v-if="editItemId === item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -ml-[40px] -mr-4">
-                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
+                                        <!-- Branding Header for Edit Mode -->
+                                        <div class="fixed top-0 left-0 right-0 z-[110] bg-white border-b border-slate-100 flex flex-col pt-2 animate-fade-in md:hidden">
+                                            <!-- Row 1: Global Title -->
+                                            <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
+                                                <logo-imperial-notebook :height="30" />
+                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                                            </div>
+                                            <!-- Row 2: Category Name (if selected) -->
+                                            <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
+                                                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
+                                                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                                                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
+                                                    </span>
+                                                    <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
+                                                          :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
+                                                        — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[90px] md:pt-[30px]">
                                             <div class="space-y-1 relative group px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
                                                 <input v-model="editData.record_date" type="text" placeholder="年/月/日"
-                                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                    class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                                 <button @click="activePicker = { field: 'record_date' }" class="absolute right-4 bottom-2 text-slate-300 hover:text-indigo-500">
                                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
@@ -296,7 +283,7 @@
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
                                             <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法 (選填)</label>
+                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法/求寶方式</label>
                                                 <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
                                                     class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                             </div>
@@ -343,27 +330,27 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Table Layout (Matching Image) -->
-                                                <div class="overflow-x-auto border-y border-slate-200 bg-white -ml-[10px]">
-                                                    <table class="w-full border-collapse bg-white text-[16px]">
+                                                <!-- Table Layout (Matching View Mode) -->
+                                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white -ml-[10px] mr-2">
+                                                    <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
-                                                            <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[10px]">法號</th>
-                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">日期</th>
-                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit whitespace-nowrap pl-[5px]">備註</th>
-                                                                <th class="w-[30px]"></th>
+                                                            <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
+                                                                <th class="w-[28%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
+                                                                <th class="w-[34%] px-[10px] py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[34%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[4%]"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-2 py-1.5 font-black text-blue-700 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit pl-[10px]">
-                                                                    {{ dnr.custom_name }}
+                                                                <td class="px-[10px] py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit pl-[10px]">
+                                                                    {{ getDharmaNameText(dnr) }}
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
-                                                                        placeholder="年/月/日"
-                                                                        class="w-full text-center text-[15px] font-black !text-[#dc1428] bg-transparent py-2 outline-none pl-6"
+                                                                        placeholder="--"
+                                                                        class="w-full text-center text-[15px] font-normal !text-[#dc1428] bg-transparent py-2 outline-none pl-6"
                                                                         style="font-family: 'PMingLiU', serif;">
                                                                     <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-1 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
                                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -371,7 +358,7 @@
                                                                 </td>
                                                                 <td class="p-0">
                                                                     <input v-model="dnr.remarks"
-                                                                        placeholder="備註"
+                                                                        placeholder="--"
                                                                         class="w-full text-center text-[14px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
                                                                 </td>
                                                                 <td class="px-1 text-center">
@@ -389,80 +376,186 @@
                                             </div>
 
                                             <!-- Save/Cancel Buttons -->
-                                            <div class="flex gap-3 justify-center pt-4 pb-8">
-                                                <button @click="cancelEdit" class="w-[100px] py-3 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
+                                            <div class="flex gap-2 justify-center pt-4 pb-8 px-[15px]">
+                                                <button @click="cancelEdit" class="w-[85px] py-3 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
                                                 <button @click="saveEdit" :disabled="isSaving" class="flex-1 max-w-[200px] py-3 bg-emerald-600 text-white rounded-2xl font-black text-[17px] active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- VIEW MODE: Read-only expanded details -->
-                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="border-t border-slate-50 md:mt-2 md:pt-4 md:border-t-slate-100 relative -ml-[40px] -mr-4">
-                                        <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[30px]">
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
-                                                <div class="space-y-1 md:hidden">
-                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">日期</label>
-                                                    <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDisplayDate(getEarliestDate(item)) }}</div>
+                                    <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="md:mt-2 md:pt-4 relative -ml-[40px] -mr-4">
+                                        <!-- Header Actions (Inside Expanded) -->
+                                        <div class="absolute right-2 top-8 z-[50] flex flex-col gap-1 items-center">
+                                            <button @click.stop="toggleExpand(item.id)" 
+                                                    class="p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
+                                                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </button>
+                                            <div class="relative">
+                                                <button @click.stop="openMenuId = openMenuId === item.id ? null : item.id" 
+                                                        class="p-2 active:scale-90 transition-all !text-[#dc1428]">
+                                                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                                        <circle cx="5" cy="12" r="2" />
+                                                        <circle cx="12" cy="12" r="2" />
+                                                        <circle cx="19" cy="12" r="2" />
+                                                    </svg>
+                                                </button>
+                                                <div v-if="openMenuId === item.id" 
+                                                     class="absolute right-0 mt-0 w-24 bg-white opacity-100 border border-slate-200 shadow-xl rounded-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
+                                                    <button @click.stop="toggleExpand(item.id); openMenuId = null" 
+                                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                        收起
+                                                    </button>
+                                                    <button @click.stop="openEdit(item); openMenuId = null" 
+                                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                        修改
+                                                    </button>
+                                                    <button @click.stop="copyAsTextFile(item); openMenuId = null" 
+                                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                        複製
+                                                    </button>
+                                                    <button @click.stop="downloadItemData(item); openMenuId = null" 
+                                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
+                                                        下載
+                                                    </button>
+                                                    <button @click.stop="deleteConfirmId = item.id; openMenuId = null" 
+                                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">
+                                                        刪除
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div class="space-y-1 md:hidden px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                                <div class="app-body font-black text-[20px] text-slate-900 leading-tight">{{ item.name }}</div>
+                                        </div>
+
+                                        <div v-if="focusedId" class="fixed top-0 left-0 right-0 z-[110] bg-white border-b border-slate-100 flex flex-col pt-2 animate-fade-in md:hidden">
+                                            <!-- Row 1: Global Title -->
+                                            <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
+                                                <logo-imperial-notebook :height="30" />
+                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
                                             </div>
-                                            <div v-if="item.purpose && item.purpose !== '-' && item.purpose !== '無'" class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">用意</label>
-                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.purpose }}</div>
+                                            <!-- Row 2: Category Name (if selected) -->
+                                            <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
+                                                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
+                                                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                                                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
+                                                    </span>
+                                                    <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
+                                                          :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
+                                                        — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div v-if="item.effect && item.effect !== '-' && item.effect !== '無'" class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">功效</label>
-                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.effect }}</div>
+                                        </div>
+
+                                        <div class="w-full px-4 mb-4 animate-fade-in pt-4 mt-10 space-y-2 bg-white">
+                                            <!-- Treasure Name Row (Header) -->
+                                            <div class="flex items-center group cursor-pointer" @click.stop="toggleDetails(item.id)">
+                                                <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                    <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
+                                                </div>
+                                                <div class="flex-1 px-3 py-2 flex items-center pr-12">
+                                                    <span class="font-black text-[16px] text-slate-900 leading-tight">{{ item.name || '-' }}</span>
+                                                    <!-- Toggle Icon (Moved left) -->
+                                                    <div class="ml-4 transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(item.id) }">
+                                                        <svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div v-if="item.acquisition_method && item.acquisition_method !== '-' && item.acquisition_method !== '無'" class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法</label>
-                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.acquisition_method }}</div>
-                                            </div>
-                                            <div v-if="item.content && item.content !== '-' && item.content !== '無'" class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容</label>
-                                                <div class="app-body font-normal text-slate-900 leading-relaxed">{{ item.content }}</div>
-                                            </div>
-                                            <div v-if="item.remarks && item.remarks !== '-' && item.remarks !== '無'" class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">備註</label>
-                                                <div @click.stop="openRemarks(item.remarks)" class="app-body font-bold text-slate-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:text-indigo-600 transition-colors">{{ item.remarks }}</div>
+
+                                            <!-- Collapsible Details Section -->
+                                            <div v-if="expandedDetailIds.has(item.id)" class="space-y-1 animate-slide-down border-t border-slate-50 pt-2 pb-2">
+                                                <!-- Date Grid (Adjusted position) -->
+                                                <div class="flex mt-4">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">得知日期</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-normal text-[15.5px] font-outfit text-slate-900">
+                                                            {{ formatDisplayDate(item.record_date) || formatDisplayDate(getEarliestDate(item)) || '-' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Efficacy Grid -->
+                                                <div class="flex">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">功效</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-bold text-[16px] text-[#059669] leading-relaxed">{{ item.effect || '-' }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Purpose Grid -->
+                                                <div class="flex">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">用意</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.purpose || '-' }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Method Grid -->
+                                                <div class="flex">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">作法</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.acquisition_method || '-' }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Content Grid -->
+                                                <div class="flex">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.content || '-' }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Remarks Grid -->
+                                                <div class="flex">
+                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                                        <span class="font-bold text-[14px] text-slate-400">備註</span>
+                                                    </div>
+                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.remarks || '-' }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto border-y border-slate-200 mb-20 bg-white">
-                                                    <table class="w-full border-collapse bg-white text-[16px]">
+                                                <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
+                                                    <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
-                                                            <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
-                                                                <th class="w-[105px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit">
-                                                                    <div class="flex items-center justify-between">
-                                                                        <span>法號</span>
-                                                                        <button @click.stop="openEdit(item); showDharmaSelector = true" class="p-1 bg-indigo-50 text-indigo-600 rounded-full active:scale-95 transition-all">
-                                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg>
-                                                                        </button>
-                                                                    </div>
-                                                                </th>
-                                                                <th class="w-[150px] px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
-                                                                <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
+                                                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                                                <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id || dnr.dharma_name_id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[17px] font-outfit">{{ getDharmaNameText(dnr) }}</td>
-                                                                <td class="p-0 text-black border-r border-slate-50">
-                                                                    <div class="flex items-center px-2 py-1.5 justify-center relative">
-                                                                        <span class="text-[15px] font-black font-outfit !text-[#dc1428]" style="font-family: 'PMingLiU', serif;">
-                                                                            {{ formatDisplayDate(dnr.obtained_date) || '-' }}
-                                                                        </span>
-                                                                    </div>
+                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id || dnr.dharma_name_id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                                <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
+                                                                    {{ getDharmaNameText(dnr) }}
                                                                 </td>
-                                                                <td class="p-0 text-black">
-                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full py-1.5 px-2 flex items-center justify-center transition-colors">
-                                                                        <span v-if="dnr.remarks?.length" class="text-[18px] text-amber-500 animate-pulse">●</span>
-                                                                        <span v-else class="text-[15px] text-slate-200">-</span>
+                                                                <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
+                                                                    <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
+                                                                        {{ formatDisplayDate(dnr.obtained_date) || '--' }}
+                                                                    </span>
+                                                                </td>
+                                                                <td class="px-[10px] py-2.5 text-center">
+                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                            {{ (dnr.remarks && dnr.remarks.length > 0) ? dnr.remarks : '--' }}
+                                                                        </span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -471,46 +564,30 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto border-y border-slate-200 mb-20 bg-white">
-                                                    <table class="w-full border-collapse bg-white text-[16px]">
+                                                <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
+                                                    <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
-                                                             <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
-                                                                  <th class="w-[125px] px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit pl-[10px]">
-                                                                      <div class="flex items-center justify-between">
-                                                                          <span>法號</span>
-                                                                          <button @click.stop="openEdit(item); showDharmaSelector = true" class="p-1 bg-indigo-50 text-indigo-600 rounded-full active:scale-95 transition-all">
-                                                                              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg>
-                                                                          </button>
-                                                                      </div>
-                                                                  </th>
-                                                                  <th class="px-2 py-1.5 text-center font-black whitespace-nowrap border-r border-slate-100 text-[15px] font-outfit pl-[20px]">日期</th>
-                                                                  <th class="px-2 py-1.5 text-left font-black whitespace-nowrap border-r border-slate-200 text-[15px] font-outfit">親友</th>
-                                                                  <th class="px-2 py-1.5 text-center font-black text-[15px] font-outfit">備註</th>
-                                                              </tr>
-                                                          </thead>
+                                                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                                                <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                            </tr>
+                                                        </thead>
                                                         <tbody>
-                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" :data-registry-person="item.id" class="hover:bg-slate-50 transition-colors border-b border-slate-200 last:border-0">
-                                                                <td @click="openRemarks(dnr)" class="px-2 py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-200 text-[17px] font-outfit cursor-pointer active:bg-slate-100 transition-colors border-r border-slate-50 pl-[10px]">{{ getDharmaNameText(dnr) }}</td>
-                                                                <td class="p-0 text-black border-r border-slate-200">
-                                                                    <div class="flex items-center px-2 py-1.5 justify-center relative">
-                                                                        <span class="text-[15px] font-bold font-outfit whitespace-nowrap" style="font-family: 'PMingLiU', serif; color: #1e293b !important;">{{ formatDisplayDate(dnr.obtained_date) || '-' }}</span>
-                                                                    </div>
+                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                                <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
+                                                                    {{ getDharmaNameText(dnr) }}
                                                                 </td>
-                                                                <td class="p-0 text-black border-r border-slate-200">
-                                                                    <div class="w-full py-1.5 px-2 flex items-center">
-                                                                        <span class="text-[14px] text-slate-600 font-bold font-outfit">
-                                                                            {{ translateRelList(dnr.related_personnel) }}
+                                                                <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
+                                                                    <span class="text-[14px] font-normal font-outfit text-slate-600" style="font-family: 'PMingLiU', serif;">
+                                                                        {{ formatDisplayDate(dnr.obtained_date) || '--' }}
+                                                                    </span>
+                                                                </td>
+                                                                <td class="px-[10px] py-2.5 text-center">
+                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                            {{ (dnr.related_personnel && dnr.related_personnel.length ? translateRelList(dnr.related_personnel) + '：' : '') + ((dnr.remarks && dnr.remarks.length > 0) ? dnr.remarks : '--') }}
                                                                         </span>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="p-0 text-black">
-                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" 
-                                                                        class="w-full py-1.5 px-2 flex items-center justify-center cursor-pointer active:scale-95 transition-all">
-                                                                        <span v-if="dnr.remarks && (Array.isArray(dnr.remarks) ? dnr.remarks.length > 0 : true)" 
-                                                                             :class="(Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md text-[13px] font-black font-outfit' : 'text-[18px] text-amber-500 animate-pulse font-outfit'">
-                                                                             {{ (Array.isArray(dnr.remarks) ? dnr.remarks.length > 1 : dnr.remarks.includes('；')) ? '多重' : '●' }}
-                                                                         </span>
-                                                                        <span v-else class="text-[14px] text-slate-300 font-outfit">-</span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -520,11 +597,10 @@
                                             </template>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                 </div>
-            </div>
-        </div>
 
         <registry-add-form 
             v-if="addMode"
@@ -532,6 +608,7 @@
             :mode="addMode" 
             :initialData="form"
             :masters="masters"
+            :category="currentCategory"
             :isSaving="isSaving"
             @saveSingle="saveSingle"
             @saveBatch="triggerBatchSave"
@@ -624,6 +701,7 @@
 
         <!-- Add Action Menu (uses z-[2000], above navbar) -->
         <add-action-menu
+            v-if="!focusedId"
             :show="showAddMenu"
             @close="showAddMenu = false"
             :actions="addActions"
@@ -656,6 +734,7 @@ import CompactDatePicker from './CompactDatePicker.vue';
 import LuckyDraw from './LuckyDraw.vue';
 import RemarksViewer from './RemarksViewer.vue';
 import PaginationButtons from './PaginationButtons.vue';
+import EditableInputChips from './EditableInputChips.vue';
 import { writeClipboard, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const isDesktop = ref(window.innerWidth >= 768);
@@ -784,9 +863,10 @@ const loading = ref(false);
 const persistentToast = ref(null);
 const isSaving = ref(false);
 const dharmaPickerItemId = ref(null);
-const sortDesc = ref(true);
+const sortDesc = ref(false);
 const openMenuId = ref(null);
 const expandedIds = ref(new Set());
+const expandedDetailIds = ref(new Set());
 const focusedId = ref(null);
 const scrollContainer = ref(null);
 const showAddMenu = ref(false);
@@ -893,6 +973,19 @@ const folders = computed(() => {
     }));
 });
 
+const folderNameOptions = computed(() => folders.value.map(f => f.name));
+
+const handleFolderNameChange = (newName) => {
+    if (!newName) {
+        currentFolder.value = null;
+        return;
+    }
+    const found = folders.value.find(f => f.name === newName);
+    if (found && found.id !== currentFolder.value?.id) {
+        currentFolder.value = found;
+    }
+};
+
 const loadData = async (page = 1) => {
     loading.value = true;
     // Clear existing treasures to prevent showing stale data from other folders
@@ -965,13 +1058,24 @@ const dynamicHeaderTitle = computed(() => {
 });
 
 const getDharmaNameText = (dnr) => {
+    // Priority 1: Use pre-resolved ID from DB
     if (dnr.dharma_name_id) {
         const dn = dharmaNames.value.find(d => d.id === dnr.dharma_name_id);
         if (dn) return dn.name;
     }
-    // Fallback for custom_name or special cases
-    if (dnr.custom_name === '道霞龍妃') return '道霞龍妃';
-    return dnr.custom_name || '-';
+    
+    const rawName = (dnr.custom_name || '').trim();
+    if (!rawName) return '--';
+    
+    // Exception: Explicitly allowed or non-dharma names
+    if (['道霞龍妃', '金巧'].includes(rawName)) return rawName;
+    
+    // Priority 2: Resolve alias/old name to official name
+    const match = dharmaNames.value.find(d => 
+        d.name === rawName || (d.alias && d.alias.includes(rawName))
+    );
+    
+    return match ? match.name : rawName;
 };
 
 const getPeopleSummary = (item) => {
@@ -1111,11 +1215,31 @@ const openAdd = (mode = 'single') => {
 
 const openEdit = (item) => {
     expandedIds.value = new Set([item.id]);
+    focusedId.value = item.id; // Also focus it
     editItemId.value = item.id;
     const cloned = JSON.parse(JSON.stringify(item));
+    
+    // Split multi-name rows into individual rows for editing (Visual Parity with View Mode)
     if (cloned.dharma_name_registries) {
+        const splitList = [];
+        cloned.dharma_name_registries.forEach(r => {
+            const nameText = r.custom_name || '';
+            const recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
+            const isRel = recognizedRels.some(rel => nameText.endsWith(rel));
+            
+            if (!isRel && (nameText.includes(',') || nameText.includes('，') || nameText.includes('、'))) {
+                const names = nameText.split(/[，、, \t]+/).map(n => n.trim()).filter(n => n);
+                names.forEach(name => {
+                    splitList.push({ ...r, custom_name: name, id: null });
+                });
+            } else {
+                splitList.push(r);
+            }
+        });
+        cloned.dharma_name_registries = splitList;
         sortRegistries(cloned.dharma_name_registries);
     }
+    
     editData.value = cloned;
     showDharmaSelector.value = false;
 };
@@ -1226,6 +1350,14 @@ const sortRegistries = (arr) => {
     });
 };
 
+const getNamesList = (item) => {
+    if (!item.dharma_name_registries) return '-';
+    // Use the same sort logic as the list view
+    const sorted = sortRegistries([...item.dharma_name_registries]);
+    return sorted.map(r => getDharmaNameText(r)).join(', ');
+};
+
+
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
     const idx = registries.findIndex(r => {
@@ -1265,6 +1397,23 @@ const removeDharmaSelection = (idx) => {
     editData.value.dharma_name_registries.splice(idx, 1);
 };
 
+const deleteDharmaNameRegistry = async (dnr, item) => {
+    if (!dnr.id) return;
+    if (!window.confirm(`確定刪除「${getDharmaNameText(dnr)}」的法號紀錄？`)) return;
+    try {
+        await axios.delete(`/dharma-name-registries/${dnr.id}`);
+        if (item.dharma_name_registries) {
+            const idx = item.dharma_name_registries.findIndex(r => r.id === dnr.id);
+            if (idx !== -1) item.dharma_name_registries.splice(idx, 1);
+        }
+        persistentToast.value = { msg: '✓ 已刪除', type: 'success' };
+        setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
+    } catch (e) {
+        const errorMsg = e.response?.data?.error || e.response?.data?.message || '刪除失敗';
+        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+    }
+};
+
 const getMasterName = (id) => {
     const m = masters.value.find(m => String(m.id) === String(id));
     if (m) {
@@ -1277,6 +1426,7 @@ const toggleExpand = (id) => {
     const nextExpanded = new Set(expandedIds.value);
     if (nextExpanded.has(id)) {
         nextExpanded.delete(id);
+        expandedDetailIds.value.delete(id); // Clear detail state on close
         focusedId.value = null;
     } else {
         nextExpanded.clear();
@@ -1284,6 +1434,14 @@ const toggleExpand = (id) => {
         focusedId.value = id;
     }
     expandedIds.value = nextExpanded;
+};
+
+const toggleDetails = (id) => {
+    if (expandedDetailIds.value.has(id)) {
+        expandedDetailIds.value.delete(id);
+    } else {
+        expandedDetailIds.value.add(id);
+    }
 };
 
 const handleBack = () => {
@@ -1386,6 +1544,42 @@ const saveSingle = async (data, shuntAction = null) => {
 const triggerBatchSave = async (batchData) => {
     isSaving.value = true;
     try {
+        // Use pre-parsed rows from the form if available (avoids incompatible re-parsing)
+        if (batchData.rows && batchData.rows.length > 0) {
+            const records = batchData.rows.map(row => ({
+                name: row.name,
+                master_id: row.master_id || batchData.masterId,
+                category: currentCategory.value || 'major',
+                record_date: row.record_date || '',
+                obtained_date: row.record_date || '',
+                acquisition_method: row.acquisition_method || '',
+                purpose: row.purpose || '',
+                effect: row.effect || '',
+                content: row.content || '',
+                remarks: row.remarks || '',
+                dharma_name_registries: [{
+                    custom_name: row.recipient_name,
+                    remarks: row.person_remarks || '',
+                    obtained_date: row.record_date || ''
+                }].filter(d => d.custom_name)
+            }));
+            if (records.length === 0) {
+                persistentToast.value = { msg: '✖ 無法解析出任何法寶資料', type: 'error' };
+                isSaving.value = false;
+                return;
+            }
+            const res = await axios.post('/registries/batch', records);
+            const savedCount = res.data?.count ?? records.length;
+            addMode.value = null;
+            expandedIds.value.clear();
+            focusedId.value = null;
+            loadData();
+            persistentToast.value = { msg: `✓ 批量新增成功 (${savedCount} 筆)`, type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
+            isSaving.value = false;
+            return;
+        }
+
         const text = batchData.input || '';
         const blocks = text.split(/\n\s*\n|\r\n\s*\r\n/).filter(b => b.trim());
         const masterNames = masters.value.map(m => m.name);
@@ -1404,6 +1598,11 @@ const triggerBatchSave = async (batchData) => {
 
         let rawRecords = [];
         let blockMasterId = batchData.masterId || (currentFolder.value?.id);
+        if (!blockMasterId) {
+            isSaving.value = false;
+            persistentToast.value = { msg: '✖ 請先選擇仙師再進行批量新增', type: 'error' };
+            return;
+        }
         let blockDate = batchData.date || '';
         let currentContextYear = new Date().getFullYear();
 
@@ -1695,85 +1894,52 @@ const triggerBatchSave = async (batchData) => {
                         return { custom_name: translated, remarks: finalRemarks, obtained_date: lineObtainedDate || lineDate || blockDate };
                     }).filter(n => n !== null);
 
-                    const newRec = {
-                        name: treasureName, 
-                        master_id: blockMasterId,
-                        category: batchData.category || currentCategory.value || 'major',
-                        record_date: lineDate || blockDate, 
-                        obtained_date: lineObtainedDate,
-                        acquisition_method: batchData.defaults?.acquisition_method || '',
-                        purpose: batchData.defaults?.purpose || '',
-                        remarks: batchData.defaults?.remarks || '',
-                        dharma_name_registries: dnr
-                    };
+                    const recipientsList = dnr.filter(n => n !== null);
+                    recipientsList.forEach(onePersonDnr => {
+                        const newRec = {
+                            name: treasureName, 
+                            master_id: blockMasterId,
+                            category: batchData.category || currentCategory.value || 'major',
+                            record_date: lineDate || blockDate, 
+                            obtained_date: lineObtainedDate,
+                            acquisition_method: batchData.defaults?.acquisition_method || '',
+                            purpose: batchData.defaults?.purpose || '',
+                            remarks: batchData.defaults?.remarks || '',
+                            dharma_name_registries: [onePersonDnr]
+                        };
 
-                    // Apply pending attributes
-                    if (pendingAttrs.purpose) newRec.purpose = pendingAttrs.purpose;
-                    if (pendingAttrs.remarks) newRec.remarks = pendingAttrs.remarks;
-                    if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
-                    if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
-                    if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
+                        // Apply pending attributes
+                        if (pendingAttrs.purpose) newRec.purpose = pendingAttrs.purpose;
+                        if (pendingAttrs.remarks) newRec.remarks = pendingAttrs.remarks;
+                        if (pendingAttrs.record_date) newRec.record_date = pendingAttrs.record_date;
+                        if (pendingAttrs.obtained_date) newRec.obtained_date = pendingAttrs.obtained_date;
+                        if (pendingAttrs.acquisition_method) newRec.acquisition_method = pendingAttrs.acquisition_method;
+
+                        rawRecords.push(newRec);
+                        activeRecord = newRec; // Set context to the last one for subsequent attributes
+                    });
 
                     // Reset pending
                     pendingAttrs = { purpose: '', remarks: '', status: '', record_date: null, obtained_date: null, acquisition_method: '' };
-
-                    rawRecords.push(newRec);
-                    activeRecord = newRec; // Set context
                 }
             }
         });
 
-        // --- MERGE STAGE ---
-        const mergedMap = new Map();
-        rawRecords.forEach(rec => {
-            const cleanName = rec.name.trim();
-            const key = `${cleanName}-${rec.master_id}`;
-            if (mergedMap.has(key)) {
-                const existing = mergedMap.get(key);
-                if (new Date(rec.record_date) > new Date(existing.record_date)) existing.record_date = rec.record_date;
-                if (rec.obtained_date) existing.obtained_date = rec.obtained_date;
-
-                if (rec.acquisition_method && !existing.acquisition_method.includes(rec.acquisition_method)) {
-                    existing.acquisition_method = existing.acquisition_method ? (existing.acquisition_method + '；' + rec.acquisition_method) : rec.acquisition_method;
-                }
-                if (rec.purpose && !existing.purpose.includes(rec.purpose)) {
-                    existing.purpose = existing.purpose ? (existing.purpose + '；' + rec.purpose) : rec.purpose;
-                }
-                if (rec.remarks && !existing.remarks.includes(rec.remarks)) {
-                    existing.remarks = existing.remarks ? (existing.remarks + '\n' + rec.remarks) : rec.remarks;
-                }
-
-                rec.dharma_name_registries.forEach(nr => {
-                    const existingDnr = existing.dharma_name_registries.find(er => (er.custom_name === nr.custom_name && er.obtained_date === nr.obtained_date));
-                    if (existingDnr) {
-                        const currentRemarks = Array.isArray(existingDnr.remarks) ? existingDnr.remarks : (existingDnr.remarks ? [existingDnr.remarks] : []);
-                        if (nr.remarks) {
-                            const newRemarks = Array.isArray(nr.remarks) ? nr.remarks : [nr.remarks];
-                            newRemarks.forEach(r => { if (!currentRemarks.includes(r)) currentRemarks.push(r); });
-                            existingDnr.remarks = currentRemarks;
-                        }
-                    } else {
-                        existing.dharma_name_registries.push(nr);
-                    }
-                });
-            } else {
-                mergedMap.set(key, rec);
-            }
-        });
-
-        const records = Array.from(mergedMap.values());
+        // --- MERGE STAGE (Simplified: No grouping by treasure name to keep people separate) ---
+        const records = rawRecords; 
         if (records.length === 0) {
             persistentToast.value = { msg: '✖ 無法解析出任何法寶資料', type: 'error' };
             isSaving.value = false;
             return;
         }
 
-        await axios.post('/registries/batch', records);
+        const res = await axios.post('/registries/batch', records);
+        const savedCount = res.data?.count ?? records.length;
         addMode.value = null;
         expandedIds.value.clear();
         focusedId.value = null;
         loadData();
-        persistentToast.value = { msg: `✓ 批量新增成功 (${records.length} 筆)`, type: 'success' };
+        persistentToast.value = { msg: `✓ 批量新增成功 (${savedCount} 筆)`, type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
     } catch (e) {
         console.error(e);

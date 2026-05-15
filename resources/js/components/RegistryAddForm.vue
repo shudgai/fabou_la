@@ -7,16 +7,27 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
 
-            <!-- Header -->
-            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative">
-                <div class="flex-1 flex flex-col justify-center min-w-0">
-                    <div class="text-[22px] font-black leading-none font-outfit uppercase tracking-wider text-red-600 flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        {{ isEditing ? '修改' : (localMode === 'batch' ? '多筆載錄' : '逐筆載錄') }}
+            <!-- Header: Standardized Branding (Logo + Main Title + Sub Title) -->
+            <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
+                <!-- Row 1: Global Title -->
+                <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
+                    <logo-imperial-notebook :height="30" />
+                    <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                </div>
+                <!-- Row 2: Subtitle (Category + Form Mode) -->
+                <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
+                    <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
+                        <span v-if="categoryText" class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                            {{ categoryText }}
+                        </span>
+                        <span class="font-outfit font-normal text-slate-900 whitespace-nowrap" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
+                            - {{ modeTitleText }}
+                        </span>
                     </div>
                 </div>
-                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <!-- Close Button -->
+                <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-2 z-[50]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
@@ -133,7 +144,7 @@
                             <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">作法</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法 (選填)</label>
+                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
                             <textarea v-model="form.acquisition_method" rows="5" placeholder="輸入作法..."
                                 class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                         </div>
@@ -159,8 +170,10 @@
 
                         <div class="relative group mb-8">
                             <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
-                            <input v-model="form.remarks" type="text" placeholder="輸入備註..."
-                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                            <div @click="openRemarksModal"
+                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
+                                <span :class="form.remarks ? 'text-slate-900' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-between">
@@ -174,17 +187,23 @@
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 p-1">✕</button>
                             </div>
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
-                                <div class="space-y-1">
+                                <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號"
-                                        @keydown.enter.prevent="handlePersonnelEnter(idx)"
-                                        @input="e => handlePersonnelNameInput(idx, e)"
-                                        class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
-                                    <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
+                                    <!-- Desktop View -->
+                                    <div class="hidden md:block relative">
+                                        <input v-model="p.custom_name" type="text" placeholder="法號"
+                                            @keydown.enter.prevent="handlePersonnelEnter(idx)"
+                                            @input="e => handlePersonnelNameInput(idx, e)"
+                                            class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                        <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
+                                    </div>
+                                    <!-- Mobile View -->
+                                    <editable-input-chips class="md:hidden" v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <div class="relative flex items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
+                                    <!-- Desktop View -->
+                                    <div class="hidden md:flex relative items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
                                         <input v-model="p.relationship" type="text" placeholder="例如：母親"
                                             @focus="activeRelationshipDropdownIdx = idx"
                                             class="w-full bg-transparent border-none px-3 text-[15px] font-normal text-slate-900 focus:ring-0 outline-none">
@@ -196,6 +215,8 @@
                                                 class="px-4 h-[36px] flex items-center md:rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
                                         </div>
                                     </div>
+                                    <!-- Mobile View -->
+                                    <editable-input-chips class="md:hidden" v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
@@ -253,7 +274,7 @@
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法 (選填)</label>
+                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
                         <textarea v-model="form.acquisition_method" rows="3" placeholder="輸入作法..."
                             class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
@@ -269,8 +290,10 @@
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
-                        <input v-model="form.remarks" type="text" placeholder="輸入備註..."
-                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                        <div @click="openRemarksModal"
+                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
+                            <span :class="form.remarks ? 'text-slate-900' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
+                        </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
@@ -284,17 +307,23 @@
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 p-1">✕</button>
                             </div>
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
-                                <div class="space-y-1">
+                                <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號"
-                                        @keydown.enter.prevent="handlePersonnelEnter(idx)"
-                                        @input="e => handlePersonnelNameInput(idx, e)"
-                                        class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
-                                    <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
+                                    <!-- Desktop View -->
+                                    <div class="hidden md:block relative">
+                                        <input v-model="p.custom_name" type="text" placeholder="法號"
+                                            @keydown.enter.prevent="handlePersonnelEnter(idx)"
+                                            @input="e => handlePersonnelNameInput(idx, e)"
+                                            class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                        <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
+                                    </div>
+                                    <!-- Mobile View -->
+                                    <editable-input-chips class="md:hidden" v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <div class="relative flex items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
+                                    <!-- Desktop View -->
+                                    <div class="hidden md:flex relative items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
                                         <input v-model="p.relationship" type="text" placeholder="例如：母親"
                                             @focus="activeRelationshipDropdownIdx = idx"
                                             class="w-full bg-transparent border-none px-3 text-[15px] font-normal text-slate-900 focus:ring-0 outline-none">
@@ -306,6 +335,8 @@
                                                 class="px-4 h-[36px] flex items-center md:rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
                                         </div>
                                     </div>
+                                    <!-- Mobile View -->
+                                    <editable-input-chips class="md:hidden" v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
@@ -332,8 +363,18 @@
                     </div>
                 </div>
 
-                <!-- BATCH MODE (unchanged) -->
+                <!-- BATCH MODE -->
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
+                    <!-- Master Selector -->
+                    <div class="px-1">
+                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                        <button @click="showMasterDropdown = true"
+                            class="w-full py-3 border-0 border-b-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
+                            :class="form.master_id ? 'border-blue-500 text-blue-700' : 'border-slate-100 text-slate-400'">
+                            <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
+                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
                         <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-red-400 rounded-lg text-[13px] font-bold active:scale-95 flex items-center space-x-1 border border-red-100">
@@ -341,7 +382,12 @@
                             <span>清空</span>
                         </button>
                     </div>
-                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="支援直接貼上或輸入內容... 第一行若是日期將自動作為登記日期！"></textarea>
+                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="多筆載錄格式：
+日期(Tab)允求:法寶名稱(Tab)法號,法號
+
+例如：
+113.10.6	允求:無形現惡鏡	閻帝
+113.10.7	求得:森羅戒	金了,元續"></textarea>
                     <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
                         <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                             <div class="flex flex-col">
@@ -362,15 +408,15 @@
             </div>
 
             <!-- Footer Action -->
-            <div class="shrink-0 px-6 pt-4 pb-1 bg-white border-t border-slate-50 flex gap-3 justify-center">
+            <div class="shrink-0 px-[15px] pt-4 pb-1 bg-white border-t border-slate-50 flex gap-2 justify-center">
                 <!-- Edit Mode -->
                 <template v-if="isEditing">
-                    <button @click="$emit('cancel')" class="w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
+                    <button @click="$emit('cancel')" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
                     <button @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
                 </template>
                 <!-- Single Mode Wizard Navigation -->
                 <template v-else-if="localMode === 'single'">
-                    <button v-if="currentStep > 1" @click="handleBack" class="w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
+                    <button v-if="currentStep > 1" @click="handleBack" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
                     <button v-if="currentStep < totalSteps" @click="handleNext" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
                     <button v-else @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認載錄' }}</button>
                 </template>
@@ -420,11 +466,32 @@
                 </div>
             </div>
         </teleport>
+
+        <!-- Remarks Edit Modal -->
+        <teleport to="body">
+            <div v-if="showRemarksModal" class="fixed inset-0 z-[5500] flex items-end justify-center">
+                <div class="fixed inset-0 bg-slate-900/80" @click="showRemarksModal = false"></div>
+                <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
+                    <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
+                        <span class="text-[20px] font-black text-slate-900">編輯備註</span>
+                        <button @click="showRemarksModal = false" class="p-2 text-slate-300 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-4 pb-10">
+                        <textarea v-model="remarksBuffer" rows="8" placeholder="輸入備註..."
+                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                    </div>
+                    <div class="px-6 py-4 border-t border-slate-100 flex gap-3">
+                        <button @click="showRemarksModal = false" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
+                        <button @click="confirmRemarks" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all">確認</button>
+                    </div>
+                </div>
+            </div>
+        </teleport>
     </teleport>
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 import CompactDatalist from './CompactDatalist.vue';
@@ -433,6 +500,7 @@ const props = defineProps({
     mode: String,
     initialData: Object,
     masters: Array,
+    category: String,
     isSaving: Boolean
 });
 
@@ -446,6 +514,18 @@ const totalSteps = 8;
 const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '法寶內容', '備註'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 const isEditing = computed(() => !!props.initialData?.id);
+
+const categoryText = computed(() => {
+    if (props.category === 'major') return '特殊法寶登記簿';
+    if (props.category === 'minor') return '其他皇恩登記簿';
+    return '';
+});
+
+const modeTitleText = computed(() => {
+    if (isEditing.value) return '修改紀錄';
+    if (localMode.value === 'batch') return '多筆貼上新增';
+    return '逐筆新增紀錄';
+});
 
 function handleNext() {
     // 根據用戶要求：只有法寶名稱是必填 (Step 3)
@@ -466,6 +546,18 @@ const activePicker = ref(null); // { idx: number | 'main', field: string, title:
 const activeRelationshipDropdownIdx = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const fileInput = ref(null);
+const showRemarksModal = ref(false);
+const remarksBuffer = ref('');
+
+const openRemarksModal = () => {
+    remarksBuffer.value = form.value.remarks || '';
+    showRemarksModal.value = true;
+};
+
+const confirmRemarks = () => {
+    form.value.remarks = remarksBuffer.value;
+    showRemarksModal.value = false;
+};
 
 const treasureNames = computed(() => {
     // 優先依換行切分，其次依兩個以上的空格或 Tab 切分，保留單個標點符號（如括號、逗號）作為名稱的一部分
@@ -475,197 +567,214 @@ const treasureNames = computed(() => {
 const cleanedTreasureNames = computed(() => treasureNames.value);
 
 const batchParsedRows = computed(() => {
-    if (!batchInput.value.trim()) return [];
+        const results = [];
+        const lines = batchInput.value.split('\n');
+        
+        let currentContextYear = new Date().getFullYear();
+        let currentDateInText = '';
+        let currentMasterId = form.value.master_id;
 
-    const lines = batchInput.value.split('\n');
-    const results = [];
-    let currentMasterId = form.value.master_id;
-    let currentDateInText = null; // Changed from currentDate = form.value.record_date to null
-    let currentContextYear = new Date().getFullYear();
+        // Pending treasure-level attributes
+        let pendingTreasure = {
+            name: '',
+            purpose: '',
+            effect: '',
+            acquisition_method: '',
+            content: '',
+            remarks: ''
+        };
 
-    const parseDateText = (str, ctxYear = null) => {
-        if (!str) return null;
-        // Handle explicitly ROC prefixes like "民國113年" or "113年"
-        const rocYearMatch = str.match(/^(?:民國)?\s*(\d{2,3})\s*年?$/);
-        if (rocYearMatch) {
-            const y = parseInt(rocYearMatch[1]) + 1911;
-            return `${y}-01-01`;
-        }
+        const parseDateText = (text, defaultYear) => {
+            if (!text) return null;
+            const dMatch = text.match(/(\d{1,4})[./\-](\d{1,2})[./\-](\d{1,2})/);
+            if (dMatch) {
+                let y = parseInt(dMatch[1]);
+                if (y < 1000) y += 1911;
+                return `${y}-${dMatch[2].padStart(2, '0')}-${dMatch[3].padStart(2, '0')}`;
+            }
+            const shortMatch = text.match(/(\d{1,2})[./\-](\d{1,2})/);
+            if (shortMatch) {
+                return `${defaultYear}-${shortMatch[1].padStart(2, '0')}-${shortMatch[2].padStart(2, '0')}`;
+            }
+            const standaloneYMatch = text.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
+            if (standaloneYMatch) {
+                let y = parseInt(standaloneYMatch[1]);
+                if (y < 1000) y += 1911;
+                return `${y}-01-01`;
+            }
+            return null;
+        };
 
-        // Priority 1: 4-digit CE
-        const ceMatch = str.match(/\b(\d{4})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
-        if (ceMatch) return `${ceMatch[1]}-${ceMatch[2].padStart(2,'0')}-${ceMatch[3].padStart(2,'0')}`;
-        // Priority 2: 2-3 digit ROC
-        const rocMatch = str.match(/\b(\d{2,3})[/\-\s](\d{1,2})[/\-\s](\d{1,2})\b/);
-        if (rocMatch) {
-            const y = parseInt(rocMatch[1]) + 1911;
-            return `${y}-${rocMatch[2].padStart(2,'0')}-${rocMatch[3].padStart(2,'0')}`;
-        }
-        // Priority 3: Month/Day only (Uses contextYear or Current Year)
-        const mdMatch = str.match(/\b(\d{1,2})[/\-\s](\d{1,2})\b/);
-        if (mdMatch) {
-            const y = ctxYear || new Date().getFullYear();
-            return `${y}-${mdMatch[1].padStart(2,'0')}-${mdMatch[2].padStart(2,'0')}`;
-        }
-        // Fallback for year only
-        const standaloneYMatch = str.match(/^\s*(\d{2,4})\s*[年]?\s*$/);
-        if (standaloneYMatch) {
-            let y = parseInt(standaloneYMatch[1]);
-            if (y < 1000) y += 1911;
-            return `${y}-01-01`;
-        }
-        return null;
-    };
+        const attrKeywords = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '備註', '得知日期', '登記日期', '求得日期', '日期', '法寶名稱'];
+        const prefixesToStrip = /^(允求|賜降|得知|賜予|賜|求得|法寶名稱)\s*[：:]\s*/;
 
-    lines.forEach(line => {
-        let normLine = line.normalize('NFKC').trim();
-        if (!normLine) return;
+        lines.forEach(line => {
+            let normLine = line.normalize('NFKC').trim();
+            if (!normLine) return;
 
-        // Inline Year Prefix
-        const inlineYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?\s+/);
-        if (inlineYearMatch) {
-            let y = parseInt(inlineYearMatch[1]);
-            if (y < 1000) y += 1911;
-            currentContextYear = y;
-            normLine = normLine.replace(inlineYearMatch[0], '').trim();
-        }
+            // 1. Detect Standalone Year Line
+            const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
+            if (standaloneYearMatch) {
+                let y = parseInt(standaloneYearMatch[1]);
+                if (y < 1000) y += 1911;
+                currentContextYear = y;
+                return;
+            }
 
-        // Detect Standalone Year Line
-        const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
-        if (standaloneYearMatch) {
-            let y = parseInt(standaloneYearMatch[1]);
-            if (y < 1000) y += 1911;
-            currentContextYear = y;
-            return;
-        }
+            // 2. Detect Master Header
+            const masterMatch = props.masters?.find(m => (normLine === m.name || normLine === (m.name === '父皇仙師' ? '父皇' : m.name)) && normLine.length < 15);
+            if (masterMatch) {
+                currentMasterId = masterMatch.id;
+                return;
+            }
 
-        // 1. Detect Standalone Date Header
-        const dateHeader = parseDateText(normLine, currentContextYear);
-        const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
-        if (dateHeader && isPureDateStr) {
-            currentDateInText = dateHeader;
-            return;
-        }
+            // 3. Detect Standalone Date Header
+            const dateHeader = parseDateText(normLine, currentContextYear);
+            const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
+            if (dateHeader && (isPureDateStr || normLine.startsWith('日期'))) {
+                currentDateInText = dateHeader;
+                if (normLine.startsWith('日期')) {
+                    const val = normLine.replace(/^日期[：:\s]*/, '').trim();
+                    const d = parseDateText(val, currentContextYear);
+                    if (d) currentDateInText = d;
+                }
+                return;
+            }
 
-        // 2. Detect Master Header
-        const masterMatch = props.masters?.find(m => normLine.includes(m.name) && normLine.length < 15);
-        if (masterMatch) {
-            currentMasterId = masterMatch.id;
-            return;
-        }
+            // 4. Detect Attribute Keywords
+            const keywordMatch = normLine.match(/^([^：:\s]+)[：:\s]+(.*)/);
+            if (keywordMatch) {
+                const key = keywordMatch[1].trim();
+                const val = keywordMatch[2].trim();
 
-        // 3. Detect Attribute Keywords
-        const attrKeywords = ['用意', '功效', '狀態', '備註', '求寶方式', '求寶', '由來', '得知日期', '登記日期', '求得日期', '日期'];
-        const firstWord = normLine.split(/[\s：:]/)[0];
+                if (attrKeywords.includes(key)) {
+                    if (key === '用意') pendingTreasure.purpose = val;
+                    else if (key === '功效') pendingTreasure.effect = val;
+                    else if (key === '作法' || key === '求寶方式' || key === '求寶') pendingTreasure.acquisition_method = val;
+                    else if (key === '法寶內容') pendingTreasure.content = val;
+                    else if (key === '備註') pendingTreasure.remarks = val;
+                    else if (key === '法寶名稱') pendingTreasure.name = val.replace(prefixesToStrip, '');
+                    else if (['得知日期', '登記日期', '求得日期', '日期'].includes(key)) {
+                        const d = parseDateText(val, currentContextYear) || val;
+                        currentDateInText = d;
+                    }
+                    return;
+                }
 
-        if (attrKeywords.includes(firstWord) && results.length > 0) {
-            const val = normLine.replace(new RegExp(`^${firstWord}[\\s：:]*`), '').trim();
-            
-            // Try to find if this attribute (especially '備註') belongs to a specific person in the last group
-            let targetRows = [results[results.length - 1]];
-            
-            // Check for "Name: " prefix in the value
-            const namePrefixMatch = val.match(/^([^：:]+)[：:](.*)/);
-            if (namePrefixMatch) {
-                const potentialName = namePrefixMatch[1].trim();
-                const content = namePrefixMatch[2].trim();
-                // Look back through the most recent block of results (with same treasure name)
-                const lastTreasureName = results[results.length - 1].name;
-                const match = results.slice().reverse().find(r => r.name === lastTreasureName && r.recipient_name === potentialName);
-                if (match) {
-                    if (firstWord === '用意') match.purpose = content;
-                    else if (firstWord === '功效') match.effect = content;
-                    else match.person_remarks = (match.person_remarks ? match.person_remarks + '；' : '') + content;
+                // Handle prefix keywords: 允求/賜降/求得 etc on same line as recipients
+                const prefixKeywords = ['允求', '賜降', '求得', '賜予', '賜', '得知'];
+                if (prefixKeywords.includes(key)) {
+                    const recMatch = val.match(/^(\S+)\s+(.+)/);
+                    if (recMatch) {
+                        pendingTreasure.name = recMatch[1].trim();
+                        const recNames = recMatch[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                        recNames.forEach(n => {
+                            results.push({
+                                name: pendingTreasure.name,
+                                recipient_name: resolveNewDharmaName(n),
+                                person_remarks: '',
+                                master_id: currentMasterId,
+                                date: currentDateInText,
+                                purpose: pendingTreasure.purpose,
+                                effect: pendingTreasure.effect,
+                                acquisition_method: pendingTreasure.acquisition_method,
+                                content: pendingTreasure.content,
+                                remarks: pendingTreasure.remarks,
+                                obtained_date: currentDateInText || form.value.record_date || '',
+                                status: '已登記'
+                            });
+                        });
+                    } else {
+                        pendingTreasure.name = val.replace(prefixesToStrip, '');
+                    }
                     return;
                 }
             }
 
-            // Default: apply to last row
-            const prev = results[results.length - 1];
-            if (firstWord === '用意') prev.purpose = val;
-            else if (firstWord === '功效') prev.effect = val;
-            else if (firstWord === '狀態') {
-                prev.status = val;
-                if (val.includes('已登記')) prev.obtained_date = prev.date || currentDate;
-            }
-            else if (['得知日期', '登記日期', '求得日期', '日期'].includes(firstWord)) {
-                const d = parseDateText(val, currentContextYear) || val;
-                if (firstWord === '得知日期') {
-                    prev.date = d;
-                    currentDateInText = d;
-                } else {
-                    prev.obtained_date = d;
-                    prev.status = '已登記';
-                    currentDateInText = d;
+            // 5. Handle tab-separated lines: 日期\t前綴:法寶名稱\t法號
+            if (normLine.includes('\t')) {
+                const parts = normLine.split('\t').map(p => p.trim()).filter(p => p);
+                if (parts.length >= 2) {
+                    const dateParsed = parseDateText(parts[0], currentContextYear);
+                    if (dateParsed) currentDateInText = dateParsed;
+                    let treasureRaw = parts[1];
+                    const pfMatch = treasureRaw.match(/^(允求|賜降|求得|賜予|賜|得知|法寶名稱)\s*[：:]\s*/);
+                    if (pfMatch) treasureRaw = treasureRaw.replace(pfMatch[0], '');
+                    pendingTreasure.name = treasureRaw;
+                    if (parts.length >= 3) {
+                        const recNames = parts[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                        recNames.forEach(n => {
+                            results.push({
+                                name: pendingTreasure.name,
+                                recipient_name: resolveNewDharmaName(n),
+                                person_remarks: '',
+                                master_id: currentMasterId,
+                                date: currentDateInText,
+                                purpose: pendingTreasure.purpose,
+                                effect: pendingTreasure.effect,
+                                acquisition_method: pendingTreasure.acquisition_method,
+                                content: pendingTreasure.content,
+                                remarks: pendingTreasure.remarks,
+                                obtained_date: currentDateInText || form.value.record_date || '',
+                                status: '已登記'
+                            });
+                        });
+                    }
+                    return;
                 }
             }
-            else if (firstWord === '求寶方式' || firstWord === '求寶') prev.acquisition_method = val;
-            else prev.person_remarks = (prev.person_remarks ? prev.person_remarks + '；' : '') + val;
-            return;
-        }
 
-        // 4. Parse Standard Record
-        // Extract date from start of line if present
-        const lineStartDateMatch = normLine.match(/^(\d{1,4}[/.-]\d{1,2}[/.-]\d{1,2}|\d{1,2}[/.-]\d{1,2})\s+/);
-        if (lineStartDateMatch) {
-            const parsed = parseDateText(lineStartDateMatch[1], currentContextYear);
-            if (parsed) currentDateInText = parsed;
-            normLine = normLine.replace(lineStartDateMatch[0], '').trim();
-        }
+            // 6. Detect if the line contains Dharma Names (Recipient Line)
+            const names = normLine.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+            const knownNames = dharmaNames.value.length > 0
+                ? names.filter(n => {
+                    const resolved = resolveNewDharmaName(n);
+                    return dharmaNames.value.some(dn => dn.name === resolved || dn.alias === n);
+                  })
+                : names.filter(n => !n.includes('：') && !n.includes(':'));
 
-        const kwMatch = normLine.match(/^\s*((允求|賜降|得知|賜予|賜|法寶名稱|法寶內容|求得)\s*)?(.*?)[：:](.*)/);
-        let treasureName = '';
-        let recipientsText = '';
-        let lineDate = currentDateInText || '';
-
-        if (kwMatch && kwMatch[3] && kwMatch[3].trim() && !attrKeywords.includes(kwMatch[3].trim())) {
-            let rawName = kwMatch[3].trim();
-            rawName = rawName.replace(/^(允求|賜降|得知|賜予|賜|求得)\s*/, '');
-            treasureName = rawName;
-            recipientsText = kwMatch[4].trim();
-        } else if (normLine.match(/^(允求|賜降|得知|賜予|賜|求得)\s+/)) {
-            const parts = normLine.split(/\s+/);
-            treasureName = parts[1];
-            recipientsText = parts.slice(2).join(' ');
-        } else if (normLine.includes(' ') && !normLine.includes('：') && !normLine.includes(':')) {
-            const spaceParts = normLine.split(/\s+/);
-            const hasSeparators = normLine.includes('，') || normLine.includes('、') || normLine.includes(',') || normLine.includes('.');
-            if (spaceParts.length >= 2 && (spaceParts[1].length <= 20 || hasSeparators)) {
-                treasureName = spaceParts[0];
-                recipientsText = spaceParts.slice(1).join(' ');
-            } else {
-                treasureName = normLine;
+            if (knownNames.length > 0 && pendingTreasure.name) {
+                // Accept line if it has at least one recipient name and a treasure name is set
+                knownNames.forEach(n => {
+                    results.push({
+                        name: pendingTreasure.name,
+                        recipient_name: resolveNewDharmaName(n),
+                        person_remarks: '',
+                        master_id: currentMasterId,
+                        date: currentDateInText,
+                        purpose: pendingTreasure.purpose,
+                        effect: pendingTreasure.effect,
+                        acquisition_method: pendingTreasure.acquisition_method,
+                        content: pendingTreasure.content,
+                        remarks: pendingTreasure.remarks,
+                        obtained_date: currentDateInText || form.value.record_date || '',
+                        status: '已登記'
+                    });
+                });
+                return;
             }
-        } else if (normLine.length < 50) {
-            treasureName = normLine;
-        }
 
-        if (treasureName) {
-            const recipients = recipientsText ? recipientsText.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n) : [''];
-            recipients.forEach(r => {
-                const item = { 
-                    name: treasureName, 
-                    recipient_name: r, 
-                    person_remarks: '',
-                    master_id: currentMasterId, 
-                    date: lineDate, 
+            // 6. Detect a standalone treasure name (not a keyword line, not a recipient line)
+            if (normLine.length < 50 && !normLine.includes('，') && !normLine.includes('、') && !normLine.includes('：') && !normLine.includes(':')) {
+                // Clear pending attributes when a new treasure name starts (attribute bleed prevention)
+                pendingTreasure = {
+                    name: '',
                     purpose: '',
                     effect: '',
                     acquisition_method: '',
-                    obtained_date: lineDate || form.value.record_date || '',
-                    status: (lineDate || form.value.record_date) ? '已登記' : '未求得'
+                    content: '',
+                    remarks: ''
                 };
-                if (r.includes('已登記')) {
-                    item.status = '已登記';
-                    item.obtained_date = lineDate || form.value.record_date;
-                    item.recipient_name = r.replace('已登記', '').replace(/[，、, \s]+$/, '').trim();
+                // If it has a prefix, strip it
+                if (normLine.match(prefixesToStrip)) {
+                    pendingTreasure.name = normLine.replace(prefixesToStrip, '');
+                } else {
+                    pendingTreasure.name = normLine;
                 }
-                results.push(item);
-            });
-        }
+            }
+        });
+        return results;
     });
-    return results;
-});
 
 const parsedItemsCount = computed(() => batchParsedRows.value.length);
 
@@ -681,6 +790,25 @@ const rawLines = computed(() => {
 });
 
 // Methods for row management removed as we use textarea now
+
+const resolveNewDharmaName = (input) => {
+    if (!input || !input.trim()) return input;
+    const trimmed = input.trim();
+    // 1. Direct match
+    const directMatch = dharmaNames.value.find(dn => dn.name === trimmed);
+    if (directMatch) return directMatch.name;
+
+    // 2. Alias match (Old Name check)
+    const aliasMatch = dharmaNames.value.find(dn => dn.alias === trimmed);
+    if (aliasMatch) {
+        // Exception: 金巧 / 道霞龍妃
+        if (['金巧', '道霞龍妃'].includes(aliasMatch.name)) {
+            return trimmed;
+        }
+        return aliasMatch.name;
+    }
+    return trimmed;
+};
 
 const fetchDharmaNames = async () => {
     try {
@@ -746,7 +874,6 @@ watch(() => props.mode, (newVal) => {
     }
 });
 
-import { nextTick } from 'vue';
 const handlePersonnelEnter = (idx) => {
     if (idx === personnel.value.length - 1) {
         addPersonnelRow();
@@ -788,23 +915,24 @@ const handlePersonnelNameInput = (idx, event) => {
         // Keep the '之' or '的' as part of the relationship
         const connector = val.includes('之') ? '之' : '的';
 
-        personnel.value[idx].custom_name = namePart;
+        const resolvedName = resolveNewDharmaName(namePart);
+        personnel.value[idx].custom_name = resolvedName;
         personnel.value[idx].relationship = connector + relPart;
         return;
     }
 
-    const splitters = /[，、, \s]+/;
+    const splitters = /[，、, \s\t]+/;
 
     // Check for multi-name input (e.g., "A B C" or "A,B,C")
     if (splitters.test(val)) {
         const names = val.split(splitters).filter(n => n.trim());
         if (names.length > 1) {
-            // Keep the first name in current row, move others to new rows
-            personnel.value[idx].custom_name = names[0];
+            // Apply conversion to first name
+            personnel.value[idx].custom_name = resolveNewDharmaName(names[0]);
 
-            // Insert new rows after current index
+            // Insert new rows after current index with conversion
             const newRows = names.slice(1).map(n => ({
-                custom_name: n,
+                custom_name: resolveNewDharmaName(n),
                 relationship: personnel.value[idx].relationship,
                 obtained_date: personnel.value[idx].obtained_date,
                 remarks: ''
@@ -818,6 +946,15 @@ const handlePersonnelNameInput = (idx, event) => {
                 const lastIdx = idx + names.length - 1;
                 if (inputs[lastIdx]) inputs[lastIdx].focus();
             });
+        } else if (names.length === 1) {
+            personnel.value[idx].custom_name = resolveNewDharmaName(names[0]);
+        }
+    } else {
+        // Individual name entry without splitters - resolve on typing? 
+        // Better to resolve when they leave or paste. But let's try a partial resolve if it matches exactly.
+        const resolved = resolveNewDharmaName(val);
+        if (resolved !== val) {
+            personnel.value[idx].custom_name = resolved;
         }
     }
 };
@@ -923,16 +1060,27 @@ const handleSubmit = async () => {
         let expandedPersonnel = [];
         personnel.value.forEach(p => {
             if (!p.custom_name || !p.custom_name.trim()) return;
-            // Split names by common delimiters, but protect '道霞龍妃' as a single unit if it's there
-            // Actually standard split might be fine if we don't use space/comma inside it.
+            
             const names = p.custom_name.split(/[，、, \s\t]+/).map(n => n.trim()).filter(n => n);
-            names.forEach(name => {
-                const dnMatch = dharmaNames.value.find(dn => dn.name === name);
-                expandedPersonnel.push({
-                    ...p,
-                    dharma_name_id: dnMatch ? dnMatch.id : null,
-                    custom_name: name
-                });
+            names.forEach(rawName => {
+                const resolvedName = resolveNewDharmaName(rawName);
+                const dnMatch = dharmaNames.value.find(dn => dn.name === resolvedName);
+                
+                if (dnMatch) {
+                    expandedPersonnel.push({
+                        ...p,
+                        dharma_name_id: dnMatch.id,
+                        custom_name: dnMatch.name
+                    });
+                } else {
+                    // Strictly DB only names in the name column. 
+                    // Non-DB names are moved to remarks of a generic "Anonymous" or handled as error?
+                    // User said: "其他法號的親友或備註,都以modal的方式填入備註框"
+                    // If the user entered something not in DB, we should notify or reject.
+                    // But here we will attempt to find if it's actually meant for the remarks.
+                    alert(`「${rawName}」不屬於系統法號庫，請確認。非系統法號請填入備註欄。`);
+                    throw new Error('INVALID_DHARMA_NAME');
+                }
             });
         });
         const cleanedPersonnel = expandedPersonnel;
@@ -1004,6 +1152,9 @@ const handleSubmit = async () => {
                 record_date: row.date || form.value.record_date || '',
                 purpose: row.purpose || form.value.purpose || '',
                 effect: row.effect || form.value.effect || '',
+                acquisition_method: row.acquisition_method || '',
+                content: row.content || '',
+                remarks: row.remarks || '',
                 recipient_name: row.recipient_name,
                 person_remarks: row.person_remarks || ''
             }))
