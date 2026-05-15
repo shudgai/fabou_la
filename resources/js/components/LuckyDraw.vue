@@ -369,7 +369,7 @@ watch(() => props.show, (val) => {
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
-        users.value = res.data;
+        users.value = res.data.filter(u => u.name !== '紫真');
     } catch (e) { console.error(e); }
 };
 

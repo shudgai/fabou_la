@@ -317,8 +317,12 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-[10px] py-1.5 font-black text-slate-900 whitespace-nowrap border-r border-slate-50 text-[16px] font-outfit pl-[10px]">
-                                                                    {{ getDharmaNameText(dnr) }}
+                                                                <td class="px-[10px] py-1.5 border-r border-slate-50 pl-[5px]">
+                                                                    <select :value="dnr.dharma_name_id"
+                                                                        @change="e => { const id = parseInt(e.target.value); const dn = dharmaNames.value.find(d => d.id === id); if (dn) { dnr.dharma_name_id = id; dnr.custom_name = dn.name; } }"
+                                                                        class="w-full text-[13px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-pointer">
+                                                                        <option v-for="dn in dharmaNames.value" :key="dn.id" :value="dn.id">{{ dn.name }}</option>
+                                                                    </select>
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
