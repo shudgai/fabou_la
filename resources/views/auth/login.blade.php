@@ -189,6 +189,11 @@
                                 下一步 →
                             </button>
                         </div>
+                        @if (Route::has('password.direct'))
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('password.direct') }}" class="text-[12px] font-bold text-red-400 hover:text-red-600 transition-colors tracking-wider">忘記密碼？</a>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- STEP 2: Email --}}
@@ -272,6 +277,11 @@
                                 確認登入
                             </button>
                         </div>
+                        @if (Route::has('password.direct'))
+                            <div class="mt-4 text-center">
+                                <a href="{{ route('password.direct') }}" class="text-[12px] font-bold text-red-400 hover:text-red-600 transition-colors tracking-wider">忘記密碼？</a>
+                            </div>
+                        @endif
                     </div>
                 </form>
 

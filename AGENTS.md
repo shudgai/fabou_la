@@ -277,3 +277,24 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 | LuckyDraw | `lucky_draw_draft` | currentStep, pendingNames, fixedParticipants, selectedNames, roundParticipants, drawCount, manualName, lotteryMode |
 | OtherManager | `other_manager_record_draft` | title, content, record_date |
 
+## Session Notes (2026-05-15)
+
+### DB Wipe & Re-seed
+- `php artisan db:wipe --force && php artisan migrate --force` clears all tables and test data
+- After wipe, run: `php artisan db:seed --class=MasterSeeder` (or `php artisan db:seed` for all)
+- Admin user 元續: email `shudgai999@gmail.com`, password `abc1234`, role `admin`
+
+### i18n: No English in UI
+- All user-visible English text replaced with Traditional Chinese
+- Login auth error message: `lang/zh_TW/auth.php` with `'failed' => '帳號或密碼錯誤，請重新輸入。'`
+- Login flow always starts at step 1 (removed auto-advance to password when saved credentials exist)
+- Forgot password link added to step 1 and step 3 of login form
+- Date placeholders use `年/月/日` format
+- "Step X of Y" → "步驟 X / Y"
+- PHP API responses: `'已刪除'` / `'已更新'` / `'錯誤'`
+
+### KaiwenManager Acrostic Grid (Desktop)
+- Cells: `md:w-12 md:h-12`, gap: `md:gap-0` (mobile: `gap-1`)
+- Textarea rows: `:rows="props.isDesktop ? 2 : 6"`
+- Tab buttons: `md:flex-row` side-by-side on desktop
+
