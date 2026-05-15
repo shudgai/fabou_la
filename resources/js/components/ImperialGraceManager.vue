@@ -86,10 +86,10 @@
                 class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                 <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                     <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2 text-[#fbbf24] tracking-tight leading-tight text-center" style="transform: translateY(-10px);">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2 text-[#fbbf24] tracking-tight leading-tight text-center" style="transform: translateY(-15px);">
                         <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[38px] text-[#fbbf24]">重大皇恩專區</div>
-                        <div class="mt-[22px] flex items-center font-biaokai-locked">
-                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[24px]">共 {{ totalCount }} 筆</span>
+                        <div class="mt-[18px] flex items-center font-biaokai-locked">
+                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[19px]" style="color: white !important;">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -101,10 +101,10 @@
                 class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                 <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                     <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked" style="transform: translateY(-10px);">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked" style="transform: translateY(-15px);">
                         <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-[#fbbf24]"><span class="text-[24px] opacity-90 font-biaokai-locked">未求得</span><br>重大皇恩專區</div>
-                        <div class="mt-[22px] flex items-center font-biaokai-locked -translate-y-2">
-                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[24px]">共 {{ unobtainedTotal }} 筆</span>
+                        <div class="mt-[18px] flex items-center font-biaokai-locked -translate-y-2">
+                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[19px]" style="color: white !important;">共 {{ unobtainedTotal }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -115,17 +115,17 @@
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
-            <div class="grid grid-cols-2 gap-1 p-2 place-items-center">
+            <div class="grid grid-cols-2 gap-x-1 gap-y-0.5 p-2 place-items-center">
                 <button v-for="folder in mastersFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none overflow-visible">
                     <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
                         <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
-                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked" style="transform: translateY(-18px);">
+                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked" style="transform: translateY(-22px);">
                               <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
                               <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
-                             <div class="mt-1 flex items-center font-biaokai-locked -translate-y-[6px]">
-                                 <span class="text-white font-normal font-biaokai-locked text-[12px]">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                             <div class="mt-1 flex items-center font-biaokai-locked -translate-y-[2px]">
+                                 <span class="text-white font-normal font-biaokai-locked text-[11.2px]" style="color: white !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                              </div>
                          </div>
                     </div>
