@@ -65,14 +65,13 @@
                         </div>
                     </div>
                     <!-- Batch Records Preview -->
-                    <div v-if="batchRecords.length > 0" class="space-y-4">
-                         <div class="text-[14px] text-slate-400 font-bold px-2 flex items-center">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
-                            已解析紀錄 ({{ batchRecords.length }} 筆)
-                        </div>
+                     <div v-if="batchRecords.length > 0" class="space-y-4">
+                          <div class="text-[14px] text-slate-400 font-bold px-2 flex items-center">
+                             <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                             {{ batchRecords.length }} 筆紀錄
+                         </div>
                          <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-4 animate-fade-in text-left">
-                             <div class="flex items-center justify-between">
-                                 <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
+                             <div class="flex items-center justify-end">
                                  <button @click="batchRecords.splice(index, 1)" class="text-slate-300 hover:text-red-500 p-1">
                                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                  </button>
