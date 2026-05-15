@@ -27,9 +27,9 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a]" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h3 class="leading-tight font-outfit tracking-widest break-words !font-black !text-[#0f172a]" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
                             其他記錄專區
-                        </h1>
+                        </h3>
                     </div>
                     </div>
                 <div class="flex items-center space-x-2 mr-2">
