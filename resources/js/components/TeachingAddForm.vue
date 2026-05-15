@@ -61,7 +61,7 @@
                             <textarea v-model="batchImportContent" 
                                       @paste="handleBatchPaste"
                                       placeholder="在此貼上資料...&#10;&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
-                                      class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
+                                       class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px] min-h-[300px]"></textarea>
                         </div>
                     </div>
                     <!-- Batch Records Preview -->
@@ -77,10 +77,10 @@
                                  </button>
                              </div>
                              
-                             <textarea v-model="record.content"
-                                 class="w-full bg-transparent border border-slate-100 rounded-xl text-[15px] font-black text-slate-800 leading-relaxed resize-none outline-none p-3 min-h-[60px]"
-                                 placeholder="輸入內容..."
-                                 rows="3"></textarea>
+                              <textarea v-model="record.content"
+                                  class="w-full bg-transparent border border-slate-100 rounded-xl text-[15px] font-black text-slate-800 leading-relaxed outline-none p-3 min-h-[100px]"
+                                  placeholder="輸入內容..."
+                                  rows="4"></textarea>
                          </div>
                          <button @click="addBatchRecord" class="w-full py-3 border-2 border-dashed border-indigo-200 rounded-2xl text-indigo-400 font-black text-[15px] active:scale-95 transition-all hover:border-indigo-400 hover:text-indigo-600">
                              ＋ 新增一筆
@@ -166,8 +166,8 @@
                     <div v-else-if="currentStep === 4" :key="'step-4'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">請輸入<span class="text-indigo-600">開示內容</span></h2>
                         <div class="max-w-md mx-auto mt-12 relative">
-                            <textarea v-model="form.content" rows="8" placeholder="請輸入主文內容..." 
-                                class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 resize-none leading-relaxed"></textarea>
+                            <textarea v-model="form.content" rows="10" placeholder="請輸入主文內容..." 
+                                class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100 leading-relaxed min-h-[200px]"></textarea>
                         </div>
                     </div>
 
@@ -309,8 +309,8 @@
 
                  <div class="space-y-4">
                      <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest block">細項備註 (選填)</label>
-                     <textarea v-model="newItemRemarks" rows="2" placeholder="輸入其他細節..."
-                         class="w-full text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 bg-transparent py-2 outline-none transition-all placeholder:text-slate-100 resize-none"></textarea>
+                      <textarea v-model="newItemRemarks" rows="4" placeholder="輸入其他細節..."
+                          class="w-full text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 bg-transparent py-2 outline-none transition-all placeholder:text-slate-100 leading-relaxed min-h-[100px]"></textarea>
                  </div>
 
                  <div v-if="!newItemRemarks.trim()" class="space-y-4 animate-fade-in">

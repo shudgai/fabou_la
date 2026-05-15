@@ -25,8 +25,7 @@
                     @input="handleInput"
                     @focus="isFocused = true"
                     @blur="handleBlur"
-                    @keydown.enter.stop
-                    rows="2"
+                    rows="3"
                     class="flex-1 bg-transparent border-none outline-none text-[17px] font-black text-slate-900 text-center w-full min-w-[120px] placeholder:text-slate-200 resize-none leading-relaxed"
                     :placeholder="placeholder"
                 ></textarea>
