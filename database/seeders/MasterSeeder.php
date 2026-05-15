@@ -17,7 +17,7 @@ class MasterSeeder extends Seeder
             '元始仙師',
             '道祖仙師',
             '靈寶仙師',
-            '父皇',
+            '父皇仙師',
             '太宰仙師',
             '太子',
             '閻王仙師',
