@@ -49,7 +49,7 @@ body.font-large {
     font-family: 'Montserrat', sans-serif !important;
     font-size:   var(--fs-body) !important;
     font-weight: 400 !important;
-    color:       #0f172a !important; /* slate-900 */
+    color:       #000000 !important; /* Pure Black */
 }
 
 /* 標題：非粗體 + 深灰色 (slate-800) */
@@ -57,7 +57,28 @@ body.font-large {
     font-family: 'Noto Sans TC', sans-serif !important;
     font-size:   var(--fs-title) !important;
     font-weight: 400 !important;
-    color:       #1e293b !important; /* slate-800 */
+    color:       #000000 !important; /* Force Black */
+}
+
+/* --- 全域文字與標題樣式重置 (Global Typography Reset) --- */
+/* 強制移除所有粗體並統一顏色為黑色 */
+.font-black, .font-bold, .font-extrabold, .font-semibold {
+    font-weight: 400 !important;
+}
+
+/* 統一顏色為黑色，涵蓋系統中常用的顏色 class */
+.text-slate-900, .text-slate-800, .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-slate-300,
+.text-indigo-600, .text-indigo-500, .text-indigo-400,
+.text-red-600, .text-red-500, .text-red-400,
+.text-blue-600, .text-blue-500, .text-blue-400,
+.text-emerald-600, .text-emerald-500, .text-emerald-400 {
+    color: #000000 !important;
+}
+
+/* 確保所有標題標籤與標籤統一 */
+h1, h2, h3, h4, h5, h6, label, th {
+    font-weight: 400 !important;
+    color: #000000 !important;
 }
 
 /* ── Tailwind 工具 class (可直接用在 template) ── */
@@ -111,9 +132,9 @@ body.font-small  .text-\[28px\] { font-size: 25px !important; }
 body.font-medium .text-\[28px\] { font-size: 28px !important; }
 body.font-large  .text-\[28px\] { font-size: 31px !important; }
 
-body.font-small  .text-\[24px\], body.font-small .text-\[23px\] { font-size: 21px !important; }
-body.font-medium .text-\[24px\], body.font-medium .text-\[23px\] { font-size: 24px !important; }
-body.font-large  .text-\[24px\], body.font-large  .text-\[23px\] { font-size: 27px !important; }
+body.font-small  .text-\[24px\], body.font-small .text-\[23px\] { font-size: 21px !important; font-weight: 400 !important; color: #000000 !important; }
+body.font-medium .text-\[24px\], body.font-medium .text-\[23px\] { font-size: 24px !important; font-weight: 400 !important; color: #000000 !important; }
+body.font-large  .text-\[24px\], body.font-large  .text-\[23px\] { font-size: 27px !important; font-weight: 400 !important; color: #000000 !important; }
 
 /* ============================================================
    電腦版專屬字體排版設計 (Desktop Typography - min-width: 768px)

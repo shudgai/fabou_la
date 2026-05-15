@@ -12,12 +12,12 @@
                 <!-- Row 1: Global Title -->
                 <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                     <logo-imperial-notebook :height="30" />
-                    <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                    <h1 class="font-outfit !font-normal !text-black tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 400 !important;">法寶登記專區</h1>
                 </div>
                 <!-- Row 2: Subtitle (Category + Form Mode) -->
                 <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
                     <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
-                        <span v-if="categoryText" class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
+                        <span v-if="categoryText" class="font-outfit font-normal !text-black whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                             {{ categoryText }}
                         </span>
                         <span class="font-outfit font-normal text-slate-900 whitespace-nowrap" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
@@ -35,14 +35,14 @@
             <div v-if="!isEditing" class="px-6 pt-4 flex space-x-1">
                 <button @click="localMode = 'single'; currentStep = 1"
                     :class="localMode === 'single' ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-50 text-slate-400 border border-slate-100'"
-                    class="flex-1 py-[12px] rounded-2xl text-[16px] font-black transition-all whitespace-nowrap active:scale-95"
-                    :style="{ fontSize: '16px !important', color: localMode === 'single' ? 'white !important' : '#94a3b8 !important' }">
+                    class="flex-1 py-[12px] rounded-2xl text-[16px] font-normal transition-all whitespace-nowrap active:scale-95"
+                    :style="{ fontSize: '16px !important', color: localMode === 'single' ? 'white !important' : '#000000 !important' }">
                     逐筆載錄
                 </button>
                 <button @click="localMode = 'batch'"
                     :class="localMode === 'batch' ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-50 text-slate-400 border border-slate-100'"
-                    class="flex-1 py-[12px] rounded-2xl text-[16px] font-black transition-all whitespace-nowrap active:scale-95"
-                    :style="{ fontSize: '16px !important', color: localMode === 'batch' ? 'white !important' : '#94a3b8 !important' }">
+                    class="flex-1 py-[12px] rounded-2xl text-[16px] font-normal transition-all whitespace-nowrap active:scale-95"
+                    :style="{ fontSize: '16px !important', color: localMode === 'batch' ? 'white !important' : '#000000 !important' }">
                     多筆載錄
                 </button>
             </div>
@@ -54,8 +54,8 @@
                          :class="s <= currentStep ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-slate-100'"></div>
                 </div>
                 <div class="flex justify-between mt-2 px-1">
-                    <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">第 {{ currentStep }} 步 / 共 {{ totalSteps }} 步</span>
-                    <span class="text-[11px] font-black text-blue-500 uppercase tracking-[0.2em]">{{ currentStepTitle }}</span>
+                    <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">第 {{ currentStep }} 步 / 共 {{ totalSteps }} 步</span>
+                    <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">{{ currentStepTitle }}</span>
                 </div>
             </div>
 
@@ -68,18 +68,18 @@
                     <!-- STEP 1: 日期 -->
                     <div v-if="currentStep === 1" :key="'s1'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">日期</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">日期</span></h2>
                         </div>
                         <div class="space-y-8">
                             <div class="relative group">
                                 <div class="flex items-center justify-between mb-2">
-                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">得知日期</label>
+                                    <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">得知日期</label>
                                     <button @click="activePicker = { idx: 'main', field: 'record_date', title: '選擇日期' }" class="text-slate-300 hover:text-blue-500 p-1 active:scale-90">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
                                 </div>
                                 <textarea v-model="form.record_date" rows="2" placeholder="年/月/日 或 註記文字"
-                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                                    class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                             </div>
                         </div>
                     </div>
@@ -87,11 +87,11 @@
                     <!-- STEP 2: 載錄仙師 (Moved from step 3) -->
                     <div v-else-if="currentStep === 2" :key="'s2'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請確認<span class="text-red-600">載錄仙師</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請確認<span class="text-black">載錄仙師</span></h2>
                         </div>
                         <div class="space-y-8">
                             <div class="relative group">
-                                <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                                <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
                                 <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                             </div>
                         </div>
@@ -100,80 +100,80 @@
                     <!-- STEP 3: 法寶名稱 (Moved from step 2) -->
                     <div v-else-if="currentStep === 3" :key="'s3'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶名稱</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">法寶名稱</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
                             <textarea v-model="treasureNamesText" rows="5" placeholder="輸入內容..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                         </div>
                     </div>
 
                     <!-- STEP 4: 用意 (Moved from step 3) -->
                     <div v-else-if="currentStep === 4" :key="'s4'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">用意</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">用意</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
                             <textarea v-model="form.purpose" rows="5" placeholder="輸入用意..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                         </div>
                     </div>
 
                     <!-- STEP 5: 功效 (Moved from step 4) -->
                     <div v-else-if="currentStep === 5" :key="'s5'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">功效</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">功效</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
                             <textarea v-model="form.effect" rows="5" placeholder="輸入功效..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                         </div>
                     </div>
 
                     <!-- STEP 6: 作法 -->
                     <div v-else-if="currentStep === 6" :key="'s6'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">作法</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">作法</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
                             <textarea v-model="form.acquisition_method" rows="5" placeholder="輸入作法..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                         </div>
                     </div>
 
                     <!-- STEP 7: 法寶內容 (NEW) -->
                     <div v-else-if="currentStep === 7" :key="'s7'" class="space-y-8 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-8">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">法寶內容</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">法寶內容</span></h2>
                         </div>
                         <div class="relative group">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
                             <textarea v-model="form.content" rows="5" placeholder="輸入內容..."
-                                class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                         </div>
                     </div>
 
                     <!-- STEP 8: 備註與承接師兄姐 -->
                     <div v-else-if="currentStep === 8" :key="'s8'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-6">
-                            <h2 class="text-[17px] font-black text-slate-900">請輸入<span class="text-blue-600">備註及人員</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">備註及人員</span></h2>
                         </div>
 
                         <div class="relative group mb-8">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
                             <div @click="openRemarksModal"
-                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
-                                <span :class="form.remarks ? 'text-slate-900' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
+                                class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
+                                <span :class="form.remarks ? 'text-black' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">承接師兄姐</label>
-                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[15px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增人員</button>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">承接師兄姐</label>
+                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[15px] font-normal active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增人員</button>
                         </div>
                         <div v-for="(p, idx) in personnel" :key="idx" class="p-4 bg-slate-50/30 rounded-2xl border border-slate-200 space-y-3 relative animate-fade-in">
                             <div class="absolute top-2 right-2 flex items-center space-x-1">
@@ -213,7 +213,7 @@
                         <div v-if="personnel.length === 0" class="text-center py-6 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200 text-slate-300 text-[13px]">尚無人員紀錄</div>
                         <button @click="addPersonnelRow" class="w-full py-4 rounded-2xl border-2 border-dashed border-blue-100 bg-blue-50/30 flex items-center justify-center space-x-2 text-blue-500 hover:bg-blue-50 active:scale-[0.98] transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span class="text-[16px] font-black">新增人員</span>
+                            <span class="text-[16px] font-normal">新增人員</span>
                         </button>
                     </div>
 
@@ -222,50 +222,50 @@
                 <!-- EDIT MODE: All fields on one page -->
                 <div v-if="isEditing && localMode === 'single'" class="space-y-8 max-w-md mx-auto pb-8 animate-fade-in">
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">得知日期</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">得知日期</label>
                         <textarea v-model="form.record_date" rows="2" placeholder="年/月/日 或 註記文字"
-                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                            class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
                         <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
                         <textarea v-model="form.purpose" rows="3" placeholder="輸入用意..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">功效 (選填)</label>
                         <textarea v-model="form.effect" rows="3" placeholder="輸入功效..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">作法/求寶方式</label>
                         <textarea v-model="form.acquisition_method" rows="3" placeholder="輸入作法..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">法寶名稱</label>
                         <textarea v-model="treasureNamesText" rows="3" placeholder="輸入內容..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">法寶內容 (選填)</label>
                         <textarea v-model="form.content" rows="3" placeholder="輸入內容..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="relative group">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
                         <div @click="openRemarksModal"
-                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
-                            <span :class="form.remarks ? 'text-slate-900' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
+                            class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
+                            <span :class="form.remarks ? 'text-black' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">承接師兄姐</label>
-                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[15px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增人員</button>
+                            <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">承接師兄姐</label>
+                            <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[15px] font-normal active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增人員</button>
                         </div>
                         <div v-for="(p, idx) in personnel" :key="idx" class="p-4 bg-slate-50/30 rounded-2xl border border-slate-200 space-y-3 relative mb-3 animate-fade-in">
                             <div class="absolute top-2 right-2 flex items-center space-x-1">
@@ -302,7 +302,7 @@
                         <div v-if="personnel.length === 0" class="text-center py-6 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200 text-slate-300 text-[13px]">尚無人員紀錄</div>
                         <button @click="addPersonnelRow" class="w-full py-4 rounded-2xl border-2 border-dashed border-blue-100 bg-blue-50/30 flex items-center justify-center space-x-2 text-blue-500 hover:bg-blue-50 active:scale-[0.98] transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span class="text-[16px] font-black">新增人員</span>
+                            <span class="text-[16px] font-normal">新增人員</span>
                         </button>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
                 <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
                     <!-- Master Selector -->
                     <div class="px-1">
-                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
                         <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                     </div>
                     <div class="flex items-center justify-between ml-1">
@@ -330,13 +330,13 @@
                     <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
                         <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
                             <div class="flex flex-col">
-                                <span class="text-[15px] font-bold text-blue-600">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</span>
+                                <span class="text-[15px] font-normal text-black">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</span>
                                 <span class="text-[11px] text-blue-400 font-medium">貼上內容原始顯示</span>
                             </div>
                         </div>
                         <div class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
-                            <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-bold text-slate-900 flex items-start gap-3 hover:bg-slate-50">
-                                <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                            <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-normal text-black flex items-start gap-3 hover:bg-slate-50">
+                                <span class="text-[11px] font-normal text-black w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
                                 <span class="break-all whitespace-pre-wrap">{{ line }}</span>
                             </div>
                         </div>
@@ -350,18 +350,18 @@
             <div class="shrink-0 px-[15px] pt-4 pb-1 bg-white border-t border-slate-50 flex gap-2 justify-center">
                 <!-- Edit Mode -->
                 <template v-if="isEditing">
-                    <button @click="$emit('cancel')" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
-                    <button @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
+                    <button @click="$emit('cancel')" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">取消</button>
+                    <button @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
                 </template>
                 <!-- Single Mode Wizard Navigation -->
                 <template v-else-if="localMode === 'single'">
-                    <button v-if="currentStep > 1" @click="handleBack" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
-                    <button v-if="currentStep < totalSteps" @click="handleNext" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
-                    <button v-else @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認載錄' }}</button>
+                    <button v-if="currentStep > 1" @click="handleBack" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">上一步</button>
+                    <button v-if="currentStep < totalSteps" @click="handleNext" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
+                    <button v-else @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認載錄' }}</button>
                 </template>
                 <!-- Batch Mode -->
                 <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0"
-                    class="w-full max-w-md bg-blue-600 text-white h-[48px] rounded-2xl font-black text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all disabled:opacity-50" style="color: white !important;">
+                    class="w-full max-w-md bg-blue-600 text-white h-[48px] rounded-2xl font-normal text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all disabled:opacity-50" style="color: white !important;">
                     {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
                 </button>
             </div>
@@ -391,16 +391,16 @@
                 <div class="fixed inset-0 bg-slate-900/80" @click="showRemarksModal = false"></div>
                 <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
                     <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
-                        <span class="text-[20px] font-black text-slate-900">編輯備註</span>
+                        <span class="text-[20px] font-normal text-black">編輯備註</span>
                         <button @click="showRemarksModal = false" class="p-2 text-slate-300 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 pb-10">
                         <textarea v-model="remarksBuffer" rows="8" placeholder="輸入備註..."
-                            class="w-full text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="px-6 py-4 border-t border-slate-100 flex gap-3">
-                        <button @click="showRemarksModal = false" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
-                        <button @click="confirmRemarks" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all">確認</button>
+                        <button @click="showRemarksModal" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">取消</button>
+                        <button @click="confirmRemarks" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all">確認</button>
                     </div>
                 </div>
             </div>
