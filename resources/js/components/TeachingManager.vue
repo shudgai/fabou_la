@@ -166,7 +166,7 @@
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[26px] font-biaokai-locked text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[2px] font-biaokai-locked text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
                                           style="font-weight: 900 !important; font-size: 26px !important;">
                                           {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                      </div>

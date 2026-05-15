@@ -123,7 +123,7 @@
                         <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked">
                               <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
-                              <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked mt-[24px]">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
+                              <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
                              <div class="mt-1 flex items-center font-biaokai-locked -translate-y-[7px]">
                                  <span class="text-white font-normal font-biaokai-locked text-[14px]">{{ folderCounts[folder.id] || 0 }} 筆</span>
                              </div>
