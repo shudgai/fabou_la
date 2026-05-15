@@ -348,9 +348,6 @@ document.addEventListener('alpine:init', () => {
                 if (errors.dharma_name) this.step = 1;
                 else if (errors.email) this.step = 2;
                 else if (errors.password) this.step = 3;
-            } else if (this.dharma_name && this.email) {
-                // If we already have saved credentials, auto advance to password
-                this.step = 3;
             }
             
             // Focus first relevant input
