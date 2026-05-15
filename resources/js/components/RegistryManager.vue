@@ -84,7 +84,7 @@
                 <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-6 gap-x-12 pt-12 pb-20 bg-white">
                     <button v-for="(folder, idx) in folders" :key="folder.id" 
                              @click="currentFolder = folder"
-                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[175px] h-[138px] flex-shrink-0 relative overflow-visible bg-white border-none"
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[175px] h-[138px] flex-shrink-0 relative overflow-visible bg-white"
                               :style="{ zIndex: folders.length - idx }">
 
                         <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
@@ -138,13 +138,13 @@
                     </div>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
-                            <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black shadow-sm" style="color: white !important; font-size: 16px !important;">
+                            <button v-if="!reorderMode" @click="toggleSort" class="px-4 py-1.5 bg-indigo-600 border border-indigo-500 rounded-xl active:scale-95 transition-all font-black" style="color: white !important; font-size: 16px !important;">
                                 {{ sortDesc ? '新→舊' : '舊→新' }}
                             </button>
                             <!-- Reorder Button -->
                             <button v-if="currentFolder" @click="reorderMode = !reorderMode" 
                                     :class="reorderMode ? 'bg-emerald-600 text-white border-2 border-emerald-500 shadow-lg' : 'bg-slate-50 text-slate-400 border border-transparent'"
-                                    class="px-3 py-1.5 rounded-xl font-black transition-all active:scale-95 whitespace-nowrap shadow-sm"
+                                    class="px-3 py-1.5 rounded-xl font-black transition-all active:scale-95 whitespace-nowrap"
                                     style="font-size: 16px !important;">
                                 {{ reorderMode ? '確認排序' : '修改排序' }}
                             </button>
@@ -171,7 +171,7 @@
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <input v-model="searchQuery" type="text" placeholder="搜尋項目、用意、法號..." 
-                                    class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                                    class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none">
                                 <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
@@ -188,8 +188,8 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                          @click="editItemId === item.id ? null : toggleExpand(item.id)"
                              :class="[
-                                 'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer hover:shadow-md active:bg-slate-50 flex items-start',
-                                 focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent shadow-none !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:shadow-2xl md:border md:border-slate-100 md:mt-4' : '',
+                                 'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer active:bg-slate-50 flex items-start',
+                                 focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
 
@@ -225,7 +225,7 @@
                                 </button>
 
                                 <div v-if="openMenuId === item.id" 
-                                     class="absolute right-0 mt-2 w-24 bg-white opacity-100 border border-slate-100 rounded-2xl shadow-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
+                                     class="absolute right-0 mt-2 w-24 bg-white opacity-100 border border-slate-100 rounded-2xl z-[110] py-1 ring-1 ring-black ring-opacity-5 animate-fade-in overflow-hidden">
                                     <button @click.stop="toggleExpand(item.id); openMenuId = null" 
                                             class="w-full text-left px-3 py-2.5 text-[14px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">
                                         {{ expandedIds.has(item.id) ? '收起' : '展開' }}
@@ -344,7 +344,7 @@
                                                 </div>
 
                                                 <!-- Table Layout (Matching Image) -->
-                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm bg-white -ml-[10px]">
+                                                <div class="overflow-x-auto border-y border-slate-200 bg-white -ml-[10px]">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
@@ -391,7 +391,7 @@
                                             <!-- Save/Cancel Buttons -->
                                             <div class="flex gap-3 justify-center pt-4 pb-8">
                                                 <button @click="cancelEdit" class="w-[100px] py-3 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
-                                                <button @click="saveEdit" :disabled="isSaving" class="flex-1 max-w-[200px] py-3 bg-emerald-600 text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
+                                                <button @click="saveEdit" :disabled="isSaving" class="flex-1 max-w-[200px] py-3 bg-emerald-600 text-white rounded-2xl font-black text-[17px] active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -432,7 +432,7 @@
                                         </div>
                                         <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm mb-20 bg-white">
+                                                <div class="overflow-x-auto border-y border-slate-200 mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                             <tr class="bg-slate-50/80 text-slate-600 font-outfit border-b border-slate-200">
@@ -471,7 +471,7 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div class="overflow-x-auto border-y border-slate-200 shadow-sm mb-20 bg-white">
+                                                <div class="overflow-x-auto border-y border-slate-200 mb-20 bg-white">
                                                     <table class="w-full border-collapse bg-white text-[16px]">
                                                         <thead>
                                                              <tr class="bg-slate-50 text-slate-600 font-outfit border-b border-slate-200">
@@ -570,7 +570,7 @@
         <!-- Delete Confirmation Overlay -->
         <teleport to="body">
             <div v-if="deleteConfirmId" class="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/80 animate-fade-in">
-                <div class="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl animate-pop-in">
+                <div class="bg-white w-full max-w-sm rounded-[32px] p-6 animate-pop-in">
                     <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </div>
