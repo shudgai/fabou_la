@@ -732,7 +732,7 @@ const loadUsers = async () => {
         const res = await axios.get('/api/dharma-names-list');
         let rawUsers = res.data;
 
-        let processed = [...rawUsers];
+        let processed = [...rawUsers].filter(u => u.name !== '紫真');
         const qingIdx = processed.findIndex(u => u.name === '靈情');
         if (qingIdx > -1) {
             const lingQi = rawUsers.find(u => u.name === '靈奇');

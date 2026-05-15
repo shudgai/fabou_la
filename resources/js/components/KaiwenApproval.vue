@@ -223,7 +223,7 @@ const persistentToast = ref(null);
 
 // Storage Keys removed for clean state on load
 
-const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾'];
+const excludedNames = ['鳳尊', '金巧', '赤覺', '紫元', '鳳媓', '金忠', '金孝', '金諦', '金彩', '金德', '靈平', '金護', '靈情', '靈奇', '靈傾', '紫真'];
 
 const loadUsers = async () => {
     try {
