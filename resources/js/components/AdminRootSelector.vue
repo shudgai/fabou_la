@@ -1,5 +1,13 @@
 <template>
-    <div class="h-[100dvh] overflow-hidden overscroll-none bg-white flex flex-col items-stretch">
+    <div class="h-[100dvh] overflow-hidden overscroll-none bg-white flex flex-col items-stretch relative">
+        <!-- Global Transition Logo Overlay -->
+        <div v-if="isGlobalTransitioning" class="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center pointer-events-auto transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" spinning />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">介面切換中...</div>
+            </div>
+        </div>
+
         <!-- GLOBAL SVG DEFINITIONS (Fixed for iOS Safari stability across all sub-views) -->
         <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
             <defs>
@@ -159,6 +167,7 @@ import LogoImperialNotebook from './LogoImperialNotebook.vue';
 const user = ref(null);
 const currentView = ref('menu');
 const counts = ref({});
+const isGlobalTransitioning = ref(false);
 
 const menuItems = [
     { id: 'grace', label: '重大皇恩專區', icon: '👑', color: 'bg-amber-50' },
@@ -271,7 +280,19 @@ const syncHash = () => {
         window.location.hash = '';
     }
 
-    currentView.value = targetView;
+    if (currentView.value !== targetView) {
+        if (isAdmin.value) {
+            currentView.value = targetView;
+        } else {
+            isGlobalTransitioning.value = true;
+            setTimeout(() => {
+                currentView.value = targetView;
+                setTimeout(() => {
+                    isGlobalTransitioning.value = false;
+                }, 300);
+            }, 300);
+        }
+    }
 };
 
 const handleNavigate = (view) => {
@@ -281,15 +302,24 @@ const handleNavigate = (view) => {
     if (view === 'other' && !perms.can_see_other_folders && !isAdmin.value) return;
     if (view === 'trash' && !perms.can_see_trash && !isAdmin.value) return;
 
-    currentView.value = view;
-    // Optionally update hash as well
-    const reverseMap = { 
-        'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 
-        'grudge': '#grudge', 'military': '#military', 'other': '#other', 
-        'other_teaching': '#other_teaching', 'kaiwen': '#kaiwen', 
-        'trash': '#trash', 'menu': '' 
-    };
-    window.location.hash = reverseMap[view] || '';
+    if (currentView.value === view) return;
+
+    isGlobalTransitioning.value = true;
+    setTimeout(() => {
+        currentView.value = view;
+        // Optionally update hash as well
+        const reverseMap = { 
+            'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 
+            'grudge': '#grudge', 'military': '#military', 'other': '#other', 
+            'other_teaching': '#other_teaching', 'kaiwen': '#kaiwen', 
+            'trash': '#trash', 'menu': '' 
+        };
+        window.location.hash = reverseMap[view] || '';
+        
+        setTimeout(() => {
+            isGlobalTransitioning.value = false;
+        }, 300);
+    }, 300);
 };
 
 onMounted(async () => {

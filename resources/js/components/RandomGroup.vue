@@ -17,8 +17,7 @@
 
 <!-- Main scrollable selection grid -->
              <div class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
-                <!-- Header bar -->
-                <div class="flex items-start justify-between px-3 py-1.5 md:pt-[60px]">
+                <div class="flex items-start justify-between pl-3 pr-14 py-1.5 md:pt-[60px]">
                     <div class="flex flex-col flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
@@ -36,7 +35,7 @@
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 mt-1">
                         <button @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
-                        <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
+                        <button @click="resetAll" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
@@ -214,15 +213,12 @@
                                     <input 
                                         type="text" 
                                         v-model="seedInput"
-                                        list="available-seeds-list" 
                                         @change="addSeedFromSelect($event)" 
                                         placeholder="查詢在場人員加入種子組..." 
                                         class="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 outline-none text-[16px] font-black text-slate-600 cursor-pointer shadow-sm text-center"
                                     >
                                     <compact-datalist v-model="seedInput" :options="availableSeeds" @update:modelValue="onSeedSelected" />
-                                    <datalist id="available-seeds-list">
-                                        <option v-for="name in availableSeeds" :key="'dlopt'+name" :value="name"></option>
-                                    </datalist>
+
                                 <div v-if="seedNames.length > 0" class="flex flex-wrap gap-2 mt-2">
                                     <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-indigo-50 text-indigo-900 text-[16px] font-black px-3 py-1.5 rounded-xl border border-indigo-100">
                                         <span>{{ name }}</span>
@@ -495,6 +491,16 @@
         </div>
         </div>
     </div>
+        <!-- Mobile Navbar explicitly added per user request to ensure all interfaces have it -->
+        <mobile-navbar 
+            is-absolute
+            :can-back="true"
+            :can-home="false"
+            :show-action="false"
+            :can-search="false"
+            @back="$emit('close')"
+            class="md:hidden"
+        />
     </div>
     </teleport>
 </template>
@@ -503,6 +509,7 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 import CompactDatalist from './CompactDatalist.vue';
+import MobileNavbar from './MobileNavbar.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const users = ref([]);

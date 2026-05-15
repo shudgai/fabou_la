@@ -1,5 +1,12 @@
 <template>
     <div class="flex flex-col md:flex-row h-[100dvh] bg-white font-sans overflow-hidden">
+        <!-- Global Transition Logo Overlay -->
+        <div v-if="isGlobalTransitioning" class="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center pointer-events-auto transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" spinning />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">介面切換中...</div>
+            </div>
+        </div>
         <!-- Sidebar / Top Nav Container -->
         <div class="w-full md:w-64 bg-white border-r border-white flex-shrink-0 flex flex-col z-[50] h-auto md:h-full">
             <!-- Logo area -->
@@ -122,14 +129,21 @@ const props = defineProps({
 
 const currentTab = ref(props.initialTab);
 const resetKey = ref(0);
+const isGlobalTransitioning = ref(false);
 
 const selectTab = (id) => {
     if (currentTab.value === id) {
         resetKey.value++;
-    } else {
+        return;
+    }
+    isGlobalTransitioning.value = true;
+    setTimeout(() => {
         currentTab.value = id;
         resetKey.value = 0;
-    }
+        setTimeout(() => {
+            isGlobalTransitioning.value = false;
+        }, 300);
+    }, 300);
 };
 
 const forceResetGrace = () => {

@@ -1,5 +1,13 @@
 <template>
     <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
+        <!-- Transition Logo Overlay -->
+        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" spinning />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">資料載入中...</div>
+            </div>
+        </div>
+
         <AddActionMenu 
             :show="showAddMenu" 
             :actions="addActions" 
@@ -24,7 +32,7 @@
                     </div>
             </div>
 
-            <div class="flex flex-col items-start ml-4 mt-[2px] animate-fade-in gap-1.5">
+            <div class="flex flex-col md:flex-row items-start md:items-center ml-4 mt-[2px] animate-fade-in gap-1.5 md:gap-3">
                 <button @click="currentTab = 'weekly'" 
                     :class="currentTab === 'weekly' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
                     class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
@@ -320,19 +328,17 @@
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">仙師</label>
-                            <input v-model="form.master_name" list="master-list" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
+                            <input v-model="form.master_name" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
                             <compact-datalist v-model="form.master_name" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" />
-                            <datalist id="master-list">
-                                <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
-                            </datalist>
+
                         </div>
 
                         <div class="space-y-1">
                             <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">開文內容</label>
                             <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5 overflow-x-auto">
-                                <div v-for="(char, i) in titleChars" :key="i" class="grid grid-cols-7 gap-1">
+                                <div v-for="(char, i) in titleChars" :key="i" class="grid grid-cols-7 gap-1 md:gap-0">
                                     <!-- Acrostic char box (1st cell) -->
-                                    <div class="aspect-square flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 
+                                    <div class="aspect-square md:w-12 md:h-12 flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 
                                          :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }">
                                         {{ char }}
                                     </div>
@@ -345,13 +351,13 @@
                                         :value="(weeklyLines[i] || '')[j-1] || ''"
                                         @input="onWeeklyCellInput($event, i, j-1)"
                                         @compositionend="onWeeklyCellCompositionEnd($event, i, j-1)"
-                                        class="aspect-square text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors !font-black !text-[#0f172a] min-w-0"
+                                        class="aspect-square md:w-12 md:h-12 text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors !font-black !text-[#0f172a] min-w-0"
                                         :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }"
                                     >
                                 </div>
                             </div>
                             <div v-else>
-                                <textarea v-model="form.original_content" rows="6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4] !font-black !text-[#0f172a]" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }"></textarea>
+                                <textarea v-model="form.original_content" :rows="props.isDesktop ? 2 : 6" placeholder="請輸入開文內容..." class="w-full rounded-xl bg-white p-3 outline-none transition-all leading-[1.4] !font-black !text-[#0f172a]" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }"></textarea>
                             </div>
                         </div>
                     </div>
@@ -368,44 +374,42 @@
                                 <p class="text-[15px] font-bold text-amber-700 tracking-wider">有合格才有機會鋪文。<br>請先在列表將此紀錄核定為「合格」。</p>
                             </div>
                         </div>
-                        <template v-else>
-                            <div class="space-y-2">
-                                <label class="app-title ml-1 flex items-center" style="font-weight: 900 !important;">
-                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                    殿中貼文內容 (圖片或文字)
-                                </label>
-                                <div class="w-full min-h-[300px] rounded-2xl bg-purple-50/30 border-2 border-dashed border-purple-200 relative group overflow-hidden transition-all hover:border-purple-400">
-                                    <template v-if="form.modified_content && form.modified_content.startsWith('data:image')">
-                                        <div class="p-6 flex flex-col items-center justify-center min-h-[300px] w-full">
-                                            <div class="relative group/img">
-                                                <img :src="form.modified_content" @click.stop="viewerImage = form.modified_content" class="max-w-full max-h-[400px] rounded-xl shadow-lg border border-purple-100 cursor-zoom-in" alt="預覽">
-                                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center rounded-xl pointer-events-none">
-                                                    <span class="text-white font-bold text-[14px]">點擊放大查看</span>
-                                                </div>
+                        <div v-else class="space-y-2">
+                            <label class="app-title ml-1 flex items-center" style="font-weight: 900 !important;">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                殿中貼文內容 (圖片或文字)
+                            </label>
+                            <div class="w-full min-h-[300px] rounded-2xl bg-purple-50/30 border-2 border-dashed border-purple-200 relative group overflow-hidden transition-all hover:border-purple-400">
+                                <template v-if="form.modified_content && form.modified_content.startsWith('data:image')">
+                                    <div class="p-6 flex flex-col items-center justify-center min-h-[300px] w-full">
+                                        <div class="relative group/img">
+                                            <img :src="form.modified_content" @click.stop="viewerImage = form.modified_content" class="max-w-full max-h-[400px] rounded-xl shadow-lg border border-purple-100 cursor-zoom-in" alt="預覽">
+                                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center rounded-xl pointer-events-none">
+                                                <span class="text-white font-bold text-[14px]">點擊放大查看</span>
                                             </div>
-                                            <button @click.stop="form.modified_content = ''" class="mt-4 text-red-500 font-bold text-[13px] hover:underline flex items-center">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                清除內容並重新貼上
-                                            </button>
                                         </div>
-                                    </template>
-                                    <template v-else>
-                                        <textarea v-model="form.modified_content" @paste="onImagePaste" placeholder="在此直接貼上 (Ctrl+V) 文字或截圖..." class="w-full h-full min-h-[300px] bg-transparent p-6 app-body font-bold text-purple-900 outline-none resize-none cursor-text placeholder:text-purple-200 leading-relaxed"></textarea>
-                                    </template>
-                                    <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
-                                </div>
-                                <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
-                                    <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 h-[48px] bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="font-size: 16px !important; color: white !important;">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        <span class="app-body">上傳圖片檔案</span>
-                                    </button>
-                                </div>
+                                        <button @click.stop="form.modified_content = ''" class="mt-4 text-red-500 font-bold text-[13px] hover:underline flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            清除內容並重新貼上
+                                        </button>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <textarea v-model="form.modified_content" @paste="onImagePaste" placeholder="在此直接貼上 (Ctrl+V) 文字或截圖..." class="w-full h-full min-h-[300px] bg-transparent p-6 app-body font-bold text-purple-900 outline-none resize-none cursor-text placeholder:text-purple-200 leading-relaxed"></textarea>
+                                </template>
+                                <input id="imageUpload" type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                             </div>
-                            <datalist id="masterList">
-                                <option v-for="m in masters" :key="m.id" :value="m.name === '父皇仙師' ? '父皇' : m.name"></option>
-                            </datalist>
-                        </template>
+                            <div v-if="!isModifiedLocked && !(form.modified_content && form.modified_content.startsWith('data:image'))" class="flex justify-center mt-4">
+                                <button @click="triggerImageUpload" class="flex items-center space-x-2 px-8 h-[48px] bg-purple-600 !text-white rounded-2xl border border-purple-500 font-black shadow-lg shadow-purple-100 active:scale-95 transition-all" style="font-size: 16px !important; color: white !important;">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <span class="app-body">上傳圖片檔案</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
+
+
 
                 </div>
             </div>

@@ -3,7 +3,7 @@
         <!-- Transition Logo Overlay -->
         <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
-                <logo-imperial-notebook :height="120" class="animate-spin-slow" />
+                <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
             </div>
         </div>

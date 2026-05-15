@@ -176,7 +176,7 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                    <input v-model="p.custom_name" type="text" placeholder="法號"
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
@@ -286,10 +286,11 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <input v-model="p.custom_name" type="text" placeholder="法號" list="dharma-names"
+                                    <input v-model="p.custom_name" type="text" placeholder="法號"
                                         @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                         @input="e => handlePersonnelNameInput(idx, e)"
                                         class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                    <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
@@ -357,10 +358,7 @@
                     </div>
                 </div>
 
-                <!-- Dharma Names datalist -->
-                <datalist id="dharma-names">
-                    <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
-                </datalist>
+
             </div>
 
             <!-- Footer Action -->

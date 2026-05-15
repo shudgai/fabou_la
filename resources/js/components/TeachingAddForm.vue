@@ -226,7 +226,7 @@
                                      </div>
                                  </div>
                                  <div class="relative border-0 border-b-2 border-slate-200 focus-within:border-indigo-600 transition-all">
-                                     <input v-model="newFooterRemark" list="footer-remark-options" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
+                                     <input v-model="newFooterRemark" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
                                          class="w-full text-center text-[18px] font-black bg-transparent py-4 px-4 outline-none transition-all placeholder:text-slate-100">
                                      <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg></button>
                                  </div>
@@ -397,10 +397,7 @@
             </div>
         </teleport>
 
-        <datalist id="footer-remark-options">
-            <option value="*允同享皇恩"></option>
-            <option value="完畢"></option>
-        </datalist>
+
 
     </div>
     </teleport>

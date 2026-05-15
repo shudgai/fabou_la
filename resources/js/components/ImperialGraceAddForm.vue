@@ -253,9 +253,7 @@
             </div>
         </div>
 
-        <datalist id="dharma-names">
-            <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
-        </datalist>
+
     </div>
     </div>
     </teleport>

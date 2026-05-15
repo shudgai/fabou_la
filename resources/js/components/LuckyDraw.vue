@@ -289,6 +289,16 @@
             </div>
         </div>
     </div>
+        <!-- Mobile Navbar explicitly added per user request to ensure all interfaces have it -->
+        <mobile-navbar 
+            is-absolute
+            :can-back="true"
+            :can-home="false"
+            :show-action="false"
+            :can-search="false"
+            @back="$emit('close')"
+            class="md:hidden"
+        />
     </div>
     </teleport>
 </template>

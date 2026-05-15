@@ -22,14 +22,14 @@
                     <button @click="luckyDrawInitialMode = false; showLuckyDraw = true"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
                         style="background-color: white;">
-                        <div class="relative w-[341px] h-[341px] bg-white flex items-center justify-center overflow-visible">
+                        <div class="relative w-[290px] h-[290px] bg-white flex items-center justify-center overflow-visible">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[60px] px-3">
-                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[51px] px-3">
+                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 36px !important;">
                                     抽順序
                                 </span>
                             </div>
@@ -50,16 +50,16 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
 
-                        <div class="relative w-[341px] h-[341px] bg-white flex items-center justify-center overflow-visible">
+                        <div class="relative w-[290px] h-[290px] bg-white flex items-center justify-center overflow-visible">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[60px] px-3 pointer-events-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[51px] px-3 pointer-events-none">
                                 <div :class="[
                                      'font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all',
                                      folder.name === '閻王仙師' ? 'text-black' : 'text-[#fbbf24]'
-                                 ]" style="font-weight: 900 !important; font-size: 42px !important;">{{ folder.name }}</div>
+                                 ]" style="font-weight: 900 !important; font-size: 36px !important;">{{ folder.name }}</div>
                                 <div v-if="folder.other_records?.length" class="mt-4 flex items-center space-x-2">
                                     <span class="text-black text-[17px] font-normal tracking-tight drop-shadow-sm">{{ folder.other_records.length }} 筆</span>
                                 </div>
@@ -71,14 +71,14 @@
                     <button v-if="idx === 0" @click="luckyDrawInitialMode = false; showLuckyDraw = true"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
                         style="background-color: white;">
-                        <div class="relative w-[341px] h-[341px] bg-white flex items-center justify-center overflow-visible">
+                        <div class="relative w-[290px] h-[290px] bg-white flex items-center justify-center overflow-visible">
                             <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
                                 <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-redGrad)" style="fill: #ef4444;" opacity="0.8"/>
                                 <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-redGrad)" style="fill: #ef4444;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
                             </svg>
                             <!-- Label Inside -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[60px] px-3">
-                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[51px] px-3">
+                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 36px !important;">
                                     抽順序
                                 </span>
                             </div>
@@ -90,18 +90,18 @@
                 <button @click="luckyDrawInitialMode = true; showLuckyDraw = true"
                     class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none p-[5px]"
                     style="background-color: white;">
-                    <div class="relative w-[341px] h-[341px] bg-white flex items-center justify-center overflow-visible">
-                        <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
-                            <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-roundGrad)" style="fill: #10b981;" opacity="0.8"/>
-                            <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-roundGrad)" style="fill: #10b981;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
-                        </svg>
-                        <!-- Label Inside -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pt-[60px] px-3">
-<span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 42px !important;">
-                                  回合抽籤
-                               </span>
+                        <div class="relative w-[290px] h-[290px] bg-white flex items-center justify-center overflow-visible">
+                            <svg class="w-full h-full transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                                <path d="M4 14C4 11.7909 5.79086 10 8 10H24.5L30 16H56C58.2091 16 60 17.7909 60 20V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V14Z" fill="url(#om-roundGrad)" style="fill: #10b981;" opacity="0.8"/>
+                                <path d="M4 22C4 19.7909 5.79086 18 8 18H56C58.2091 18 60 19.7909 60 22V50C60 52.2091 58.2091 54 56 54H8C5.79086 54 4 52.2091 4 50V22Z" fill="url(#om-roundGrad)" style="fill: #10b981;" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                            </svg>
+                            <!-- Label Inside -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[51px] px-3">
+                                <span class="text-white font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] tracking-tight leading-tight text-center transition-all" style="font-weight: 900 !important; font-size: 36px !important;">
+                                   回合抽籤
+                                </span>
+                            </div>
                         </div>
-                    </div>
                 </button> 
                 </div> <!-- end grid -->
             </div> <!-- end scrollable flex-1 -->

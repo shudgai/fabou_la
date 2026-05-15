@@ -1,5 +1,13 @@
 <template>
     <div class="bg-white h-full flex flex-col relative text-slate-900 imperial-grace-module overscroll-none">
+        <!-- Transition Logo Overlay -->
+        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+            <div class="relative flex flex-col items-center">
+                <logo-imperial-notebook :height="120" spinning />
+                <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">資料載入中...</div>
+            </div>
+        </div>
+
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
@@ -174,9 +182,6 @@
 
             <!-- List Display Area -->
             <div style="padding: 0px 15px 10px 15px;" class="mt-0 relative">
-                <div v-if="loading" class="absolute inset-0 z-20 flex items-start justify-center pt-10 bg-white/60 pointer-events-none">
-                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-slate-100 border-t-indigo-600"></div>
-                </div>
                 <div class="flex flex-col">
                     <div v-if="showSearch" class="pb-3 animate-fade-in">
                         <div class="relative group">

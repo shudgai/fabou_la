@@ -76,6 +76,7 @@
                                     無符合的法號
                                 </div>
                             </div>
+                            <compact-datalist v-model="dharmaSearch" :options="filteredDharmaNames.map(u => u.name)" />
                         </div>
                     </div>
 
@@ -97,6 +98,7 @@
                                 </div>
                             </div>
                         </div>
+                        <compact-datalist v-model="form.user_remarks" :options="relationshipOptions" />
                     </div>
                 </div>
 
@@ -208,6 +210,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import CompactDatalist from './CompactDatalist.vue';
 
 const props = defineProps({
     show: Boolean,
@@ -243,6 +246,10 @@ const showDatePicker = ref(false);
 const activeDharmaDropdown = ref(false);
 const activeRemarksDropdown = ref(false);
 const dharmaSearch = ref('');
+
+watch(dharmaSearch, (val) => {
+    form.value.user_name = val;
+});
 
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 

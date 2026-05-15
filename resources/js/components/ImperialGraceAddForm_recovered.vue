@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div v-if="mode" class="fixed inset-0 z-[2000] flex items-end md:items-center justify-center px-0 imperial-grace-module" style="overscroll-behavior: contain;">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
@@ -135,9 +135,10 @@
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="space-y-1.5">
                                         <label class="app-title font-black text-red-400 ml-1 uppercase tracking-widest">瘜?</label>
-                                        <input v-model="p.custom_name" type="text" placeholder="瘜?" list="dharma-names"
+                                        <input v-model="p.custom_name" type="text" placeholder="法號" 
                                             @keydown.enter.prevent="handlePersonnelEnter(idx)"
                                             class="personnel-name-input app-body w-full h-[46px] border-0 border-b-2 border-slate-300 bg-transparent px-4 font-black text-slate-900 outline-none font-outfit">
+                                        <compact-datalist v-model="p.custom_name" :options="dharmaNames.map(dn => dn.name)" />
                                     </div>
                                     <div class="space-y-1.5">
                                         <label class="app-title font-black text-red-400 ml-1 uppercase tracking-widest">???/label>
@@ -173,13 +174,8 @@
                                             <button @click.stop="activeRelDropdownIdx = (activeRelDropdownIdx === idx ? null : idx)" class="p-2 text-indigo-500 hover:text-indigo-700 transition-all">
                                                 <svg class="w-5 h-5" :class="activeRelDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
-                                            <div v-if="activeRelDropdownIdx === idx" class="absolute left-0 top-full mt-2 w-full bg-white rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar overscroll-contain">
-                                                <div v-for="opt in relationshipOptions" :key="opt"
-                                                     @click.stop="p.relationship = opt; activeRelDropdownIdx = null"
-                                                     class="px-4 py-2.5 flex items-center rounded-xl hover:bg-indigo-50 font-black app-body text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                                    {{ opt }}
-                                                </div>
-                                            </div>
+                                            <compact-datalist v-model="p.relationship" :options="relationshipOptions" />
+
                                         </div>
                                     </div>
                                 </div>
@@ -295,9 +291,7 @@
 
             <mobile-navbar class="md:hidden" :can-back="false" @home="$emit('cancel')" :show-action="false" :can-search="false" is-absolute />
             
-            <datalist id="dharma-names">
-                <option v-for="dn in dharmaNames" :key="dn.id" :value="dn.name" />
-            </datalist>
+
         </div>
 
         <!-- LOCAL DATE PICKER FOR THE ADD FORM -->
@@ -315,6 +309,7 @@ import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import axios from 'axios';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
+import CompactDatalist from './CompactDatalist.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({

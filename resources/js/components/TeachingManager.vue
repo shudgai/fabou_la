@@ -3,69 +3,12 @@
         <!-- Transition Logo Overlay -->
         <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
-                <logo-imperial-notebook :height="120" class="animate-spin-slow" />
+                <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
             </div>
         </div>
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans">
-            <!-- Global Datalists -->
-            <datalist id="instrument-list">
-        <option v-for="t in instrumentTreasures" :key="t.id" :value="t.name" />
-    </datalist>
-    <datalist id="item-name-list">
-                <option v-for="name in uniqueTreasureNames" :key="name" :value="name">{{ name }}</option>
-            </datalist>
-            <datalist id="master-list-entry">
-                <option value="老祖仙師" />
-                <option value="元始仙師" />
-                <option value="道祖仙師" />
-                <option value="靈寶仙師" />
-                <option value="父皇" />
-                <option value="太宰仙師" />
-                <option value="太子" />
-                <option value="閻王仙師" />
-                <option v-for="m in masters" :key="'m'+m.id" :value="m.name" />
-            </datalist>
-            <datalist id="num-list">
-                <option v-for="n in 9" :key="n" :value="n">{{ n }}</option>
-            </datalist>
-            <datalist id="unit-list">
-                <option v-for="u in units" :key="u" :value="u">{{ u }}</option>
-            </datalist>
-            <datalist id="remark-list">
-                <option value="完畢" />
-                <option value="*允同享皇恩" />
-            </datalist>
 
-            <datalist id="dharma-search-list">
-                <option v-for="dn in sortedDharmaNames" :key="'dn'+dn.id" :value="dn.name">{{ dn.name }}</option>
-                <option value="玄通宮">玄通宮</option>
-                <option value="玄應宮">玄應宮</option>
-                <option value="玄心宮">玄心宮</option>
-                <option value="玄妙宮">玄妙宮</option>
-                <option value="玄昇宮">玄昇宮</option>
-                <option value="玄願宮">玄願宮</option>
-                <option value="玄法宮">玄法宮</option>
-                <option value="玄閻宮">玄閻宮</option>
-                <option value="玄窕宮">玄窕宮</option>
-                <option value="玄瑤宮">玄瑤宮</option>
-                <option value="玄義宮">玄義宮</option>
-                <option value="宮主">宮主</option>
-                <option value="宮主副宮主">宮主副宮主</option>
-                <option v-for="g in palacePrioritizedGroups" :key="'g'+g.id" :value="g.name">{{ g.name }}</option>
-            </datalist>
-
-            <datalist id="body-part-list">
-                <option value="患處" />
-                <option value="五大穴" />
-                <option value="第一大穴" />
-                <option value="第二大穴" />
-                <option value="第三大穴" />
-                <option value="第四大穴" />
-                <option value="第五大穴" />
-                <option value="前身三大穴" />
-                <option value="後身二大穴" />
-            </datalist>
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
             <div v-if="!currentFolder && !addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">

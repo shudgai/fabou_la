@@ -1,5 +1,6 @@
 <template>
     <div class="inline-flex items-center justify-center relative transition-transform active:scale-95 group overflow-hidden" 
+          :class="{ 'logo-spin': spinning }"
           :style="`width: ${badgeSize}px; height: ${badgeSize}px;` ">
 
         <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,8 +48,25 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-    height: { type: Number, default: 48 }
+    height: { type: Number, default: 48 },
+    small: { type: Boolean, default: false },
+    spinning: { type: Boolean, default: false }
 });
 
-const badgeSize = computed(() => Math.max(53, Math.round(props.height * 1.05)));
+const badgeSize = computed(() => {
+    const base = Math.max(53, Math.round(props.height * 1.05));
+    const scaled = props.small || props.spinning ? Math.round(base * 0.6) : base;
+    return scaled;
+});
 </script>
+
+<style>
+.logo-spin {
+    animation: logo-spin-keyframes 2.5s linear infinite;
+}
+
+@keyframes logo-spin-keyframes {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+</style>
