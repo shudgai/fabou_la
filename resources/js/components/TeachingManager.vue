@@ -156,10 +156,10 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-x-1 gap-y-0.5 p-2 place-items-center">
+                    <div class="grid grid-cols-2 gap-x-0 gap-y-0.5 p-2 place-items-center">
                         <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                             @click="currentFolder = folder"
-                            class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-0 overflow-visible">
+                            class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[175px] h-[198px] flex-shrink-0 p-0 overflow-visible">
                             <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
                                 <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked" style="transform: translateY(-20px);">
