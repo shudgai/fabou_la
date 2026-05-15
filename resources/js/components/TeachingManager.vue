@@ -119,7 +119,7 @@
                                          父皇仙師<br>每日開示
                                      </span>
                                      <div class="mt-[22px] flex items-center font-biaokai-locked">
-                                         <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
+                                         <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-white" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
                                      </div>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@
                                         父皇仙師<br>開示載錄
                                     </span>
                                     <div class="mt-[22px] flex items-center font-biaokai-locked">
-                                        <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
+                                        <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-white" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-x-1 p-2 place-items-center">
+                    <div class="grid grid-cols-2 gap-1 p-2 place-items-center">
                         <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                             @click="currentFolder = folder"
                             class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-0 overflow-visible">

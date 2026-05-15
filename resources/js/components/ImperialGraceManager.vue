@@ -115,7 +115,7 @@
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
-            <div class="grid grid-cols-2 gap-x-1 p-2 place-items-center">
+            <div class="grid grid-cols-2 gap-1 p-2 place-items-center">
                 <button v-for="folder in mastersFolders" :key="folder.id" 
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none overflow-visible">
