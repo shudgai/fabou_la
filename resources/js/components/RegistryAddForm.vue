@@ -2,7 +2,7 @@
     <teleport to="body">
     <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0">
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('cancel')"></div>
+        <div class="fixed inset-0 bg-slate-900/60" @click="$emit('cancel')"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
@@ -405,7 +405,7 @@
         <!-- Master Bottom Sheet (root-level teleport to avoid transition interference) -->
         <teleport to="body">
             <div v-if="showMasterDropdown" class="fixed inset-0 z-[5500] flex items-end justify-center">
-                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px]" @click="showMasterDropdown = false"></div>
+                <div class="fixed inset-0 bg-slate-900/80" @click="showMasterDropdown = false"></div>
                 <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
                     <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
                         <span class="text-[20px] font-black text-slate-900">選擇仙師</span>

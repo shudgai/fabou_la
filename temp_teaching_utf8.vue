@@ -110,16 +110,16 @@
                         <!-- Category 1: Daily Teaching (Large Folder Style) -->
                         <button v-if="user?.permissions?.can_see_daily_teachings"
                             @click="currentCategory = 'daily'"
-                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
-                            <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                            <div class="relative w-full max-w-[310px] aspect-square">
+                                <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                                 <!-- Label Inside -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2">
-                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai pt-2">
+                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
                                          父皇仙師<br>每日開示
                                      </span>
-                                     <div class="mt-6 flex items-center font-biaokai-locked">
-                                         <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
+                                     <div class="mt-6 flex items-center font-biaokai">
+                                         <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
                                      </div>
                                 </div>
                             </div>
@@ -128,16 +128,16 @@
                         <!-- Category 2: Master Teachings (Large Gold Folder Style) -->
                         <button v-if="user?.permissions?.can_see_teaching_folders"
                             @click="currentCategory = 'masters'"
-                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
-                            <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                            class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
+                            <div class="relative w-full max-w-[310px] aspect-square">
+                                <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
                                 <!-- Label Inside -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2">
-                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai pt-2">
+                                    <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
                                         父皇仙師<br>開示載錄
                                     </span>
-                                    <div class="mt-6 flex items-center font-biaokai-locked">
-                                        <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
+                                    <div class="mt-6 flex items-center font-biaokai">
+                                        <span class="text-red-600 font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
                                     </div>
                                 </div>
                             </div>
@@ -156,28 +156,29 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-[2px] p-2 place-items-center">
-                        <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
-                            @click="currentFolder = folder"
-                            class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 bg-white p-0 overflow-visible">
-                            <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[275px] h-[177px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
-                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked">
-                                     <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-                                          style="font-size: 11px !important;">父皇仙師開示載錄</div>
+                <div class="grid grid-cols-2 gap-1 justify-items-center w-full max-w-[400px] mx-auto">
+                    <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
+                        @click="currentFolder = folder"
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-2 bg-white">
+                        <div class="relative w-full max-w-[180px] aspect-[245/158]">
+                            <img src="/image/registry_book_yellow_v6.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
+                             <div class="absolute inset-0 flex flex-col items-center justify-end pb-4 font-biaokai">
+                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+                                      style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[26px] font-biaokai-locked text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                                          style="font-weight: 900 !important; font-size: 26px !important;">
-                                          {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
-                                     </div>
-                                     <div class="mt-[2px] flex items-center font-biaokai-locked">
-                                         <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai-locked text-white"
-                                               style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
-                                     </div>
+                                 <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[2px] font-biaokai text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                      style="font-weight: 900 !important; font-size: 26px !important;">
+                                      {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                  </div>
-                            </div>
-                        </button>
-                    </div>
+                                 <div class="mt-[2px] flex items-center font-biaokai">
+                                     <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai text-red-600"
+                                           style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                 </div>
+                             </div>
+                        </div>
+                    </button>
+                </div>
+
                 </div>
             </template>
 
@@ -196,6 +197,1272 @@
                     @save="saveItem"
                     @close="addMode = false"
                 />
+
+                <!-- LEGACY ADD VIEW REMOVED -->
+                <div v-if="false && addMode" class="flex-1 overflow-y-auto custom-scrollbar bg-white w-full md:fixed md:inset-0 md:z-[1000] md:bg-slate-900/40 md:flex md:items-center md:justify-center md:p-4 md:overflow-hidden">
+                    <div class="hidden md:block absolute inset-0 -z-10" @click="addMode = false"></div>
+                    <div class="bg-white w-full h-full relative flex flex-col md:h-full rounded-none md:rounded-3xl md:shadow-2xl md:overflow-hidden animate-slide-up">
+                        <!-- Desktop Header -->
+                        <div class="hidden md:flex px-6 py-5 border-b border-slate-100 items-center justify-between shrink-0 bg-slate-50/30">
+                            <h3 class="text-[22px] font-black text-slate-900 tracking-tight">父皇仙師每日開示載錄</h3>
+                            <button @click="addMode = false" class="text-slate-300 hover:text-red-500 transition-colors p-2 active:scale-90">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="space-y-4 pb-32 flex-1 p-4 md:overflow-y-auto custom-scrollbar">
+                                <div class="grid grid-cols-2 gap-3 pb-1 mt-1">
+                                    <div v-if="activeEntryTab === 'single'" class="space-y-0.5">
+                                        <div class="flex items-center justify-between px-1">
+                                            <label class="app-title ml-1">日期</label>
+                                            <button @click="activeDate = 'date'" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90">
+                                                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                        </div>
+                                        <div class="relative flex items-center h-[52px]">
+                                            <input v-model="form.date" type="text" placeholder="年/月/日 或 註記文字" 
+                                                class="w-full h-full border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[10px] focus:ring-0 outline-none app-title text-slate-900 font-bold text-[16px]">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-0.5 relative">
+                                        <label class="app-title ml-1">仙師</label>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
+                                            <input v-model="masterNameInput" @change="resolveMasterId" @focus="activeMasterDropdownId = 'mainMaster'" placeholder="選擇或輸入仙師..." class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400">
+                                            <button @click.prevent="activeMasterDropdownId = (activeMasterDropdownId === 'mainMaster' ? null : 'mainMaster')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100 shrink-0">
+                                                <svg class="w-4 h-4 transition-transform" :class="activeMasterDropdownId === 'mainMaster' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+
+                                            <!-- Custom Dropdown Menu -->
+                                             <div v-if="activeMasterDropdownId === 'mainMaster'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] p-1.5 animate-fade-in max-h-[250px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="m in ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" :key="m"
+                                                     @click.stop="masterNameInput = m; resolveMasterId(); activeMasterDropdownId = null"
+                                                     class="px-4 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ m }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <template v-if="activeEntryTab === 'single'">
+
+                                <div class="grid grid-cols-12 gap-3 py-1.5 border-b border-blue-100/10">
+                                    <div class="col-span-7 space-y-0.5">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-[13px] text-slate-400 font-bold px-1">對象 / 群組</label>
+                                            <button @click.prevent="showDharmaPicker = true" class="text-[11px] bg-indigo-50 text-white px-2 py-0.5 rounded-full font-bold active:scale-95 transition-all">選擇器</button>
+                                        </div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
+                                            <input type="text" 
+                                                   @input="e => { activePractitionerDropdownId = 'mainPract'; handleDharmaSearchInput(e) }" 
+                                                   @focus="activePractitionerDropdownId = 'mainPract'"
+                                                   @keyup.enter="handleDharmaSearchInput"
+                                                   v-model="dharmaSearchQuery"
+                                                   autocomplete="off"
+                                                   placeholder="搜尋法號或群組..." 
+                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-sky-400 placeholder:text-[17px]">
+                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainPract' ? null : 'mainPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activePractitionerDropdownId === 'mainPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-if="mainSearchFilteredDharmaNames.length > 0" class="px-5 py-2 text-[12px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 mt-2 mb-1">法號</div>
+                                                <div v-for="dn in mainSearchFilteredDharmaNames" :key="'dn'+dn.id"
+                                                     @click.stop="dharmaSearchQuery = dn.name; activePractitionerDropdownId = null; handleDharmaSearchInput({target: {value: dn.name}})"
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ dn.name }}
+                                                </div>
+                                                <div v-if="mainSearchFilteredGroups.length > 0" class="px-5 py-2 text-[12px] font-bold text-indigo-500 uppercase tracking-widest bg-slate-50/50 mb-1 rounded-t-2xl">群組</div>
+                                                <div v-for="g in mainSearchFilteredGroups" :key="'g'+g.id"
+                                                     @click.stop="g.name === '各宮' ? (showPalacePicker = true) : triggerGroupSelection(g)"
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ formatGroupName(g.name) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-5 space-y-0.5">
+                                        <label class="text-[13px] text-slate-400 font-bold px-1">備註對象</label>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent pl-[10px] pr-[2px] py-[2px] flex items-center h-[52px] relative">
+                                            <input v-model="form.target_remarks" 
+                                                   @focus="activeTargetRemarksDropdown = 'single'"
+                                                   autocomplete="off"
+                                                   placeholder="備註對象..." 
+                                                   class="w-full bg-transparent border-none text-[17px] text-slate-900 focus:ring-0 outline-none font-black placeholder-blue-300 placeholder:text-[17px]">
+                                            <button @click.stop="activeTargetRemarksDropdown = (activeTargetRemarksDropdown === 'single' ? null : 'single')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5 transition-transform" :class="activeTargetRemarksDropdown === 'single' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activeTargetRemarksDropdown === 'single'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[610] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="opt in relationshipOptions" :key="opt"
+                                                     @click.stop="form.target_remarks = opt; activeTargetRemarksDropdown = false"
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ opt }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Full-Width Selected Personnel Tag Display (Utilizes full page width per user request) -->
+                                    <!-- Concise Group Display or Individual Tags -->
+                                    <div v-if="form.dharma_name_ids.length > 0 || dharmaSearchQuery === '在場全體'" class="col-span-12 mt-1 animate-fade-in">
+                                        <div class="flex flex-wrap gap-2.5 px-1 py-1">
+                                            <!-- Group Mode (Only if more than 1 person or global group) -->
+                                            <template v-if="(activeModalGroup || currentMatchedGroup || dharmaSearchQuery === '在場全體') && (form.dharma_name_ids.length > 1 || dharmaSearchQuery === '在場全體')">
+                                                <div @click="activeModalGroup = (activeModalGroup || currentMatchedGroup); showGroupMembersModal = true" 
+                                                     class="bg-indigo-600 text-white px-4 py-3 rounded-2xl app-body flex items-center shadow-md cursor-pointer active:scale-95 transition-all">
+                                                    <span class="mr-2 w-2.5 h-2.5 bg-white rounded-full animate-pulse"></span>
+                                                    <span class="font-black text-[17px] !text-white" style="color: white !important;">群組：{{ formatGroupName(activeModalGroup?.name || currentMatchedGroup?.name || dharmaSearchQuery) }} <span v-if="form.dharma_name_ids.length > 0" class="!text-white" style="color: white !important;">({{ form.dharma_name_ids.length }}人)</span></span>
+                                                    <span class="ml-2 text-[12px] underline font-black tracking-tight text-white/60">查看明細</span>
+                                                    <button @click.stop="form.dharma_name_ids = []; dharmaSearchQuery = ''" class="ml-4 text-white/60 hover:text-white transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </div>
+                                            </template>
+
+                                            <!-- Individual Mode -->
+                                            <template v-else>
+                                                <div v-for="id in form.dharma_name_ids" :key="'sel'+id" 
+                                                     class="bg-white border border-indigo-600 text-slate-900 px-3 py-3 rounded-2xl app-body flex items-center shadow-sm active:scale-95 transition-all">
+                                                    <button @click.prevent="toggleDharmaName(id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                    <span class="mr-2 w-2 h-2 bg-indigo-500 rounded-full shrink-0"></span>
+                                                    <span class="font-black">{{ getDharmaNameText(id) }}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-blue-50/50 border-b border-blue-100/30 py-3 pl-[10px] pr-4 flex flex-col space-y-1.5">
+                                    <label class="text-[13px] text-slate-400 font-bold px-1 uppercase tracking-wider">輸入開示內容</label>
+                                    <div class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent overflow-hidden">
+                                        <textarea v-model="form.content" @paste="e => handleSmartPaste(e, form, null)" rows="1" @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }" placeholder="輸入開示內容" class="w-full bg-transparent border-none app-body text-[17px] font-black text-slate-900 focus:ring-0 outline-none pl-[10px] pr-[2px] py-[2px] resize-none overflow-hidden min-h-[52px] h-[52px] leading-relaxed placeholder-sky-400"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Footer Remarks紧贴開示框下方 -->
+                                <div class="px-4">
+                                    <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase px-1 mb-2">結尾備註</div>
+                                    <div v-if="footerRemarksList.length > 0" class="mb-2 space-y-1">
+                                        <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center border-0 border-b-2 border-slate-300 bg-transparent px-3 py-2 min-h-[44px]">
+                                            <span class="flex-1 text-[16px] font-bold text-slate-900">{{ r || ' ' }}</span>
+                                            <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-400 hover:text-red-500 ml-2 text-[18px] leading-none transition-all">×</button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-hidden h-[52px]">
+                                        <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none px-4 py-3 placeholder-sky-400">
+                                    </div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-[14px] text-slate-400 font-bold uppercase tracking-[0.1em]">整筆智慧錄入 (v2)</div>
+                                    <div class="flex space-x-2">
+                                        <label class="bg-indigo-50 text-indigo-600 px-3 py-[10px] rounded-2xl text-[14px] font-black cursor-pointer active:scale-95 transition-all" style="font-size: 14px !important;">
+                                            匯入檔案
+                                            <input type="file" class="hidden" accept=".txt,.csv,.xlsx,.xls,.docx" @change="handleBatchFileImport">
+                                        </label>
+                                        <button @click="processBatchText" class="bg-[#FFB266] text-white px-4 py-[10px] rounded-2xl text-[14px] font-black active:scale-95 transition-all" style="font-size: 14px !important; color: white !important;">
+                                            智慧解析
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
+                                    <button v-if="batchImportContent" @click="batchImportContent = ''" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all active:scale-90 shadow-sm border border-slate-100">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                    </button>
+                                    <div class="p-5 flex-1 flex flex-col">
+                                        <textarea v-model="batchImportContent" 
+                                                  @paste="handleBatchPaste"
+                                                  placeholder="整筆智慧錄入 (V2) (不可手動輸入文字，僅供貼上或匯入檔案)&#10;&#10;在此貼上資料...&#10;格式例：&#10;父皇開示給對象：&#10;內容...&#10;賜降：&#10;1.法寶名稱:詳情" 
+                                                  class="w-full flex-1 bg-transparent border-none text-[17px] text-slate-800 focus:ring-0 outline-none resize-none font-black leading-relaxed placeholder:text-rose-400 placeholder:font-black placeholder:text-[17px]"></textarea>
+
+                                        <!-- Instructions -->
+                                        <div class="mt-4 p-4 bg-white/60 rounded-2xl border border-blue-50 text-[13px] text-slate-400 leading-normal">
+                                            <p class="font-bold text-slate-500 mb-1">💡 智慧貼上說明：</p>
+                                            <ul class="space-y-1 list-disc pl-4">
+                                                <li>支援從 Excel 貼上多行紀錄</li>
+                                                <li>自動識別「仙師」與「對象」</li>
+                                                <li>偵測到「賜降：」會自動解析清單</li>
+                                                <li>多筆紀錄請保持基本段落區隔</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Preview of raw lines -->
+                                <div v-if="batchImportContent.trim()" class="mt-8 space-y-4">
+                                    <div class="text-[14px] text-slate-400 font-bold px-2 flex items-center">
+                                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
+                                        預覽清單 ({{ rawLines.length }} 行)
+                                    </div>
+                                    <div class="bg-white border border-slate-200 rounded-3xl shadow-lg divide-y divide-slate-100 custom-scrollbar">
+                                        <div v-for="(line, idx) in rawLines" :key="idx" class="px-5 py-3 text-[15px] font-bold text-slate-900 flex items-start gap-3 hover:bg-slate-50">
+                                            <span class="text-[11px] font-black text-slate-300 w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                            <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Added Treasures List - Hidden per user request to simplify UI -->
+                            <div v-if="false && Object.keys(groupedPendingItems).length > 0" class="mt-4 pt-4 border-t border-slate-100 space-y-0.5">
+                                <div class="px-2 py-4 text-[13px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center">
+                                    📝 已加入降寶 ({{ form.items.length }})
+                                </div>
+
+                                <div v-for="(group, gName, gIdx) in groupedPendingItems" :key="gName" class="py-2.5 px-4 rounded-[28px] mb-2 border border-slate-100 bg-white hover:bg-slate-50 transition-colors cursor-pointer shadow-sm" @click="expandedDetails[gName] = !expandedDetails[gName]">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex flex-col flex-1 min-w-0 px-2">
+                                            <span class="text-[17px] font-black text-slate-900 truncate">
+                                                {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}
+                                                <template v-if="group.length === 1 && !group[0].name && !isSpecialInstrument(gName) && !gName.includes('丹') && !gName.includes('符') && !gName.includes('令') && !gName.includes('疏') && !gName.includes('香') && !gName.includes('由')">
+                                                    <span v-if="group[0].details" class="text-indigo-600 font-black ml-1"> : {{ group[0].details }}</span>
+                                                </template>
+                                            </span>
+
+                                            <!-- Specialized mode main details (Directly visible indented line) -->
+                                            <div v-if="!(group.length === 1 && !group[0].name && !isSpecialInstrument(gName) && !gName.includes('丹') && !gName.includes('符') && !gName.includes('令') && !gName.includes('疏') && !gName.includes('香') && !gName.includes('由'))" 
+                                                 class="mt-1 pl-6 text-[16px] text-slate-800 font-black flex items-center justify-between">
+                                                <span class="flex-1">{{ getMainDetails(group) }}</span>
+                                                <button @click.stop="removeMagicItemByGroup(gName)" class="text-red-300 hover:text-red-500 transition-colors p-1 opacity-40 hover:opacity-100">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
+                                                </button>
+                                            </div>
+                                            <div v-if="expandedDetails[gName]" class="mt-3 pl-4 space-y-3 animate-fade-in border-l-2 border-slate-100 ml-1">
+                                                <div v-for="(m, midx) in group" :key="midx" class="text-[15px]">
+                                                    <template v-if="m.name || m.sub_name?.trim()">
+                                                        <div class="flex items-start group">
+                                                            <span class="text-slate-300 font-black mr-2 shrink-0">+</span>
+                                                            <div class="flex flex-col flex-1 min-w-0">
+                                                                <div class="flex items-center">
+                                                                    <span class="font-bold text-slate-700 truncate">{{ m.name ? m.name : '項目內容' }}</span>
+                                                                    <span v-if="m.details" class="ml-2 text-indigo-500 font-black px-2 py-0.5 bg-indigo-50 rounded-2xl text-[13px]">{{ m.details }}</span>
+                                                                    <button @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                                                </div>
+                                                                <div v-if="m.sub_name?.trim()" class="mt-1 text-[13px] text-slate-400 font-medium leading-tight">
+                                                                    {{ m.sub_name.trim() }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <button v-else-if="group.length > 1" @click.stop="removeMagicItem(m.uid)" class="ml-2 text-rose-300 text-[13px]">✕ (空內容)</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 pr-2" 
+                                             v-if="group.length === 1 && !group[0].name && !isSpecialInstrument(gName) && !gName.includes('丹') && !gName.includes('符') && !gName.includes('令') && !gName.includes('疏') && !gName.includes('香') && !gName.includes('由')">
+                                            <button @click.stop="removeGroup(gName)" class="text-rose-200 hover:text-rose-400 p-2 active:scale-90 transition-transform">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" /></svg>
+                                            </button>
+                                        </div>
+                                        <div class="w-10 shrink-0" v-else></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div v-else class="py-20 md:pt-10 flex flex-col items-center justify-center text-slate-300">
+                                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                </div>
+                                <p class="text-[17px] font-bold">目前無降寶明細</p>
+                                <p class="text-[14px] mt-1">請點選下方「降寶詳情」按鈕開始輸入</p>
+                            </div>
+
+                            <!-- Floating Action Bar (Side-by-Side): Fixed above mobile navbar -->
+                            <div class="fixed bottom-[7dvh] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none p-[3px] pb-[1px] bg-white z-[300] flex items-center space-x-4 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style="padding-bottom: calc(1px + env(safe-area-inset-bottom, 0px));">
+                                <button v-if="currentFolder?.id === 0 || activeEntryTab === 'single'"
+                                    @click.prevent="itemsDetailMode = true" 
+                                    class="w-[45%] bg-indigo-600 text-white rounded-2xl h-[55px] shadow-lg border border-indigo-500 active:scale-95 transition-all text-[16px] font-black" style="color: white !important;">
+                                    <span style="color: white !important;">降寶內容</span>
+                                </button>
+
+                                <button @click="saveItem" :disabled="saving" class="flex-1 bg-amber-500 text-white rounded-2xl h-[55px] active:scale-95 disabled:opacity-50 text-[19px] font-black shadow-lg shadow-amber-200/40" style="color: white !important;">
+                                    {{ saving ? '錄入中...' : '確認存檔' }}
+                                </button>
+                            </div>
+                            <!-- Space for Floating Button -->
+                            <div class="h-96"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Magic Items Detail View -->
+                <div v-if="itemsDetailMode" class="items-detail-container fixed inset-0 z-[1100] bg-[#f8fafc] flex flex-col overflow-y-auto animate-fade-in border-x border-slate-200 shadow-2xl">
+                    <div class="bg-white px-6 py-5 border-b border-slate-100 sticky top-0 z-[510] flex items-center justify-between shadow-sm">
+                        <div class="flex items-center">
+                            <button @click.prevent="handleItemsDetailClose" class="text-slate-400 mr-4 p-2 bg-slate-50 rounded-full active:scale-90 transition-all hover:bg-slate-100">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                            <div class="flex items-center gap-2">
+                        <logo-imperial-notebook :height="36" class="md:hidden" />
+                        <h1 class="text-[26px] text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">降寶詳情</h1>
+                    </div>
+                        </div>
+                    </div>
+
+                    <div class="px-0 pt-0 pb-[20px] space-y-5">
+                        <div class="bg-white rounded-2xl border-b border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                                <div class="flex items-center justify-between mb-4 px-1">
+                                    <div class="flex items-center min-w-0">
+                                        <span class="w-7 h-7 bg-white border border-indigo-600 text-indigo-600 rounded-2xl flex items-center justify-center text-[13px] font-black mr-3 shrink-0 shadow-sm">1</span>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="text-[17px] font-black text-slate-900 leading-none">錄入法寶</span>
+                                            <span class="text-[12px] text-indigo-500 font-bold mt-1 truncate">
+                                                對象：{{ activeBatchIndex !== null ? getRecipientName(batchRecords[activeBatchIndex]) : getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks}) }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <button v-if="newItemName" @click="addNewItemQuickly" 
+                                            :class="isAddingFlash ? 'bg-emerald-500 scale-110 shadow-emerald-200' : 'bg-red-500 shadow-red-200'"
+                                            class="w-[40px] h-[40px] rounded-2xl flex items-center justify-center text-white text-[26px] font-black leading-none active:scale-95 transition-all duration-300 shadow-lg" style="color: white !important;"> + </button>
+                                </div>
+                                <div class="grid grid-cols-12 gap-3 items-end">
+                                    <div :class="(isSpecialInstrument(newItemName) || newItemName.includes('由')) ? 'col-span-12' : 'col-span-8'" class="space-y-1 relative">
+                                        <div class="text-[13px] text-slate-400 font-bold px-2 mb-0.5 text-left">法寶名稱</div>
+                                        <div class="flex items-center">
+                                            <div class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent flex items-center transition-all focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-md py-[11px] relative">
+                                                <input v-model="newItemName" ref="treasureInput" @input="activeTreasureDropdownId = 'main'" @click.stop
+                                                       autocomplete="off"
+                                                       class="treasure-name-input w-full bg-transparent border-none px-4 text-[18px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-slate-300">
+                                                <div class="flex items-center space-x-1 pr-2">
+                                                    <button @click.stop="activeTreasureDropdownId = (activeTreasureDropdownId === 'main' ? null : 'main')" class="p-1 text-slate-300 hover:text-indigo-500 transition-colors">
+                                                        <svg class="w-5 h-5" :class="activeTreasureDropdownId === 'main' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                    <button v-if="newItemName" @click="newItemName = ''" class="p-1 text-slate-300 hover:text-red-400 active:scale-95 transition-all">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Custom Treasure Dropdown -->
+                                        <div v-if="activeTreasureDropdownId === 'main'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                            <div v-for="name in uniqueTreasureNames.filter(n => !newItemName || n.toLowerCase().includes(newItemName.toLowerCase()))" :key="name" 
+                                                 @click.stop="newItemName = name; activeTreasureDropdownId = null" 
+                                                 class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                {{ name }}
+                                            </div>
+                                        </div>
+                                        <div v-if="newItemName === '令牌' || newItemName === '令牌 '" class="mt-3 flex flex-wrap gap-2 px-1 animate-fade-in">
+                                            <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
+                                                    :key="t"
+                                                    @click="newItemName = t"
+                                                    class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-2xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                {{ t }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div v-if="magicItemCategory === 'default' && !isSpecialInstrument(newItemName) && !newItemName.includes('由') && !hasSubDetailData && !newItemMainRemarks.trim()" class="col-span-4 space-y-1">
+                                        <div class="text-[13px] text-slate-400 font-bold px-2 mb-0.5 text-center">天份</div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 transition-all focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-md py-[11px] relative">
+                                            <input v-model="newItemDays" 
+                                                   @focus="activeDaysDropdownId = 'main'" @click.stop
+                                                   class="w-full bg-transparent border-none text-[18px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder-slate-300" 
+                                                   placeholder="0">
+                                            <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
+
+                                            <!-- Custom Days Dropdown (Showing above) -->
+                                            <div v-if="activeDaysDropdownId === 'main'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="n in 9" :key="n" 
+                                                     @click.stop="newItemDays = n; activeDaysDropdownId = null" 
+                                                     class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                    {{ n }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Main Item Remarks (Toggleable) - Hidden when adding details -->
+                                <div v-if="!hasSubDetailData" class="mt-4 text-left">
+                                    <button @click="showMainRemarks = !showMainRemarks" 
+                                            :class="showMainRemarks ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400'"
+                                            class="text-[13px] font-black flex items-center px-4 py-2.5 rounded-2xl transition-all active:scale-95">
+                                        <svg :class="showMainRemarks ? 'rotate-180' : ''" class="w-4 h-4 mr-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" /></svg>
+                                        {{ showMainRemarks ? '隱藏主備註' : '加入主備註' }}
+                                    </button>
+                                    <div v-if="showMainRemarks" class="mt-3 animate-fade-in">
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-2 flex flex-col shadow-sm focus-within:border-indigo-100 transition-all">
+                                            <textarea v-model="newItemMainRemarks" rows="2" 
+                                                   @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                                   placeholder="輸入備註內容..." 
+                                                   class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-2 placeholder-indigo-200 resize-none overflow-hidden leading-tight"></textarea>
+                                            <!-- Quick Tags (Datalist simulation for textarea) -->
+                                            <div class="flex flex-wrap gap-2 pb-2 px-1">
+                                                <button v-for="opt in ['完畢', '*允同享皇恩']" :key="opt"
+                                                        @click="newItemMainRemarks = (newItemMainRemarks ? newItemMainRemarks + '\n' : '') + opt"
+                                                        class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-2xl text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
+                                                    {{ opt }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SPECIALIZED INPUTS (Immediate Category fields) -->
+                                <div v-if="magicItemCategory !== 'default'" class="mt-2.5 space-y-2.5 animate-fade-in">
+                                    <div v-if="magicItemCategory === '三光金丹'" class="grid grid-cols-4 gap-2">
+                                        <div class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                <input v-model="newItemSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemSun" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                <input v-model="newItemMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemMoon" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                <input v-model="newItemLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <compact-datalist v-model="newItemLight" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                            </div>
+                                        </div>
+                                        <div v-if="!hasSubDetailData && !newItemMainRemarks.trim()" class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-2 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainDays" 
+                                                       @focus="activeDaysDropdownId = 'mainDays'"
+                                                       class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
+
+                                                <div v-if="activeDaysDropdownId === 'mainDays'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="n" 
+                                                         @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-else-if="magicItemCategory === '金丹'" class="grid grid-cols-3 gap-2">
+                                        <div class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainTimes" 
+                                                       @focus="activeDaysDropdownId = 'mainTimes'" @click.stop
+                                                       class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
+
+                                                <!-- Custom Times Dropdown -->
+                                                <div v-if="activeDaysDropdownId === 'mainTimes'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="'mt'+n" 
+                                                         @click.stop="newItemMainTimes = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainHours" 
+                                                       @focus="activeDaysDropdownId = 'mainHours'" @click.stop
+                                                       class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">粒</span>
+
+                                                <!-- Custom Hours Dropdown -->
+                                                <div v-if="activeDaysDropdownId === 'mainHours'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="'mh'+n" 
+                                                         @click.stop="newItemMainHours = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-if="!hasSubDetailData && !newItemMainRemarks.trim()" class="space-y-1">
+                                            <div class="text-[11px] text-slate-400 font-bold px-2">天份</div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                <input v-model="newItemMainDays" 
+                                                       @focus="activeDaysDropdownId = 'mainDays2'"
+                                                       class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">天</span>
+
+                                                <div v-if="activeDaysDropdownId === 'mainDays2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="n in 9" :key="n" 
+                                                         @click.stop="newItemMainDays = n; activeDaysDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                        {{ n }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TALISMANS / SHUWUN / TAI-LING -->
+                                    <div v-else-if="magicItemCategory === '符令' || magicItemCategory === '太令'" class="space-y-2.5">
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div class="space-y-1">
+                                                <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                    <input v-model="newItemSubSize" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="尺寸">
+                                                </div>
+                                            </div>
+                                            <div v-if="!hasSubDetailData && !newItemMainRemarks.trim()" class="space-y-1">
+                                                <div class="text-[11px] text-slate-400 font-bold px-2">天數</div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                    <input v-model="newItemSubDetails" 
+                                                           @focus="activeDaysDropdownId = 'subDetails'" @click.stop
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
+                                                    <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
+
+                                                    <div v-if="activeDaysDropdownId === 'subDetails'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-for="n in 9" :key="n" 
+                                                             @click.stop="newItemSubDetails = n; activeDaysDropdownId = null" 
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                            {{ n }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent px-3 py-[10px] flex items-center relative">
+                                                        <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'mainFulingPract'" @focus="activePractitionerDropdownId = 'mainFulingPract'" autocomplete="off" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                            <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'mainFulingPract' ? null : 'mainFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'mainFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <div v-if="activePractitionerDropdownId === 'mainFulingPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                <div v-for="dn in detailModalFilteredDharmaNames" :key="'mainfp'+dn.id" 
+                                                     @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
+                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                    {{ dn.name }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- INCENSE COIL (Strict search) -->
+                                    <div v-else-if="magicItemCategory === '香環'" class="grid grid-cols-2 gap-2">
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                            <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
+                                            <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
+                                        </div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                            <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="盒數">
+                                            <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">盒</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- FU-LU INCENSE -->
+                                    <div v-else-if="magicItemCategory === '福祿香'" class="grid grid-cols-2 gap-2">
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                            <input v-model="newItemSubDetails" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                            <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
+                                        </div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                            <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                            <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">包</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CLEARING & INSTRUMENT SPECIAL CASE (Visible even in default category) -->
+                                <div v-if="!hasSubDetailData && (isSpecialInstrument(newItemName) || newItemName.includes('由'))" class="mt-4 space-y-4 px-1 mb-4">
+                                    <!-- 1. Practitioner -->
+                                    <div class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
+                                        <div class="relative group">
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                <input v-model="newItemPractitioner" @input="activePractitionerDropdownId = 'pract2'" @focus="activePractitionerDropdownId = 'pract2'" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入法號...">
+                                                <button @click.stop="activePractitionerDropdownId = (activePractitionerDropdownId === 'pract2' ? null : 'pract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                    <svg class="w-5 h-5" :class="activePractitionerDropdownId === 'pract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                                <div v-if="activePractitionerDropdownId === 'pract2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="dn in detailModalFilteredDharmaNames" :key="'pract2'+dn.id" 
+                                                         @click.stop="newItemPractitioner = dn.name; activePractitionerDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                        {{ dn.name }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 2. Instrument Name - Only show if the name is generic -->
+                                    <div v-if="(newItemName === '令牌' || newItemName === '法器' || newItemName?.includes('由')) && newItemName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemName === k)" class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
+                                            <input v-model="newItemSubInstrumentName" list="instrument-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="使用的法器...">
+                                        </div>
+                                        <compact-datalist v-model="newItemSubInstrumentName" :options="instrumentTreasures.map(t => t.name)" />
+                                    </div>
+                                    <!-- 3. Body Part -->
+                                    <div class="space-y-1.5">
+                                        <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
+                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300">
+                                            <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" placeholder="輸入部位...">
+                                        </div>
+                                        <compact-datalist v-model="newItemSubBodyPart" :options="['患處', '五大穴', '第一大穴', '第二大穴', '第三大穴', '第四大穴', '第五大穴', '前身三大穴', '後身二大穴']" />
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 pt-5 border-t border-slate-100">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center space-x-2 px-1">
+                                            <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
+                                            <span class="text-[17px] font-black text-slate-800">內容物 / 細項</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Staged Contents List (Modern Chip/Tag display) -->
+                                    <div v-if="stagedContents.length > 0" class="flex flex-wrap gap-2 mb-4 px-1">
+                                        <div v-for="(sc, sci) in stagedContents" :key="sci" 
+                                             class="bg-white border border-indigo-100 rounded-2xl px-3 py-2 flex items-center shadow-sm animate-fade-in group hover:border-indigo-300 transition-all">
+                                            <span class="text-[14px] font-black text-slate-700">
+                                                {{ sc.name }}{{ sc.details ? ' : ' + sc.details : '' }}{{ sc.remarks?.trim() ? ' (' + sc.remarks.trim() + ')' : '' }}
+                                            </span>
+                                            <button @click="stagedContents.splice(sci, 1)" class="ml-2 text-slate-300 hover:text-red-500 transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-3 animate-fade-in mt-1">
+                                        <div class="grid grid-cols-12 gap-2.5 items-end">
+                                            <div :class="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由')) ? 'col-span-12' : 'col-span-8'" class="space-y-1 relative">
+                                                <div class="flex justify-between items-end px-1 mb-0.5">
+                                                    <div class="text-[12px] text-slate-400 font-bold text-left">內容物名稱</div>
+                                                    <button v-if="(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由'))" @click="stageContent" class="text-red-500 text-[26px] font-black leading-none active:scale-90 transition-all -mb-1.5">＋</button>
+                                                </div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 py-[10px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                    <input v-model="newItemSubName" @input="activeSubTreasureDropdownId = 'sub'"
+                                                           class="w-full bg-transparent border-none outline-none shadow-none text-[17px] font-black text-slate-900 focus:ring-0 text-left placeholder-sky-400 placeholder:text-[17px] placeholder:font-black" 
+                                                           placeholder="輸入法寶名稱">
+                                                    <div class="flex items-center space-x-2 pr-1">
+                                                        <button @click.stop="activeSubTreasureDropdownId = (activeSubTreasureDropdownId === 'sub' ? null : 'sub')" class="p-1 text-slate-300 hover:text-indigo-500">
+                                                            <svg class="w-5 h-5" :class="activeSubTreasureDropdownId === 'sub' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                        <button v-if="newItemSubName" @click="newItemSubName = ''" class="text-slate-300 hover:text-red-400 active:scale-95 transition-all">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!-- Custom Sub-Treasure Dropdown -->
+                                                <div v-if="activeSubTreasureDropdownId === 'sub'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                    <div v-for="name in uniqueTreasureNames.filter(n => !newItemSubName || n.toLowerCase().includes(newItemSubName.toLowerCase()))" :key="'sub'+name" 
+                                                         @click.stop="newItemSubName = name; activeSubTreasureDropdownId = null" 
+                                                         class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                        {{ name }}
+                                                    </div>
+                                                </div>
+                                                <div v-if="newItemSubName === '令牌' || newItemSubName === '令牌 '" class="mt-3 flex flex-wrap gap-2 px-1 animate-fade-in">
+                                                    <button v-for="t in ['太令令牌', '極令令牌', '道令令牌', '元令令牌', '靈令令牌', '玉皇令令牌', '皇令牌', '龍令令牌', '王令令牌']" 
+                                                            :key="t"
+                                                            @click="newItemSubName = t"
+                                                            class="px-4 py-[10px] bg-blue-50 text-blue-600 rounded-2xl text-[17px] font-black border border-blue-100 active:scale-95 transition-all">
+                                                        {{ t }}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div v-if="magicItemSubCategory === 'default' && !(isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由'))" class="col-span-4 space-y-1.5">
+                                                <div class="flex justify-between items-end px-1">
+                                                    <div class="text-[13px] text-slate-400 font-bold select-none">天份</div>
+                                                    <button @click="stageContent" class="text-red-500 text-[26px] font-black leading-none active:scale-90 transition-all -mb-1.5">＋</button>
+                                                </div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent overflow-visible flex items-center px-1 transition-all py-[10px] relative">
+                                                    <input v-model="newItemDetailsExtraDays"
+                                                           @focus="activeDaysDropdownId = 'subExtra'" @click.stop
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" 
+                                                           placeholder="0">
+                                                    <span class="text-slate-400 font-black mr-0.5 shrink-0 text-[12px]">天</span>
+
+                                                    <!-- Custom Days Dropdown (Showing above) -->
+                                                    <div v-if="activeDaysDropdownId === 'subExtra'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-for="n in 9" :key="n" 
+                                                             @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                            {{ n }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Specialized Sub-Inputs -->
+                                        <div v-if="magicItemSubCategory !== 'default'" class="space-y-2.5">
+                                            <div v-if="magicItemSubCategory === '三光金丹'" class="grid grid-cols-4 gap-2">
+                                            <div class="space-y-1">
+                                                <div class="text-[11px] text-slate-400 font-bold px-2">日</div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                    <input v-model="newItemSubSun" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubSun" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                    <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="text-[11px] text-slate-400 font-bold px-2">月</div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                    <input v-model="newItemSubMoon" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubMoon" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                    <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="text-[11px] text-slate-400 font-bold px-2">光</div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px]">
+                                                    <input v-model="newItemSubLight" list="num-list" class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <compact-datalist v-model="newItemSubLight" :options="[1,2,3,4,5,6,7,8,9]" />
+                                                    <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">粒</span>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="flex justify-between items-end px-2">
+                                                    <div class="text-[11px] text-slate-400 font-bold">天份</div>
+                                                    <button @click="stageContent" class="text-red-500 text-[20px] font-black leading-none active:scale-90 transition-all -mb-1">＋</button>
+                                                </div>
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                    <input v-model="newItemDetailsExtraDays" 
+                                                           @focus="activeDaysDropdownId = 'subExtraSlight'" @click.stop
+                                                           class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                    <span class="text-slate-400 font-bold ml-0.5 shrink-0 text-[11px]">天</span>
+
+                                                    <!-- Custom Days Dropdown -->
+                                                    <div v-if="activeDaysDropdownId === 'subExtraSlight'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                        <div v-for="n in 9" :key="'ses'+n" 
+                                                             @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                             class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                            {{ n }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-else-if="magicItemSubCategory === '金丹'" class="grid grid-cols-3 gap-2">
+                                                <div class="space-y-1">
+                                                    <div class="text-[11px] text-slate-400 font-bold px-2">吃</div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemSubTimes" 
+                                                               @focus="activeDaysDropdownId = 'subTimes'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                        <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
+
+                                                        <!-- Custom Times Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subTimes'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'st'+n" 
+                                                                 @click.stop="newItemSubTimes = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <div class="text-[11px] text-slate-400 font-bold px-2">洗</div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemSubHours" 
+                                                               @focus="activeDaysDropdownId = 'subHours'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                        <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">粒</span>
+
+                                                        <!-- Custom Hours Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subHours'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'sh'+n" 
+                                                                 @click.stop="newItemSubHours = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <div class="flex justify-between items-end px-2">
+                                                        <div class="text-[11px] text-slate-400 font-bold">天份</div>
+                                                        <button @click="stageContent" class="text-red-500 text-[20px] font-black leading-none active:scale-90 transition-all -mb-1">＋</button>
+                                                    </div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                        <input v-model="newItemDetailsExtraDays" 
+                                                               @focus="activeDaysDropdownId = 'subExtra2'" @click.stop
+                                                               class="w-full bg-transparent border-none text-[16px] font-bold text-slate-900 focus:ring-0 outline-none text-center" placeholder="0">
+                                                        <span class="text-slate-400 font-bold ml-1 shrink-0 text-[13px]">天</span>
+
+                                                        <!-- Custom Days Dropdown -->
+                                                        <div v-if="activeDaysDropdownId === 'subExtra2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="n in 9" :key="'se2'+n" 
+                                                                 @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                {{ n }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-else-if="magicItemSubCategory === '符令' || magicItemSubCategory === '太令'" class="space-y-2.5">
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div class="space-y-1">
+                                                    <div class="text-[11px] text-slate-400 font-bold px-2">尺寸</div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                        <input v-model="newItemSubSize" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="尺寸">
+                                                        </div>
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <div class="flex justify-between items-end px-2">
+                                                            <div class="text-[11px] text-slate-400 font-bold">天數</div>
+                                                            <button @click="stageContent" class="text-red-500 text-[20px] font-black leading-none active:scale-90 transition-all -mb-1">＋</button>
+                                                        </div>
+                                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-3 py-[10px] relative overflow-visible">
+                                                            <input v-model="newItemDetailsExtraDays" 
+                                                                   @focus="activeDaysDropdownId = 'extraDaysModal'" @click.stop
+                                                                   class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="天份">
+                                                            <span class="text-slate-400 font-black shrink-0 text-[13px]"> 天份</span>
+
+                                                            <div v-if="activeDaysDropdownId === 'extraDaysModal'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                                <div v-for="n in 9" :key="n" 
+                                                                     @click.stop="newItemDetailsExtraDays = n; activeDaysDropdownId = null" 
+                                                                     class="px-5 h-[38px] flex items-center justify-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
+                                                                    {{ n }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent px-3 py-[10px] flex items-center relative">
+                                                        <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subFulingPract'" @focus="activeSubPractitionerDropdownId = 'subFulingPract'" autocomplete="off" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder:text-[17px]" placeholder="開立人 (法號)...">
+                                                        <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subFulingPract' ? null : 'subFulingPract')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                            <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subFulingPract' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                        <div v-if="activeSubPractitionerDropdownId === 'subFulingPract'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                            <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'spsub'+dn.id" 
+                                                                 @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                                                 class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                                {{ dn.name }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div v-else-if="magicItemSubCategory === '香環'" class="grid grid-cols-2 gap-2">
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="個數">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">個</span>
+                                            </div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="盒數">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">盒</span>
+                                            </div>
+                                            </div>
+                                            <div v-else-if="magicItemSubCategory === '福祿香'" class="grid grid-cols-2 gap-2">
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                <input v-model="newItemDetailsExtraDays" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">根</span>
+                                            </div>
+                                            <div class="border-0 border-b-2 border-slate-300 bg-transparent flex items-center px-4 py-[10px]">
+                                                <input v-model="newItemSubSheets" list="num-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-center placeholder:text-[17px]" placeholder="0">
+                                                <span class="text-slate-400 font-black ml-1 shrink-0 text-[13px]">包</span>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                            <!-- SUB-ITEM INSTRUMENT SPECIAL CASE (Always accessible if detected) -->
+                                            <div v-if="isSpecialInstrument(newItemSubName) || newItemSubName?.includes('由')" class="mt-4 space-y-4">
+                                                <!-- 1. Practitioner -->
+                                                <div class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">執法</div>
+                                                    <div class="relative group">
+                                                        <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300 relative">
+                                                            <input v-model="newItemSubPractitioner" @input="activeSubPractitionerDropdownId = 'subPract2'" @focus="activeSubPractitionerDropdownId = 'subPract2'" autocomplete="off" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入法號...">
+                                                            <button @click.stop="activeSubPractitionerDropdownId = (activeSubPractitionerDropdownId === 'subPract2' ? null : 'subPract2')" class="p-1 text-slate-900 opacity-60 hover:text-indigo-500 hover:opacity-100">
+                                                                <svg class="w-5 h-5" :class="activeSubPractitionerDropdownId === 'subPract2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                            </button>
+                                                            <div v-if="activeSubPractitionerDropdownId === 'subPract2'" class="absolute left-0 bottom-full mb-2 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[600] overflow-hidden p-1.5 animate-fade-in max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                                <div v-for="dn in dharmaNames.filter(d => !newItemSubPractitioner || d.name.includes(newItemSubPractitioner))" :key="'sp2'+dn.id" 
+                                                                     @click.stop="newItemSubPractitioner = dn.name; activeSubPractitionerDropdownId = null" 
+                                                                     class="px-5 h-[38px] flex items-center md:rounded-2xl hover:bg-indigo-600 hover:text-white font-black text-[17px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer whitespace-nowrap">
+                                                                    {{ dn.name }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- 2. Instrument Name - Only show if the name is generic -->
+                                                <div v-if="(newItemSubName === '令牌' || newItemSubName === '法器' || newItemSubName?.includes('由')) && newItemSubName !== '皇令牌' && !['極令令牌', '元令令牌', '道令令牌', '靈令令牌', '玉皇令令牌', '龍令令牌', '王令令牌', '太令令牌'].some(k => newItemSubName === k)" class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">法器名稱</div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                        <input v-model="newItemSubInstrumentName" 
+                                                               list="instrument-list" 
+                                                               class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" 
+                                                               placeholder="使用的法器...">
+                                                    </div>
+                                                </div>
+                                                <!-- 3. Body Part -->
+                                                <div class="space-y-1.5">
+                                                    <div class="text-[13px] text-slate-400 font-bold px-1 text-left select-none">清煞部位</div>
+                                                    <div class="border-0 border-b-2 border-slate-300 bg-transparent px-4 h-[52px] flex items-center transition-all focus-within:border-blue-300">
+                                                        <input v-model="newItemSubBodyPart" list="body-part-list" class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 outline-none text-left placeholder-sky-400 placeholder:text-[17px]" placeholder="輸入部位...">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        <div class="mt-2 text-left">
+                                            <button @click="showSubRemarks = !showSubRemarks" class="text-[11px] font-bold text-slate-400 flex items-center px-1">
+                                                {{ showSubRemarks ? '隱藏細項備註' : '+ 加入細項備註' }}
+                                            </button>
+                                            <div v-if="showSubRemarks" class="mt-2 animate-fade-in">
+                                                <div class="border-0 border-b-2 border-slate-300 bg-transparent px-3 py-1 flex flex-col shadow-sm">
+                                                    <textarea v-model="newItemRemarks" rows="2"
+                                                           @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                                           class="w-full bg-transparent border-none text-[17px] font-black text-slate-900 focus:ring-0 text-left py-2 placeholder-sky-400 resize-none overflow-hidden leading-tight" 
+                                                           placeholder="加入內容物備註..."></textarea>
+                                                    <div class="flex flex-wrap gap-2 pb-2 px-1">
+                                                        <button v-for="opt in ['完畢', '*允同享皇恩']" :key="opt"
+                                                                @click="newItemRemarks = (newItemRemarks ? newItemRemarks + '\n' : '') + opt"
+                                                                class="px-2 py-0.5 bg-white/50 border border-blue-100 rounded-2xl text-[11px] font-bold text-blue-500 hover:bg-blue-100 transition-colors">
+                                                            {{ opt }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Secondary Quick Add Bar (Mirrors the top header for better accessibility when form is long) -->
+                                <div v-if="newItemName" class="mt-8 mb-4 px-1 py-4 flex items-center justify-between border-t-2 border-slate-50">
+                                    <div class="flex items-center text-[22px] font-black text-slate-800">
+                                        <span class="w-8 h-8 rounded-full bg-orange-900 text-slate-100 flex items-center justify-center text-[18px] mr-2.5 shrink-0">1</span>
+                                        <span>錄入法寶 <span class="text-indigo-600">({{ stripMasterPrefix(getRecipientName({dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks})) }})</span></span>
+                                    </div>
+                                    <button @click="addNewItemQuickly" 
+                                            :class="isAddingFlash ? 'text-emerald-500 scale-125' : 'text-red-500'"
+                                            class="text-[36px] font-light leading-none active:scale-95 transition-all duration-300"> + </button>
+                                </div>
+
+                        <!-- History List (always visible, outside collapsible) -->
+                        <div v-if="form.items.length > 0" class="mt-4 px-1 border-t border-slate-50 pt-4 mb-2">
+                            <div class="text-[12px] font-bold text-slate-400 mb-2 flex items-center justify-between">
+                                <span>已加入記錄 ({{ form.items.length }})</span>
+                                <span class="text-[10px] opacity-50">最下方為最新</span>
+                            </div>
+                            <div class="space-y-3 pr-1">
+                                <div v-for="(subItems, gName, gIdx) in groupItems(form.items)" :key="gIdx" class="border border-indigo-600 p-3.5 rounded-2xl shadow-sm space-y-2 text-left bg-white">
+                                    <div class="text-[16px] font-black text-slate-900 leading-tight">
+                                        <template v-if="form.items.length > 1">{{ gIdx + 1 }}. </template>{{ stripMasterPrefix(gName) }}{{ getMainDetails(subItems) ? ' : ' + getMainDetails(subItems) : '' }}
+                                    </div>
+                                    <div class="space-y-2.5">
+                                        <div v-for="(item, idx) in subItems" :key="item.uid" class="flex items-start justify-between pl-3 border-l-2 border-slate-200">
+                                            <div class="flex-1">
+                                                <div class="text-[14px] font-bold flex items-start leading-tight text-slate-700">
+                                                    <span v-if="form.items.length > 1" class="w-5 h-5 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-[10px] font-black mr-2 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                                    <template v-if="item.name"><span class="text-slate-500 mr-1.5 shrink-0">{{ item.name }}</span><span v-if="item.details || item.remarks || item.sub_name">：</span></template><span class="text-slate-900">{{ item.details }}<template v-if="item.remarks || item.sub_name">（{{ item.remarks || item.sub_name }}）</template></span>
+                                                </div>
+                                            </div>
+                                            <button @click="removeMagicItem(item.uid)" class="ml-2 text-slate-400 hover:text-red-500 transition-all text-[18px] leading-none">×</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Remarks (independent, always visible, multi-entry) -->
+                        <div class="px-2 mt-8 mb-4">
+                            <div class="flex items-center space-x-2 mb-4 px-1">
+                                <span class="w-6 h-6 bg-slate-100 text-slate-500 rounded-2xl flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-width="2.5" /></svg>
+                                </span>
+                                <div class="text-[14px] font-black text-slate-400 tracking-[0.1em] uppercase">結尾備註</div>
+                            </div>
+
+                            <!-- Added entries list (Refined design) -->
+                            <div v-if="footerRemarksList.length > 0" class="mb-4 space-y-2">
+                                <div v-for="(r, ri) in footerRemarksList" :key="ri" class="flex items-center border-2 border-indigo-600 rounded-2xl px-4 py-3 shadow-sm animate-fade-in group bg-white">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mr-3"></div>
+                                    <span class="flex-1 text-[17px] font-black text-slate-900">{{ r || ' ' }}</span>
+                                    <button @click="footerRemarksList.splice(ri, 1); syncFooterRemarks()" class="text-slate-400 hover:text-red-500 transition-all p-1">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Input + Add button (Modernized) -->
+                            <div class="relative">
+                                <div class="flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-hidden focus-within:border-indigo-200 focus-within:bg-white focus-within:shadow-lg transition-all group">
+                                    <input v-model="newFooterRemark" list="remark-list" placeholder="例如：完畢..." @keyup.enter="addFooterRemark" class="flex-1 bg-transparent border-none text-[18px] font-black text-slate-900 focus:ring-0 outline-none px-5 py-4 placeholder-slate-300">
+                                    <button @click="addFooterRemark" class="-ml-[10px] w-10 h-10 bg-indigo-600 text-white rounded-2xl flex items-center justify-center active:scale-95 transition-all shadow-md" style="color: white !important;">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Close Button -->
+                        <div class="px-2 pb-10 flex justify-center">
+                            <button @click.prevent="handleItemsDetailClose" 
+                                    class="text-slate-400 font-bold text-[16px] active:scale-[0.98] transition-all">
+                                離開視窗
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                        <div class="pt-8 border-t border-slate-100 flex flex-col space-y-5">
+                            <!-- High-Fidelity Card Preview - Hidden per user request -->
+                            <div v-if="false && (form.content.trim() || form.items.length > 0)" class="bg-white rounded-[28px] p-5 border border-slate-200 shadow-xl shadow-slate-100/50 space-y-4 animate-fade-in relative overflow-hidden">
+                                <div class="absolute top-0 right-0 px-3 py-1 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-xl shadow-sm">預覽</div>
+
+                                <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
+                                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{{ (form.date || '').replace(/-/g, '/') }}</span>
+                                    <span class="text-[16px] font-black text-slate-900 leading-tight mt-1.5 pr-8">
+                                        {{ (masterNameInput || form.master_name || '仙師') }}開示給：{{ getRecipientName({ dharma_name_ids: form.dharma_name_ids, target_remarks: form.target_remarks }) }}
+                                    </span>
+                                </div>
+
+                                <!-- Recipient Detail Box (if group) -->
+                                <div v-if="getFullRecipientList({ dharma_name_ids: form.dharma_name_ids })" class="text-[14px] font-bold text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-2.5 border border-indigo-100/50 space-y-1">
+                                    <div v-if="getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).groupName" class="flex items-center text-indigo-700">
+                                        <span class="mr-2 text-[15px]">🏘️</span> 
+                                        <span>群組：{{ getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).groupName }}</span>
+                                    </div>
+                                    <div v-if="getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).names.length > 0" class="flex items-start">
+                                        <span class="mr-2 text-[15px] shrink-0">👥</span>
+                                        <span class="opacity-80">人員：{{ getFullRecipientList({ dharma_name_ids: form.dharma_name_ids }).names.join(', ') }}</span>
+                                    </div>
+                                </div>
+
+                                <div v-if="form.content?.trim()" class="text-[17px] text-black font-black leading-tight whitespace-pre-wrap px-1">
+                                    {{ form.content.trim() }}
+                                </div>
+
+                                <div v-if="form.items.length > 0" class="space-y-3 pt-2 border-t border-slate-50">
+                                    <div class="text-[12px] font-black text-slate-300 uppercase tracking-widest pl-1 mb-1">賜降：</div>
+                                    <div v-for="(group, gName, gIdx) in groupedPendingItems" :key="gName" class="text-[16px] text-slate-700 font-black flex flex-col px-1">
+                                        <div class="flex items-center">
+                                            <span class="text-indigo-400 mr-2 shrink-0">💎</span>
+                                            {{ gIdx + 1 }}. {{ stripMasterPrefix(gName) }}{{ getMainDetails(group) ? ' : ' + getMainDetails(group) : '' }}
+                                        </div>
+                                        <div v-if="group.some(m => m.name || m.sub_name)" class="pl-7 space-y-1 mt-1">
+                                            <div v-for="m in group.filter(sm => sm.name || sm.sub_name)" :key="m.uid" class="text-[14px] text-slate-400 font-bold flex items-center">
+                                                <span class="mr-1.5 opacity-50">+</span> {{ m.name }}{{ m.details ? ' : ' + m.details : '' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fixed bottom-[calc(7dvh+env(safe-area-inset-bottom))] left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0 md:translate-x-0 md:max-w-none px-6 py-[2px] bg-white/95 border-t border-slate-100 z-[520] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button @click="handleItemsDetailClose(true)" class="w-full bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border border-indigo-500 rounded-[24px] h-[55px] active:scale-95 text-[17px] font-black leading-tight flex flex-col items-center justify-center shadow-lg shadow-indigo-100 transition-all hover:brightness-110" style="color: white !important;">
+                                        <span style="color: white !important;">完成並新增</span>
+                                        <span class="text-[11px] opacity-80" style="color: white !important;">下一位人員</span>
+                                    </button>
+                                    <button @click.prevent="handleItemsDetailClose('save')" :disabled="saving" class="w-full bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-[24px] h-[55px] active:scale-95 disabled:opacity-50 text-[20px] font-black shadow-xl shadow-amber-200/40 transition-all hover:brightness-110" style="color: white !important;">
+                                        確認存檔
+                                    </button>
+                                </div>
+                            </div>
+                            <button v-if="form.items.length === 0" @click="handleItemsDetailClose(false)" class="w-full text-slate-400 py-3 text-[14px] font-bold">
+                                (無降寶，直接返回列表)
+                            </button>
+                        </div>
+                        <div class="flex justify-center">
+                            <p class="text-[14px] text-slate-400 mt-4 font-medium px-6 text-center leading-relaxed">※ 保存後將同時儲存對象、仙師及所有開示與降寶內容。</p>
+                        </div>
+
+                    <!-- Bottom Navbar in Detail Mode for consistency -->
+                        <mobile-navbar 
+                            :can-back="true"
+                            :show-action="false"
+                            @back="itemsDetailMode = false"
+                            @home="$emit('goHome')"
+                        />
+                    </div>
+
+                <!-- Dharma Picker Modal -->
+                <div v-if="showDharmaPicker" class="fixed inset-0 z-[400] bg-[#FFB266]/40 flex items-end justify-center sm:items-center animate-fade-in">
+                    <div class="bg-white w-full h-[85dvh] sm:h-[70dvh] sm:max-w-xl rounded-t-[32px] sm:rounded-[32px] flex flex-col shadow-2xl overflow-hidden animate-slide-up">
+                        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
+                            <div>
+                                <h3 class="text-[20px] font-bold text-slate-900">選擇對象</h3>
+                                <p class="text-[14px] text-slate-400">可搜尋「法號」或「群組名稱」</p>
+                            </div>
+                            <button @click.prevent="showDharmaPicker = false" class="bg-slate-100 text-slate-500 w-8 h-8 rounded-full flex items-center justify-center active:scale-90 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" /></svg>
+                            </button>
+                        </div>
+
+                        <div class="px-6 py-4 shrink-0 bg-slate-50/50">
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" /></svg>
+                                </span>
+                                <input v-model="pickerSearch" type="text" placeholder="輸入法號或群組名稱進行搜尋..." 
+                                       class="w-full bg-white border border-slate-300 rounded-2xl py-3.5 pl-11 pr-4 text-[17px] text-slate-900 focus:ring-4 focus:ring-indigo-100 transition-all outline-none shadow-sm font-black placeholder:text-slate-400">
+                            </div>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto px-6 py-2 custom-scrollbar">
+                            <div class="mb-4 mt-2">
+                                <div class="text-[14px] text-slate-400 font-bold px-1 mb-3 tracking-widest uppercase flex items-center">
+                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2"/></svg>
+                                    {{ pickerSearch ? '法號搜尋結果' : '所有法號' }}
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button v-for="dn in filteredPickerResults" :key="dn.id" 
+                                            @click.prevent="toggleDharmaName(dn.id)"
+                                            :class="form.dharma_name_ids.includes(dn.id) ? 'bg-white border-indigo-600 ring-2 ring-indigo-50' : 'bg-white border-slate-200'"
+                                            class="flex items-center px-4 py-3.5 rounded-2xl border transition-all text-[17px] font-black active:scale-[0.98] shadow-sm">
+                                        <div class="w-5 h-5 rounded-md border-2 flex items-center justify-center mr-3 shrink-0"
+                                             :class="form.dharma_name_ids.includes(dn.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-slate-50 border-slate-200 shadow-inner'">
+                                            <svg v-if="form.dharma_name_ids.includes(dn.id)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        </div>
+                                        <span class="truncate text-[17px] text-slate-900">{{ dn.name }}</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div v-if="filteredGroups.length > 0" class="mb-6">
+                                <div class="text-[14px] text-indigo-500 font-bold px-1 mb-3 tracking-widest uppercase flex items-center">
+                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
+                                    群組搜尋結果
+                                </div>
+                                <div class="space-y-2">
+                                        <div v-for="group in filteredGroups" :key="group.id" 
+                                             class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm mb-2">
+                                            <div @click.prevent="toggleGroupAccordion(group.id)" 
+                                                 class="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-slate-50">
+                                                <div class="flex items-center space-x-3">
+                                                    <div @click.stop.prevent="toggleGroupSelection(group)" 
+                                                         class="w-6 h-6 rounded-2xl border flex items-center justify-center transition-all shadow-sm"
+                                                         :class="isGroupFullySelected(group) ? 'bg-indigo-600 border-indigo-600' : 'bg-slate-50 border-slate-200'">
+                                                        <svg v-if="isGroupFullySelected(group)" class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                    </div>
+                                                    <span class="text-[17px] font-black text-slate-900">{{ group.name }}</span>
+                                                    <span v-if="group.name !== '在場全體' && group.name !== '全體殿生'" class="text-[14px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-bold">{{ group.dharma_names.length }}人</span>
+                                                </div>
+                                                <svg :class="expandedGroupPicker === group.id ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                            </div>
+                                            <div v-if="(expandedGroupPicker === group.id || pickerSearch) && group.name !== '在場全體' && group.name !== '全體殿生'" class="bg-slate-50/50 px-4 py-3 border-t border-slate-100 grid grid-cols-2 gap-2 animate-fade-in">
+                                                <button v-for="member in group.dharma_names" :key="member.id" 
+                                                        @click.prevent="toggleDharmaName(member.id)"
+                                                        class="flex items-center p-2 rounded-2xl text-[17px] transition-all bg-white border border-slate-200 shadow-sm"
+                                                        :class="form.dharma_name_ids.includes(member.id) ? 'border-indigo-600 ring-1 ring-indigo-600/10' : ''">
+                                                    <div class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 shadow-sm" :class="form.dharma_name_ids.includes(member.id) ? 'bg-indigo-600' : 'bg-slate-200'"></div>
+                                                    <span class="truncate font-black text-slate-900">{{ member.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 border-t border-slate-100 flex items-center space-x-4 shrink-0 bg-white">
+                            <button @click.prevent="form.dharma_name_ids = []" class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black active:scale-95 transition-all text-[17px]">全部清除</button>
+                            <button @click.prevent="showDharmaPicker = false" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-black active:scale-95 transition-all text-[17px] shadow-lg shadow-indigo-200" style="color: white !important;">確認選擇</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group Members Detail Modal -->
+                <div v-if="showGroupMembersModal && activeModalGroup" class="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+                    <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up max-h-[80dvh]">
+                        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-indigo-50/30">
+                            <div>
+                                <h3 class="text-[20px] font-bold text-slate-900 tracking-tight">群組成員：{{ activeModalGroup?.name }}</h3>
+                                <p v-if="activeModalGroup?.name !== '在場全體'" class="text-[14px] text-slate-400 font-bold">共 {{ activeModalGroup?.dharma_names?.length || 0 }} 位人員</p>
+                            </div>
+                            <button @click.prevent="showGroupMembersModal = false" class="bg-white text-slate-400 w-8 h-8 rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                            <!-- Simplified view for "在場全體" -->
+                            <div v-if="activeModalGroup?.name === '在場全體' || activeModalGroup?.name === '全體殿生'" class="py-16 flex flex-col items-center justify-center space-y-6 animate-fade-in">
+                                <div class="w-24 h-24 bg-indigo-50 rounded-[32px] flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100/50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
+                                </div>
+                                <div class="text-center space-y-2">
+                                    <div class="text-[26px] font-black text-slate-800 tracking-tight">{{ activeModalGroup.name }}</div>
+                                    <p class="text-[16px] text-slate-400 font-bold">
+                                        {{ activeModalGroup.name === '在場全體' ? '已指定對象為在場所有成員' : '已指定對象為全體殿生' }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Standard Group View -->
+                            <template v-else>
+                                <div v-if="activeModalGroupGrouped.length > 0" class="grid grid-cols-2 gap-x-3 gap-y-6">
+                                    <div v-for="pg in activeModalGroupGrouped" :key="pg.palaceName" class="space-y-2">
+                                        <div v-if="pg.palaceName !== '全體成員'" class="text-[14px] font-black text-indigo-600 uppercase tracking-tighter flex items-center px-1 border-b border-indigo-50 pb-1">
+                                            <span class="w-2 h-2 bg-indigo-500 rounded-full mr-1.5"></span>
+                                            {{ pg.palaceName }}
+                                        </div>
+                                        <div class="grid grid-cols-1 gap-2">
+                                            <div v-for="member in pg.members" :key="member.id" 
+                                                 class="flex items-center px-3 py-2.5 bg-white rounded-2xl border border-indigo-600 shadow-sm">
+                                                <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </button>
+                                                <span class="text-[16px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else-if="activeModalGroup" class="grid grid-cols-2 gap-3">
+                                    <div v-for="member in activeModalGroup.dharma_names" :key="member.id" 
+                                         class="flex items-center px-4 py-3 bg-white rounded-2xl border border-indigo-600 shadow-sm">
+                                        <button @click.stop="toggleDharmaName(member.id)" class="mr-2 text-slate-400 hover:text-red-500 transition-colors shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <span class="text-[17px] font-black text-slate-900 truncate">{{ stripMasterPrefix(member.name) }}</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="p-6 border-t border-slate-100 bg-white">
+                            <button @click.prevent="showGroupMembersModal = false" class="w-full py-3.5 bg-indigo-600 text-white border border-indigo-500 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg" style="color: white !important;">
+                                關閉預覽
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Palace Picker Modal -->
+                <div v-if="showPalacePicker" class="fixed inset-0 z-[700] bg-indigo-900/60 backdrop-blur-sm flex items-center justify-center p-6 animate-fade-in" @click.self="showPalacePicker = false">
+                    <div class="bg-white w-full max-w-lg rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-slide-up border border-white/20">
+                        <div class="px-8 py-7 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-indigo-50/30 to-white">
+                            <div>
+                                <h3 class="text-[24px] font-black text-slate-900 tracking-tight">各宮選擇</h3>
+                                <p class="text-[14px] text-slate-400 font-bold mt-0.5">請選擇要指定的宮名</p>
+                            </div>
+                            <button @click="showPalacePicker = false" class="w-10 h-10 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-100 transition-all active:scale-90">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                        </div>
+                        <div class="p-8 overflow-y-auto max-h-[60dvh] custom-scrollbar">
+                            <div class="grid grid-cols-2 gap-4">
+                                <button v-for="p in palaceOrder" 
+                                        :key="p"
+                                        @click="selectPalaceGroup(p)"
+                                        class="px-2 py-5 bg-white border border-slate-200 rounded-[24px] text-[17px] font-black text-slate-900 hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center shadow-sm whitespace-nowrap">
+                                    <svg class="w-4 h-4 mr-2 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    {{ p }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-8 bg-slate-50/50 border-t border-slate-100">
+                            <button @click="selectPalaceGroup('各宮')" 
+                                    class="w-full py-5 bg-indigo-600 text-white rounded-[24px] text-[20px] font-black shadow-xl shadow-indigo-200 active:scale-[0.98] transition-all flex items-center justify-center group" style="color: white !important;">
+                                <span class="mr-2" style="color: white !important;">✨</span>
+                                <span style="color: white !important;">選擇全部 (各宮)</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke: white !important;"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Main List View -->
                  <div :class="[!addMode ? 'block' : 'hidden md:block']" 
@@ -4012,7 +5279,6 @@ onUnmounted(() => {
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-.font-biaokai-locked { font-family: 'DFKai-SB', '標楷體', serif !important; }
 @keyframes slide-up { from { transform: translateY(10%); } to { transform: translateY(0); } }
 .animate-slide-up { animation: slide-up 0.15s ease-out; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }

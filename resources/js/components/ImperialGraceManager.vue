@@ -32,7 +32,7 @@
 
         <!-- Perfectly Centered Premium Confirmation / Status Modal -->
         <teleport to="body">
-        <div v-if="persistentToast" class="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-md animate-fade-in pointer-events-auto">
+        <div v-if="persistentToast" class="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-900/60 animate-fade-in pointer-events-auto">
             <div class="bg-white w-full max-w-[340px] rounded-[48px] p-10 shadow-[0_30px_100px_rgba(0,0,0,0.3)] animate-slide-up flex flex-col items-center relative border border-white/50">
 
                 <!-- Icon Section -->
@@ -83,13 +83,13 @@
         <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
             <button 
                 @click="currentCategory = 'masters'"
-                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
-                <div class="relative w-full max-w-[310px] aspect-square">
-                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 font-biaokai">
-                        <div class="text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-biaokai" style="font-size: 38px !important; color: #fbbf24 !important;">重大皇恩專區</div>
-                        <div class="mt-6 flex items-center font-biaokai">
-                            <span class="text-white font-normal tracking-tight drop-shadow-sm font-biaokai" style="font-size: 24px !important;">共 {{ totalCount }} 筆</span>
+                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
+                <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
+                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2 text-[#fbbf24] tracking-tight leading-tight text-center">
+                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[38px] text-[#fbbf24]">重大皇恩專區</div>
+                        <div class="mt-6 flex items-center font-biaokai-locked">
+                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[24px]">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -98,13 +98,13 @@
             <!-- 第二個按鈕：未求得重大皇恩 (直接進入內容) -->
             <button 
                 @click="currentFolder = { id: 'unobtained', name: '未求得重大皇恩' }; currentCategory = 'masters'"
-                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[310px]">
-                <div class="relative w-full max-w-[310px] aspect-square">
-                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105" alt="Book Icon">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 font-biaokai">
-                        <div class="text-[#fbbf24] tracking-tight leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-biaokai" style="font-size: 30px !important; color: #fbbf24 !important;"><span class="text-[24px] opacity-90 font-biaokai">未求得</span><br>重大皇恩專區</div>
-                        <div class="mt-1 flex items-center font-biaokai" style="transform: translateY(-8px);">
-                            <span class="text-white font-normal tracking-tight drop-shadow-sm font-biaokai" style="font-size: 24px !important;">共 {{ unobtainedTotal }} 筆</span>
+                class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
+                <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
+                    <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked">
+                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-[#fbbf24]"><span class="text-[24px] opacity-90 font-biaokai-locked">未求得</span><br>重大皇恩專區</div>
+                        <div class="mt-1 flex items-center font-biaokai-locked -translate-y-2">
+                            <span class="text-white font-normal tracking-tight font-biaokai-locked text-[24px]">共 {{ unobtainedTotal }} 筆</span>
                         </div>
                     </div>
                 </div>
@@ -115,17 +115,17 @@
             <div class="pt-[5px] pb-2 flex items-center relative min-h-[10px] cursor-pointer" @click="resetToRoot">
             </div>
 
-            <div class="grid grid-cols-2 gap-[10px] p-2 place-items-center">
+            <div class="grid grid-cols-2 gap-[2px] p-2 place-items-center">
                 <button v-for="folder in mastersFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center active:scale-95 transition-all p-2 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none bg-transparent">
-                    <div class="relative w-full max-w-[180px] aspect-[245/158]">
-                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 scale-[1.2] mix-blend-multiply drop-shadow-[0_10px_20px_rgba(0,0,0,0.12)]" alt="Book Icon">
-                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-3 text-[#fbbf24] font-biaokai">
-                              <div class="text-[13px] mb-[3px] tracking-widest font-biaokai" style="color: #fbbf24 !important;">重大皇恩專區</div>
-                              <div class="text-[25px] font-black font-biaokai" style="color: #fbbf24 !important; -webkit-text-stroke: 0.5px #fbbf24;">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
-                             <div class="mt-1.5 flex items-center font-biaokai" style="transform: translateY(-9px);">
-                                 <span class="text-white font-normal font-biaokai" style="font-size: 13px !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                        class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none bg-white hover:bg-white active:bg-white overflow-visible">
+                    <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
+                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[275px] h-[177px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked">
+                              <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
+                              <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked mt-[24px]">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
+                             <div class="mt-1 flex items-center font-biaokai-locked -translate-y-[7px]">
+                                 <span class="text-white font-normal font-biaokai-locked text-[14px]">{{ folderCounts[folder.id] || 0 }} 筆</span>
                              </div>
                          </div>
                     </div>
@@ -140,6 +140,8 @@
                 </button>
             </div>
         </div>
+
+
 
         <!-- Level 2: Folder Contents -->
         <div v-else-if="currentFolder && !addMode" class="px-0 bg-white w-full pb-32">
@@ -247,7 +249,7 @@
                         <teleport to="body">
                         <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
                             <!-- Backdrop -->
-                            <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
+                            <div class="absolute inset-0 bg-slate-900/60" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
                             <div class="w-full h-full bg-white flex flex-col animate-slide-up pointer-events-auto">
@@ -1177,6 +1179,13 @@ onUnmounted(() => {
 .animate-slide-up { animation: slideUp 0.15s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Locked Font Utility for Administrative Consistency */
+.font-biaokai-locked {
+    font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;
+}
+.text-gold-locked { color: #fbbf24 !important; }
+.stroke-gold-locked { -webkit-text-stroke: 0.5px #fbbf24; }
 
 /* Custom Scrollbar for a cleaner mobile look */
 .custom-scrollbar { -webkit-overflow-scrolling: touch; }

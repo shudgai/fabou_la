@@ -2,7 +2,7 @@
     <teleport to="body">
     <div v-if="mode" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center px-0 teaching-module" style="overscroll-behavior: contain;">
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
+        <div class="fixed inset-0 bg-slate-900/60" @click="$emit('close')"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[95dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] animate-slide-up flex flex-col">
@@ -52,7 +52,7 @@
                      <div class="bg-blue-50/30 border-2 border-dashed border-blue-100 rounded-[28px] overflow-hidden min-h-[400px] flex flex-col relative">
                         <!-- Floating Clear Cross Button -->
                         <button v-if="batchImportContent" @click="batchImportContent = ''" 
-                            class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur shadow-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white active:scale-90 transition-all border border-slate-100">
+                            class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white shadow-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white active:scale-90 transition-all border border-slate-100">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>

@@ -1,7 +1,7 @@
 <template>
     <teleport to="body">
     <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center md:justify-center p-0 md:p-6 animate-fade-in">
-        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="handleCancel"></div>
+        <div class="hidden md:block fixed inset-0 bg-slate-900/60" @click="handleCancel"></div>
 
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-lg bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden">
             <!-- Header -->
