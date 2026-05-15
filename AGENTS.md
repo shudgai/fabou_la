@@ -423,5 +423,22 @@ imagewebp($dstImg, $outputPath, 80);
 3. **Build 驗證**：此 bug 不會造成 build error（Vue template 編譯時不會檢查變數是否已宣告），必須實際瀏覽測試才能發現。
 4. **未來重構守則**：修改 template 時若涉及刪除/改寫區塊，應同時檢查 `v-model`、`{{ }}`、`v-if` 中使用的變數是否有對應宣告。
 
+## Session Notes (2026-05-16)
 
+### TeachingAddForm.vue 逐筆新增 — 全部 textarea 支援換行
 
+#### 問題
+逐筆新增表單的 input/textarea 無法用 Enter 換行，或 textarea 太小（rows 不足）、`resize-none` 無法拖曳放大。
+
+#### 修改清單
+
+| 位置 | 修改 |
+|------|------|
+| `EditableInputChips.vue:28` | 移除 `@keydown.enter.stop`，讓 Enter 可以正常換行；`rows="2"` → `rows="3"` |
+| `TeachingAddForm.vue:169` (Step 4 內容) | `rows="8"` → `rows="10"`，移除 `resize-none`，加 `min-h-[200px]` |
+| `TeachingAddForm.vue:312` (降寶備註 modal) | `rows="2"` → `rows="4"`，移除 `resize-none`，加 `min-h-[100px]` |
+| `TeachingAddForm.vue:64` (批次主貼入區) | 移除 `resize-none`，加 `min-h-[300px]` |
+| `TeachingAddForm.vue:81` (批次單筆記錄) | 移除 `resize-none`，`rows="3"` → `rows="4"`，`min-h-[60px]` → `min-h-[100px]` |
+
+#### 教訓
+`EditableInputChips` 是共用元件，修改 `@keydown.enter.stop` 會影響所有使用處。若需保留某些場景的 Enter 阻擋行為，應改為透過 prop 控制。
