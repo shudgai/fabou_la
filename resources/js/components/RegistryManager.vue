@@ -82,9 +82,10 @@
 
                 <!-- Masters Grid -->
                 <div v-else class="grid grid-cols-2 justify-items-center w-full max-w-3xl mx-auto gap-y-1.5 gap-x-0 pb-20 bg-white">
-                    <button v-for="folder in folders" :key="folder.id" 
+                    <button v-for="(folder, idx) in folders" :key="folder.id" 
                              @click="currentFolder = folder"
-                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[175px] h-[138px] flex-shrink-0 relative overflow-visible bg-white">
+                              class="flex flex-col items-center justify-center transition-all active:scale-95 rounded-none group p-0 w-[175px] h-[138px] flex-shrink-0 relative overflow-visible bg-white"
+                              :style="{ zIndex: folders.length - idx }">
 
                         <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
                             <img src="/image/registry_book_yellow_v2.png" 
