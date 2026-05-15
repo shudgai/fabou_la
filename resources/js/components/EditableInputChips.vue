@@ -8,8 +8,8 @@
                 <!-- Selected Value as a Chip -->
                 <div v-if="modelValue && !isEditing" 
                      @click="startEditing"
-                     class="flex items-center bg-indigo-50 border border-indigo-100 rounded-xl px-3 py-1 animate-fade-in cursor-pointer hover:bg-indigo-100 transition-colors mx-auto shrink-0">
-                    <span class="text-indigo-600 font-black text-[17px] truncate max-w-[200px]">{{ modelValue }}</span>
+                     class="flex items-center bg-indigo-50 border border-indigo-100 rounded-xl px-3 py-1 animate-fade-in cursor-pointer hover:bg-indigo-100 transition-colors mx-auto shrink-0 max-w-full">
+                    <span class="text-indigo-600 font-black text-[17px] whitespace-pre-wrap text-center">{{ modelValue }}</span>
                     <button @click.stop="clearValue" class="ml-2 text-indigo-300 hover:text-indigo-600 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -18,18 +18,18 @@
                 </div>
 
                 <!-- Hidden Input for actual typing -->
-                <input 
+                <textarea 
                     v-else
                     ref="inputRef"
-                    type="text"
                     :value="modelValue"
                     @input="handleInput"
                     @focus="isFocused = true"
                     @blur="handleBlur"
-                    @keyup.enter="finishEditing"
-                    class="flex-1 bg-transparent border-none outline-none text-[17px] font-black text-slate-900 text-center w-full min-w-[120px] placeholder:text-slate-200"
+                    @keydown.enter.stop
+                    rows="2"
+                    class="flex-1 bg-transparent border-none outline-none text-[17px] font-black text-slate-900 text-center w-full min-w-[120px] placeholder:text-slate-200 resize-none leading-relaxed"
                     :placeholder="placeholder"
-                />
+                ></textarea>
             </div>
         </div>
 

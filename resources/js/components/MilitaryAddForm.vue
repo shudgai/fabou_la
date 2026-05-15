@@ -41,7 +41,6 @@
                     </div>
                 </div>
 
-                <!-- Step 1: Date -->
                 <div v-if="currentStep === 1" class="space-y-1">
                     <div class="flex items-center justify-between">
                         <label class="font-black text-slate-400 uppercase tracking-wider">得知日期</label>
@@ -49,59 +48,21 @@
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
-                    <input v-model="form.know_date" type="text" placeholder="年/月/日 或 註記文字"
-                           class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none text-center">
+                    <textarea v-model="form.know_date" rows="2" placeholder="年/月/日 或 註記文字"
+                           class="w-full border-0 border-b-2 border-slate-300 bg-transparent py-[10px] px-2 focus:ring-0 outline-none text-center resize-none leading-relaxed"></textarea>
                 </div>
 
-                <!-- Step 2: 法號與備註對象 (skip if cumulative) -->
-                <div v-if="currentStep === 2 && !props.isCumulative" class="space-y-4">
+                <div v-if="currentStep === 2 && !props.isCumulative" class="space-y-6">
                     <!-- 法號 -->
-                    <div class="space-y-1 relative dharma-dropdown">
-                        <label class="font-bold text-slate-400 uppercase tracking-wider">法號</label>
-                        <!-- Desktop View -->
-                        <div class="hidden md:flex relative items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
-                            <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..."
-                                   @focus="activeDharmaDropdown = true"
-                                   class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
-                            <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1 text-slate-300 hover:text-slate-600 transition-all shrink-0">
-                                <svg class="w-4 h-4" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white shadow-xl z-[2100] overflow-hidden animate-fade-in max-h-48 overflow-y-auto">
-                                <div v-for="u in filteredDharmaNames" :key="u.id"
-                                     @click.stop="selectDharma(u.name)"
-                                     class="px-3 py-2 text-slate-700 cursor-pointer transition-colors">
-                                    {{ u.name }}
-                                </div>
-                                <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2 text-slate-400 text-center">
-                                    無符合的法號
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Mobile View -->
-                        <editable-input-chips class="md:hidden" v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
+                    <div class="space-y-1 relative">
+                        <label class="font-bold text-slate-400 uppercase tracking-wider block text-center">法號</label>
+                        <editable-input-chips v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
                     </div>
 
                     <!-- 備註對象 -->
-                    <div class="space-y-1 relative remarks-dropdown">
-                        <label class="font-bold text-slate-400 uppercase tracking-wider">備註對象</label>
-                        <!-- Desktop View -->
-                        <div class="hidden md:flex relative items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
-                            <input v-model="form.user_remarks" type="text" placeholder="備註對象（例如：母親）..."
-                                   @focus="activeRemarksDropdown = true"
-                                   class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
-                            <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1 text-slate-300 hover:text-slate-600 transition-all shrink-0">
-                                <svg class="w-4 h-4" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white shadow-xl z-[2100] overflow-hidden animate-fade-in max-h-48 overflow-y-auto">
-                                <div v-for="opt in relationshipOptions" :key="opt"
-                                     @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                     class="px-3 py-2 text-slate-700 cursor-pointer transition-colors">
-                                    {{ opt }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Mobile View -->
-                        <editable-input-chips class="md:hidden" v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象（例如：母親）..." />
+                    <div class="space-y-1 relative">
+                        <label class="font-bold text-slate-400 uppercase tracking-wider block text-center">備註對象</label>
+                        <editable-input-chips v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象（例如：母親）..." />
                     </div>
                 </div>
 
@@ -141,10 +102,9 @@
                     </template>
                 </div>
 
-                <!-- Step: Remarks (3 for cumulative, 4 for non-cumulative) -->
                 <div v-if="(props.isCumulative && currentStep === (hasQuantity ? 4 : 3)) || (!props.isCumulative && currentStep === 4)" class="space-y-1">
                     <label class="font-bold text-slate-400 uppercase tracking-wider">備註文字</label>
-                    <input type="text" v-model="form.remarks_text" placeholder="備註文字" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center" />
+                    <textarea v-model="form.remarks_text" rows="3" placeholder="備註文字" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center resize-none leading-relaxed"></textarea>
                 </div>
 
                 <!-- Last step: Preview -->
@@ -213,7 +173,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import MobileNavbar from './MobileNavbar.vue';
-import CompactDatalist from './CompactDatalist.vue';
+import EditableInputChips from './EditableInputChips.vue';
 
 const props = defineProps({
     show: Boolean,

@@ -78,8 +78,8 @@
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
                                 </div>
-                                <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字"
-                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                                <textarea v-model="form.record_date" rows="2" placeholder="年/月/日 或 註記文字"
+                                    class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                             </div>
                         </div>
                     </div>
@@ -184,34 +184,11 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <!-- Desktop View -->
-                                    <div class="hidden md:block relative">
-                                        <input v-model="p.custom_name" type="text" placeholder="法號"
-                                            @keydown.enter.prevent="handlePersonnelEnter(idx)"
-                                            @input="e => handlePersonnelNameInput(idx, e)"
-                                            class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
-                                        <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
-                                    </div>
-                                    <!-- Mobile View -->
-                                    <editable-input-chips class="md:hidden" v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
+                                    <editable-input-chips v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <!-- Desktop View -->
-                                    <div class="hidden md:flex relative items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
-                                        <input v-model="p.relationship" type="text" placeholder="例如：母親"
-                                            @focus="activeRelationshipDropdownIdx = idx"
-                                            class="w-full bg-transparent border-none px-3 text-[15px] font-normal text-slate-900 focus:ring-0 outline-none">
-                                        <button @click.stop="activeRelationshipDropdownIdx = (activeRelationshipDropdownIdx === idx ? null : idx)" class="p-2 mr-1 text-blue-400 active:scale-90">
-                                            <svg class="w-5 h-5" :class="activeRelationshipDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
-                                        <div v-if="activeRelationshipDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-lg border border-slate-100 z-[610] p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                            <div v-for="opt in relationshipOptions" :key="opt" @click.stop="p.relationship = opt; activeRelationshipDropdownIdx = null"
-                                                class="px-4 h-[36px] flex items-center md:rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
-                                        </div>
-                                    </div>
-                                    <!-- Mobile View -->
-                                    <editable-input-chips class="md:hidden" v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
+                                    <editable-input-chips v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
@@ -220,8 +197,8 @@
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
                                     </div>
-                                    <input :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''" @input="e => handlePersonnelDateInput(idx, e)" placeholder="年/月/日"
-                                        class="personnel-date-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                    <textarea :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''" @input="e => handlePersonnelDateInput(idx, e)" placeholder="年/月/日" rows="2"
+                                        class="personnel-date-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none resize-none leading-tight"></textarea>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
@@ -246,8 +223,8 @@
                 <div v-if="isEditing && localMode === 'single'" class="space-y-8 max-w-md mx-auto pb-8 animate-fade-in">
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">得知日期</label>
-                        <input v-model="form.record_date" type="text" placeholder="年/月/日 或 註記文字"
-                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                        <textarea v-model="form.record_date" rows="2" placeholder="年/月/日 或 註記文字"
+                            class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
@@ -299,41 +276,18 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <!-- Desktop View -->
-                                    <div class="hidden md:block relative">
-                                        <input v-model="p.custom_name" type="text" placeholder="法號"
-                                            @keydown.enter.prevent="handlePersonnelEnter(idx)"
-                                            @input="e => handlePersonnelNameInput(idx, e)"
-                                            class="personnel-name-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
-                                        <compact-datalist v-model="p.custom_name" :options="getDharmaOptions(p.custom_name)" />
-                                    </div>
-                                    <!-- Mobile View -->
-                                    <editable-input-chips class="md:hidden" v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
+                                    <editable-input-chips v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <!-- Desktop View -->
-                                    <div class="hidden md:flex relative items-center border border-slate-300 rounded-xl bg-white overflow-visible min-h-[46px]">
-                                        <input v-model="p.relationship" type="text" placeholder="例如：母親"
-                                            @focus="activeRelationshipDropdownIdx = idx"
-                                            class="w-full bg-transparent border-none px-3 text-[15px] font-normal text-slate-900 focus:ring-0 outline-none">
-                                        <button @click.stop="activeRelationshipDropdownIdx = (activeRelationshipDropdownIdx === idx ? null : idx)" class="p-2 mr-1 text-blue-400 active:scale-90">
-                                            <svg class="w-5 h-5" :class="activeRelationshipDropdownIdx === idx ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
-                                        <div v-if="activeRelationshipDropdownIdx === idx" class="absolute left-0 top-full mt-1 w-full bg-white rounded-2xl shadow-lg border border-slate-100 z-[610] p-1.5 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                            <div v-for="opt in relationshipOptions" :key="opt" @click.stop="p.relationship = opt; activeRelationshipDropdownIdx = null"
-                                                class="px-4 h-[36px] flex items-center md:rounded-xl hover:bg-blue-50 font-bold text-[17px] text-slate-900 cursor-pointer">{{ opt }}</div>
-                                        </div>
-                                    </div>
-                                    <!-- Mobile View -->
-                                    <editable-input-chips class="md:hidden" v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
+                                    <editable-input-chips v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
                                         <label class="text-[11px] text-red-400 ml-1 font-bold">日期</label>
                                     </div>
-                                    <input :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''" @input="e => handlePersonnelDateInput(idx, e)" placeholder="年/月/日"
-                                        class="personnel-date-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none">
+                                    <textarea :value="p.obtained_date ? p.obtained_date.replace(/-/g, '/') : ''" @input="e => handlePersonnelDateInput(idx, e)" placeholder="年/月/日" rows="2"
+                                        class="personnel-date-input w-full py-[10px] rounded-xl border border-slate-300 bg-white px-3 text-[15px] font-bold text-slate-900 outline-none resize-none leading-tight"></textarea>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
@@ -458,7 +412,6 @@
 import { ref, watch, computed, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import CompactDatalist from './CompactDatalist.vue';
 
 const props = defineProps({
     mode: String,

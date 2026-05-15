@@ -254,10 +254,10 @@
                         <teleport to="body">
                         <div v-if="expandedId === reg.id" class="fixed inset-0 z-[500] animate-fade-in">
                             <!-- Backdrop -->
-                            <div class="absolute inset-0 bg-slate-900/60" @click="toggleExpand(reg.id)"></div>
+                            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
-                            <div class="w-full h-full bg-white flex flex-col animate-slide-up pointer-events-auto">
+                            <div class="w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[40px] md:shadow-2xl flex flex-col animate-slide-up pointer-events-auto overflow-hidden">
                                 <!-- Header -->
                                 <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
                                     <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
@@ -271,7 +271,7 @@
                                     </div>
 
                                     <!-- Action Buttons Container (Right Side) -->
-                                    <div class="absolute right-2 top-[48px] z-[100] flex flex-col items-center gap-0">
+                                    <div class="absolute right-4 top-[48px] z-[100] flex flex-col items-center gap-0">
                                         <!-- Close Button (X) - Top -->
                                         <button @click="toggleExpand(reg.id)" class="w-10 h-10 flex items-center justify-center text-slate-400 active:scale-90 transition-all">
                                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

@@ -168,24 +168,24 @@
                             <!-- STEP 2: Master -->
                             <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                                 <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">選擇<span class="text-red-600">對象仙師</span></h2>
-                                <div class="max-w-md mx-auto mt-12 relative">
-                                    <div @click="showMasterModal = true" 
-                                         class="w-full flex items-center justify-between text-center text-[22px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-6 outline-none transition-all cursor-pointer">
-                                        <span :class="masterNameInput ? 'text-slate-900' : 'text-slate-100'">{{ masterNameInput || '點擊選擇仙師...' }}</span>
-                                        <svg class="w-6 h-6 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
+                                <div class="max-w-md mx-auto mt-12 px-2">
+                                    <editable-input-chips 
+                                        v-model="masterNameInput" 
+                                        :options="masterModalList" 
+                                        @change="selectMasterModal"
+                                        placeholder="選擇或輸入仙師..." />
                                 </div>
                             </div>
 
                             <!-- STEP 3: Target -->
                             <div v-else-if="currentStep === 3" :key="'step-3'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                                 <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">選擇<span class="text-indigo-600">法號或群組</span></h2>
-                                <div class="max-w-md mx-auto mt-12 relative">
-                                    <div @click="showTargetModal = true" 
-                                         class="w-full flex items-center justify-between text-center text-[22px] font-black border-0 border-b-2 border-slate-200 bg-transparent py-6 outline-none transition-all cursor-pointer">
-                                        <span :class="targetRemarksInput ? 'text-slate-900' : 'text-slate-100'">{{ targetRemarksInput || '點擊選擇對象...' }}</span>
-                                        <svg class="w-6 h-6 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
+                                <div class="max-w-md mx-auto mt-12 px-2">
+                                    <editable-input-chips 
+                                        v-model="targetRemarksInput" 
+                                        :options="[...targetModalNames.map(n => n.name), ...targetModalGroups.map(g => g.name)]"
+                                        @change="selectTargetModalByName"
+                                        placeholder="選擇或輸入對象..." />
                                 </div>
                             </div>
 
@@ -221,64 +221,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Master Selection Modal -->
-            <teleport to="body">
-                <div v-if="showMasterModal" class="fixed inset-0 z-[9000] flex items-end md:items-center justify-center" @click.self="showMasterModal = false">
-                    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showMasterModal = false"></div>
-                    <div class="relative w-full md:max-w-lg bg-white rounded-t-[32px] md:rounded-[32px] shadow-xl overflow-hidden flex flex-col max-h-[70dvh] animate-slide-up">
-                        <div class="shrink-0 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                            <h2 class="text-[20px] font-black text-slate-900">選擇仙師</h2>
-                            <button @click="showMasterModal = false" class="p-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="shrink-0 px-6 py-3">
-                            <input v-model="masterSearchQuery" placeholder="搜尋仙師..." class="w-full text-[17px] font-black border-0 border-b-2 border-slate-200 focus:border-red-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-100">
-                        </div>
-                        <div class="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4">
-                            <div v-for="m in masterModalList" :key="m"
-                                 @click="selectMasterModal(m); showMasterModal = false"
-                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                {{ m }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </teleport>
-
-            <!-- Target Selection Modal -->
-            <teleport to="body">
-                <div v-if="showTargetModal" class="fixed inset-0 z-[9000] flex items-end md:items-center justify-center" @click.self="showTargetModal = false">
-                    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showTargetModal = false"></div>
-                    <div class="relative w-full md:max-w-lg bg-white rounded-t-[32px] md:rounded-[32px] shadow-xl overflow-hidden flex flex-col max-h-[70dvh] animate-slide-up">
-                        <div class="shrink-0 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                            <h2 class="text-[20px] font-black text-slate-900">選擇法號或群組</h2>
-                            <button @click="showTargetModal = false" class="p-2 text-slate-300 hover:text-slate-600 active:scale-90 transition-all">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="shrink-0 px-6 py-3">
-                            <input v-model="targetSearchQuery" placeholder="搜尋法號或群組..." class="w-full text-[17px] font-black border-0 border-b-2 border-slate-200 focus:border-indigo-600 bg-transparent py-3 outline-none transition-all placeholder:text-slate-100">
-                        </div>
-                        <div class="flex-1 overflow-y-auto custom-scrollbar px-4 pb-4">
-                            <div v-if="targetModalNames.length > 0" class="px-4 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest">法號</div>
-                            <div v-for="dn in targetModalNames" :key="'dn'+dn.id"
-                                 @click="selectTargetModal(dn); showTargetModal = false"
-                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                                {{ dn.name }}
-                            </div>
-                            <div v-if="targetModalGroups.length > 0" class="px-4 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest">群組</div>
-                            <div v-for="g in targetModalGroups" :key="'g'+g.id"
-                                 @click="selectTargetModal(g); showTargetModal = false"
-                                 class="px-4 h-[52px] flex items-center rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
-                                {{ g.name }}
-                            </div>
-                            <div v-if="targetModalNames.length === 0 && targetModalGroups.length === 0" class="px-4 py-8 text-center text-[16px] font-black text-slate-300">無符合項目</div>
-                        </div>
-                    </div>
-                </div>
-            </teleport>
         </div>
     </div>
 </template>
@@ -287,6 +229,7 @@
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import EditableInputChips from './EditableInputChips.vue';
 import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
@@ -469,9 +412,9 @@ const selectMasterModal = (name) => {
     form.value.master_id = match ? match.id : null;
 };
 
-const selectTargetModal = (item) => {
-    targetRemarksInput.value = item.name;
-    form.value.target_remarks = item.name;
+const selectTargetModalByName = (name) => {
+    targetRemarksInput.value = name;
+    form.value.target_remarks = name;
 };
 
 const handleNext = () => {

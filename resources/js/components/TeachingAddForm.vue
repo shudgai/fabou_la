@@ -99,25 +99,12 @@
                     <!-- STEP 2: Master -->
                     <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">錄入哪位<span class="text-red-600">仙師</span>的開示？</h2>
-                        <!-- Desktop View -->
-                        <div class="hidden md:flex max-w-md mx-auto mt-12 relative items-center">
-                            <input v-model="masterNameInput" 
-                                ref="masterInputEl"
-                                @click="showMasterDropdown = true; openMasterDropdown()"
-                                @focus="showMasterDropdown = true; openMasterDropdown()"
-                                @input="showMasterDropdown = true; openMasterDropdown()"
-                                @change="resolveMasterId"
-                                @blur="delayClose(showMasterDropdown, 200)"
-                                autocomplete="off"
-                                placeholder="選擇仙師..." 
-                                class="w-full text-center text-[22px] font-black border-0 border-b-2 border-slate-200 focus:border-red-600 bg-transparent py-6 outline-none transition-all placeholder:text-slate-100">
-                            <button @click.prevent="showMasterDropdown = !showMasterDropdown; if (showMasterDropdown) openMasterDropdown()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-600 active:scale-90 transition-all">
-                                <svg class="w-5 h-5 transition-transform" :class="showMasterDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <!-- Mobile View -->
-                        <div class="md:hidden mt-8">
-                            <editable-input-chips v-model="masterNameInput" :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" @change="resolveMasterId" placeholder="選擇仙師..." />
+                        <div class="mt-12 max-w-md mx-auto">
+                            <editable-input-chips 
+                                v-model="masterNameInput" 
+                                :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" 
+                                @change="resolveMasterId" 
+                                placeholder="選擇仙師..." />
                         </div>
                     </div>
 
@@ -126,48 +113,24 @@
                         <div class="space-y-4">
                             <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">此次開示的<span class="text-indigo-600">對象</span>與<span class="text-emerald-600">群組</span></h2>
                             
-                            <!-- Desktop View -->
-                            <div class="hidden md:flex max-w-md mx-auto mt-8 relative items-center">
-                                <input ref="dharmaSearchInputEl"
-                                       type="text"
-                                        @click="showPractitionerDropdown = true; openPractitionerDropdown()"
-                                        @focus="showPractitionerDropdown = true; openPractitionerDropdown()"
-                                        @input="handleDharmaSearchInput; if (!showPractitionerDropdown) openPractitionerDropdown()" 
-                                       v-model="dharmaSearchQuery"
-                                       @blur="delayClose(showPractitionerDropdown, 200)"
-                                       autocomplete="off"
-                                       placeholder="搜尋法號或群組..." 
-                                       class="w-full bg-transparent border-0 border-b-2 border-slate-200 focus:border-indigo-600 text-center text-[20px] font-black text-slate-900 py-4 outline-none transition-all placeholder:text-slate-100">
-                                <button @click.prevent="showPractitionerDropdown = !showPractitionerDropdown; if (showPractitionerDropdown) openPractitionerDropdown()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-indigo-600 active:scale-90 transition-all">
-                                    <svg class="w-5 h-5 transition-transform" :class="showPractitionerDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                            <!-- Mobile View -->
-                            <div class="md:hidden mt-4">
-                                <editable-input-chips v-model="dharmaSearchQuery" :options="combinedPractitionerOptions" @change="handleDharmaSearchInput({target: {value: dharmaSearchQuery}})" placeholder="搜尋法號或群組..." />
+                            <div class="mt-8 max-w-md mx-auto">
+                                <editable-input-chips 
+                                    v-model="dharmaSearchQuery" 
+                                    :options="combinedPractitionerOptions" 
+                                    @change="handleDharmaSearchInput({target: {value: dharmaSearchQuery}})" 
+                                    placeholder="搜尋法號或群組..." />
                             </div>
                         </div>
 
                         <div class="space-y-4">
                             <h2 class="text-[16px] font-black text-slate-400 tracking-tight">備註對象 (選填)</h2>
                             <div class="max-w-md mx-auto relative mt-4">
-                                <!-- Desktop View -->
-                                <div class="hidden md:block relative">
-                                    <input v-model="form.target_remarks" 
-                                        ref="relInputEl"
-                                        @click="activeRelDropdown = true; openRelDropdown()"
-                                        @input="activeRelDropdown = true; openRelDropdown()"
-                                        @focus="openRelDropdown"
-                                        @blur="delayClose(activeRelDropdown, 150)"
-                                        autocomplete="off"
-                                        placeholder="例：之母親 / 長輩..." 
-                                        class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-emerald-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                    <button v-if="form.target_remarks" @click="form.target_remarks = ''" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
+                                <div class="mt-4 max-w-md mx-auto">
+                                    <editable-input-chips 
+                                        v-model="form.target_remarks" 
+                                        :options="relationshipOptions" 
+                                        placeholder="例：之母親 / 長輩..." />
                                 </div>
-                                <!-- Mobile View -->
-                                <editable-input-chips class="md:hidden" v-model="form.target_remarks" :options="relationshipOptions" placeholder="例：之母親 / 長輩..." />
                             </div>
                         </div>
 
@@ -241,16 +204,7 @@
                                      </div>
                                  </div>
                                  <!-- Desktop View -->
-                                 <div class="hidden md:block">
-                                     <div class="relative border-0 border-b-2 border-slate-200 focus-within:border-indigo-600 transition-all">
-                                         <input v-model="newFooterRemark" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
-                                             class="w-full text-center text-[18px] font-black bg-transparent py-4 px-4 outline-none transition-all placeholder:text-slate-100">
-                                         <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg></button>
-                                     </div>
-                                     <compact-datalist v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" />
-                                 </div>
-                                 <!-- Mobile View -->
-                                 <div class="md:hidden">
+                                 <div class="mt-4">
                                      <editable-input-chips v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" @change="addFooterRemark" placeholder="輸入結尾備註..." />
                                  </div>
                              </div>
@@ -346,21 +300,8 @@
              </div>
              <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
                      <div class="space-y-4">
-                         <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest">法宝名稱</label>
-                          <div class="relative">
-                                <input v-model="newItemName"
-                                    ref="treasureInputEl"
-                                    @click="showTreasureDropdown = true; openTreasureDropdown()"
-                                    @input="showTreasureDropdown = true; openTreasureDropdown()"
-                                    @focus="openTreasureDropdown"
-                                    @blur="delayClose(showTreasureDropdown, 200)"
-                                    autocomplete="off"
-                                    placeholder="輸入或選擇法宝..." 
-                                    class="w-full pr-10 text-[20px] font-black border-0 border-b-2 border-slate-200 focus:border-amber-500 py-4 outline-none transition-all placeholder:text-slate-100">
-                                <button v-if="newItemName" @click="newItemName = ''" class="absolute right-2 p-2 text-slate-300 hover:text-red-500 transition-all active:scale-90 top-3">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                          </div>
+                         <label class="text-[12px] font-black text-slate-300 uppercase tracking-widest block text-center mb-4">法寶名稱</label>
+                         <editable-input-chips v-model="newItemName" :options="treasureModalList" placeholder="輸入或選擇法寶..." />
                      </div>
 
                  <div class="space-y-4">
@@ -381,43 +322,7 @@
 
 
 
-        <teleport to="body">
-            <div v-if="activeRelDropdown" :style="relDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto custom-scrollbar text-left p-2 animate-fade-in">
-                <div v-for="opt in relationshipOptions" :key="opt"
-                     @mousedown.prevent @click.stop="form.target_remarks = opt; activeRelDropdown = false"
-                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-emerald-50 font-black text-[18px] text-slate-900 active:bg-emerald-100 transition-all cursor-pointer">
-                    {{ opt }}
-                </div>
-            </div>
-            <div v-if="showMasterDropdown && masterFilteredList.length > 0" :style="masterDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar text-left p-2 animate-fade-in">
-                <div v-for="m in masterFilteredList" :key="m"
-                     @mousedown.prevent @click.stop="masterNameInput = m; resolveMasterId(); showMasterDropdown = false"
-                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                    {{ m }}
-                </div>
-            </div>
-            <div v-if="showTreasureDropdown && treasureFilteredList.length > 0" :style="treasureDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[240px] custom-scrollbar text-left p-2 animate-fade-in">
-                <div v-for="name in treasureFilteredList" :key="name"
-                     @mousedown.prevent @click.stop="newItemName = name; showTreasureDropdown = false"
-                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-amber-50 font-black text-[18px] text-slate-900 active:bg-amber-100 transition-all cursor-pointer">
-                    {{ name }}
-                </div>
-            </div>
-            <div v-if="showPractitionerDropdown && (practitionerFilteredNames.length > 0 || practitionerFilteredGroups.length > 0)" :style="practitionerDropdownStyle" class="fixed bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-100 z-[9000] overflow-y-auto max-h-[280px] custom-scrollbar text-left p-2 animate-fade-in">
-                <div v-if="practitionerFilteredNames.length > 0" class="px-4 py-2 text-[12px] font-black text-slate-300 uppercase tracking-widest">法號</div>
-                <div v-for="dn in practitionerFilteredNames" :key="'dn'+dn.id"
-                     @mousedown.prevent @click.stop="selectDharmaName(dn); showPractitionerDropdown = false"
-                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-slate-900 active:bg-indigo-100 transition-all cursor-pointer">
-                    {{ dn.name }}
-                </div>
-                <div v-if="practitionerFilteredGroups.length > 0" class="px-4 py-2 text-[12px] font-black text-indigo-300 uppercase tracking-widest">群組</div>
-                <div v-for="g in practitionerFilteredGroups" :key="'g'+g.id"
-                     @mousedown.prevent @click.stop="selectGroup(g); showPractitionerDropdown = false"
-                     class="px-6 h-[48px] flex items-center md:rounded-2xl hover:bg-indigo-50 font-black text-[18px] text-indigo-600 active:bg-indigo-100 transition-all cursor-pointer">
-                    {{ formatGroupName(g.name) }}
-                </div>
-            </div>
-        </teleport>
+
 
 
 
@@ -429,7 +334,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import LogoImperialNotebook from './LogoImperialNotebook.vue';
 import MobileNavbar from './MobileNavbar.vue';
-import CompactDatalist from './CompactDatalist.vue';
+import EditableInputChips from './EditableInputChips.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 
 const props = defineProps({
@@ -443,123 +348,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['save', 'close']);
-
-function delayClose(ref, ms) {
-    window.setTimeout(() => { ref.value = false; }, ms);
-}
-
-// --- 1. State ---
-const currentStep = ref(1);
-const totalSteps = 6;
-const stepTitles = ['日期', '仙師', '對象 / 群組', '開示內容', '降寶詳情', '預覽確認'];
-const currentStepTitle = computed(() => stepTitles[currentStep.value - 1]);
-
-const scrollContainer = ref(null);
-
-function scrollToTop() {
-    nextTick(() => {
-        if (scrollContainer.value) {
-            scrollContainer.value.scrollTo({ top: 0, behavior: 'auto' });
-        }
-    });
-}
-
-watch(currentStep, () => {
-    scrollToTop();
-});
-
-const form = ref({
-    date: props.initialData?.date || new Date().toLocaleDateString('sv-SE'),
-    master_id: props.initialData?.master_id || null,
-    dharma_name_ids: [],
-    target_remarks: '',
-    content: '',
-    items: [],
-    items_footer_remarks: ''
-});
-
-const masterNameInput = ref('');
-const dharmaSearchQuery = ref('');
-const activeRelDropdown = ref(false);
-const showItemsSelector = ref(false);
-const showMasterDropdown = ref(false);
-const showPractitionerDropdown = ref(false);
-const showTreasureDropdown = ref(false);
-const dharmaSearchInputEl = ref(null);
-const masterInputEl = ref(null);
-const relInputEl = ref(null);
-const treasureInputEl = ref(null);
-
-const relDropdownStyle = ref({});
-const masterDropdownStyle = ref({});
-const treasureDropdownStyle = ref({});
-const practitionerDropdownStyle = ref({});
-
-function openRelDropdown() {
-    activeRelDropdown.value = true;
-    nextTick(() => {
-        if (relInputEl.value) {
-            const rect = relInputEl.value.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom - 40;
-            relDropdownStyle.value = {
-                left: rect.left + 'px',
-                width: rect.width + 'px',
-                top: (rect.bottom + 8) + 'px',
-                maxHeight: Math.min(spaceBelow, 300) + 'px',
-            };
-        }
-    });
-}
-
-function openMasterDropdown() {
-    showMasterDropdown.value = true;
-    nextTick(() => {
-        if (masterInputEl.value) {
-            const rect = masterInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 20;
-            masterDropdownStyle.value = {
-                left: rect.left + 'px',
-                width: rect.width + 'px',
-                top: (rect.top - 8) + 'px',
-                transform: 'translateY(-100%)',
-                maxHeight: Math.min(spaceAbove, 400) + 'px',
-            };
-        }
-    });
-}
-
-function openTreasureDropdown() {
-    showTreasureDropdown.value = true;
-    nextTick(() => {
-        if (treasureInputEl.value) {
-            const rect = treasureInputEl.value.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom - 40;
-            treasureDropdownStyle.value = {
-                left: rect.left + 'px',
-                width: rect.width + 'px',
-                top: (rect.bottom + 8) + 'px',
-                maxHeight: Math.min(spaceBelow, 240) + 'px',
-            };
-        }
-    });
-}
-
-function openPractitionerDropdown() {
-    showPractitionerDropdown.value = true;
-    nextTick(() => {
-        if (dharmaSearchInputEl.value) {
-            const rect = dharmaSearchInputEl.value.getBoundingClientRect();
-            const spaceAbove = rect.top - 20;
-            practitionerDropdownStyle.value = {
-                left: rect.left + 'px',
-                width: rect.width + 'px',
-                top: (rect.top - 8) + 'px',
-                transform: 'translateY(-100%)',
-                maxHeight: Math.min(spaceAbove, 280) + 'px',
-            };
-        }
-    });
-}
 
 const footerRemarks = ref([]);
 const newFooterRemark = ref('');

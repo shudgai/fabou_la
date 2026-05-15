@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             DharmaGroupSeeder::class,
             TreasureSeeder::class,
-            RegistrySeeder::class,
+            // RegistrySeeder::class, // 註解掉範例資料
         ]);
 
         if (app()->environment('local', 'testing')) {
             $this->call([
-                TeachingSampleSeeder::class,
+                // TeachingSampleSeeder::class, // 註解掉範例資料
             ]);
         }
     }

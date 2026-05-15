@@ -94,13 +94,13 @@
         <div class="flex-1 overflow-hidden relative flex flex-col">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
-                <div class="px-6 pb-24 grid grid-cols-1 sm:grid-cols-2 gap-y-12 items-center justify-center mt-[25px] max-w-4xl mx-auto">
+                <div class="px-6 pb-24 flex flex-col items-center justify-center gap-y-12 mt-[25px] max-w-4xl mx-auto">
                     <button v-for="folder in filteredFolders" :key="folder.id" 
                         @click="currentFolder = folder"
-                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative">
+                        class="flex flex-col items-center justify-center p-2 active:scale-95 transition-all group relative w-full max-w-[480px]">
 
                         <!-- Unified Shield Badge (Matches Mobile Style) -->
-                        <div class="relative w-full max-w-[339px] md:max-w-[387px] aspect-square">
+                        <div class="relative w-full aspect-square">
                             <!-- MOBILE VERSION SVG -->
                             <svg class="block md:hidden w-full h-full drop-shadow-2xl transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L4 5V11C4 16.5 7.5 21 12 22.5C16.5 21 20 16.5 20 11V5L12 2Z" 
@@ -183,12 +183,12 @@
                                 class="bg-white px-[15px] py-[20px] border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-all group overflow-hidden relative">
                                 <div class="flex items-center z-10">
                                     <div class="flex flex-col">
-                                        <span class="font-outfit tracking-wider font-black text-slate-800 military-label" style="color: #1e293b !important;">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
+                                        <span class="font-outfit tracking-wider text-slate-800 military-label" style="color: #1e293b !important;">{{ group.know_date ? formatDate(group.know_date) : '原始數量' }}</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2 z-10">
                                     <div v-if="group.total_qty" class="flex items-center">
-                                        <span class="text-black font-black drop-shadow-sm military-value">{{ formatArmyTotal(group.total_qty) }}</span>
+                                        <span class="text-black drop-shadow-sm military-value">{{ formatArmyTotal(group.total_qty) }}</span>
                                     </div>
                                     <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 </div>
@@ -202,7 +202,7 @@
                                 @click.stop="expandedDate = null"
                                 class="px-4 py-2.5 bg-slate-50 border-y border-slate-200 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors mb-4 rounded-xl">
                                 <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                <span class="font-outfit tracking-wider font-black text-slate-800 military-label" style="color: #1e293b !important;">{{ expandedDate }}</span>
+                                <span class="font-outfit tracking-wider text-slate-800 military-label" style="color: #1e293b !important;">{{ expandedDate }}</span>
                             </div>
 
                             <template v-for="group in groupedItems" :key="group.date">
@@ -1057,30 +1057,26 @@ onMounted(() => {
 .military-field { display: flex; flex-direction: column; gap: 4px; }
 .military-label {
     font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 900;
+    font-weight: 400;
     color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     white-space: nowrap;
-    font-size: 17px;
 }
 .military-value {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
+    font-family: inherit;
+    font-weight: 400;
     color: #0f172a;
-    font-size: 17px;
 }
 .military-value-name {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
+    font-family: inherit;
+    font-weight: 400;
     color: #0f172a;
-    font-size: 17px;
 }
 .military-date-value {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
+    font-weight: 500;
     color: #0f172a;
-    font-size: 17px;
 }
 
 /* Specific scaling for the date headers to match label size */
@@ -1089,11 +1085,14 @@ onMounted(() => {
 :deep(body.font-large) .app-title.text-\[14px\] { font-size: 15px !important; }
 
 /* Custom Military Scaling Logic */
-:deep(body.font-small) .military-label, :deep(body.font-small) .military-date-value, :deep(body.font-small) .military-value, :deep(body.font-small) .military-value-name { font-size: 15px !important; }
+:deep(body.font-small) .military-label, :deep(body.font-small) .military-date-value { font-size: 13px !important; }
+:deep(body.font-small) .military-value, :deep(body.font-small) .military-value-name { font-size: 15px !important; }
 
-:deep(body.font-medium) .military-label, :deep(body.font-medium) .military-date-value, :deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
+:deep(body.font-medium) .military-label, :deep(body.font-medium) .military-date-value { font-size: 15px !important; }
+:deep(body.font-medium) .military-value, :deep(body.font-medium) .military-value-name { font-size: 17px !important; }
 
-:deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value, :deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
+:deep(body.font-large) .military-label, :deep(body.font-large) .military-date-value { font-size: 15px !important; }
+:deep(body.font-large) .military-value, :deep(body.font-large) .military-value-name { font-size: 21px !important; }
 
 .animate-fade-in { animation: fadeIn 0.1s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }

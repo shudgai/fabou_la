@@ -52,8 +52,8 @@
                     <div class="space-y-10 w-full max-w-sm mt-8">
                         <div v-if="localMode.startsWith('single')" class="relative group">
                             <label class="absolute -top-6 left-0 text-[13px] font-black text-slate-300 uppercase tracking-widest">日期</label>
-                            <input v-model="form.record_date" type="text" placeholder="日期格式 年-月-日" 
-                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200">
+                            <textarea v-model="form.record_date" rows="2" placeholder="日期格式 年-月-日" 
+                                class="w-full text-center text-[17px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed"></textarea>
                             <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-300 hover:text-indigo-500 transition-colors">
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
@@ -120,70 +120,25 @@
                     </template>
                 </div>
 
-                <!-- STEP 4: Personnel Selection -->
-                <div v-else-if="currentStep === 4 && localMode.startsWith('single')" :key="4" class="space-y-6 animate-fade-in text-center w-full pt-[15px] pb-32">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">承接<span class="text-blue-600">師兄姐</span></h2>
-                        <button @click="addPersonnelRow" class="px-4 py-1.5 bg-blue-600 text-white rounded-2xl text-[14px] font-black active:scale-95 transition-all shadow-md" style="color: white !important;">＋ 新增</button>
-                    </div>
 
-                    <div class="space-y-4">
-                        <div v-for="(p, idx) in personnel" :key="idx" class="p-5 bg-white rounded-[28px] border border-slate-100 shadow-sm space-y-4 relative animate-fade-in text-left">
-                            <button @click="removePersonnelRow(idx)" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 p-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
 
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-1">
-                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">法號</label>
-                                    <editable-input-chips v-model="p.custom_name" :options="dharmaNames.map(dn => dn.name)" placeholder="法號..." />
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">備註對象</label>
-                                    <editable-input-chips v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-1">
-                                    <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">狀態</label>
-                                    <select v-model="p.status" class="w-full h-[46px] border-0 border-b-2 border-slate-100 bg-transparent px-2 font-black text-slate-900 outline-none">
-                                        <option value="未領取">未領取</option>
-                                        <option value="已領取">已領取</option>
-                                        <option value="已登記">已登記</option>
-                                    </select>
-                                </div>
-                                <div class="space-y-1">
-                                    <div class="flex items-center justify-between">
-                                        <label class="text-[11px] font-black text-slate-300 uppercase tracking-widest ml-1">日期</label>
-                                        <button @click="activePicker = { idx, field: 'obtained_date', title: '領取日期' }" class="text-slate-300 hover:text-blue-500 p-0.5">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
-                                    </div>
-                                    <input v-model="p.obtained_date" type="text" placeholder="年/月/日" class="w-full h-[46px] border-0 border-b-2 border-slate-100 bg-transparent px-2 font-black text-slate-900 outline-none">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-else-if="currentStep === 5 && localMode.startsWith('single')" :key="5" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
-                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>為何？</h2>
+                <div v-else-if="currentStep === 4 && localMode.startsWith('single')" :key="4" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                    <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">此法寶的<span class="text-indigo-600">用意</span>為何？ (選填)</h2>
 
                     <div class="max-w-md mx-auto mt-12">
-                        <textarea v-model="form.purpose" rows="3" placeholder="請簡述用途..." 
+                        <textarea v-model="form.purpose" rows="3" placeholder="請簡述用途 (選填)..." 
                             class="w-full text-center text-[18px] font-black border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-red-600"></textarea>
                     </div>
                 </div>
 
-                <div v-else-if="currentStep === 6 && localMode.startsWith('single')" :key="6" class="space-y-12 animate-fade-in text-center w-full pt-[15px]">
+                <div v-else-if="currentStep === 5 && localMode.startsWith('single')" :key="5" class="space-y-12 animate-fade-in text-center w-full pt-[15px]">
                     <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">請確認<span class="text-indigo-600">狀態與日期</span></h2>
                     
                     <div class="space-y-8 max-w-sm mx-auto">
                         <div class="space-y-4">
                             <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest block">法寶狀態</label>
                             <div class="grid grid-cols-1 gap-4">
-                                <button v-for="s in ['未領取', '已領取', '已登記']" :key="s"
+                                <button v-for="s in ['未求得', '已求得', '已登記']" :key="s"
                                     @click="form.status = s"
                                     :class="form.status === s ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-50 text-slate-400'"
                                     class="py-4 rounded-2xl font-black text-[18px] transition-all active:scale-95"
@@ -195,7 +150,7 @@
 
                         <div class="space-y-4">
                             <div class="flex items-center justify-center gap-2">
-                                <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記' : (form.status === '已領取' ? '領取' : '預定') }}日期</label>
+                                <label class="text-[13px] font-black text-slate-300 uppercase tracking-widest">{{ form.status === '已登記' ? '登記' : (form.status === '已求得' ? '求得' : '得知') }}日期</label>
                                 <button @click="activePicker = { field: 'obtained_date', title: '選擇日期' }" class="text-slate-300 hover:text-indigo-600 transition-colors p-1 active:scale-90">
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
@@ -206,7 +161,7 @@
                     </div>
                 </div>
 
-                <div v-else-if="currentStep === 7 && localMode.startsWith('single')" :key="7" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
+                <div v-else-if="currentStep === 6 && localMode.startsWith('single')" :key="6" class="space-y-6 animate-fade-in text-center w-full pt-[15px]">
                     <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">還有其他<span class="text-indigo-600">補充說明</span>嗎？</h2>
                     <div class="max-w-sm mx-auto mt-12">
                         <textarea v-model="form.remarks" rows="8" placeholder="輸入補充說明..."
@@ -215,7 +170,7 @@
                 </div>
 
                 <!-- STEP 8: Review -->
-                <div v-else-if="currentStep === 8 && localMode.startsWith('single')" :key="8" class="space-y-8 animate-fade-in text-center w-full pt-[15px] pb-32">
+                <div v-else-if="currentStep === 7 && localMode.startsWith('single')" :key="7" class="space-y-8 animate-fade-in text-center w-full pt-[15px] pb-32">
                     <h2 class="text-[17px] font-black text-slate-900 leading-relaxed tracking-tight">載錄內容<span class="text-indigo-600">預覽確認</span></h2>
                     
                     <div class="max-w-md mx-auto border border-slate-100 rounded-[40px] overflow-hidden shadow-xl bg-white text-left">
@@ -230,15 +185,7 @@
                                 <span class="text-[19px] font-black text-indigo-600 leading-tight">{{ form.name }}</span>
                             </div>
 
-                            <div v-if="personnel.length > 0" class="flex flex-col border-b border-slate-50 pb-4">
-                                <span class="text-[12px] font-black text-slate-300 uppercase tracking-widest mb-2">承接人員</span>
-                                <div class="space-y-2">
-                                    <div v-for="(p, idx) in personnel" :key="idx" class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl">
-                                        <span class="text-[16px] font-black text-slate-700">{{ p.custom_name }} <span v-if="p.relationship" class="text-slate-400">({{ p.relationship }})</span></span>
-                                        <span class="text-[13px] font-bold text-blue-500">{{ p.status }}</span>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <div v-if="form.purpose" class="flex flex-col border-b border-slate-50 pb-4">
                                 <span class="text-[12px] font-black text-slate-300 uppercase tracking-widest mb-1">用意</span>
@@ -321,9 +268,7 @@ const form = ref({ ...props.initialData });
 const batchInput = ref('');
 const activePicker = ref(null);
 const scrollContainer = ref(null);
-const personnel = ref([]);
 const masterNameInput = ref('');
-const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 
 const resolveMasterId = () => {
     const m = props.masters.find(m => m.name === masterNameInput.value || (m.name === '父皇仙師' && masterNameInput.value === '父皇'));
@@ -334,11 +279,7 @@ watch(masterNameInput, () => {
     resolveMasterId();
 });
 
-const addPersonnelRow = () => {
-    personnel.value.push({ custom_name: '', relationship: '', obtained_date: form.value.obtained_date || '', status: '未領取', remarks: '' });
-};
 
-const removePersonnelRow = (idx) => { personnel.value.splice(idx, 1); };
 
 const displayMasterName = computed(() => {
     if (masterNameInput.value) return masterNameInput.value;
@@ -365,7 +306,6 @@ const stepTitles = [
     '得知日期',
     '載錄仙師',
     '法寶名稱',
-    '承接人員',
     '法寶用意',
     '狀態與日期',
     '補充說明',
@@ -421,18 +361,11 @@ const excelRows = computed(() => {
 const activePickerValue = computed({
     get: () => {
         if (!activePicker.value) return '';
-        if (activePicker.value.idx !== undefined) {
-            return personnel.value[activePicker.value.idx][activePicker.value.field] || '';
-        }
         return form.value[activePicker.value.field] || '';
     },
     set: (val) => {
         if (activePicker.value) {
-            if (activePicker.value.idx !== undefined) {
-                personnel.value[activePicker.value.idx][activePicker.value.field] = val;
-            } else {
-                form.value[activePicker.value.field] = val;
-            }
+            form.value[activePicker.value.field] = val;
         }
     }
 });
@@ -457,8 +390,9 @@ function validateStep() {
         if (currentStep.value === 1) return true; 
         if (currentStep.value === 2 && !form.value.master_id) return false;
         if (currentStep.value === 3 && !form.value.name) return false;
-        if (currentStep.value === 4) return true; // Personnel optional
-        if (currentStep.value === 5 && !form.value.purpose) return false;
+        if (currentStep.value === 4) return true; // Purpose optional
+        if (currentStep.value === 5) return true; 
+        if (currentStep.value === 6) return true; 
     } else {
         if (currentStep.value === 1 && !form.value.master_id) return false;
         if (currentStep.value === 2 && !batchInput.value.trim()) return false;
@@ -477,11 +411,7 @@ function scrollToTop() {
 function handleSubmit() {
     if (localMode.value.startsWith('single')) {
         emit('saveSingle', { 
-            ...form.value,
-            dharma_name_registries: personnel.value.map(p => ({
-                ...p,
-                related_personnel: p.relationship ? [p.relationship] : []
-            }))
+            ...form.value
         });
     } else {
         emit('saveBatch', excelRows.value);
