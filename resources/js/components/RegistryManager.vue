@@ -70,10 +70,10 @@
                                  style="will-change: transform;"
                                  alt="Book Icon">
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(-15px);">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[21.6px] text-[#8B0000]">法寶登記專區</div>
-                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[25.6px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
+                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
+                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
                                 <div class="mt-2 flex items-center font-biaokai-locked">
-                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[13.6px] drop-shadow-sm">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[11.5px] drop-shadow-sm">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -90,21 +90,21 @@
                             <img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-[240px] h-[155px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
+                                 class="w-[320px] h-[206px] max-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
                                  alt="Book Icon">
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-8px);">
-                                <div class="font-black tracking-tighter leading-none text-center font-biaokai" style="font-size: 14px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
-                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[7px] font-biaokai" style="font-size: 12.35px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
+                                <div class="font-black tracking-tighter leading-none text-center font-biaokai" style="font-size: 12px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
+                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[7px] font-biaokai" style="font-size: 10.5px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
 
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-0">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai -mt-4"
-                                         :style="'font-size: 21px !important; font-weight: 900 !important; color: ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important; font-family: \'DFKai-SB\', \'標楷體\', \'BiauKai\', \'Kaiti TC\', serif !important; -webkit-text-stroke: 0.5px ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important;'">
+                                         :style="'font-size: 18px !important; font-weight: 900 !important; color: ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important; font-family: \'DFKai-SB\', \'標楷體\', \'BiauKai\', \'Kaiti TC\', serif !important; -webkit-text-stroke: 0.5px ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important;'">
                                          {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                     </div>
                                     <div class="mt-[14px] flex items-center font-biaokai-locked" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">
-                                        <span class="font-black text-white font-biaokai-locked drop-shadow-sm" style="font-size: 10.4px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                        <span class="font-black text-white font-biaokai-locked drop-shadow-sm" style="font-size: 9px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                     </div>
                                 </div>
                             </div>
