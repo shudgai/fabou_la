@@ -513,7 +513,6 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
-import CompactDatalist from './CompactDatalist.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
 

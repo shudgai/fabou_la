@@ -95,8 +95,8 @@
                                       <label class="grudge-label">日期:</label>
                                       <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
                                   </div>
-                                  <div class="grudge-field flex flex-col">
-                                      <label class="grudge-label">法號:</label>
+                                   <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                       <label class="grudge-label">法號:</label>
                                       <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
                                   </div>
                                   <div class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
@@ -163,7 +163,7 @@
                           @click.stop="activeDateGroup = group.know_date ? formatDate(group.know_date) : '歷史累積'" 
                           class="px-[15px] py-[20px] bg-white border-b border-slate-300 flex items-center justify-between cursor-pointer active:bg-slate-50 transition-colors group">
                           <div class="flex items-center">
-                              <span class="font-outfit tracking-wider font-black text-slate-800 grudge-label" style="color: #1e293b !important;">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
+                              <span class="font-outfit tracking-wider text-slate-800 grudge-label" style="color: #1e293b !important;">{{ group.know_date ? formatDate(group.know_date) : '歷史累積' }}</span>
                           </div>
                           <div class="flex items-center space-x-2">
                               <div class="flex items-center">
@@ -180,7 +180,7 @@
                          @click.stop="activeDateGroup = null" 
                          class="px-4 py-2.5 bg-slate-50 border-y border-slate-300 flex items-center sticky top-0 z-20 cursor-pointer active:bg-slate-200 transition-colors mb-4 rounded-xl">
                          <svg class="w-5 h-5 text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                         <span class="font-outfit tracking-wider font-black text-slate-800 grudge-label" style="color: #1e293b !important;">{{ activeDateGroup }}</span>
+                         <span class="font-outfit tracking-wider text-slate-800 grudge-label" style="color: #1e293b !important;">{{ activeDateGroup }}</span>
                      </div>
 
                      <!-- Virtual Scroller for Records -->
@@ -201,17 +201,17 @@
                                  >
                                      <!-- List Item Detail (Simplified per user request) -->
                                      <div class="py-0 bg-white relative px-1.5 border-b-2 border-slate-300">
-                                         <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
-                                             <!-- Date -->
-                                             <div class="grudge-field flex flex-row items-center space-x-1.5">
-                                                 <label class="grudge-label">日期:</label>
-                                                 <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
-                                             </div>
-                                             <!-- Dharma Name -->
-                                             <div class="grudge-field flex flex-col">
-                                                 <label class="grudge-label">法號:</label>
-                                                 <div class="grudge-value-name">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
-                                             </div>
+                                          <div class="grid grid-cols-2 gap-y-3 pr-8 md:flex md:flex-wrap md:items-center md:gap-x-5">
+                                              <!-- Date -->
+                                              <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                                  <label class="grudge-label">日期:</label>
+                                                  <div class="grudge-date-value">{{ formatDate(item.process_date) || formatDate(item.know_date) }}</div>
+                                              </div>
+                                              <!-- Dharma Name -->
+                                              <div class="grudge-field flex flex-row items-center space-x-1.5">
+                                                  <label class="grudge-label">法號:</label>
+                                                  <div class="grudge-value-name whitespace-nowrap">{{ item.user_name || '-' }}{{ item.user_remarks ? '(' + translateRel(item.user_remarks) + ')' : '' }}</div>
+                                              </div>
                                              <div v-if="focusedId === item.id" 
                                                   class="absolute right-0 top-0 z-20 flex items-start pt-[2px]">
                                                  <div class="relative">
@@ -833,7 +833,7 @@ onUnmounted(() => {
 .grudge-field { display: flex; flex-direction: column; gap: 4px; }
 .grudge-label {
     font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 900;
+    font-weight: 400;
     color: #94a3b8; /* Changed to a lighter slate for better hierarchy as label is now on top */
     text-transform: uppercase;
     letter-spacing: 0.05em;

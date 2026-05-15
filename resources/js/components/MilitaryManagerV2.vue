@@ -1075,7 +1075,7 @@ onMounted(() => {
 }
 .military-date-value {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
+    font-weight: 400;
     color: #0f172a;
 }
 

@@ -608,7 +608,6 @@
 
 <script setup>
 import TeachingAddForm from './TeachingAddForm.vue';
-import CompactDatalist from './CompactDatalist.vue';
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
 import { debounce } from '../utils/debounce';
 import axios from 'axios';

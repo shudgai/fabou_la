@@ -363,4 +363,28 @@ imagewebp($dstImg, $outputPath, 80);
 - Do NOT delete the original `.png` files — ImageController uses them as background sources for dynamic text overlay
 - WebP has universal browser support as of 2026
 
+## UI Tweaks (2026-05-15)
+
+### Bold Removal
+| Component | Element | Before | After |
+|-----------|---------|--------|-------|
+| `MilitaryManagerV2.vue` | `.military-label`, `.military-value`, `.military-value-name`, `.military-date-value` | `font-weight: 900/500` | `font-weight: 400` |
+| `MilitaryManagerV2.vue` | Date header spans | `font-black` class | removed |
+| `GrudgeManager.vue` | `.grudge-label` | `font-weight: 900` | `font-weight: 400` |
+| `GrudgeManager.vue` | Date header spans | `font-black` class | removed |
+
+### Grid Alignment (GrudgeManager.vue)
+- All `法號:` fields changed from `flex-col` (label above name) to `flex-row items-center space-x-1.5` (label + name side by side)
+- Grid layout: `grid-cols-2` — Row 1: 日期+法號, Row 2: 數量+結果 (法號 aligns vertically with 結果)
+
+### Unused Imports Removed
+| File | Import Removed |
+|------|---------------|
+| `RandomGroup.vue` | `CompactDatalist` |
+| `TeachingManager.vue` | `CompactDatalist` |
+
+### Scratch Directory
+- `/scratch` added to `.gitignore` — 116 temporary/test files untracked from repo
+
+
 
