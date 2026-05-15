@@ -97,7 +97,7 @@
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-8px);">
                                  <div class="font-black tracking-tighter leading-none text-center font-biaokai -mt-3" style="font-size: 12px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
-                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[2px] font-biaokai" style="font-size: 10.5px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
+                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[8px] font-biaokai" style="font-size: 10.5px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
 
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-2">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai"
