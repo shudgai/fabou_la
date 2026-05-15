@@ -366,6 +366,28 @@ const newItemPillsEat = ref('');
 const newItemPillsWash = ref('');
 const newItemRemarks = ref('');
 
+// Wizard Step State
+const currentStep = ref(1);
+const totalSteps = 6;
+const stepTitles = ['選擇日期', '選擇仙師', '選擇對象', '輸入內容', '降寶明細', '預覽確認'];
+const currentStepTitle = computed(() => stepTitles[currentStep.value - 1]);
+
+// Form State
+const form = ref({
+    date: new Date().toISOString().slice(0, 10),
+    master_id: null,
+    dharma_name_ids: [],
+    target_remarks: '',
+    content: '',
+    items: [],
+    items_footer_remarks: ''
+});
+
+// Input State
+const masterNameInput = ref('');
+const dharmaSearchQuery = ref('');
+const showItemsSelector = ref(false);
+
 // --- 2. Computed ---
 const masterFilteredList = computed(() => {
     const masters = ['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師'];

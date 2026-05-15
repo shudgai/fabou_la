@@ -392,5 +392,36 @@ imagewebp($dstImg, $outputPath, 80);
 - `handleNextRound`: `roundParticipants` 改為 `[]`，新回合時法號框不再自動全選，讓使用者自行點選本輪人員
 - `confirmSelection` (lotteryMode): `roundParticipants` 改為 `[]`，選完固定人員進入 step 3 時法號框保持清空
 
+## Session Notes (2026-05-16)
+
+### TeachingAddForm.vue 遺失變數 Bug
+
+#### 問題
+`TeachingAddForm.vue` 在 commit `1376e26` (feat: add new record button) 的改版中，將自訂下拉選單（teleported dropdown）全部替換為 `EditableInputChips` 元件。改版過程中**誤刪**了 8 個關鍵變數定義，導致：
+- `currentStep` 為 `undefined` → 畫面只顯示 `STEP  / `（無步驟數字）
+- `currentStep === 1` 永遠為 `false` → 所有步驟內容都隱藏
+- `form`, `masterNameInput`, `dharmaSearchQuery` 等同樣遺失 → 表單無法運作
+
+#### 影響變數清單
+| 變數 | 型態 | 功能 |
+|------|------|------|
+| `currentStep` | `ref(1)` | 當前步驟 (1-6) |
+| `totalSteps` | `6` | 總步驟數 |
+| `stepTitles` | 陣列 | 6 個步驟的標題文字 |
+| `currentStepTitle` | `computed` | 當前步驟標題 |
+| `form` | `ref({...})` | 表單資料物件 (date, master_id, dharma_name_ids, content, items, ...) |
+| `masterNameInput` | `ref('')` | 仙師輸入綁定 |
+| `dharmaSearchQuery` | `ref('')` | 對象搜尋綁定 |
+| `showItemsSelector` | `ref(false)` | 降寶明細選擇器開關 |
+
+#### 修復
+在 `TeachingAddForm.vue:369` 的 `// --- 2. Computed ---` 之前補回所有變數定義。
+
+#### 教訓 (前後端 + git)
+1. **Vue 3 Composition API**：所有 template 中使用的變數都必須在 `<script setup>` 中顯式宣告，Vue 不會報錯遺失變數（僅默默地呈現 undefined）。
+2. **Git diff 檢查**：大範圍 template 重構時，務必用 `git diff` 確認沒有意外刪除 script 區塊的變數定義，特別是與 template 綁定的 `ref`/`computed`。
+3. **Build 驗證**：此 bug 不會造成 build error（Vue template 編譯時不會檢查變數是否已宣告），必須實際瀏覽測試才能發現。
+4. **未來重構守則**：修改 template 時若涉及刪除/改寫區塊，應同時檢查 `v-model`、`{{ }}`、`v-if` 中使用的變數是否有對應宣告。
+
 
 

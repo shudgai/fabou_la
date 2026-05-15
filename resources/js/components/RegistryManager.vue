@@ -521,17 +521,17 @@
                                                                 <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
                                                                     {{ getDharmaNameText(dnr) }}
                                                                 </td>
-                                                                <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
+                                                                 <td class="px-[10px] py-2.5 text-left border-r border-slate-50">
                                                                         <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
                                                                             {{ formatDisplayDate(dnr.obtained_date) || '--' }}
                                                                         </span>
                                                                     </td>
-                                                                    <td class="px-[10px] py-2.5 text-center">
-                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                                    <td class="px-[10px] py-2.5 text-left">
+                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-start cursor-pointer">
                                                                             <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
                                                                         </div>
                                                                     </td>
-                                                                </tr>
+                                                                 </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -551,19 +551,19 @@
                                                                     <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
                                                                         {{ getDharmaNameText(dnr) }}
                                                                     </td>
-                                                                    <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
-                                                                        <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
-                                                                            {{ formatDisplayDate(dnr.obtained_date) || '--' }}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td class="px-[10px] py-2.5 text-center">
-                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight">
-                                                                                <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
-                                                                                <span v-html="renderRemarksHtml(dnr.remarks)"></span>
-                                                                            </span>
-                                                                        </div>
-                                                                    </td>
+                                                                     <td class="px-[10px] py-2.5 text-left border-r border-slate-50">
+                                                                         <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
+                                                                             {{ formatDisplayDate(dnr.obtained_date) || '--' }}
+                                                                         </span>
+                                                                     </td>
+                                                                     <td class="px-[10px] py-2.5 text-left">
+                                                                         <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-start cursor-pointer">
+                                                                             <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                                 <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
+                                                                                 <span v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                             </span>
+                                                                         </div>
+                                                                     </td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
