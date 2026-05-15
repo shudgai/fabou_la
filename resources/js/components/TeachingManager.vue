@@ -114,11 +114,11 @@
                             <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                                 <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
                                 <!-- Label Inside -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2" style="transform: translateY(-10px);">
                                     <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
                                          父皇仙師<br>每日開示
                                      </span>
-                                     <div class="mt-6 flex items-center font-biaokai-locked">
+                                     <div class="mt-[22px] flex items-center font-biaokai-locked">
                                          <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ folderCounts.daily || 0 }} 筆</span>
                                      </div>
                                 </div>
@@ -132,11 +132,11 @@
                             <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                                 <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="Book Icon">
                                 <!-- Label Inside -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2" style="transform: translateY(-10px);">
                                     <span class="font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter leading-tight text-center font-biaokai-locked" style="font-weight: 900 !important; font-size: 38px !important; color: white !important;">
                                         父皇仙師<br>開示載錄
                                     </span>
-                                    <div class="mt-6 flex items-center font-biaokai-locked">
+                                    <div class="mt-[22px] flex items-center font-biaokai-locked">
                                         <span class="font-black tracking-tight drop-shadow-sm whitespace-nowrap font-biaokai-locked text-[#ff3131]" style="font-size: 24px !important;">{{ mastersTotalCount }} 筆</span>
                                     </div>
                                 </div>
@@ -156,13 +156,13 @@
                             <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-[2px] p-2 place-items-center">
+                    <div class="grid grid-cols-2 gap-x-1 p-2 place-items-center">
                         <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                             @click="currentFolder = folder"
                             class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 p-0 overflow-visible">
                             <div class="relative w-[198px] h-[198px] flex items-center justify-center overflow-visible">
                                 <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
-                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked">
+                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked" style="transform: translateY(-15px);">
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
@@ -170,7 +170,7 @@
                                           style="font-weight: 900 !important; font-size: 26px !important;">
                                           {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                      </div>
-                                     <div class="mt-[2px] flex items-center font-biaokai-locked">
+                                     <div class="mt-[-2px] flex items-center font-biaokai-locked">
                                          <span class="font-black whitespace-nowrap drop-shadow-sm font-biaokai-locked text-white"
                                                style="font-size: 13px !important; line-height: 2;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                      </div>
