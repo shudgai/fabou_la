@@ -69,11 +69,11 @@
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
                                  alt="Book Icon">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(-15px);">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(0px);">
                                 <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
                                 <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
-                                <div class="mt-2 flex items-center font-biaokai-locked">
-                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[11.5px]">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                <div class="mt-8 flex items-center font-biaokai-locked">
+                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[14.5px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
