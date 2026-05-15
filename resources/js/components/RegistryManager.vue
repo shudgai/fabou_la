@@ -73,7 +73,7 @@
                                 <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
                                 <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
                                 <div class="mt-2 flex items-center font-biaokai-locked">
-                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[11.5px] drop-shadow-sm">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[11.5px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                                          {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                     </div>
                                     <div class="mt-[14px] flex items-center font-biaokai-locked" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">
-                                        <span class="font-black text-white font-biaokai-locked drop-shadow-sm" style="font-size: 9px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
+                                        <span class="font-black text-white font-biaokai-locked" style="font-size: 9px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">{{ folderCounts[folder.id] || 0 }} 筆</span>
                                     </div>
                                 </div>
                             </div>
