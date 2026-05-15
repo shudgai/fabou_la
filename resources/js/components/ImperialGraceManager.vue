@@ -80,7 +80,7 @@
         </teleport>
         <div ref="scrollContainer" class="flex-1 overflow-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
-        <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
+        <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-2.5 bg-white">
             <button 
                 @click="currentCategory = 'masters'"
                 class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">

@@ -59,7 +59,7 @@
                 </div>
 
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
-                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-8 bg-white">
+                <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-2.5 bg-white">
 
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                         <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
