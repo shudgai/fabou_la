@@ -52,12 +52,12 @@
 
                     <button @click="currentCategory = 'major'" class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                         <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
-                            <img src="/image/registry_book_yellow_v2.png" 
+                            <picture><source srcset="/image/registry_book_yellow_v2.webp" type="image/webp"><img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
-                                 alt="書籍圖示">
+                                 alt="書籍圖示"></picture>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(0px);">
                                 <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
                                 <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
@@ -77,12 +77,12 @@
                               :style="{ zIndex: folders.length - idx }">
 
                         <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
-                            <img src="/image/registry_book_yellow_v2.png" 
+                            <picture><source srcset="/image/registry_book_yellow_v2.webp" type="image/webp"><img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
                                  class="w-[320px] h-[206px] max-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
-                                 alt="書籍圖示">
+                                 alt="書籍圖示"></picture>
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-8px);">
                                  <div class="font-black tracking-tighter leading-none text-center font-biaokai -mt-3" style="font-size: 12px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>

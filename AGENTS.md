@@ -325,3 +325,42 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 3. **多行屬性**: `日期` → `法寶名稱` → `用意:xxx` → `法號1,法號2`
 4. **民國年**: `113.10.6` 自動轉西元 `2024-10-06`
 
+## Image Optimization (2026-05-15)
+
+### Format & Sizing Strategy
+| Before | After | Saving |
+|--------|-------|--------|
+| 1024×1024 PNG, 574~840 KB each | 256×256 WebP, **5~11 KB** each | **~99%** |
+| `ImageController.php` output PNG (1024×1024) | output **WebP** (q=80), cache `.webp` | ~70% smaller |
+
+### Active Images (in `public/image/`)
+- `imperial_grace_book_v5.png` (709 KB) + `.webp` (10 KB) — ImperialGraceManager, TeachingManager
+- `registry_book_yellow_v2.png` (574 KB) + `.webp` (5 KB) — RegistryManager
+- `registry_book_yellow_v6.png` (682 KB) + `.webp` (6 KB) — ImageController teaching template
+- `imperial_grace_book_yellow.png` (840 KB) + `.webp` (11 KB) — currently unused
+
+### Implementation
+- **Vue components** use `<picture>` with WebP source + PNG fallback:
+  ```html
+  <picture><source srcset="/image/xxx.webp" type="image/webp">
+  <img src="/image/xxx.png" ...></picture>
+  ```
+- **ImageController** (`ImageController.php`): `imagepng()` → `imagewebp($img, $cachePath, 80)`, cache extension `.webp`, `Content-Type: image/webp`
+- **app.blade.php preloads** point to `.webp` files (not `.png`)
+- **PNG originals kept** as fallback for older browsers and for GD source images in ImageController (which uses `imagecreatefromjpeg`)
+- **6 orphaned images** (~3.7 MB) and empty `favicon.ico` deleted; unused `imperial_grace_book_yellow.png` preload removed
+
+### Resize Conversion (PHP GD)
+```powershell
+# Resize and convert any PNG/JPEG to 256×256 WebP:
+$srcImg = imagecreatefromjpeg($path);  # or imagecreatefrompng
+$dstImg = imagescale($srcImg, 256, 256);
+imagewebp($dstImg, $outputPath, 80);
+```
+
+### Important Notes
+- Files have JPEG headers (`FF D8 FF E0`) despite `.png` extension — `imagecreatefromjpeg()` is correct
+- Do NOT delete the original `.png` files — ImageController uses them as background sources for dynamic text overlay
+- WebP has universal browser support as of 2026
+
+

@@ -32,6 +32,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@400;500;600;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Preload Critical Images -->
+    <link rel="preload" as="image" href="/image/registry_book_yellow_v2.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="/image/imperial_grace_book_v5.webp" fetchpriority="high">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

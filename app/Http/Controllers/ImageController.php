@@ -41,11 +41,11 @@ class ImageController extends Controller
         }
 
         $cacheKey = 'folder_img_' . $template . '_' . md5(json_encode($lines));
-        $cachePath = storage_path('app/folder_cache/' . $cacheKey . '.png');
+        $cachePath = storage_path('app/folder_cache/' . $cacheKey . '.webp');
 
         if (file_exists($cachePath)) {
             return response()->file($cachePath, [
-                'Content-Type' => 'image/png',
+                'Content-Type' => 'image/webp',
                 'Cache-Control' => 'public, max-age=86400',
             ]);
         }
@@ -106,11 +106,11 @@ class ImageController extends Controller
             mkdir($cacheDir, 0755, true);
         }
 
-        imagepng($img, $cachePath);
+        imagewebp($img, $cachePath, 80);
         imagedestroy($img);
 
         return response()->file($cachePath, [
-            'Content-Type' => 'image/png',
+            'Content-Type' => 'image/webp',
             'Cache-Control' => 'public, max-age=86400',
         ]);
     }
