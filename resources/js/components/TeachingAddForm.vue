@@ -70,20 +70,24 @@
                             <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
                             已解析紀錄 ({{ batchRecords.length }} 筆)
                         </div>
-                        <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-4 animate-fade-in text-left">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
-                                <button @click="batchRecords.splice(index, 1)" class="text-slate-300 hover:text-red-500 p-1">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                            
-                            <div v-if="record.content && record.content.trim()" class="text-slate-800 text-[17px] font-black leading-relaxed whitespace-pre-wrap">
-                                {{ record.content }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                         <div v-for="(record, index) in batchRecords" :key="index" class="bg-white border border-slate-200 rounded-3xl p-5 shadow-lg space-y-4 animate-fade-in text-left">
+                             <div class="flex items-center justify-between">
+                                 <span class="text-[12px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-2xl">#{{ index + 1 }} {{ record.master_name }}</span>
+                                 <button @click="batchRecords.splice(index, 1)" class="text-slate-300 hover:text-red-500 p-1">
+                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                 </button>
+                             </div>
+                             
+                             <textarea v-model="record.content"
+                                 class="w-full bg-transparent border border-slate-100 rounded-xl text-[15px] font-black text-slate-800 leading-relaxed resize-none outline-none p-3 min-h-[60px]"
+                                 placeholder="輸入內容..."
+                                 rows="3"></textarea>
+                         </div>
+                         <button @click="addBatchRecord" class="w-full py-3 border-2 border-dashed border-indigo-200 rounded-2xl text-indigo-400 font-black text-[15px] active:scale-95 transition-all hover:border-indigo-400 hover:text-indigo-600">
+                             ＋ 新增一筆
+                         </button>
+                     </div>
+                 </div>
 
                 <!-- SINGLE MODE UI -->
                 <transition v-else name="step-fade" mode="out-in">
@@ -610,6 +614,18 @@ function processBatchParsing() {
         });
         
         return record;
+    });
+}
+
+function addBatchRecord() {
+    batchRecords.value.push({
+        master_name: '父皇',
+        dharmaSearchQuery: '',
+        rawRecipientLine: '',
+        content: '',
+        items: [],
+        dharma_name_ids: [],
+        items_footer_remarks: ''
     });
 }
 
