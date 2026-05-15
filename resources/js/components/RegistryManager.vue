@@ -51,7 +51,7 @@
                 <!-- Consolidated Header for Masters Grid (Matching List View) -->
                 <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-slate-100">
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
-                        <span class="font-outfit !font-black !text-[#dc2626] whitespace-nowrap mr-2" style="font-size: 23px !important; font-weight: 900 !important;">法寶登記專區</span>
+
                         <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
                             {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
                         </span>
