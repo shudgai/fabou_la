@@ -280,6 +280,15 @@ class RegistryController extends Controller
             $registry->update($request->all());
 
             if ($request->has('dharma_name_registries')) {
+                $incomingIds = collect($request->input('dharma_name_registries'))
+                    ->pluck('id')
+                    ->filter()
+                    ->values();
+
+                DharmaNameRegistry::where('registry_id', $registry->id)
+                    ->whereNotIn('id', $incomingIds)
+                    ->delete();
+
                 foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     if (empty($dharma_name_id) && !empty($dn['custom_name'])) {
@@ -513,6 +522,21 @@ class RegistryController extends Controller
             }
         }
         return response()->json(['message' => 'Reordered']);
+    }
+
+    /**
+     * 刪除單筆法號紀錄
+     */
+    public function destroyDharmaNameRegistry($id)
+    {
+        $user = auth()->user();
+        $dnr = DharmaNameRegistry::with('registry')->findOrFail($id);
+        $registry = $dnr->registry;
+        if (!$registry || $registry->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $dnr->delete();
+        return response()->json(['message' => '已刪除']);
     }
 
     /**

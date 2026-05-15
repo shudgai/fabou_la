@@ -547,56 +547,55 @@
                                                                     {{ getDharmaNameText(dnr) }}
                                                                 </td>
                                                                 <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
-                                                                    <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
-                                                                        {{ formatDisplayDate(dnr.obtained_date) || '--' }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="px-[10px] py-2.5 text-center">
-                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight">
-                                                                            {{ (dnr.remarks && dnr.remarks.length > 0) ? dnr.remarks : '--' }}
+                                                                        <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
+                                                                            {{ formatDisplayDate(dnr.obtained_date) || '--' }}
                                                                         </span>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
-                                                    <table class="w-full border-collapse bg-white table-fixed">
-                                                        <thead>
-                                                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                                                                <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
-                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
-                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
-                                                                <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
-                                                                    {{ getDharmaNameText(dnr) }}
-                                                                </td>
-                                                                <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
-                                                                    <span class="text-[14px] font-normal font-outfit text-slate-600" style="font-family: 'PMingLiU', serif;">
-                                                                        {{ formatDisplayDate(dnr.obtained_date) || '--' }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="px-[10px] py-2.5 text-center">
-                                                                    <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight">
-                                                                            {{ (dnr.related_personnel && dnr.related_personnel.length ? translateRelList(dnr.related_personnel) + '：' : '') + ((dnr.remarks && dnr.remarks.length > 0) ? dnr.remarks : '--') }}
+                                                                    </td>
+                                                                    <td class="px-[10px] py-2.5 text-center">
+                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
+                                                        <table class="w-full border-collapse bg-white table-fixed">
+                                                            <thead>
+                                                                <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                                                    <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                                    <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                    <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="dnr in getFilteredSortedRegistries(item)" :key="dnr.id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                                    <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">
+                                                                        {{ getDharmaNameText(dnr) }}
+                                                                    </td>
+                                                                    <td class="px-[10px] py-2.5 text-center border-r border-slate-50">
+                                                                        <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">
+                                                                            {{ formatDisplayDate(dnr.obtained_date) || '--' }}
                                                                         </span>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </template>
+                                                                    </td>
+                                                                    <td class="px-[10px] py-2.5 text-center">
+                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                                <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
+                                                                                <span v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </template>
+                                            </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -610,9 +609,9 @@
             :masters="masters"
             :category="currentCategory"
             :isSaving="isSaving"
+            @openRemarksEdit="handleAddFormRemarksEdit"
             @saveSingle="saveSingle"
             @saveBatch="triggerBatchSave"
-            @openRemarksEdit="handleAddFormRemarksEdit"
             @cancel="addMode = null"
         />
 
@@ -1056,6 +1055,36 @@ const dynamicHeaderTitle = computed(() => {
     const catName = currentCategory.value === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿';
     return `${catName}-${currentFolder.value.name}`;
 });
+
+const renderRemarksHtml = (remarks) => {
+    if (!remarks || (Array.isArray(remarks) && remarks.length === 0)) return '--';
+    let text = '';
+    
+    // Normalize input
+    let raw = Array.isArray(remarks) ? remarks.join('；') : String(remarks);
+    
+    // Handle JSON array strings e.g. ["2024/06/23 ..."]
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+        try {
+            const parsed = JSON.parse(trimmed);
+            if (Array.isArray(parsed)) {
+                raw = parsed.join('；');
+            }
+        } catch (e) {}
+    }
+    
+    // Strip wrapping quotes and outer symbols
+    text = raw.replace(/^["'](.*)["']$/, '$1')
+              .replace(/^[（(［\[「](.*?)[」\]］)）]$/, '$1');
+    
+    // Broad regex for dates: 2024/01/01, 113.10.06, 2024-05-12, etc.
+    // Handles / . - and full-width ／
+    const dateRegex = /(\d{2,4}[\/\.\-／]\s?\d{1,2}\s?[\/\.\-／]\s?\d{1,2})/g;
+
+    // Use a very specific red style
+    return text.replace(dateRegex, '<span style="color: #ef4444 !important; font-weight: 900 !important; font-family: sans-serif !important;">$1</span>');
+};
 
 const getDharmaNameText = (dnr) => {
     // Priority 1: Use pre-resolved ID from DB
@@ -1969,13 +1998,6 @@ const triggerRemarksEdit = (item, personIdentifier) => {
 
 
 
-const handleAddFormRemarksEdit = ({ idx, remarks }) => {
-    currentAddFormIdx.value = idx;
-    activeRemarks.value = remarks;
-    currentDnrId.value = null;
-    showRemarksModal.value = true;
-};
-
 const openRemarks = (dnrOrContent) => {
     if (typeof dnrOrContent === 'string') {
         activeRemarks.value = dnrOrContent;
@@ -1985,6 +2007,13 @@ const openRemarks = (dnrOrContent) => {
         activeRemarks.value = Array.isArray(r) ? r.join('\n') : (r || '');
         currentDnrId.value = dnrOrContent.id;
     }
+    showRemarksModal.value = true;
+};
+
+const handleAddFormRemarksEdit = ({ idx, remarks }) => {
+    currentAddFormIdx.value = idx;
+    currentDnrId.value = null;
+    activeRemarks.value = remarks || '';
     showRemarksModal.value = true;
 };
 

@@ -14,7 +14,7 @@
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-tighter font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-tighter font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <div class="flex flex-col items-center pt-8 pb-20 w-full space-y-2.5 bg-white">
                         <!-- Category 1: Daily Teaching (Large Folder Style) -->
                         <button v-if="user?.permissions?.can_see_daily_teachings"
-                            @click="currentCategory = 'daily'"
+                            @click="currentCategory = 'daily'; currentFolder = folders_list.find(f => f.id === 0)"
                             class="flex flex-col items-center justify-center bg-white active:scale-95 transition-all group relative rounded-none w-full max-w-[465px]">
                             <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                                 <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示">
@@ -96,7 +96,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                         <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
-                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important;">父皇仙師開示載錄</span>
+                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important; display: inline-block; transform: translateY(2px);">父皇仙師開示載錄</span>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-x-0 gap-y-0.5 p-2 place-items-center">
@@ -201,10 +201,10 @@
                                             <div class="text-[14px] mb-1 font-bold text-slate-400 font-outfit tracking-tighter">
                                                 {{ (item.date || '').replace(/-/g, '/') }}
                                             </div>
-                                            <!-- Literal Record Content (Full) -->
+                                            <!-- Literal Record Content (Truncated to 3 lines) -->
                                             <template v-if="isContentLiteral(item)">
                                                 <div class="text-[17px] font-black text-slate-900 leading-relaxed whitespace-pre-wrap mt-1 text-left">
-                                                    {{ item.content.trim() }}
+                                                    {{ getFirstThreeLines(item.content) }}
                                                 </div>
                                             </template>
                                             <template v-else>
@@ -212,9 +212,9 @@
                                                 <div class="text-[17px] font-black leading-none mb-1 text-slate-900">
                                                     <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ formatMasterName(item.master?.name || item.master_name) }}</span>開示給:{{ getRecipientName(item) }}
                                                 </div>
-                                                <!-- Content Summary Row (Grey) -->
-                                                <div class="text-[17px] font-semibold text-slate-500 truncate leading-none">
-                                                    <span v-if="item.content">{{ item.content.split('\n')[0] }}</span>
+                                                <!-- Content Summary Row (3 Lines max) -->
+                                                <div class="text-[17px] font-semibold text-slate-500 leading-relaxed whitespace-pre-wrap text-left">
+                                                    <span v-if="item.content">{{ getFirstThreeLines(item.content) }}</span>
                                                     <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                                 </div>
                                             </template>
@@ -659,6 +659,13 @@ const isContentLiteral = (item) => {
     const hasMaster = masters.some(m => c.includes(m));
     const hasMarkers = c.includes('開示') || c.includes('給') || c.includes('：') || c.includes(':');
     return hasMaster && hasMarkers;
+};
+
+const getFirstThreeLines = (text) => {
+    if (!text) return '';
+    const lines = text.trim().split('\n');
+    if (lines.length <= 3) return text.trim();
+    return lines.slice(0, 3).join('\n') + '...';
 };
 
 const emit = defineEmits(['goHome']);
@@ -2893,6 +2900,11 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
 };
 
 const formatTeachingForExport = (item, index = null, allRecords = []) => {
+    // REQUIREMENT: Literal records return full content exactly as displayed (no synthetic headers)
+    if (isContentLiteral(item)) {
+        return item.content.trim();
+    }
+
     const recipient = getRecipientName(item);
     const grouped = groupItems(item.items);
     let treasureLines = [];
@@ -2921,7 +2933,7 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     });
 
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
-    const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
+    const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content.trim() : '';
 
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (index !== null && allRecords.length > 0) {
@@ -2943,7 +2955,9 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     }
 
     let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
-    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
+    // Match list view header style: Master + Label + Recipient
+    const mName = formatMasterName(item.master?.name || item.master_name);
+    return `${(item.date || '').replace(/-/g, '/')}\n${mName}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
 };
 
 const downloadTeaching = (item) => {
@@ -3295,32 +3309,9 @@ const exportListTxt = async () => {
         const res = await axios.get('/teachings', { params });
         const recordsObj = res.data.records || res.data;
         const allItems = recordsObj.data || recordsObj;
-        const text = allItems.map(item => {
-            const dnText = item.dharma_names?.map(d => d.name).join(', ') || '全員';
-            const grouped = groupItems(item.items);
-            let treasLines = [];
-            Object.keys(grouped).forEach((gName, gIdx) => {
-                const group = grouped[gName];
-                let line = `${gIdx + 1}. ${gName}`;
-                if (group.length === 1 && !group[0].name && !group[0].sub_name) {
-                    if (group[0].details) line += `: ${group[0].details}`;
-                    treasLines.push(line);
-                } else if (group.length === 1) {
-                    line += `: ${group[0].name || ''} ${group[0].sub_name || ''} ${group[0].details || ''}`.replace(/\s+/g, ' ').trim();
-                    treasLines.push(line);
-                } else {
-                    treasLines.push(line);
-                    group.forEach(m => {
-                        if (m.name || m.sub_name || m.details) {
-                            treasLines.push(`      ${m.name || ''}${m.details ? ':' + m.details : ''}${m.sub_name ? ' (' + m.sub_name + ')' : ''}`.trimEnd());
-                        }
-                    });
-                }
-            });
-            const treasuresStr = treasLines.join('\n');
-            const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
-            return `【日期：${item.date?.replace(/-/g, '/')}】\n${item.master?.name || '仙師'}開示給${dnText}：${safeContent}${treasuresStr ? '\n賜降：\n'+treasuresStr : ''}\n\n完畢！`;
-        }).join('\n\n' + '='.repeat(40) + '\n\n');
+        const text = allItems.map((item, idx) => {
+            return formatTeachingForExport(item, idx, allItems);
+        }).join('\n' + '='.repeat(40) + '\n');
 
         const fileName = `開示記錄_${currentFolder.value?.name}_${getTodayStr()}.txt`;
         triggerSimpleDownload(text, fileName);

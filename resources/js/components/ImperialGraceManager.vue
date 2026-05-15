@@ -15,7 +15,7 @@
             style="padding: 4px 15px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px !important; font-weight: 900 !important;">
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -30,7 +30,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 30px !important; font-weight: 900 !important;">
+                    <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 24px !important; font-weight: 900 !important;">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
                         {{ form.id ? '修改重大皇恩' : '重大皇恩專區' }}
                     </div>
@@ -315,9 +315,9 @@
                                                 <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
                                             </div>
 
-                                            <div class="space-y-1">
+                                            <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="space-y-1">
                                                 <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                                <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose && reg.purpose !== '-' && reg.purpose !== '無' ? reg.purpose : '-' }}</div>
+                                                <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
                                             </div>
 
                                             <div class="grid grid-cols-2 gap-4">
@@ -333,9 +333,9 @@
                                                 </div>
                                             </div>
 
-                                            <div class="space-y-1 pt-2 border-t border-slate-50">
+                                            <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
                                                 <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                                <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks && reg.remarks !== '-' && reg.remarks !== '無' ? reg.remarks : '-' }}</div>
+                                                <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
                                             </div>
                                         </div>
                                     </div>

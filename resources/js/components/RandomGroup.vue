@@ -210,14 +210,19 @@
                         <div class="space-y-2">
                             <label class="font-bold text-slate-400 uppercase tracking-wider px-1" style="font-size: 16px !important;">🌟 指定種子組 (優先扣除)</label>
                             <div class="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl min-h-[60px]">
-                                    <input 
-                                        type="text" 
-                                        v-model="seedInput"
-                                        @change="addSeedFromSelect($event)" 
-                                        placeholder="查詢在場人員加入種子組..." 
-                                        class="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 outline-none text-[16px] font-black text-slate-600 cursor-pointer shadow-sm text-center"
-                                    >
-                                    <compact-datalist v-model="seedInput" :options="availableSeeds" @update:modelValue="onSeedSelected" />
+                                    <!-- Desktop View -->
+                                    <div class="hidden md:block">
+                                        <input 
+                                            type="text" 
+                                            v-model="seedInput"
+                                            @change="addSeedFromSelect($event)" 
+                                            placeholder="查詢在場人員加入種子組..." 
+                                            class="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 outline-none text-[16px] font-black text-slate-600 cursor-pointer shadow-sm text-center"
+                                        >
+                                        <compact-datalist v-model="seedInput" :options="availableSeeds" @update:modelValue="onSeedSelected" />
+                                    </div>
+                                    <!-- Mobile View -->
+                                    <editable-input-chips class="md:hidden" v-model="seedInput" :options="availableSeeds" @change="onSeedSelected" placeholder="查詢在場人員..." />
 
                                 <div v-if="seedNames.length > 0" class="flex flex-wrap gap-2 mt-2">
                                     <div v-for="name in seedNames" :key="'seed'+name" class="flex items-center space-x-1.5 bg-indigo-50 text-indigo-900 text-[16px] font-black px-3 py-1.5 rounded-xl border border-indigo-100">

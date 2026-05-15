@@ -58,7 +58,8 @@ class DharmaNameSeeder extends Seeder
             43 => '金惜',
             44 => '金護',
             45 => '靈奇',
-            46 => '靈傾'
+            46 => '靈傾',
+            47 => '紫真'
         ];
 
         foreach ($dharmaNames as $order => $name) {

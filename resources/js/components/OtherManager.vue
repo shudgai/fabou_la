@@ -9,7 +9,7 @@
                     </button>
                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
+                        <h1 class="font-outfit tracking-tighter truncate font-black text-red-600 whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px; font-weight: 900 !important;">抽籤專區</h1>
                     </div>
                 </div>
                 <div class="w-10 h-10"></div> <!-- Placeholder to maintain title centering -->
@@ -131,7 +131,7 @@
                         <h1 class="text-slate-900 leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 28px !important; padding-top: 5px; font-weight: 900 !important;">
                                  抽籤專區
                               </h1>
-                              <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important;">{{ activeFolder.name }}</span>
+                              <span v-if="activeFolder" :class="activeFolder.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" class="truncate font-outfit font-normal" style="font-size: 23px !important; font-weight: 400 !important; display: inline-block; transform: translateY(2px);">{{ activeFolder.name }}</span>
                     </div>
                     </div>
 

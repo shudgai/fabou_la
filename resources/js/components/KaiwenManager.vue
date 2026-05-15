@@ -26,7 +26,7 @@
             <div class="cursor-pointer shrink-0 pt-[2px]" @click="resetToRoot">
                 <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 30px !important; line-height: 1.1;">
+                        <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1;">
                     開文專區
                 </h1>
                     </div>
@@ -328,8 +328,13 @@
 
                         <div v-if="addMode === 'self'" class="space-y-1">
                             <label class="ml-1 !font-black !text-[#1e293b]" style="font-family: 'Noto Sans TC', sans-serif !important;">仙師</label>
-                            <input v-model="form.master_name" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
-                            <compact-datalist v-model="form.master_name" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" />
+                            <!-- Desktop View -->
+                            <div class="hidden md:block">
+                                <input v-model="form.master_name" placeholder="輸入或選擇仙師..." class="w-full h-[36px] rounded-lg bg-white px-3 outline-none transition-all" :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontWeight: '400', color: '#0f172a', fontSize: '16px !important' }">
+                                <compact-datalist v-model="form.master_name" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" />
+                            </div>
+                            <!-- Mobile View -->
+                            <editable-input-chips class="md:hidden" v-model="form.master_name" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" placeholder="輸入或選擇仙師..." />
 
                         </div>
 

@@ -24,7 +24,7 @@
                             {{ mode === 'batch' ? '多筆載錄' : '逐筆載錄' }}
                         </div>
                         <button @click="$emit('close')" class="shrink-0 w-10 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors p-1 z-[50]">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
                 </div>
@@ -99,7 +99,8 @@
                     <!-- STEP 2: Master -->
                     <div v-else-if="currentStep === 2" :key="'step-2'" class="space-y-10 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">錄入哪位<span class="text-red-600">仙師</span>的開示？</h2>
-                        <div class="max-w-md mx-auto mt-12 relative flex items-center">
+                        <!-- Desktop View -->
+                        <div class="hidden md:flex max-w-md mx-auto mt-12 relative items-center">
                             <input v-model="masterNameInput" 
                                 ref="masterInputEl"
                                 @click="showMasterDropdown = true; openMasterDropdown()"
@@ -114,6 +115,10 @@
                                 <svg class="w-5 h-5 transition-transform" :class="showMasterDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
+                        <!-- Mobile View -->
+                        <div class="md:hidden mt-8">
+                            <editable-input-chips v-model="masterNameInput" :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" @change="resolveMasterId" placeholder="選擇仙師..." />
+                        </div>
                     </div>
 
                     <!-- STEP 3: Target/Group -->
@@ -121,7 +126,8 @@
                         <div class="space-y-4">
                             <h2 class="text-[18px] font-black text-slate-900 tracking-tight leading-relaxed">此次開示的<span class="text-indigo-600">對象</span>與<span class="text-emerald-600">群組</span></h2>
                             
-                            <div class="max-w-md mx-auto mt-8 relative flex items-center">
+                            <!-- Desktop View -->
+                            <div class="hidden md:flex max-w-md mx-auto mt-8 relative items-center">
                                 <input ref="dharmaSearchInputEl"
                                        type="text"
                                         @click="showPractitionerDropdown = true; openPractitionerDropdown()"
@@ -136,23 +142,32 @@
                                     <svg class="w-5 h-5 transition-transform" :class="showPractitionerDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </div>
+                            <!-- Mobile View -->
+                            <div class="md:hidden mt-4">
+                                <editable-input-chips v-model="dharmaSearchQuery" :options="combinedPractitionerOptions" @change="handleDharmaSearchInput({target: {value: dharmaSearchQuery}})" placeholder="搜尋法號或群組..." />
+                            </div>
                         </div>
 
                         <div class="space-y-4">
                             <h2 class="text-[16px] font-black text-slate-400 tracking-tight">備註對象 (選填)</h2>
-                            <div class="max-w-md mx-auto relative">
-                                <input v-model="form.target_remarks" 
-                                    ref="relInputEl"
-                                    @click="activeRelDropdown = true; openRelDropdown()"
-                                    @input="activeRelDropdown = true; openRelDropdown()"
-                                    @focus="openRelDropdown"
-                                    @blur="delayClose(activeRelDropdown, 150)"
-                                    autocomplete="off"
-                                    placeholder="例：之母親 / 長輩..." 
-                                    class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-emerald-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
-                                <button v-if="form.target_remarks" @click="form.target_remarks = ''" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
+                            <div class="max-w-md mx-auto relative mt-4">
+                                <!-- Desktop View -->
+                                <div class="hidden md:block relative">
+                                    <input v-model="form.target_remarks" 
+                                        ref="relInputEl"
+                                        @click="activeRelDropdown = true; openRelDropdown()"
+                                        @input="activeRelDropdown = true; openRelDropdown()"
+                                        @focus="openRelDropdown"
+                                        @blur="delayClose(activeRelDropdown, 150)"
+                                        autocomplete="off"
+                                        placeholder="例：之母親 / 長輩..." 
+                                        class="w-full text-center text-[19px] font-black border-0 border-b-2 border-slate-200 focus:border-emerald-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-100">
+                                    <button v-if="form.target_remarks" @click="form.target_remarks = ''" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-red-500 active:scale-90 transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                <!-- Mobile View -->
+                                <editable-input-chips class="md:hidden" v-model="form.target_remarks" :options="relationshipOptions" placeholder="例：之母親 / 長輩..." />
                             </div>
                         </div>
 
@@ -225,12 +240,19 @@
                                          <button @click="removeFooterRemark(idx)" class="ml-2 text-slate-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
                                      </div>
                                  </div>
-                                 <div class="relative border-0 border-b-2 border-slate-200 focus-within:border-indigo-600 transition-all">
-                                     <input v-model="newFooterRemark" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
-                                         class="w-full text-center text-[18px] font-black bg-transparent py-4 px-4 outline-none transition-all placeholder:text-slate-100">
-                                     <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg></button>
+                                 <!-- Desktop View -->
+                                 <div class="hidden md:block">
+                                     <div class="relative border-0 border-b-2 border-slate-200 focus-within:border-indigo-600 transition-all">
+                                         <input v-model="newFooterRemark" @keyup.enter="addFooterRemark" placeholder="在此輸入結尾備註，按 Enter 加入..." 
+                                             class="w-full text-center text-[18px] font-black bg-transparent py-4 px-4 outline-none transition-all placeholder:text-slate-100">
+                                         <button v-if="newFooterRemark" @click="addFooterRemark" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-indigo-600 active:scale-90"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="4" stroke-linecap="round"/></svg></button>
+                                     </div>
+                                     <compact-datalist v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" />
                                  </div>
-                                 <compact-datalist v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" />
+                                 <!-- Mobile View -->
+                                 <div class="md:hidden">
+                                     <editable-input-chips v-model="newFooterRemark" :options="['*允同享皇恩', '完畢']" @change="addFooterRemark" placeholder="輸入結尾備註..." />
+                                 </div>
                              </div>
                          </div>
                     </div>
@@ -805,6 +827,12 @@ function processBatchParsing() {
 
 watch(batchImportContent, () => {
     processBatchParsing();
+});
+
+const combinedPractitionerOptions = computed(() => {
+    const list = [...props.dharmaNames.map(dn => dn.name), ...props.groups.map(g => g.name)];
+    if (!list.includes('在場全體')) list.unshift('在場全體');
+    return list;
 });
 
 function handleSubmit() {

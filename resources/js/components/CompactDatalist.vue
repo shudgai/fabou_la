@@ -1,11 +1,11 @@
 <template>
-    <div v-if="filteredOptions.length > 0" class="flex flex-wrap gap-1.5 mt-1.5 overflow-x-auto pb-1 custom-scrollbar no-scrollbar-mobile md:hidden">
+    <div v-if="filteredOptions.length > 0" ref="suggestionsRef" class="flex flex-nowrap gap-1.5 mt-1.5 overflow-x-auto pb-1 custom-scrollbar no-scrollbar-mobile md:hidden scroll-smooth">
         <button 
             v-for="opt in filteredOptions" 
             :key="opt.value"
             type="button"
             @click="$emit('update:modelValue', opt.value)"
-            class="whitespace-nowrap px-3 py-1.5 rounded-xl border border-slate-200 bg-white shadow-sm text-[14px] font-black text-slate-600 active:scale-95 transition-all"
+            class="whitespace-nowrap px-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm text-[16px] font-black text-slate-700 active:scale-95 transition-all shrink-0"
         >
             {{ opt.label }}
         </button>
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, nextTick, watch } from 'vue';
 
 const props = defineProps({
     options: {
@@ -24,6 +24,16 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
+
+const suggestionsRef = ref(null);
+
+watch(filteredOptions, () => {
+    if (filteredOptions.value.length > 0) {
+        nextTick(() => {
+            suggestionsRef.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        });
+    }
+});
 
 const normalizedOptions = computed(() => {
     if (Array.isArray(props.options)) {

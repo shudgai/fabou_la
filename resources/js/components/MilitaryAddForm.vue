@@ -23,8 +23,8 @@
                         </div>
                     </div>
                 </div>
-                <button @click="handleCancel" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button @click="handleCancel" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-[55%] -translate-y-1/2 z-[50]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
 
@@ -58,14 +58,14 @@
                     <!-- 法號 -->
                     <div class="space-y-1 relative dharma-dropdown">
                         <label class="font-bold text-slate-400 uppercase tracking-wider">法號</label>
-                        <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
+                        <!-- Desktop View -->
+                        <div class="hidden md:flex relative items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
                             <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..."
                                    @focus="activeDharmaDropdown = true"
                                    class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
                             <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1 text-slate-300 hover:text-slate-600 transition-all shrink-0">
                                 <svg class="w-4 h-4" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <input type="hidden" v-model="form.user_name" />
                             <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white shadow-xl z-[2100] overflow-hidden animate-fade-in max-h-48 overflow-y-auto">
                                 <div v-for="u in filteredDharmaNames" :key="u.id"
                                      @click.stop="selectDharma(u.name)"
@@ -76,14 +76,16 @@
                                     無符合的法號
                                 </div>
                             </div>
-                            <compact-datalist v-model="dharmaSearch" :options="filteredDharmaNames.map(u => u.name)" />
                         </div>
+                        <!-- Mobile View -->
+                        <editable-input-chips class="md:hidden" v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
                     </div>
 
                     <!-- 備註對象 -->
                     <div class="space-y-1 relative remarks-dropdown">
                         <label class="font-bold text-slate-400 uppercase tracking-wider">備註對象</label>
-                        <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
+                        <!-- Desktop View -->
+                        <div class="hidden md:flex relative items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[36px]">
                             <input v-model="form.user_remarks" type="text" placeholder="備註對象（例如：母親）..."
                                    @focus="activeRemarksDropdown = true"
                                    class="w-full bg-transparent border-none px-2 py-1 text-center outline-none">
@@ -98,7 +100,8 @@
                                 </div>
                             </div>
                         </div>
-                        <compact-datalist v-model="form.user_remarks" :options="relationshipOptions" />
+                        <!-- Mobile View -->
+                        <editable-input-chips class="md:hidden" v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象（例如：母親）..." />
                     </div>
                 </div>
 

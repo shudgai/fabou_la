@@ -23,7 +23,7 @@
                             逐筆載錄
                         </div>
                         <button @click="$emit('cancel')" class="shrink-0 w-10 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors p-1 z-[50]">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
                 </div>
@@ -66,23 +66,27 @@
                         <div class="space-y-0.5 mt-[-5px]">
                             <label class="app-title ml-1">法號</label>
                             <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] dharma-dropdown">
-                                <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
-                                    @focus="activeDharmaDropdown = true"
-                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body font-bold">
-                                <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
-                                    <svg class="w-5 h-5" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <input type="hidden" v-model="form.user_name">
-                                <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
-                                    <div v-for="u in filteredDharmaNames" :key="u.id"
-                                        @click.stop="selectDharma(u.name)"
-                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
-                                        {{ u.name }}
-                                    </div>
-                                    <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
-                                        無符合的法號
+                                <!-- Desktop View -->
+                                <div class="hidden md:flex w-full items-center">
+                                    <input v-model="dharmaSearch" type="text" placeholder="搜尋或選擇法號..." 
+                                        @focus="activeDharmaDropdown = true"
+                                        class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body font-bold text-center">
+                                    <button @click.stop="activeDharmaDropdown = !activeDharmaDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
+                                        <svg class="w-5 h-5" :class="activeDharmaDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div v-if="activeDharmaDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[200px] overflow-y-auto custom-scrollbar">
+                                        <div v-for="u in filteredDharmaNames" :key="u.id"
+                                            @click.stop="selectDharma(u.name)"
+                                            class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
+                                            {{ u.name }}
+                                        </div>
+                                        <div v-if="filteredDharmaNames.length === 0" class="px-3 py-2.5 text-[16px] text-slate-400 text-center">
+                                            無符合的法號
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- Mobile View -->
+                                <editable-input-chips class="md:hidden" v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
                             </div>
                         </div>
 
@@ -90,20 +94,24 @@
                         <div class="space-y-0.5">
                             <label class="app-title ml-1">備註對象</label>
                             <div class="relative flex items-center border-0 border-b-2 border-slate-300 bg-transparent overflow-visible min-h-[44px] remarks-dropdown">
-                                <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
-                                    @focus="activeRemarksDropdown = true"
-                                    class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body">
-                                <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
-                                    <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-
-                                <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
-                                    <div v-for="opt in relationshipOptions" :key="opt"
-                                        @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
-                                        class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
-                                        {{ opt }}
+                                <!-- Desktop View -->
+                                <div class="hidden md:flex w-full items-center">
+                                    <input v-model="form.user_remarks" type="text" placeholder="備註對象 (例如：母親)..." 
+                                        @focus="activeRemarksDropdown = true"
+                                        class="w-full bg-transparent border-none px-2 text-[15px] focus:ring-0 outline-none app-body font-bold text-center">
+                                    <button @click.stop="activeRemarksDropdown = !activeRemarksDropdown" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-all">
+                                        <svg class="w-5 h-5" :class="activeRemarksDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                    <div v-if="activeRemarksDropdown" class="absolute left-0 top-full mt-1 w-full bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-slate-100 z-[2100] overflow-hidden p-1 animate-fade-in max-h-[180px] overflow-y-auto custom-scrollbar">
+                                        <div v-for="opt in relationshipOptions" :key="opt"
+                                            @click.stop="form.user_remarks = opt; activeRemarksDropdown = false"
+                                            class="px-3 py-2.5 text-[16px] text-slate-700 hover:bg-indigo-50 active:bg-indigo-100 md:rounded-lg cursor-pointer transition-colors font-medium">
+                                            {{ opt }}
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- Mobile View -->
+                                <editable-input-chips class="md:hidden" v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象 (例如：母親)..." />
                             </div>
                         </div>
                     </div>
@@ -398,10 +406,15 @@ const selectDharma = (name) => {
     activeDharmaDropdown.value = false;
 };
 
+// Sync dharmaSearch to form.user_name
+watch(dharmaSearch, (newVal) => {
+    form.value.user_name = newVal;
+});
+
 // Watch form.user_name to sync with dharmaSearch
 watch(() => form.value.user_name, (newVal) => {
-    if (newVal && !dharmaSearch.value) {
-        dharmaSearch.value = newVal;
+    if (newVal !== dharmaSearch.value) {
+        dharmaSearch.value = newVal || '';
     }
 }, { immediate: true });
 

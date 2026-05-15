@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('registries/batch', [App\Http\Controllers\RegistryController::class, 'batchStore']);
     Route::post('registries/reorder', [App\Http\Controllers\RegistryController::class, 'reorder']);
     Route::patch('registries/personnel/{id}/remarks', [App\Http\Controllers\RegistryController::class, 'updatePersonnelRemarks']);
+    Route::delete('dharma-name-registries/{id}', [App\Http\Controllers\RegistryController::class, 'destroyDharmaNameRegistry']);
     Route::resource('registries', App\Http\Controllers\RegistryController::class);
     Route::resource('imperial-graces', App\Http\Controllers\ImperialGraceController::class);
     Route::post('imperial-graces/registry', [App\Http\Controllers\ImperialGraceController::class, 'storeRegistry']);

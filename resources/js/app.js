@@ -37,6 +37,7 @@ const components = {
     'other-records-manager': () => import('./components/OtherRecordsManager.vue'),
     'pagination-buttons': () => import('./components/PaginationButtons.vue'),
     'logo-imperial-notebook': () => import('./components/LogoImperialNotebook.vue'),
+    'editable-input-chips': () => import('./components/EditableInputChips.vue'),
 };
 
 Object.entries(components).forEach(([name, loader]) => {

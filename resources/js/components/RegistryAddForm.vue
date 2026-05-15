@@ -92,12 +92,7 @@
                         <div class="space-y-8">
                             <div class="relative group">
                                 <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                                <button @click="showMasterDropdown = true"
-                                    class="w-full py-4 border-0 border-b-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
-                                    :class="form.master_id ? 'border-blue-500 text-blue-700' : 'border-slate-100 text-slate-400'">
-                                    <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
-                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
+                                <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                             </div>
                         </div>
                     </div>
@@ -256,12 +251,7 @@
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                        <button @click="showMasterDropdown = true"
-                            class="w-full py-4 border-0 border-b-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
-                            :class="form.master_id ? 'border-blue-500 text-blue-700' : 'border-slate-100 text-slate-400'">
-                            <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
-                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
+                        <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
@@ -368,12 +358,7 @@
                     <!-- Master Selector -->
                     <div class="px-1">
                         <label class="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                        <button @click="showMasterDropdown = true"
-                            class="w-full py-3 border-0 border-b-2 text-[17px] font-black flex items-center justify-between outline-none transition-all active:scale-[0.98]"
-                            :class="form.master_id ? 'border-blue-500 text-blue-700' : 'border-slate-100 text-slate-400'">
-                            <span class="flex-1 text-center">{{ selectedMasterName || '請點選選擇仙師...' }}</span>
-                            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
+                        <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                     </div>
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
@@ -446,27 +431,6 @@
         />
     </div>
 
-        <!-- Master Bottom Sheet (root-level teleport to avoid transition interference) -->
-        <teleport to="body">
-            <div v-if="showMasterDropdown" class="fixed inset-0 z-[5500] flex items-end justify-center">
-                <div class="fixed inset-0 bg-slate-900/80" @click="showMasterDropdown = false"></div>
-                <div class="relative w-full max-w-xl bg-white rounded-t-[32px] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[80dvh]">
-                    <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-10">
-                        <span class="text-[20px] font-black text-slate-900">選擇仙師</span>
-                        <button @click="showMasterDropdown = false" class="p-2 text-slate-300 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                    </div>
-                    <div class="flex-1 overflow-y-auto p-3 space-y-1 pb-10">
-                        <button v-for="m in masters" :key="m.id" @click="form.master_id = m.id; showMasterDropdown = false"
-                            class="w-full py-3.5 px-4 text-left rounded-xl transition-all flex items-center justify-between border-2"
-                            :class="form.master_id === m.id ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50/50 border-transparent text-slate-700 hover:bg-slate-100'">
-                            <span class="text-[18px] font-bold">{{ m.name === '父皇仙師' ? '父皇' : m.name }}</span>
-                            <div v-if="form.master_id === m.id" class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </teleport>
-
         <!-- Remarks Edit Modal -->
         <teleport to="body">
             <div v-if="showRemarksModal" class="fixed inset-0 z-[5500] flex items-end justify-center">
@@ -507,6 +471,7 @@ const props = defineProps({
 const emit = defineEmits(['saveSingle', 'saveBatch', 'cancel', 'openRemarksEdit']);
 
 import CompactDatePicker from './CompactDatePicker.vue';
+import EditableInputChips from './EditableInputChips.vue';
 
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
@@ -539,7 +504,7 @@ function handleBack() {
 const form = ref({ ...props.initialData });
 const treasureNamesText = ref('');
 const batchInput = ref('');
-const showMasterDropdown = ref(false);
+const masterNameInput = ref('');
 const personnel = ref([]);
 const dharmaNames = ref([]);
 const activePicker = ref(null); // { idx: number | 'main', field: string, title: string }
@@ -831,6 +796,10 @@ const addPersonnelRow = () => {
 onMounted(() => {
     fetchDharmaNames();
     if (personnel.value.length === 0) addPersonnelRow();
+    if (form.value.master_id) {
+        const m = props.masters?.find(m => m.id === form.value.master_id);
+        if (m) masterNameInput.value = (m.name === '父皇仙師' ? '父皇' : m.name);
+    }
 });
 
 const removePersonnelRow = (idx) => {
@@ -845,17 +814,20 @@ const movePersonnel = (idx, direction) => {
     personnel.value.splice(targetIdx, 0, item);
 };
 
-const selectedMasterName = computed(() => {
-    const m = props.masters?.find(m => String(m.id) === String(form.value.master_id));
-    if (m) {
-        return m.name === '父皇仙師' ? '父皇' : m.name;
-    }
-    return '';
-});
+const resolveMasterId = () => {
+    const m = props.masters?.find(m => m.name === masterNameInput.value || (m.name === '父皇仙師' && masterNameInput.value === '父皇'));
+    if (m) form.value.master_id = m.id;
+};
+
+watch(masterNameInput, () => { resolveMasterId(); });
 
 watch(() => props.initialData, (newVal) => {
     form.value = { ...newVal };
     treasureNamesText.value = newVal.name || '';
+    if (newVal.master_id) {
+        const m = props.masters?.find(m => m.id === newVal.master_id);
+        if (m) masterNameInput.value = (m.name === '父皇仙師' ? '父皇' : m.name);
+    }
     if (newVal.dharma_name_registries) {
         personnel.value = newVal.dharma_name_registries.map(r => ({
             dharma_name_id: r.dharma_name_id,

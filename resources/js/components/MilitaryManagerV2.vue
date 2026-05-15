@@ -34,7 +34,7 @@
             <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">
+                        <h1 class="leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #0f172a !important; font-size: 24px !important; padding-top: 5px; font-weight: 900 !important;">
                     軍隊記錄專區
                 </h1>
                     </div>
