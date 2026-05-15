@@ -797,8 +797,7 @@ const formatRegistryForFile = (item) => {
     registries.sort((a, b) => {
         const getSortIndex = (dnr) => {
             const name = getDharmaNameText(dnr);
-            const searchName = name === '道霞龍妃' ? '金巧' : name;
-            return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
+            return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === name);
         };
 
         const indexA = getSortIndex(a);
@@ -1067,8 +1066,7 @@ const getDharmaNameText = (dnr) => {
     const rawName = (dnr.custom_name || '').trim();
     if (!rawName) return '--';
     
-    // Exception: Explicitly allowed or non-dharma names
-    if (['道霞龍妃', '金巧'].includes(rawName)) return rawName;
+    if (rawName === '金巧') return rawName;
     
     // Priority 2: Resolve alias/old name to official name
     const match = dharmaNames.value.find(d => 
@@ -1119,7 +1117,7 @@ const getSortedRegistries = (item) => {
     return registries.sort((a, b) => {
         const getSortIndex = (dnr) => {
             const name = getDharmaNameText(dnr);
-            const searchName = name === '道霞龍妃' ? '金巧' : name;
+            const searchName = name;
             return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
         };
 
@@ -1170,8 +1168,8 @@ const personCentricList = computed(() => {
             });
         });
     const sortedPersons = Array.from(personMap.values()).sort((a,b) => {
-        const nameA = a.name === '道霞龍妃' ? '金巧' : a.name;
-        const nameB = b.name === '道霞龍妃' ? '金巧' : b.name;
+        const nameA = a.name;
+        const nameB = b.name;
         const indexA = dharmaNames.value.findIndex(d => d.name === nameA);
         const indexB = dharmaNames.value.findIndex(d => d.name === nameB);
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
@@ -1311,7 +1309,6 @@ const filteredEditDharmaNames = computed(() => {
     const q = dharmaEditSearch.value?.toLowerCase().trim();
     let list = [...dharmaNames.value];
 
-    // Note: virtual 道霞龍妃 is now handled in the template to allow expansion toggle
     
     if (!q) return list;
     return list.filter(dn => dn.name.toLowerCase().includes(q));
@@ -1319,25 +1316,14 @@ const filteredEditDharmaNames = computed(() => {
 
 const isDharmaSelected = (dn) => {
     if (!editData.value?.dharma_name_registries) return false;
-    return editData.value.dharma_name_registries.some(r => {
-        if (dn.name === '道霞龍妃' || dn.isVirtual) {
-            return r.custom_name === '道霞龍妃' || (r.dharma_name_id && dharmaNames.value.find(d => d.id === r.dharma_name_id)?.name === '道霞龍妃');
-        }
-        // If checking normal的金巧, exclude the virtual or real 道霞龍妃
-        if (dn.name === '金巧') {
-            const isGq = r.dharma_name_id === dn.id && r.custom_name !== '道霞龍妃';
-            if (isGq) return true;
-            return false;
-        }
-        return r.dharma_name_id === dn.id;
-    });
+    return editData.value.dharma_name_registries.some(r => r.dharma_name_id === dn.id);
 };
 
 const sortRegistries = (arr) => {
     if (!arr) return [];
     const getSortIndex = (dnr) => {
         const name = getDharmaNameText(dnr);
-        const searchName = name === '道霞龍妃' ? '金巧' : name;
+        const searchName = name;
         return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
     };
     return arr.sort((a, b) => {
@@ -1360,31 +1346,14 @@ const getNamesList = (item) => {
 
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
-    const idx = registries.findIndex(r => {
-        if (dn.name === '道霞龍妃' || dn.isVirtual) {
-            return r.custom_name === '道霞龍妃' || (r.dharma_name_id && dharmaNames.value.find(d => d.id === r.dharma_name_id)?.name === '道霞龍妃');
-        }
-        if (dn.name === '金巧') return r.dharma_name_id === dn.id && r.custom_name !== '道霞龍妃';
-        return r.dharma_name_id === dn.id;
-    });
+    const idx = registries.findIndex(r => r.dharma_name_id === dn.id);
 
     if (idx >= 0) {
         registries.splice(idx, 1);
     } else {
-        // If it's a selection of 道霞龍妃, try to find its real record from the all-list
-        let targetId = dn.id;
-        let targetName = dn.name;
-        if (dn.name === '道霞龍妃' || dn.isVirtual) {
-            const realDxlf = dharmaNames.value.find(d => d.name === '道霞龍妃');
-            if (realDxlf) {
-                targetId = realDxlf.id;
-                targetName = '道霞龍妃';
-            }
-        }
-
         registries.push({
-            dharma_name_id: targetId,
-            custom_name: targetName,
+            dharma_name_id: dn.id,
+            custom_name: dn.name,
             obtained_date: editData.value.record_date || '',
             related_personnel: [],
             remarks: ''

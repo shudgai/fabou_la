@@ -719,10 +719,6 @@ const resolveNewDharmaName = (input) => {
     // 2. Alias match (Old Name check)
     const aliasMatch = dharmaNames.value.find(dn => dn.alias === trimmed);
     if (aliasMatch) {
-        // Exception: 金巧 / 道霞龍妃
-        if (['金巧', '道霞龍妃'].includes(aliasMatch.name)) {
-            return trimmed;
-        }
         return aliasMatch.name;
     }
     return trimmed;
@@ -1087,22 +1083,8 @@ const handleSubmit = async () => {
     }
 };
 
-const getDharmaOptions = (currentVal) => {
-    let names = dharmaNames.value.map(dn => dn.name);
-    
-    // Ensure both are present in the pool if either is present (for selection)
-    const hasGold = names.includes('金巧');
-    const hasDao = names.includes('道霞龍妃');
-    
-    if (hasGold && !hasDao) names.push('道霞龍妃');
-    if (hasDao && !hasGold) names.push('金巧');
-
-    // Logic: "沒選到的自動隱藏"
-    // If the input already exactly matches one, hide the other from the suggestion list
-    if (currentVal === '金巧') return names.filter(n => n !== '道霞龍妃');
-    if (currentVal === '道霞龍妃') return names.filter(n => n !== '金巧');
-
-    return names;
+const getDharmaOptions = () => {
+    return dharmaNames.value.map(dn => dn.name);
 };
 
 const updatePersonnelRemarks = (idx, content) => {

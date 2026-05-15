@@ -1437,7 +1437,7 @@ const sortedDharmaNames = computed(() => {
     return list.sort((a, b) => {
         const getSortIndex = (dn) => {
             const name = dn.name;
-            const searchName = name === '道霞龍妃' ? '金巧' : name;
+            const searchName = name;
             // Use the original dharmaNames order (which follows database)
             return dharmaNames.value.findIndex(d => d.id === dn.id || d.name === searchName);
         };

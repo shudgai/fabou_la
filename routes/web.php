@@ -116,12 +116,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/users-list', function () {
         return \App\Models\User::select('id', 'name')->get();
     });
-    Route::get('/api/dharma-names-list', function (\Illuminate\Http\Request $request) {
-        $query = \App\Models\DharmaName::with('groups:id,name')->select('id', 'name', 'alias', 'order');
-        if ($request->query('all') !== '1') {
-            $query->where('name', '!=', '道霞龍妃');
-        }
-        return $query->orderBy('order')->get();
+    Route::get('/api/dharma-names-list', function () {
+        return \App\Models\DharmaName::with('groups:id,name')->select('id', 'name', 'alias', 'order')->orderBy('order')->get();
     });
     Route::get('/api/user-profile', function () {
         $user = auth()->user()->load('dharmaName');
