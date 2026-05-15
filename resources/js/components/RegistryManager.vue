@@ -16,14 +16,6 @@
                 <logo-imperial-notebook :height="30" />
                 <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
             </div>
-            <!-- Row 2: Category Name (if selected) -->
-            <div v-if="currentCategory" class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
-                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
-                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                    </span>
-                </div>
-            </div>
         </div>
 
         <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
@@ -36,10 +28,7 @@
             </div>
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
-                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
-                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                    </span>
+                <div class="flex items-baseline gap-x-2 flex-1 flex-wrap pt-[10px]">
                     <span class="font-outfit font-normal text-slate-900" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
                         {{ currentFolder.name === '父皇仙師' ? '父皇' : currentFolder.name }}
                     </span>
@@ -56,15 +45,7 @@
         <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto bg-white" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
-                <!-- Consolidated Header for Masters Grid (Matching List View) -->
-                <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-transparent">
-                    <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
 
-                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
-                            {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                        </span>
-                    </div>
-                </div>
 
                 <!-- Root Categories (Scaled up to match TeachingManager) -->
                 <div v-if="!currentCategory" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-2.5 bg-white">
@@ -105,8 +86,7 @@
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-8px);">
                                  <div class="font-black tracking-tighter leading-none text-center font-biaokai -mt-3" style="font-size: 12px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
-                                <div class="font-black text-[#991b1b] tracking-tighter leading-none text-center mt-[8px] font-biaokai" style="font-size: 10.5px !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶登記簿</div>
-
+                                
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-2">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai"
                                          :style="'font-size: 18px !important; font-weight: 900 !important; color: ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important; font-family: \'DFKai-SB\', \'標楷體\', \'BiauKai\', \'Kaiti TC\', serif !important; -webkit-text-stroke: 0.5px ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important;'">
@@ -164,9 +144,6 @@
                     </div>
                     <!-- Bottom Row: Dynamic Sub-title + Folder Name (same line, adjacent) -->
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
-                        <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
-                            {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                        </span>
                         <span class="font-outfit font-normal text-slate-900" style="font-size: 23px !important; transform: translateY(1.5px);">
                             {{ currentFolder.name === '父皇仙師' ? '父皇' : currentFolder.name }}
                         </span>
@@ -248,9 +225,6 @@
                                             <!-- Row 2: Category Name (if selected) -->
                                             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
                                                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
-                                                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                                                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                                                    </span>
                                                     <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
                                                           :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
                                                         — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
@@ -437,9 +411,6 @@
                                             <!-- Row 2: Category Name (if selected) -->
                                             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
                                                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
-                                                    <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
-                                                        {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
-                                                    </span>
                                                     <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
                                                           :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
                                                         — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
@@ -670,8 +641,8 @@
         <remarks-viewer 
             v-model="showRemarksModal"
             :remarks="activeRemarks"
-            :editable="currentAddFormIdx !== null"
-            :forceEdit="currentAddFormIdx !== null"
+            :editable="currentAddFormIdx !== null || currentDnrId !== null"
+            :forceEdit="currentAddFormIdx !== null || currentDnrId !== null"
             :dnrId="currentDnrId"
             @save="handleRemarksViewerSave"
         />
