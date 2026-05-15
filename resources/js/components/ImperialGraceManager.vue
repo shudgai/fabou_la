@@ -120,7 +120,7 @@
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[198px] h-[198px] flex-shrink-0 relative group rounded-none bg-white hover:bg-white active:bg-white overflow-visible">
                     <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
-                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[235px] h-[151px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                        <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked">
                               <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
                               <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked mt-[24px]">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>

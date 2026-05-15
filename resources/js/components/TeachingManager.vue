@@ -161,7 +161,7 @@
                             @click="currentFolder = folder"
                             class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[198px] h-[198px] flex-shrink-0 bg-white p-0 overflow-visible">
                             <div class="relative w-[198px] h-[198px] bg-white flex items-center justify-center overflow-visible">
-                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[235px] h-[151px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
+                                <img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="Book Icon">
                                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked">
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>
