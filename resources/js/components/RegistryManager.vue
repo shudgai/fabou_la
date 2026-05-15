@@ -10,7 +10,7 @@
         <!-- Global Dual Header System -->
         <!-- Header 1: Module Level (Shown ONLY when not in a folder/add mode) -->
         <div v-if="!currentFolder && !addMode" 
-            class="border-b border-white flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
+            class="border-b border-transparent flex items-center bg-white sticky top-0 z-[110] w-full transition-all duration-300"
             style="padding: 4px 15px; min-height: 52px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                 <logo-imperial-notebook :height="36" class="md:hidden" />
@@ -22,14 +22,14 @@
 
         <!-- Header 2: Action/Folder Level (Mobile & Desktop Unified Layout) -->
         <div v-if="currentFolder && !addMode" 
-            class="border-b border-slate-100 flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
+            class="border-b border-white flex flex-col bg-white sticky top-0 z-[110] w-full transition-all duration-300 md:hidden">
             <!-- Row 1: Global Title -->
-            <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-slate-50">
+            <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                 <logo-imperial-notebook :height="30" />
                 <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
             </div>
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
-            <div class="px-4 bg-white border-b border-white flex items-center justify-between py-[5px]">
+            <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
                     <span class="font-outfit font-normal !text-[#dc2626] whitespace-nowrap shrink-0" style="font-size: 23px !important; font-weight: 400 !important; line-height: 1.1;">
                         {{ currentCategory === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿' }}
@@ -49,7 +49,7 @@
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
                 <!-- Consolidated Header for Masters Grid (Matching List View) -->
-                <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-slate-100">
+                <div v-if="currentCategory" class="w-full flex flex-col bg-white border-b border-transparent">
                     <div class="px-4 py-2 bg-white flex items-baseline gap-x-2 w-full">
 
                         <span class="font-outfit !text-[#dc2626] whitespace-nowrap" style="font-size: 23px !important; font-weight: 400 !important;">
@@ -171,7 +171,7 @@
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <input v-model="searchQuery" type="text" placeholder="搜尋項目、用意、法號..." 
-                                    class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none">
+                                    class="block w-full pl-11 pr-12 h-[52px] bg-white border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none">
                                 <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
@@ -188,7 +188,7 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                          @click="editItemId === item.id ? null : toggleExpand(item.id)"
                              :class="[
-                                 'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer active:bg-slate-50 flex items-start',
+                                 'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer active:bg-white flex items-start',
                                  focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
@@ -323,7 +323,7 @@
                                                 </div>
 
                                                 <!-- Selector Grid (Toggleable) -->
-                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-slate-50 p-3 rounded-none border-y border-slate-100">
+                                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-white p-3 rounded-none border-y border-slate-100">
                                                     <div class="relative px-4">
                                                         <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
                                                             class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
