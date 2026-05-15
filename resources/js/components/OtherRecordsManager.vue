@@ -117,8 +117,8 @@
                 </div>
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-white pb-8">
-                <div class="flex space-x-3">
+            <div class="fixed md:relative left-0 right-0 bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0 z-[200] shrink-0 bg-white border-t border-slate-50">
+                <div class="px-4 py-3 flex space-x-3">
                     <button @click="closeModal"
                         class="flex-1 h-[52px] rounded-2xl font-black text-[18px] text-slate-500 bg-slate-100 active:bg-slate-200 transition-all">取消</button>
                     <button @click="saveRecord" :disabled="saving"

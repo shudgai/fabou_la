@@ -201,8 +201,8 @@
                     </div>
 
                     <!-- Footer Buttons -->
-                    <div class="mt-auto shrink-0 bg-white border-t border-slate-50">
-                        <div class="px-3 pt-4 pb-1 bg-white flex gap-2 justify-center">
+                    <div class="fixed md:relative left-0 right-0 bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0 z-[200] shrink-0 bg-white border-t border-slate-50">
+                        <div class="px-4 py-3 bg-white flex gap-3 justify-center">
                             <button v-if="currentStep > 1" @click="currentStep--"
                                 class="min-w-[100px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-[18px] active:scale-95 transition-all">
                                 上一步
@@ -218,7 +218,6 @@
                                 <span class="!text-white" style="color: white !important;">{{ saving ? '儲存中...' : (isEditing ? '確認修改' : '確認存檔') }}</span>
                             </button>
                         </div>
-                        <div class="h-[env(safe-area-inset-bottom)] md:h-0"></div>
                     </div>
                 </div>
             </div>
