@@ -539,9 +539,9 @@
                             </div>
                         </div>
 
-                        <div class="px-8">
-                            <!-- Quick Add Buttons (Vertical) -->
-                            <div class="flex flex-col gap-4 mt-8">
+                        <div class="px-8 mt-12">
+                            <!-- Quick Add Buttons (Always Vertical Stack) -->
+                            <div class="flex flex-col gap-4 max-w-sm mx-auto">
                                 <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4.5 rounded-[32px] border border-slate-200 bg-slate-50/30 text-slate-700 text-[18px] font-normal active:scale-[0.97] transition-all shadow-sm hover:bg-slate-100 hover:border-slate-300">
                                     *允同享皇恩
                                 </button>
