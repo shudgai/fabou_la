@@ -274,7 +274,7 @@
                                                 </div>
                                             </div>
                                             <!-- Remarks -->
-                                            <div v-if="item.remarks_text" class="military-field">
+                                            <div v-if="isMeaningfulRemarks(item.remarks_text, item.quantity)" class="military-field">
                                                 <label class="military-label">詳細內容 / 備註</label>
                                                 <div class="military-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">{{ item.remarks_text }}</div>
                                             </div>
@@ -458,6 +458,25 @@ const isValidBigInt = (val) => {
     } catch (e) {
         return false;
     }
+};
+
+const isMeaningfulRemarks = (remarks, quantity) => {
+    if (!remarks) return false;
+    const trimmed = String(remarks).trim();
+    if (!trimmed) return false;
+    
+    // Clean commas for comparison
+    const cleanRemarks = trimmed.replace(/,/g, '');
+    const cleanQty = String(quantity).replace(/,/g, '');
+
+    // If it's just a number and it matches the quantity, or it's just a numeric string with no context
+    if (/^[\d,.]+$/.test(trimmed)) {
+        // If it matches the quantity exactly, it's definitely redundant
+        if (cleanRemarks === cleanQty) return false;
+        // In this module, if remarks is JUST a number, it's almost always a mistake or redundant count
+        return false;
+    }
+    return true;
 };
 
 const formatWithCommas = (val) => {

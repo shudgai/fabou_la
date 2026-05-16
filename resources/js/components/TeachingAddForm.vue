@@ -29,7 +29,7 @@
             </div>
 
             <!-- Progress Indicator (Immersive Style) -->
-            <div v-if="mode === 'single'" class="px-8 pt-8 pb-2 bg-white shrink-0">
+            <div v-if="mode === 'single' && !isEditMode" class="px-8 pt-8 pb-2 bg-white shrink-0">
                 <div class="flex items-center justify-between gap-1.5">
                     <div v-for="s in totalSteps" :key="s" 
                          class="h-1.5 flex-1 rounded-full transition-all duration-500"
@@ -154,138 +154,95 @@
 
                 <!-- SINGLE MODE UI -->
                 <transition v-else name="step-fade" mode="out-in">
-                    <!-- UNIFIED EDIT MODE (Redesigned Word Style) -->
-                    <div v-if="isEditMode" :key="'edit-mode'" class="animate-fade-in w-full pt-[20px] px-6 pb-32 space-y-6 text-left flex flex-col items-center">
-                        <!-- Header Bar -->
-                        <div class="w-full max-w-4xl flex items-center justify-between px-4 mb-2">
-                            <div class="flex flex-col">
-                                <span class="text-[20px] font-black text-slate-900 font-outfit tracking-wider">{{ form.date.replace(/-/g, '/') }}</span>
-                                <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mt-0.5">開示載錄編輯</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button @click="handleDelete" class="w-10 h-10 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-100 transition-colors active:scale-90">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                <button @click="showActionMenu = !showActionMenu" class="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-colors active:scale-90">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Main Paper Container (The "Word" style) -->
-                        <div class="w-full max-w-4xl bg-white rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-50 overflow-hidden flex flex-col min-h-[85dvh] md:min-h-[700px]">
-                            <!-- Top Info Banner -->
-                            <div class="px-10 py-8 bg-slate-50/50 border-b border-slate-100/50 grid grid-cols-2 gap-10">
-                                <!-- Recipient (對象) -->
-                                <div class="space-y-3">
-                                    <div class="app-title !text-indigo-600/70 leading-snug tracking-widest font-black uppercase text-[13px]">對象</div>
-                                    <editable-input-chips 
-                                        v-model="dharmaSearchQuery" 
-                                        variant="boxed"
-                                        placeholder="對象"
-                                        :options="combinedPractitionerOptions" 
-                                        @change="handleDharmaSearchInput({target: {value: dharmaSearchQuery}})" />
-                                    
-                                    <!-- Secondary Recipient Detail (Optional) -->
-                                    <div v-if="!isGroupSelected" class="pt-2 animate-fade-in">
-                                        <div class="app-title !text-slate-400 leading-snug tracking-widest font-black uppercase text-[11px] mb-2">備註對象</div>
-                                        <editable-input-chips 
-                                            v-model="form.target_remarks" 
-                                            variant="boxed"
-                                            placeholder="對象"
-                                            :options="relationshipOptions" />
-                                    </div>
+                    <!-- EDIT MODE (Always expanded, flat fields) -->
+                    <div v-if="isEditMode" :key="'edit-mode'" class="px-6 pt-6 pb-32 space-y-4 animate-fade-in">
+                        <div class="bg-white border border-slate-200 rounded-[32px] p-6 shadow-lg space-y-6 text-left">
+                            <!-- Date & Master grid -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">日期</label>
+                                    <input v-model="form.date" type="text" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-[15px] text-black outline-none focus:ring-2 focus:ring-indigo-100">
                                 </div>
-
-                                <!-- Master (仙師) -->
-                                <div class="space-y-3">
-                                    <div class="app-title !text-indigo-600/70 leading-snug tracking-widest font-black uppercase text-[13px]">仙師</div>
+                                <div class="space-y-2">
+                                    <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">仙師</label>
                                     <editable-input-chips 
                                         v-model="masterNameInput" 
                                         variant="boxed"
                                         placeholder="仙師"
                                         :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" 
                                         @change="resolveMasterId" />
-                                    
-                                    <!-- Date Display -->
-                                    <div class="pt-2">
-                                        <div class="app-title !text-slate-400 leading-snug tracking-widest font-black uppercase text-[11px] mb-2">日期</div>
-                                        <div class="px-6 py-4 bg-white/60 rounded-[32px] text-[17px] font-black text-slate-800 border border-slate-100/50">
-                                            {{ form.date }}
-                                        </div>
+                                </div>
+                            </div>
+                            <!-- Recipient -->
+                            <div class="space-y-2">
+                                <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">對象 (法號或群組)</label>
+                                <editable-input-chips 
+                                    v-model="dharmaSearchQuery" 
+                                    variant="boxed"
+                                    placeholder="對象"
+                                    :options="combinedPractitionerOptions" 
+                                    @change="handleDharmaSearchInput({target: {value: dharmaSearchQuery}})" />
+                            </div>
+                            <!-- Target Remarks -->
+                            <div v-if="!isGroupSelected" class="space-y-2">
+                                <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">備註對象 (選填)</label>
+                                <editable-input-chips 
+                                    v-model="form.target_remarks" 
+                                    variant="boxed"
+                                    placeholder="對象"
+                                    :options="relationshipOptions" />
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="space-y-2">
+                                <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">開示內容</label>
+                                <textarea v-model="form.content"
+                                    class="w-full bg-white border border-slate-100 rounded-[24px] text-[17px] font-normal text-black leading-relaxed outline-none p-4 min-h-[150px] shadow-sm focus:border-indigo-100 focus:ring-4 focus:ring-indigo-50/30 transition-all"
+                                    placeholder="輸入內容..."
+                                    rows="5"></textarea>
+                            </div>
+
+                            <!-- Treasures Section -->
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">賜降法寶</label>
+                                    <button @click="showItemsSelector = true" class="text-indigo-500 text-[14px] font-black flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg>
+                                        新增法寶
+                                    </button>
+                                </div>
+                                <div v-if="form.items.length > 0" class="space-y-2">
+                                    <div v-for="(item, idx) in form.items" :key="item.uid" class="flex items-center justify-between bg-amber-50/50 p-4 rounded-2xl border border-amber-100 shadow-sm">
+                                        <span class="text-[15px] text-black">{{ item.treasure_name }} · {{ item.details }}</span>
+                                        <button @click="removeItem(idx)" class="p-1 text-amber-300 hover:text-red-500">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Content Editor Area (Premium Paper feel) -->
-                            <div class="flex-1 px-10 py-10 relative">
-                                <textarea v-model="form.content" 
-                                    class="w-full bg-transparent border-none text-[20px] font-normal text-slate-900 leading-[1.8] outline-none resize-none placeholder:text-slate-200 custom-scrollbar"
-                                    style="min-height: 400px;"
-                                    placeholder="在此輸入開示內容..."></textarea>
-                                
-                                <!-- Treasures Section (賜降) -->
-                                <div v-if="form.items.length > 0 || showItemsSelector" class="mt-12 border-t border-slate-100 pt-10 px-2 pb-10">
-                                    <div class="flex items-center justify-between mb-8">
-                                        <div class="app-title !text-indigo-600/70 leading-snug tracking-widest font-black uppercase text-[13px]">賜降法寶</div>
-                                        <button @click="showItemsSelector = true" class="text-indigo-500 text-[14px] font-black flex items-center gap-1 hover:text-indigo-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg>
-                                            新增法寶
+                            <!-- Footer Remarks Section -->
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">結尾備註</label>
+                                <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-2">
+                                    <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-indigo-50/50 px-4 py-2 rounded-2xl flex items-center border border-indigo-100/50 shadow-sm">
+                                        <span class="font-normal text-[15px] text-indigo-900">{{ r }}</span>
+                                        <button @click="removeFooterRemark(idx)" class="ml-2 text-indigo-200 hover:text-red-500">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
                                         </button>
                                     </div>
-                                    
-                                    <div class="space-y-4">
-                                        <div v-for="(item, idx) in form.items" :key="item.uid" class="flex items-start gap-4 bg-slate-50/40 p-6 rounded-[28px] border border-slate-100 group animate-fade-in">
-                                            <span class="text-slate-300 font-outfit text-[18px] mt-1.5">{{ idx + 1 }}.</span>
-                                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                                <div>
-                                                    <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">法寶名稱</div>
-                                                    <input v-model="item.treasure_name" class="w-full bg-white/80 rounded-[18px] px-4 py-3 border border-slate-100 focus:border-indigo-200 focus:ring-4 focus:ring-indigo-500/5 outline-none text-[17px] font-normal text-slate-900 transition-all" />
-                                                </div>
-                                                <div>
-                                                    <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">細項備註</div>
-                                                    <input v-model="item.details" class="w-full bg-white/80 rounded-[18px] px-4 py-3 border border-slate-100 focus:border-indigo-200 focus:ring-4 focus:ring-indigo-500/5 outline-none text-[17px] font-normal text-slate-900 transition-all" />
-                                                </div>
-                                            </div>
-                                            <button @click="removeItem(idx)" class="p-2 text-slate-300 hover:text-rose-500 transition-all active:scale-90">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <!-- Footer Remarks Section -->
-                                <div class="mt-8 border-t border-slate-100 pt-10 px-2 pb-20">
-                                    <div class="app-title !text-indigo-600/70 leading-snug tracking-widest font-black uppercase text-[13px] mb-8">結尾備註</div>
-                                    
-                                    <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-3 mb-8">
-                                        <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-indigo-50/50 px-5 py-3 rounded-[20px] flex items-center border border-indigo-100/50 shadow-sm animate-fade-in group">
-                                            <span class="font-normal text-[16px] text-indigo-900">{{ r }}</span>
-                                            <button @click="removeFooterRemark(idx)" class="ml-2.5 text-indigo-200 hover:text-rose-500 transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
-                                            </button>
-                                        </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <editable-input-chips 
+                                        v-model="newFooterRemark" 
+                                        variant="boxed"
+                                        :options="[]" 
+                                        @change="addFooterRemark" 
+                                        placeholder="自訂結尾..." />
+                                    <div class="flex gap-2">
+                                        <button @click="quickAddFooterRemark('*允同享皇恩')" class="flex-1 py-3 rounded-2xl border border-slate-100 bg-white text-slate-600 text-[14px] font-black active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
+                                        <button @click="quickAddFooterRemark('完畢')" class="flex-1 py-3 rounded-2xl border border-slate-100 bg-white text-slate-600 text-[14px] font-black active:scale-95 transition-all shadow-sm">完畢</button>
                                     </div>
-
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div class="relative">
-                                            <editable-input-chips 
-                                                v-model="newFooterRemark" 
-                                                variant="boxed"
-                                                :options="[]" 
-                                                @change="addFooterRemark" 
-                                                placeholder="自訂結尾..." />
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <button @click="quickAddFooterRemark('*允同享皇恩')" class="flex-1 py-4 rounded-[28px] border border-slate-100 bg-white text-slate-600 text-[16px] font-black active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
-                                            <button @click="quickAddFooterRemark('完畢')" class="flex-1 py-4 rounded-[28px] border border-slate-100 bg-white text-slate-600 text-[16px] font-black active:scale-95 transition-all shadow-sm">完畢</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Bottom Page Number Decor -->
-                                <div class="absolute bottom-6 left-0 right-0 flex justify-center opacity-10 pointer-events-none">
-                                    <logo-imperial-notebook :height="40" />
                                 </div>
                             </div>
                         </div>
@@ -732,7 +689,7 @@ const currentStepTitle = computed(() => stepTitles[currentStep.value - 1]);
 
 // Form State
 const scrollContainer = ref(null);
-const recordExpanded = ref(false);
+const recordExpanded = ref(!!props.initialData?.id);
 const isEditMode = computed(() => !!props.initialData?.id);
 
 const form = ref({

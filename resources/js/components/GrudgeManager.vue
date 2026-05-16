@@ -472,10 +472,14 @@ const isMeaningfulRemarks = (remarks, quantity) => {
     const trimmed = String(remarks).trim();
     if (!trimmed) return false;
     
+    // Clean commas for comparison
+    const cleanRemarks = trimmed.replace(/,/g, '');
+    const cleanQty = String(quantity).replace(/,/g, '');
+
     // If it's just a number and it matches the quantity, or it's just a short number with no context
-    if (/^\d+$/.test(trimmed)) {
+    if (/^[\d,.]+$/.test(trimmed)) {
         // If it matches the quantity exactly, it's definitely redundant
-        if (trimmed === String(quantity)) return false;
+        if (cleanRemarks === cleanQty) return false;
         // In this module, if remarks is JUST a number, it's almost always a mistake or redundant count
         return false;
     }

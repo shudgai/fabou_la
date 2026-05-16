@@ -110,7 +110,7 @@
                 <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                     <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示"></picture>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked" style="transform: translateY(-15px);">
-                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-[#fbbf24]"><span class="text-[24px] opacity-90 font-biaokai-locked">未求得</span><br>重大皇恩專區</div>
+                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-[#fbbf24]"><span class="text-[24px] text-[#fbbf24] font-biaokai-locked">未求得</span><br>重大皇恩專區</div>
                         <div class="mt-[18px] flex items-center font-biaokai-locked -translate-y-2">
                             <span class="text-white font-normal tracking-tight font-biaokai-locked text-[19px]" style="color: white !important;">共 {{ unobtainedTotal }} 筆</span>
                         </div>
