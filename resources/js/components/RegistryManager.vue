@@ -175,13 +175,13 @@
                         <div v-for="(item, idx) in filteredTreasures" :key="item.id" 
                          @click="editItemId === item.id ? null : toggleExpand(item.id)"
                              :class="[
-                                 'bg-white px-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer active:bg-white flex items-start',
+                                 'bg-white pl-3 pr-4 py-[10px] border-b border-slate-300 relative transition-all cursor-pointer active:bg-white flex items-start outline-none focus:outline-none',
                                  focusedId === item.id ? 'min-h-[calc(100dvh-100px)] md:min-h-[60dvh] border-transparent !mb-0 md:!mb-10 !rounded-none md:!rounded-[48px] -mx-4 md:mx-0 z-[60] md:border md:border-slate-100 md:mt-4' : '',
                                  openMenuId === item.id ? 'z-[50]' : 'z-0'
                              ]">
 
                             <!-- Sequence Number / Reorder Input -->
-                            <div class="mr-4 shrink-0 flex items-center justify-center pt-1 md:pt-2">
+                            <div class="mr-2.5 shrink-0 flex items-center justify-center pt-1 md:pt-2">
                                 <div v-if="!reorderMode" class="w-8 h-8 md:w-12 md:h-12 bg-slate-50 md:bg-slate-100/60 rounded-xl flex items-center justify-center text-[14px] md:text-[18px] font-black text-slate-400 md:text-slate-500 transition-all">
                                     {{ idx + 1 }}
                                 </div>
@@ -193,15 +193,9 @@
                                        class="w-10 h-9 bg-blue-50 border-2 border-blue-200 rounded-xl text-center text-[15px] font-black text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none">
                             </div>
 
-                            <div class="flex-1 min-w-0 pr-[10px]">
-                            <div v-if="!expandedIds.has(item.id)" class="flex items-center gap-2 pr-2">
-                                <!-- Collapsed state buttons if any -->
-                            </div>
-
-                            </div>
 
                             <!-- Card Header (Toggle Expansion) - Standardized to Imperial Grace Style -->
-                            <div :class="[!expandedIds.has(item.id) && editItemId !== item.id ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-8 py-1">
+                            <div :class="[!expandedIds.has(item.id) && editItemId !== item.id ? 'flex' : 'hidden md:flex']" class="mt-0 flex-col flex-1 min-w-0 pr-4 py-1">
                                 <!-- Row 1: Name + (Expansion Indicator) -->
                                 <div class="flex items-center justify-between">
                                     <div class="app-body font-bold text-slate-900 leading-tight truncate">{{ item.name }}</div>

@@ -31,14 +31,14 @@
             </div>
         </div>
 
-        <!-- Variant: Boxed (Premium Modern Style) -->
+        <!-- Variant: Boxed (Modern Underline Style) -->
         <div v-else-if="variant === 'boxed'"
              @click="startEditing"
-             class="relative flex items-center justify-center min-h-[72px] bg-indigo-50/40 rounded-[32px] border-2 transition-all duration-300 px-8 cursor-text group hover:bg-indigo-50/60"
-             :class="isFocused || isEditing ? 'border-indigo-200 bg-white shadow-xl shadow-indigo-100/40 -translate-y-0.5' : 'border-transparent'">
+             class="relative flex items-center justify-center min-h-[64px] bg-transparent border-b-2 transition-all duration-300 cursor-text group"
+             :class="isFocused || isEditing ? 'border-indigo-500 bg-white/50' : 'border-slate-300'">
             
-            <div v-if="modelValue && !isEditing" class="flex items-center justify-center animate-fade-in w-full">
-                <span class="text-slate-900 font-normal text-[20px] text-center truncate px-2">{{ modelValue }}</span>
+            <div v-if="modelValue && !isEditing" class="flex items-center justify-center animate-fade-in w-full py-2">
+                <span class="text-slate-900 font-normal text-[20px] text-center whitespace-pre-wrap px-2">{{ modelValue }}</span>
                 <button @click.stop="clearValue" class="ml-2 text-slate-300 hover:text-red-500 transition-colors shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -46,17 +46,17 @@
                 </button>
             </div>
 
-<textarea 
-                    v-else
-                    ref="inputRef"
-                    :value="modelValue"
-                    @input="handleInput"
-                    @focus="isFocused = true"
-                    @blur="handleBlur"
-                    rows="3"
-                    class="w-full bg-transparent border-none outline-none text-[20px] font-normal text-slate-900 text-center placeholder:text-slate-300 min-h-[100px] resize-none leading-relaxed overflow-hidden"
-                    :placeholder="placeholder"
-                ></textarea>
+            <textarea 
+                v-else
+                ref="inputRef"
+                :value="modelValue"
+                @input="handleInput"
+                @focus="isFocused = true"
+                @blur="handleBlur"
+                rows="3"
+                class="w-full bg-transparent border-none outline-none text-[20px] font-normal text-slate-900 text-center placeholder:text-slate-200 min-h-[60px] resize-none leading-relaxed overflow-hidden py-2"
+                :placeholder="placeholder"
+            ></textarea>
         </div>
 
         <!-- Suggestions (Chips Scroll Area) -->

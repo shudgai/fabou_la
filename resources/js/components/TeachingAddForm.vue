@@ -387,7 +387,7 @@
                                      <div class="grid grid-cols-2 gap-4">
                                          <div class="space-y-2">
                                              <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">日期</label>
-                                             <input v-model="form.date" type="text" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-[15px] text-black outline-none focus:ring-2 focus:ring-indigo-100">
+                                             <input v-model="form.date" type="text" class="w-full bg-transparent border-0 border-b-2 border-slate-300 px-1 py-2 text-[15.5px] font-normal text-black outline-none focus:border-indigo-500 transition-colors">
                                          </div>
                                          <div class="space-y-2">
                                              <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">仙師</label>
@@ -425,7 +425,7 @@
                         <h2 class="text-[18px] font-normal text-black tracking-tight leading-relaxed">請輸入<span class="text-black">開示內容</span></h2>
                         <div class="max-w-md mx-auto mt-6">
                             <textarea v-model="form.content" 
-                                class="w-full bg-white border border-slate-100 rounded-[32px] text-[18px] font-normal text-black leading-relaxed outline-none p-8 min-h-[300px] shadow-sm focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                                class="w-full bg-transparent border-0 border-b-2 border-slate-200 text-[18px] font-normal text-black leading-relaxed outline-none px-2 py-4 min-h-[300px] transition-all focus:border-indigo-400"
                                 placeholder="在此輸入開示內容..."></textarea>
                         </div>
                     </div>
@@ -450,7 +450,7 @@
                                      <div class="grid grid-cols-2 gap-4">
                                          <div class="space-y-2">
                                              <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">日期</label>
-                                             <input v-model="form.date" type="text" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-[15px] text-black outline-none focus:ring-2 focus:ring-indigo-100">
+                                             <input v-model="form.date" type="text" class="w-full bg-transparent border-0 border-b-2 border-slate-300 px-1 py-2 text-[15.5px] font-normal text-black outline-none focus:border-indigo-500 transition-colors">
                                          </div>
                                          <div class="space-y-2">
                                              <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">仙師</label>
