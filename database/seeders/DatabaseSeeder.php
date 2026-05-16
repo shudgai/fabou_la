@@ -19,7 +19,12 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             DharmaGroupSeeder::class,
             TreasureSeeder::class,
-            // RegistrySeeder::class, // 註解掉範例資料
+            ImperialGraceSeeder::class,
+            RegistrySeeder::class,
+            TeachingSeeder::class,
+            GrudgeSeeder::class,
+            MilitarySeeder::class,
+            OtherSeeder::class,
         ]);
 
         if (app()->environment('local', 'testing')) {

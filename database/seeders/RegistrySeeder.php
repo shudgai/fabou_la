@@ -12,33 +12,54 @@ class RegistrySeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::where('name', '元續')->first() ?: User::first();
+        $user = User::where('email', 'shudgai999@gmail.com')->first() ?: User::first();
         if (!$user) return;
 
         $registries = [
             [
-                'name' => '森羅戒',
-                'category' => 'major',
-                'purpose' => '隨身保平安、清煞',
-                'content' => '純銀戒身，內刻森羅經文',
+                'name' => '全球',
                 'master_id' => 1,
-                'recipients' => ['靈昡', '元續']
+                'record_date' => '2026-05-15',
+                'status' => '已求得',
+                'recipients' => [
+                    ['name' => '鳳尊', 'date' => '2026-05-15'],
+                    ['name' => '金巧', 'date' => '2026-05-15'],
+                    ['name' => '赤覺', 'date' => '2026-05-15'],
+                    ['name' => '靈情', 'date' => '2026-05-15'],
+                    ['name' => '閻帝', 'date' => '2026-05-15'],
+                ]
             ],
             [
-                'name' => '金印',
-                'category' => 'major',
-                'purpose' => '鎮宅、清磁場',
-                'content' => '純金材質，底刻元始太極',
-                'master_id' => 2,
-                'recipients' => ['閻尊']
+                'name' => '親收義女',
+                'master_id' => 1,
+                'record_date' => '2021-07-25',
+                'obtained_date' => '2021-07-25',
+                'status' => '未求得',
+                'recipients' => [
+                    ['name' => '鳳尊', 'date' => '2021-07-25'],
+                    ['name' => '靈情', 'date' => '2021-08-08'],
+                    ['custom_name' => '道霞龍妃', 'date' => '2021-08-08', 'status' => '已求得'],
+                ]
             ],
             [
-                'name' => '清煞法寶',
-                'category' => 'major',
-                'purpose' => '清除深層煞氣',
-                'content' => '白玉材質，附法水加持',
+                'name' => '日後出世車只合眾仙師所賜降所有的法寶皆可承接不用另外請示',
                 'master_id' => 1,
-                'recipients' => ['靈果', '龍戰']
+                'record_date' => '2021-08-01',
+                'obtained_date' => '2021-08-01',
+                'status' => '未求得',
+                'recipients' => [
+                    ['name' => '靈情', 'date' => '2021-08-01'],
+                ]
+            ],
+            [
+                'name' => '太髓,真氣',
+                'master_id' => 1,
+                'record_date' => '2021-08-10',
+                'obtained_date' => '2021-08-10',
+                'status' => '未求得',
+                'recipients' => [
+                    ['name' => '金巧', 'date' => '2021-08-10'],
+                ]
             ]
         ];
 
@@ -47,19 +68,33 @@ class RegistrySeeder extends Seeder
                 ['user_id' => $user->id, 'name' => $r['name']],
                 [
                     'master_id' => $r['master_id'],
-                    'category' => $r['category'],
-                    'purpose' => $r['purpose'],
-                    'content' => $r['content'] ?? null,
-                    'record_date' => now()->format('Y-m-d'),
+                    'record_date' => $r['record_date'],
+                    'obtained_date' => $r['obtained_date'] ?? null,
+                    'status' => $r['status'] ?? '未求得',
+                    'category' => 'major',
                 ]
             );
 
-            foreach ($r['recipients'] as $name) {
-                $dn = DharmaName::where('name', $name)->first();
-                if ($dn) {
+            foreach ($r['recipients'] as $rec) {
+                if (isset($rec['name'])) {
+                    $dn = DharmaName::where('name', $rec['name'])->first();
+                    if ($dn) {
+                        DharmaNameRegistry::updateOrCreate(
+                            ['registry_id' => $reg->id, 'dharma_name_id' => $dn->id],
+                            [
+                                'obtained_date' => $rec['date'],
+                                'status' => $rec['status'] ?? null,
+                                'custom_name' => $rec['name'] // Also store in custom_name for fidelity
+                            ]
+                        );
+                    }
+                } else if (isset($rec['custom_name'])) {
                     DharmaNameRegistry::updateOrCreate(
-                        ['registry_id' => $reg->id, 'dharma_name_id' => $dn->id],
-                        ['obtained_date' => now()->format('Y-m-d')]
+                        ['registry_id' => $reg->id, 'custom_name' => $rec['custom_name']],
+                        [
+                            'obtained_date' => $rec['date'],
+                            'status' => $rec['status'] ?? null
+                        ]
                     );
                 }
             }
