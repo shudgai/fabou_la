@@ -160,11 +160,12 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **resolveMasterId 回退**: 當 `props.masters` 搜尋不到時，使用硬編碼 map: `{ '老祖仙師': 1, '元始仙師': 2, ... '閻王仙師': 8 }` 作為ID回退。`handleNext()` 在第2步時也會呼叫 resolveMasterId()。
 
 ### RegistryManager.vue
-- 法寶登記專區
+- 特殊法寶登記區
 - Folder grid: same as Teaching
 - Folder text: `#fbbf24` (yellow)
 - Folder icon fill: `#b91c1c` (dark red)
 - Sub-folder images scaled 150% (btn 189→284px, img 177→266px)
+- **Folder Labels**: "特殊法寶<br>登記區" (two lines, break at '寶', scaled 90%).
 - **Edit Interface Refinement**: Dharma name selection moved below main Remarks field; uses a 3-column table (法號, 日期, 備註) for both View and Edit modes.
 - **Table Headers**: "法號" header includes an "Add" (新增) button in both modes; Edit mode toggles a grid selector; View mode triggers Edit mode with selector open.
 - **Others Category**: Table columns reordered to [法號, 日期, 親友, 備註] to prioritize dharma name visibility.
