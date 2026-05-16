@@ -528,8 +528,8 @@
                                         </button>
                                     </div>
                                     
-                                    <!-- Inline Input sitting on the same line (Hidden when remarks exist) -->
-                                    <div v-if="footerRemarks.length === 0" class="inline-block min-w-[120px]">
+                                    <!-- Inline Input sitting on the same line -->
+                                    <div class="inline-block min-w-[120px]">
                                         <input v-model="newFooterRemark" 
                                                @keydown.enter.prevent="addFooterRemark"
                                                placeholder="在此輸入..." 
