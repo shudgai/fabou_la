@@ -514,7 +514,9 @@
 
                     <!-- STEP 6: Footer Remarks -->
                     <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-6 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
-                        <h2 class="text-[20px] font-normal text-black tracking-[0.1em] text-center uppercase">結尾備註 (選填)</h2>
+                        <div class="max-w-md mx-auto border-b-2 border-slate-100 pb-6 mb-8">
+                            <h2 class="text-[20px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
+                        </div>
                         
                         <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-2.5 justify-center mb-6 px-4">
                             <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-white px-4 py-2.5 rounded-2xl flex items-center border border-slate-100 shadow-sm animate-fade-in">
