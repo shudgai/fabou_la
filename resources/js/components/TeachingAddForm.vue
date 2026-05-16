@@ -513,10 +513,8 @@
                     </div>
 
                     <!-- STEP 6: Footer Remarks -->
-                    <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-6 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
-                        <div class="max-w-md mx-auto border-b-2 border-slate-100 pb-6 mb-8">
-                            <h2 class="text-[20px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
-                        </div>
+                    <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-12 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
+                        <h2 class="text-[17px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
                         
                         <div v-if="footerRemarks.length > 0" class="flex flex-col items-center gap-4 mb-10 px-4">
                             <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-center gap-3 animate-fade-in group">
@@ -527,9 +525,18 @@
                             </div>
                         </div>
 
-                        <div class="px-8 space-y-8 mt-12">
+                        <div class="px-8 space-y-12">
+                            <!-- Custom Input with Underline -->
+                            <div class="relative group">
+                                <textarea v-model="newFooterRemark" 
+                                          @keydown.enter.prevent="addFooterRemark"
+                                          rows="1"
+                                          placeholder="在此輸入結尾備註..." 
+                                          class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
+                            </div>
+
                             <!-- Quick Add Buttons (Vertical) -->
-                            <div class="flex flex-col gap-4 mt-4">
+                            <div class="flex flex-col gap-4 mt-8">
                                 <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4.5 rounded-[32px] border border-slate-200 bg-slate-50/30 text-slate-700 text-[18px] font-normal active:scale-[0.97] transition-all shadow-sm hover:bg-slate-100 hover:border-slate-300">
                                     *允同享皇恩
                                 </button>
