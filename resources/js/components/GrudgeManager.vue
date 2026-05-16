@@ -317,7 +317,7 @@
             />
         </div>
         <grudge-batch-import :show="showBatchImport" @cancel="showBatchImport = false" @success="onBatchSuccess" />
-        <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
+        <grudge-add-form :key="editingId || 'new'" :show="addMode" :initialData="form" :editingId="editingId" :isSaving="saving" :users="users" @save="saveItem" @cancel="addMode = false; editingId = null" />
     </div>
 </template>
 
@@ -711,6 +711,8 @@ watch([searchQuery, activeDateGroup], debounce(() => {
 }, 300));
 
 const saveItem = async (formData) => {
+    if (saving.value) return;
+    saving.value = true;
     try {
         let status = formData.status || (formData.destination === '未處理' ? '待處理' : '已處理');
         if (editingId.value) {
@@ -722,7 +724,11 @@ const saveItem = async (formData) => {
         editingId.value = null;
         focusedId.value = null;
         loadData();
-    } catch (e) { alert('儲存失敗: ' + (e.response?.data?.message || e.message)); }
+    } catch (e) { 
+        alert('儲存失敗: ' + (e.response?.data?.message || e.message)); 
+    } finally {
+        saving.value = false;
+    }
 };
 
 const handleBack = () => {

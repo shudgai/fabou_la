@@ -543,8 +543,10 @@ const copyResults = () => {
     writeClipboard(text).then(() => alert('已複製'));
 };
 
+const saving = ref(false);
 const saveResults = async () => {
-    if (!props.folderId) return;
+    if (!props.folderId || saving.value) return;
+    saving.value = true;
     try {
         await axios.post(`/other-folders/${props.folderId}/records`, {
             title: `抽籤結果 - ${new Date().toLocaleString()}`,
@@ -553,7 +555,12 @@ const saveResults = async () => {
         });
         alert('已儲存');
         emit('saved');
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+        console.error(e);
+        alert('儲存失敗');
+    } finally {
+        saving.value = false;
+    }
 };
 
 const handleReselect = () => {

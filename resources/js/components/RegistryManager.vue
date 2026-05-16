@@ -236,7 +236,7 @@
                                             <div class="space-y-1 relative group px-4">
                                                 <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
                                                 <input v-model="editData.record_date" type="text" placeholder="年/月/日"
-                                                    class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                    class="w-full text-center text-[11.9px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
                                                 <button @click="activePicker = { field: 'record_date' }" class="absolute right-4 bottom-2 text-slate-300 hover:text-indigo-500">
                                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </button>
@@ -309,26 +309,26 @@
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
-                                                                <th class="w-[28%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
-                                                                <th class="w-[34%] px-[10px] py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
-                                                                <th class="w-[34%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[30%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
+                                                                <th class="w-[33%] px-[10px] py-3 text-center font-black text-[10.5px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[33%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                                 <th class="w-[4%]"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
                                                                 <td class="px-[10px] py-1.5 border-r border-slate-50 pl-[5px]">
-                                                                    <select :value="dnr.dharma_name_id"
-                                                                        @change="e => { const id = parseInt(e.target.value); const dn = dharmaNames.value.find(d => d.id === id); if (dn) { dnr.dharma_name_id = id; dnr.custom_name = dn.name; } }"
-                                                                        class="w-full text-[13px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-pointer">
-                                                                        <option v-for="dn in dharmaNames.value" :key="dn.id" :value="dn.id">{{ dn.name }}</option>
-                                                                    </select>
+                                                                    <input v-model="dnr.custom_name"
+                                                                        list="dharma-names-list"
+                                                                        @blur="syncDharmaNameId(dnr)"
+                                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text truncate"
+                                                                        placeholder="輸入法號...">
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[15px] font-normal !text-[#dc1428] bg-transparent py-2 outline-none pl-6"
+                                                                        class="w-full text-center text-[10.8px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-6"
                                                                         style="font-family: 'PMingLiU', serif;">
                                                                     <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-1 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
                                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -337,7 +337,7 @@
                                                                 <td class="p-0">
                                                                     <input v-model="dnr.remarks"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[14px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
+                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
@@ -689,6 +689,10 @@
             @close="activePicker = null"
             @confirm="handlePickerConfirm"
         />
+
+        <datalist id="dharma-names-list">
+            <option v-for="dn in availableDharmaNamesForDatalist" :key="dn.id" :value="dn.name"></option>
+        </datalist>
     </div>
 </template>
 
@@ -1225,6 +1229,11 @@ const openEdit = (item) => {
     if (cloned.dharma_name_registries) {
         const splitList = [];
         cloned.dharma_name_registries.forEach(r => {
+            // Ensure custom_name is populated for the input field if missing but ID exists
+            if (!r.custom_name && r.dharma_name_id) {
+                const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
+                if (dn) r.custom_name = dn.name;
+            }
             const nameText = r.custom_name || '';
             const recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
             const isRel = recognizedRels.some(rel => nameText.endsWith(rel));
@@ -1239,6 +1248,21 @@ const openEdit = (item) => {
             }
         });
         cloned.dharma_name_registries = splitList;
+
+        // Strict De-duplicate to prevent rows appearing twice (as seen in user report)
+        const uniqueList = [];
+        const seenKeys = new Set();
+        cloned.dharma_name_registries.forEach(r => {
+            const name = (r.custom_name || '').trim();
+            const key = r.dharma_name_id ? `id:${r.dharma_name_id}` : (name ? `name:${name}` : null);
+            if (key && !seenKeys.has(key)) {
+                seenKeys.add(key);
+                uniqueList.push(r);
+            } else if (!key) {
+                uniqueList.push(r); // Keep empty rows if any
+            }
+        });
+        cloned.dharma_name_registries = uniqueList;
         sortRegistries(cloned.dharma_name_registries);
     }
     
@@ -1252,11 +1276,11 @@ const cancelEdit = () => {
 };
 
 const saveEdit = async () => {
-    if (!editData.value) return;
+    if (!editData.value || isSaving.value) return;
     isSaving.value = true;
     try {
         const data = editData.value;
-        const registries = (data.dharma_name_registries || []).map(r => ({
+        const rawRegistries = (data.dharma_name_registries || []).map(r => ({
             id: r.id,
             dharma_name_id: r.dharma_name_id,
             custom_name: r.custom_name,
@@ -1264,6 +1288,18 @@ const saveEdit = async () => {
             remarks: typeof r.remarks === 'string' ? r.remarks : (Array.isArray(r.remarks) ? r.remarks.join('\n') : ''),
             related_personnel: Array.isArray(r.related_personnel) ? r.related_personnel : (r.related_personnel ? r.related_personnel.split(/[、, ]+/).filter(x => x) : [])
         }));
+
+        // De-duplicate based on dharma_name_id or custom_name
+        const registries = [];
+        const seen = new Set();
+        rawRegistries.forEach(r => {
+            const key = r.dharma_name_id ? `id:${r.dharma_name_id}` : `name:${(r.custom_name || '').trim()}`;
+            if (key && !seen.has(key)) {
+                seen.add(key);
+                registries.push(r);
+            }
+        });
+
         const payload = {
             id: data.id,
             master_id: data.master_id,
@@ -1311,11 +1347,19 @@ const handlePickerConfirm = (date) => {
 
 const filteredEditDharmaNames = computed(() => {
     const q = dharmaEditSearch.value?.toLowerCase().trim();
-    let list = [...dharmaNames.value];
-
+    const selectedIds = new Set((editData.value?.dharma_name_registries || []).map(r => r.dharma_name_id).filter(id => id));
+    const selectedNames = new Set((editData.value?.dharma_name_registries || []).map(r => (r.custom_name || '').trim()).filter(n => n));
     
+    let list = dharmaNames.value.filter(dn => !selectedIds.has(dn.id) && !selectedNames.has(dn.name));
+
     if (!q) return list;
-    return list.filter(dn => dn.name.toLowerCase().includes(q));
+    return list.filter(dn => dn.name.toLowerCase().includes(q) || (dn.alias && dn.alias.toLowerCase().includes(q)));
+});
+
+const availableDharmaNamesForDatalist = computed(() => {
+    if (!editData.value?.dharma_name_registries) return dharmaNames.value;
+    const selectedNames = new Set(editData.value.dharma_name_registries.map(r => (r.custom_name || '').trim()).filter(n => n));
+    return dharmaNames.value.filter(dn => !selectedNames.has(dn.name));
 });
 
 const isDharmaSelected = (dn) => {
@@ -1347,6 +1391,37 @@ const getNamesList = (item) => {
     return sorted.map(r => getDharmaNameText(r)).join(', ');
 };
 
+
+const syncDharmaNameId = (dnr) => {
+    if (!dnr.custom_name) {
+        dnr.dharma_name_id = null;
+        return;
+    }
+    const name = dnr.custom_name.trim();
+    
+    // Prevent duplicate entries within the same record
+    const isDuplicate = (editData.value.dharma_name_registries || []).some(r => 
+        r !== dnr && (
+            (r.custom_name && r.custom_name.trim() === name) || 
+            (r.dharma_name_id && dharmaNames.value.find(d => d.id === r.dharma_name_id)?.name === name)
+        )
+    );
+
+    if (isDuplicate) {
+        alert(`「${name}」已存在於清單中，請勿重複輸入。`);
+        dnr.custom_name = '';
+        dnr.dharma_name_id = null;
+        return;
+    }
+
+    const dn = dharmaNames.value.find(d => d.name === name || d.alias === name);
+    if (dn) {
+        dnr.dharma_name_id = dn.id;
+        dnr.custom_name = dn.name; // Use standard name
+    } else {
+        dnr.dharma_name_id = null;
+    }
+};
 
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
@@ -1430,6 +1505,7 @@ const handleBack = () => {
 };
 
 const saveSingle = async (data, shuntAction = null) => {
+    if (isSaving.value) return;
     if (!data.name?.trim()) {
         persistentToast.value = { msg: '✖ 請輸入求寶內容', type: 'error' };
         return;
@@ -1515,6 +1591,7 @@ const saveSingle = async (data, shuntAction = null) => {
 };
 
 const triggerBatchSave = async (batchData) => {
+    if (isSaving.value) return;
     isSaving.value = true;
     try {
         // Use pre-parsed rows from the form if available (avoids incompatible re-parsing)

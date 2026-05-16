@@ -56,13 +56,21 @@
                     <!-- 法號 -->
                     <div class="space-y-1 relative">
                         <label class="font-bold text-slate-400 uppercase tracking-wider block text-center">法號</label>
-                        <editable-input-chips v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
+                        <editable-input-chips 
+                            v-model="dharmaSearch" 
+                            variant="boxed"
+                            :options="props.users.map(u => u.name)" 
+                            placeholder="對象" />
                     </div>
 
                     <!-- 備註對象 -->
                     <div class="space-y-1 relative">
                         <label class="font-bold text-slate-400 uppercase tracking-wider block text-center">備註對象</label>
-                        <editable-input-chips v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象（例如：母親）..." />
+                        <editable-input-chips 
+                            v-model="form.user_remarks" 
+                            variant="boxed"
+                            :options="relationshipOptions" 
+                            placeholder="對象" />
                     </div>
                 </div>
 
@@ -345,6 +353,7 @@ const prevStep = () => {
 };
 
 const handleSave = () => {
+    if (props.isSaving) return;
     const payload = {
         know_date: form.value.know_date || null,
         user_name: form.value.user_name || null,

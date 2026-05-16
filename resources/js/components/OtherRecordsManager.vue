@@ -299,6 +299,7 @@ const loadData = async () => {
 
 const saveRecord = async () => {
     if (!newContent.value.trim() && !newTitle.value.trim()) return;
+    if (saving.value) return;
     saving.value = true;
     try {
         const payload = {
@@ -316,7 +317,12 @@ const saveRecord = async () => {
         safeLocalStorage.removeItem('other_records_draft');
         closeModal();
         await loadData();
-    } catch (e) { console.error(e); } finally { saving.value = false; }
+    } catch (e) { 
+        console.error(e); 
+        showToast('✖ 儲存失敗', 'error');
+    } finally { 
+        saving.value = false; 
+    }
 };
 
 const deleteRecord = (id) => {

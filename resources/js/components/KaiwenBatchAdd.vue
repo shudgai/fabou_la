@@ -124,6 +124,7 @@ const removePost = (idx) => {
     parsedPosts.value.splice(idx, 1);
 };
 const handleSave = () => {
+    if (props.isSaving) return;
     emit('save', parsedPosts.value);
 };
 </script>

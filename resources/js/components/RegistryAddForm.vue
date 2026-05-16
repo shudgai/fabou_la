@@ -92,7 +92,12 @@
                         <div class="space-y-8">
                             <div class="relative group">
                                 <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                                <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
+                                <editable-input-chips 
+                                    v-model="masterNameInput" 
+                                    variant="boxed"
+                                    :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" 
+                                    @change="resolveMasterId" 
+                                    placeholder="仙師" />
                             </div>
                         </div>
                     </div>
@@ -184,11 +189,19 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <editable-input-chips v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
+                                    <editable-input-chips 
+                                        v-model="p.custom_name" 
+                                        variant="boxed"
+                                        :options="props.dharmaNames.map(dn => dn.name)" 
+                                        placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <editable-input-chips v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
+                                    <editable-input-chips 
+                                        v-model="p.relationship" 
+                                        variant="boxed"
+                                        :options="relationshipOptions" 
+                                        placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
@@ -228,7 +241,12 @@
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                        <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
+                        <editable-input-chips 
+                            v-model="masterNameInput" 
+                            variant="boxed"
+                            :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" 
+                            @change="resolveMasterId" 
+                            placeholder="仙師" />
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">用意 (選填)</label>
@@ -276,11 +294,19 @@
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
                                 <div class="space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
-                                    <editable-input-chips v-model="p.custom_name" :options="props.dharmaNames.map(dn => dn.name)" placeholder="法號..." />
+                                    <editable-input-chips 
+                                        v-model="p.custom_name" 
+                                        variant="boxed"
+                                        :options="props.dharmaNames.map(dn => dn.name)" 
+                                        placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
-                                    <editable-input-chips v-model="p.relationship" :options="relationshipOptions" placeholder="例如：母親..." />
+                                    <editable-input-chips 
+                                        v-model="p.relationship" 
+                                        variant="boxed"
+                                        :options="relationshipOptions" 
+                                        placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-1">
@@ -312,7 +338,12 @@
                     <!-- Master Selector -->
                     <div class="px-1">
                         <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                        <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
+                        <editable-input-chips 
+                            v-model="masterNameInput" 
+                            variant="boxed"
+                            :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" 
+                            @change="resolveMasterId" 
+                            placeholder="仙師" />
                     </div>
                     <div class="flex items-center justify-between ml-1">
                         <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
@@ -970,6 +1001,7 @@ const validateSingle = () => {
 };
 
 const handleSubmit = async () => {
+    if (props.isSaving) return;
     if (localMode.value === 'single') {
         const error = validateSingle();
         if (error) {
@@ -1004,7 +1036,17 @@ const handleSubmit = async () => {
                 }
             });
         });
-        const cleanedPersonnel = expandedPersonnel;
+        
+        // De-duplicate expandedPersonnel based on dharma_name_id
+        const uniquePersonnel = [];
+        const seenIds = new Set();
+        expandedPersonnel.forEach(p => {
+            if (!seenIds.has(p.dharma_name_id)) {
+                seenIds.add(p.dharma_name_id);
+                uniquePersonnel.push(p);
+            }
+        });
+        const cleanedPersonnel = uniquePersonnel;
 
         // Edit mode: use entire textarea as single name, emit once
         if (isEditing.value) {

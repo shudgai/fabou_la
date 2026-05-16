@@ -377,10 +377,18 @@ const loadData = async () => {
 
 const saveFolder = async () => {
     if (!newFolderName.value) return;
-    await axios.post('/other-folders', { name: newFolderName.value, color: newFolderColor.value });
-    newFolderName.value = '';
-    showAddFolder.value = false;
-    await loadData();
+    if (saving.value) return;
+    saving.value = true;
+    try {
+        await axios.post('/other-folders', { name: newFolderName.value, color: newFolderColor.value });
+        newFolderName.value = '';
+        showAddFolder.value = false;
+        await loadData();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        saving.value = false;
+    }
 };
 
 const deleteFolder = (id) => {
@@ -456,6 +464,8 @@ const prepareAddRecord = () => {
 const saveRecord = async () => {
     if (!newRecord.value.content.trim() && !newRecord.value.title.trim()) return;
     if (!activeFolder.value || !activeFolder.value.id) return;
+    if (saving.value) return;
+    saving.value = true;
     try {
         await axios.post(`/other-folders/${activeFolder.value.id}/records`, {
             title: newRecord.value.title.trim(),
@@ -465,7 +475,11 @@ const saveRecord = async () => {
         safeLocalStorage.removeItem('other_manager_record_draft');
         showAddRecord.value = false;
         await loadData();
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+        console.error(e); 
+    } finally {
+        saving.value = false;
+    }
 };
 
 const handleMore = () => {

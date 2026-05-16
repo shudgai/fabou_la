@@ -1213,6 +1213,7 @@ const copyFullText = (post) => {
 };
 
 const saveForm = async () => {
+    if (isSaving.value) return;
     isSaving.value = true;
 
     // Format title to 7 characters per line

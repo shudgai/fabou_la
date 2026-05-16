@@ -2822,6 +2822,8 @@ const handleReorder = async (item, newOrderStr) => {
     } catch (e) {
         const msg = e.response?.data?.message || e.message || '連線錯誤';
         persistentToast.value = { msg: '✖ 排序更新失敗: ' + msg, type: 'error' };
+    } finally {
+        saving.value = false;
     }
 };
 
@@ -3267,7 +3269,8 @@ const clearTodayDaily = () => {
 };
 
 const executeClearTodayDaily = async () => {
-    loading.value = true;
+    if (saving.value) return;
+    saving.value = true;
     try {
         const res = await axios.get('/teachings', { params: { master_id: 5, per_page: 200, is_daily: 1 } });
         const recordsObj = res.data.records || res.data;
@@ -3284,7 +3287,7 @@ const executeClearTodayDaily = async () => {
     } catch (e) {
         persistentToast.value = { msg: '✖ 清空失敗', type: 'error' };
     } finally {
-        loading.value = false;
+        saving.value = false;
     }
 };
 
@@ -3320,6 +3323,7 @@ const exportListTxt = async () => {
 };
 
 const saveItem = async (data = null) => {
+    if (saving.value) return;
     if (data) {
         if (data.mode === 'batch') {
             activeEntryTab.value = 'batch';
@@ -3345,8 +3349,7 @@ const saveItem = async (data = null) => {
     }
 
     if (newFooterRemark.value.trim()) addFooterRemark();
-    if (saving.value) return;
-
+    
     // Sync active detail mode items back to the record block before saving
     if (itemsDetailMode.value && activeBatchIndex.value !== null) {
         batchRecords.value[activeBatchIndex.value].items = JSON.parse(JSON.stringify(form.value.items));
@@ -3518,24 +3521,45 @@ const performActualSave = async () => {
     // Single item save logic
     saving.value = true;
     try {
-        const { master_name: _mn, ...formClean } = form.value;
+        // Thorough cleanup of the payload to avoid backend resolution traps
+        const { 
+            master, master_name, dharma_names, dharmaNames, 
+            created_at, updated_at, deleted_at, user,
+            ...formClean 
+        } = form.value;
+
         const payload = {
             ...formClean,
             master_id: form.value.master_id || currentFolder.value?.id,
-            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
+            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 
         };
 
         if (editingId.value) {
             await axios.put(`/teachings/${editingId.value}`, payload);
+            
+            // Optimistic UI update for list view
+            const idx = visibleItems.value.findIndex(i => i.id === editingId.value);
+            if (idx !== -1) {
+                const mObj = masters.value.find(v => v.id == payload.master_id);
+                const updatedRecord = {
+                    ...visibleItems.value[idx],
+                    ...payload,
+                    master: mObj || { id: payload.master_id, name: payload.master_name || '仙師' },
+                    items: Array.isArray(payload.items) ? payload.items : (typeof payload.items === 'string' ? JSON.parse(payload.items) : []),
+                    dharma_name_ids: Array.isArray(payload.dharma_name_ids) ? payload.dharma_name_ids : (typeof payload.dharma_name_ids === 'string' ? JSON.parse(payload.dharma_name_ids) : [])
+                };
+                visibleItems.value[idx] = updatedRecord;
+                focusedId.value = editingId.value;
+            }
         } else {
             const res = await axios.post('/teachings', payload);
             if (res.data?.id) {
                 const mObj = masters.value.find(v => v.id == payload.master_id);
                 const newRecord = {
                     ...res.data,
-                    master: mObj || null,
-                    items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
-                    dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
+                    master: mObj || { id: payload.master_id, name: payload.master_name || '仙師' },
+                    items: Array.isArray(res.data.items) ? res.data.items : (typeof res.data.items === 'string' ? JSON.parse(res.data.items) : []),
+                    dharma_name_ids: Array.isArray(res.data.dharma_name_ids) ? res.data.dharma_name_ids : (typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : [])
                 };
                 // Optimistic UI: Add to top of list immediately
                 visibleItems.value.unshift(newRecord);
@@ -3554,9 +3578,10 @@ const performActualSave = async () => {
 
         saveConfirmModal.value.show = false;
         addMode.value = false;
+        editingId.value = null; // Ensure editingId is cleared
 
         // Refresh in background to ensure total consistency (sorting, etc)
-        fetchItems(1);
+        fetchItems(itemPagination.value.current_page);
     } catch (e) {
         console.error(e);
         persistentToast.value = { msg: '✖ 儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'), type: 'error' };

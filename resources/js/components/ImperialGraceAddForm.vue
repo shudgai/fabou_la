@@ -409,6 +409,7 @@ function scrollToTop() {
 }
 
 function handleSubmit() {
+    if (props.isSaving) return;
     if (localMode.value.startsWith('single')) {
         emit('saveSingle', { 
             ...form.value

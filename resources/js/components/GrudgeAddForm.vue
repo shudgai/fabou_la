@@ -86,7 +86,12 @@
                                     </div>
                                 </div>
                                 <!-- Mobile View -->
-                                <editable-input-chips class="md:hidden" v-model="dharmaSearch" :options="props.users.map(u => u.name)" placeholder="搜尋或選擇法號..." />
+                                <editable-input-chips 
+                                    class="md:hidden" 
+                                    v-model="dharmaSearch" 
+                                    variant="boxed"
+                                    :options="props.users.map(u => u.name)" 
+                                    placeholder="對象" />
                             </div>
                         </div>
 
@@ -111,7 +116,12 @@
                                     </div>
                                 </div>
                                 <!-- Mobile View -->
-                                <editable-input-chips class="md:hidden" v-model="form.user_remarks" :options="relationshipOptions" placeholder="備註對象 (例如：母親)..." />
+                                <editable-input-chips 
+                                    class="md:hidden" 
+                                    v-model="form.user_remarks" 
+                                    variant="boxed"
+                                    :options="relationshipOptions" 
+                                    placeholder="對象" />
                             </div>
                         </div>
                     </div>
@@ -239,8 +249,8 @@
             <div class="absolute bottom-[7dvh] left-0 right-0 md:relative md:bottom-0 px-6 py-[4px] bg-white border-t border-slate-50 z-[10] flex gap-3 justify-center shrink-0">
                 <button v-if="currentStep > 1" @click="currentStep--" class="min-w-[100px] py-[12px] bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">上一步</button>
                 <button v-if="currentStep < 6" @click="handleNext" class="flex-1 py-[12px] bg-indigo-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-indigo-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
-                <button v-else @click="handleSave" class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all" style="color: white !important;">
-                    {{ editingId ? '確認修改' : '確認載錄' }}
+                <button v-else @click="handleSave" :disabled="isSaving" class="flex-1 py-[12px] bg-emerald-600 !text-white rounded-2xl font-black text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed" style="color: white !important;">
+                    {{ isSaving ? '儲存中...' : (editingId ? '確認修改' : '確認載錄') }}
                 </button>
             </div>
 
@@ -336,7 +346,8 @@ const props = defineProps({
     show: Boolean,
     initialData: Object,
     editingId: [Number, String],
-    users: Array
+    users: Array,
+    isSaving: Boolean
 });
 
 const emit = defineEmits(['save', 'cancel']);
@@ -504,6 +515,7 @@ watch(() => form.user_remarks, (newVal) => {
 */
 
 const handleSave = () => {
+    if (props.isSaving) return;
     // Validation Rules
     if (!form.value.user_name) {
         persistentToast.value = { msg: '✖ 請選擇或輸入「法號」，不可留空。', type: 'error' };
