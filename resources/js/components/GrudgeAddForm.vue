@@ -6,26 +6,23 @@
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col pb-0">
-            <!-- Header -->
-            <div class="px-[10px] py-[8px] bg-white border-b border-slate-50 relative shrink-0">
-                <div class="flex flex-col items-center w-full">
-                    <!-- Title Row -->
-                    <div class="flex items-center justify-center gap-2 w-full mb-0.5">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <div class="text-[30px] font-bold leading-tight font-outfit uppercase tracking-wider text-slate-900" style="font-size: 30px !important;">
-                            怨靈載錄專區
-                        </div>
-                    </div>
-                    <!-- Subtitle Row with Close Button -->
-                    <div class="flex items-center w-full mt-0.5">
-                        <div class="w-10 shrink-0"></div>
-                        <div class="flex-1 text-center text-[20px] font-black text-slate-400 tracking-[0.3em] font-outfit">
+            <!-- Header: Standardized Branding (Logo + Main Title + Sub Title) -->
+            <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
+                <!-- Row 1: Global Title (Left) -->
+                <div class="px-4 py-2 bg-white flex items-center justify-start gap-2 border-b border-transparent">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="font-outfit !font-normal tracking-widest pt-[2px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 400 !important;">怨靈載錄專區</h1>
+                </div>
+                <!-- Row 2: Subtitle (Left) + Close Button (Right) -->
+                <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
+                    <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
+                        <span class="font-outfit font-normal text-slate-900 whitespace-nowrap" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
                             逐筆載錄
-                        </div>
-                        <button @click="$emit('cancel')" class="shrink-0 w-10 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors p-1 z-[50]">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
+                        </span>
                     </div>
+                    <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 z-[50]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
             </div>
 

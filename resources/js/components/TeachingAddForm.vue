@@ -9,10 +9,10 @@
             
             <!-- Header: Standardized Branding (Logo + Main Title + Sub Title) -->
             <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
-                <!-- Row 1: Global Title -->
-                <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
-                    <logo-imperial-notebook :height="30" />
-                    <h1 class="font-outfit !font-normal !text-black tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 400 !important;">父皇仙師每日開示</h1>
+                <!-- Row 1: Global Title (Left) -->
+                <div class="px-4 py-2 bg-white flex items-center justify-start gap-2 border-b border-transparent">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="font-outfit !font-normal tracking-widest pt-[2px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 400 !important;">父皇仙師每日開示</h1>
                 </div>
                 <!-- Row 2: Subtitle (Category + Form Mode) -->
                 <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
@@ -21,11 +21,11 @@
                             {{ mode === 'batch' ? '多筆載錄' : '逐筆載錄' }}
                         </span>
                     </div>
+                    <!-- Close Button moved here -->
+                    <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 z-[50]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
-                <!-- Close Button -->
-                <button @click="$emit('close')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-2 z-[50]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
             </div>
 
             <!-- Progress Indicator (Immersive Style) -->
@@ -519,12 +519,24 @@
                 
                 <!-- Modal Container -->
                 <div class="relative w-full h-[100dvh] md:h-auto md:max-h-[90dvh] md:max-w-xl bg-white md:rounded-[32px] shadow-2xl animate-slide-up flex flex-col overflow-hidden">
-                    <!-- Header -->
-                    <div class="bg-white px-6 py-4 border-b border-slate-100 flex items-center shrink-0">
-                        <button @click="showItemsSelector = false" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <h1 class="text-[20px] font-normal text-black ml-1">錄入法寶</h1>
+                    <!-- Header: Standardized Branding (Logo + Main Title) -->
+                    <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
+                        <!-- Row 1: Global Title (Left) -->
+                        <div class="px-4 py-2 bg-white flex items-center justify-start gap-2 border-b border-transparent">
+                            <logo-imperial-notebook :height="36" />
+                            <h1 class="font-outfit !font-normal tracking-widest pt-[2px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 400 !important;">父皇仙師每日開示</h1>
+                        </div>
+                        <!-- Row 2: Subtitle (Left) + Close Button (Right) -->
+                        <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
+                            <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
+                                <span class="font-outfit font-normal text-slate-900 whitespace-nowrap" style="font-size: 23px !important; line-height: 1.1; transform: translateY(1.5px);">
+                                    錄入法寶
+                                </span>
+                            </div>
+                            <button @click="showItemsSelector = false" class="text-slate-300 hover:text-slate-600 transition-colors p-2 z-[50]">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <!-- Scrollable Content -->
                     <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar overscroll-contain bg-white">

@@ -54,8 +54,13 @@ class GroupSeeder extends Seeder
             '在場全體'
         ];
 
+        $userId = \App\Models\User::first()?->id ?? 1;
+
         foreach ($groups as $name) {
-            Group::updateOrCreate(['name' => $name]);
+            Group::updateOrCreate(
+                ['name' => $name, 'user_id' => $userId],
+                ['user_id' => $userId]
+            );
         }
     }
 }

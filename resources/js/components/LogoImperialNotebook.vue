@@ -6,8 +6,8 @@
         <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Golden decorative rings -->
             <circle cx="120" cy="120" r="114" fill="white" stroke="#eab308" stroke-width="4"/>
-            <circle cx="120" cy="120" r="108" fill="white" stroke="#eab308" stroke-width="1.5"/>
-            <circle cx="120" cy="120" r="58" fill="white" stroke="#eab308" stroke-width="1.5"/>
+            <circle cx="120" cy="120" r="108" fill="white" stroke="#eab308" stroke-width="4"/>
+            <circle cx="120" cy="120" r="58" fill="white" stroke="#eab308" stroke-width="4"/>
 
             <!-- Central Taiji -->
             <g transform="translate(70, 70)">

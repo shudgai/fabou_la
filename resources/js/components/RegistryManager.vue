@@ -14,7 +14,7 @@
             <!-- Row 1: Global Title -->
             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                 <logo-imperial-notebook :height="30" />
-                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
+                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記專區</h1>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             <!-- Row 1: Global Title -->
             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                 <logo-imperial-notebook :height="30" />
-                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
+                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記專區</h1>
             </div>
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
@@ -59,7 +59,7 @@
                                  style="will-change: transform;"
                                  alt="書籍圖示"></picture>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(12px);">
-                                <div class="font-black tracking-tight leading-tight text-center font-biaokai-locked text-[34px] text-[#8B0000]">特殊法寶<br>登記區</div>
+                                <div class="font-black tracking-tight leading-tight text-center font-biaokai-locked text-[34px] text-[#8B0000]">特殊法寶<br>登記專區</div>
                                 <div class="mt-8 flex items-center font-biaokai-locked">
                                     <span class="text-white font-normal tracking-tight font-biaokai-locked text-[16px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
@@ -84,7 +84,7 @@
                                  alt="書籍圖示"></picture>
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[52px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(2px);">
-                                 <div class="font-black tracking-tighter leading-tight text-center font-biaokai -mt-6" style="font-size: 14.5px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶<br>登記區</div>
+                                 <div class="font-black tracking-tighter leading-tight text-center font-biaokai -mt-6" style="font-size: 14.5px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶<br>登記專區</div>
                                 
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-1">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai"

@@ -153,7 +153,10 @@ class TeachingService
             if ($matched) {
                 $dnIds[] = $matched->id;
             } else {
-                $group = \App\Models\Group::where('name', trim($targetRemarks))->with('dharmaNames')->first();
+                $group = \App\Models\Group::where('user_id', $user->id)
+                    ->where('name', trim($targetRemarks))
+                    ->with('dharmaNames')
+                    ->first();
                 if ($group) {
                     $dnIds = array_merge($dnIds, $group->dharmaNames->pluck('id')->toArray());
                 }
