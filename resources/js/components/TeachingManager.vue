@@ -459,20 +459,21 @@
                 </div>
 
                 <!-- Full Page Save Confirmation Overlay -->
-                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[3000] bg-white animate-fade-in flex flex-col font-sans text-left">
+                <div v-if="saveConfirmModal.show" class="fixed inset-0 z-[3500] bg-white animate-fade-in flex flex-col font-sans text-left">
                     <!-- High-Density Header -->
-                    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
-                        <div class="flex items-center space-x-3">
-                        <div class="flex flex-col">
-                            <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">確認錄入資料</h1>
-                    </div>
-                            <span class="text-[24px] font-medium text-red-600 font-outfit whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 500 !important;">請核對以下內容是否正確</span>
+                    <div class="px-0 flex flex-col bg-white border-b border-slate-50 shrink-0">
+                        <!-- Row 1: Global Title -->
+                        <div class="px-6 py-2 bg-white flex items-center gap-3 border-b border-transparent">
+                            <logo-imperial-notebook :height="32" />
+                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
                         </div>
+                        <!-- Row 2: Subtitle (Centered Red) -->
+                        <div class="px-6 py-3 bg-white border-b border-transparent flex flex-col items-center">
+                            <span class="text-[24px] font-black text-red-600 font-outfit tracking-wider" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 900 !important;">每日開示載錄</span>
                         </div>
-                        <button @click="saveConfirmModal.show = false" class="p-2 text-slate-300 hover:text-slate-500">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        <!-- Close Button -->
+                        <button @click="saveConfirmModal.show = false" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-2 z-[50]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
 
@@ -485,29 +486,46 @@
                                 <span v-if="item.date || form.date" class="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">{{ (item.date || form.date || '').replace(/-/g, '/') }}</span>
                             </div>
 
-                            <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
-                                <div v-if="editingHeaderIdx === bIdx" class="space-y-4 py-2 animate-fade-in">
-                                    <div class="space-y-2">
-                                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">修改仙師</div>
-                                        <editable-input-chips 
-                                            v-model="item.master_name" 
-                                            variant="boxed"
-                                            placeholder="仙師"
-                                            :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" 
-                                            @change="(val) => syncHeaderMaster(val, bIdx)" />
+                            <div class="flex flex-col relative">
+                                <div v-if="editingHeaderIdx === bIdx" :id="'edit-header-' + bIdx" class="py-4 animate-fade-in">
+                                    <div class="bg-indigo-50/30 rounded-[32px] border-2 border-dashed border-indigo-100 p-6 flex flex-col items-center gap-4 relative">
+                                        <!-- The "Chip-like" Side-by-Side Editor -->
+                                        <div class="w-full flex items-center gap-2 justify-center">
+                                            <!-- Master Chip Input -->
+                                            <div class="flex-1 min-w-0">
+                                                <editable-input-chips 
+                                                    v-model="item.master_name" 
+                                                    variant="boxed"
+                                                    placeholder="仙師"
+                                                    :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" 
+                                                    @change="(val) => syncHeaderMaster(val, bIdx)" />
+                                            </div>
+
+                                            <!-- Divider text "開示給:" -->
+                                            <div class="flex flex-col items-center justify-center shrink-0">
+                                                <span class="text-[14px] font-black text-slate-400 leading-tight">開示</span>
+                                                <span class="text-[14px] font-black text-slate-400 leading-tight">給:</span>
+                                            </div>
+
+                                            <!-- Recipient Chip Input -->
+                                            <div class="flex-1 min-w-0">
+                                                <editable-input-chips 
+                                                    v-model="item.dharmaSearchQuery" 
+                                                    variant="boxed"
+                                                    placeholder="對象"
+                                                    :options="combinedPractitionerOptions" 
+                                                    @change="(val) => syncHeaderRecipient(val, bIdx)" />
+                                            </div>
+                                        </div>
+
+                                        <!-- Done Button -->
+                                        <button @click="editingHeaderIdx = null" class="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-2xl text-[14px] font-black active:scale-95 transition-all shadow-lg shadow-indigo-200">
+                                            完成修改
+                                        </button>
+
+                                        <!-- Scroll Anchor -->
+                                        <div :id="'scroll-anchor-' + bIdx" class="absolute -top-32"></div>
                                     </div>
-                                    <div class="space-y-2">
-                                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">修改對象</div>
-                                        <editable-input-chips 
-                                            v-model="item.dharmaSearchQuery" 
-                                            variant="boxed"
-                                            placeholder="對象"
-                                            :options="combinedPractitionerOptions" 
-                                            @change="(val) => syncHeaderRecipient(val, bIdx)" />
-                                    </div>
-                                    <button @click="editingHeaderIdx = null" class="w-full py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[14px] font-black active:scale-95 transition-all">
-                                        完成修改
-                                    </button>
                                 </div>
                                 <div v-else @click="editingHeaderIdx = bIdx" class="inline-flex items-center bg-indigo-50 px-4 py-2 rounded-[20px] border border-indigo-100 cursor-pointer hover:bg-indigo-100 transition-all shadow-sm mb-2">
                                     <span class="text-[17px] font-black text-indigo-700 leading-tight">
@@ -869,6 +887,16 @@ const deleteConfirmId = ref(null);
 const toastActionContext = ref(null);
 const reorderMode = ref(false);
 const editingHeaderIdx = ref(null);
+watch(editingHeaderIdx, (newVal) => {
+    if (newVal !== null) {
+        nextTick(() => {
+            const anchor = document.getElementById(`scroll-anchor-${newVal}`);
+            if (anchor) {
+                anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+});
 const inlineEditingId = ref(null);
 const inlineEditData = ref({
     id: null,
