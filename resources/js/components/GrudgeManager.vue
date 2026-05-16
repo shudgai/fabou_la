@@ -148,7 +148,7 @@
                                           </template>
                                       </div>
                                   </div>
-                                  <div v-if="item.remarks_text" class="space-y-2">
+                                  <div v-if="isMeaningfulRemarks(item.remarks_text, item.quantity)" class="space-y-2">
                                       <label class="grudge-label uppercase tracking-widest">詳細備註</label>
                                       <div class="grudge-value leading-relaxed whitespace-pre-wrap bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">{{ item.remarks_text }}</div>
                                   </div>
@@ -275,7 +275,7 @@
                                              </div>
 
                                              <!-- Detailed Remarks / Remarks Text -->
-                                             <div v-if="item.remarks_text" class="space-y-2">
+                                             <div v-if="isMeaningfulRemarks(item.remarks_text, item.quantity)" class="space-y-2">
                                                  <label class="app-title uppercase tracking-widest">詳細備註</label>
                                                  <div class="app-body font-medium leading-relaxed whitespace-pre-wrap text-[18px] bg-slate-50/50 p-3 rounded-xl border border-slate-100/50">
                                                      {{ item.remarks_text }}
@@ -465,6 +465,22 @@ const translateRel = (rel) => {
     if (result === '之嬤' || result === '嬤') return '奶奶';
     if (result === '之夫' || result === '夫') return '先生';
     return result.replace(/^[之的]/, '');
+};
+
+const isMeaningfulRemarks = (remarks, quantity) => {
+    if (!remarks) return false;
+    const trimmed = String(remarks).trim();
+    if (!trimmed) return false;
+    
+    // If it's just a number and it matches the quantity, or it's just a short number with no context
+    if (/^\d+$/.test(trimmed)) {
+        // If it matches the quantity exactly, it's definitely redundant
+        if (trimmed === String(quantity)) return false;
+        // In this module, if remarks is JUST a number, it's almost always a mistake or redundant count
+        return false;
+    }
+    
+    return true;
 };
 
 let totalTimer = null;
