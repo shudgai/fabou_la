@@ -522,7 +522,7 @@
                                 <div class="flex flex-wrap items-baseline justify-center gap-x-6 gap-y-4">
                                     <!-- Selected Items sitting on the same line -->
                                     <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-baseline gap-1.5 animate-fade-in">
-                                        <span class="font-normal text-[20px] text-black tracking-wide">{{ r }}</span>
+                                        <span class="font-normal text-[17px] text-black tracking-wide">{{ r }}</span>
                                         <button @click="removeFooterRemark(idx)" class="text-slate-300 hover:text-red-500 transition-colors active:scale-90 translate-y-[2px]">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
