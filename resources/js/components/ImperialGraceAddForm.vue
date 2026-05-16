@@ -99,8 +99,7 @@
                     </template>
                     <template v-else>
                         <div class="max-w-xl mx-auto mt-6 bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
-                            <div class="bg-indigo-50/30 px-4 py-2 flex justify-between items-center border-b border-slate-100">
-                                <span class="text-[13px] font-normal text-black">日期：{{ form.record_date || '-' }}</span>
+                            <div class="bg-indigo-50/30 px-4 py-2 flex justify-end items-center border-b border-slate-100">
                                 <span class="text-[13px] font-normal text-black">{{ getMasterName(form.master_id) }}</span>
                             </div>
                             <div class="divide-y divide-slate-50 max-h-64 overflow-y-auto custom-scrollbar">
