@@ -14,7 +14,7 @@
             <!-- Row 1: Global Title -->
             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                 <logo-imperial-notebook :height="30" />
-                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             <!-- Row 1: Global Title -->
             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                 <logo-imperial-notebook :height="30" />
-                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
             </div>
             <!-- Row 2: Category Name + Master Name (Consolidated 2-row Header) -->
             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
@@ -59,10 +59,9 @@
                                  style="will-change: transform;"
                                  alt="書籍圖示"></picture>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(12px);">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-10 font-biaokai-locked text-[20px] text-[#8B0000]">特殊法寶登記區</div>
-                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-[12px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
-                                <div class="mt-8 flex items-center font-biaokai-locked">
-                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[14.5px]">共 {{ categoryCounts.major || 0 }} 筆</span>
+                                <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-[26px] text-[#8B0000]">特殊法寶登記區</div>
+                                <div class="mt-12 flex items-center font-biaokai-locked">
+                                    <span class="text-white font-normal tracking-tight font-biaokai-locked text-[16px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +121,7 @@
                     <div class="flex items-center justify-between bg-white border-b border-slate-100 w-full py-2 px-4">
                         <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">法寶登記專區</h1>
+                        <h1 class="tracking-widest font-outfit !font-black !text-[#dc2626]" style="font-size: 30px !important;">特殊法寶登記區</h1>
                     </div>
                         <div class="flex items-center space-x-3">
                             <!-- Sort Button -->
@@ -214,7 +213,7 @@
                                             <!-- Row 1: Global Title -->
                                             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                                                 <logo-imperial-notebook :height="30" />
-                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
                                             </div>
                                             <!-- Row 2: Category Name (if selected) -->
                                             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
@@ -404,7 +403,7 @@
                                             <!-- Row 1: Global Title -->
                                             <div class="px-4 py-2 bg-white flex items-center gap-2 border-b border-transparent">
                                                 <logo-imperial-notebook :height="30" />
-                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">法寶登記專區</h1>
+                                                <h1 class="font-outfit !font-black !text-[#dc2626] tracking-widest pt-[2px]" style="font-size: 26px !important; font-weight: 900 !important;">特殊法寶登記區</h1>
                                             </div>
                                             <!-- Row 2: Category Name (if selected) -->
                                             <div class="px-4 bg-white border-b border-transparent flex items-center justify-between py-[5px]">
@@ -1010,7 +1009,7 @@ const filteredTreasures = computed(() => {
 });
 
 const dynamicHeaderTitle = computed(() => {
-    if (!currentFolder.value) return '法寶登記專區';
+    if (!currentFolder.value) return '特殊法寶登記區';
 
     const catName = currentCategory.value === 'major' ? '特殊法寶登記簿' : '其他皇恩登記簿';
     return `${catName}-${currentFolder.value.name}`;
@@ -2200,12 +2199,12 @@ const downloadAllData = () => {
         return `【${item.name}】\r\n用意：${item.purpose || '-'}\r\n內容：${item.content || '-'}\r\n登記狀況：\r\n${dnrText}`;
     }).join('\r\n\r\n--------------------------------\r\n\r\n');
 
-    const finalContent = `【法寶登記專區 - ${currentFolder.value.name} 完整清單】\r\n\r\n${contents}`;
+    const finalContent = `【特殊法寶登記區 - ${currentFolder.value.name} 完整清單】\r\n\r\n${contents}`;
     const blob = new Blob(["\ufeff" + finalContent], { type: 'text/plain;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `法寶登記專區_${currentFolder.value.name}_完整清單.txt`);
+    link.setAttribute("download", `特殊法寶登記區_${currentFolder.value.name}_完整清單.txt`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
