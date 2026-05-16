@@ -1218,7 +1218,7 @@ const syncHeaderMaster = (name, bIdx) => {
     if (saveConfirmModal.value.records[bIdx]) {
         saveConfirmModal.value.records[bIdx].master_name = name;
         // Also update form if it's the first record (for single save parity)
-        if (bIdx === 0 && !addMode.value) {
+        if (bIdx === 0) {
             form.value.master_name = name;
             resolveMasterId();
         }
@@ -1228,6 +1228,10 @@ const syncHeaderMaster = (name, bIdx) => {
 const syncHeaderRecipient = (val, bIdx) => {
     if (saveConfirmModal.value.records[bIdx]) {
         saveConfirmModal.value.records[bIdx].dharmaSearchQuery = val;
+        // Also update search query in main form for parity if it's the first record
+        if (bIdx === 0) {
+            dharmaSearchQuery.value = val;
+        }
         // Trigger recipient logic for this specific confirm record
         handleHeaderDharmaInput(val, bIdx);
     }
@@ -3657,16 +3661,17 @@ const performActualSave = async () => {
     saving.value = true;
     try {
         // Thorough cleanup of the payload to avoid backend resolution traps
+        const activeRecord = saveConfirmModal.value.records[0] || form.value;
         const { 
             master, master_name, dharma_names, dharmaNames, 
             created_at, updated_at, deleted_at, user,
-            ...formClean 
-        } = form.value;
+            ...baseForm 
+        } = activeRecord;
 
         const isDailyContext = !currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         const payload = {
-            ...formClean,
-            master_id: form.value.master_id || currentFolder.value?.id,
+            ...baseForm,
+            master_id: activeRecord.master_id || form.value.master_id || currentFolder.value?.id,
             is_daily: isDailyContext ? 1 : 0 
         };
 
@@ -3775,8 +3780,9 @@ const executeDistributionSave = async (mode) => {
     }
 
     try {
-        // Iterate through each block record
-        for (const record of batchRecords.value) {
+        let savedCount = 0;
+        // Iterate through each block record from the CONFIRM MODAL (source of truth)
+        for (const record of saveConfirmModal.value.records) {
             let content = record.content?.trim() || '';
             let items = [...(record.items || [])];
 
@@ -3898,13 +3904,17 @@ const executeDistributionSave = async (mode) => {
                     items: typeof res.data.items === 'string' ? JSON.parse(res.data.items) : (res.data.items || []),
                     dharma_name_ids: typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : (res.data.dharma_name_ids || [])
                 };
-                // Optimistic UI: Add to the beginning of the list to ensure visibility
                 visibleItems.value.unshift(newRecord);
                 if (!focusedId.value) {
                     focusedId.value = res.data.id;
                     focusedDate.value = res.data.date;
                 }
+                savedCount++;
             }
+        }
+
+        if (savedCount > 0) {
+            persistentToast.value = { msg: `✓ 已成功新增 ${savedCount} 筆資料`, type: 'success' };
         }
 
         if (focusedId.value) {
