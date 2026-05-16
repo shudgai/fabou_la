@@ -3611,6 +3611,9 @@ const saveItem = async (data = null) => {
             saveConfirmModal.value.show = true;
             itemsDetailMode.value = false;
             return;
+        } else if (activeEntryTab.value === 'batch' && batchImportContent.value.trim()) {
+            persistentToast.value = { msg: '✖ 無法從貼上內容中解析出有效的載錄紀錄，請檢查格式。', type: 'error' };
+            return;
         }
     } else {
         // Individual save confirmation
@@ -3651,7 +3654,7 @@ const performActualSave = async () => {
     if (saving.value) return;
 
     // Always distribution 'keep' mode as per user request to skip intermediate modals
-    if (activeEntryTab.value === 'batch') {
+    if (activeEntryTab.value === 'batch' || saveConfirmModal.value.records.length > 1) {
         await executeDistributionSave('distribute');
         saveConfirmModal.value.show = false;
         return;
@@ -3781,8 +3784,12 @@ const executeDistributionSave = async (mode) => {
 
     try {
         let savedCount = 0;
-        // Iterate through each block record from the CONFIRM MODAL (source of truth)
-        for (const record of saveConfirmModal.value.records) {
+        // Use confirmed records if available, otherwise fallback to batchRecords
+        const recordsToSave = saveConfirmModal.value.records.length > 0 
+            ? saveConfirmModal.value.records 
+            : batchRecords.value.filter(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
+
+        for (const record of recordsToSave) {
             let content = record.content?.trim() || '';
             let items = [...(record.items || [])];
 
@@ -3915,6 +3922,8 @@ const executeDistributionSave = async (mode) => {
 
         if (savedCount > 0) {
             persistentToast.value = { msg: `✓ 已成功新增 ${savedCount} 筆資料`, type: 'success' };
+        } else {
+            persistentToast.value = { msg: '✖ 未偵測到可儲存的有效資料', type: 'warning' };
         }
 
         if (focusedId.value) {
