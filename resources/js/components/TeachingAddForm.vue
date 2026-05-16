@@ -516,23 +516,25 @@
                     <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-12 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
                         <h2 class="text-[17px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
                         
-                        <!-- Ruled Paper Style Entry Area -->
-                        <div class="px-8 mt-12 space-y-4">
-                            <div class="max-w-md mx-auto space-y-4">
-                                <!-- Each Selected Item sits on its own line -->
-                                <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="border-b-2 border-slate-300 flex items-center justify-center gap-3 pb-0 animate-fade-in group">
-                                    <span class="font-normal text-[20px] text-black tracking-wide leading-none pb-0.5">{{ r }}</span>
-                                    <button @click="removeFooterRemark(idx)" class="text-slate-200 hover:text-red-500 transition-colors active:scale-90">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </button>
-                                </div>
-                                
-                                <!-- Input Line -->
-                                <div class="border-b-2 border-slate-300 pb-0">
-                                    <input v-model="newFooterRemark" 
-                                           @keydown.enter.prevent="addFooterRemark"
-                                           placeholder="在此輸入結尾備註..." 
-                                           class="w-full text-center text-[17px] font-normal border-none bg-transparent py-1 outline-none transition-all placeholder:text-slate-200 text-black leading-none" />
+                        <!-- Single Continuous Underline Area -->
+                        <div class="px-8 mt-12">
+                            <div class="max-w-md mx-auto border-b-2 border-slate-300 pb-1">
+                                <div class="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-2">
+                                    <!-- Selected Items sitting on the same line -->
+                                    <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-baseline gap-1 animate-fade-in">
+                                        <span class="font-normal text-[20px] text-black tracking-wide">{{ r }}</span>
+                                        <button @click="removeFooterRemark(idx)" class="text-slate-300 hover:text-red-500 transition-colors active:scale-90 translate-y-[2px]">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Inline Input sitting on the same line -->
+                                    <div class="flex-1 min-w-[120px]">
+                                        <input v-model="newFooterRemark" 
+                                               @keydown.enter.prevent="addFooterRemark"
+                                               placeholder="在此輸入..." 
+                                               class="w-full text-center text-[17px] font-normal border-none bg-transparent outline-none transition-all placeholder:text-slate-200 text-black leading-none" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
