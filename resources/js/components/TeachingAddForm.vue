@@ -518,10 +518,10 @@
                             <h2 class="text-[20px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
                         </div>
                         
-                        <div v-if="footerRemarks.length > 0" class="flex flex-col items-center gap-3 mb-10 px-4">
-                            <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-slate-50/80 px-6 py-3.5 rounded-[24px] flex items-center border border-slate-200 shadow-sm animate-scale-in group">
-                                <span class="font-normal text-[18px] text-slate-700">{{ r }}</span>
-                                <button @click="removeFooterRemark(idx)" class="ml-4 text-slate-400 hover:text-red-500 transition-colors">
+                        <div v-if="footerRemarks.length > 0" class="flex flex-col items-center gap-4 mb-10 px-4">
+                            <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-center gap-3 animate-fade-in group">
+                                <span class="font-normal text-[19px] text-black tracking-wide">{{ r }}</span>
+                                <button @click="removeFooterRemark(idx)" class="text-slate-200 hover:text-red-500 transition-colors active:scale-90">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                             </div>
