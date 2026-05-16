@@ -529,9 +529,13 @@
 
                         <div class="px-8 space-y-8 mt-12">
                             <!-- Quick Add Buttons (Vertical) -->
-                            <div class="flex flex-col gap-3">
-                                <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
-                                <button @click="quickAddFooterRemark('完畢')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">完畢</button>
+                            <div class="flex flex-col gap-4 mt-4">
+                                <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4.5 rounded-[32px] border border-slate-200 bg-slate-50/30 text-slate-700 text-[18px] font-normal active:scale-[0.97] transition-all shadow-sm hover:bg-slate-100 hover:border-slate-300">
+                                    *允同享皇恩
+                                </button>
+                                <button @click="quickAddFooterRemark('完畢')" class="w-full py-4.5 rounded-[32px] border border-slate-200 bg-slate-50/30 text-slate-700 text-[18px] font-normal active:scale-[0.97] transition-all shadow-sm hover:bg-slate-100 hover:border-slate-300">
+                                    完畢
+                                </button>
                             </div>
                         </div>
                     </div>
