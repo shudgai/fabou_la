@@ -10,11 +10,11 @@
         <div class="bg-white h-full relative w-full shadow-sm flex flex-col font-sans">
 
             <!-- Global Main Title (Hidden when inside folder to avoid duplication) -->
-            <div v-if="!currentFolder && !addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
+            <div v-if="!addMode" class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-100 relative min-h-[52px] cursor-pointer w-full z-[120]" @click="resetToRoot">
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1">
                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-tighter font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-tighter font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 30px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示載錄</h1>
                     </div>
                 </div>
             </div>
@@ -91,14 +91,6 @@
 
             <template v-else-if="currentCategory === 'masters' && !currentFolder && !addMode">
                 <div class="flex-1 overflow-auto custom-scrollbar w-full">
-                    <div class="flex items-center relative min-h-[52px] border-b border-slate-50 sticky top-0 bg-white z-30">
-                        <button @click="currentCategory = null" class="p-4 text-slate-400 active:scale-90 transition-transform z-10">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
-                        <div class="absolute inset-x-0 flex justify-center items-center pointer-events-none">
-                            <span class="font-black" :class="currentCategory === 2 && currentFolder?.name === '閻王仙師' ? 'text-slate-900' : 'text-red-600'" style="font-size: 26px !important; display: inline-block; transform: translateY(2px);">父皇仙師開示載錄</span>
-                        </div>
-                    </div>
                     <div class="grid grid-cols-2 gap-x-0 gap-y-0.5 p-2 place-items-center">
                         <button v-for="(folder, idx) in filteredFolders" :key="folder.id" 
                             @click="currentFolder = folder"
@@ -208,14 +200,14 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <div v-if="!isContentLiteral(item)" class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-2">
+                                                <div class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-2">
                                                     <span class="text-[17px] font-black text-indigo-700 leading-none">
                                                         <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-indigo-600'">{{ formatMasterName(item.master?.name || item.master_name) }}</span>開示給:{{ getRecipientName(item) }}
                                                     </span>
                                                 </div>
                                                 <!-- Content Summary Row (3 Lines max) -->
                                                 <div class="text-[17px] font-semibold text-slate-500 leading-relaxed whitespace-pre-wrap text-left">
-                                                    <span v-if="item.content">{{ getFirstThreeLines(item.content) }}</span>
+                                                    <span v-if="item.content">{{ getFirstThreeLines(stripContentHeaders(item.content)) }}</span>
                                                     <span v-else-if="item.items?.length > 0">{{ item.items.map(i => i.treasure_name || i.name).join(', ') }}</span>
                                                 </div>
                                             </template>
@@ -236,14 +228,14 @@
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 27px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示載錄</h1>
                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Sub-folder Title (Added for consistency) -->
                                             <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px] relative">
-                                                <span class="text-[24px] font-medium text-red-600 tracking-tight" style="font-size: 24px !important; color: #dc2626 !important; font-weight: 500 !important;">每日開示載錄</span>
+                                                <span class="text-[24px] font-medium text-red-600 tracking-tight" style="font-size: 24px !important; color: #dc2626 !important; font-weight: 500 !important;">父皇仙師開示載錄</span>
                                                 <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all absolute right-3">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                 </button>
@@ -289,162 +281,109 @@
                                             <!-- Scrollable Content -->
                                             <div class="flex-1 overflow-y-auto px-[20px] custom-scrollbar" :class="isContentLiteral(item) ? 'pt-0' : 'pt-2'">
                                                 <!-- View Mode -->
-                                                <div v-if="inlineEditingId !== item.id" class="space-y-4">
-                                                    <div v-if="getFullRecipientList(item)" class="space-y-2 mb-4">
-                                                        <button @click.stop="toggleRecipientDetails(item.id)" 
-                                                                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group py-1">
-                                                            <div class="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
-                                                                <svg class="w-4 h-4 text-indigo-500" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                            </div>
-                                                            <span class="text-[17px] font-black text-slate-900">點選查看對象詳情</span>
-                                                        </button>
-                                                        <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
-                                                            <div v-if="getFullRecipientList(item).groupName" class="app-body text-indigo-700 leading-tight">{{ getFullRecipientList(item).groupName }}</div>
-                                                            <div v-if="getFullRecipientList(item).names.length > 0" class="app-title !text-indigo-600/70 leading-snug">{{ getFullRecipientList(item).names.join(', ') }}</div>
-                                                            <div v-if="getFullRecipientList(item)?.names.join(', ') !== item.target_remarks && getFullRecipientList(item)?.groupName && item.target_remarks" class="app-title !text-indigo-400 pt-1 whitespace-pre-wrap">說明：{{ item.target_remarks }}</div>
-                                                        </div>
-                                                    </div>
+                                                    <!-- Literal Record View -->
+                                                    <template v-if="isContentLiteral(item)">
+                                                        <div class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.content.trim() }}</div>
+                                                    </template>
 
-                                                    <div v-if="item.content?.trim()" class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.content.trim() }}</div>
-
-                                                    <div v-if="item.items?.length > 0 && !isContentLiteral(item)" class="mt-2">
-                                                        <label class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
-                                                        <div class="space-y-1">
-                                                            <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
-                                                                <div class="text-[17px] font-semibold text-slate-800 leading-relaxed">
-                                                                    <template v-if="item.items.length > 1"><span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.</span></template>{{ stripMasterPrefix(gName) }}
-                                                                    <template v-if="group.length === 1 && !group[0].name">
-                                                                        <span v-if="group[0].details || group[0].remarks || group[0].sub_name" class="ml-1">: {{ group[0].details }} <span v-if="group[0].remarks || group[0].sub_name" class="text-[17px] font-normal text-slate-400">({{ group[0].remarks || group[0].sub_name }})</span></span>
-                                                                    </template>
+                                                    <!-- Structured Record View -->
+                                                    <template v-else>
+                                                        <div v-if="getFullRecipientList(item)" class="space-y-2 mb-4">
+                                                            <button @click.stop="toggleRecipientDetails(item.id)" 
+                                                                    class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors group py-1">
+                                                                <div class="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
+                                                                    <svg class="w-4 h-4 text-indigo-500" :class="showRecipientDetails[item.id] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                 </div>
-                                                                <div class="space-y-1" v-if="group.length > 1 || (group[0] && group[0].name)">
-                                                                    <div v-if="group.length > 1 && getMainDetails(group)" class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">{{ getMainDetails(group) }}</div>
-                                                                    <div v-for="(m, midx) in group" :key="midx">
-                                                                        <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">
-                                                                            <template v-if="m.name">
-                                                                                <template v-if="item.items.length > 1 || group.length > 1"><span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.{{ midx + 1 }}</span></template>
-                                                                                <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
-                                                                                <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[17px] font-normal text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
-                                                                                <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 text-[17px] font-normal text-slate-500">{{ m.details }}</div>
-                                                                            </template>
+                                                                <span class="text-[17px] font-black text-slate-900">點選查看對象詳情</span>
+                                                            </button>
+                                                            <div v-if="showRecipientDetails[item.id]" class="text-indigo-600 bg-indigo-50/50 rounded-2xl px-4 py-3 border border-indigo-100/50 space-y-1 animate-fade-in text-left">
+                                                                <div v-if="getFullRecipientList(item).groupName" class="app-body text-indigo-700 leading-tight">{{ getFullRecipientList(item).groupName }}</div>
+                                                                <div v-if="getFullRecipientList(item).names.length > 0" class="app-title !text-indigo-600/70 leading-snug">{{ getFullRecipientList(item).names.join(', ') }}</div>
+                                                                <div v-if="getFullRecipientList(item)?.names.join(', ') !== item.target_remarks && getFullRecipientList(item)?.groupName && item.target_remarks" class="app-title !text-indigo-400 pt-1 whitespace-pre-wrap">說明：{{ item.target_remarks }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap mb-4">
+                                                            {{ stripItemLines(stripContentHeaders(item.content), item.items) }}
+                                                        </div>
+
+                                                        <div v-if="item.items?.length > 0" class="mt-2">
+                                                            <label class="text-[15px] font-bold text-slate-400 uppercase tracking-widest block mb-1">賜降：</label>
+                                                            <div class="space-y-1">
+                                                                <template v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gName">
+                                                                    <div class="text-[17px] font-semibold text-slate-800 leading-relaxed">
+                                                                        <template v-if="item.items.length > 1"><span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.</span></template>{{ stripMasterPrefix(gName) }}
+                                                                        <template v-if="group.length === 1 && !group[0].name">
+                                                                            <span v-if="group[0].details || group[0].remarks || group[0].sub_name" class="ml-1">: {{ group[0].details }} <span v-if="group[0].remarks || group[0].sub_name" class="text-[17px] font-normal text-slate-400">({{ group[0].remarks || group[0].sub_name }})</span></span>
+                                                                        </template>
+                                                                    </div>
+                                                                    <div class="space-y-1" v-if="group.length > 1 || (group[0] && group[0].name)">
+                                                                        <div v-if="group.length > 1 && getMainDetails(group)" class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">{{ getMainDetails(group) }}</div>
+                                                                        <div v-for="(m, midx) in group" :key="midx">
+                                                                            <div v-if="m.name || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="pl-6 text-[17px] font-normal text-slate-800 leading-relaxed">
+                                                                                <template v-if="m.name">
+                                                                                    <template v-if="item.items.length > 1 || group.length > 1"><span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.{{ midx + 1 }}</span></template>
+                                                                                    <span v-if="isSpecialTreasure(m.name)">{{ stripMasterPrefix(m.name) }}</span>
+                                                                                    <span v-else>{{ stripMasterPrefix(m.name) }}{{ (m.details) ? ':' + m.details : '' }} <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="text-[17px] font-normal text-slate-400">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span></span>
+                                                                                    <div v-if="m.details && isSpecialTreasure(m.name) && !getCleanRemark(m.remarks || m.sub_name, m.details)" class="pl-4 text-[17px] font-normal text-slate-500">{{ m.details }}</div>
+                                                                                </template>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+
+                                                        <div v-if="item.items_footer_remarks" class="text-[17px] font-normal text-slate-600 leading-relaxed pt-1 whitespace-pre-wrap">{{ item.items_footer_remarks }}</div>
+                                                        <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item)"><span class="text-[17px] font-normal text-slate-700">完畢</span></div>
+                                                    </template>
+                                                </div>
+
+                                                <!-- Edit Mode (Word Mode) -->
+                                                <div v-if="inlineEditingId === item.id" class="animate-fade-in text-left flex flex-col h-full bg-white">
+                                                    <div class="px-3 pt-4 pb-2 border-b border-slate-50 shrink-0 flex items-center justify-between">
+                                                        <span class="text-[17px] font-black text-indigo-600 flex items-center">
+                                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                            WORD 模式編輯中
+                                                        </span>
+                                                        <div class="relative">
+                                                            <button @click.stop="activeDropdownId = activeDropdownId === 'edit-menu-' + item.id ? null : 'edit-menu-' + item.id" class="w-8 h-8 flex items-center justify-center text-slate-300">
+                                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                            </button>
+                                                            <div v-if="activeDropdownId === 'edit-menu-' + item.id" class="absolute right-0 top-full mt-1 w-32 bg-white rounded-2xl shadow-xl border border-slate-50 z-[100] p-1">
+                                                                <button @click.stop="inlineEditingId = null; activeDropdownId = null" class="w-full px-4 py-2 text-left text-red-500 font-bold text-[15px] hover:bg-red-50 rounded-xl transition-all">取消修改</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="flex-1 overflow-y-auto px-1 pt-2 custom-scrollbar">
+                                                        <textarea :id="'inline-ta-' + item.id"
+                                                            v-model="inlineEditData.content" 
+                                                            class="w-full bg-transparent border-0 text-[18px] font-black text-slate-800 leading-relaxed outline-none p-4 resize-none overflow-hidden"
+                                                            @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                                            placeholder="在此輸入載錄內容..."></textarea>
+                                                        <div class="h-[120px]"></div>
+                                                    </div>
+
+                                                    <!-- Fixed Action Footer for Word Mode -->
+                                                    <div class="px-6 pt-4 pb-[calc(1.5rem+env(safe-area-inset-bottom,20px))] bg-white border-t border-slate-50 shrink-0">
+                                                        <button @click.stop="saveInlineEdit" :disabled="saving" class="w-full h-[64px] rounded-[32px] bg-amber-500 text-white font-black text-[21px] active:scale-95 transition-all flex items-center justify-center" style="color: white !important;">
+                                                            <template v-if="saving">
+                                                                <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                                             </template>
-                                                        </div>
-                                                    </div>
-
-                                                    <div v-if="item.items_footer_remarks && !isContentLiteral(item)" class="text-[17px] font-normal text-slate-600 leading-relaxed pt-1 whitespace-pre-wrap">{{ item.items_footer_remarks }}</div>
-                                                    <div class="pt-1 text-left" v-if="!hasFinishedSuffix(item) && !isContentLiteral(item)"><span class="text-[17px] font-normal text-slate-700">完畢</span></div>
-                                                </div>
-
-                                                <!-- Edit Mode -->
-                                                <div v-if="inlineEditingId === item.id" class="pt-4 space-y-4 animate-fade-in text-left">
-                                                    <!-- Date & Master & Target -->
-                                                    <div class="space-y-4">
-                                                        <div class="grid grid-cols-2 gap-4">
-                                                            <div class="space-y-2">
-                                                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">日期</label>
-                                                                <input v-model="inlineEditData.date" type="text" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-1 py-2 text-[15px] text-black outline-none focus:border-indigo-500 transition-colors">
-                                                            </div>
-                                                            <div class="space-y-2">
-                                                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">仙師</label>
-                                                                <editable-input-chips 
-                                                                    v-model="inlineEditData.master_name" 
-                                                                    variant="boxed"
-                                                                    placeholder="仙師"
-                                                                    :options="allMastersList" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="space-y-2">
-                                                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">對象</label>
-                                                            <editable-input-chips 
-                                                                v-model="inlineEditData.target_name" 
-                                                                variant="boxed"
-                                                                placeholder="對象"
-                                                                :options="combinedPractitionerOptions" />
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Content textarea -->
-                                                    <div>
-                                                        <div class="flex items-center justify-between mb-3 px-1">
-                                                            <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest flex items-center">
-                                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                開示內容
-                                                            </span>
-                                                        </div>
-                                                        <textarea v-model="inlineEditData.content" 
-                                                                 class="w-full min-h-[200px] border-0 border-b-2 border-slate-300 bg-transparent text-[17px] text-black outline-none focus:border-indigo-500 leading-relaxed resize-none"
-                                                                 @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
-                                                                 placeholder="輸入內容..."></textarea>
-                                                    </div>
-
-                                                    <!-- Treasures Section -->
-                                                    <div class="space-y-3">
-                                                        <div class="flex items-center justify-between">
-                                                            <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest">賜降法寶</span>
-                                                            <div class="flex items-center gap-2">
-                                                                <input v-model="inlineItemName" placeholder="法寶名稱" class="w-[120px] border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
-                                                                <input v-model="inlineItemDetails" placeholder="備註" class="w-[80px] border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
-                                                                <button @click.stop="addInlineItem" class="text-indigo-500 text-[13px] font-black flex items-center gap-1 hover:text-indigo-600 transition-colors">
-                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg>
-                                                                    新增
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div v-if="inlineEditData.items.length > 0" class="space-y-2">
-                                                            <div v-for="(itm, iidx) in inlineEditData.items" :key="iidx" class="flex items-center justify-between py-2 border-b border-slate-100">
-                                                                <span class="text-[15px] text-black">{{ itm.treasure_name || itm.name }}{{ itm.details ? ' · ' + itm.details : '' }}</span>
-                                                                <button @click.stop="removeInlineItem(iidx)" class="p-1 text-slate-300 hover:text-red-500">
-                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Footer Remarks Section -->
-                                                    <div class="space-y-3">
-                                                        <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest">結尾備註</span>
-                                                        <div v-if="inlineEditData.items_footer_remarks" class="flex flex-wrap gap-2">
-                                                            <div v-for="(fr, fidx) in inlineFooterList" :key="fidx" class="bg-indigo-50 px-3 py-1.5 flex items-center">
-                                                                <span class="font-normal text-[15px] text-indigo-900">{{ fr }}</span>
-                                                                <button @click.stop="removeInlineFooterRemark(fidx)" class="ml-2 text-indigo-300 hover:text-red-500">
-                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex gap-2">
-                                                            <input v-model="inlineFooterInput" @keydown.enter.prevent="addInlineFooterRemark" placeholder="自訂結尾..." class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
-                                                            <button @click.stop="quickAddInlineFooterRemark('*允同享皇恩')" class="px-4 py-2 bg-slate-100 text-slate-600 text-[13px] font-black active:scale-95 transition-all">*允同享皇恩</button>
-                                                            <button @click.stop="quickAddInlineFooterRemark('完畢')" class="px-4 py-2 bg-slate-100 text-slate-600 text-[13px] font-black active:scale-95 transition-all">完畢</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Fixed Action Footer -->
-                                            <div v-if="inlineEditingId === item.id" class="px-[20px] pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_45px_rgba(0,0,0,0.06)] z-[100]">
-                                                <div class="flex flex-col items-stretch gap-3">
-                                                    <div class="flex space-x-3">
-                                                        <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-1 h-[64px] rounded-2xl bg-[#FFB266] text-white font-black text-[19px] shadow-xl active:scale-95 transition-all flex items-center justify-center" style="color: white !important;">
-                                                            {{ saving ? '正在存檔...' : '確認修改' }}
+                                                            <span v-else>確認修改</span>
                                                         </button>
                                                     </div>
-                                                    <button @click.stop="cancelInlineEdit" class="text-slate-400 font-bold text-[15px] py-1 text-center active:scale-95 transition-all">取消修改</button>
                                                 </div>
                                             </div>
-
-                                        </div><!-- /white panel -->
-                                        </div><!-- /pointer-events-none wrapper -->
-                                    </div><!-- /overlay root -->
+                                        </div>
+                                    </div>
                                 </teleport>
-                                 </template>
-                             </div>
-                         </template>
-
+                            </template>
+                        </div>
+                    </template>
                      </div>
-                </div>
+                 </div>
 
                 <div v-if="distributionModal.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#FFB266]/60 backdrop-blur-sm animate-fade-in">
                     <div class="bg-white rounded-[32px] w-full max-w-sm overflow-hidden shadow-2xl animate-slide-up border border-white/20">
@@ -518,13 +457,9 @@
                     <!-- High-Density Header -->
                     <div class="px-0 flex flex-col bg-white border-b border-slate-50 shrink-0">
                         <!-- Row 1: Global Title -->
-                        <div class="px-6 py-2 bg-white flex items-center gap-3 border-b border-transparent">
+                        <div class="px-6 py-3 bg-white flex items-center gap-3 border-b border-slate-50">
                             <logo-imperial-notebook :height="32" />
-                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示專區</h1>
-                        </div>
-                        <!-- Row 2: Subtitle (Centered Red) -->
-                        <div class="px-6 py-3 bg-white border-b border-transparent flex flex-col items-center">
-                            <span class="text-[24px] font-black text-red-600 font-outfit tracking-wider" style="color: #dc2626 !important; font-size: 24px !important; font-weight: 900 !important;">每日開示載錄</span>
+                            <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px; font-weight: 900 !important;">父皇仙師開示載錄</h1>
                         </div>
                         <!-- Close Button -->
                         <button @click="saveConfirmModal.show = false" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-2 z-[50]">
@@ -615,32 +550,39 @@
                                 </div>
                             </div>
 
-                            <div v-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
-                                {{ stripContentHeaders(item.content).trim() }}
+                            <!-- Main Content: Raw for literal, Stripped for others -->
+                            <div v-if="isContentLiteral(item)" class="text-[17px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
+                                {{ item.content.trim() }}
+                            </div>
+                            <div v-else-if="stripContentHeaders(item.content)?.trim()" class="text-[17px] text-slate-900 font-semibold leading-relaxed whitespace-pre-wrap px-1">
+                                {{ stripItemLines(stripContentHeaders(item.content), item.items) }}
                             </div>
 
-                            <div v-if="item.items?.length > 0" class="pt-3 space-y-2">
-                                <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[17px] font-black text-slate-900 pl-1">賜降：</div>
-                                <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[17px] text-slate-900 font-normal flex flex-col px-1">
-                                    <div class="flex items-center">
-                                        <span class="text-slate-400 mr-2 font-outfit">{{ gIdx + 1 }}.</span> {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
-                                    </div>
-                                    <div v-if="group.length > 1 || (group[0] && group[0].name)" class="pl-6 space-y-0.5 mt-1">
-                                        <div v-for="(m, mIdx) in group" :key="m.uid">
-                                            <div v-if="(m.name && !shouldHideContentName(gName, m.name)) || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="text-[17px] text-slate-900 font-normal">
-                                                <span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.{{ mIdx + 1 }}</span> {{ m.name ? m.name : (getMainDetails(group) ? '' : '項目') }}
-                                                {{ (m.details && (m.name || !getMainDetails(group))) ? (m.name ? ' : ' : '') + m.details : '' }}
-                                                <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="opacity-60 ml-1">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span>
+                            <!-- Synthetic sections only for non-literal records to prevent duplication -->
+                            <template v-if="!isContentLiteral(item)">
+                                <div v-if="item.items?.length > 0" class="pt-3 space-y-2">
+                                    <div v-if="!item.content?.includes('賜降：') || stripContentHeaders(item.content) !== item.content" class="text-[17px] font-black text-slate-900 pl-1">賜降：</div>
+                                    <div v-for="(group, gName, gIdx) in groupItems(item.items)" :key="gIdx" class="text-[17px] text-slate-900 font-normal flex flex-col px-1">
+                                        <div class="flex items-center">
+                                            <span class="text-slate-400 mr-2 font-outfit">{{ gIdx + 1 }}.</span> {{ stripMasterPrefix(gName) }}{{ (group.length === 1 && !group[0].name) ? (getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) ? ' : ' + getMergedContent(group[0].details, group[0].remarks || group[0].sub_name) : '') : (getMainDetails(group) ? ' : ' + getMainDetails(group) : '') }}
+                                        </div>
+                                        <div v-if="group.length > 1 || (group[0] && group[0].name)" class="pl-6 space-y-0.5 mt-1">
+                                            <div v-for="(m, mIdx) in group" :key="m.uid">
+                                                <div v-if="(m.name && !shouldHideContentName(gName, m.name)) || (group.length > 1 && getCleanRemark(m.remarks || m.sub_name, m.details))" class="text-[17px] text-slate-900 font-normal">
+                                                    <span class="text-slate-400 mr-1.5 font-outfit">{{ gIdx + 1 }}.{{ mIdx + 1 }}</span> {{ m.name ? m.name : (getMainDetails(group) ? '' : '項目') }}
+                                                    {{ (m.details && (m.name || !getMainDetails(group))) ? (m.name ? ' : ' : '') + m.details : '' }}
+                                                    <span v-if="getCleanRemark(m.remarks || m.sub_name, m.details)" class="opacity-60 ml-1">({{ getCleanRemark(m.remarks || m.sub_name, m.details) }})</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div v-if="item.items_footer_remarks" class="text-[17px] text-slate-900 font-normal leading-tight pt-2 border-t border-slate-50 whitespace-pre-wrap">
-                                {{ item.items_footer_remarks }}
-                            </div>
-                        </div>
+                                <div v-if="item.items_footer_remarks" class="text-[17px] text-slate-900 font-normal leading-tight pt-2 border-t border-slate-50 whitespace-pre-wrap">
+                                    {{ item.items_footer_remarks }}
+                                </div>
+                        </template>
                     </div>
+                </div>
 
                     <div class="fixed bottom-[37px] left-0 right-0 md:fixed md:bottom-[37px] md:left-0 md:right-0 px-6 pt-[4px] pb-[1px] border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
                         <button @click="saveConfirmModal.show = false; addMode = true" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
@@ -651,9 +593,7 @@
                         </button>
                     </div>
                 </div>
-
             </template>
-
             <!-- Global Components (Visible on all levels) -->
             <add-action-menu :show="showAddMenu" @close="showAddMenu = false" :actions="addActions" />
 
@@ -721,7 +661,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Floating Login Info Removed per user request -->
         </div>
     </div>
 </template>
@@ -788,14 +727,20 @@ const formatDate = (dateStr) => {
 const isContentLiteral = (item) => {
     if (!item.content || item.content.trim().length < 5) return false;
     const c = item.content.trim();
-    // Detect if content contains full record structure or is multi-line
-    const lines = c.split('\n');
-    if (lines.length > 1) return true; // Most batch records are multi-line
     
+    // Rule: Most batch records are multi-line and contain standard record markers
+    const lines = c.split('\n');
     const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
     const hasMaster = masters.some(m => c.includes(m));
     const hasMarkers = c.includes('開示') || c.includes('給') || c.includes('：') || c.includes(':');
-    return hasMaster && hasMarkers;
+    
+    // If it has header-like markers and is multi-line, it's almost certainly a literal record
+    if (lines.length > 1 && hasMaster && hasMarkers) return true;
+    
+    // Even if single line, if it matches the "Date Master Header" pattern, it's literal
+    if (hasMaster && hasMarkers && (c.includes('/') || c.includes('113') || c.includes('114'))) return true;
+
+    return false;
 };
 
 const getFirstThreeLines = (text) => {
@@ -1059,17 +1004,16 @@ const startInlineEdit = (item) => {
 
     inlineEditData.value = { 
         id: item.id,
-        date: item.date || '',
-        master_name: item.master?.name || item.master_name || '父皇',
-        target_name: getRecipientName(item),
-        content: item.content || '',
-        items: item.items ? item.items.map(i => ({
-            name: i.name || i.treasure_name || '',
-            details: i.details || '',
-            remarks: i.remarks || i.sub_name || ''
-        })) : [],
-        items_footer_remarks: item.items_footer_remarks || ''
+        content: formatTeachingForFile(item).trim()
     };
+    
+    nextTick(() => {
+        const ta = document.getElementById(`inline-ta-${item.id}`);
+        if (ta) {
+            ta.style.height = 'auto';
+            ta.style.height = ta.scrollHeight + 'px';
+        }
+    });
 };
 
 const cancelInlineEdit = () => {
@@ -1107,7 +1051,10 @@ const saveInlineEdit = async () => {
         const master = masters.value.find(m => m.name === masterName);
         const master_id = master ? master.id : (currentFolder.value?.id || null);
 
-        const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, {
+        // Parse the word-style content to extract clean fields and prevent duplication
+        const parsed = parseTeachingFromWord(inlineEditData.value.content);
+        
+        let payload = {
             date: inlineEditData.value.date,
             master_id: master_id,
             dharma_name_ids: dharma_name_ids,
@@ -1115,7 +1062,38 @@ const saveInlineEdit = async () => {
             content: inlineEditData.value.content || '',
             items: inlineEditData.value.items || [],
             items_footer_remarks: inlineEditData.value.items_footer_remarks || ''
-        });
+        };
+
+        if (parsed) {
+            payload.content = parsed.content;
+            payload.items = parsed.items;
+            payload.items_footer_remarks = parsed.items_footer_remarks;
+            if (parsed.date) payload.date = parsed.date;
+            
+            // Resolve master from parsed text
+            const pMaster = masters.value.find(m => m.name === (parsed.master_name?.includes('仙師') ? parsed.master_name : parsed.master_name + '仙師'));
+            if (pMaster) payload.master_id = pMaster.id;
+
+            // Resolve recipients from parsed text
+            if (parsed.recipient_name && parsed.recipient_name !== '對象') {
+                const matchedGroup = groups.value.find(g => g.name === parsed.recipient_name);
+                if (matchedGroup) {
+                    payload.dharma_name_ids = (matchedGroup.dharma_names || matchedGroup.dharmaNames || []).map(dn => dn.id);
+                    payload.target_remarks = parsed.recipient_name;
+                } else {
+                    const matchedDN = dharmaNames.value.find(dn => dn.name === parsed.recipient_name);
+                    if (matchedDN) {
+                        payload.dharma_name_ids = [matchedDN.id];
+                        payload.target_remarks = '';
+                    } else {
+                        payload.target_remarks = parsed.recipient_name;
+                        payload.dharma_name_ids = [];
+                    }
+                }
+            }
+        }
+
+        const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, payload);
 
         const vIdx = visibleItems.value.findIndex(t => t.id === inlineEditData.value.id);
         if (vIdx !== -1) {
@@ -2037,13 +2015,13 @@ const stripContentHeaders = (text) => {
             continue;
         }
 
-        // Date check: 2026/05/07 or 2026-05-07
+        // Date check
         if (/^\d{2,4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2}\s*$/.test(line)) {
             startIndex = i + 1;
             continue;
         }
 
-        // Header check: Master + 開示給 + Recipient
+        // Header check
         if (line.includes('開示給')) {
             startIndex = i + 1;
             continue;
@@ -2057,8 +2035,31 @@ const stripContentHeaders = (text) => {
 
         break;
     }
+    
+    // Also strip everything from "賜降：" onwards if it appears later in the text
+    let result = lines.slice(startIndex).join('\n');
+    const treasureIndex = result.indexOf('賜降：');
+    if (treasureIndex !== -1) {
+        result = result.substring(0, treasureIndex).trim();
+    }
+    const finishIndex = result.indexOf('完畢');
+    if (finishIndex !== -1) {
+        result = result.substring(0, finishIndex).trim();
+    }
 
-    return lines.slice(startIndex).join('\n').trim();
+    return result.trim();
+};
+
+const stripItemLines = (text, items) => {
+    if (!text || !items?.length) return text;
+    const itemKeywords = ['法寶', '天份', '金丹', '符', '疏文'];
+    return text.split('\n').filter(line => {
+        const l = line.trim();
+        if (!l) return true;
+        if (l.match(/^\d+\s*\./) || l.match(/^[+*]/)) return false;
+        if (itemKeywords.some(k => l.includes(k))) return false;
+        return true;
+    }).join('\n').trim();
 };
 
 const handleSmartPaste = (e, targetRefOrObj, blockIndex = null) => {
@@ -3057,15 +3058,95 @@ const formatTeachingForFile = (item, index = null, allRecords = []) => {
     });
 
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
-    const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content : '';
+    const cleanContent = (item.content && item.content !== 'null') ? stripItemLines(item.content, item.items) : '';
+    const safeContent = cleanContent ? '\n' + cleanContent : '';
 
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (!hasFinishedSuffix(item)) {
         footer += (footer ? '\n\n' : '\n\n') + '完畢';
     }
 
-    let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
-    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
+    let headerLabel = '開示給:';
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master?.name || (item.master_name || '仙師')}${headerLabel}${recipient}${safeContent}${treasureText}${footer}\n`;
+};
+
+const parseTeachingFromWord = (text) => {
+    if (!text || !text.trim()) return null;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+    if (lines.length === 0) return null;
+
+    let record = {
+        date: '',
+        master_name: '父皇',
+        recipient_name: '對象',
+        content: '',
+        items: [],
+        items_footer_remarks: ''
+    };
+
+    const firstLine = lines[0];
+    if (firstLine.match(/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/)) {
+        record.date = firstLine.replace(/\//g, '-');
+    } else {
+        record.date = getTodayStr();
+    }
+
+    const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
+    let headerLine = '';
+    let foundHeader = false;
+
+    lines.forEach(line => {
+        if (foundHeader) return;
+        masters.forEach(m => {
+            if (line.includes(m) && (line.includes('開示') || line.includes('給'))) {
+                record.master_name = m;
+                const recMatch = line.match(/(?:開示給|給)\s*[:：]?\s*(.*)/);
+                if (recMatch) {
+                    record.recipient_name = recMatch[1].replace(/[:：]$/, '').trim();
+                }
+                headerLine = line;
+                foundHeader = true;
+            }
+        });
+    });
+
+    let contentLines = [];
+    let parsingTreasures = false;
+    let footerRemarks = [];
+
+    lines.forEach((line, idx) => {
+        if (idx === 0 && line === firstLine && record.date) return;
+        if (line === headerLine) return;
+
+        if (line.includes('賜降：')) {
+            parsingTreasures = true;
+            return;
+        }
+
+        if (line.includes('完畢') || line.includes('允同享皇恩')) {
+            footerRemarks.push(line);
+            return;
+        }
+
+        if (parsingTreasures) {
+            const tMatch = line.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
+            if (tMatch && tMatch[2]) {
+                record.items.push({
+                    treasure_name: tMatch[2].trim(),
+                    details: tMatch[4] || '',
+                    name: '',
+                    sub_name: ''
+                });
+            }
+        } else {
+            contentLines.push(line);
+        }
+    });
+
+    record.content = contentLines.join('\n');
+    record.items_footer_remarks = footerRemarks.join('\n');
+
+    return record;
 };
 
 const formatTeachingForExport = (item, index = null, allRecords = []) => {
@@ -3081,7 +3162,6 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
 
     groupKeys.forEach((gName, gIdx) => {
         const group = grouped[gName];
-        // "沒有項次就不要加項次" (If only one group, no numbering like 1. )
         let line = groupKeys.length > 1 ? `${gIdx + 1}. ${gName}` : gName;
 
         if (group.length === 1 && !group[0].name && !group[0].sub_name) {
@@ -3094,7 +3174,6 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
             treasureLines.push(line);
             group.forEach(m => {
                 if (m.name || m.sub_name || m.details) {
-                    // Indentation: 3 spaces (as requested "3PX")
                     treasureLines.push(`   ${m.name || ''}${m.details ? ':' + m.details : ''}${m.sub_name ? ' (' + m.sub_name + ')' : ''}`.trimEnd());
                 }
             });
@@ -3102,12 +3181,14 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     });
 
     const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
-    const safeContent = (item.content && item.content !== 'null') ? '\n' + item.content.trim() : '';
+    
+    // Use stripped content to prevent duplication in export
+    const strippedContent = stripContentHeaders(item.content);
+    const safeContent = strippedContent ? '\n' + strippedContent : '';
 
     let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
     if (index !== null && allRecords.length > 0) {
         if (isSameSessionAsNext(item, index, allRecords)) {
-            // Only hide if the footer is generic "完畢" or empty, or if it's identical to the next one
             const nextItem = allRecords[index + 1];
             if (!footer.trim() || footer.trim() === '完畢' || footer.trim() === '完畢！' || (nextItem && nextItem.items_footer_remarks === item.items_footer_remarks)) {
                 footer = '';
@@ -3116,15 +3197,12 @@ const formatTeachingForExport = (item, index = null, allRecords = []) => {
     }
 
     if (footer && !hasFinishedSuffix(item) && footer.length > 0) {
-        // If we have other footer remarks but no "finished" suffix, add it
         if (!footer.includes('完畢')) footer += '\n\n完畢';
     } else if (!footer && !hasFinishedSuffix(item)) {
-        // If no footer at all and no suffix in content, add it
         footer = '\n\n完畢';
     }
 
-    let headerLabel = (item.content && item.content !== 'null') ? '開示給' : '給';
-    // Match list view header style: Master + Label + Recipient
+    let headerLabel = strippedContent ? '開示給' : '給';
     const mName = formatMasterName(item.master?.name || item.master_name);
     return `${(item.date || '').replace(/-/g, '/')}\n${mName}${headerLabel}${recipient}：${safeContent}${treasureText}${footer}\n`;
 };
@@ -3594,54 +3672,15 @@ const saveItem = async (data = null) => {
         }
 
         const blocksToProcess = batchRecords.value.filter(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
-        if (blocksToProcess.length > 0) {
-            // ── Master Mismatch Detection ────────────────────────────────────
-            const mIdMap = { '老祖': 1, '元始': 2, '道祖': 3, '靈寶': 4, '父皇': 5, '太宰': 6, '太子': 7, '閻王': 8 };
-            const isInSpecificFolder = currentFolder.value &&
-                currentFolder.value.id !== 0 && currentFolder.value.id !== '0' && currentFolder.value.id !== null;
-
-            if (isInSpecificFolder) {
-                const folderMasterId = Number(currentFolder.value.id);
-                let mismatchName = null;
-                let mismatchId = null;
-                for (const record of blocksToProcess) {
-                    if (record.master_name) {
-                        const mClean = record.master_name.replace(/仙師$/,'').trim();
-                        const did = mIdMap[mClean];
-                        if (did && did !== folderMasterId) {
-                            mismatchName = record.master_name;
-                            mismatchId = did;
-                            break;
-                        }
-                    }
-                }
-                if (mismatchId) {
-                    // Store blocks for use after user choice
-                    saveConfirmModal.value.records = blocksToProcess.map(r => ({
-                        ...r, items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
-                    }));
-                    addMode.value = false;
-                    masterMismatchModal.value = {
-                        show: true,
-                        detectedMasterName: mismatchName,
-                        detectedMasterId: mismatchId,
-                        currentMasterName: currentFolder.value.name,
-                        currentMasterId: folderMasterId
-                    };
-                    pendingMasterId.value = null; // reset
-                    itemsDetailMode.value = false;
-                    return; // Wait for user choice
-                }
-            }
-            // ── No mismatch: reset pendingMasterId and proceed ───────────────
-            pendingMasterId.value = null;
+        if (activeEntryTab.value === 'batch' && blocksToProcess.length > 0) {
+            // Bypass MasterMismatchModal per user request - auto-proceed to preview
             saveConfirmModal.value.records = blocksToProcess.map(r => ({
-                ...r,
-                items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
+                ...r, items_footer_remarks: r.items_footer_remarks || form.value.items_footer_remarks || ''
             }));
             addMode.value = false;
             saveConfirmModal.value.show = true;
             itemsDetailMode.value = false;
+            pendingMasterId.value = 'auto'; // Default to auto-detection from text
             return;
         } else if (activeEntryTab.value === 'batch' && batchImportContent.value.trim()) {
             persistentToast.value = { msg: '✖ 無法從貼上內容中解析出有效的載錄紀錄，請檢查格式。', type: 'error' };
@@ -3780,18 +3819,18 @@ const performActualSave = async () => {
 
         saveConfirmModal.value.show = false;
         addMode.value = false;
-        const pageToFetch = wasEditing ? itemPagination.value.current_page : 1;
         editingId.value = null; 
 
-        // Refresh in background to ensure total consistency (sorting, etc)
-        // If it was a new item, always go to page 1 to see it
-        fetchItems(pageToFetch);
     } catch (e) {
         console.error(e);
         persistentToast.value = { msg: '✖ 儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'), type: 'error' };
     } finally {
         saving.value = false;
     }
+
+    // Refresh outside try/catch to avoid overwriting success toast with fetch failure
+    const pageToFetch = wasEditing ? itemPagination.value.current_page : 1;
+    try { await fetchItems(pageToFetch); } catch (e) { console.error('Fetch after save failed:', e); }
 };
 
 const distributionModal = ref({
@@ -3822,6 +3861,8 @@ const executeDistributionSave = async (mode) => {
         const recordsToSave = saveConfirmModal.value.records.length > 0 
             ? saveConfirmModal.value.records 
             : batchRecords.value.filter(r => r.content?.trim() || r.items?.length > 0 || r.dharma_name_ids?.length > 0);
+
+        let lastSavedMasterId = null;
 
         for (const record of recordsToSave) {
             let content = record.content?.trim() || '';
@@ -3861,7 +3902,7 @@ const executeDistributionSave = async (mode) => {
             }
 
             // Allow save if there is content OR items OR names selected (as per user request)
-            if (!content && items.length === 0 && record.dharma_name_ids.length === 0) continue;
+            if (!content && items.length === 0 && (record.dharma_name_ids || []).length === 0) continue;
 
             let blockMasterId = currentMasterId;
 
@@ -3951,11 +3992,13 @@ const executeDistributionSave = async (mode) => {
                     focusedDate.value = res.data.date;
                 }
                 savedCount++;
+                lastSavedMasterId = newRecord.master_id || blockMasterId;
             }
         }
 
         if (savedCount > 0) {
             persistentToast.value = { msg: `✓ 已成功新增 ${savedCount} 筆資料`, type: 'success' };
+            setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
         } else {
             persistentToast.value = { msg: '✖ 未偵測到可儲存的有效資料', type: 'warning' };
         }
@@ -3973,14 +4016,11 @@ const executeDistributionSave = async (mode) => {
         addMode.value = false;
 
         // Switch folder if we saved to a specific one to ensure visibility
-        if (savedCount > 0) {
-            const firstSaved = recordsToSave[0];
-            let targetMid = blockMasterId; // from the last record in loop
-            
-            if (targetMid !== undefined && targetMid !== null && currentFolder.value?.id != targetMid) {
-                const targetFolder = folders_list.find(f => f.id == targetMid);
+        if (savedCount > 0 && lastSavedMasterId) {
+            if (currentFolder.value?.id != lastSavedMasterId) {
+                const targetFolder = folders_list.find(f => f.id == lastSavedMasterId);
                 if (targetFolder) {
-                    currentCategory.value = (targetMid == 0 ? 'daily' : 'masters');
+                    currentCategory.value = (lastSavedMasterId == 0 ? 'daily' : 'masters');
                     currentFolder.value = targetFolder;
                 }
             }
@@ -3992,13 +4032,16 @@ const executeDistributionSave = async (mode) => {
         // Stay in current folder to allow user to see the newly added data
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         batchImportContent.value = '';
-        fetchItems(1);
     } catch (e) {
-        addMode.value = false; // Also close form on error
-        persistentToast.value = { msg: '✖ 存檔過程中發生錯誤', type: 'error' };
+        console.error('Batch Save Error:', e);
+        const errorMsg = e.response?.data?.message || e.message || '連線逾時或伺服器無回應';
+        persistentToast.value = { msg: '✖ 存檔失敗: ' + errorMsg, type: 'error' };
     } finally {
         saving.value = false;
     }
+
+    // Refresh outside try/catch to avoid overwriting success toast with fetch failure
+    try { await fetchItems(1); } catch (e) { console.error('Fetch after batch save failed:', e); }
 };
 
 const showAdd = () => {

@@ -13,12 +13,13 @@ class Teaching extends Model
 
     protected $fillable = [
         'sort_order', 'date', 'is_daily', 'master_id', 
-        'content', 'supplement', 'target_remarks', 
+        'content', 'is_content_literal', 'supplement', 'target_remarks', 
         'remarks', 'items', 'items_footer_remarks', 'user_id'
     ];
 
     protected $casts = [
         'content' => 'encrypted',
+        'is_content_literal' => 'boolean',
         'items' => 'encrypted:json',
         'remarks' => 'encrypted:json',
         'items_footer_remarks' => 'encrypted',

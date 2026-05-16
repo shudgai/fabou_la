@@ -85,65 +85,21 @@
                                  </button>
                              </div>
 
-                             <!-- Editable Details Accordion -->
-                             <div v-if="record.isExpanded" class="space-y-6 pt-4 border-t border-slate-50 animate-fade-in">
-                                 <div class="grid grid-cols-1 gap-6">
-                                     <!-- Date & Master -->
-                                     <div class="grid grid-cols-2 gap-4">
-                                         <div class="space-y-2">
-                                             <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">日期</label>
-                                             <input v-model="record.date" type="text" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-[15px] text-black outline-none focus:ring-2 focus:ring-indigo-100">
-                                         </div>
-                                         <div class="space-y-2">
-                                             <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">仙師</label>
-                                             <editable-input-chips 
-                                                 v-model="record.master_name" 
-                                                 variant="boxed"
-                                                 placeholder="仙師"
-                                                 :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" />
-                                         </div>
-                                     </div>
-                                     <!-- Recipient -->
-                                     <div class="space-y-2">
-                                         <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">對象 (法號或群組)</label>
-                                         <editable-input-chips 
-                                             v-model="record.dharmaSearchQuery" 
-                                             variant="boxed"
-                                             placeholder="對象"
-                                             :options="combinedPractitionerOptions" />
-                                     </div>
-                                     <!-- Target Remarks -->
-                                     <div class="space-y-2">
-                                         <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">備註對象 (選填)</label>
-                                         <editable-input-chips 
-                                             v-model="record.target_remarks" 
-                                             variant="boxed"
-                                             placeholder="對象"
-                                             :options="relationshipOptions" />
-                                     </div>
-                                 </div>
-                                 
-                                 <!-- Parsed Items (Treasure) display -->
-                                 <div v-if="record.items && record.items.length > 0" class="space-y-3">
-                                      <label class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">賜降法寶明細</label>
-                                      <div class="space-y-2">
-                                          <div v-for="(it, iidx) in record.items" :key="iidx" class="flex items-center justify-between bg-amber-50/50 p-4 rounded-2xl border border-amber-100 shadow-sm">
-                                              <span class="text-[15px] text-black">{{ it.treasure_name }} · {{ it.details }}</span>
-                                              <button @click="record.items.splice(iidx, 1)" class="p-1 text-amber-300 hover:text-red-500">
-                                                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                              </button>
-                                          </div>
-                                      </div>
-                                 </div>
-                             </div>
-                             
-                             <!-- Content Editor (Always Visible) -->
-                             <div class="space-y-2">
-                                 <label v-if="record.isExpanded" class="text-[11px] font-normal text-slate-400 uppercase tracking-widest ml-1">開示內容</label>
-                                 <textarea v-model="record.content"
-                                     class="w-full bg-white border border-slate-100 rounded-[24px] text-[17px] font-normal text-black leading-relaxed outline-none p-4 min-h-[150px] shadow-sm focus:border-indigo-100 focus:ring-4 focus:ring-indigo-50/30 transition-all"
-                                     placeholder="輸入內容..."
-                                     rows="5"></textarea>
+                             <!-- Word Mode Editor for Batch Preview -->
+                             <div class="space-y-4 pt-4">
+                                 <textarea 
+                                     :value="formatTeachingForFile({
+                                         date: record.date,
+                                         master_name: record.master_name,
+                                         items: record.items,
+                                         content: record.content,
+                                         items_footer_remarks: record.items_footer_remarks,
+                                         is_content_literal: false,
+                                         target_remarks: record.dharmaSearchQuery
+                                     }).trim()"
+                                     @input="e => { updateBatchRecordFromWord(record, e.target.value); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                     class="w-full bg-white border border-slate-100 rounded-[24px] text-[17px] font-normal text-black leading-relaxed outline-none p-6 min-h-[250px] overflow-hidden shadow-sm focus:border-indigo-100 transition-all"
+                                     placeholder="在此編輯內容..."></textarea>
                              </div>
                          </div>
                          <button @click="addBatchRecord" class="w-full py-3 border-2 border-dashed border-indigo-200 rounded-2xl text-black font-normal text-[15px] active:scale-95 transition-all hover:border-indigo-400 hover:text-indigo-600">
@@ -514,45 +470,12 @@
                         <h2 class="text-[18px] font-normal text-black tracking-tight leading-relaxed">載錄內容<span class="text-black">預覽確認</span></h2>
                         
                         <div class="max-w-md mx-auto border border-slate-100 rounded-[40px] overflow-hidden shadow-xl bg-white text-left mt-8">
-                            <div class="p-8 space-y-6">
-                                <div class="flex flex-col border-b border-slate-50 pb-4">
-                                    <span class="text-[12px] font-normal text-black uppercase tracking-widest mb-1">日期 / 仙師</span>
-                                    <span class="text-[19px] font-normal text-black">{{ form.date }} · {{ masterNameInput }}</span>
-                                </div>
-                                
-                                <div class="flex flex-col border-b border-slate-50 pb-4">
-                                    <span class="text-[12px] font-normal text-black uppercase tracking-widest mb-1">對象</span>
-                                    <span class="text-[19px] font-normal text-black">{{ dharmaSearchQuery }}</span>
-                                    <span v-if="form.target_remarks" class="text-[14px] font-normal text-black mt-1">備註：{{ form.target_remarks }}</span>
-                                </div>
-
-                                <div class="flex flex-col border-b border-slate-50 pb-4">
-                                    <span class="text-[12px] font-normal text-black uppercase tracking-widest mb-1">開示內容</span>
-                                    <p class="text-[17px] font-normal text-black leading-relaxed whitespace-pre-wrap">{{ form.content }}</p>
-                                </div>
-
-                                <div v-if="form.items.length > 0" class="space-y-4">
-                                    <span class="text-[12px] font-normal text-black uppercase tracking-widest block">賜降法寶</span>
-                                    <div class="space-y-3">
-                                        <div v-for="(item, idx) in form.items" :key="idx" class="flex items-start gap-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                                            <span class="text-black font-normal text-[16px]">{{ idx + 1 }}.</span>
-                                            <div class="flex flex-col">
-                                                <span class="text-[17px] font-normal text-black">{{ item.treasure_name }}</span>
-                                                <span v-if="item.details" class="text-[14px] font-normal text-black mt-0.5">{{ item.details }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div v-if="footerRemarks.length > 0" class="space-y-2 pt-2">
-                                    <span class="text-[12px] font-normal text-black uppercase tracking-widest block mb-1">結尾備註</span>
-                                    <div class="space-y-1.5">
-                                        <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="text-[17px] font-normal text-black flex items-center gap-2.5">
-                                            <span class="w-2 h-2 bg-slate-200 rounded-full"></span>
-                                            {{ r }}
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="p-4 space-y-4">
+                                <textarea 
+                                    :value="wordModeContent"
+                                    @input="e => { updateSingleFromWord(e.target.value); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                    class="w-full bg-transparent border-0 text-[18px] font-normal text-black leading-relaxed outline-none p-4 min-h-[400px] overflow-hidden"
+                                    placeholder="在此編輯載錄內容..."></textarea>
                             </div>
                         </div>
                         <div class="bg-indigo-50/50 p-6 rounded-[32px] max-w-sm mx-auto border border-indigo-100 mt-8">
@@ -675,6 +598,145 @@ const batchImportContent = ref('');
 const batchRecords = ref([]);
 
 // Item Builder State
+const wordModeContent = computed(() => {
+    return formatTeachingForFile({
+        date: form.value.date,
+        master_name: masterNameInput.value,
+        content: form.value.content,
+        items: form.value.items,
+        items_footer_remarks: footerRemarks.value.join('\n'),
+        target_remarks: dharmaSearchQuery.value,
+        is_content_literal: false
+    }).trim();
+});
+
+const updateSingleFromWord = (text) => {
+    const parsed = parseTeachingFromWord(text);
+    if (!parsed) return;
+
+    form.value.date = parsed.date;
+    masterNameInput.value = parsed.master_name;
+    dharmaSearchQuery.value = parsed.recipient_name;
+    form.value.content = parsed.content;
+    form.value.items = parsed.items;
+    footerRemarks.value = parsed.items_footer_remarks ? parsed.items_footer_remarks.split('\n') : [];
+    
+    // Auto-resolve master_id
+    resolveMasterId();
+};
+
+const updateBatchRecordFromWord = (record, text) => {
+    const parsed = parseTeachingFromWord(text);
+    if (!parsed) return;
+
+    record.date = parsed.date;
+    record.master_name = parsed.master_name;
+    record.dharmaSearchQuery = parsed.recipient_name;
+    record.content = parsed.content;
+    record.items = parsed.items;
+    record.items_footer_remarks = parsed.items_footer_remarks;
+};
+
+const formatTeachingForFile = (item) => {
+    const grouped = groupItems(item.items || []);
+    let treasureLines = [];
+    const groupKeys = Object.keys(grouped);
+
+    groupKeys.forEach((gName, gIdx) => {
+        const group = grouped[gName];
+        let line = groupKeys.length > 1 ? `${gIdx + 1}. ${gName}` : gName;
+        if (group.length === 1 && !group[0].name) {
+            if (group[0].details) line += `: ${group[0].details}`;
+            treasureLines.push(line);
+        } else {
+            treasureLines.push(line);
+            group.forEach(m => {
+                if (m.name) treasureLines.push(`   ${m.name}${m.details ? ':' + m.details : ''}`);
+            });
+        }
+    });
+
+    const treasureText = treasureLines.length > 0 ? '\n賜降：\n' + treasureLines.join('\n') : '';
+    const safeContent = item.content ? '\n' + item.content : '';
+    let footer = item.items_footer_remarks ? '\n\n' + item.items_footer_remarks : '';
+    if (!footer.includes('完畢')) footer += (footer ? '\n' : '\n\n') + '完畢';
+
+    const headerLabel = '開示給:';
+    return `${(item.date || '').replace(/-/g, '/')}\n${item.master_name || '仙師'}${headerLabel}${item.target_remarks || '對象'}${safeContent}${treasureText}${footer}\n`;
+};
+
+const parseTeachingFromWord = (text) => {
+    if (!text || !text.trim()) return null;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+    if (lines.length === 0) return null;
+
+    let record = {
+        date: '',
+        master_name: '父皇',
+        recipient_name: '對象',
+        content: '',
+        items: [],
+        items_footer_remarks: ''
+    };
+
+    const firstLine = lines[0];
+    if (firstLine.match(/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/)) {
+        record.date = firstLine.replace(/\//g, '-');
+    }
+
+    const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
+    let headerLine = '';
+    let foundHeader = false;
+
+    lines.forEach(line => {
+        if (foundHeader) return;
+        masters.forEach(m => {
+            if (line.includes(m) && (line.includes('開示') || line.includes('給'))) {
+                record.master_name = m.includes('仙師') ? m : m + '仙師';
+                if (m === '父皇' || m === '太子') record.master_name = m;
+                const recMatch = line.match(/(?:開示給|給)\s*[:：]?\s*(.*)/);
+                if (recMatch) record.recipient_name = recMatch[1].replace(/[:：]$/, '').trim();
+                headerLine = line;
+                foundHeader = true;
+            }
+        });
+    });
+
+    let contentLines = [];
+    let parsingTreasures = false;
+    let footerRemarks = [];
+
+    lines.forEach((line, idx) => {
+        if (idx === 0 && line === firstLine && record.date) return;
+        if (line === headerLine) return;
+        if (line.includes('賜降：')) { parsingTreasures = true; return; }
+        if (line.includes('完畢') || line.includes('允同享皇恩')) { footerRemarks.push(line); return; }
+
+        if (parsingTreasures) {
+            const tMatch = line.match(/^(\d+\.|[+])?\s*(.*?)([:：]\s*(.*))?$/);
+            if (tMatch && tMatch[2]) {
+                record.items.push({ treasure_name: tMatch[2].trim(), details: tMatch[4] || '', name: '', sub_name: '' });
+            }
+        } else {
+            contentLines.push(line);
+        }
+    });
+
+    record.content = contentLines.join('\n');
+    record.items_footer_remarks = footerRemarks.join('\n');
+    return record;
+};
+
+const groupItems = (items) => {
+    const groups = {};
+    items.forEach(item => {
+        const key = item.treasure_name || item.name || '其他';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(item);
+    });
+    return groups;
+};
+
 const newItemName = ref('');
 const newItemDays = ref('');
 const newItemPillsEat = ref('');
@@ -952,66 +1014,21 @@ function processBatchParsing() {
     const rawBlocks = batchImportContent.value.match(/[\s\S]*?完畢[！!]?/g) || [batchImportContent.value];
     
     batchRecords.value = rawBlocks.filter(b => b.trim()).map(block => {
-        const fullBlockText = block.trim();
-        const lines = fullBlockText.split('\n');
-        
-        let record = { 
-            master_name: '父皇', 
-            dharmaSearchQuery: '對象', 
+        const parsed = parseTeachingFromWord(block.trim());
+        if (!parsed) return null;
+
+        return { 
+            master_name: parsed.master_name, 
+            dharmaSearchQuery: parsed.recipient_name, 
             target_remarks: '',
-            date: form.value.date || new Date().toISOString().slice(0, 10),
-            rawRecipientLine: '',
-            content: fullBlockText, // Keep the FULL original text here
-            items: [], 
+            date: parsed.date || form.value.date || new Date().toISOString().slice(0, 10),
+            content: parsed.content, 
+            items: parsed.items, 
             dharma_name_ids: [], 
-            items_footer_remarks: '',
+            items_footer_remarks: parsed.items_footer_remarks,
             isExpanded: false
         };
-
-        lines.forEach(line => {
-            const l = line.trim();
-            if (!l) return;
-            
-            // Footer remarks (Still parse for logic, but don't separate for display)
-            if (l.includes('允同享皇恩') || l.includes('完畢')) {
-                if (!record.items_footer_remarks.includes(l)) {
-                    record.items_footer_remarks += (record.items_footer_remarks ? '\n' : '') + l;
-                }
-            }
-
-            // Master detection
-            const masters = ['老祖', '元始', '道祖', '靈寶', '父皇', '太宰', '太子', '閻王'];
-            masters.forEach(m => {
-                if (l.includes(m) && record.master_name === '父皇') {
-                    record.master_name = m;
-                }
-            });
-
-            // Recipient detection
-            const recMatch = l.match(/(?:開示給|給|開示給對象)\s*[:：]?\s*(.*)/);
-            if (recMatch && !record.rawRecipientLine) {
-                let recipient = recMatch[1].trim();
-                recipient = recipient.replace(/[:：]$/, '').trim();
-                record.rawRecipientLine = l;
-                record.dharmaSearchQuery = recipient || '對象';
-            }
-
-            // Item detection (For database only)
-            if (l.includes('賜降') && l.length > 3 && !l.endsWith('：') && !l.endsWith(':')) {
-                const tMatch = l.match(/^(\d+[\.、]|[+\-•])?\s*(.*?)([:：]\s*(.*))?$/);
-                if (tMatch && tMatch[2].trim()) {
-                    record.items.push({ 
-                        uid: Date.now() + Math.random(), 
-                        treasure_name: tMatch[2].trim(), 
-                        details: tMatch[4] || '', 
-                        quantity: 1 
-                    });
-                }
-            }
-        });
-        
-        return record;
-    });
+    }).filter(r => r !== null);
 }
 
 function addBatchRecord() {
