@@ -469,3 +469,25 @@ imagewebp($dstImg, $outputPath, 80);
 
 #### 教訓
 `EditableInputChips` 是共用元件，修改 `@keydown.enter.stop` 會影響所有使用處。若需保留某些場景的 Enter 阻擋行為，應改為透過 prop 控制。
+
+## Session Notes (2026-05-16)
+
+### TeachingManager.vue 逐筆修改功能
+
+#### 功能說明
+- 在每日開示列表中，點擊三點選單的「修改」可展開逐筆編輯介面
+- 編輯介面包含：日期、仙師、對象、開示內容、賜降法寶、結尾備註
+- 使用 EditableInputChips 元件編輯仙師和對象
+
+#### 修復記錄
+1. **Overlay 滑動修復**：將 overlay 容器從 `overflow-hidden` 改為 `overflow-y-auto`，使內容可滾動
+2. **對象儲存 bug**：修正 `saveInlineEdit` 中的資料結構不正確問題
+   - 錯誤：傳送 `target_name` (string) 到後端
+   - 正確：解析 `target_name` 為 `dharma_name_ids` (array of IDs) 和 `target_remarks` (string)
+3. **UI 樣式優化**：移除編輯介面的框線，改為下底線樣式輸入框 (`border-0 border-b-2 border-slate-300 bg-transparent`)
+
+#### 相關程式碼位置
+- `TeachingManager.vue:341-423` - 編輯介面模板
+- `TeachingManager.vue:1084-1117` - saveInlineEdit 函數
+- `TeachingManager.vue:1056-1073` - startInlineEdit 函數（初始化編輯資料）
+- `TeachingManager.vue:1052-1081` - cancelInlineEdit 函數（重設表單）

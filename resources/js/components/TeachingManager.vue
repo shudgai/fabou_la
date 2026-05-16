@@ -228,18 +228,15 @@
 
                                 <!-- Full-page Expanded Overlay -->
                                 <teleport to="body">
-                                    <div v-if="isSessionFocused(item)" class="fixed inset-0 z-[500] animate-fade-in">
-                                        <!-- Backdrop (click to close) -->
-                                        <div class="absolute inset-0 bg-slate-900/50" @click="toggleExpand(item.id)"></div>
-                                        <!-- Content Panel -->
-                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div class="w-full h-full bg-white flex flex-col md:max-w-xl md:max-h-[90dvh] md:rounded-[32px] md:shadow-2xl overflow-hidden animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform;">
+                                    <div v-if="isSessionFocused(item)" class="fixed inset-0 z-[5000] animate-fade-in bg-black/20 md:bg-black/40 pointer-events-auto">
+                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none p-0 md:p-6">
+                                            <div class="w-full h-full md:max-w-xl md:max-h-[90dvh] bg-white flex flex-col md:rounded-[32px] md:shadow-2xl overflow-y-auto animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform; height: 100dvh; height: 100dvh !important;">
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-2">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 30px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
+                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 27px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示專區</h1>
                     </div>
                                                 </div>
                                             </div>
@@ -254,31 +251,14 @@
 
                                             <!-- Header (Sub-title Style) -->
                                             <div class="px-[15px] flex items-center justify-between shrink-0 bg-white" :class="isContentLiteral(item) ? 'pt-4 pb-0' : 'py-4 border-b border-slate-100'">
-                                                <div class="flex flex-col">
+                                                <div class="flex flex-col w-full">
+                                                    <!-- Date -->
                                                     <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
+
                                                     <div v-if="!isContentLiteral(item)" class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-4">
-                                                        <template v-if="inlineEditingId === item.id">
-                                                            <div class="flex items-center gap-1">
-                                                                <editable-input-chips 
-                                                                    v-model="inlineEditData.master_name" 
-                                                                    variant="boxed"
-                                                                    placeholder="仙師"
-                                                                    :options="allMastersList"
-                                                                    class="min-w-[100px]" />
-                                                                <span class="text-[17px] font-black text-indigo-700 mx-1">開示給:</span>
-                                                                <editable-input-chips 
-                                                                    v-model="inlineEditData.target_name" 
-                                                                    variant="boxed"
-                                                                    placeholder="對象"
-                                                                    :options="combinedPractitionerOptions"
-                                                                    class="min-w-[120px]" />
-                                                            </div>
-                                                        </template>
-                                                        <template v-else>
-                                                            <span class="text-[17px] font-black text-indigo-700 leading-tight">
-                                                                {{ formatMasterName(item.master?.name || item.master_name) }}開示給:{{ getRecipientName(item) }}
-                                                            </span>
-                                                        </template>
+                                                        <span class="text-[17px] font-black text-indigo-700 leading-tight">
+                                                            {{ formatMasterName(item.master?.name || item.master_name) }}開示給:{{ getRecipientName(item) }}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center space-x-1">
@@ -307,7 +287,7 @@
                                     </div>
 
                                             <!-- Scrollable Content -->
-                                            <div class="flex-1 overflow-y-auto px-[15px] pb-32 custom-scrollbar" :class="isContentLiteral(item) ? 'pt-0' : 'pt-2'">
+                                            <div class="flex-1 overflow-y-auto px-[20px] custom-scrollbar" :class="isContentLiteral(item) ? 'pt-0' : 'pt-2'">
                                                 <!-- View Mode -->
                                                 <div v-if="inlineEditingId !== item.id" class="space-y-4">
                                                     <div v-if="getFullRecipientList(item)" class="space-y-2 mb-4">
@@ -360,23 +340,98 @@
 
                                                 <!-- Edit Mode -->
                                                 <div v-if="inlineEditingId === item.id" class="pt-4 space-y-4 animate-fade-in text-left">
-                                                    <div class="bg-slate-50 rounded-3xl border-2 border-dashed border-indigo-100 p-5 shadow-inner">
+                                                    <!-- Date & Master & Target -->
+                                                    <div class="space-y-4">
+                                                        <div class="grid grid-cols-2 gap-4">
+                                                            <div class="space-y-2">
+                                                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">日期</label>
+                                                                <input v-model="inlineEditData.date" type="text" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-1 py-2 text-[15px] text-black outline-none focus:border-indigo-500 transition-colors">
+                                                            </div>
+                                                            <div class="space-y-2">
+                                                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">仙師</label>
+                                                                <editable-input-chips 
+                                                                    v-model="inlineEditData.master_name" 
+                                                                    variant="boxed"
+                                                                    placeholder="仙師"
+                                                                    :options="allMastersList" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="space-y-2">
+                                                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">對象</label>
+                                                            <editable-input-chips 
+                                                                v-model="inlineEditData.target_name" 
+                                                                variant="boxed"
+                                                                placeholder="對象"
+                                                                :options="combinedPractitionerOptions" />
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Content textarea -->
+                                                    <div>
                                                         <div class="flex items-center justify-between mb-3 px-1">
                                                             <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest flex items-center">
                                                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                                Word 模式編輯中
+                                                                開示內容
                                                             </span>
-                                                            <span class="text-[12px] text-slate-400 font-bold">系統將自動解析格式</span>
                                                         </div>
-                                                        <textarea v-model="inlineWordText" 
-                                                                  class="w-full min-h-[400px] bg-transparent border-none text-[17px] font-black text-slate-800 focus:ring-0 outline-none leading-relaxed resize-none overflow-hidden"
-                                                                  @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
-                                                                  placeholder="輸入內容..."></textarea>
+                                                        <textarea v-model="inlineEditData.content" 
+                                                                 class="w-full min-h-[200px] border-0 border-b-2 border-slate-300 bg-transparent text-[17px] text-black outline-none focus:border-indigo-500 leading-relaxed resize-none"
+                                                                 @input="e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }"
+                                                                 placeholder="輸入內容..."></textarea>
                                                     </div>
-                                                    <div class="flex space-x-3 pt-4 pb-6">
-                                                        <button @click.stop="cancelInlineEdit" class="flex-1 h-[56px] rounded-2xl bg-slate-100 text-slate-600 font-black text-[16px] active:scale-95 transition-all">取消</button>
-                                                        <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-1 h-[56px] rounded-2xl bg-[#FFB266] text-white font-black text-[19px] shadow-xl active:scale-95 transition-all">{{ saving ? '正在存檔...' : '確認修改' }}</button>
+
+                                                    <!-- Treasures Section -->
+                                                    <div class="space-y-3">
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest">賜降法寶</span>
+                                                            <div class="flex items-center gap-2">
+                                                                <input v-model="inlineItemName" placeholder="法寶名稱" class="w-[120px] border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
+                                                                <input v-model="inlineItemDetails" placeholder="備註" class="w-[80px] border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
+                                                                <button @click.stop="addInlineItem" class="text-indigo-500 text-[13px] font-black flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg>
+                                                                    新增
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div v-if="inlineEditData.items.length > 0" class="space-y-2">
+                                                            <div v-for="(itm, iidx) in inlineEditData.items" :key="iidx" class="flex items-center justify-between py-2 border-b border-slate-100">
+                                                                <span class="text-[15px] text-black">{{ itm.treasure_name || itm.name }}{{ itm.details ? ' · ' + itm.details : '' }}</span>
+                                                                <button @click.stop="removeInlineItem(iidx)" class="p-1 text-slate-300 hover:text-red-500">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+
+                                                    <!-- Footer Remarks Section -->
+                                                    <div class="space-y-3">
+                                                        <span class="text-[14px] font-black text-indigo-400 uppercase tracking-widest">結尾備註</span>
+                                                        <div v-if="inlineEditData.items_footer_remarks" class="flex flex-wrap gap-2">
+                                                            <div v-for="(fr, fidx) in inlineFooterList" :key="fidx" class="bg-indigo-50 px-3 py-1.5 flex items-center">
+                                                                <span class="font-normal text-[15px] text-indigo-900">{{ fr }}</span>
+                                                                <button @click.stop="removeInlineFooterRemark(fidx)" class="ml-2 text-indigo-300 hover:text-red-500">
+                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex gap-2">
+                                                            <input v-model="inlineFooterInput" @keydown.enter.prevent="addInlineFooterRemark" placeholder="自訂結尾..." class="flex-1 border-0 border-b-2 border-slate-300 bg-transparent px-2 py-2 text-[13px] text-black outline-none focus:border-indigo-500">
+                                                            <button @click.stop="quickAddInlineFooterRemark('*允同享皇恩')" class="px-4 py-2 bg-slate-100 text-slate-600 text-[13px] font-black active:scale-95 transition-all">*允同享皇恩</button>
+                                                            <button @click.stop="quickAddInlineFooterRemark('完畢')" class="px-4 py-2 bg-slate-100 text-slate-600 text-[13px] font-black active:scale-95 transition-all">完畢</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Fixed Action Footer -->
+                                            <div v-if="inlineEditingId === item.id" class="px-[20px] pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] bg-white border-t border-slate-100 shrink-0 shadow-[0_-15px_45px_rgba(0,0,0,0.06)] z-[100]">
+                                                <div class="flex flex-col items-stretch gap-3">
+                                                    <div class="flex space-x-3">
+                                                        <button @click.stop="saveInlineEdit" :disabled="saving" class="flex-1 h-[64px] rounded-2xl bg-[#FFB266] text-white font-black text-[19px] shadow-xl active:scale-95 transition-all flex items-center justify-center" style="color: white !important;">
+                                                            {{ saving ? '正在存檔...' : '確認修改' }}
+                                                        </button>
+                                                    </div>
+                                                    <button @click.stop="cancelInlineEdit" class="text-slate-400 font-bold text-[15px] py-1 text-center active:scale-95 transition-all">取消修改</button>
                                                 </div>
                                             </div>
 
@@ -897,190 +952,6 @@ watch(editingHeaderIdx, (newVal) => {
         });
     }
 });
-const inlineEditingId = ref(null);
-const inlineEditData = ref({
-    id: null,
-    date: '',
-    master_name: '',
-    target_name: '',
-    content: '',
-    items: [],
-    items_footer_remarks: ''
-});
-
-const handleMenuEdit = (item) => {
-    startInlineEdit(item);
-    activeDropdownId.value = null;
-};
-
-const inlineWordText = ref('');
-
-const startInlineEdit = (item) => {
-    // Explicitly set focus to ensure expansion without toggling
-    focusedId.value = item.id;
-    inlineEditingId.value = item.id;
-
-    // Word Mode: Prepare full text version
-    inlineWordText.value = formatTeachingForFile(item).trim();
-
-    inlineEditData.value = { 
-        id: item.id,
-        date: item.date || '',
-        master_name: item.master?.name || item.master_name || '父皇',
-        target_name: getRecipientName(item),
-        content: item.content || '',
-        items: item.items ? item.items.map(i => ({
-            name: i.name || i.treasure_name || '',
-            details: i.details || '',
-            remarks: i.remarks || i.sub_name || ''
-        })) : [],
-        items_footer_remarks: item.items_footer_remarks || ''
-    };
-};
-
-const cancelInlineEdit = () => {
-    inlineEditingId.value = null;
-    inlineEditData.value = { id: null, date: '', master_name: '', target_name: '', content: '', items: [], items_footer_remarks: '' };
-    saving.value = false;
-};
-
-const saveInlineEdit = async () => {
-    if (!inlineWordText.value) return;
-    saving.value = true;
-    try {
-        // 1. Parse the unified text back into structured data
-        const parsed = parseTeachingWordText(inlineWordText.value);
-
-        // 2. Send to backend
-        const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, {
-            date: parsed.date || inlineEditData.value.date,
-            master_name: parsed.master_name || inlineEditData.value.master_name,
-            target_name: parsed.target_name || inlineEditData.value.target_name,
-            content: parsed.content || '',
-            items: parsed.items || [],
-            items_footer_remarks: parsed.items_footer_remarks || ''
-        });
-
-        // Update local state (Optimistic UI)
-        const vIdx = visibleItems.value.findIndex(t => t.id === inlineEditData.value.id);
-        if (vIdx !== -1) {
-            visibleItems.value[vIdx] = { ...visibleItems.value[vIdx], ...res.data };
-        }
-        
-        // Also update teachings if it's still being used as a secondary source
-        const idx = teachings.value.findIndex(t => t.id === inlineEditData.value.id);
-        if (idx !== -1) {
-            teachings.value[idx] = { ...teachings.value[idx], ...res.data };
-        }
-
-        cancelInlineEdit();
-        
-        // Background sync to ensure total consistency
-        fetchItems(itemPagination.value.current_page || 1);
-    } catch (err) {
-        console.error('Failed to save inline edit:', err);
-        persistentToast.value = { msg: '✖ 存檔失敗，請稍後再試', type: 'error' };
-    } finally {
-        saving.value = false;
-    }
-};
-
-const parseTeachingWordText = (text) => {
-    const lines = text.split('\n').map(l => l.trim());
-    const result = {
-        date: '',
-        master_name: '',
-        target_name: '',
-        content: '',
-        items: [],
-        items_footer_remarks: ''
-    };
-
-    let section = 'header';
-    let contentLines = [];
-
-    lines.forEach((line, index) => {
-        if (!line && section !== 'content') return;
-
-        if (index === 0) {
-            // First line is usually date: 2026/05/01
-            const dateMatch = line.match(/(\d{4}[\/\s.-]\d{1,2}[\/\s.-]\d{1,2})/);
-            if (dateMatch) {
-                result.date = dateMatch[1].replace(/\//g, '-');
-            }
-            return;
-        }
-
-        if (line.includes('開示給') || line.includes('給')) {
-            const separator = line.includes('開示給') ? '開示給' : '給';
-            const parts = line.split(separator);
-            result.master_name = parts[0].trim();
-            result.target_name = parts[1].replace(/[：:]/, '').trim();
-            section = 'content';
-            return;
-        }
-
-        if (line.includes('賜降：') || line.startsWith('賜降')) {
-            section = 'treasures';
-            return;
-        }
-
-        if (section === 'content') {
-            const val = line.trim();
-            const footerKeywords = ['完畢', '完畢！', '*允同享皇恩'];
-            if (footerKeywords.some(k => val === k || val.startsWith(k))) {
-                result.items_footer_remarks = (result.items_footer_remarks ? result.items_footer_remarks + '\n' : '') + val;
-            } else {
-                contentLines.push(line);
-            }
-        } else if (section === 'treasures') {
-            // Parse treasure line: "1. 法寶: 9天份" or "   項目 (備註)"
-            const match = line.match(/^(\d+\.|[+*])\s*(.*?)([:：]\s*(.*))?$/);
-            if (match) {
-                const tName = match[2].trim();
-                const tDetails = match[4] ? match[4].trim() : '';
-                result.items.push({
-                    uid: Date.now() + Math.random(),
-                    treasure_name: tName,
-                    details: tDetails,
-                    name: '',
-                    sub_name: ''
-                });
-            } else if (line.startsWith('   ') || line.startsWith('\t')) {
-                // Sub-item logic
-                const subMatch = line.trim().match(/^(.*?)\s*(\((.*?)\))?$/);
-                if (subMatch && result.items.length > 0) {
-                    const lastItem = result.items[result.items.length - 1];
-                    const namePart = subMatch[1].trim();
-                    const remarkPart = subMatch[3] ? subMatch[3].trim() : '';
-
-                    if (!lastItem.name) {
-                        lastItem.name = namePart;
-                        lastItem.sub_name = remarkPart;
-                    } else {
-                        result.items.push({
-                            uid: Date.now() + Math.random(),
-                            treasure_name: lastItem.treasure_name,
-                            name: namePart,
-                            sub_name: remarkPart,
-                            details: ''
-                        });
-                    }
-                }
-            } else {
-                // Non-indented line after treasures section started - Treat as footer remark
-                const val = line.trim();
-                if (val && !val.includes('賜降')) {
-                    result.items_footer_remarks = (result.items_footer_remarks ? result.items_footer_remarks + '\n' : '') + val;
-                }
-            }
-        }
-    });
-
-    result.content = contentLines.join('\n').trim();
-    return result;
-};
-
 const getCleanRemark = (remark, details) => {
     if (!remark) return '';
     if (!details) return remark;
@@ -1103,6 +974,167 @@ const hasFinishedSuffix = (item) => {
 const getMergedContent = (details, remark) => {
     if (remark?.trim()) return remark.trim();
     return details || '';
+};
+
+// Inline Edit refs and functions
+const inlineEditingId = ref(null);
+watch(inlineEditingId, (newVal) => {
+    if (newVal !== null) {
+        nextTick(() => {
+            const el = document.getElementById(`teaching-row-${newVal}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+});
+const inlineItemName = ref('');
+const inlineItemDetails = ref('');
+const inlineFooterInput = ref('');
+const inlineEditData = ref({
+    id: null,
+    date: '',
+    master_name: '',
+    target_name: '',
+    content: '',
+    items: [],
+    items_footer_remarks: ''
+});
+
+const inlineFooterList = computed(() => {
+    if (!inlineEditData.value.items_footer_remarks) return [];
+    return inlineEditData.value.items_footer_remarks.split('\n').map(l => l.trim()).filter(Boolean);
+});
+
+function addInlineItem() {
+    const name = inlineItemName.value.trim();
+    if (!name) return;
+    inlineEditData.value.items.push({
+        uid: Date.now() + Math.random(),
+        treasure_name: name,
+        name: name,
+        details: inlineItemDetails.value.trim() || ''
+    });
+    inlineItemName.value = '';
+    inlineItemDetails.value = '';
+}
+
+function removeInlineItem(idx) {
+    inlineEditData.value.items.splice(idx, 1);
+}
+
+function addInlineFooterRemark() {
+    const val = inlineFooterInput.value.trim();
+    if (!val) return;
+    const list = inlineFooterList.value;
+    if (!list.includes(val)) {
+        list.push(val);
+    }
+    inlineEditData.value.items_footer_remarks = list.join('\n');
+    inlineFooterInput.value = '';
+}
+
+function removeInlineFooterRemark(idx) {
+    const list = inlineFooterList.value;
+    list.splice(idx, 1);
+    inlineEditData.value.items_footer_remarks = list.join('\n');
+}
+
+function quickAddInlineFooterRemark(val) {
+    const list = inlineFooterList.value;
+    if (!list.includes(val)) {
+        list.push(val);
+    }
+    inlineEditData.value.items_footer_remarks = list.join('\n');
+}
+
+const handleMenuEdit = (item) => {
+    startInlineEdit(item);
+    activeDropdownId.value = null;
+};
+
+const startInlineEdit = (item) => {
+    focusedId.value = item.id;
+    inlineEditingId.value = item.id;
+
+    inlineEditData.value = { 
+        id: item.id,
+        date: item.date || '',
+        master_name: item.master?.name || item.master_name || '父皇',
+        target_name: getRecipientName(item),
+        content: item.content || '',
+        items: item.items ? item.items.map(i => ({
+            name: i.name || i.treasure_name || '',
+            details: i.details || '',
+            remarks: i.remarks || i.sub_name || ''
+        })) : [],
+        items_footer_remarks: item.items_footer_remarks || ''
+    };
+};
+
+const cancelInlineEdit = () => {
+    inlineEditingId.value = null;
+    inlineEditData.value = { id: null, date: '', master_name: '', target_name: '', content: '', items: [], items_footer_remarks: '' };
+    inlineItemName.value = '';
+    inlineItemDetails.value = '';
+    inlineFooterInput.value = '';
+    saving.value = false;
+};
+
+const saveInlineEdit = async () => {
+    saving.value = true;
+    try {
+        const targetName = inlineEditData.value.target_name?.trim() || '';
+        let dharma_name_ids = [];
+        let target_remarks = '';
+
+        if (targetName) {
+            const matchedGroup = groups.value.find(g => g.name === targetName);
+            if (matchedGroup) {
+                dharma_name_ids = (matchedGroup.dharma_names || matchedGroup.dharmaNames || []).map(dn => dn.id);
+                target_remarks = targetName;
+            } else {
+                const matchedDN = dharmaNames.value.find(dn => dn.name === targetName);
+                if (matchedDN) {
+                    dharma_name_ids = [matchedDN.id];
+                } else {
+                    target_remarks = targetName;
+                }
+            }
+        }
+
+        const masterName = inlineEditData.value.master_name?.trim() || '';
+        const master = masters.value.find(m => m.name === masterName);
+        const master_id = master ? master.id : (currentFolder.value?.id || null);
+
+        const res = await axios.patch(`/teachings/${inlineEditData.value.id}`, {
+            date: inlineEditData.value.date,
+            master_id: master_id,
+            dharma_name_ids: dharma_name_ids,
+            target_remarks: target_remarks,
+            content: inlineEditData.value.content || '',
+            items: inlineEditData.value.items || [],
+            items_footer_remarks: inlineEditData.value.items_footer_remarks || ''
+        });
+
+        const vIdx = visibleItems.value.findIndex(t => t.id === inlineEditData.value.id);
+        if (vIdx !== -1) {
+            visibleItems.value[vIdx] = { ...visibleItems.value[vIdx], ...res.data };
+        }
+        
+        const idx = teachings.value.findIndex(t => t.id === inlineEditData.value.id);
+        if (idx !== -1) {
+            teachings.value[idx] = { ...teachings.value[idx], ...res.data };
+        }
+
+        cancelInlineEdit();
+        fetchItems(itemPagination.value.current_page || 1);
+    } catch (err) {
+        console.error('Failed to save inline edit:', err);
+        persistentToast.value = { msg: '✖ 存檔失敗，請稍後再試', type: 'error' };
+    } finally {
+        saving.value = false;
+    }
 };
 
 const activePractitionerDropdownId = ref(null);
@@ -3674,7 +3706,9 @@ const performActualSave = async () => {
         const isDailyContext = !currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         const payload = {
             ...baseForm,
-            master_id: activeRecord.master_id || form.value.master_id || currentFolder.value?.id,
+            master_id: (activeRecord.master_id !== undefined && activeRecord.master_id !== null) 
+                ? activeRecord.master_id 
+                : (form.value.master_id !== undefined && form.value.master_id !== null ? form.value.master_id : currentFolder.value?.id),
             is_daily: isDailyContext ? 1 : 0 
         };
 
@@ -3937,6 +3971,20 @@ const executeDistributionSave = async (mode) => {
 
         distributionModal.value.show = false;
         addMode.value = false;
+
+        // Switch folder if we saved to a specific one to ensure visibility
+        if (savedCount > 0) {
+            const firstSaved = recordsToSave[0];
+            let targetMid = blockMasterId; // from the last record in loop
+            
+            if (targetMid !== undefined && targetMid !== null && currentFolder.value?.id != targetMid) {
+                const targetFolder = folders_list.find(f => f.id == targetMid);
+                if (targetFolder) {
+                    currentCategory.value = (targetMid == 0 ? 'daily' : 'masters');
+                    currentFolder.value = targetFolder;
+                }
+            }
+        }
 
         // Clear search so the user can see their new mass records
         searchQuery.value = '';
