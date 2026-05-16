@@ -523,17 +523,7 @@
                             </div>
                         </div>
 
-                        <div class="px-8 space-y-12 mt-12">
-                            <!-- Custom Input -->
-                            <div class="relative">
-                                <editable-input-chips 
-                                v-model="newFooterRemark" 
-                                variant="boxed"
-                                :options="[]" 
-                                @change="addFooterRemark" 
-                                placeholder="輸入結尾備註..." />
-                            </div>
-
+                        <div class="px-8 space-y-8 mt-12">
                             <!-- Quick Add Buttons (Vertical) -->
                             <div class="flex flex-col gap-3">
                                 <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
