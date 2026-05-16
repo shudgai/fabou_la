@@ -15,7 +15,7 @@
             style="padding: 4px 15px;">
             <div class="flex-1 flex items-center gap-2 min-w-0 py-1 pl-1 cursor-pointer" @click="resetToRoot">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 24px !important; padding-top: 5px !important; font-weight: 900 !important;">
+                        <h1 class="text-red-600 leading-tight font-outfit tracking-widest break-words font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
                     重大皇恩專區
                 </h1>
             </div>
@@ -30,7 +30,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </button>
                 <div class="flex-1 flex flex-col justify-start min-w-0 py-1 pl-1 cursor-pointer">
-                    <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 24px !important; font-weight: 900 !important;">
+                    <div class="leading-tight font-outfit tracking-widest break-words flex items-center gap-2" style="color: #dc1428 !important; font-size: 32px !important; font-weight: 900 !important;">
                         <logo-imperial-notebook :height="36" class="md:hidden" />
                         {{ form.id ? '修改重大皇恩' : '重大皇恩專區' }}
                     </div>
@@ -96,7 +96,7 @@
                     <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示"></picture>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked pt-2 text-[#fbbf24] tracking-tight leading-tight text-center" style="transform: translateY(-15px);">
                         <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[38px] text-[#fbbf24]">重大皇恩專區</div>
-                        <div class="mt-[18px] flex items-center font-biaokai-locked">
+                        <div class="mt-[28px] flex items-center font-biaokai-locked">
                             <span class="text-white font-normal tracking-tight font-biaokai-locked text-[19px]" style="color: white !important;">共 {{ totalCount }} 筆</span>
                         </div>
                     </div>
@@ -110,8 +110,8 @@
                 <div class="relative w-full max-w-[465px] aspect-[245/158] bg-white">
                     <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示"></picture>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none font-biaokai-locked" style="transform: translateY(-15px);">
-                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-[#fbbf24]"><span class="text-[24px] text-[#fbbf24] font-biaokai-locked">未求得</span><br>重大皇恩專區</div>
-                        <div class="mt-[18px] flex items-center font-biaokai-locked -translate-y-2">
+                        <div class="tracking-tight leading-tight text-center font-biaokai-locked text-[30px] text-gold-locked" style="color: #fbbf24 !important;"><span class="text-[24px] text-gold-locked font-biaokai-locked" style="color: #fbbf24 !important;">未求得</span><br>重大皇恩專區</div>
+                        <div class="mt-[28px] flex items-center font-biaokai-locked">
                             <span class="text-white font-normal tracking-tight font-biaokai-locked text-[19px]" style="color: white !important;">共 {{ unobtainedTotal }} 筆</span>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                 <!-- Row 1: Global Title (Now visible on all devices to replace separate Header 2) -->
                 <div class="flex px-[15px] py-1 items-center gap-2 cursor-pointer" @click="resetToRoot">
                     <logo-imperial-notebook :height="36" class="md:hidden" />
-                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 26px !important; padding-top: 5px !important; font-weight: 900 !important;">
+                    <h1 class="text-red-600 leading-tight font-outfit tracking-widest font-black whitespace-nowrap" style="color: #dc2626 !important; font-size: 32px !important; padding-top: 5px !important; font-weight: 900 !important;">
                         重大皇恩專區
                     </h1>
                 </div>
@@ -249,7 +249,7 @@
                                     <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
                                         <div class="flex items-center gap-2">
                                             <logo-imperial-notebook :height="36" class="md:hidden" />
-                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 30px !important;">重大皇恩登記簿</h1>
+                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important;">重大皇恩登記簿</h1>
                                         </div>
                                         <div class="mt-1">
                                             <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>

@@ -101,7 +101,7 @@
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>
 
-                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[2px] font-biaokai-locked text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black mt-[2px] font-biaokai-locked" :class="folder.name === '閻王仙師' ? 'text-black' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'"
                                           style="font-weight: 900 !important; font-size: 26px !important;">
                                           {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
                                      </div>
@@ -227,25 +227,22 @@
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示載錄</h1>
-                    </div>
+                                                        <logo-imperial-notebook :height="36" class="md:hidden" />
+                                                        <h1 class="font-black text-red-600 tracking-tight text-center whitespace-nowrap" style="font-size: 32px !important; color: #dc2626 !important; font-weight: 900 !important;">父皇仙師開示載錄</h1>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                            <!-- Sub-folder Title (Added for consistency) -->
-                                            <div class="pt-[5px] pb-2 flex items-center justify-center border-b border-slate-50 bg-white min-h-[44px] relative">
-                                                <span class="text-[24px] font-medium text-red-600 tracking-tight" style="font-size: 24px !important; color: #dc2626 !important; font-weight: 500 !important;">父皇仙師開示載錄</span>
-                                                <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all absolute right-3">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                                                </button>
                                             </div>
 
                                             <!-- Header (Sub-title Style) -->
                                             <div class="px-[15px] flex items-center justify-between shrink-0 bg-white" :class="isContentLiteral(item) ? 'pt-4 pb-0' : 'py-4 border-b border-slate-100'">
                                                 <div class="flex flex-col w-full">
                                                     <!-- Date -->
-                                                    <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="text-[15px] font-bold text-slate-400">{{ (item.date || '').replace(/-/g, '/') }}</div>
+                                                        <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                        </button>
+                                                    </div>
 
                                                     <div v-if="!isContentLiteral(item)" class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-4">
                                                         <span class="text-[17px] font-black text-indigo-700 leading-tight">
@@ -3098,7 +3095,8 @@ const parseTeachingFromWord = (text) => {
     lines.forEach(line => {
         if (foundHeader) return;
         masters.forEach(m => {
-            if (line.includes(m) && (line.includes('開示') || line.includes('給'))) {
+            // Expanded keyword list to include "賜降"
+            if (line.includes(m) && (line.includes('開示') || line.includes('給') || line.includes('賜降'))) {
                 record.master_name = m;
                 const recMatch = line.match(/(?:開示給|給)\s*[:：]?\s*(.*)/);
                 if (recMatch) {
@@ -3116,7 +3114,10 @@ const parseTeachingFromWord = (text) => {
 
     lines.forEach((line, idx) => {
         if (idx === 0 && line === firstLine && record.date) return;
-        if (line === headerLine) return;
+        if (line === headerLine) {
+            if (line.includes('賜降：')) parsingTreasures = true;
+            return;
+        }
 
         if (line.includes('賜降：')) {
             parsingTreasures = true;
