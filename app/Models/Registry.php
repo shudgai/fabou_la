@@ -13,6 +13,15 @@ class Registry extends Model
 
     protected $table = 'registries';
 
+    protected $casts = [
+        'purpose'            => 'encrypted',
+        'effect'             => 'encrypted',
+        'acquisition_method' => 'encrypted',
+        'content'            => 'encrypted',
+        'remarks'            => 'encrypted',
+        'is_multi'           => 'boolean',
+    ];
+
     protected $fillable = [
         'user_id',
         'master_id',

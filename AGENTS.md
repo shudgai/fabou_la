@@ -113,6 +113,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Folder overlay text positioning | `justify-start pt-[72px]` (not `justify-center`) for Teaching sub-folders with tall images |
 | Home view title spacing | `tracking-tighter` (not `tracking-widest`) for consistency between home and list views |
 | Back button | `w-[100px]` → `min-w-[100px]` to prevent text truncation on mobile |
+| Imperial Grace List | Two-row vertical stack: [Date + Status] / [Name (Large/Bold)] |
+| Batch Date Parsing | Supports ROC (114.10.6) and AD. Auto-detects `Date Name` (single line) or `Date\nName` (multi-line). |
+| Data Security | Field-level AES-256 encryption applied to all sensitive 'content', 'remarks', and 'purpose' fields across models. |
 | Batch import preview | Show raw pasted lines as-is (use `rawLines` computed: `split('\n').map(l => l.trim()).filter(l => l !== '')`); never modify `batchInput`/`batchText` textarea content with watchers |
 | Batch integrity (WYPIWYS) | For batch-pasted records, preserve the FULL original content in the database; do NOT strip headers or item lines. List view should render raw content with `whitespace-pre-wrap` and hide synthetic headers when `isContentLiteral` is true. |
 | Dropdown/Menu state | Use `activeDropdownId` (reactive) to track which item menu/dropdown is open; ensure `activeDropdownId = null` is called on delete/edit/close. |

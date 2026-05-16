@@ -49,23 +49,20 @@
                             請輸入<span class="text-black">得知日期</span>
                         </template>
                     </h2>
-                    <div class="space-y-10 w-full max-w-sm mt-8">
                         <div v-if="localMode.startsWith('single')" class="relative group">
                             <label class="absolute -top-6 left-0 text-[13px] font-normal text-black uppercase tracking-widest">日期</label>
                             <textarea v-model="form.record_date" rows="2" placeholder="日期格式 年-月-日" 
                                 class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
-                            <button @click="activePicker = { field: 'record_date', title: '修改得知日期' }" class="absolute right-0 bottom-4 text-slate-300 hover:text-indigo-500 transition-colors">
+                            <button @click="activePicker = { field: 'record_date', title: '修改日期' }" class="absolute right-0 bottom-4 text-slate-300 hover:text-indigo-500 transition-colors">
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </div>
                         <div v-if="localMode.startsWith('batch')" class="relative group mt-12">
                             <label class="absolute -top-6 left-0 text-[13px] font-normal text-black uppercase tracking-widest">載錄目標仙師</label>
-                            <!-- Unified Master Selection: Searchable Chips Input -->
                             <div class="w-full">
                                 <editable-input-chips v-model="masterNameInput" :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" @change="resolveMasterId" placeholder="選擇仙師..." />
                             </div>
                         </div>
-                    </div>
                 </div>
 
                 <!-- STEP 2: Content Input -->
@@ -101,10 +98,9 @@
                         </div>
                     </template>
                     <template v-else>
-                        <h2 class="text-[17px] font-normal text-black leading-relaxed tracking-tight">多筆載錄內容<span class="text-black">預覽</span></h2>
                         <div class="max-w-xl mx-auto mt-6 bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
                             <div class="bg-indigo-50/30 px-4 py-2 flex justify-between items-center border-b border-slate-100">
-                                <span class="text-[13px] font-normal text-black">得知日期：{{ form.record_date || '-' }}</span>
+                                <span class="text-[13px] font-normal text-black">日期：{{ form.record_date || '-' }}</span>
                                 <span class="text-[13px] font-normal text-black">{{ getMasterName(form.master_id) }}</span>
                             </div>
                             <div class="divide-y divide-slate-50 max-h-64 overflow-y-auto custom-scrollbar">
@@ -331,28 +327,96 @@ const rawLines = computed(() => {
 const excelRows = computed(() => {
     if (!batchInput.value.trim()) return [];
     
+    const parseDateText = (text) => {
+        if (!text) return null;
+        let s = text.trim();
+        // Match 114.10.6 or 114/10/06 or 114-10-6
+        const m = s.match(/^(\d{2,4})[./-](\d{1,2})[./-](\d{1,2})$/);
+        if (m) {
+            let y = parseInt(m[1]);
+            let mon = m[2].padStart(2, '0');
+            let d = m[3].padStart(2, '0');
+            if (y < 1000) y += 1911;
+            return `${y}-${mon}-${d}`;
+        }
+        return null;
+    };
+
     const rawText = batchInput.value.trim();
     let sections = rawText.split(/\n\s*\n+/).filter(s => s.trim());
 
-    // Fallback: If only one section was found but there are multiple non-empty lines,
-    // and no explicit separators like double-newlines were useful, treat each line as a name.
     if (sections.length === 1 && rawText.split('\n').filter(l => l.trim()).length > 1) {
-        // Only fallback if the single section doesn't seem to have structured data (labels)
         if (!rawText.match(/(用意|備註|日期|得知日期)[:：]/)) {
             sections = rawText.split('\n').filter(l => l.trim());
         }
     }
     
+    let currentBlockDate = null;
+
     return sections.map(section => {
         const lines = section.split('\n').map(l => l.trim()).filter(l => l);
         if (lines.length === 0) return null;
         
-        // REQUIREMENT: No more stripping labels, no more default '-' placeholders.
-        // Display strictly what was pasted.
+        let rowDate = currentBlockDate || form.value.record_date;
+        let rowName = '';
+        let rowPurpose = '';
+        let rowRemarks = '';
+
+        // Case 1: First line is a date
+        const dateAtStart = parseDateText(lines[0]);
+        if (dateAtStart) {
+            rowDate = dateAtStart;
+            if (lines.length > 1) {
+                rowName = lines[1];
+                rowPurpose = lines[2] || '';
+                rowRemarks = lines.slice(3).join('\n');
+            } else {
+                // Single line: might be "Date Name"
+                const spaceIdx = lines[0].indexOf(' ');
+                const tabIdx = lines[0].indexOf('\t');
+                const splitIdx = spaceIdx !== -1 ? spaceIdx : tabIdx;
+                if (splitIdx !== -1) {
+                    const potentialDate = parseDateText(lines[0].substring(0, splitIdx));
+                    if (potentialDate) {
+                        rowDate = potentialDate;
+                        rowName = lines[0].substring(splitIdx).trim();
+                    } else {
+                        rowName = lines[0];
+                    }
+                } else {
+                    rowName = lines[0]; // Just a date line with no name? handled below
+                }
+            }
+        } else {
+            // Case 2: No date at start of block
+            // Check if first line is "Date Name"
+            const spaceIdx = lines[0].indexOf(' ');
+            const tabIdx = lines[0].indexOf('\t');
+            const splitIdx = spaceIdx !== -1 ? spaceIdx : tabIdx;
+            if (splitIdx !== -1) {
+                const potentialDate = parseDateText(lines[0].substring(0, splitIdx));
+                if (potentialDate) {
+                    rowDate = potentialDate;
+                    rowName = lines[0].substring(splitIdx).trim();
+                } else {
+                    rowName = lines[0];
+                }
+            } else {
+                rowName = lines[0];
+            }
+            rowPurpose = lines[1] || '';
+            rowRemarks = lines.slice(2).join('\n');
+        }
+
+        if (rowName === parseDateText(rowName) || !rowName) return null;
+
         return {
-            name: lines[0],
-            purpose: lines[1] || '',
-            remarks: lines.slice(2).join('\n'),
+            name: rowName,
+            purpose: rowPurpose,
+            remarks: rowRemarks,
+            record_date: rowDate,
+            obtained_date: rowDate,
+            status: '已登記',
             master_id: form.value.master_id
         };
     }).filter(row => row && row.name);

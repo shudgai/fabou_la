@@ -23,8 +23,9 @@ class DharmaNameRegistry extends Model
     ];
 
     protected $casts = [
-        'related_personnel' => 'array',
-        'remarks' => 'array',
+        'custom_name' => 'encrypted',
+        'remarks' => 'encrypted:json',
+        'related_personnel' => 'encrypted:json',
     ];
 
     public function registry()

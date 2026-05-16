@@ -35,6 +35,6 @@ class MilitaryRecord extends Model
     protected $casts = [
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',
-        // Quantity fields are kept as strings from DECIMAL(65,0) to prevent overflow
+        'remarks_text' => 'encrypted',
     ];
 }

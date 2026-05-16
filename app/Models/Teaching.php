@@ -18,8 +18,10 @@ class Teaching extends Model
     ];
 
     protected $casts = [
-        'items' => 'array',
-        'remarks' => 'array',
+        'content' => 'encrypted',
+        'items' => 'encrypted:json',
+        'remarks' => 'encrypted:json',
+        'items_footer_remarks' => 'encrypted',
     ];
 
     public function master()
