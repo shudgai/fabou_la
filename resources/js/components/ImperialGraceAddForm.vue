@@ -357,7 +357,7 @@ const excelRows = computed(() => {
         const lines = section.split('\n').map(l => l.trim()).filter(l => l);
         if (lines.length === 0) return null;
         
-        let rowDate = currentBlockDate || form.value.record_date;
+        let rowDate = null;
         let rowName = '';
         let rowPurpose = '';
         let rowRemarks = '';
