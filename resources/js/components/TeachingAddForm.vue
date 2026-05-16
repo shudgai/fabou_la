@@ -576,7 +576,7 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import LogoImperialNotebook from './LogoImperialNotebook.vue';
 import MobileNavbar from './MobileNavbar.vue';
 import EditableInputChips from './EditableInputChips.vue';
-import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const props = defineProps({
     mode: String,
@@ -778,6 +778,8 @@ const masterNameInput = ref(props.initialData?.master?.name || props.initialData
 const dharmaSearchQuery = ref(props.initialData?.dharmaSearchQuery || '');
 const showItemsSelector = ref(false);
 
+const DRAFT_KEY = 'teaching_draft';
+
 onMounted(() => {
     // Populate footer remarks array from string if present
     if (props.initialData?.items_footer_remarks) {
@@ -792,8 +794,50 @@ onMounted(() => {
             // form.value.content = prefix + '\n' + form.value.content;
         }
     }
+    
+    // Draft Restoration
+    if (!isEditMode.value) {
+        const draft = safeLocalStorage.getItem(DRAFT_KEY);
+        if (draft) {
+            try {
+                const data = JSON.parse(draft);
+                if (window.confirm('偵測到您有未儲存的「仙師開示」草稿，是否要載入？')) {
+                    if (data.form) form.value = { ...form.value, ...data.form };
+                    if (data.batchImportContent !== undefined) batchImportContent.value = data.batchImportContent;
+                    if (data.batchRecords) batchRecords.value = data.batchRecords;
+                    if (data.currentStep) currentStep.value = data.currentStep;
+                    if (data.footerRemarks) footerRemarks.value = data.footerRemarks;
+                    if (data.masterNameInput) masterNameInput.value = data.masterNameInput;
+                    if (data.dharmaSearchQuery) dharmaSearchQuery.value = data.dharmaSearchQuery;
+                    
+                    // Re-sync master_id if restored
+                    if (masterNameInput.value) resolveMasterId();
+                } else {
+                    safeLocalStorage.removeItem(DRAFT_KEY);
+                }
+            } catch (e) {
+                console.error('Failed to restore draft', e);
+            }
+        }
+    }
+    
     lockBodyScroll();
 });
+
+// Auto-save Watcher
+watch(() => ({
+    form: form.value,
+    batchImportContent: batchImportContent.value,
+    batchRecords: batchRecords.value,
+    currentStep: currentStep.value,
+    footerRemarks: footerRemarks.value,
+    masterNameInput: masterNameInput.value,
+    dharmaSearchQuery: dharmaSearchQuery.value
+}), (val) => {
+    if (!isEditMode.value && props.mode) {
+        safeLocalStorage.setItem(DRAFT_KEY, JSON.stringify(val));
+    }
+}, { deep: true });
 
 // --- 2. Computed ---
 const masterFilteredList = computed(() => {

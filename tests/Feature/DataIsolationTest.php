@@ -54,7 +54,7 @@ class DataIsolationTest extends TestCase
 
         // B 應該看不到 A 的法寶
         $response->assertStatus(200);
-        $this->assertCount(0, $response->json());
+        $this->assertCount(0, $response->json()['data']);
     }
 
     /** @test */
@@ -73,7 +73,7 @@ class DataIsolationTest extends TestCase
 
         // B 應該看不到 A 的皇恩
         $response->assertStatus(200);
-        $this->assertCount(0, $response->json()['registries']);
+        $this->assertCount(0, $response->json()['registries']['data']);
     }
 
     /** @test */
@@ -113,7 +113,7 @@ class DataIsolationTest extends TestCase
         $response = $this->getJson('/grudges');
 
         $response->assertStatus(200);
-        $this->assertCount(0, $response->json());
+        $this->assertCount(0, $response->json()['paginator']['data']);
     }
 
     /** @test */
@@ -139,6 +139,6 @@ class DataIsolationTest extends TestCase
 
         // B 「應該」要能看到這筆開示
         $response->assertStatus(200);
-        $this->assertCount(1, $response->json()['data']);
+        $this->assertCount(1, $response->json()['records']['data']);
     }
 }

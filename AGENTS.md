@@ -491,3 +491,63 @@ imagewebp($dstImg, $outputPath, 80);
 - `TeachingManager.vue:1084-1117` - saveInlineEdit 函數
 - `TeachingManager.vue:1056-1073` - startInlineEdit 函數（初始化編輯資料）
 - `TeachingManager.vue:1052-1081` - cancelInlineEdit 函數（重設表單）
+
+## Session Notes (2026-05-16)
+
+### Data Isolation Fix — 使用者資料隔離
+
+#### 問題
+`php artisan test` 中的 `DataIsolationTest` 有 4 個測試失敗：
+- `registry isolation` — 使用者 B 看到 15 筆（應為 0）
+- `imperial grace isolation` — 使用者 B 看到 13 筆（應為 0）
+- `grudge isolation` — 使用者 B 看到 3 筆（應為 0）
+- `teaching linkage is preserved` — 403 Forbidden
+
+#### 根因分析
+1. **Registry/ImperialGrace/Grudge**：程式碼**已經有** `where('user_id', $user->id)` 隔離邏輯，**是測試斷言寫錯**。測試用 `assertCount(0, $response->json())` 檢查 paginated response 的 key 數量（~15 個），不是實際資料筆數。
+2. **Teaching**：`applyVisibilityFilter` 只檢查 `user_id`，沒有包含被法號關聯的開示。`TeachingController` 的 `can_see_daily_teachings` 權限檢查也過於嚴格。
+
+#### 修復清單
+
+| 檔案 | 修改 |
+|------|------|
+| `tests/Feature/DataIsolationTest.php:57` | `assertCount(0, $response->json())` → `assertCount(0, $response->json()['data'])` |
+| `tests/Feature/DataIsolationTest.php:76` | `assertCount(0, $response->json()['registries'])` → `assertCount(0, $response->json()['registries']['data'])` |
+| `tests/Feature/DataIsolationTest.php:116` | `assertCount(0, $response->json())` → `assertCount(0, $response->json()['paginator']['data'])` |
+| `tests/Feature/DataIsolationTest.php:142` | `assertCount(1, $response->json()['data'])` → `assertCount(1, $response->json()['records']['data'])` |
+| `app/Services/TeachingService.php:327` | `applyVisibilityFilter` 加入 `orWhereHas('dharmaNames')` 讓被法號標記的使用者也能看到開示 |
+| `app/Http/Controllers/TeachingController.php:28-40` | 權限檢查加入：如果使用者的 `dharma_name_id` 有關聯的每日開示，允許存取 |
+
+#### 修復後結果
+```bash
+php artisan test
+# Tests: 7 passed, 12 assertions
+```
+
+## Pre-Launch Checklist
+
+### 上線前必做檢查
+
+| 指令 | 說明 |
+|------|------|
+| `npm run build` | 前端編譯成功，無 error（僅 CSS 警告可忽略） |
+| `php artisan test` | 所有測試通過 |
+| `php artisan route:list` | 確認路由正確（155 條） |
+| `php artisan migrate:status` | 確認遷移已執行 |
+| `php artisan config:cache` | 正式環境需快取設定 |
+| `php artisan route:cache` | 正式環境需快取路由 |
+
+### 正式環境設定 (.env)
+```env
+APP_ENV=production
+APP_DEBUG=false
+```
+
+### GitHub
+- Remote: `https://github.com/shudgai/fabou_la.git`
+- Current branch: `optimization`
+- 上線後建議 commit 本次修復：
+  ```
+  git add app/Http/Controllers/TeachingController.php app/Services/TeachingService.php tests/Feature/DataIsolationTest.php
+  git commit -m "fix: 修復使用者資料隔離與開示權限問題"
+  ```

@@ -4033,6 +4033,9 @@ const executeDistributionSave = async (mode) => {
         // Stay in current folder to allow user to see the newly added data
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
         batchImportContent.value = '';
+
+        // Clear Draft on success
+        safeLocalStorage.removeItem('teaching_draft');
     } catch (e) {
         console.error('Batch Save Error:', e);
         const errorMsg = e.response?.data?.message || e.message || '連線逾時或伺服器無回應';

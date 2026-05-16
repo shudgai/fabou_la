@@ -350,7 +350,7 @@ body.font-large select {
 }
 
 /* 讓原本極小的標籤（如 13px-15px）在大字體模式下也有感提升 */
-body.font-large :where(.text-[13px], .text-[14px], .text-[15px]) {
+body.font-large :where(.text-\[13px\], .text-\[14px\], .text-\[15px\]) {
     font-size: 16px !important;
 }
 </style>

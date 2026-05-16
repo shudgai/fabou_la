@@ -326,7 +326,14 @@ class TeachingService
 
     protected function applyVisibilityFilter($query, $user)
     {
-        $query->where('user_id', $user->id);
+        $query->where(function($q) use ($user) {
+            $q->where('user_id', $user->id);
+            if ($user->dharma_name_id) {
+                $q->orWhereHas('dharmaNames', function($sq) use ($user) {
+                    $sq->where('dharma_names.id', $user->dharma_name_id);
+                });
+            }
+        });
     }
 
     protected function applyMasterGroupFilter($query, $masterId)

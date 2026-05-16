@@ -29,7 +29,17 @@ class TeachingController extends Controller
         $permissions = $user->getPermissions();
         $isRequestingDaily = ($masterId === '0' || $masterId === 0 || (is_numeric($masterId) && (int)$masterId === 0 && $masterId !== null));
         if ($isRequestingDaily && !$permissions['can_see_daily_teachings']) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            // Still allow if the user is linked via their dharma name
+            $hasLinked = false;
+            if ($user->dharma_name_id) {
+                $hasLinked = Teaching::where('is_daily', 1)
+                    ->whereHas('dharmaNames', function($q) use ($user) {
+                        $q->where('dharma_names.id', $user->dharma_name_id);
+                    })->exists();
+            }
+            if (!$hasLinked) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
         }
 
         // Single query: get per-master counts AND daily count at once

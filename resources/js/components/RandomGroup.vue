@@ -345,8 +345,7 @@
                             class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm"
                             :style="{
                                 background: selectedNames.length < 1 || isDrawing ? '#94a3b8' : 'rgb(0,255,0)',
-                                color: '#ffffff !important',
-                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                color: '#000000 !important',
                                 fontSize: '18px !important',
                                 paddingTop: '13px',
                                 paddingBottom: '13px'
