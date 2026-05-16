@@ -759,8 +759,12 @@ const masterNameInput = ref(props.initialData?.master?.name || props.initialData
 const dharmaSearchQuery = ref(props.initialData?.dharmaSearchQuery || '');
 const showItemsSelector = ref(false);
 
-// If editing, ensure content includes master prefix if missing
 onMounted(() => {
+    // Populate footer remarks array from string if present
+    if (props.initialData?.items_footer_remarks) {
+        footerRemarks.value = props.initialData.items_footer_remarks.split('\n').map(l => l.trim()).filter(Boolean);
+    }
+
     if (isEditMode.value && form.value.content) {
         const mName = masterNameInput.value || '仙師';
         const prefix = `${mName}開示：`;
@@ -904,8 +908,14 @@ function quickAddFooterRemark(val) {
     }
 }
 
-function removeFooterRemark(idx) {
-    footerRemarks.value.splice(idx, 1);
+function removeFooterRemark(valOrIdx) {
+    if (typeof valOrIdx === 'string') {
+        footerRemarks.value = footerRemarks.value.filter(v => v !== valOrIdx);
+    } else {
+        // If it's a numeric index from the sorted list, find the actual value first
+        const val = sortedFooterRemarks.value[valOrIdx];
+        footerRemarks.value = footerRemarks.value.filter(v => v !== val);
+    }
 }
 
 function getDharmaNameText(id) {
@@ -1080,13 +1090,17 @@ function handleSubmit() {
     handleDharmaSearchInput();
 
     if (newFooterRemark.value.trim()) addFooterRemark();
+    
+    // Sync array back to string
+    form.value.items_footer_remarks = sortedFooterRemarks.value.filter(Boolean).join('\n');
+
     if (props.mode === 'batch') {
         if (batchRecords.value.length === 0 && !batchImportContent.value.trim()) { alert('請先貼上資料或解析紀錄'); return; }
         emit('save', { mode: 'batch', records: batchRecords.value, importContent: batchImportContent.value });
         batchImportContent.value = ''; batchRecords.value = [];
         return;
     }
-    emit('save', { ...form.value, dharmaSearchQuery: dharmaSearchQuery.value, items_footer_remarks: sortedFooterRemarks.value.filter(Boolean).join('\n') });
+    emit('save', { ...form.value, dharmaSearchQuery: dharmaSearchQuery.value });
 }
 
 onMounted(() => {

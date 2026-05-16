@@ -58,9 +58,10 @@
                                  class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
                                  style="will-change: transform;"
                                  alt="書籍圖示"></picture>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(0px);">
-                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-6 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
-                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-[6px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(12px);">
+                                <div class="font-black tracking-tighter leading-none text-center -mt-4 mb-1 font-biaokai-locked text-[18.5px] text-[#8B0000]">法寶登記專區</div>
+                                <div class="font-black tracking-tighter leading-none text-center mb-4 font-biaokai-locked text-[17px] text-[#8B0000]">特殊皇恩登記簿</div>
+                                <div class="font-black tracking-tight leading-tight text-center !font-black mt-[2px] font-biaokai-locked text-[22px] font-weight-900 text-[#8B0000]">特殊法寶<br>登記簿</div>
                                 <div class="mt-8 flex items-center font-biaokai-locked">
                                     <span class="text-white font-normal tracking-tight font-biaokai-locked text-[14.5px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
@@ -84,10 +85,11 @@
                                  style="will-change: transform;"
                                  alt="書籍圖示"></picture>
 
-                             <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[42px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(-8px);">
-                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai -mt-3" style="font-size: 12px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
+                             <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[52px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(2px);">
+                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai -mt-4" style="font-size: 11px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">法寶登記專區</div>
+                                 <div class="font-black tracking-tighter leading-none text-center font-biaokai mt-[1px]" style="font-size: 11px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊皇恩登記簿</div>
                                 
-                                <div class="flex-1 flex flex-col items-center justify-center w-full mt-2">
+                                <div class="flex-1 flex flex-col items-center justify-center w-full mt-1">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai"
                                          :style="'font-size: 18px !important; font-weight: 900 !important; color: ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important; font-family: \'DFKai-SB\', \'標楷體\', \'BiauKai\', \'Kaiti TC\', serif !important; -webkit-text-stroke: 0.5px ' + (folder.name === '閻王仙師' ? '#000000' : '#dc2626') + ' !important;'">
                                          {{ folder.name === '父皇仙師' ? '父皇' : folder.name }}
@@ -221,7 +223,7 @@
                                                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
                                                     <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
                                                           :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
-                                                        — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
+                                                        特殊法寶登記簿 — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -299,7 +301,7 @@
                                                 </div>
 
                                                 <!-- Table Layout (Matching View Mode) -->
-                                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white -ml-[10px] mr-2">
+                                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-auto w-[90%] mb-6 px-4">
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
@@ -411,7 +413,7 @@
                                                 <div class="flex items-baseline gap-x-2 flex-1 flex-wrap">
                                                     <span class="font-outfit font-normal" style="font-size: 20px !important; transform: translateY(1.5px);"
                                                           :style="{ color: (item.master_id && getMasterName(item.master_id) === '閻王仙師') ? '#0f172a' : '#dc2626' }">
-                                                        — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
+                                                        特殊法寶登記簿 — {{ item.master_id ? getMasterName(item.master_id) : '未設定' }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -419,29 +421,27 @@
 
                                         <div class="w-full px-4 mb-4 animate-fade-in pt-4 mt-10 space-y-2 bg-white">
                                             <!-- Treasure Name Row (Header) -->
-                                            <div class="flex items-center group cursor-pointer" @click.stop="toggleDetails(item.id)">
-                                                <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
+                                            <div class="flex flex-col group cursor-pointer px-4 pt-4 pb-2" @click.stop="toggleDetails(item.id)">
+                                                <div class="flex items-center justify-between">
                                                     <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
-                                                </div>
-                                                <div class="flex-1 px-3 py-2 flex items-center pr-12">
-                                                    <span class="font-black text-[16px] text-slate-900 leading-tight">{{ item.name || '-' }}</span>
-                                                    <!-- Toggle Icon (Moved left) -->
-                                                    <div class="ml-4 transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(item.id) }">
+                                                    <!-- Toggle Icon (Moved right) -->
+                                                    <div class="transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(item.id) }">
                                                         <svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                                                         </svg>
                                                     </div>
                                                 </div>
+                                                <div class="pt-1">
+                                                    <span class="font-black text-[16px] text-slate-900 leading-tight">{{ item.name || '-' }}</span>
+                                                </div>
                                             </div>
 
                                             <!-- Collapsible Details Section -->
-                                            <div v-if="expandedDetailIds.has(item.id)" class="space-y-1 animate-slide-down border-t border-slate-50 pt-2 pb-2">
-                                                <!-- Date Grid (Adjusted position) -->
-                                                <div class="flex mt-4">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">得知日期</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                            <div v-if="expandedDetailIds.has(item.id)" class="space-y-4 animate-slide-down border-t border-slate-50 pt-4 pb-2 px-4">
+                                                <!-- Date Grid -->
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">得知日期</span>
+                                                    <div class="pt-1">
                                                         <span class="font-normal text-[15.5px] font-outfit text-slate-900">
                                                             {{ formatDisplayDate(item.record_date) || formatDisplayDate(getEarliestDate(item)) || '-' }}
                                                         </span>
@@ -449,51 +449,41 @@
                                                 </div>
 
                                                 <!-- Efficacy Grid -->
-                                                <div class="flex">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">功效</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">功效</span>
+                                                    <div class="pt-1">
                                                         <span class="font-bold text-[16px] text-[#059669] leading-relaxed">{{ item.effect || '-' }}</span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Purpose Grid -->
-                                                <div class="flex">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">用意</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">用意</span>
+                                                    <div class="pt-1">
                                                         <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.purpose || '-' }}</span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Method Grid -->
-                                                <div class="flex">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">作法</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">作法/求寶方式</span>
+                                                    <div class="pt-1">
                                                         <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.acquisition_method || '-' }}</span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Content Grid -->
-                                                <div class="flex">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
+                                                    <div class="pt-1">
                                                         <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.content || '-' }}</span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Remarks Grid -->
-                                                <div class="flex">
-                                                    <div class="w-[90px] flex items-center justify-center py-2 shrink-0">
-                                                        <span class="font-bold text-[14px] text-slate-400">備註</span>
-                                                    </div>
-                                                    <div class="flex-1 px-3 py-2 flex items-center">
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[14px] text-slate-400">備註</span>
+                                                    <div class="pt-1">
                                                         <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.remarks || '-' }}</span>
                                                     </div>
                                                 </div>
@@ -501,7 +491,7 @@
                                         </div>
                                         <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px] md:mt-6">
                                             <template v-if="currentCategory === 'major'">
-                                                <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
+                                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-auto w-[90%] mb-20 px-4">
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -531,7 +521,7 @@
                                                     </div>
                                                 </template>
                                                 <template v-else>
-                                                    <div class="border border-slate-200 rounded-xl overflow-hidden mb-20 bg-white -ml-[10px] mr-2">
+                                                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-auto w-[90%] mb-20 px-4">
                                                         <table class="w-full border-collapse bg-white table-fixed">
                                                             <thead>
                                                                 <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">

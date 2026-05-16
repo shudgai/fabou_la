@@ -192,7 +192,7 @@
                                     <editable-input-chips 
                                         v-model="p.custom_name" 
                                         variant="boxed"
-                                        :options="props.dharmaNames.map(dn => dn.name)" 
+                                        :options="dharmaNames.map(dn => dn.name)" 
                                         placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
@@ -297,7 +297,7 @@
                                     <editable-input-chips 
                                         v-model="p.custom_name" 
                                         variant="boxed"
-                                        :options="props.dharmaNames.map(dn => dn.name)" 
+                                        :options="dharmaNames.map(dn => dn.name)" 
                                         placeholder="對象" />
                                 </div>
                                 <div class="space-y-1">
@@ -519,11 +519,11 @@ const batchParsedRows = computed(() => {
         const results = [];
         const lines = batchInput.value.split('\n');
         
-        let currentContextYear = new Date().getFullYear();
-        let currentDateInText = '';
         let currentMasterId = form.value.master_id;
+        let currentContextYear = new Date().getFullYear();
+        let currentDateInText = form.value.record_date || '';
 
-        // Pending treasure-level attributes
+        // State for the "active" treasure being parsed
         let pendingTreasure = {
             name: '',
             purpose: '',
@@ -532,6 +532,7 @@ const batchParsedRows = computed(() => {
             content: '',
             remarks: ''
         };
+        let pendingRecipients = [];
 
         const parseDateText = (text, defaultYear) => {
             if (!text) return null;
@@ -540,10 +541,6 @@ const batchParsedRows = computed(() => {
                 let y = parseInt(dMatch[1]);
                 if (y < 1000) y += 1911;
                 return `${y}-${dMatch[2].padStart(2, '0')}-${dMatch[3].padStart(2, '0')}`;
-            }
-            const shortMatch = text.match(/(\d{1,2})[./\-](\d{1,2})/);
-            if (shortMatch) {
-                return `${defaultYear}-${shortMatch[1].padStart(2, '0')}-${shortMatch[2].padStart(2, '0')}`;
             }
             const standaloneYMatch = text.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
             if (standaloneYMatch) {
@@ -554,137 +551,9 @@ const batchParsedRows = computed(() => {
             return null;
         };
 
-        const attrKeywords = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '備註', '得知日期', '登記日期', '求得日期', '日期', '法寶名稱'];
-        const prefixesToStrip = /^(允求|賜降|得知|賜予|賜|求得|法寶名稱)\s*[：:]\s*/;
-
-        lines.forEach(line => {
-            let normLine = line.normalize('NFKC').trim();
-            if (!normLine) return;
-
-            // 1. Detect Standalone Year Line
-            const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
-            if (standaloneYearMatch) {
-                let y = parseInt(standaloneYearMatch[1]);
-                if (y < 1000) y += 1911;
-                currentContextYear = y;
-                return;
-            }
-
-            // 2. Detect Master Header
-            const masterMatch = props.masters?.find(m => (normLine === m.name || normLine === (m.name === '父皇仙師' ? '父皇' : m.name)) && normLine.length < 15);
-            if (masterMatch) {
-                currentMasterId = masterMatch.id;
-                return;
-            }
-
-            // 3. Detect Standalone Date Header
-            const dateHeader = parseDateText(normLine, currentContextYear);
-            const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
-            if (dateHeader && (isPureDateStr || normLine.startsWith('日期'))) {
-                currentDateInText = dateHeader;
-                if (normLine.startsWith('日期')) {
-                    const val = normLine.replace(/^日期[：:\s]*/, '').trim();
-                    const d = parseDateText(val, currentContextYear);
-                    if (d) currentDateInText = d;
-                }
-                return;
-            }
-
-            // 4. Detect Attribute Keywords
-            const keywordMatch = normLine.match(/^([^：:\s]+)[：:\s]+(.*)/);
-            if (keywordMatch) {
-                const key = keywordMatch[1].trim();
-                const val = keywordMatch[2].trim();
-
-                if (attrKeywords.includes(key)) {
-                    if (key === '用意') pendingTreasure.purpose = val;
-                    else if (key === '功效') pendingTreasure.effect = val;
-                    else if (key === '作法' || key === '求寶方式' || key === '求寶') pendingTreasure.acquisition_method = val;
-                    else if (key === '法寶內容') pendingTreasure.content = val;
-                    else if (key === '備註') pendingTreasure.remarks = val;
-                    else if (key === '法寶名稱') pendingTreasure.name = val.replace(prefixesToStrip, '');
-                    else if (['得知日期', '登記日期', '求得日期', '日期'].includes(key)) {
-                        const d = parseDateText(val, currentContextYear) || val;
-                        currentDateInText = d;
-                    }
-                    return;
-                }
-
-                // Handle prefix keywords: 允求/賜降/求得 etc on same line as recipients
-                const prefixKeywords = ['允求', '賜降', '求得', '賜予', '賜', '得知'];
-                if (prefixKeywords.includes(key)) {
-                    const recMatch = val.match(/^(\S+)\s+(.+)/);
-                    if (recMatch) {
-                        pendingTreasure.name = recMatch[1].trim();
-                        const recNames = recMatch[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
-                        recNames.forEach(n => {
-                            results.push({
-                                name: pendingTreasure.name,
-                                recipient_name: resolveNewDharmaName(n),
-                                person_remarks: '',
-                                master_id: currentMasterId,
-                                date: currentDateInText,
-                                purpose: pendingTreasure.purpose,
-                                effect: pendingTreasure.effect,
-                                acquisition_method: pendingTreasure.acquisition_method,
-                                content: pendingTreasure.content,
-                                remarks: pendingTreasure.remarks,
-                                obtained_date: currentDateInText || form.value.record_date || '',
-                                status: '已登記'
-                            });
-                        });
-                    } else {
-                        pendingTreasure.name = val.replace(prefixesToStrip, '');
-                    }
-                    return;
-                }
-            }
-
-            // 5. Handle tab-separated lines: 日期\t前綴:法寶名稱\t法號
-            if (normLine.includes('\t')) {
-                const parts = normLine.split('\t').map(p => p.trim()).filter(p => p);
-                if (parts.length >= 2) {
-                    const dateParsed = parseDateText(parts[0], currentContextYear);
-                    if (dateParsed) currentDateInText = dateParsed;
-                    let treasureRaw = parts[1];
-                    const pfMatch = treasureRaw.match(/^(允求|賜降|求得|賜予|賜|得知|法寶名稱)\s*[：:]\s*/);
-                    if (pfMatch) treasureRaw = treasureRaw.replace(pfMatch[0], '');
-                    pendingTreasure.name = treasureRaw;
-                    if (parts.length >= 3) {
-                        const recNames = parts[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
-                        recNames.forEach(n => {
-                            results.push({
-                                name: pendingTreasure.name,
-                                recipient_name: resolveNewDharmaName(n),
-                                person_remarks: '',
-                                master_id: currentMasterId,
-                                date: currentDateInText,
-                                purpose: pendingTreasure.purpose,
-                                effect: pendingTreasure.effect,
-                                acquisition_method: pendingTreasure.acquisition_method,
-                                content: pendingTreasure.content,
-                                remarks: pendingTreasure.remarks,
-                                obtained_date: currentDateInText || form.value.record_date || '',
-                                status: '已登記'
-                            });
-                        });
-                    }
-                    return;
-                }
-            }
-
-            // 6. Detect if the line contains Dharma Names (Recipient Line)
-            const names = normLine.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
-            const knownNames = dharmaNames.value.length > 0
-                ? names.filter(n => {
-                    const resolved = resolveNewDharmaName(n);
-                    return dharmaNames.value.some(dn => dn.name === resolved || dn.alias === n);
-                  })
-                : names.filter(n => !n.includes('：') && !n.includes(':'));
-
-            if (knownNames.length > 0 && pendingTreasure.name) {
-                // Accept line if it has at least one recipient name and a treasure name is set
-                knownNames.forEach(n => {
+        const flush = () => {
+            if (pendingTreasure.name && pendingRecipients.length > 0) {
+                pendingRecipients.forEach(n => {
                     results.push({
                         name: pendingTreasure.name,
                         recipient_name: resolveNewDharmaName(n),
@@ -700,30 +569,148 @@ const batchParsedRows = computed(() => {
                         status: '已登記'
                     });
                 });
+                // Clear recipients but KEEP the name/attributes in case more recipients or attributes follow
+                pendingRecipients = [];
+            }
+        };
+
+        const attrKeywords = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '備註', '得知日期', '登記日期', '求得日期', '日期', '法寶名稱', '承接者', '承接人', '法號', '承接'];
+        const prefixesToStrip = /^(允求|賜降|得知|賜予|賜|求得|法寶名稱)\s*[：:]\s*/;
+
+        lines.forEach(line => {
+            let normLine = line.normalize('NFKC').trim();
+            if (!normLine) return;
+
+            // 1. Detect Combined Line format: [Date] [Name] 承接者:[Recipients]
+            const combinedMatch = normLine.match(/^(\d{2,4}[./-]\d{1,2}[./-]\d{1,2})\s+(.*?)\s+(?:承接者|承接人|法號|承接)[：:](.*)/);
+            if (combinedMatch) {
+                const nextDate = parseDateText(combinedMatch[1], currentContextYear);
+                const nextName = combinedMatch[2].trim().replace(prefixesToStrip, '');
+                
+                // If the name or date changed, flush the previous state
+                if (pendingTreasure.name && (pendingTreasure.name !== nextName || currentDateInText !== nextDate)) {
+                    flush();
+                    pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                }
+                
+                currentDateInText = nextDate;
+                pendingTreasure.name = nextName;
+                const recs = combinedMatch[3].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                pendingRecipients.push(...recs);
                 return;
             }
 
-            // 6. Detect a standalone treasure name (not a keyword line, not a recipient line)
-            if (normLine.length < 50 && !normLine.includes('，') && !normLine.includes('、') && !normLine.includes('：') && !normLine.includes(':')) {
-                // Clear pending attributes when a new treasure name starts (attribute bleed prevention)
-                pendingTreasure = {
-                    name: '',
-                    purpose: '',
-                    effect: '',
-                    acquisition_method: '',
-                    content: '',
-                    remarks: ''
-                };
-                // If it has a prefix, strip it
-                if (normLine.match(prefixesToStrip)) {
-                    pendingTreasure.name = normLine.replace(prefixesToStrip, '');
-                } else {
-                    pendingTreasure.name = normLine;
+            // 2. Detect Name + Recipients format: [Name] 承接者:[Recipients]
+            const nameRecsMatch = normLine.match(/^(.*?)\s+(?:承接者|承接人|法號|承接)[：:](.*)/);
+            if (nameRecsMatch) {
+                const nextName = nameRecsMatch[1].trim().replace(prefixesToStrip, '');
+                if (pendingTreasure.name && pendingTreasure.name !== nextName) {
+                    flush();
+                    pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                }
+                pendingTreasure.name = nextName;
+                const recs = nameRecsMatch[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                pendingRecipients.push(...recs);
+                return;
+            }
+
+            // 3. Detect Attribute Keywords: [Key]: [Value]
+            const keywordMatch = normLine.match(/^([^：:\s]+)[：:\s]+(.*)/);
+            if (keywordMatch) {
+                const key = keywordMatch[1].trim();
+                const val = keywordMatch[2].trim();
+
+                if (attrKeywords.includes(key)) {
+                    if (key === '用意') pendingTreasure.purpose = pendingTreasure.purpose ? pendingTreasure.purpose + '\n' + val : val;
+                    else if (key === '功效') pendingTreasure.effect = pendingTreasure.effect ? pendingTreasure.effect + '\n' + val : val;
+                    else if (key === '作法' || key === '求寶方式' || key === '求寶') pendingTreasure.acquisition_method = pendingTreasure.acquisition_method ? pendingTreasure.acquisition_method + '\n' + val : val;
+                    else if (key === '法寶內容') pendingTreasure.content = pendingTreasure.content ? pendingTreasure.content + '\n' + val : val;
+                    else if (key === '備註') pendingTreasure.remarks = pendingTreasure.remarks ? pendingTreasure.remarks + '\n' + val : val;
+                    else if (key === '法寶名稱') {
+                        const nextName = val.replace(prefixesToStrip, '');
+                        if (pendingTreasure.name && pendingTreasure.name !== nextName) flush();
+                        pendingTreasure.name = nextName;
+                    }
+                    else if (['得知日期', '登記日期', '求得日期', '日期'].includes(key)) {
+                        const d = parseDateText(val, currentContextYear) || val;
+                        if (currentDateInText && currentDateInText !== d) flush();
+                        currentDateInText = d;
+                    }
+                    else if (['承接者', '承接人', '法號', '承接'].includes(key)) {
+                        const recs = val.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                        pendingRecipients.push(...recs);
+                    }
+                    return;
                 }
             }
+
+            // 4. Detect Master/Year/Date Headers (Standalone)
+            const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
+            if (standaloneYearMatch) {
+                flush();
+                let y = parseInt(standaloneYearMatch[1]);
+                if (y < 1000) y += 1911;
+                currentContextYear = y;
+                return;
+            }
+
+            const masterMatch = props.masters?.find(m => (normLine === m.name || normLine === (m.name === '父皇仙師' ? '父皇' : m.name)) && normLine.length < 15);
+            if (masterMatch) {
+                flush();
+                currentMasterId = masterMatch.id;
+                return;
+            }
+
+            const dateHeader = parseDateText(normLine, currentContextYear);
+            const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
+            if (dateHeader && isPureDateStr) {
+                if (currentDateInText && currentDateInText !== dateHeader) flush();
+                currentDateInText = dateHeader;
+                return;
+            }
+
+            // 5. Handle tab-separated lines: 日期\t法寶名稱\t法號
+            if (normLine.includes('\t')) {
+                const parts = normLine.split('\t').map(p => p.trim()).filter(p => p);
+                if (parts.length >= 2) {
+                    flush();
+                    const d = parseDateText(parts[0], currentContextYear);
+                    if (d) currentDateInText = d;
+                    pendingTreasure.name = parts[1].replace(prefixesToStrip, '');
+                    if (parts.length >= 3) {
+                        pendingRecipients = parts[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+                    }
+                    return;
+                }
+            }
+
+            // 6. Detect if the line contains Dharma Names (Recipient Line without prefix)
+            const names = normLine.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
+            const knownNames = names.filter(n => {
+                const resolved = resolveNewDharmaName(n);
+                return dharmaNames.value.some(dn => dn.name === resolved || dn.alias === n);
+            });
+
+            if (knownNames.length > 0 && pendingTreasure.name) {
+                pendingRecipients.push(...names);
+                return;
+            }
+
+            // 7. Detect a standalone treasure name
+            if (normLine.length < 100 && !normLine.includes('，') && !normLine.includes('、') && !normLine.includes('：') && !normLine.includes(':')) {
+                const nextName = normLine.replace(prefixesToStrip, '');
+                if (pendingTreasure.name && pendingTreasure.name !== nextName) {
+                    flush();
+                    pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                }
+                pendingTreasure.name = nextName;
+            }
         });
+        
+        flush(); // Final flush for the last entry
         return results;
     });
+
 
 const parsedItemsCount = computed(() => batchParsedRows.value.length);
 

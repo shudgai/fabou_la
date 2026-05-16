@@ -272,8 +272,7 @@
                                                 <button @click.stop="toggleExpand(reg.id); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-indigo-50 border-b border-slate-50 whitespace-nowrap">
                                                     {{ expandedId === reg.id ? '收起清單' : '展開清單' }}
                                                 </button>
-                                                <button v-if="inlineEditId !== reg.id" @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
-                                                <button v-else @click.stop="cancelInlineEdit()" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50 border-b border-slate-50 whitespace-nowrap">取消修改</button>
+                                                <button @click.stop="editItem(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">修改內容</button>
                                                 <button @click.stop="copyAsTextFile(reg); openMenuId = null" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
                                                 <button @click.stop="downloadOnly(reg)" class="w-full p-3 text-left text-[17px] font-black text-slate-900 hover:bg-blue-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
                                                 <button @click.stop="confirmDelete(reg.id)" class="w-full p-3 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
@@ -675,7 +674,7 @@ const toggleMenu = (id) => {
 const toggleExpand = (id) => {
     if (expandedId.value === id) {
         expandedId.value = null;
-        inlineEditId.value = null;
+
         if (focusedId.value === id) focusedId.value = null;
     } else {
         expandedId.value = id;

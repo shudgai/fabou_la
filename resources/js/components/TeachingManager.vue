@@ -208,9 +208,10 @@
                                                 </div>
                                             </template>
                                             <template v-else>
-                                                <!-- Title Row (Black Bold) -->
-                                                <div class="text-[17px] font-black leading-none mb-1 text-slate-900">
-                                                    <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-red-600'">{{ formatMasterName(item.master?.name || item.master_name) }}</span>開示給:{{ getRecipientName(item) }}
+                                                <div v-if="!isContentLiteral(item)" class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-2">
+                                                    <span class="text-[17px] font-black text-indigo-700 leading-none">
+                                                        <span :class="(item.master?.name || item.master_name) === '閻王仙師' ? 'text-slate-900' : 'text-indigo-600'">{{ formatMasterName(item.master?.name || item.master_name) }}</span>開示給:{{ getRecipientName(item) }}
+                                                    </span>
                                                 </div>
                                                 <!-- Content Summary Row (3 Lines max) -->
                                                 <div class="text-[17px] font-semibold text-slate-500 leading-relaxed whitespace-pre-wrap text-left">
@@ -255,8 +256,29 @@
                                             <div class="px-[15px] flex items-center justify-between shrink-0 bg-white" :class="isContentLiteral(item) ? 'pt-4 pb-0' : 'py-4 border-b border-slate-100'">
                                                 <div class="flex flex-col">
                                                     <div class="text-[15px] font-bold text-slate-400 mb-1">{{ (item.date || '').replace(/-/g, '/') }}</div>
-                                                    <div v-if="!isContentLiteral(item)" class="text-[17px] font-black text-slate-900 leading-tight">
-                                                        {{ formatMasterName(item.master?.name || item.master_name) }}開示給:{{ getRecipientName(item) }}
+                                                    <div v-if="!isContentLiteral(item)" class="inline-flex items-center bg-indigo-50/50 px-4 py-2 rounded-[20px] border border-indigo-100/50 shadow-sm mb-4">
+                                                        <template v-if="inlineEditingId === item.id">
+                                                            <div class="flex items-center gap-1">
+                                                                <editable-input-chips 
+                                                                    v-model="inlineEditData.master_name" 
+                                                                    variant="boxed"
+                                                                    placeholder="仙師"
+                                                                    :options="allMastersList"
+                                                                    class="min-w-[100px]" />
+                                                                <span class="text-[17px] font-black text-indigo-700 mx-1">開示給:</span>
+                                                                <editable-input-chips 
+                                                                    v-model="inlineEditData.target_name" 
+                                                                    variant="boxed"
+                                                                    placeholder="對象"
+                                                                    :options="combinedPractitionerOptions"
+                                                                    class="min-w-[120px]" />
+                                                            </div>
+                                                        </template>
+                                                        <template v-else>
+                                                            <span class="text-[17px] font-black text-indigo-700 leading-tight">
+                                                                {{ formatMasterName(item.master?.name || item.master_name) }}開示給:{{ getRecipientName(item) }}
+                                                            </span>
+                                                        </template>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center space-x-1">
@@ -464,9 +486,34 @@
                             </div>
 
                             <div class="flex flex-col border-l-4 border-indigo-500 pl-3">
-                                <span class="text-[17px] font-normal text-slate-900 leading-tight">
-                                    {{ formatMasterName(item.master_name) }}開示給:{{ getRecipientName(item) }}
-                                </span>
+                                <div v-if="editingHeaderIdx === bIdx" class="space-y-4 py-2 animate-fade-in">
+                                    <div class="space-y-2">
+                                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">修改仙師</div>
+                                        <editable-input-chips 
+                                            v-model="item.master_name" 
+                                            variant="boxed"
+                                            placeholder="仙師"
+                                            :options="['老祖仙師', '元始仙師', '道祖仙師', '靈寶仙師', '父皇', '太宰仙師', '太子', '閻王仙師']" 
+                                            @change="(val) => syncHeaderMaster(val, bIdx)" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">修改對象</div>
+                                        <editable-input-chips 
+                                            v-model="item.dharmaSearchQuery" 
+                                            variant="boxed"
+                                            placeholder="對象"
+                                            :options="combinedPractitionerOptions" 
+                                            @change="(val) => syncHeaderRecipient(val, bIdx)" />
+                                    </div>
+                                    <button @click="editingHeaderIdx = null" class="w-full py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[14px] font-black active:scale-95 transition-all">
+                                        完成修改
+                                    </button>
+                                </div>
+                                <div v-else @click="editingHeaderIdx = bIdx" class="inline-flex items-center bg-indigo-50 px-4 py-2 rounded-[20px] border border-indigo-100 cursor-pointer hover:bg-indigo-100 transition-all shadow-sm mb-2">
+                                    <span class="text-[17px] font-black text-indigo-700 leading-tight">
+                                        {{ formatMasterName(item.master_name) }}開示給:{{ getRecipientName(item) }}
+                                    </span>
+                                </div>
                             </div>
 
                             <!-- Personnel Detail Box: Toggleable for high-density -->
@@ -523,7 +570,7 @@
                     </div>
 
                     <div class="fixed bottom-[37px] left-0 right-0 md:fixed md:bottom-[37px] md:left-0 md:right-0 px-6 pt-[4px] pb-[1px] border-t border-slate-100 bg-white/95 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.05)] shrink-0 flex items-center space-x-4 z-[1210]">
-                        <button @click="saveConfirmModal.show = false" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
+                        <button @click="saveConfirmModal.show = false; addMode = true" class="px-8 py-[12px] bg-slate-100 text-slate-500 rounded-2xl font-black text-[17px] active:scale-[0.98] transition-all whitespace-nowrap">
                             修改
                         </button>
                         <button @click="performActualSave" class="flex-1 py-[12px] bg-amber-500 text-white rounded-2xl font-black text-[19px] shadow-lg shadow-amber-200/40 active:scale-[0.98] transition-all flex items-center justify-center" style="color: white !important;">
@@ -609,6 +656,8 @@
 <script setup>
 import TeachingAddForm from './TeachingAddForm.vue';
 import { ref, computed, onMounted, onUnmounted, defineEmits, watch, nextTick } from 'vue';
+import LogoImperialNotebook from './LogoImperialNotebook.vue';
+import EditableInputChips from './EditableInputChips.vue';
 import { debounce } from '../utils/debounce';
 import axios from 'axios';
 import SearchComponent from './SearchComponent.vue';
@@ -625,6 +674,22 @@ const getTodayStr = () => {
 
 // Reactive State
 const props = defineProps(['user']);
+
+const combinedPractitionerOptions = computed(() => {
+    const dNames = (dharmaNames.value || []).map(dn => dn.name);
+    const gNames = (groups.value || []).map(g => g.name);
+    const combined = [...new Set([...dNames, ...gNames, '在場全體', '各宮'])];
+    return combined.sort((a, b) => a.localeCompare(b, 'zh-TW', { collation: 'stroke' }));
+});
+
+const allMastersList = computed(() => {
+    const list = (masters.value || [])
+        .map(m => m.name)
+        .filter(n => n && n !== '父皇仙師');
+    if (!list.includes('父皇')) list.unshift('父皇');
+    return [...new Set(list)];
+});
+
 const formatMasterName = (name) => {
     if (!name) return '仙師';
     let clean = name.replace('每日開示', '').replace('開示記錄', '').replace('專區', '').trim();
@@ -790,6 +855,7 @@ const masterMismatchModal = ref({
 // number = user explicitly chose specific master ID
 const pendingMasterId = ref(null);
 const masters = ref([]);
+
 const loading = ref(false);
 const saving = ref(false);
 const editingId = ref(null);
@@ -802,6 +868,7 @@ const persistentToast = ref(null);
 const deleteConfirmId = ref(null);
 const toastActionContext = ref(null);
 const reorderMode = ref(false);
+const editingHeaderIdx = ref(null);
 const inlineEditingId = ref(null);
 const inlineEditData = ref({
     id: null,
@@ -846,6 +913,7 @@ const startInlineEdit = (item) => {
 const cancelInlineEdit = () => {
     inlineEditingId.value = null;
     inlineEditData.value = { id: null, date: '', master_name: '', target_name: '', content: '', items: [], items_footer_remarks: '' };
+    saving.value = false;
 };
 
 const saveInlineEdit = async () => {
@@ -1107,22 +1175,52 @@ const toggleDateExpand = (date) => {
     }
 };
 
-const activeMasterDropdownId = ref(null);
-const allMastersList = computed(() => {
-    // Requirement: Follow original sequence while excluding '父皇仙師'
-    return (masters.value || [])
-        .map(m => m.name)
-        .filter(n => n && n !== '父皇仙師');
-});
 
-const pickMaster = (name, index = null) => {
-    if (index !== null) {
-        batchRecords.value[index].master_name = name;
-    } else {
-        masterNameInput.value = name;
-        resolveMasterId();
+
+const syncHeaderMaster = (name, bIdx) => {
+    if (saveConfirmModal.value.records[bIdx]) {
+        saveConfirmModal.value.records[bIdx].master_name = name;
+        // Also update form if it's the first record (for single save parity)
+        if (bIdx === 0 && !addMode.value) {
+            form.value.master_name = name;
+            resolveMasterId();
+        }
     }
-    activeMasterDropdownId.value = null;
+};
+
+const syncHeaderRecipient = (val, bIdx) => {
+    if (saveConfirmModal.value.records[bIdx]) {
+        saveConfirmModal.value.records[bIdx].dharmaSearchQuery = val;
+        // Trigger recipient logic for this specific confirm record
+        handleHeaderDharmaInput(val, bIdx);
+    }
+};
+
+const handleHeaderDharmaInput = (val, bIdx) => {
+    const record = saveConfirmModal.value.records[bIdx];
+    if (!record) return;
+
+    const matchedDN = dharmaNames.value.find(dn => dn.name === val);
+    if (matchedDN) {
+        record.dharma_name_ids = [matchedDN.id];
+        record.target_remarks = '';
+        return;
+    }
+    const matchedGroup = groups.value.find(g => g.name === val || g.palace === val);
+    if (matchedGroup) {
+        record.dharma_name_ids = (matchedGroup.dharma_names || matchedGroup.dharmaNames || []).map(dn => dn.id);
+        record.target_remarks = matchedGroup.name;
+        return;
+    }
+    
+    // Custom/Virtual
+    if (val === '在場全體') {
+        record.dharma_name_ids = [];
+        record.target_remarks = '在場全體';
+    } else {
+        record.dharma_name_ids = [];
+        record.target_remarks = val;
+    }
 };
 
 const showRecipientDetails = ref({});
@@ -1593,13 +1691,13 @@ const addFooterRemark = () => {
 
 // When loading an existing record for edit, parse existing remarks back to list
 watch(() => form.value.items_footer_remarks, (val) => {
-    if (typeof val === 'string') {
-        const lines = val.split('\n').map(l => l.trim());
+    if (typeof val === 'string' && val.trim()) {
+        const lines = val.split('\n').map(l => l.trim()).filter(Boolean);
         // Only sync if the list doesn't already match (avoid infinite loop)
         if (lines.join('\n') !== footerRemarksList.value.join('\n')) {
             footerRemarksList.value = lines;
         }
-    } else if (val === null || val === undefined) {
+    } else {
         footerRemarksList.value = [];
     }
 }, { immediate: true });
@@ -3770,16 +3868,19 @@ const executeDistributionSave = async (mode) => {
 };
 
 const showAdd = () => {
+    saving.value = false; // Safety reset
     editingId.value = null;
     form.value = {
+        id: null, // Explicitly clear ID to avoid edit-mode leak in TeachingAddForm
         supplement: '', target_remarks: '', content: '',
-        date: '', master_id: null, items: [], 
+        date: getTodayStr(), master_id: null, items: [], 
         remarks: '', items_footer_remarks: '', user_id: props.user?.id || 1, dharma_name_ids: []
     };
 
     dharmaSearchQuery.value = '';
     masterNameInput.value = '';
     batchImportContent.value = ''; // Reset the collective paste area
+    footerRemarksList.value = []; // Reset footer remarks list
 
     const dailyMaster = masters.value.find(m => m.name === '父皇' || m.name === '父皇仙師');
     const dailyMasterId = dailyMaster?.id || null;
@@ -3950,6 +4051,14 @@ const isAnyModalOpen = computed(() => {
            !!activeDropdownId.value || 
            !!itemsDetailMode.value ||
            saveConfirmModal.value?.show;
+});
+
+watch(addMode, (newVal) => {
+    if (!newVal) {
+        editingId.value = null;
+        if (form.value) form.value.id = null;
+        saving.value = false;
+    }
 });
 
 watch(isAnyModalOpen, (newVal) => {

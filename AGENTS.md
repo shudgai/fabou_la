@@ -169,6 +169,19 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Table Headers**: "法號" header includes an "Add" (新增) button in both modes; Edit mode toggles a grid selector; View mode triggers Edit mode with selector open.
 - **Others Category**: Table columns reordered to [法號, 日期, 親友, 備註] to prioritize dharma name visibility.
 
+### RegistryAddForm.vue
+- Step-based form modal for 法寶登記 (Wizard: 日期 → 仙師 → 法寶名稱 → 用意 → 功效 → 作法 → 法寶內容 → 備註)
+- **Registry Batch Import Standard (2026-05-16)**:
+  - **Combined Line**: `[Date] [Name] 承接者:[Recipients]` (e.g. `109.11.1 閻燁提升為玄之將 承接者:赤覺`)
+  - **Recipients**: Comma or space separated (e.g. `鳳尊，鳳煌，龍勝`).
+  - **Multi-line Attributes**: `用意:`, `功效:`, `作法:`, `法寶內容:`, `備註:`. 
+    - Multiple lines of the same attribute are appended with newlines (`\n`).
+    - Attributes following a recipient line apply to the *preceding* treasure and all its recipients.
+  - **Prefix Stripping**: Automatically strips `允求:`, `賜降:`, `得知:`, `求得:` from treasure names for data purity.
+  - **Date Parsing**: Supports ROC (`109.11.1`) and standalone year headers (`110年`).
+  - **Heuristic**: Space-separated lines starting with a date are treated as combined lines if they contain a recipient prefix.
+- **Registry AddForm UI: label**: `作法 (選填)` → `作法/求寶方式`.
+
 ### ImperialGraceManager.vue
 - 皇恩 module — reference for folder sizing (198×198 buttons, 163×163 SVG, `overflow-clip` on wrapper)
 - `overflow-y-auto` on scroll container
@@ -331,10 +344,12 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 | `triggerBatchSave` 二次解析 | 優先使用 `batchData.rows`（表單已解析資料），老解析器保留為 fallback |
 
 #### 支援的批次格式
-1. **Tab 分隔**: `日期\t前綴:法寶名稱\t法號1,法號2` （最推薦）
-2. **前綴單行**: `允求:法寶名稱 法號1,法號2`
-3. **多行屬性**: `日期` → `法寶名稱` → `用意:xxx` → `法號1,法號2`
-4. **民國年**: `113.10.6` 自動轉西元 `2024-10-06`
+1. **聯合單行 (推薦)**: `日期 法寶名稱 承接者:法號1,法號2`
+2. **Tab 分隔**: `日期\t法寶名稱\t法號1,法號2`
+3. **前綴單行**: `允求:法寶名稱 法號1,法號2`
+4. **多行屬性 (狀態式解析)**: `日期` → `法寶名稱` → `用意:xxx` → `承接者:法號1,法號2` → `備註:xxx`
+5. **屬性累加**: 若出現多行相同的屬性（如多個 `備註:`），解析器會自動換行累加，不再覆蓋。
+6. **民國年**: `113.10.6` 自動轉西元 `2024-10-06`。
 
 ## Image Optimization (2026-05-15)
 
