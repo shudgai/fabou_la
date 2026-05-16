@@ -352,7 +352,7 @@
                                 paddingBottom: '13px'
                             }"
                         >
-                            <span style="color: #ffffff !important;">開始分組演算</span>
+                            <span style="color: #000000 !important;">開始分組演算</span>
                         </button>
                     </div>
                 </div>
