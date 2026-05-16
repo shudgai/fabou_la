@@ -516,24 +516,24 @@
                     <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-12 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
                         <h2 class="text-[17px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
                         
-                        <!-- Single Continuous Underline Area -->
+                        <!-- Single Underline with Vertical Centered Items -->
                         <div class="px-8 mt-12">
                             <div class="max-w-md mx-auto border-b-2 border-slate-300 pb-1">
-                                <div class="flex flex-wrap items-baseline justify-center gap-x-6 gap-y-4">
-                                    <!-- Selected Items sitting on the same line -->
-                                    <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-baseline gap-1.5 animate-fade-in">
-                                        <span class="font-normal text-[17px] text-black tracking-wide">{{ r }}</span>
-                                        <button @click="removeFooterRemark(idx)" class="text-slate-300 hover:text-red-500 transition-colors active:scale-90 translate-y-[2px]">
+                                <div class="flex flex-col items-center justify-center gap-y-3">
+                                    <!-- Selected Items stacked vertically -->
+                                    <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-center gap-3 animate-fade-in">
+                                        <span class="font-normal text-[18px] text-black tracking-wide leading-none">{{ r }}</span>
+                                        <button @click="removeFooterRemark(idx)" class="text-slate-300 hover:text-red-500 transition-colors active:scale-90">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
                                     </div>
                                     
-                                    <!-- Inline Input sitting on the same line -->
-                                    <div class="inline-block min-w-[120px]">
+                                    <!-- Input sitting at the very bottom on the line -->
+                                    <div class="w-full max-w-[200px]">
                                         <input v-model="newFooterRemark" 
                                                @keydown.enter.prevent="addFooterRemark"
                                                placeholder="在此輸入..." 
-                                               class="w-full text-center text-[17px] font-normal border-none bg-transparent outline-none transition-all placeholder:text-slate-200 text-black leading-none" />
+                                               class="w-full text-center text-[17px] font-normal border-none bg-transparent outline-none transition-all placeholder:text-slate-200 text-black leading-none py-1" />
                                     </div>
                                 </div>
                             </div>
