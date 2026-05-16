@@ -3663,11 +3663,16 @@ const performActualSave = async () => {
             ...formClean 
         } = form.value;
 
+        const isDailyContext = !currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
         const payload = {
             ...formClean,
             master_id: form.value.master_id || currentFolder.value?.id,
-            is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 
+            is_daily: isDailyContext ? 1 : 0 
         };
+
+        const wasEditing = !!editingId.value;
+        const targetMasterId = payload.master_id;
+        const targetIsDaily = payload.is_daily;
 
         if (editingId.value) {
             const res = await axios.put(`/teachings/${editingId.value}`, payload);
@@ -3697,6 +3702,25 @@ const performActualSave = async () => {
                     items: Array.isArray(res.data.items) ? res.data.items : (typeof res.data.items === 'string' ? JSON.parse(res.data.items) : []),
                     dharma_name_ids: Array.isArray(res.data.dharma_name_ids) ? res.data.dharma_name_ids : (typeof res.data.dharma_name_ids === 'string' ? JSON.parse(res.data.dharma_name_ids) : [])
                 };
+
+                // Clear search to ensure the new record is visible
+                searchQuery.value = '';
+
+                // If the new record belongs to a different master folder, switch to it
+                const isCurrentDaily = currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
+                if (targetIsDaily) {
+                    if (!isCurrentDaily) {
+                        currentCategory.value = 'daily';
+                        currentFolder.value = folders_list.find(f => f.id === 0);
+                    }
+                } else if (targetMasterId && currentFolder.value?.id != targetMasterId) {
+                    const targetFolder = folders_list.find(f => f.id == targetMasterId);
+                    if (targetFolder) {
+                        currentCategory.value = 'masters';
+                        currentFolder.value = targetFolder;
+                    }
+                }
+
                 // Optimistic UI: Add to top of list immediately
                 visibleItems.value.unshift(newRecord);
                 focusedId.value = res.data.id;
@@ -3714,11 +3738,12 @@ const performActualSave = async () => {
 
         saveConfirmModal.value.show = false;
         addMode.value = false;
-        editingId.value = null; // Ensure editingId is cleared
+        const pageToFetch = wasEditing ? itemPagination.value.current_page : 1;
+        editingId.value = null; 
 
         // Refresh in background to ensure total consistency (sorting, etc)
         // If it was a new item, always go to page 1 to see it
-        fetchItems(editingId.value ? itemPagination.value.current_page : 1);
+        fetchItems(pageToFetch);
     } catch (e) {
         console.error(e);
         persistentToast.value = { msg: '✖ 儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'), type: 'error' };
@@ -3861,7 +3886,7 @@ const executeDistributionSave = async (mode) => {
                 items_footer_remarks: record.items_footer_remarks || form.value.items_footer_remarks || '',
                 items: items,
                 user_id: props.user?.id || 1,
-                is_daily: (currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 // Correctly flag daily teachings vs master records
+                is_daily: (!currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 
             };
 
             const res = await axios.post('/teachings', payload);
@@ -3893,6 +3918,9 @@ const executeDistributionSave = async (mode) => {
 
         distributionModal.value.show = false;
         addMode.value = false;
+
+        // Clear search so the user can see their new mass records
+        searchQuery.value = '';
 
         // Stay in current folder to allow user to see the newly added data
         batchRecords.value = [{ dharma_name_ids: [], content: '', dharmaSearchQuery: '', target_remarks: '', items: [] }];
