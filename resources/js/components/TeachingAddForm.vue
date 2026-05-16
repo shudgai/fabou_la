@@ -509,40 +509,42 @@
                                      <span class="text-[17px] font-black tracking-[0.2em] uppercase">新增降寶明細</span>
                                  </button>
                              </div>
-
-                             <div class="space-y-6">
-                                 <h2 class="text-[14px] font-normal text-slate-400 tracking-[0.2em] text-center uppercase">結尾備註 (選填)</h2>
-                                 
-                                 <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-2.5 justify-center mb-6 px-4">
-                                     <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-white px-4 py-2.5 rounded-2xl flex items-center border border-slate-100 shadow-sm animate-fade-in">
-                                         <span class="font-normal text-[15px] text-black">{{ r }}</span>
-                                         <button @click="removeFooterRemark(idx)" class="ml-2 text-slate-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
-                                     </div>
-                                 </div>
-
-                                 <div class="px-8 space-y-8">
-                                     <!-- Custom Input -->
-                                     <div class="relative">
-                                         <editable-input-chips 
-                                            v-model="newFooterRemark" 
-                                            variant="boxed"
-                                            :options="[]" 
-                                            @change="addFooterRemark" 
-                                            placeholder="輸入結尾備註..." />
-                                     </div>
-
-                                     <!-- Quick Add Buttons (Vertical) -->
-                                     <div class="flex flex-col gap-3">
-                                         <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
-                                         <button @click="quickAddFooterRemark('完畢')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">完畢</button>
-                                     </div>
-                                 </div>
                              </div>
                          </div>
                     </div>
 
-                    <!-- STEP 6: Review -->
-                    <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-8 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
+                    <!-- STEP 6: Footer Remarks -->
+                    <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-6 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
+                        <h2 class="text-[20px] font-normal text-black tracking-[0.1em] text-center uppercase">結尾備註 (選填)</h2>
+                        
+                        <div v-if="footerRemarks.length > 0" class="flex flex-wrap gap-2.5 justify-center mb-6 px-4">
+                            <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="bg-white px-4 py-2.5 rounded-2xl flex items-center border border-slate-100 shadow-sm animate-fade-in">
+                                <span class="font-normal text-[15px] text-black">{{ r }}</span>
+                                <button @click="removeFooterRemark(idx)" class="ml-2 text-slate-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
+                            </div>
+                        </div>
+
+                        <div class="px-8 space-y-12 mt-12">
+                            <!-- Custom Input -->
+                            <div class="relative">
+                                <editable-input-chips 
+                                v-model="newFooterRemark" 
+                                variant="boxed"
+                                :options="[]" 
+                                @change="addFooterRemark" 
+                                placeholder="輸入結尾備註..." />
+                            </div>
+
+                            <!-- Quick Add Buttons (Vertical) -->
+                            <div class="flex flex-col gap-3">
+                                <button @click="quickAddFooterRemark('*允同享皇恩')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">*允同享皇恩</button>
+                                <button @click="quickAddFooterRemark('完畢')" class="w-full py-4 rounded-[24px] border border-slate-100 bg-white text-black text-[17px] font-normal active:scale-95 transition-all shadow-sm">完畢</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 7: Review -->
+                    <div v-else-if="currentStep === 7" :key="'step-7'" class="space-y-8 animate-fade-in text-center w-full pt-[30px] px-8 pb-32">
                         <h2 class="text-[18px] font-normal text-black tracking-tight leading-relaxed">載錄內容<span class="text-black">預覽確認</span></h2>
                         
                         <div class="max-w-md mx-auto border border-slate-100 rounded-[40px] overflow-hidden shadow-xl bg-white text-left mt-8">
@@ -715,8 +717,8 @@ const newItemRemarks = ref('');
 
 // Wizard Step State
 const currentStep = ref(1);
-const totalSteps = 6;
-const stepTitles = ['選擇日期', '選擇仙師', '選擇對象', '輸入內容', '降寶明細', '預覽確認'];
+const totalSteps = 7;
+const stepTitles = ['選擇日期', '選擇仙師', '選擇對象', '輸入內容', '降寶明細', '結尾備註', '預覽確認'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1]);
 
 // Form State
