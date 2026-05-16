@@ -516,7 +516,7 @@
                     <div v-else-if="currentStep === 6" :key="'step-6'" class="space-y-12 animate-fade-in text-center w-full pt-[40px] px-8 pb-32">
                         <h2 class="text-[17px] font-normal text-black tracking-[0.1em] uppercase">結尾備註 (選填)</h2>
                         
-                        <div v-if="footerRemarks.length > 0" class="flex flex-col items-center gap-4 mb-10 px-4">
+                        <div v-if="footerRemarks.length > 0" class="flex flex-col items-center gap-2 mb-4 px-4">
                             <div v-for="(r, idx) in sortedFooterRemarks" :key="idx" class="flex items-center gap-3 animate-fade-in group">
                                 <span class="font-normal text-[19px] text-black tracking-wide">{{ r }}</span>
                                 <button @click="removeFooterRemark(idx)" class="text-slate-200 hover:text-red-500 transition-colors active:scale-90">
@@ -525,14 +525,14 @@
                             </div>
                         </div>
 
-                        <div class="px-8 space-y-12">
+                        <div class="px-8 space-y-6">
                             <!-- Custom Input with Underline -->
                             <div class="relative group">
                                 <textarea v-model="newFooterRemark" 
                                           @keydown.enter.prevent="addFooterRemark"
                                           rows="1"
                                           placeholder="在此輸入結尾備註..." 
-                                          class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
+                                          class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-indigo-500 bg-transparent py-2 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                             </div>
 
                             <!-- Quick Add Buttons (Vertical) -->
