@@ -125,6 +125,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 
 ### TeachingManager.vue
 - Main add/list UI for 父皇仙師開示載錄
+- Wizard steps refactored to 7 steps (Added Step 6: Footer Remarks).
 - Folder grid: `flex flex-col items-center gap-[4px]`
 - Folder icon fill: `#ef4444` (red)
 - Has `*允同享皇恩` in remark-list datalist
@@ -140,8 +141,15 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Group Identity Persistence**: Selecting a group in `TeachingAddForm.vue` now populates `form.value.target_remarks` with the group name. This acts as a persistent hint in the database so that after a page refresh, the system knows whether the user intended to record for the "Group" or the "Individual".
 
 ### TeachingAddForm.vue
-- Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 預覽)
+- Step-based form modal for 父皇仙師每日開示 (wizard: 日期 → 仙師 → 對象 → 內容 → 降寶 → 結尾備註 → 預覽)
 - Modal container: `overflow-hidden` removed to prevent dropdown clipping
+- **Footer Remarks (Step 6)**: 
+  - Title size matches body text (`17px`).
+  - Single underline design: All items and input sit on a common `border-b-2 border-slate-300` base.
+  - Vertical Stacking: Selected items stack vertically and are centered horizontally.
+  - Sorting logic: "完畢" is always forced to the bottom of the list.
+  - Interactive Entry: Input field remains visible after adding items for iterative custom entry.
+  - Quick Add: Chip-style buttons (`*允同享皇恩`, `完畢`) located below the entry line.
 - **Upward-expanding teleported dropdowns**: Master, Practitioner, Treasure dropdowns use `<teleport to="body">` with `position: fixed` + `transform: translateY(-100%)` to expand upward without being clipped by scroll container
 - Each teleported dropdown has a corresponding `open*Dropdown()` function using `getBoundingClientRect()` for positioning
 - Master and Practitioner inputs: dropdown only opens on arrow button click or on input typing (not on focus alone)
