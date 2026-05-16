@@ -15,16 +15,23 @@ class ImperialGraceSeeder extends Seeder
 
         $graces = [
             [
-                'name' => 'Ggyh',
+                'name' => '重大皇恩項目A',
                 'master_id' => 1,
+                'record_date' => '2026-05-15',
+                'status' => '已求得',
+                'obtained_date' => '2026-05-16',
+            ],
+            [
+                'name' => '重大皇恩項目B',
+                'master_id' => 2,
                 'record_date' => '2026-05-15',
                 'status' => '未求得',
             ],
             [
-                'name' => 'ddd',
-                'master_id' => 2,
-                'record_date' => '2026-05-15',
-                'status' => '未求得',
+                'name' => '重大皇恩項目C',
+                'master_id' => 5,
+                'record_date' => '2026-05-10',
+                'status' => '已登記',
             ]
         ];
 

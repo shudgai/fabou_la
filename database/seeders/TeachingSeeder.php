@@ -83,6 +83,7 @@ class TeachingSeeder extends Seeder
                     'content' => $t['content'] ?? null,
                     'items' => $t['items'] ?? [],
                     'items_footer_remarks' => $t['items_footer_remarks'] ?? null,
+                    'is_content_literal' => $t['is_content_literal'] ?? false,
                 ]
             );
 
