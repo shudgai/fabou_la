@@ -59,7 +59,7 @@
                                  style="will-change: transform;"
                                  alt="書籍圖示"></picture>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(12px);">
-                                <div class="font-black tracking-tight leading-tight text-center font-biaokai-locked text-[38px] text-[#8B0000]">特殊法寶<br>登記區</div>
+                                <div class="font-black tracking-tight leading-tight text-center font-biaokai-locked text-[34px] text-[#8B0000]">特殊法寶<br>登記區</div>
                                 <div class="mt-8 flex items-center font-biaokai-locked">
                                     <span class="text-white font-normal tracking-tight font-biaokai-locked text-[16px]">共 {{ categoryCounts.major || 0 }} 筆</span>
                                 </div>
@@ -84,7 +84,7 @@
                                  alt="書籍圖示"></picture>
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[52px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(2px);">
-                                 <div class="font-black tracking-tighter leading-tight text-center font-biaokai -mt-6" style="font-size: 16px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶<br>登記區</div>
+                                 <div class="font-black tracking-tighter leading-tight text-center font-biaokai -mt-6" style="font-size: 14.5px !important; color: rgb(139, 0, 0) !important; font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;">特殊法寶<br>登記區</div>
                                 
                                 <div class="flex-1 flex flex-col items-center justify-center w-full mt-1">
                                     <div class="font-black tracking-tight leading-tight text-center whitespace-nowrap !font-black font-biaokai"

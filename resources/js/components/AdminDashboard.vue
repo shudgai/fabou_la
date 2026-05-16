@@ -166,7 +166,7 @@ const notebookItems = computed(() => {
         { id: 'kaiwen', label: '開文專區' },
         { id: 'grudge', label: '怨靈記錄專區' },
         { id: 'military', label: '軍隊記錄專區' },
-        { id: 'treasure', label: '法寶登記專區' },
+        { id: 'treasure', label: '特殊法寶登記區' },
         { id: 'other_teaching', label: '其他記錄專區' },
         { id: 'other', label: '抽籤專區' },
         { id: 'trash', label: '回收桶' },
