@@ -3651,7 +3651,7 @@ const performActualSave = async () => {
     if (saving.value) return;
 
     // Always distribution 'keep' mode as per user request to skip intermediate modals
-    if (activeEntryTab.value === 'batch' || batchRecords.value.length > 1) {
+    if (activeEntryTab.value === 'batch') {
         await executeDistributionSave('distribute');
         saveConfirmModal.value.show = false;
         return;
