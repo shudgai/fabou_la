@@ -933,13 +933,22 @@ const saveInlineEdit = async () => {
             items_footer_remarks: parsed.items_footer_remarks || ''
         });
 
-        // Update local state
+        // Update local state (Optimistic UI)
+        const vIdx = visibleItems.value.findIndex(t => t.id === inlineEditData.value.id);
+        if (vIdx !== -1) {
+            visibleItems.value[vIdx] = { ...visibleItems.value[vIdx], ...res.data };
+        }
+        
+        // Also update teachings if it's still being used as a secondary source
         const idx = teachings.value.findIndex(t => t.id === inlineEditData.value.id);
         if (idx !== -1) {
             teachings.value[idx] = { ...teachings.value[idx], ...res.data };
         }
 
         cancelInlineEdit();
+        
+        // Background sync to ensure total consistency
+        fetchItems(itemPagination.value.current_page || 1);
     } catch (err) {
         console.error('Failed to save inline edit:', err);
         persistentToast.value = { msg: '✖ 存檔失敗，請稍後再試', type: 'error' };
@@ -3633,18 +3642,19 @@ const performActualSave = async () => {
         };
 
         if (editingId.value) {
-            await axios.put(`/teachings/${editingId.value}`, payload);
+            const res = await axios.put(`/teachings/${editingId.value}`, payload);
+            const updatedFromServer = res.data;
             
             // Optimistic UI update for list view
             const idx = visibleItems.value.findIndex(i => i.id === editingId.value);
             if (idx !== -1) {
-                const mObj = masters.value.find(v => v.id == payload.master_id);
+                const mObj = masters.value.find(v => v.id == (updatedFromServer.master_id || payload.master_id));
                 const updatedRecord = {
                     ...visibleItems.value[idx],
-                    ...payload,
-                    master: mObj || { id: payload.master_id, name: payload.master_name || '仙師' },
-                    items: Array.isArray(payload.items) ? payload.items : (typeof payload.items === 'string' ? JSON.parse(payload.items) : []),
-                    dharma_name_ids: Array.isArray(payload.dharma_name_ids) ? payload.dharma_name_ids : (typeof payload.dharma_name_ids === 'string' ? JSON.parse(payload.dharma_name_ids) : [])
+                    ...updatedFromServer,
+                    master: mObj || updatedFromServer.master || { id: updatedFromServer.master_id, name: updatedFromServer.master_name || '仙師' },
+                    items: Array.isArray(updatedFromServer.items) ? updatedFromServer.items : (typeof updatedFromServer.items === 'string' ? JSON.parse(updatedFromServer.items) : []),
+                    dharma_name_ids: Array.isArray(updatedFromServer.dharma_name_ids) ? updatedFromServer.dharma_name_ids : (typeof updatedFromServer.dharma_name_ids === 'string' ? JSON.parse(updatedFromServer.dharma_name_ids) : [])
                 };
                 visibleItems.value[idx] = updatedRecord;
                 focusedId.value = editingId.value;
@@ -3679,7 +3689,8 @@ const performActualSave = async () => {
         editingId.value = null; // Ensure editingId is cleared
 
         // Refresh in background to ensure total consistency (sorting, etc)
-        fetchItems(itemPagination.value.current_page);
+        // If it was a new item, always go to page 1 to see it
+        fetchItems(editingId.value ? itemPagination.value.current_page : 1);
     } catch (e) {
         console.error(e);
         persistentToast.value = { msg: '✖ 儲存失敗：' + (e.response?.data?.message || '伺服器錯誤'), type: 'error' };
