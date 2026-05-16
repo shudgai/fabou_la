@@ -509,7 +509,6 @@
                                      <span class="text-[17px] font-black tracking-[0.2em] uppercase">新增降寶明細</span>
                                  </button>
                              </div>
-                             </div>
                          </div>
                     </div>
 
