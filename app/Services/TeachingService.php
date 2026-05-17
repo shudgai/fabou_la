@@ -225,8 +225,8 @@ class TeachingService
 
     protected function resolveRelations(array $data): array
     {
-        // Resolve Master ID if it's a string name
-        if (isset($data['master_name']) && !empty($data['master_name'])) {
+        // Resolve Master ID if it's a string name, BUT ONLY if master_id is not explicitly provided
+        if (empty($data['master_id']) && isset($data['master_name']) && !empty($data['master_name'])) {
             $master = \App\Models\Master::where('name', $data['master_name'])->first();
             if ($master) {
                 $data['master_id'] = $master->id;

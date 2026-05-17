@@ -703,11 +703,18 @@ const parseTeachingFromWord = (text) => {
     lines.forEach(line => {
         if (foundHeader) return;
         masters.forEach(m => {
-            if (line.includes(m) && (line.includes('開示') || line.includes('給'))) {
+            if (line.includes(m)) {
                 record.master_name = m.includes('仙師') ? m : m + '仙師';
                 if (m === '父皇' || m === '太子') record.master_name = m;
+                
                 const recMatch = line.match(/(?:開示給|給)\s*[:：]?\s*(.*)/);
-                if (recMatch) record.recipient_name = recMatch[1].replace(/[:：]$/, '').trim();
+                if (recMatch) {
+                    record.recipient_name = recMatch[1].replace(/[:：]$/, '').trim();
+                } else if (line.includes('承接者')) {
+                    const cMatch = line.match(/承接者\s*[:：]?\s*(.*)/);
+                    if (cMatch) record.recipient_name = cMatch[1].replace(/[:：]$/, '').trim();
+                }
+                
                 headerLine = line;
                 foundHeader = true;
             }
@@ -813,20 +820,16 @@ onMounted(() => {
         if (draft) {
             try {
                 const data = JSON.parse(draft);
-                if (window.confirm('偵測到您有未儲存的「仙師開示」草稿，是否要載入？')) {
-                    if (data.form) form.value = { ...form.value, ...data.form };
-                    if (data.batchImportContent !== undefined) batchImportContent.value = data.batchImportContent;
-                    if (data.batchRecords) batchRecords.value = data.batchRecords;
-                    if (data.currentStep) currentStep.value = data.currentStep;
-                    if (data.footerRemarks) footerRemarks.value = data.footerRemarks;
-                    if (data.masterNameInput) masterNameInput.value = data.masterNameInput;
-                    if (data.dharmaSearchQuery) dharmaSearchQuery.value = data.dharmaSearchQuery;
-                    
-                    // Re-sync master_id if restored
-                    if (masterNameInput.value) resolveMasterId();
-                } else {
-                    safeLocalStorage.removeItem(DRAFT_KEY);
-                }
+                if (data.form) form.value = { ...form.value, ...data.form };
+                if (data.batchImportContent !== undefined) batchImportContent.value = data.batchImportContent;
+                if (data.batchRecords) batchRecords.value = data.batchRecords;
+                if (data.currentStep) currentStep.value = data.currentStep;
+                if (data.footerRemarks) footerRemarks.value = data.footerRemarks;
+                if (data.masterNameInput) masterNameInput.value = data.masterNameInput;
+                if (data.dharmaSearchQuery) dharmaSearchQuery.value = data.dharmaSearchQuery;
+                
+                // Re-sync master_id if restored
+                if (masterNameInput.value) resolveMasterId();
             } catch (e) {
                 console.error('Failed to restore draft', e);
             }

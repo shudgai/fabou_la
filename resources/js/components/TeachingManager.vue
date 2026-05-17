@@ -674,7 +674,7 @@ import MobileNavbar from './MobileNavbar.vue';
 import AddActionMenu from './AddActionMenu.vue';
 import CompactDatePicker from './CompactDatePicker.vue';
 import PaginationButtons from './PaginationButtons.vue';
-import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import { writeClipboard, downloadBlob, lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
 
 const getTodayStr = () => {
     const d = new Date();
@@ -1395,9 +1395,8 @@ const handleItemsDetailClose = (mode = false) => {
         br.target_remarks = form.value.target_remarks;
         br.items_footer_remarks = form.value.items_footer_remarks;
 
-        // Strict Inheritance
-        const firstM = batchRecords.value[0].master_name || masterNameInput.value;
-        br.master_name = firstM;
+        // Let the record keep its own master, don't force strict inheritance
+        br.master_name = form.value.master_name || br.master_name;
 
         form.value.items = []; 
         activeBatchIndex.value = null;
@@ -3744,11 +3743,17 @@ const performActualSave = async () => {
         } = activeRecord;
 
         const isDailyContext = !currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0';
+        let finalMasterId = (activeRecord.master_id !== undefined && activeRecord.master_id !== null) 
+            ? activeRecord.master_id 
+            : (form.value.master_id !== undefined && form.value.master_id !== null ? form.value.master_id : currentFolder.value?.id);
+            
+        if (finalMasterId === 0 || finalMasterId === '0' || !finalMasterId) {
+            finalMasterId = 5;
+        }
+
         const payload = {
             ...baseForm,
-            master_id: (activeRecord.master_id !== undefined && activeRecord.master_id !== null) 
-                ? activeRecord.master_id 
-                : (form.value.master_id !== undefined && form.value.master_id !== null ? form.value.master_id : currentFolder.value?.id),
+            master_id: finalMasterId,
             is_daily: isDailyContext ? 1 : 0 
         };
 
@@ -3964,6 +3969,10 @@ const executeDistributionSave = async (mode) => {
                         finalTargetRemarks = (finalTargetRemarks ? finalTargetRemarks + ' ' : '') + nameField;
                     }
                 }
+            }
+
+            if (blockMasterId === 0 || blockMasterId === '0' || !blockMasterId) {
+                blockMasterId = 5;
             }
 
             const payload = {
