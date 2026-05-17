@@ -27,14 +27,6 @@ const emit = defineEmits(['update:modelValue']);
 
 const suggestionsRef = ref(null);
 
-watch(filteredOptions, () => {
-    if (filteredOptions.value.length > 0) {
-        nextTick(() => {
-            suggestionsRef.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        });
-    }
-});
-
 const normalizedOptions = computed(() => {
     if (Array.isArray(props.options)) {
         return props.options.map(opt => {
@@ -61,6 +53,14 @@ const filteredOptions = computed(() => {
         String(opt.label).toLowerCase().includes(val) || 
         String(opt.value).toLowerCase().includes(val)
     ).slice(0, 15); // Cap at 15 for performance and UI
+});
+
+watch(() => filteredOptions.value, () => {
+    if (filteredOptions.value && filteredOptions.value.length > 0) {
+        nextTick(() => {
+            suggestionsRef.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        });
+    }
 });
 </script>
 

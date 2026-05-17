@@ -5,18 +5,18 @@
         <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
 
         <!-- Form Container -->
-        <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+        <div class="relative w-full h-full md:h-[85dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
             <!-- Global Close Button -->
             <button @click="$emit('close')" class="absolute right-4 top-4 z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-sm md:shadow-none">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <div class="flex h-full bg-white overflow-hidden font-sans relative">
+            <div class="flex flex-col flex-1 h-full min-h-0 bg-white overflow-hidden font-sans relative w-full">
 
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
 
 <!-- Main scrollable selection grid -->
-             <div class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
+             <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
                 <div class="flex items-start justify-between pl-3 pr-14 py-1.5 md:pt-[60px]">
                     <div class="flex flex-col flex-1 min-w-0">
                         <div class="flex items-center gap-2">
@@ -24,7 +24,7 @@
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
                             <span class="shrink-0 leading-tight font-black" style="font-size: 17px !important; color: #0f172a !important;">
-                                {{ selectionFiltered ? '已確認名單' : '點選待定法號' }}
+                                {{ selectionFiltered ? '已確認名單-在場人員' : '點選待定法號' }}
                             </span>
                         </div>
                         <div v-if="!selectionFiltered" class="flex items-center gap-1 mt-1">
@@ -34,7 +34,7 @@
                         <span v-if="!selectionFiltered" class="font-bold text-slate-800 mt-1" style="font-size: 16px !important;">已選 {{ pendingNames.length }} 人</span>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 mt-1">
-                        <button @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
+                        <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
                         <button @click="resetAll" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
@@ -48,6 +48,8 @@
                         :key="user.id || user.name"
                         @mousedown="startDrag(user.name)"
                         @mouseenter="onDragEnter(user.name)"
+                        @dragstart.prevent
+                        @selectstart.prevent
                         @touchstart.passive="handleTouchStart($event, user.name)"
                         @touchmove.passive="handleTouchMove($event)"
                         @touchend.passive="stopDrag"
@@ -513,7 +515,10 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
-import { lockBodyScroll, unlockBodyScroll } from '../utils/iosCompat';
+import CompactDatalist from './CompactDatalist.vue';
+import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/iosCompat';
+
+const emit = defineEmits(['close']);
 
 const users = ref([]);
 const selectedNames = ref([]);   // Step 2 uses this
@@ -551,12 +556,45 @@ const isDragging = ref(false);
 const dragSelectionType = ref(null); // 'add' or 'remove'
 const lastTouchedName = ref(null);
 
+const scrollContainer = ref(null);
+let scrollInterval = null;
+
+const handleMouseMoveDrag = (e) => {
+    if (!isDragging.value || !scrollContainer.value) return;
+
+    const rect = scrollContainer.value.getBoundingClientRect();
+    const mouseY = e.clientY;
+
+    const distanceToBottom = rect.bottom - mouseY;
+    const distanceToTop = mouseY - rect.top;
+
+    clearInterval(scrollInterval);
+    scrollInterval = null;
+
+    if (distanceToBottom < 60 && distanceToBottom > -20) {
+        const speed = Math.max(2, (60 - distanceToBottom) / 3);
+        scrollInterval = setInterval(() => {
+            if (scrollContainer.value) {
+                scrollContainer.value.scrollTop += speed;
+            }
+        }, 16);
+    } else if (distanceToTop < 60 && distanceToTop > -20) {
+        const speed = Math.max(2, (60 - distanceToTop) / 3);
+        scrollInterval = setInterval(() => {
+            if (scrollContainer.value) {
+                scrollContainer.value.scrollTop -= speed;
+            }
+        }, 16);
+    }
+};
+
 const startDrag = (name) => {
     isDragging.value = true;
     const isSelected = pendingNames.value.includes(name);
     dragSelectionType.value = isSelected ? 'remove' : 'add';
     togglePending(name);
     window.addEventListener('mouseup', stopDrag);
+    window.addEventListener('mousemove', handleMouseMoveDrag);
 };
 
 const onDragEnter = (name) => {
@@ -593,7 +631,10 @@ const handleTouchMove = (e) => {
 const stopDrag = () => {
     isDragging.value = false;
     lastTouchedName.value = null;
+    clearInterval(scrollInterval);
+    scrollInterval = null;
     window.removeEventListener('mouseup', stopDrag);
+    window.removeEventListener('mousemove', handleMouseMoveDrag);
 };
 
 const selectionFiltered = ref(false);
@@ -628,9 +669,18 @@ const getPendingStyle = (name) => {
     const t = name.trim();
     const isSelected = pendingNames.value.includes(t);
     if (isSelected) {
+        if (selectionFiltered.value) {
+            return {
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                border: '1px solid #000000',
+                boxShadow: 'none',
+                zIndex: '5'
+            };
+        }
         return {
             backgroundColor: '#2563eb', // Professional Blue for SELECTED
-            color: '#ffffff !important',
+            color: '#ffffff',
             borderColor: '#fbbf24',
             borderWidth: '3px',
             boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
@@ -743,10 +793,30 @@ const loadUsers = async () => {
         }
         users.value = processed;
 
-        pendingNames.value = [];
-        selectedNames.value = [];
+        const sharedStr = safeLocalStorage.getItem('shared_dharma_selection');
+        if (sharedStr) {
+            try {
+                const sharedNames = JSON.parse(sharedStr);
+                if (Array.isArray(sharedNames) && sharedNames.length > 0) {
+                    pendingNames.value = sharedNames;
+                    selectedNames.value = [...sharedNames];
+                    selectionFiltered.value = true;
+                } else {
+                    pendingNames.value = [];
+                    selectedNames.value = [];
+                    selectionFiltered.value = false;
+                }
+            } catch (e) {
+                pendingNames.value = [];
+                selectedNames.value = [];
+                selectionFiltered.value = false;
+            }
+        } else {
+            pendingNames.value = [];
+            selectedNames.value = [];
+            selectionFiltered.value = false;
+        }
 
-        selectionFiltered.value = false;
         currentStep.value = 1;
     } catch (e) { console.error('Failed to load users', e); }
 };
@@ -976,12 +1046,21 @@ const resetAll = () => {
     currentType.value = '';
     currentStep.value = 1;
     includeGuardians.value = false;
+    safeLocalStorage.removeItem('shared_dharma_selection');
 };
 
 watch(persistentToast, (newVal) => {
     if (newVal) lockBodyScroll();
     else unlockBodyScroll();
 });
+
+watch(pendingNames, (newVal) => {
+    if (newVal && Array.isArray(newVal) && newVal.length > 0) {
+        safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(newVal));
+    } else {
+        safeLocalStorage.removeItem('shared_dharma_selection');
+    }
+}, { deep: true });
 
 onMounted(loadUsers);
 

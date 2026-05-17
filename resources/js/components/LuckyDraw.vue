@@ -13,88 +13,88 @@
 
         <!-- STEP 1 & 2: PERSONNEL SELECTION -->
         <div v-if="currentStep === 1 || currentStep === 2" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
-            <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <!-- Header bar -->
-                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
-                    <div class="flex flex-col w-full gap-1">
-                        <div class="flex items-center justify-between w-full relative">
-                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
-                                <button v-if="currentStep === 2" @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                                 <logo-imperial-notebook :height="40" />
-                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">
-                                     抽籤專區
-                                 </div>
-                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">
-                                     {{ lotteryMode === true ? '回合抽籤' : '抽順序' }}
-                                 </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
 
                 <!-- Main Scrollable Content -->
-                <div class="flex-1 overflow-y-auto custom-scrollbar pb-64 animate-fade-in w-full">
-                    <div class="p-4 space-y-6">
-<div class="flex items-center flex-wrap gap-2 mb-2">
-                             <label class="text-[18px] font-black text-slate-800 shrink-0">{{ currentStep === 1 ? '滑動游標選取固定人員' : '滑動游標選取其他抽籤人員' }}</label>
-                             <span @click="invertSelection()" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all cursor-pointer shrink-0">
-                                       反選
-                                   </span>
-                                 <button @click="resetAll" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center active:scale-95 transition-all shrink-0 border-none">
-                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                 </button>
-                            <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 border border-slate-100">
-                                <span class="text-[11px] font-bold text-slate-300 whitespace-nowrap shrink-0 mr-1">手動:</span>
-                                <input v-model="manualName" @keyup.enter="addManualName" class="w-16 bg-transparent border-none text-[12px] font-bold h-6 outline-none">
-                                <button @click="addManualName" class="text-blue-500 font-black text-[18px] ml-1">＋</button>
+                <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px] w-full">
+                    <div class="flex items-start justify-between pl-3 pr-14 py-1.5 md:pt-[60px]">
+                        <div class="flex flex-col flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <button v-if="selectionFiltered || currentStep === 2" @click="handleSelectionBack" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                </button>
+                                <span class="shrink-0 leading-tight font-black" style="font-size: 17px !important; color: #0f172a !important;">
+                                    {{ selectionFiltered ? '已確認名單-在場人員' : '點選待定法號' }}
+                                </span>
                             </div>
-                            <div class="ml-auto text-slate-800 text-[18px] font-black">
-                                {{ pendingNames.length }} 人
+                            <div v-if="!selectionFiltered" class="flex items-center gap-1 mt-1">
+                                <span class="text-[12px] text-slate-400 whitespace-nowrap">滑動游標選取人員</span>
+                                <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="" class="bg-transparent border-none outline-none text-[10px] font-bold w-16 shrink-0">
                             </div>
+                            <span v-if="!selectionFiltered" class="font-bold text-slate-800 mt-1" style="font-size: 16px !important;">已選 {{ pendingNames.length }} 人</span>
                         </div>
+                        <div class="flex items-center space-x-2 shrink-0 mt-1">
+                            <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
+                            <button @click="resetAll" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
 
                         <!-- Grid -->
-                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4" @mouseleave="stopDrag" @touchmove="handleTouchMove">
                             <button v-for="user in displayUsers" :key="user.id"
                                 @mousedown="startDrag(user.name)"
                                 @mouseenter="onDragEnter(user.name)"
                                 @mouseup="stopDrag"
+                                @dragstart.prevent
+                                @selectstart.prevent
                                 @touchstart="handleTouchStart($event, user.name)"
                                 @touchend="stopDrag"
                                 :data-name="user.name"
-                                class="dharma-btn h-[45px] flex items-center justify-center rounded-xl border-2 font-normal text-[17px] transition-all relative"
-                                :style="getPendingStyle(user.name)">
-                                <span class="pointer-events-none flex items-center">
-                                    <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✔</span>
+                                class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                :style="{ 
+                                    ...getPendingStyle(user.name),
+                                    fontSize: '16px !important'
+                                }">
+                                <span class="pointer-events-none flex items-center relative">
+                                    <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✓</span>
                                     {{ user.name }}
-                                    <span v-if="pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" class="absolute -top-2 -right-2 w-5 h-5 bg-indigo-500 text-white rounded-full text-[10px] flex items-center justify-center border border-white">
+                                    <span v-if="pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" 
+                                        class="absolute -top-3.5 -right-3 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center border border-white shadow-sm font-black">
                                         {{ pendingNames.indexOf(user.name) + 1 }}
                                     </span>
                                 </span>
                             </button>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Bottom Button Area -->
-                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
-                    <div class="w-full space-y-2">
-                        <button @click="confirmSelection" 
-                                :disabled="pendingNames.length === 0" 
-                                class="w-full py-[10px] rounded-2xl font-black text-[17px] shadow-lg active:scale-95 disabled:opacity-50 transition-all bg-blue-600 text-white"
-                                style="color: white !important;">
-                            確定名單 (共 {{ pendingNames.length }} 人) → 下一步
-                        </button>
-                    </div>
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                    <button
+                        @click="confirmSelection"
+                        :disabled="pendingNames.length === 0"
+                        class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
+                        :style="{
+                            background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
+                            color: '#ffffff !important',
+                            textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            fontSize: '16px !important',
+                            paddingTop: '13px',
+                            paddingBottom: '13px'
+                        }"
+                    >
+                        <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
+                        <span v-else style="color: #ffffff !important;">確定 → 進入抽籤設定</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- STEP 3: DRAW CONFIGURATION -->
         <div v-if="currentStep === 3" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
-            <div class="animate-slide-in flex flex-col h-full overflow-hidden">
+            <div class="animate-slide-in flex flex-col h-full overflow-hidden min-h-0">
                 <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
@@ -122,13 +122,16 @@
                             <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
                         </div>
                         <div class="flex gap-2">
-<button @click="roundParticipants = [...selectedNames]" class="px-4 py-[10px] bg-indigo-50 text-white rounded-lg font-black text-[15px]">全選</button>
-                             <button @click="roundParticipants = []" class="px-4 py-[10px] bg-slate-100 text-slate-400 rounded-lg font-black text-[15px]">清空</button>
+                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-[10px] bg-indigo-600 text-white rounded-lg font-black text-[15px]" style="color: white !important;">全選</button>
+                            <button @click="roundParticipants = []" class="px-4 py-[10px] bg-slate-100 text-slate-600 rounded-lg font-black text-[15px]" style="color: #475569 !important;">清空</button>
                         </div>
                         <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
                             <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
-                                class="h-14 rounded-xl border-2 font-black text-[17px] transition-all"
-                                :style="getStep2RoundStyle(name)">
+                                class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                :style="{
+                                    ...getStep2RoundStyle(name),
+                                    fontSize: '16px !important'
+                                }">
                                 {{ name }}
                             </button>
                         </div>
@@ -214,7 +217,7 @@
         </div>
         <!-- STEP 4: RESULTS -->
         <div v-if="currentStep === 4" class="flex-1 flex flex-col bg-white overflow-hidden z-[1000] min-h-[600px] md:min-h-0">
-            <div class="animate-fade-in flex flex-col h-full overflow-hidden">
+            <div class="animate-fade-in flex flex-col h-full overflow-hidden min-h-0">
                 <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
                     <div class="flex flex-col w-full gap-1">
                         <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
@@ -325,6 +328,7 @@ const fixedParticipants = ref([]);
 const roundParticipants = ref([]);
 const results = ref([]);
 const currentStep = ref(1);
+const selectionFiltered = ref(false);
 const drawCount = ref(1);
 const isDrawing = ref(false);
 const hasResult = ref(false);
@@ -337,47 +341,22 @@ const flyingSticks = ref([]);
 
 const DRAFT_KEY = 'lucky_draw_draft';
 
-watch(() => props.show, (val) => {
-    if (val) {
-        loadUsers();
-
-        const draftStr = safeLocalStorage.getItem(DRAFT_KEY);
-        if (draftStr) {
-            try {
-                const draft = JSON.parse(draftStr);
-                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
-                    currentStep.value = draft.currentStep || 1;
-                    pendingNames.value = draft.pendingNames || [];
-                    fixedParticipants.value = draft.fixedParticipants || [];
-                    selectedNames.value = draft.selectedNames || [];
-                    roundParticipants.value = draft.roundParticipants || [];
-                    drawCount.value = draft.drawCount || 1;
-                    manualName.value = draft.manualName || '';
-                    lotteryMode.value = draft.lotteryMode !== undefined ? draft.lotteryMode : props.initialMode;
-                    return;
-                }
-            } catch (e) {}
-        }
-
-        resetAll(true);
-        lotteryMode.value = props.initialMode;
-    } else {
-        safeLocalStorage.removeItem(DRAFT_KEY);
-    }
-});
-
 const loadUsers = async () => {
     try {
         const res = await axios.get('/api/dharma-names-list');
-        users.value = res.data.filter(u => u.name !== '紫真');
+        users.value = res.data.filter(u => u && u.name && u.name !== '紫真');
     } catch (e) { console.error(e); }
 };
 
 const displayUsers = computed(() => {
-    if (!lotteryMode.value && currentStep.value === 2) {
-        return users.value.filter(u => !fixedParticipants.value.includes(u.name));
+    if (!users.value || !Array.isArray(users.value)) return [];
+    if (selectionFiltered.value) {
+        return users.value.filter(u => u && u.name && pendingNames.value.includes(u.name.trim()));
     }
-    return users.value;
+    if (!lotteryMode.value && currentStep.value === 2) {
+        return users.value.filter(u => u && u.name && !fixedParticipants.value.includes(u.name));
+    }
+    return users.value.filter(u => u && u.name);
 });
 
 const togglePending = (name) => {
@@ -399,22 +378,67 @@ const togglePending = (name) => {
 };
 
 const getPendingStyle = (name) => {
-    const isSelected = pendingNames.value.includes(name);
-    if (isSelected) return { background: '#e0f2fe', color: 'black !important', borderColor: '#e0f2fe', borderWidth: '1px' };
-    return { background: 'white', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
+    const t = name.trim();
+    const isSelected = pendingNames.value.includes(t);
+    if (isSelected) {
+        if (selectionFiltered.value) {
+            return {
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                border: '1px solid #000000',
+                boxShadow: 'none',
+                zIndex: '5'
+            };
+        }
+        return {
+            backgroundColor: '#2563eb', // Professional Blue for SELECTED
+            color: '#ffffff',
+            borderColor: '#fbbf24',
+            borderWidth: '3px',
+            boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+            zIndex: '5'
+        };
+    } else {
+        return {
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            border: '1px solid #d1d5db',
+            textShadow: 'none'
+        };
+    }
 };
 
 const confirmSelection = () => {
+    if (pendingNames.value.length === 0) return;
+
+    if (!selectionFiltered.value) {
+        selectionFiltered.value = true;
+        safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
+        return;
+    }
+
+    // Save/update the shared selection list
+    safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
+
     if (lotteryMode.value === true) {
         selectedNames.value = [...pendingNames.value];
-        roundParticipants.value = [];
+        roundParticipants.value = [...pendingNames.value];
         drawCount.value = 1;
         currentStep.value = 3;
         return;
     }
 
     if (currentStep.value === 1) {
-        currentStep.value = 2;
+        if (fixedParticipants.value.length === 0) {
+            // No fixed participants selected, treat everyone in the confirmed list as general participants and skip Step 2
+            selectedNames.value = [...pendingNames.value];
+            drawCount.value = selectedNames.value.length;
+            currentStep.value = 3;
+        } else {
+            // Manual flow: go to Step 2 for others
+            selectionFiltered.value = false;
+            currentStep.value = 2;
+        }
     } else if (currentStep.value === 2) {
         selectedNames.value = [...pendingNames.value];
         drawCount.value = selectedNames.value.length;
@@ -427,21 +451,34 @@ const handleBack = () => {
     else emit('close');
 };
 
+const handleSelectionBack = () => {
+    if (selectionFiltered.value) {
+        selectionFiltered.value = false;
+    } else {
+        handleBack();
+    }
+};
+
 const resetAll = (silent = false) => {
-    if (silent) {
-        executeReset();
+    if (silent === true) {
+        executeReset(true);
         return;
     }
     persistentToast.value = { msg: '確定要清空目前的所有選擇與記錄嗎？', type: 'clear' };
 };
 
-const executeReset = () => {
+const executeReset = (silent = false) => {
+    const isSilent = silent === true;
     pendingNames.value = [];
     fixedParticipants.value = [];
     selectedNames.value = [];
     roundParticipants.value = [];
+    selectionFiltered.value = false;
     currentStep.value = 1;
     results.value = [];
+    if (!isSilent) {
+        safeLocalStorage.removeItem('shared_dharma_selection');
+    }
     if (persistentToast.value) {
         persistentToast.value = { msg: '✓ 已清空', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
@@ -460,9 +497,26 @@ const toggleRoundParticipant = (name) => {
 };
 
 const getStep2RoundStyle = (name) => {
-    const active = roundParticipants.value.includes(name);
-    if (active) return { background: '#2563eb', color: '#ffffff !important', borderColor: '#2563eb', borderWidth: '1px' };
-    return { background: 'transparent', color: 'black', borderColor: '#e2e8f0', borderWidth: '1px' };
+    const t = name.trim();
+    const active = roundParticipants.value.includes(t);
+    if (active) {
+        return {
+            backgroundColor: '#2563eb', // Professional Blue for SELECTED
+            color: '#ffffff',
+            borderColor: '#fbbf24',
+            borderWidth: '3px',
+            boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+            zIndex: '5'
+        };
+    } else {
+        return {
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            border: '1px solid #000000', // Confirmed but unselected for the round has a black border!
+            boxShadow: 'none',
+            zIndex: '5'
+        };
+    }
 };
 
 let lotteryInterval = null;
@@ -571,7 +625,7 @@ const handleReselect = () => {
 const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [];
+    roundParticipants.value = [...pendingNames.value];
     currentStep.value = 3;
 };
 
@@ -587,12 +641,45 @@ const isDragging = ref(false);
 const dragSelectionType = ref(null); // 'add' or 'remove'
 const lastTouchedName = ref(null);
 
+const scrollContainer = ref(null);
+let scrollInterval = null;
+
+const handleMouseMoveDrag = (e) => {
+    if (!isDragging.value || !scrollContainer.value) return;
+
+    const rect = scrollContainer.value.getBoundingClientRect();
+    const mouseY = e.clientY;
+
+    const distanceToBottom = rect.bottom - mouseY;
+    const distanceToTop = mouseY - rect.top;
+
+    clearInterval(scrollInterval);
+    scrollInterval = null;
+
+    if (distanceToBottom < 60 && distanceToBottom > -20) {
+        const speed = Math.max(2, (60 - distanceToBottom) / 3);
+        scrollInterval = setInterval(() => {
+            if (scrollContainer.value) {
+                scrollContainer.value.scrollTop += speed;
+            }
+        }, 16);
+    } else if (distanceToTop < 60 && distanceToTop > -20) {
+        const speed = Math.max(2, (60 - distanceToTop) / 3);
+        scrollInterval = setInterval(() => {
+            if (scrollContainer.value) {
+                scrollContainer.value.scrollTop -= speed;
+            }
+        }, 16);
+    }
+};
+
 const startDrag = (name) => {
     isDragging.value = true;
     const isSelected = pendingNames.value.includes(name);
     dragSelectionType.value = isSelected ? 'remove' : 'add';
     togglePending(name);
     window.addEventListener('mouseup', stopDrag);
+    window.addEventListener('mousemove', handleMouseMoveDrag);
 };
 
 const onDragEnter = (name) => {
@@ -620,7 +707,10 @@ const onDragEnter = (name) => {
 const stopDrag = () => {
     isDragging.value = false;
     lastTouchedName.value = null;
+    clearInterval(scrollInterval);
+    scrollInterval = null;
     window.removeEventListener('mouseup', stopDrag);
+    window.removeEventListener('mousemove', handleMouseMoveDrag);
 };
 
 const handleTouchStart = (e, name) => {
@@ -670,8 +760,65 @@ watch(() => ({
             manualName: val.manual,
             lotteryMode: val.mode
         }));
+
+        if (val.pending && val.pending.length > 0) {
+            safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(val.pending));
+        } else {
+            safeLocalStorage.removeItem('shared_dharma_selection');
+        }
     }
 }, { deep: true });
+
+watch(() => props.show, (val) => {
+    if (val) {
+        if (typeof loadUsers === 'function') {
+            loadUsers();
+        }
+
+        const draftStr = safeLocalStorage.getItem(DRAFT_KEY);
+        if (draftStr) {
+            try {
+                const draft = JSON.parse(draftStr);
+                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                    currentStep.value = draft.currentStep || 1;
+                    pendingNames.value = draft.pendingNames || [];
+                    fixedParticipants.value = draft.fixedParticipants || [];
+                    selectedNames.value = draft.selectedNames || [];
+                    roundParticipants.value = draft.roundParticipants || [];
+                    drawCount.value = draft.drawCount || 1;
+                    manualName.value = draft.manualName || '';
+                    lotteryMode.value = draft.lotteryMode !== undefined ? draft.lotteryMode : props.initialMode;
+                    return;
+                }
+            } catch (e) {}
+        }
+
+        resetAll(true);
+        lotteryMode.value = props.initialMode;
+
+        // Sync with shared selection
+        const sharedStr = safeLocalStorage.getItem('shared_dharma_selection');
+        if (sharedStr) {
+            try {
+                const sharedNames = JSON.parse(sharedStr);
+                if (Array.isArray(sharedNames) && sharedNames.length > 0) {
+                    pendingNames.value = sharedNames;
+                    selectedNames.value = [...sharedNames];
+                    selectionFiltered.value = true;
+                    currentStep.value = 1;
+                    roundParticipants.value = [...sharedNames];
+                    if (lotteryMode.value === true) {
+                        drawCount.value = 1;
+                    } else {
+                        drawCount.value = sharedNames.length;
+                    }
+                }
+            } catch (e) {}
+        }
+    } else {
+        safeLocalStorage.removeItem(DRAFT_KEY);
+    }
+}, { immediate: true });
 
 onMounted(loadUsers);
 </script>

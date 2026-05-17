@@ -242,6 +242,12 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Close button fix**: Don't use `v-if` on parent for modals with `<teleport to="body">` — use `:show` prop + inner `v-if="show"` instead (see LuckyDraw). KaiwenApproval and RandomGroup must have `@close="activeFolderId = null"` handler.
 - `overflow-visible` removed from root wrappers to prevent layout bleed
 
+### LuckyDraw.vue (2026-05-17)
+- **TDZ 修復**: `loadUsers` 函式定義移至 watchers 之前，避免 `immediate: true` watcher 初始化時 TDZ 錯誤
+- **Defensive check**: watch callback 中加入 `typeof loadUsers === 'function'` 防禦性檢查
+- **Mobile scroll fix**: 所有步驟的 flex 容器加入 `min-h-0` 確保行動裝置正確計算高度並啟用滾動
+- **回合抽籤**: Step 3/4 內容過長時可正常向下滾動
+
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
 - Step 1: grid of dharma names (4 cols mobile, 5 cols desktop), toggle selection, confirm order

@@ -319,10 +319,10 @@ const deleteConfirmId = ref(null);
 
 const sortedFolders = computed(() => {
     return [...folders.value]
-        .filter(f => f.name !== '__other_records_zone__' && f.name !== '抽籤紀錄')
+        .filter(f => f.name.includes('開文核定') || f.name.includes('隨機分組') || f.name.includes('核定開文'))
         .sort((a, b) => {
-            const isKaiwenA = a.name.includes('開文核定');
-            const isKaiwenB = b.name.includes('開文核定');
+            const isKaiwenA = a.name.includes('開文核定') || a.name.includes('核定開文');
+            const isKaiwenB = b.name.includes('開文核定') || b.name.includes('核定開文');
             const isRandomA = a.name.includes('隨機分組');
             const isRandomB = b.name.includes('隨機分組');
 
