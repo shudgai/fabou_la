@@ -194,7 +194,7 @@
                     </div>
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48 flex flex-col justify-center items-center min-h-[350px]">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center">
-                            <div class="font-black text-[76px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
+                            <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
@@ -474,7 +474,7 @@
                         <div class="max-w-lg mx-auto w-full flex flex-col justify-center items-center">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
                             <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center">
-                                <h3 class="font-black text-[76px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                                <h3 class="font-black text-[120px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
                                 <div class="flex items-center space-x-2 text-indigo-300 mt-4">
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
                                     <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
