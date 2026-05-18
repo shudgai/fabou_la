@@ -608,7 +608,8 @@
             :show-action="false"
             :can-search="false"
             @back="$emit('close')"
-            class="md:hidden"
+            class="md:hidden !bg-[#fef3c7] !border-t-[#fef3c7]"
+            style="background-color: #fef3c7 !important; border-top-color: #fef3c7 !important;"
         />
     </div>
     </teleport>
