@@ -483,7 +483,7 @@
                 </div>
 
                 <!-- Confirm/Close Button in fixed bar directly above navbar -->
-                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-transparent z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-3 flex justify-center">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-3 flex justify-center">
                     <button
                         @click="confirmNewlyDrawnGuardians"
                         class="w-full max-w-xs py-4 rounded-2xl font-black text-[20px] transition-all active:scale-[0.97] bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:shadow-sm border-none cursor-pointer"
