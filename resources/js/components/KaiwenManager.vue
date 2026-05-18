@@ -276,6 +276,12 @@
                                                 <button @click.stop="editItem(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
                                                     編輯紀錄
                                                 </button>
+                                                <button @click.stop="copyAsTextFile(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                    複製貼 LINE
+                                                </button>
+                                                <button @click.stop="downloadPost(post); openMenuId = null" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
+                                                    下載檔案
+                                                </button>
                                                 <button v-if="post.message_type === '玄訊'" @click.stop="openPostMode(post, 'self')" class="w-full px-4 py-3 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 flex items-center border-b border-slate-50">
                                                     殿中修改之文
                                                 </button>
