@@ -214,6 +214,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
 
+const emit = defineEmits(['close']);
+
 const searchQuery = ref('');
 const users = ref([]);
 const selectionList = ref([]);

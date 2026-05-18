@@ -7,7 +7,7 @@
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-[85dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
             <!-- Global Close Button -->
-            <button @click="$emit('close')" class="absolute right-4 top-4 z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-sm md:shadow-none">
+            <button @click="$emit('close')" class="hidden md:flex absolute right-6 top-[76px] z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-md border border-slate-100">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="flex flex-col flex-1 h-full min-h-0 bg-white overflow-hidden font-sans relative w-full">
@@ -17,7 +17,7 @@
 
 <!-- Main scrollable selection grid -->
              <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
-                <div class="flex items-start justify-between pl-3 pr-14 py-1.5 md:pt-[60px]">
+                <div class="flex items-start justify-between pl-3 pr-3 md:pr-14 py-1.5 md:pt-[60px]">
                     <div class="flex flex-col flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
@@ -37,6 +37,9 @@
                         <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
                         <button @click="resetAll" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button @click="$emit('close')" class="md:hidden text-slate-400 hover:text-slate-600 transition-all active:scale-90 p-1 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                     </div>
                 </div>
@@ -97,7 +100,7 @@
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
                 <!-- Navigation Header -->
-                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
                     <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
@@ -140,23 +143,20 @@
                                 <div v-if="isGDropdownOpen" @click="isGDropdownOpen = false" class="fixed inset-0 z-[40]"></div>
                             </div>
                             
-                            <div class="flex items-center space-x-2 w-full pt-1">
-                                <div class="flex items-center border border-amber-200 rounded-xl overflow-hidden h-12 bg-white shadow-none flex-1">
+                            <!-- Centered counter block -->
+                            <div class="flex flex-col items-center justify-center pt-3 pb-1 w-full mx-auto">
+                                <span class="text-[14px] font-black text-amber-600/80 mb-1 tracking-wider">抽選人數</span>
+                                <div class="flex items-center border border-amber-200 rounded-xl overflow-hidden h-12 bg-white shadow-none w-[180px]">
                                     <button @click="pickSize = Math.max(1, pickSize - 1)" class="w-12 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">−</button>
                                     <input 
                                         type="number" 
                                         v-model.number="pickSize" 
                                         @blur="pickSize = Math.max(1, Math.min(selectedNames.length, pickSize || 1))"
-                                        class="flex-1 font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full"
+                                        class="flex-1 font-black text-center text-amber-900 leading-none bg-transparent outline-none w-full border-none focus:ring-0"
                                         style="font-size: 24px !important;"
                                     >
                                     <button @click="pickSize = Math.min(10, pickSize + 1)" class="w-12 h-full text-white bg-slate-300 font-black shadow-none border-none active:bg-slate-400" style="color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 24px !important;">＋</button>
                                 </div>
-                                <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
-                                    class="h-12 px-5 font-black text-[16px] rounded-xl bg-amber-400 text-white shadow-sm active:scale-95 disabled:opacity-30 whitespace-nowrap transition-all hover:bg-amber-500"
-                                    style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                                    {{ guardianResults.length > 0 ? '加抽人員' : '隨機抽' }}
-                                </button>
                             </div>
                         </div>
 
@@ -177,21 +177,41 @@
                 </div>
 
                 <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-slate-100 z-[200] w-full md:left-1/2 md:-translate-x-1/2 md:max-w-xl bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
-                    <div class="w-full">
-                        <button
-                            @click="currentStep = 3"
-                            :disabled="isDrawing"
-                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] shadow-sm bg-indigo-600"
-                            :style="{
-                                color: '#ffffff !important',
-                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                                fontSize: '18px !important',
-                                paddingTop: '13px',
-                                paddingBottom: '13px'
-                            }"
-                        >
-                            下一步：種子組設定 →
-                        </button>
+                    <div class="w-full flex flex-col gap-2">
+                        <!-- If NO guardians selected/drawn yet -->
+                        <template v-if="guardianResults.length === 0">
+                            <!-- Full width random draw button -->
+                            <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing" 
+                                class="w-full h-12 font-black text-[18px] rounded-xl bg-amber-400 text-white shadow-md active:scale-95 disabled:opacity-30 whitespace-nowrap transition-all hover:bg-amber-500 cursor-pointer"
+                                style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                隨機抽選關主
+                            </button>
+                            <!-- Skip/Next text button -->
+                            <button @click="currentStep = 3" class="w-full text-center text-slate-500 font-bold py-1 text-[15px] hover:text-indigo-600 transition-colors">
+                                跳過此步 / 不指定關主 →
+                            </button>
+                        </template>
+
+                        <!-- If guardians already selected/drawn -->
+                        <template v-else>
+                            <!-- Full width Next Step Button (Indigo) -->
+                            <button
+                                @click="currentStep = 3"
+                                class="w-full h-12 rounded-xl font-black transition-all active:scale-[0.98] shadow-sm bg-indigo-600 text-white cursor-pointer"
+                                style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 18px !important;"
+                            >
+                                確定 → 進入下一步
+                            </button>
+                            <div class="flex items-center justify-between px-2 pt-1">
+                                <button @click="pickGuardians" :disabled="selectedNames.length < pickSize || isDrawing"
+                                    class="text-[14px] font-black text-amber-500 hover:text-amber-600 transition-colors border-none bg-transparent cursor-pointer">
+                                    ＋ 繼續加抽關主
+                                </button>
+                                <button @click="guardianResults = []" class="text-[14px] font-black text-rose-500 hover:text-rose-600 transition-colors border-none bg-transparent cursor-pointer">
+                                    清空所有關主
+                                </button>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -200,7 +220,7 @@
         <!-- STEP 3: SEEDS (種子組設定) -->
         <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
                     <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
@@ -263,7 +283,7 @@
         <!-- STEP 4: RULES & SIZE (分組規則與人數) -->
         <div v-show="currentStep === 4" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-50 p-2 px-3 flex items-center sticky top-0 z-10 md:mt-[60px]">
+                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
                     <button @click="currentStep = 3" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
@@ -361,7 +381,7 @@
         </div>
 
         <!-- FULLSCREEN LOTTERY ANIMATION: 抽籤動畫 -->
-        <div v-if="isDrawing && currentType === 'group'" class="fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
+        <div v-if="isDrawing && (currentType === 'group' || currentType === 'guardian')" class="fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
 
             <!-- Ambient glow -->
             <div class="absolute inset-0 pointer-events-none">
@@ -412,7 +432,7 @@
 
             <!-- Status text -->
             <div class="absolute top-[3dvh] left-0 right-0 flex flex-col items-center space-y-2">
-                <p class="text-[30px] font-black tracking-widest text-amber-900">隨機抽籤中</p>
+                <p class="text-[30px] font-black tracking-widest text-amber-900">{{ currentType === 'guardian' ? '關主隨機抽選中' : '隨機抽籤中' }}</p>
                 <div class="flex gap-2">
                     <span class="dot-lg" style="background:#b45309;"></span>
                     <span class="dot-lg" style="background:#d97706;"></span>
@@ -421,38 +441,125 @@
             </div>
         </div>
 
+        <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+            <!-- Decorative Background Glow -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/15 rounded-full blur-[120px]"></div>
+                <div class="absolute top-[20%] left-[20%] w-32 h-32 bg-amber-300/25 rounded-full blur-2xl animate-pulse"></div>
+                <div class="absolute bottom-[20%] right-[20%] w-48 h-48 bg-amber-500/15 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
+            </div>
+
+            <!-- Content Card -->
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10">
+                <!-- Sparkle Icons and Header -->
+                <div class="space-y-3">
+                    <div class="inline-flex p-4 bg-amber-100/60 rounded-3xl border border-amber-200/50 shadow-inner animate-bounce" style="animation-duration: 3s;">
+                        <svg class="w-12 h-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.246.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.772-.564-.373-1.81.588-1.81h4.906a1 1 0 00.95-.69l1.519-4.674z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-[22px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
+                    <p class="text-[13px] font-black text-amber-600/90 uppercase tracking-widest">恭喜以下法號選中為關主</p>
+                </div>
+
+                <!-- Names with ENLARGED text -->
+                <div class="w-full py-4 flex justify-center items-center">
+                    <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
+                        <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
+                            class="flex flex-col items-center animate-slide-up"
+                            :style="{ animationDelay: (idx * 0.05) + 's' }"
+                        >
+                            <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
+                                :style="{ 
+                                    fontSize: getDynamicFontSize(newlyDrawnGuardians.length),
+                                    color: '#dc2626',
+                                    fontWeight: '900',
+                                    textShadow: '0 4px 16px rgba(220, 38, 38, 0.25)'
+                                }"
+                            >
+                                {{ name }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirm/Close Button -->
+                <button
+                    @click="confirmNewlyDrawnGuardians"
+                    class="w-full max-w-xs py-4 rounded-2xl font-black text-[20px] transition-all active:scale-[0.97] bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:shadow-sm border-none cursor-pointer"
+                    style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"
+                >
+                    下一步
+                </button>
+            </div>
+        </div>
+
         <!-- STEP 5: RESULTS (分組結果) -->
         <div v-show="currentStep === 5" class="flex flex-col w-full h-full bg-white overflow-hidden">
-            <div class="bg-white border-b border-slate-100 p-3 px-4 flex items-center justify-between sticky top-0 z-10 md:mt-[60px]">
-                <button @click="currentStep = 4" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <h2 class="flex-1 whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">分組結果</h2>
-                <div class="flex items-center space-x-2">
-                    <button @click="handleNextRound" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-indigo-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">下一輪</button>
-                    <button @click="redrawAll" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-rose-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">重抽</button>
-                    <button @click="copyResult" class="w-[72px] h-[36px] flex items-center justify-center font-black text-white bg-emerald-200 rounded-full shadow-sm border-none transition-all active:scale-95 whitespace-nowrap" style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 16px !important;">複製</button>
+            <div class="bg-white border-b border-slate-100 p-3 pl-4 pr-4 md:pr-16 flex flex-col sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
+                <div class="flex items-center w-full">
+                    <button @click="currentStep = 4" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <h2 class="whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">分組結果</h2>
+                </div>
+                <div class="flex items-center justify-center space-x-3 w-full mt-2.5 pb-1 animate-fade-in">
+                    <button @click="handleNextRound" class="w-[90px] h-[40px] flex items-center justify-center font-black text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer" style="font-size: 16px !important;">下一輪</button>
+                    <button @click="redrawAll" class="w-[90px] h-[40px] flex items-center justify-center font-black text-rose-600 bg-rose-50 border border-rose-100 rounded-full shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer" style="font-size: 16px !important;">重抽</button>
+                    <button @click="copyResult" class="w-[90px] h-[40px] flex items-center justify-center font-black text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-full shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer" style="font-size: 16px !important;">複製</button>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-3 pb-24">
                 <!-- Guardian results -->
-                <div v-if="guardianResults.length > 0" class="bg-amber-50 p-3 rounded-2xl border border-amber-200 mb-3">
-                    <h4 class="text-[15px] font-black text-amber-600 mb-2">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
-                    <div class="flex flex-wrap gap-x-4 gap-y-0.5">
-                        <div v-for="name in guardianResults" :key="'g3'+name" class="text-amber-700 font-black text-[18px]">{{ name }}</div>
+                <div v-if="guardianResults.length > 0" class="bg-amber-50/70 p-4 rounded-3xl border border-amber-200 mb-4 shadow-sm animate-fade-in">
+                    <h4 class="text-[17px] font-black text-amber-700 mb-2.5">🌟 關主名單 ({{ guardianResults.length }} 位)</h4>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2">
+                        <div v-for="name in guardianResults" :key="'g3'+name" 
+                            class="text-amber-900 font-black select-none tracking-wide font-biaokai-locked"
+                            :style="{
+                                fontSize: '26px !important',
+                                textShadow: '0 2px 4px rgba(217, 119, 6, 0.08)'
+                            }"
+                        >
+                            {{ name }}
+                        </div>
                     </div>
                 </div>
+
                 <!-- Group results -->
-                <div v-if="groups.length > 0" class="space-y-2">
+                <div v-if="groups.length > 0" :class="[
+                    'grid gap-4 w-full animate-fade-in pb-32',
+                    groups.length <= 2 ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-3'
+                ]">
                     <div v-for="(group, idx) in groups" :key="'g3g'+idx"
-                        :class="['p-3 px-4 rounded-2xl border transition-all', group.isSeed ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-200 shadow-sm']"
+                        :class="[
+                            'p-4 rounded-3xl border transition-all flex flex-col justify-start shadow-sm', 
+                            group.isSeed ? 'bg-amber-50/80 border-amber-300' : 'bg-slate-50/60 border-slate-200',
+                            groups.length <= 2 ? 'min-h-[220px]' : (groups.length <= 4 ? 'min-h-[160px]' : 'min-h-[120px]')
+                        ]"
                     >
-                        <div class="flex items-center justify-between mb-1">
-                            <span :class="['text-[14px] font-black', group.isSeed ? 'text-amber-700' : 'text-slate-900']">{{ group.name }}</span>
-                            <span :class="['text-[12px] font-bold', group.isSeed ? 'text-amber-500' : 'text-slate-400']">{{ group.members.length }} 人</span>
+                        <div class="flex items-center justify-between border-b border-dashed pb-2 mb-3" :class="[group.isSeed ? 'border-amber-200' : 'border-slate-200']">
+                            <span class="font-black text-[18px]" :class="[group.isSeed ? 'text-amber-800' : 'text-slate-800']">
+                                {{ group.name }}
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full font-black text-[12px]" :class="[group.isSeed ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600']">
+                                {{ group.members.length }} 人
+                            </span>
                         </div>
-                        <div class="flex flex-wrap gap-x-4 gap-y-1">
-                            <span v-for="member in group.members" :key="member" :class="['font-black', group.isSeed ? 'text-amber-900' : 'text-black']" style="font-size: 16px !important;">{{ member }}</span>
+                        <div class="flex-1 flex flex-wrap gap-x-5 gap-y-3 content-start items-center">
+                            <span v-for="member in group.members" :key="member" 
+                                :class="[
+                                    'font-black tracking-wide select-none leading-none font-biaokai-locked',
+                                    group.isSeed ? 'text-amber-950' : 'text-slate-900'
+                                ]"
+                                :style="{ 
+                                    fontSize: (group.members.length === 1 ? '50px' : (group.members.length <= 4 ? '40px' : '30px')) + ' !important',
+                                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                                }"
+                            >
+                                {{ member }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -520,6 +627,17 @@ import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/ios
 
 const emit = defineEmits(['close']);
 
+const getDynamicFontSize = (count) => {
+    if (count <= 1) return '135px';
+    if (count <= 2) return '110px';
+    if (count <= 4) return '90px';
+    if (count <= 6) return '72px';
+    if (count <= 8) return '58px';
+    if (count <= 12) return '46px';
+    if (count <= 16) return '38px';
+    return '32px';
+};
+
 const users = ref([]);
 const selectedNames = ref([]);   // Step 2 uses this
 const pendingNames = ref([]);    // Step 1 selection buffer
@@ -533,6 +651,19 @@ const pickSize = ref(1);
 const includeGuardians = ref(false);
 const persistentToast = ref(null);
 const seedInput = ref('');
+const newlyDrawnGuardians = ref([]);
+const showGuardianPopup = ref(false);
+
+const confirmNewlyDrawnGuardians = () => {
+    newlyDrawnGuardians.value.forEach(name => {
+        if (!guardianResults.value.includes(name)) {
+            guardianResults.value.push(name);
+        }
+    });
+    showGuardianPopup.value = false;
+    newlyDrawnGuardians.value = [];
+    currentStep.value = 3; // Direct transition to next step (Seeds)
+};
 
 const onSeedSelected = (name) => {
     if (name && !seedNames.value.includes(name)) {
@@ -966,14 +1097,34 @@ const pickGuardians = () => {
 
     isDrawing.value = true;
     currentType.value = 'guardian';
+    newlyDrawnGuardians.value = [];
+
+    buildFlyingSticks([...available]);
+
+    const pool = [...available];
+    let idx = 0;
+    lotteryDisplayNames.value = [pool[0]];
+    lotteryInterval = setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        lotteryDisplayNames.value = [pool[idx]];
+    }, 80);
+
     setTimeout(() => {
+        clearInterval(lotteryInterval);
+        lotteryInterval = null;
+
         const tempPool = [...available];
+        const drawn = [];
         for (let i = 0; i < pickSize.value; i++) {
-            const idx = Math.floor(Math.random() * tempPool.length);
-            const name = tempPool.splice(idx, 1)[0];
-            guardianResults.value.push(name);
+            const rIdx = Math.floor(Math.random() * tempPool.length);
+            const name = tempPool.splice(rIdx, 1)[0];
+            drawn.push(name);
         }
+
+        newlyDrawnGuardians.value = drawn;
         isDrawing.value = false;
+        lotteryDisplayNames.value = [];
+        showGuardianPopup.value = true;
     }, 3000);
 };
 
@@ -1281,4 +1432,7 @@ defineExpose({
 * { -webkit-tap-highlight-color: transparent; }
 .animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.font-biaokai-locked {
+    font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;
+}
 </style>

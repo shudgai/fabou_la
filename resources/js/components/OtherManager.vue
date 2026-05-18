@@ -151,7 +151,7 @@
                     @saved="loadData(); showLuckyDraw = false" />
 
                 <!-- Special View: 開文核定表 -->
-                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" class="mt-5" @close="activeFolderId = null" />
+                <kaiwen-approval v-if="activeFolder && activeFolder.name.includes('開文核定')" ref="kaiwenRef" @close="activeFolderId = null" />
                 <!-- Special View: 隨機分組 -->
                 <random-group v-else-if="activeFolder && activeFolder.name.includes('隨機分組')" ref="randomGroupRef" @close="activeFolderId = null" />
 

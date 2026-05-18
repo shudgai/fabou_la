@@ -1,45 +1,58 @@
 <template>
     <teleport to="body">
     <div v-if="show" class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center">
-        <!-- Backdrop -->
-        <div class="hidden md:block fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="$emit('close')"></div>
+        <!-- Backdrop (Critical for modal depth & click outside) -->
+        <div @click="$emit('close')" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-all duration-300"></div>
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
-            <!-- Global Close Button -->
-            <button @click="$emit('close')" class="absolute right-1 top-1 md:top-2 md:right-2 z-[9999] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full md:bg-transparent md:backdrop-filter-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
 
-        <!-- STEP 1 & 2: PERSONNEL SELECTION -->
-        <div v-if="currentStep === 1 || currentStep === 2" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
-            <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
-
-                <!-- Main Scrollable Content -->
-                <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px] w-full">
-                    <div class="flex items-start justify-between pl-3 pr-14 py-1.5 md:pt-[60px]">
-                        <div class="flex flex-col flex-1 min-w-0">
-                            <div class="flex items-center gap-2">
-                                <button v-if="selectionFiltered || currentStep === 2" @click="handleSelectionBack" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <!-- MODE 1: ROUND DRAW (lotteryMode === true) -->
+        <template v-if="lotteryMode === true">
+            <!-- STEP 1 & 2: PERSONNEL SELECTION -->
+            <div v-if="currentStep === 1 || currentStep === 2" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
+                    <!-- Header -->
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button v-if="selectionFiltered || currentStep === 2" @click="handleSelectionBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
-                                <span class="shrink-0 leading-tight font-black" style="font-size: 17px !important; color: #0f172a !important;">
-                                    {{ selectionFiltered ? '已確認名單-在場人員' : '點選待定法號' }}
-                                </span>
+                                <button v-else @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                                <span class="text-[14px] text-indigo-600 font-bold ml-2 mt-1">{{ selectionFiltered ? '2. 已確認在場人員' : '1. 選取人員' }}</span>
+                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ pendingNames.length }} 人</span>
                             </div>
-                            <div v-if="!selectionFiltered" class="flex items-center gap-1 mt-1">
-                                <span class="text-[12px] text-slate-400 whitespace-nowrap">滑動游標選取人員</span>
-                                <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="" class="bg-transparent border-none outline-none text-[10px] font-bold w-16 shrink-0">
-                            </div>
-                            <span v-if="!selectionFiltered" class="font-bold text-slate-800 mt-1" style="font-size: 16px !important;">已選 {{ pendingNames.length }} 人</span>
-                        </div>
-                        <div class="flex items-center space-x-2 shrink-0 mt-1">
-                            <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[16px] active:scale-95 transition-all border-none bg-transparent cursor-pointer shrink-0" style="font-size: 16px !important;">反選</button>
-                            <button @click="resetAll" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
                         </div>
                     </div>
+
+                    <!-- Main Scrollable Content -->
+                    <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px] w-full">
+                        <!-- Sub control panel -->
+                        <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
+                                <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="+ 自訂法號" class="bg-transparent border-none border-b border-slate-300 outline-none text-[13px] font-black w-24 text-center px-1">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[14px] active:scale-95 transition-all border-none bg-transparent cursor-pointer">反選</button>
+                                <button @click="resetAll" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    重置
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Title (Only when selectionFiltered is true) -->
+                        <div v-if="selectionFiltered" class="px-4 pt-4 pb-2 flex items-center justify-between animate-fade-in shrink-0">
+                            <span class="text-[17px] font-black text-indigo-700">在場人員名單</span>
+                            <span class="text-[14px] font-bold text-slate-500">共 {{ pendingNames.length }} 人</span>
+                        </div>
 
                         <!-- Grid -->
                         <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4" @mouseleave="stopDrag" @touchmove="handleTouchMove">
@@ -60,111 +73,463 @@
                                 <span class="pointer-events-none flex items-center relative">
                                     <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✓</span>
                                     {{ user.name }}
-                                    <span v-if="pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" 
+                                    <span v-if="!selectionFiltered && pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" 
                                         class="absolute -top-3.5 -right-3 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center border border-white shadow-sm font-black">
                                         {{ pendingNames.indexOf(user.name) + 1 }}
                                     </span>
                                 </span>
                             </button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Bottom Button Area -->
-                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
-                    <button
-                        @click="confirmSelection"
-                        :disabled="pendingNames.length === 0"
-                        class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
-                        :style="{
-                            background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
-                            color: '#ffffff !important',
-                            textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                            fontSize: '16px !important',
-                            paddingTop: '13px',
-                            paddingBottom: '13px'
-                        }"
-                    >
-                        <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
-                        <span v-else style="color: #ffffff !important;">確定 → 進入抽籤設定</span>
-                    </button>
+                    <!-- Bottom Button Area -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <button
+                            @click="confirmSelection"
+                            :disabled="pendingNames.length === 0"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white shadow-lg disabled:opacity-50 flex items-center justify-center"
+                            :style="{
+                                background: pendingNames.length === 0 ? '#94a3b8' : (selectionFiltered ? '#16a34a' : '#1d4ed8'),
+                                color: '#ffffff !important',
+                                textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                fontSize: '16px !important',
+                                paddingTop: '13px',
+                                paddingBottom: '13px'
+                            }"
+                        >
+                            <span v-if="!selectionFiltered" style="color: #ffffff !important;">完成人員選取 (進入排列)</span>
+                            <span v-else style="color: #ffffff !important;">確定 → 進入抽籤設定</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- STEP 3: DRAW CONFIGURATION -->
-        <div v-if="currentStep === 3" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
-            <div class="animate-slide-in flex flex-col h-full overflow-hidden min-h-0">
-                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
-                    <div class="flex flex-col w-full gap-1">
-                        <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
-                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <logo-imperial-notebook :height="40" />
-                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
-                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">{{ lotteryMode === true ? '回合抽籤' : '抽順序' }}</span>
-                            <span v-if="lotteryMode" class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;"> - 點選本輪人員</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 space-y-8">
-                    <div v-if="!lotteryMode" class="flex justify-center">
-                        <div class="bg-indigo-50 px-8 py-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
-                            <span class="text-indigo-400 text-[13px] font-black uppercase">總參與人數</span>
-                            <span class="text-indigo-600 text-[40px] font-black">{{ selectedNames.length }} 人</span>
-                        </div>
-                    </div>
-
-                    <div v-if="lotteryMode" class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[17px] font-black text-slate-800">1. 從基礎名單點選本輪人員</span>
-                            <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button @click="roundParticipants = [...selectedNames]" class="px-4 py-[10px] bg-indigo-600 text-white rounded-lg font-black text-[15px]" style="color: white !important;">全選</button>
-                            <button @click="roundParticipants = []" class="px-4 py-[10px] bg-slate-100 text-slate-600 rounded-lg font-black text-[15px]" style="color: #475569 !important;">清空</button>
-                        </div>
-                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
-                            <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
-                                class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
-                                :style="{
-                                    ...getStep2RoundStyle(name),
-                                    fontSize: '16px !important'
-                                }">
-                                {{ name }}
-                            </button>
-                        </div>
-                    </div>
-                    <div v-else class="space-y-6">
-                        <div v-if="fixedParticipants.length > 0">
-                            <label class="text-rose-500 font-black text-[15px] uppercase">固定優先順序</label>
-                            <div class="flex flex-wrap gap-2">
-                                <div v-for="(name, i) in fixedParticipants" :key="i" class="bg-rose-50 text-rose-700 px-3 py-2 rounded-lg font-black">{{ i+1 }}. {{ name }}</div>
+            <!-- STEP 3: DRAW CONFIGURATION -->
+            <div v-if="currentStep === 3" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
+                <div class="animate-slide-in flex flex-col h-full overflow-hidden min-h-0">
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;"> - 點選本輪人員</span>
                             </div>
                         </div>
                     </div>
-                </div>
-
-<div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 space-y-4 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[19px] font-black text-slate-800">抽取人數</span>
-                        <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
-                            <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-[44px] flex items-center justify-center bg-slate-200 text-slate-600 font-black" style="font-size: 24px !important;">-</button>
-                             <input v-model.number="drawCount" class="w-16 h-[44px] text-center font-black bg-transparent outline-none" style="font-size: 24px !important;">
-                             <button @click="drawCount = Math.min(lotteryMode ? roundParticipants.length : selectedNames.length, drawCount + 1)" 
-                                     class="w-12 h-[44px] flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
+                    <div class="flex-1 overflow-y-auto p-4 space-y-8">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[17px] font-black text-slate-800">1. 從基礎名單點選本輪人員</span>
+                                <span class="text-[17px] font-black text-slate-800">{{ roundParticipants.length }} 人</span>
+                            </div>
+                             <div class="flex gap-2">
+                                <button @click="roundParticipants = [...selectedNames]" 
+                                    :class="[
+                                        'px-4 py-[10px] rounded-lg font-black text-[15px] border transition-all active:scale-95 whitespace-nowrap cursor-pointer',
+                                        isAllSelected ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-300 text-slate-600'
+                                    ]"
+                                    :style="{ color: isAllSelected ? '#ffffff !important' : '#475569 !important' }">
+                                    全選
+                                </button>
+                                <button @click="roundParticipants = []" 
+                                    :class="[
+                                        'px-4 py-[10px] rounded-lg font-black text-[15px] border transition-all active:scale-95 whitespace-nowrap cursor-pointer',
+                                        isNoneSelected ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-300 text-slate-600'
+                                    ]"
+                                    :style="{ color: isNoneSelected ? '#ffffff !important' : '#475569 !important' }">
+                                    清空
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
+                                <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
+                                    class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                    :style="{
+                                        ...getStep2RoundStyle(name),
+                                        fontSize: '16px !important'
+                                    }">
+                                    {{ name }}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                     <button @click="lotteryMode === true ? performRoundDraw() : performDraw()" 
-                              class="w-full py-[10px] rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all"
-                              :class="lotteryMode ? 'text-white' : 'bg-indigo-600 text-white'"
-                              :style="lotteryMode ? { background: 'rgb(0,255,0)' } : {}">
-                        {{ lotteryMode ? '開始本輪抽籤' : '開始隨機抽籤' }}
-                    </button>
+
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 space-y-4 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[19px] font-black text-slate-800">抽取人數</span>
+                            <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                                <button @click="drawCount = Math.max(1, drawCount - 1)" class="w-12 h-[44px] flex items-center justify-center bg-slate-200 text-slate-600 font-black" style="font-size: 24px !important;">-</button>
+                                <input v-model.number="drawCount" class="w-16 h-[44px] text-center font-black bg-transparent outline-none" style="font-size: 24px !important;">
+                                <button @click="drawCount = Math.min(selectedNames.length, drawCount + 1)" 
+                                        class="w-12 h-[44px] flex items-center justify-center bg-slate-500 text-white font-black" style="font-size: 24px !important;">+</button>
+                            </div>
+                        </div>
+                        <button @click="performRoundDraw()" 
+                                class="w-full py-[10px] rounded-3xl font-black text-[19px] shadow-lg active:scale-95 transition-all text-white bg-indigo-600" style="background: rgb(16, 185, 129);">
+                            開始本輪抽籤
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- STEP 4: RESULTS -->
+            <div v-if="currentStep === 4" class="flex-1 flex flex-col bg-white overflow-hidden z-[1000] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden min-h-0">
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
+                        <div v-if="results.length === 1" class="flex flex-col items-center py-6">
+                            <span class="text-[70px] -mb-2 relative z-10">👑</span>
+                            <div class="bg-yellow-400 text-red-600 text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce text-center leading-none" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                                {{ results[0] }}
+                            </div>
+                        </div>
+                        <div v-else class="w-full flex justify-center items-center py-6">
+                            <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
+                                <div v-for="(name, idx) in results" :key="idx" 
+                                    class="flex flex-col items-center animate-slide-in"
+                                    :style="{ animationDelay: (idx * 0.05) + 's' }"
+                                >
+                                    <span class="text-[13px] font-black text-slate-400 mb-1.5 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded-md min-w-[22px] text-center leading-none">
+                                        {{ idx + 1 }}
+                                    </span>
+                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
+                                        :style="{ 
+                                            writingMode: 'vertical-rl',
+                                            fontSize: getDynamicFontSize(results.length),
+                                            color: '#dc2626',
+                                            textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
+                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                        }"
+                                    >
+                                        {{ name }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Button Area (Fixed above navigation) -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <div class="flex gap-2">
+                            <button @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
+                            <button @click="results = []; currentStep = 3" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
+                            <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
+                            <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- MODE 2: DRAW ORDER (lotteryMode === false) -->
+        <template v-else>
+            <!-- STEP 1: PERSONNEL SELECTION (FIXED) -->
+            <div v-if="currentStep === 1" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
+                    <!-- Header -->
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">抽順序</span>
+                                <span class="text-[14px] text-indigo-600 font-bold ml-2 mt-1">1. 選取固定人員</span>
+                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ fixedParticipants.length }} 人</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Scrollable Content -->
+                    <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[300px] w-full">
+                        <!-- Sub control panel -->
+                        <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button @click="resetAll(true)" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    重置
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4 mt-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
+                            <button v-for="user in displayUsers" :key="user.id"
+                                @mousedown="startDrag(user.name)"
+                                @mouseenter="onDragEnter(user.name)"
+                                @mouseup="stopDrag"
+                                @dragstart.prevent
+                                @selectstart.prevent
+                                @touchstart="handleTouchStart($event, user.name)"
+                                @touchend="stopDrag"
+                                :data-name="user.name"
+                                class="dharma-btn flex items-center justify-center font-black transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                :style="{ 
+                                    ...getPendingStyle(user.name),
+                                    fontSize: '17px !important'
+                                }">
+                                <span class="pointer-events-none flex items-center relative truncate leading-none">
+                                    {{ user.name }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Button Area -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <button
+                            @click="confirmSelection"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg flex items-center justify-center cursor-pointer"
+                            style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 17px !important; padding-top: 11px; padding-bottom: 11px;"
+                        >
+                            確定並進入下一步
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: OTHER PERSONNEL SELECTION (RANDOM POOL) -->
+            <div v-else-if="currentStep === 2" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
+                    <!-- Header -->
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">抽順序</span>
+                                <span class="text-[14px] text-emerald-600 font-bold ml-2 mt-1">2. 選取其他抽籤人員</span>
+                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ pendingNames.length }} 人</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Scrollable Content -->
+                    <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[300px] w-full">
+                        <!-- Sub control panel -->
+                        <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button @click="pendingNames = []" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    重置
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4 mt-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
+                            <button v-for="user in displayUsers" :key="user.id"
+                                @mousedown="startDrag(user.name)"
+                                @mouseenter="onDragEnter(user.name)"
+                                @mouseup="stopDrag"
+                                @dragstart.prevent
+                                @selectstart.prevent
+                                @touchstart="handleTouchStart($event, user.name)"
+                                @touchend="stopDrag"
+                                :data-name="user.name"
+                                class="dharma-btn flex items-center justify-center font-black transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
+                                :style="{ 
+                                    ...getPendingStyle(user.name),
+                                    fontSize: '17px !important'
+                                }">
+                                <span class="pointer-events-none flex items-center relative truncate leading-none">
+                                    {{ user.name }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Button Area -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <button
+                            @click="confirmSelection"
+                            :disabled="fixedParticipants.length + pendingNames.length === 0"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:bg-slate-300 shadow-lg flex items-center justify-center cursor-pointer"
+                            style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 17px !important; padding-top: 11px; padding-bottom: 11px;"
+                        >
+                            下一步 (確定名單 共 {{ fixedParticipants.length + pendingNames.length }} 人)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: CONFIRM LIST -->
+            <div v-else-if="currentStep === 3" class="flex-1 flex flex-col bg-white overflow-hidden z-[150] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden relative min-h-0">
+                    <!-- Header -->
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">抽順序</span>
+                                <span class="text-[14px] text-indigo-600 font-bold ml-2 mt-1">3. 確定名單</span>
+                                <button @click="resetAll(true)" class="text-slate-400 hover:text-red-500 flex items-center justify-center active:scale-90 transition-all shrink-0 border-none p-1 ml-auto mr-8">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Scrollable Content -->
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pb-[300px] w-full px-4 pt-4 space-y-6">
+                        <!-- Summary Card -->
+                        <div class="bg-indigo-50/60 border border-indigo-100 rounded-3xl p-5 text-center shadow-sm">
+                            <div class="text-[15px] font-black text-indigo-900 mb-1">本次排列總人數</div>
+                            <div class="text-[44px] font-black text-indigo-600 font-mono leading-none py-1">
+                                {{ fixedParticipants.length + pendingNames.length }} <span class="text-[20px] font-black text-indigo-400">人</span>
+                            </div>
+                            <div class="text-[12px] text-indigo-400 font-black mt-2">
+                                (固定人員 {{ fixedParticipants.length }} 人 + 隨機人員 {{ pendingNames.length }} 人)
+                            </div>
+                        </div>
+
+                        <!-- Fixed Participants list if any -->
+                        <div v-if="fixedParticipants.length > 0" class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                <span class="text-[16px] font-black text-slate-800">優先固定人員 (照順序排列)</span>
+                            </div>
+                            <div class="bg-rose-50/20 border border-rose-100/50 rounded-2xl p-4 grid grid-cols-4 gap-2">
+                                <div v-for="(name, pidx) in fixedParticipants" :key="'conf-f-'+name" 
+                                    class="bg-white border border-rose-100 py-2.5 px-1 rounded-xl text-[16px] font-black text-rose-900 shadow-sm flex flex-col items-center justify-center text-center leading-none"
+                                >
+                                    <span class="text-[11px] opacity-40 leading-none mb-0.5">{{ pidx + 1 }}</span>
+                                    <span class="truncate w-full leading-none">{{ name }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Random Pool Participants list if any -->
+                        <div v-if="pendingNames.length > 0" class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span class="text-[16px] font-black text-slate-800">隨機人員名單</span>
+                            </div>
+                            <div class="bg-emerald-50/20 border border-emerald-100/50 rounded-2xl p-4 grid grid-cols-4 gap-2">
+                                <div v-for="name in pendingNames" :key="'conf-r-'+name" 
+                                    class="bg-white border border-emerald-100 py-3.5 px-1 rounded-xl text-[16px] font-black text-emerald-900 shadow-sm flex items-center justify-center text-center leading-none truncate w-full"
+                                >
+                                    {{ name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Button Area -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <button
+                            @click="startMode2Draw"
+                            class="w-full rounded-2xl font-black transition-all active:scale-[0.98] text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg flex items-center justify-center cursor-pointer"
+                            style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 19px !important; padding-top: 13px; padding-bottom: 13px;"
+                        >
+                            開始隨機排列
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: RESULTS -->
+            <div v-if="currentStep === 4" class="flex-1 flex flex-col bg-white overflow-hidden z-[1000] min-h-[600px] md:min-h-0">
+                <div class="animate-fade-in flex flex-col h-full overflow-hidden min-h-0">
+                    <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
+                        <div class="flex flex-col w-full gap-1">
+                            <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
+                                <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <logo-imperial-notebook :height="40" />
+                                <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">直接排列</span>
+                                <span class="text-slate-900 font-black ml-auto mr-8" style="font-size: 19px !important;">抽籤結果 ({{ results.length }}人)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
+                        <div class="max-w-lg mx-auto space-y-4 pt-2">
+                            <!-- SINGLE RESULT: CROWN & CENTERED -->
+                            <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 animate-scale-in pt-4">
+                                <div class="relative">
+                                    <span class="text-[70px] filter drop-shadow-lg">👑</span>
+                                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
+                                </div>
+                                <h3 class="text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #facc15 !important; color: #dc2626 !important; border: 4px solid #eab308 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                                <div class="flex items-center space-x-2 text-indigo-300">
+                                    <div class="h-[2px] w-8 bg-indigo-100"></div>
+                                    <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
+                                    <div class="h-[2px] w-8 bg-indigo-100"></div>
+                                </div>
+                            </div>
+
+                            <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
+                            <div v-else class="w-full flex justify-center items-center py-6">
+                                <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
+                                    <div v-for="(name, idx) in results" :key="'res'+idx" 
+                                        class="flex flex-col items-center animate-slide-in"
+                                        :style="{ animationDelay: (idx * 0.05) + 's' }"
+                                    >
+                                        <span class="text-[13px] font-black text-slate-400 mb-1.5 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded-md min-w-[22px] text-center leading-none">
+                                            {{ idx + 1 }}
+                                        </span>
+                                        <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
+                                            :style="{ 
+                                                writingMode: 'vertical-rl',
+                                                fontSize: getDynamicFontSize(results.length),
+                                                color: '#dc2626',
+                                                textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
+                                                fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                            }"
+                                        >
+                                            {{ name }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Button Area -->
+                    <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
+                        <div class="flex gap-2">
+                            <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">重選</button>
+                            <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">複製</button>
+                            <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">儲存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
         <!-- FULLSCREEN LOTTERY ANIMATION -->
         <div v-if="isDrawing" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center overflow-hidden" style="background: #fefce8;">
             <!-- Ambient glow -->
@@ -215,50 +580,6 @@
                 </div>
             </div>
         </div>
-        <!-- STEP 4: RESULTS -->
-        <div v-if="currentStep === 4" class="flex-1 flex flex-col bg-white overflow-hidden z-[1000] min-h-[600px] md:min-h-0">
-            <div class="animate-fade-in flex flex-col h-full overflow-hidden min-h-0">
-                <div class="border-b border-slate-300 bg-white sticky top-0 z-[110] w-full md:pt-[60px]" style="padding: 8px 2px; min-height: 52px;">
-                    <div class="flex flex-col w-full gap-1">
-                        <div class="flex flex-wrap items-center flex-1 min-w-0 gap-x-2">
-                            <button @click="handleBack" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <logo-imperial-notebook :height="40" />
-                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
-                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">{{ lotteryMode === true ? '回合抽籤' : '抽順序' }}</span>
-                            <span v-if="!lotteryMode" class="text-slate-900 font-black ml-auto mr-8" style="font-size: 19px !important;">抽籤結果 ({{ results.length }}人)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4">
-                    <div v-if="results.length === 1" class="flex flex-col items-center py-4">
-                        <span class="text-[60px] -mb-2 relative z-10">👑</span>
-                        <div class="bg-yellow-400 text-red-600 text-[36px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce">
-                            1. {{ results[0] }}
-                        </div>
-                    </div>
-                    <div v-else class="columns-2 gap-2 space-y-2">
-                        <div v-for="(name, idx) in results" :key="idx" class="break-inside-avoid py-2 px-3 bg-slate-50 rounded-xl border border-slate-100 font-black flex items-center min-w-0 mb-2">
-                            <span class="text-indigo-400 text-[13px] mr-1.5 w-5 shrink-0">{{ idx + 1 }}.</span>
-                            <span class="text-[17px] truncate">{{ name }}</span>
-                        </div>
-                    </div>
-                </div>
-
-<!-- Bottom Button Area (Fixed above navigation) -->
-                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
-                    <div class="flex gap-2">
-                        <button v-if="lotteryMode" @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
-                         <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
-                         <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
-                         <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
 
         <!-- Global Action Confirm / Toast (Critical for iOS) -->
         <div v-if="persistentToast" class="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
@@ -291,7 +612,7 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
         <!-- Mobile Navbar explicitly added per user request to ensure all interfaces have it -->
         <mobile-navbar 
             is-absolute
@@ -320,6 +641,17 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'saved']);
 
+const getDynamicFontSize = (count) => {
+    if (count <= 1) return '76px';
+    if (count <= 2) return '68px';
+    if (count <= 4) return '54px';
+    if (count <= 6) return '44px';
+    if (count <= 8) return '38px';
+    if (count <= 12) return '34px';
+    if (count <= 16) return '28px';
+    return '24px';
+};
+
 const users = ref([]);
 const persistentToast = ref(null);
 const pendingNames = ref([]);
@@ -331,6 +663,7 @@ const currentStep = ref(1);
 const selectionFiltered = ref(false);
 const drawCount = ref(1);
 const isDrawing = ref(false);
+const isDragging = ref(false);
 const hasResult = ref(false);
 const lotteryMode = ref(props.initialMode);
 const manualName = ref('');
@@ -338,6 +671,8 @@ const DRAW_DURATION = 3000;
 const currentType = ref('');
 const lotteryDisplayNames = ref([]);
 const flyingSticks = ref([]);
+const activeAction = ref('');
+const selectionMode = ref('pool');
 
 const DRAFT_KEY = 'lucky_draw_draft';
 
@@ -348,9 +683,20 @@ const loadUsers = async () => {
     } catch (e) { console.error(e); }
 };
 
+const isAllSelected = computed(() => {
+    return selectedNames.value.length > 0 && roundParticipants.value.length === selectedNames.value.length;
+});
+
+const isNoneSelected = computed(() => {
+    return roundParticipants.value.length === 0;
+});
+
 const displayUsers = computed(() => {
     if (!users.value || !Array.isArray(users.value)) return [];
     if (selectionFiltered.value) {
+        if (!lotteryMode.value && currentStep.value === 2) {
+            return users.value.filter(u => u && u.name && selectedNames.value.includes(u.name.trim()) && !fixedParticipants.value.includes(u.name.trim()));
+        }
         return users.value.filter(u => u && u.name && pendingNames.value.includes(u.name.trim()));
     }
     if (!lotteryMode.value && currentStep.value === 2) {
@@ -360,90 +706,134 @@ const displayUsers = computed(() => {
 });
 
 const togglePending = (name) => {
-    if (currentStep.value === 1) {
-        const idx = fixedParticipants.value.indexOf(name);
+    const t = name.trim();
+    if (lotteryMode.value === true) {
+        // Round Draw selection
+        const idx = pendingNames.value.indexOf(t);
         if (idx > -1) {
-            fixedParticipants.value.splice(idx, 1);
-            pendingNames.value = pendingNames.value.filter(n => n !== name);
+            pendingNames.value.splice(idx, 1);
         } else {
-            fixedParticipants.value.push(name);
-            if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+            pendingNames.value.push(t);
         }
-    } else if (currentStep.value === 2) {
-        if (fixedParticipants.value.includes(name)) return;
-        const idx = pendingNames.value.indexOf(name);
-        if (idx > -1) pendingNames.value.splice(idx, 1);
-        else pendingNames.value.push(name);
+    } else {
+        // Draw Order selection
+        if (currentStep.value === 1) {
+            const fidx = fixedParticipants.value.indexOf(t);
+            if (fidx > -1) {
+                fixedParticipants.value.splice(fidx, 1);
+            } else {
+                fixedParticipants.value.push(t);
+            }
+        } else if (currentStep.value === 2) {
+            const idx = pendingNames.value.indexOf(t);
+            if (idx > -1) {
+                pendingNames.value.splice(idx, 1);
+            } else {
+                pendingNames.value.push(t);
+            }
+        }
     }
 };
 
 const getPendingStyle = (name) => {
     const t = name.trim();
-    const isSelected = pendingNames.value.includes(t);
-    if (isSelected) {
-        if (selectionFiltered.value) {
+    if (lotteryMode.value === true) {
+        // Mode 1: Round Draw Style
+        const isSelected = pendingNames.value.includes(t);
+        if (isSelected) {
+            if (selectionFiltered.value) {
+                return {
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    border: '1px solid #000000',
+                    boxShadow: 'none',
+                    zIndex: '5'
+                };
+            }
+            return {
+                backgroundColor: '#2563eb', // Blue for SELECTED
+                color: '#ffffff',
+                borderColor: '#fbbf24',
+                borderWidth: '3px',
+                boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+                zIndex: '5'
+            };
+        } else {
             return {
                 backgroundColor: '#ffffff',
                 color: '#000000',
-                border: '1px solid #000000',
-                boxShadow: 'none',
-                zIndex: '5'
+                border: '1px solid #d1d5db',
+                textShadow: 'none'
             };
         }
-        return {
-            backgroundColor: '#2563eb', // Professional Blue for SELECTED
-            color: '#ffffff',
-            borderColor: '#fbbf24',
-            borderWidth: '3px',
-            boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
-            zIndex: '5'
-        };
     } else {
-        return {
-            backgroundColor: '#ffffff',
-            color: '#000000',
-            border: '1px solid #d1d5db',
-            textShadow: 'none'
-        };
+        // Mode 2: Draw Order Style
+        const isFixed = fixedParticipants.value.includes(t);
+        const isSelected = pendingNames.value.includes(t);
+        if (isFixed) {
+            return {
+                backgroundColor: '#e11d48', // deep rose
+                color: '#ffffff',
+                borderColor: '#f43f5e',
+                borderWidth: '2px',
+                boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)',
+                zIndex: '5'
+            };
+        } else if (isSelected) {
+            return {
+                backgroundColor: '#10b981', // emerald green
+                color: '#ffffff',
+                borderColor: '#34d399',
+                borderWidth: '2px',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+                zIndex: '5'
+            };
+        } else {
+            return {
+                backgroundColor: '#ffffff',
+                color: '#1e293b',
+                borderColor: '#cbd5e1',
+                borderWidth: '1px',
+                boxShadow: 'none'
+            };
+        }
     }
 };
 
 const confirmSelection = () => {
-    if (pendingNames.value.length === 0) return;
-
-    if (!selectionFiltered.value) {
-        selectionFiltered.value = true;
-        safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
-        return;
-    }
-
-    // Save/update the shared selection list
-    safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
-
     if (lotteryMode.value === true) {
+        if (selectionFiltered.value) {
+            if (selectedNames.value.length === 0) return;
+        } else {
+            if (pendingNames.value.length === 0) return;
+        }
+
+        if (!selectionFiltered.value) {
+            selectionFiltered.value = true;
+            safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
+            return;
+        }
+        // Save/update the shared selection list
+        safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
         selectedNames.value = [...pendingNames.value];
-        roundParticipants.value = [...pendingNames.value];
+        roundParticipants.value = [];
         drawCount.value = 1;
         currentStep.value = 3;
-        return;
-    }
-
-    if (currentStep.value === 1) {
-        if (fixedParticipants.value.length === 0) {
-            // No fixed participants selected, treat everyone in the confirmed list as general participants and skip Step 2
-            selectedNames.value = [...pendingNames.value];
-            drawCount.value = selectedNames.value.length;
-            currentStep.value = 3;
-        } else {
-            // Manual flow: go to Step 2 for others
-            selectionFiltered.value = false;
+    } else {
+        // Mode 2: Draw Order
+        if (currentStep.value === 1) {
             currentStep.value = 2;
+            pendingNames.value = []; // Clear pending names so they start Step 2 fresh
+        } else if (currentStep.value === 2) {
+            selectedNames.value = [...fixedParticipants.value, ...pendingNames.value];
+            currentStep.value = 3;
         }
-    } else if (currentStep.value === 2) {
-        selectedNames.value = [...pendingNames.value];
-        drawCount.value = selectedNames.value.length;
-        currentStep.value = 3;
     }
+};
+
+const startMode2Draw = () => {
+    drawCount.value = selectedNames.value.length;
+    performDraw();
 };
 
 const handleBack = () => {
@@ -519,6 +909,15 @@ const getStep2RoundStyle = (name) => {
     }
 };
 
+const toggleFixedParticipant = (name) => {
+    const idx = fixedParticipants.value.indexOf(name);
+    if (idx > -1) {
+        fixedParticipants.value.splice(idx, 1);
+    } else {
+        fixedParticipants.value.push(name);
+    }
+};
+
 let lotteryInterval = null;
 
 const buildFlyingSticks = (names) => {
@@ -554,8 +953,12 @@ const performDraw = () => {
         lotteryInterval = null;
 
         const fixed = fixedParticipants.value.filter(n => pool.includes(n));
-        const rest = pool.filter(n => !fixed.includes(n)).sort(() => Math.random() - 0.5);
+        const rest = pendingNames.value.filter(n => !fixed.includes(n)).sort(() => Math.random() - 0.5);
         const full = [...fixed, ...rest];
+        
+        if (selectionFiltered.value) {
+            drawCount.value = fixed.length + rest.length;
+        }
         results.value = full.slice(0, Math.min(drawCount.value, full.length));
 
         isDrawing.value = false;
@@ -592,12 +995,20 @@ const performRoundDraw = () => {
     }, DRAW_DURATION);
 };
 
+const performQuickDraw = () => {
+    if (pendingNames.value.length === 0) return;
+    selectedNames.value = [...pendingNames.value];
+    drawCount.value = selectedNames.value.length;
+    performDraw();
+};
+
 const copyResults = () => {
     const text = results.value.map((n, i) => `${i+1}. ${n}`).join('\n');
     writeClipboard(text).then(() => alert('已複製'));
 };
 
 const saving = ref(false);
+
 const saveResults = async () => {
     if (!props.folderId || saving.value) return;
     saving.value = true;
@@ -617,15 +1028,10 @@ const saveResults = async () => {
     }
 };
 
-const handleReselect = () => {
-    resetAll(true);
-    currentStep.value = 1;
-};
-
 const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [...pendingNames.value];
+    roundParticipants.value = [];
     currentStep.value = 3;
 };
 
@@ -637,7 +1043,6 @@ const addManualName = () => {
     manualName.value = '';
 };
 
-const isDragging = ref(false);
 const dragSelectionType = ref(null); // 'add' or 'remove'
 const lastTouchedName = ref(null);
 
@@ -675,7 +1080,16 @@ const handleMouseMoveDrag = (e) => {
 
 const startDrag = (name) => {
     isDragging.value = true;
-    const isSelected = pendingNames.value.includes(name);
+    let isSelected = false;
+    if (!lotteryMode.value && selectionFiltered.value) {
+        if (currentStep.value === 1) {
+            isSelected = fixedParticipants.value.includes(name);
+        } else if (currentStep.value === 2) {
+            isSelected = pendingNames.value.includes(name);
+        }
+    } else {
+        isSelected = pendingNames.value.includes(name);
+    }
     dragSelectionType.value = isSelected ? 'remove' : 'add';
     togglePending(name);
     window.addEventListener('mouseup', stopDrag);
@@ -685,20 +1099,44 @@ const startDrag = (name) => {
 const onDragEnter = (name) => {
     if (!isDragging.value) return;
     const isSelected = pendingNames.value.includes(name);
-    if (dragSelectionType.value === 'add' && !isSelected) {
-        if (currentStep.value === 1) {
-            if (!fixedParticipants.value.includes(name)) fixedParticipants.value.push(name);
+    
+    if (dragSelectionType.value === 'add') {
+        if (lotteryMode.value === true) {
             if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
         } else {
-            if (!fixedParticipants.value.includes(name) && !pendingNames.value.includes(name)) pendingNames.value.push(name);
+            if (selectionFiltered.value) {
+                if (currentStep.value === 1) {
+                    if (!fixedParticipants.value.includes(name)) fixedParticipants.value.push(name);
+                } else if (currentStep.value === 2) {
+                    if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+                }
+            } else {
+                if (selectionMode.value === 'fixed') {
+                    if (!fixedParticipants.value.includes(name)) fixedParticipants.value.push(name);
+                    if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+                } else {
+                    if (!pendingNames.value.includes(name)) pendingNames.value.push(name);
+                }
+            }
         }
-    } else if (dragSelectionType.value === 'remove' && isSelected) {
-        if (currentStep.value === 1) {
-            fixedParticipants.value = fixedParticipants.value.filter(n => n !== name);
+    } else if (dragSelectionType.value === 'remove') {
+        if (lotteryMode.value === true) {
             pendingNames.value = pendingNames.value.filter(n => n !== name);
         } else {
-            if (!fixedParticipants.value.includes(name)) {
-                pendingNames.value = pendingNames.value.filter(n => n !== name);
+            if (selectionFiltered.value) {
+                if (currentStep.value === 1) {
+                    fixedParticipants.value = fixedParticipants.value.filter(n => n !== name);
+                } else if (currentStep.value === 2) {
+                    pendingNames.value = pendingNames.value.filter(n => n !== name);
+                }
+            } else {
+                if (selectionMode.value === 'fixed') {
+                    fixedParticipants.value = fixedParticipants.value.filter(n => n !== name);
+                    pendingNames.value = pendingNames.value.filter(n => n !== name);
+                } else {
+                    pendingNames.value = pendingNames.value.filter(n => n !== name);
+                    fixedParticipants.value = fixedParticipants.value.filter(n => n !== name);
+                }
             }
         }
     }
@@ -761,25 +1199,30 @@ watch(() => ({
             lotteryMode: val.mode
         }));
 
-        if (val.pending && val.pending.length > 0) {
-            safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(val.pending));
-        } else {
-            safeLocalStorage.removeItem('shared_dharma_selection');
+        if (lotteryMode.value === true) {
+            if (val.pending && val.pending.length > 0) {
+                safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(val.pending));
+            } else {
+                safeLocalStorage.removeItem('shared_dharma_selection');
+            }
         }
     }
 }, { deep: true });
 
-watch(() => props.show, (val) => {
-    if (val) {
-        if (typeof loadUsers === 'function') {
-            loadUsers();
-        }
+const initDraw = () => {
+    if (typeof loadUsers === 'function') {
+        loadUsers();
+    }
 
-        const draftStr = safeLocalStorage.getItem(DRAFT_KEY);
-        if (draftStr) {
-            try {
-                const draft = JSON.parse(draftStr);
-                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+    const draftStr = safeLocalStorage.getItem(DRAFT_KEY);
+    if (draftStr) {
+        try {
+            const draft = JSON.parse(draftStr);
+            if (draft.lotteryMode === props.initialMode) {
+                const hasDraftData = (draft.pendingNames && draft.pendingNames.length > 0) || 
+                                     (draft.fixedParticipants && draft.fixedParticipants.length > 0) || 
+                                     (draft.selectedNames && draft.selectedNames.length > 0);
+                if (hasDraftData && window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
                     currentStep.value = draft.currentStep || 1;
                     pendingNames.value = draft.pendingNames || [];
                     fixedParticipants.value = draft.fixedParticipants || [];
@@ -787,16 +1230,18 @@ watch(() => props.show, (val) => {
                     roundParticipants.value = draft.roundParticipants || [];
                     drawCount.value = draft.drawCount || 1;
                     manualName.value = draft.manualName || '';
-                    lotteryMode.value = draft.lotteryMode !== undefined ? draft.lotteryMode : props.initialMode;
+                    lotteryMode.value = props.initialMode;
                     return;
                 }
-            } catch (e) {}
-        }
+            }
+        } catch (e) {}
+    }
 
-        resetAll(true);
-        lotteryMode.value = props.initialMode;
+    resetAll(true);
+    lotteryMode.value = props.initialMode;
 
-        // Sync with shared selection
+    // Sync with shared selection (Only for Round Draw / Mode 1)
+    if (lotteryMode.value === true) {
         const sharedStr = safeLocalStorage.getItem('shared_dharma_selection');
         if (sharedStr) {
             try {
@@ -806,21 +1251,28 @@ watch(() => props.show, (val) => {
                     selectedNames.value = [...sharedNames];
                     selectionFiltered.value = true;
                     currentStep.value = 1;
-                    roundParticipants.value = [...sharedNames];
-                    if (lotteryMode.value === true) {
-                        drawCount.value = 1;
-                    } else {
-                        drawCount.value = sharedNames.length;
-                    }
+                    roundParticipants.value = [];
+                    drawCount.value = 1;
                 }
             } catch (e) {}
         }
+    }
+};
+
+watch(() => props.show, (val) => {
+    if (val) {
+        initDraw();
     } else {
         safeLocalStorage.removeItem(DRAFT_KEY);
     }
-}, { immediate: true });
+});
 
-onMounted(loadUsers);
+onMounted(() => {
+    loadUsers();
+    if (props.show) {
+        initDraw();
+    }
+});
 </script>
 
 <style scoped>
