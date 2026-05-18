@@ -6,18 +6,41 @@
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-4xl bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden animate-slide-up">
-            <!-- Global Close Button -->
-            <button @click="$emit('close')" class="absolute right-4 top-4 z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-sm md:shadow-none">
+            <!-- Global Close Button (Desktop) -->
+            <button @click="$emit('close')" class="hidden md:flex absolute right-6 top-[76px] z-[500] p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90 bg-white/80 backdrop-blur-sm rounded-full shadow-md border border-slate-100">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="flex flex-col h-full bg-slate-50 overflow-hidden relative">
+
+                <!-- Navigation Header -->
+                <div class="sticky top-0 bg-white border-b border-slate-100 z-[200] px-4 py-3 md:pt-[20px] md:mt-[40px] w-full shrink-0 shadow-sm md:shadow-none">
+                    <div class="max-w-4xl mx-auto flex flex-col w-full">
+                        <!-- Row 1: Logo & Title -->
+                        <div class="flex items-center justify-start gap-3 w-full pl-1">
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">開文專區</div>
+                        </div>
+                        <!-- Row 2: Navigation & Subtitle -->
+                        <div class="flex items-center justify-between w-full mt-2">
+                            <div class="flex items-center">
+                                <button v-if="step === 2" @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50 mr-1">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                                </button>
+                                <span class="text-slate-500" :style="{ fontSize: '23px !important', fontWeight: '400 !important', marginLeft: step === 2 ? '0' : '14px' }">開文核定表</span>
+                            </div>
+                            <button @click="$emit('close')" class="md:hidden text-slate-400 hover:text-slate-600 active:scale-90 p-2 -mr-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
         <!-- Step 1: Selection Page -->
         <div v-if="step === 1" class="flex flex-col h-full overflow-hidden relative">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
                 <div class="flex-1 overflow-y-auto py-3 space-y-4 custom-scrollbar pb-40 w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
                     <!-- Selection Grid matched to RandomGroup -->
-                    <div class="flex items-center justify-between pl-3 pr-14 py-3 md:pt-[32px]">
+                    <div class="flex items-center justify-between pl-3 pr-14 pb-2 md:pt-4">
                         <div class="flex items-center">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -78,15 +101,6 @@
         <!-- Step 2: Approval Table Page -->
         <div v-if="step === 2" class="flex flex-col h-full bg-white overflow-hidden relative">
             <div class="animate-fade-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-100 py-2 px-3 flex items-center justify-between shrink-0 shadow-sm z-10 w-full md:max-w-xl md:mx-auto md:mt-[60px]">
-                    <div class="flex items-center space-x-2">
-                        <button @click="step = 1" class="text-slate-400 hover:text-indigo-600 active:scale-90 transition-transform p-2 -ml-2 rounded-full hover:bg-slate-50">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h3 class="text-slate-900 tracking-tight font-black" style="font-size: 16px !important;">核定結果</h3>
-                    </div>
-                </div>
-
                 <div class="flex-1 overflow-y-auto py-4 flex flex-col custom-scrollbar w-full md:max-w-xl md:mx-auto" style="padding-left: 10px; padding-right: 10px;">
 
                     <!-- Instruction Text -->
@@ -213,6 +227,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import MobileNavbar from './MobileNavbar.vue';
+import LogoImperialNotebook from './LogoImperialNotebook.vue';
 
 const emit = defineEmits(['close']);
 
