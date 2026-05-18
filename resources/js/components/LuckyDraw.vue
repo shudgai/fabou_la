@@ -805,7 +805,7 @@ const confirmSelection = () => {
         // Save/update the shared selection list
         safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
         selectedNames.value = [...pendingNames.value];
-        roundParticipants.value = [];
+        roundParticipants.value = [...selectedNames.value];
         drawCount.value = 1;
         currentStep.value = 3;
     } else {
@@ -1020,7 +1020,7 @@ const saveResults = async () => {
 const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [];
+    roundParticipants.value = [...selectedNames.value];
     currentStep.value = 3;
 };
 
