@@ -71,7 +71,7 @@
                             <div class="relative">
                                 <button @click.stop="toggleActionMenu(item.id)"
                                         class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all">
-                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /></svg>
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
 
                                 <!-- Dropdown Menu -->
