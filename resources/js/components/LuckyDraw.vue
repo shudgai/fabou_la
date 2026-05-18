@@ -188,13 +188,13 @@
                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
                                 <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
+                                <span class="text-red-600 font-black ml-2" style="font-size: 23px !important; color: #dc2626 !important;"> - 抽籤結果</span>
                             </div>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
-                        <div v-if="results.length === 1" class="flex flex-col items-center py-6">
-                            <span class="text-[70px] -mb-2 relative z-10">👑</span>
-                            <div class="bg-yellow-400 text-red-600 text-[76px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce text-center leading-none" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                        <div v-if="results.length === 1" class="flex flex-col items-center py-12">
+                            <div class="font-black text-[76px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
@@ -204,12 +204,8 @@
                                     class="flex flex-col items-center animate-slide-in"
                                     :style="{ animationDelay: (idx * 0.05) + 's' }"
                                 >
-                                    <span class="text-[13px] font-black text-slate-400 mb-1.5 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded-md min-w-[22px] text-center leading-none">
-                                        {{ idx + 1 }}
-                                    </span>
                                     <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
                                         :style="{ 
-                                            writingMode: 'vertical-rl',
                                             fontSize: getDynamicFontSize(results.length),
                                             color: '#dc2626',
                                             textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
@@ -470,7 +466,8 @@
                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
                                 <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">直接排列</span>
-                                <span class="text-slate-900 font-black ml-auto mr-8" style="font-size: 19px !important;">抽籤結果 ({{ results.length }}人)</span>
+                                <span class="text-red-600 font-black ml-2" style="font-size: 23px !important; color: #dc2626 !important;"> - 抽籤結果</span>
+                                <span class="text-slate-900 font-black ml-auto mr-8" style="font-size: 19px !important;">({{ results.length }}人)</span>
                             </div>
                         </div>
                     </div>
@@ -478,12 +475,8 @@
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
                         <div class="max-w-lg mx-auto space-y-4 pt-2">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
-                            <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 animate-scale-in pt-4">
-                                <div class="relative">
-                                    <span class="text-[70px] filter drop-shadow-lg">👑</span>
-                                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
-                                </div>
-                                <h3 class="text-[76px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #facc15 !important; color: #dc2626 !important; border: 4px solid #eab308 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                            <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 pt-12">
+                                <h3 class="font-black text-[76px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
                                 <div class="flex items-center space-x-2 text-indigo-300">
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
                                     <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
@@ -498,12 +491,8 @@
                                         class="flex flex-col items-center animate-slide-in"
                                         :style="{ animationDelay: (idx * 0.05) + 's' }"
                                     >
-                                        <span class="text-[13px] font-black text-slate-400 mb-1.5 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded-md min-w-[22px] text-center leading-none">
-                                            {{ idx + 1 }}
-                                        </span>
                                         <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
                                             :style="{ 
-                                                writingMode: 'vertical-rl',
                                                 fontSize: getDynamicFontSize(results.length),
                                                 color: '#dc2626',
                                                 textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
