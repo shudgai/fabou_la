@@ -258,7 +258,7 @@
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
                                     <span class="app-title block uppercase tracking-widest !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important; font-weight: 900 !important;">開文內容</span>
-                                    <div class="flex items-center space-x-1">
+                                    <div class="flex items-center space-x-4">
                                         <div class="relative">
                                             <button @click.stop="openMenuId = (openMenuId === 'exp-' + post.id ? null : 'exp-' + post.id)" class="p-1">
                                                 <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
