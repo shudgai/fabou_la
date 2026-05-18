@@ -14,10 +14,17 @@
 
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
+            <!-- Navigation Header -->
+            <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
+                <button @click="$emit('close')" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <span class="font-black text-[20px] text-slate-800">隨機分組 - 人員選取</span>
+            </div>
 
-<!-- Main scrollable selection grid -->
-             <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
-                <div class="flex items-start justify-between pl-3 pr-3 md:pr-14 py-1.5 md:pt-[60px]">
+            <!-- Main scrollable selection grid -->
+            <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px]">
+                <div class="flex items-start justify-between pl-3 pr-3 md:pr-14 py-1.5">
                     <div class="flex flex-col flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <button v-if="selectionFiltered" @click="selectionFiltered = false" class="p-2 -ml-3 text-slate-400 active:scale-90 transition-all mr-1 shrink-0">
@@ -105,7 +112,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <div class="flex items-center justify-between w-full">
-                        <span class="font-black text-[20px] text-slate-800">步驟 2：關主設定</span>
+                        <span class="font-black text-[20px] text-slate-800">隨機分組 - 關主設定</span>
                         <div class="flex items-center space-x-1 text-slate-400">
                             <span class="font-bold" style="font-size: 16px !important;">總計</span>
                             <span class="font-black text-indigo-600" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
@@ -224,7 +231,7 @@
                     <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <span class="font-black text-[20px] text-slate-800">步驟 3：種子組設定</span>
+                    <span class="font-black text-[20px] text-slate-800">隨機分組 - 種子組設定</span>
                 </div>
 
                 <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
@@ -287,7 +294,7 @@
                     <button @click="currentStep = 3" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
-                    <span class="font-black text-[20px] text-slate-800">步驟 4：分組規則</span>
+                    <span class="font-black text-[20px] text-slate-800">隨機分組 - 分組規則</span>
                 </div>
 
                 <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
@@ -442,26 +449,19 @@
         </div>
 
         <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
-        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-start overflow-hidden pb-[calc(7dvh+90px)]" style="background: #ffffff !important;">
-            <!-- Decorative Background Glow -->
-            <div class="absolute inset-0 pointer-events-none">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/15 rounded-full blur-[120px]"></div>
-                <div class="absolute top-[20%] left-[20%] w-32 h-32 bg-amber-300/25 rounded-full blur-2xl animate-pulse"></div>
-                <div class="absolute bottom-[20%] right-[20%] w-48 h-48 bg-amber-500/15 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
-            </div>
-
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden bg-white" style="background: white !important;">
             <!-- Header at the absolute top -->
-            <div class="absolute top-[4vh] z-20 text-center animate-slide-up">
-                <h2 class="text-[26px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
+            <div class="absolute top-[6vh] z-20 text-center animate-slide-up">
+                <h2 class="text-[28px] font-black text-slate-800 tracking-wider">🌟 關主抽選結果 🌟</h2>
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[72vh] mt-[12vh]">
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[62vh] my-auto">
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
                     <div :class="[
                         newlyDrawnGuardians.length >= 6 && newlyDrawnGuardians.length <= 9
-                            ? 'grid grid-cols-2 gap-y-6 gap-x-12 px-4 max-w-xs mx-auto justify-items-center w-full'
+                            ? 'grid grid-cols-2 gap-y-8 gap-x-16 px-4 max-w-md mx-auto justify-items-center w-full'
                             : 'flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto'
                     ]">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
@@ -483,7 +483,7 @@
                 </div>
 
                 <!-- Confirm/Close Button in fixed bar directly above navbar -->
-                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-3 flex justify-center" style="background-color: white !important; border-top: 1px solid #e2e8f0 !important;">
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-100 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-3 flex justify-center" style="background-color: white !important; border-top: 1px solid #f1f5f9 !important;">
                     <button
                         @click="confirmNewlyDrawnGuardians"
                         class="w-full max-w-xs py-4 rounded-2xl font-black text-[20px] transition-all active:scale-[0.97] bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:shadow-sm border-none cursor-pointer"
@@ -502,7 +502,7 @@
                     <button @click="currentStep = 4" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
-                    <h2 class="whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">分組結果</h2>
+                    <h2 class="whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">隨機分組 - 分組結果</h2>
                 </div>
                 <div class="flex items-center justify-center space-x-3 w-full mt-2.5 pb-1 animate-fade-in">
                     <button @click="handleNextRound" class="w-[90px] h-[40px] flex items-center justify-center font-black text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer" style="font-size: 16px !important;">下一輪</button>
