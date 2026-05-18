@@ -998,6 +998,7 @@ const saveResults = async () => {
             record_date: new Date().toISOString().split('T')[0]
         });
         alert('已儲存');
+        safeLocalStorage.removeItem(DRAFT_KEY);
         emit('saved');
     } catch (e) { 
         console.error(e);
@@ -1166,7 +1167,8 @@ watch(() => ({
     round: roundParticipants.value,
     count: drawCount.value,
     manual: manualName.value,
-    mode: lotteryMode.value
+    mode: lotteryMode.value,
+    filtered: selectionFiltered.value
 }), (val) => {
     if (props.show) {
         safeLocalStorage.setItem(DRAFT_KEY, JSON.stringify({
@@ -1178,6 +1180,7 @@ watch(() => ({
             drawCount: val.count,
             manualName: val.manual,
             lotteryMode: val.mode,
+            selectionFiltered: val.filtered,
             timestamp: Date.now()
         }));
 
@@ -1217,6 +1220,7 @@ const initDraw = () => {
                     drawCount.value = draft.drawCount || 1;
                     manualName.value = draft.manualName || '';
                     lotteryMode.value = props.initialMode;
+                    selectionFiltered.value = draft.selectionFiltered !== undefined ? draft.selectionFiltered : (draft.currentStep > 1 || draft.pendingNames.length > 0);
                     return;
                 }
             }
@@ -1248,8 +1252,6 @@ const initDraw = () => {
 watch(() => props.show, (val) => {
     if (val) {
         initDraw();
-    } else {
-        safeLocalStorage.removeItem(DRAFT_KEY);
     }
 });
 
