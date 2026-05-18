@@ -19,4 +19,10 @@ class WeeklyPost extends Model
         'modified_content',
         'sort_order',
     ];
+
+    protected $casts = [
+        'title' => 'encrypted',
+        'original_content' => 'encrypted',
+        'modified_content' => 'encrypted',
+    ];
 }

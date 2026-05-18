@@ -14,6 +14,7 @@ class Registry extends Model
     protected $table = 'registries';
 
     protected $casts = [
+        'name'               => 'encrypted',
         'purpose'            => 'encrypted',
         'effect'             => 'encrypted',
         'acquisition_method' => 'encrypted',

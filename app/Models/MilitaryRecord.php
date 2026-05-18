@@ -33,6 +33,9 @@ class MilitaryRecord extends Model
     ];
 
     protected $casts = [
+        'user_name' => 'encrypted',
+        'user_remarks' => 'encrypted',
+        'destination' => 'encrypted',
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',
         'remarks_text' => 'encrypted',

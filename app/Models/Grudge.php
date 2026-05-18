@@ -26,6 +26,10 @@ class Grudge extends Model
     ];
 
     protected $casts = [
+        'user_name' => 'encrypted',
+        'user_remarks' => 'encrypted',
+        'destination' => 'encrypted',
+        'remarks_text' => 'encrypted',
         'remarks' => 'array',
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',

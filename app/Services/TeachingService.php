@@ -18,24 +18,43 @@ class TeachingService
             $this->applyMasterGroupFilter($query, $masterId);
         }
 
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('content', 'like', "%{$search}%")
-                  ->orWhere('remarks', 'like', "%{$search}%")
-                  ->orWhere('target_remarks', 'like', "%{$search}%")
-                  ->orWhereHas('dharmaNames', function($sq) use ($search) {
-                      $sq->where('name', 'like', "%{$search}%");
-                  });
-            });
-        }
+        // Search is handled in PHP Collection later
+        $searchQuery = $search ? mb_strtolower($search) : null;
 
         $this->applyVisibilityFilter($query, $user);
 
         $direction = $sortDesc ? 'desc' : 'asc';
-        return $query->orderBy('date', $direction)
+        $query->orderBy('date', $direction)
             ->orderBy('sort_order', $direction)
-            ->orderBy('id', $direction)
-            ->paginate($perPage);
+            ->orderBy('id', $direction);
+
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->content), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->target_remarks), $searchQuery)) return true;
+                if (is_array($r->remarks)) {
+                    foreach ($r->remarks as $rem) {
+                        if (str_contains(mb_strtolower((string)$rem), $searchQuery)) return true;
+                    }
+                }
+                foreach ($r->dharmaNames as $dn) {
+                    if (str_contains(mb_strtolower((string)$dn->name), $searchQuery)) return true;
+                }
+                return false;
+            })->values();
+        }
+
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allRecords->forPage($page, $perPage)->values(),
+            $allRecords->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
+        return $paginated;
     }
 
     public function getPaginatedDates($masterId = null, $perPage = 15, $sortDesc = true)

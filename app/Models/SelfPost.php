@@ -21,6 +21,11 @@ class SelfPost extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'original_content' => 'encrypted',
+        'modified_content' => 'encrypted',
+    ];
+
     public function master()
     {
         return $this->belongsTo(Master::class);

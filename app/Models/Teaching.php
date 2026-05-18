@@ -20,6 +20,8 @@ class Teaching extends Model
     protected $casts = [
         'content' => 'encrypted',
         'is_content_literal' => 'boolean',
+        'supplement' => 'encrypted',
+        'target_remarks' => 'encrypted',
         'items' => 'encrypted:json',
         'remarks' => 'encrypted:json',
         'items_footer_remarks' => 'encrypted',

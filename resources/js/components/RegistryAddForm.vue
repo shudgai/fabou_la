@@ -36,7 +36,7 @@
                     :style="{ fontSize: '16px !important', color: localMode === 'single' ? 'white !important' : '#000000 !important' }">
                     逐筆載錄
                 </button>
-                <button @click="localMode = 'batch'"
+                <button @click="localMode = 'batch'; batchCurrentStep = 1"
                     :class="localMode === 'batch' ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-50 text-slate-400 border border-slate-100'"
                     class="flex-1 py-[12px] rounded-2xl text-[16px] font-normal transition-all whitespace-nowrap active:scale-95"
                     :style="{ fontSize: '16px !important', color: localMode === 'batch' ? 'white !important' : '#000000 !important' }">
@@ -44,16 +44,28 @@
                 </button>
             </div>
 
-            <!-- Step Progress (Single Mode Only, hidden when editing) -->
-            <div v-if="localMode === 'single' && !isEditing" class="px-6 pt-4 pb-1 bg-white shrink-0">
-                <div class="flex items-center gap-1.5">
-                    <div v-for="s in totalSteps" :key="s" class="h-1.5 flex-1 rounded-full transition-all duration-500"
-                         :class="s <= currentStep ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-slate-100'"></div>
-                </div>
-                <div class="flex justify-between mt-2 px-1">
-                    <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">第 {{ currentStep }} 步 / 共 {{ totalSteps }} 步</span>
-                    <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">{{ currentStepTitle }}</span>
-                </div>
+            <!-- Step Progress (hidden when editing) -->
+            <div v-if="!isEditing" class="px-6 pt-4 pb-1 bg-white shrink-0">
+                <template v-if="localMode === 'single'">
+                    <div class="flex items-center gap-1.5">
+                        <div v-for="s in totalSteps" :key="'s'+s" class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                             :class="s <= currentStep ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-slate-100'"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 px-1">
+                        <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">第 {{ currentStep }} 步 / 共 {{ totalSteps }} 步</span>
+                        <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">{{ currentStepTitle }}</span>
+                    </div>
+                </template>
+                <template v-else-if="localMode === 'batch'">
+                    <div class="flex items-center gap-1.5">
+                        <div v-for="s in 2" :key="'b'+s" class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                             :class="s <= batchCurrentStep ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-slate-100'"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 px-1">
+                        <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">第 {{ batchCurrentStep }} 步 / 共 2 步</span>
+                        <span class="text-[11px] font-normal text-black uppercase tracking-[0.2em]">{{ batchCurrentStep === 1 ? '仙師' : '內容明細' }}</span>
+                    </div>
+                </template>
             </div>
 
             <!-- Scrollable Content -->
@@ -331,45 +343,57 @@
                 </div>
 
                 <!-- BATCH MODE -->
-                <div v-if="localMode === 'batch'" class="space-y-4 animate-fade-in">
-                    <!-- Master Selector -->
-                    <div class="px-1">
-                        <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
-                        <editable-input-chips 
-                            v-model="masterNameInput" 
-                            variant="boxed"
-                            :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" 
-                            @change="resolveMasterId" 
-                            placeholder="仙師" />
+                <transition v-if="localMode === 'batch'" name="step-fade" mode="out-in">
+                    
+                    <!-- STEP 1: 仙師 -->
+                    <div v-if="batchCurrentStep === 1" :key="'bs1'" class="space-y-10 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-8">
+                            <h2 class="text-[17px] font-normal text-black">請確認<span class="text-black">載錄仙師</span></h2>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="relative group">
+                                <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">載錄目標仙師</label>
+                                <editable-input-chips 
+                                    v-model="masterNameInput" 
+                                    variant="boxed"
+                                    :options="masters.map(m => m.name === '父皇仙師' ? '父皇' : m.name)" 
+                                    @change="resolveMasterId" 
+                                    placeholder="仙師" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-between ml-1">
-                        <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
-                        <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-red-400 rounded-lg text-[13px] font-bold active:scale-95 flex items-center space-x-1 border border-red-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span>清空</span>
-                        </button>
-                    </div>
-                    <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="多筆載錄格式：
+
+                    <!-- STEP 2: 內容明細 -->
+                    <div v-else-if="batchCurrentStep === 2" :key="'bs2'" class="space-y-4 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="flex items-center justify-between ml-1">
+                            <label class="text-[17px] font-bold text-slate-800">貼入內容明細</label>
+                            <button v-if="batchInput" @click="batchInput = ''" class="px-3 py-1 bg-red-50 text-red-400 rounded-lg text-[13px] font-bold active:scale-95 flex items-center space-x-1 border border-red-100">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span>清空</span>
+                            </button>
+                        </div>
+                        <textarea v-model="batchInput" rows="10" class="w-full border-none text-[15px] font-normal text-slate-900 bg-slate-50/50 focus:ring-2 focus:ring-blue-100 p-4 rounded-2xl" placeholder="多筆載錄格式：
 日期(Tab)允求:法寶名稱(Tab)法號,法號
 
 例如：
 113.10.6	允求:無形現惡鏡	閻帝
 113.10.7	求得:森羅戒	金了,元續"></textarea>
-                    <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
-                        <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
-                            <div class="flex flex-col">
-                                <span class="text-[15px] font-normal text-black">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</span>
-                                <span class="text-[11px] text-blue-400 font-medium">貼上內容原始顯示</span>
+                        <div v-if="batchInput.trim()" class="rounded-[24px] overflow-hidden bg-slate-50/50 animate-fade-in">
+                            <div class="bg-blue-50/50 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
+                                <div class="flex flex-col">
+                                    <span class="text-[15px] font-normal text-black">預覽清單 {{ rawLines.length > 0 ? '(' + rawLines.length + ' 筆)' : '' }}</span>
+                                    <span class="text-[11px] text-blue-400 font-medium">貼上內容原始顯示</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
-                            <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-normal text-black flex items-start gap-3 hover:bg-slate-50">
-                                <span class="text-[11px] font-normal text-black w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
-                                <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                            <div class="max-h-48 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
+                                <div v-for="(line, idx) in rawLines" :key="idx" class="px-4 py-2.5 text-[14px] font-normal text-black flex items-start gap-3 hover:bg-slate-50">
+                                    <span class="text-[11px] font-normal text-black w-6 shrink-0 mt-0.5">{{ idx + 1 }}</span>
+                                    <span class="break-all whitespace-pre-wrap">{{ line }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </transition>
 
 
             </div>
@@ -388,10 +412,13 @@
                     <button v-else @click="handleSubmit" :disabled="isSaving" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-emerald-100 active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認載錄' }}</button>
                 </template>
                 <!-- Batch Mode -->
-                <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0"
-                    class="w-full max-w-md bg-blue-600 text-white h-[48px] rounded-2xl font-normal text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all disabled:opacity-50" style="color: white !important;">
-                    {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
-                </button>
+                <template v-else-if="localMode === 'batch'">
+                    <button v-if="batchCurrentStep > 1" @click="handleBatchBack" class="w-[85px] py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">上一步</button>
+                    <button v-if="batchCurrentStep < 2" @click="handleBatchNext" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all" style="color: white !important;">下一步</button>
+                    <button v-else @click="handleSubmit" :disabled="isSaving || parsedItemsCount === 0" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal text-[16px] shadow-lg shadow-blue-100 active:scale-95 transition-all disabled:opacity-50" style="color: white !important;">
+                        {{ isSaving ? '儲存中...' : `確認載錄 (${parsedItemsCount} 筆)` }}
+                    </button>
+                </template>
             </div>
 
 
@@ -457,6 +484,8 @@ import EditableInputChips from './EditableInputChips.vue';
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
 const totalSteps = 8;
+const batchCurrentStep = ref(1);
+const batchTotalSteps = 2;
 const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '法寶內容', '備註'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 const isEditing = computed(() => !!props.initialData?.id);
@@ -480,6 +509,13 @@ function handleNext() {
 }
 function handleBack() {
     if (currentStep.value > 1) currentStep.value--;
+}
+
+function handleBatchNext() {
+    if (batchCurrentStep.value < batchTotalSteps) batchCurrentStep.value++;
+}
+function handleBatchBack() {
+    if (batchCurrentStep.value > 1) batchCurrentStep.value--;
 }
 
 const form = ref({ ...props.initialData });

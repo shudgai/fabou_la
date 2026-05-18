@@ -94,14 +94,10 @@ class RegistryController extends Controller
             $cleanName = trim($request->name);
 
             $registry = Registry::where('user_id', $user->id)
-                ->where('name', $cleanName)
-                ->first();
+                ->get()
+                ->firstWhere('name', $cleanName);
 
             $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
-            if ($registry && !in_array($cleanName, $allowedDuplicates)) {
-                $masterName = \App\Models\Master::find($registry->master_id)?->name ?? '其他';
-                throw new \Exception("「{$cleanName}」已存在於【{$masterName}】資料夾中，不可重複載錄。");
-            }
 
             if (!$registry || in_array($cleanName, $allowedDuplicates)) {
                 $registry = Registry::create([
@@ -268,9 +264,9 @@ class RegistryController extends Controller
                 $cleanName = trim($request->name);
                 $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
                 $exists = Registry::where('user_id', $user->id)
-                    ->where('name', $cleanName)
                     ->where('id', '!=', $registry->id)
-                    ->first();
+                    ->get()
+                    ->firstWhere('name', $cleanName);
                 
                 if ($exists && !in_array($cleanName, $allowedDuplicates)) {
                     $masterName = \App\Models\Master::find($exists->master_id)?->name ?? '其他';
@@ -341,15 +337,14 @@ class RegistryController extends Controller
         ];
 
         return DB::transaction(function () use ($records, $nameAliasMap, $user) {
+            $userRegistries = Registry::where('user_id', $user->id)->get();
             $results = [];
             foreach ($records as $recordData) {
                 if (empty($recordData['name']) || empty($recordData['master_id']))
                     continue;
 
                 $cleanName = trim($recordData['name']);
-                $registry  = Registry::where('user_id', $user->id)
-                    ->where('name', $cleanName)
-                    ->first();
+                $registry = $userRegistries->firstWhere('name', $cleanName);
 
                 $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
 
@@ -357,6 +352,7 @@ class RegistryController extends Controller
                     $recordData['name'] = $cleanName;
                     $recordData['user_id'] = $user->id;
                     $registry = Registry::create($recordData);
+                    $userRegistries->push($registry);
                 } else {
                     $registry->update(array_filter([
                         'acquisition_method' => $recordData['acquisition_method'] ?? null,

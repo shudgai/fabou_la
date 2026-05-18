@@ -17,8 +17,13 @@ class OtherTeaching extends Model
     ];
 
     protected $casts = [
-        'items' => 'array',
-        'is_daily' => 'boolean'
+        'items' => 'encrypted:json',
+        'is_daily' => 'boolean',
+        'content' => 'encrypted',
+        'supplement' => 'encrypted',
+        'target_remarks' => 'encrypted',
+        'remarks' => 'encrypted:json',
+        'items_footer_remarks' => 'encrypted',
     ];
 
     public function master()

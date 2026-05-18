@@ -18,19 +18,8 @@ class ImperialGraceController extends Controller
 
         $query->where('user_id', $user->id);
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('purpose', 'like', "%{$search}%")
-                    ->orWhereHas('dharmaNameRegistries', function ($sq) use ($search) {
-                        $sq->where('custom_name', 'like', "%{$search}%")
-                            ->orWhereHas('dharmaName', function ($ssq) use ($search) {
-                                $ssq->where('name', 'like', "%{$search}%");
-                            });
-                    });
-            });
-        }
+        // Search is handled in PHP Collection later
+        $searchQuery = $request->has('search') ? mb_strtolower($request->search) : null;
 
         if ($request->has('master_id')) {
             if ($request->master_id === 'unobtained') {
@@ -48,6 +37,20 @@ class ImperialGraceController extends Controller
               ->orderBy('sort_order', $direction)
               ->orderBy('id', $direction);
 
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->purpose), $searchQuery)) return true;
+                foreach ($r->dharmaNameRegistries as $dnr) {
+                    if (str_contains(mb_strtolower((string)$dnr->custom_name), $searchQuery)) return true;
+                    if ($dnr->dharmaName && (str_contains(mb_strtolower((string)$dnr->dharmaName->name), $searchQuery) || str_contains(mb_strtolower((string)$dnr->dharmaName->alias), $searchQuery))) return true;
+                }
+                return false;
+            })->values();
+        }
+
         // Single query: get per-master counts AND unobtained count at once
         $allCounts = ImperialGrace::where('user_id', $user->id)
             ->selectRaw('master_id, status, count(*) as total')
@@ -57,8 +60,18 @@ class ImperialGraceController extends Controller
         $folderCounts = $allCounts->groupBy('master_id')->map(fn($g) => $g->sum('total'));
         $unobtainedCount = $allCounts->filter(fn($r) => is_null($r->master_id) || $r->status === '未求得')->sum('total');
 
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = $request->input('per_page', 10);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allRecords->forPage($page, $perPage)->values(),
+            $allRecords->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
+
         return response()->json([
-            'registries' => $query->paginate($request->input('per_page', 10)),
+            'registries' => $paginated,
             'userGraces' => UserImperialGrace::where('user_id', $user->id)->get(),
             'folderCounts' => $folderCounts,
             'unobtainedCount' => $unobtainedCount
@@ -88,8 +101,8 @@ class ImperialGraceController extends Controller
         return DB::transaction(function () use ($request, $nameAliasMap, $user) {
             $cleanName = trim($request->name);
             $grace = ImperialGrace::where('user_id', $user->id)
-                ->where('name', $cleanName)
-                ->first();
+                ->get()
+                ->firstWhere('name', $cleanName);
 
             $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
             if ($grace && !in_array($cleanName, $allowedDuplicates)) {
@@ -237,9 +250,9 @@ class ImperialGraceController extends Controller
             $cleanName = trim($request->name);
             $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
             $exists = ImperialGrace::where('user_id', $user->id)
-                ->where('name', $cleanName)
                 ->where('id', '!=', $id)
-                ->first();
+                ->get()
+                ->firstWhere('name', $cleanName);
             
             if ($exists && !in_array($cleanName, $allowedDuplicates)) {
                 $masterName = \App\Models\Master::find($exists->master_id)?->name ?? '未求得';
@@ -292,13 +305,13 @@ class ImperialGraceController extends Controller
         ];
 
         return DB::transaction(function () use ($items, $masterId, $user, $nameAliasMap) {
+            $userGraces = ImperialGrace::where('user_id', $user->id)->get();
             foreach ($items as $item) {
                 $cleanName = trim($item['name'] ?? '');
                 if (!$cleanName) continue;
 
-                $grace = ImperialGrace::where('user_id', $user->id)
-                    ->where('name', $cleanName)
-                    ->first();
+                $grace = clone $userGraces->firstWhere('name', $cleanName) ?? null;
+                $grace = $userGraces->firstWhere('name', $cleanName);
 
                 $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
                 if ($grace && !in_array($cleanName, $allowedDuplicates)) {
@@ -317,6 +330,7 @@ class ImperialGraceController extends Controller
                         'is_multi' => $item['is_multi'] ?? false,
                         'remarks' => $item['remarks'] ?? null,
                     ]);
+                    $userGraces->push($grace);
                 } else {
                     $grace->update(array_filter([
                         'purpose' => $item['purpose'] ?? null,
