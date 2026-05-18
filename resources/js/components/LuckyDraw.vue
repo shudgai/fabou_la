@@ -73,7 +73,7 @@
                                 <span class="pointer-events-none flex items-center relative">
                                     <span v-if="fixedParticipants.includes(user.name)" class="mr-1 text-white">✓</span>
                                     {{ user.name }}
-                                    <span v-if="!selectionFiltered && pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" 
+                                    <span v-if="!lotteryMode && !selectionFiltered && pendingNames.includes(user.name) && !fixedParticipants.includes(user.name)" 
                                         class="absolute -top-3.5 -right-3 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center border border-white shadow-sm font-black">
                                         {{ pendingNames.indexOf(user.name) + 1 }}
                                     </span>
@@ -686,8 +686,8 @@ const isNoneSelected = computed(() => {
 const displayUsers = computed(() => {
     if (!users.value || !Array.isArray(users.value)) return [];
     if (selectionFiltered.value) {
-        if (!lotteryMode.value && currentStep.value === 2) {
-            return users.value.filter(u => u && u.name && selectedNames.value.includes(u.name.trim()) && !fixedParticipants.value.includes(u.name.trim()));
+        if (lotteryMode.value === true) {
+            return users.value.filter(u => u && u.name);
         }
         return users.value.filter(u => u && u.name && pendingNames.value.includes(u.name.trim()));
     }
@@ -731,17 +731,7 @@ const getPendingStyle = (name) => {
     const t = name.trim();
     if (lotteryMode.value === true) {
         // Mode 1: Round Draw Style
-        const isSelected = pendingNames.value.includes(t);
         if (isSelected) {
-            if (selectionFiltered.value) {
-                return {
-                    backgroundColor: '#ffffff',
-                    color: '#000000',
-                    border: '1px solid #000000',
-                    boxShadow: 'none',
-                    zIndex: '5'
-                };
-            }
             return {
                 backgroundColor: '#2563eb', // Blue for SELECTED
                 color: '#ffffff',
@@ -794,11 +784,7 @@ const getPendingStyle = (name) => {
 
 const confirmSelection = () => {
     if (lotteryMode.value === true) {
-        if (selectionFiltered.value) {
-            if (selectedNames.value.length === 0) return;
-        } else {
-            if (pendingNames.value.length === 0) return;
-        }
+        if (pendingNames.value.length === 0) return;
 
         if (!selectionFiltered.value) {
             selectionFiltered.value = true;
