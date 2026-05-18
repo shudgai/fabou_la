@@ -628,11 +628,10 @@ import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/ios
 const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
-    if (count <= 2) return '58px';
-    if (count <= 4) return '48px';
-    if (count <= 8) return '40px';
-    if (count <= 12) return '32px';
-    return '26px';
+    if (count <= 1) return '70px';
+    if (count <= 4) return '60px';
+    if (count <= 9) return '50px';
+    return '35px';
 };
 
 const users = ref([]);
