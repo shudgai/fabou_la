@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
+    <div class="bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
         <!-- Transition Logo Overlay -->
         <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
@@ -22,29 +22,36 @@
             @cancel="addMode = null"
         />
         <!-- Header (Shared) -->
-        <div class="flex items-start bg-white sticky top-0 z-[200] w-full" style="padding: 6px 10px;">
-            <div class="cursor-pointer shrink-0 pt-[2px]" @click="resetToRoot">
-                <div class="flex items-center gap-2">
-                        <logo-imperial-notebook :height="36" class="md:hidden" />
-                        <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1;">
-                    開文專區
-                </h1>
-                    </div>
+        <div class="flex flex-col bg-white sticky top-0 z-[200] w-full border-b border-slate-100" style="padding: 10px 10px 6px 10px;">
+            <!-- Title Row (Centered Logo + Title) -->
+            <div class="flex items-center justify-between w-full relative">
+                <!-- Spacer for layout balance -->
+                <div class="w-10"></div>
+                
+                <div class="cursor-pointer flex items-center justify-center gap-2" @click="resetToRoot">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1;">
+                        開文專區
+                    </h1>
+                </div>
+
+                <div class="w-10"></div>
             </div>
 
-            <div class="flex flex-col md:flex-row items-start md:items-center ml-4 mt-[2px] animate-fade-in gap-1.5 md:gap-3">
-                <button @click="currentTab = 'weekly'" 
-                    :class="currentTab === 'weekly' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
-                    class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
-                    style="font-size: 19px !important;">
-                    每週開文
-                </button>
-                <button @click="currentTab = 'self'" 
-                    :class="currentTab === 'self' ? '!text-[#7c3aed]' : '!text-[#94a3b8]'"
-                    class="font-black transition-all whitespace-nowrap relative kaiwen-tab"
-                    style="font-size: 19px !important;">
-                    自行開文
-                </button>
+            <!-- Centered Segmented Buttons (Tabs) -->
+            <div class="flex justify-center w-full mt-3 mb-1">
+                <div class="bg-slate-100 p-0.5 rounded-2xl flex items-center w-full max-w-[320px]">
+                    <button @click="currentTab = 'weekly'" 
+                        :class="currentTab === 'weekly' ? 'bg-white shadow-sm !text-[#7c3aed] font-black' : '!text-slate-400 font-normal'"
+                        class="flex-1 py-2 rounded-xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
+                        每週開文
+                    </button>
+                    <button @click="currentTab = 'self'" 
+                        :class="currentTab === 'self' ? 'bg-white shadow-sm !text-[#7c3aed] font-black' : '!text-slate-400 font-normal'"
+                        class="flex-1 py-2 rounded-xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
+                        自行開文
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -69,7 +76,7 @@
         </div>
 
         <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full">
+        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full bg-white">
             <!-- Search -->
             <div v-if="showSearch" class="px-1 pb-3 animate-fade-in">
                 <div class="relative group">
@@ -77,7 +84,7 @@
                         <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     <input v-model="searchQuery" type="text" placeholder="搜尋標題或內容..."
-                        class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
+                        class="block w-full pl-11 pr-12 h-[52px] bg-white border-2 border-slate-200 focus:border-indigo-400 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
                     <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
@@ -217,7 +224,7 @@
                             </div>
                         </div>
 
-                        <div v-if="expandedIds[post.id]" class="flex-1 bg-slate-50 px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
+                        <div v-if="expandedIds[post.id]" class="flex-1 bg-white px-[15px] pb-[10px] pt-[15px] rounded-2xl border border-slate-100 space-y-4 animate-fade-in overflow-y-auto" @click.stop>
 
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">

@@ -22,7 +22,7 @@
             </button>
         </div>
         <!-- Content -->
-        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50">
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white">
             <div class="max-w-xl mx-auto space-y-6">
                 <!-- Info Alert -->
                 <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 flex items-start space-x-3">
