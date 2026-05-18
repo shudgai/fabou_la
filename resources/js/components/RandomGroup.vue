@@ -689,7 +689,7 @@ const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
     if (count <= 1) return '120px';
-    if (count === 2) return '70px';
+    if (count === 2) return '90px';
     if (count === 3) return '60px';
     if (count === 4) return '55px';
     if (count === 5) return '48px';

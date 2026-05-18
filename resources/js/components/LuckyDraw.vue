@@ -627,8 +627,8 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved']);
 
 const getDynamicFontSize = (count) => {
-    if (count <= 1) return '76px';
-    if (count <= 2) return '68px';
+    if (count <= 1) return '120px';
+    if (count <= 2) return '90px';
     if (count <= 4) return '54px';
     if (count <= 6) return '44px';
     if (count <= 8) return '38px';
