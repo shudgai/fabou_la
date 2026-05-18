@@ -456,9 +456,9 @@
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[50vh] mt-[10vh]">
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[72vh] mt-[18vh]">
                 <!-- Names with ENLARGED text -->
-                <div class="w-full py-4 flex justify-center items-center flex-1">
+                <div class="w-full py-4 flex justify-center items-center">
                     <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
                             class="flex flex-col items-center animate-slide-up"
@@ -608,8 +608,7 @@
             :show-action="false"
             :can-search="false"
             @back="$emit('close')"
-            class="md:hidden !bg-[#fef3c7] !border-t-[#fef3c7]"
-            style="background-color: #fef3c7 !important; border-top-color: #fef3c7 !important;"
+            class="md:hidden"
         />
     </div>
     </teleport>
