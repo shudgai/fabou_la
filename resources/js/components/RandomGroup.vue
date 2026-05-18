@@ -442,7 +442,7 @@
         </div>
 
         <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
-        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden pb-[calc(7dvh+90px)]" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-start overflow-hidden pb-[calc(7dvh+90px)]" style="background: #ffffff !important;">
             <!-- Decorative Background Glow -->
             <div class="absolute inset-0 pointer-events-none">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/15 rounded-full blur-[120px]"></div>
