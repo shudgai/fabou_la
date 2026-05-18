@@ -1102,23 +1102,8 @@ const getSortedRegistries = (item) => {
     
     let registries = Array.from(uniqueMap.values());
 
-    // Sort based on master list order
-    return registries.sort((a, b) => {
-        const getSortIndex = (dnr) => {
-            const name = getDharmaNameText(dnr);
-            const searchName = name;
-            return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
-        };
-
-        const indexA = getSortIndex(a);
-        const indexB = getSortIndex(b);
-
-        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        if (indexA !== -1) return -1;
-        if (indexB !== -1) return 1;
-        
-        return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
-    });
+    // Do not sort dynamically; preserve entered/saved order
+    return registries;
 };
 
 const getFilteredSortedRegistries = (item) => {
@@ -1349,20 +1334,8 @@ const isDharmaSelected = (dn) => {
 };
 
 const sortRegistries = (arr) => {
-    if (!arr) return [];
-    const getSortIndex = (dnr) => {
-        const name = getDharmaNameText(dnr);
-        const searchName = name;
-        return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
-    };
-    return arr.sort((a, b) => {
-        const indexA = getSortIndex(a);
-        const indexB = getSortIndex(b);
-        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        if (indexA !== -1) return -1;
-        if (indexB !== -1) return 1;
-        return (getDharmaNameText(a)).localeCompare(getDharmaNameText(b), 'zh-Hant');
-    });
+    // Preserve exact entered/saved order of dharma name table
+    return arr || [];
 };
 
 const getNamesList = (item) => {
