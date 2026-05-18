@@ -50,17 +50,22 @@
 
                         <!-- + Add people picker (phase 2 only) -->
                         <div v-if="selectionFiltered" class="border-b border-slate-100 bg-white">
-                            <!-- Toggle row -->
-                            <div class="flex items-center justify-between px-4 py-2">
-                                <span class="text-[14px] text-slate-500">新增人員</span>
+                            <!-- Input and Toggle row -->
+                            <div class="flex items-center gap-2 px-4 py-2">
+                                <input
+                                    v-model="manualName"
+                                    @keyup.enter="handlePlusClick"
+                                    placeholder="新增人員..."
+                                    class="flex-1 text-[16px] border-0 border-b-2 border-slate-300 bg-transparent outline-none py-1"
+                                />
                                 <button
-                                    @click="showAddPicker = !showAddPicker"
+                                    @click="handlePlusClick"
                                     class="w-9 h-9 rounded-full text-white flex items-center justify-center text-[22px] font-black shadow active:scale-95 transition-all"
-                                    :style="{ background: showAddPicker ? '#6366f1' : '#94a3b8' }"
-                                >{{ showAddPicker ? '×' : '+' }}</button>
+                                    :style="{ background: showAddPicker && !manualName.trim() ? '#6366f1' : '#4f46e5' }"
+                                >{{ showAddPicker && !manualName.trim() ? '×' : '+' }}</button>
                             </div>
                             <!-- Picker panel: users NOT in pendingNames -->
-                            <div v-if="showAddPicker" class="px-4 pb-3 animate-fade-in">
+                            <div v-if="showAddPicker && !manualName.trim()" class="px-4 pb-3 animate-fade-in">
                                 <div v-if="nonAttendees.length === 0" class="text-[14px] text-slate-400 text-center py-2">全員已在名單中</div>
                                 <div v-else class="grid grid-cols-4 md:grid-cols-5 gap-2">
                                     <button v-for="user in nonAttendees" :key="'add-'+user.id"
@@ -1087,6 +1092,15 @@ const addManualName = () => {
     if (!users.value.some(u => u.name === n)) users.value.push({ id: Date.now(), name: n });
     togglePending(n);
     manualName.value = '';
+};
+
+// Phase 2 only: handle + button click
+const handlePlusClick = () => {
+    if (manualName.value.trim()) {
+        addManualNameToPhase2();
+    } else {
+        showAddPicker.value = !showAddPicker.value;
+    }
 };
 
 // Phase 2 only: add a temporary name to both confirmed list and this round
