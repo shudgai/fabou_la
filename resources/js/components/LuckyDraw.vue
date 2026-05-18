@@ -650,10 +650,14 @@ const fixedParticipants = ref([]);
 const roundParticipants = ref([]);
 const results = ref([]);
 const chunkedResults = computed(() => {
-    const chunks = [];
     const list = results.value || [];
-    for (let i = 0; i < list.length; i += 10) {
-        chunks.push(list.slice(i, i + 10).map((name, index) => ({ name, idx: i + index })));
+    const n = list.length;
+    if (n === 0) return [];
+    const cols = n <= 10 ? 1 : n <= 20 ? 2 : 3;
+    const chunkSize = Math.ceil(n / cols);
+    const chunks = [];
+    for (let i = 0; i < n; i += chunkSize) {
+        chunks.push(list.slice(i, i + chunkSize).map((name, index) => ({ name, idx: i + index })));
     }
     return chunks;
 });
