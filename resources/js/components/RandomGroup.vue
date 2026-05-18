@@ -549,13 +549,9 @@
                         </div>
                         <div class="flex-1 flex flex-wrap gap-x-5 gap-y-3 content-start items-center">
                             <span v-for="member in group.members" :key="member" 
-                                :class="[
-                                    'font-black tracking-wide select-none leading-none font-biaokai-locked',
-                                    group.isSeed ? 'text-red-800' : 'text-red-600'
-                                ]"
+                                class="group-member-name font-black tracking-wide select-none leading-none font-biaokai-locked"
                                 :style="{ 
                                     fontSize: (group.members.length === 1 ? '50px' : (group.members.length <= 4 ? '40px' : '30px')) + ' !important',
-                                    color: '#dc2626',
                                     textShadow: '0 2px 4px rgba(220, 38, 38, 0.1)'
                                 }"
                             >
@@ -1223,6 +1219,7 @@ defineExpose({
 </script>
 
 <style scoped>
+.group-member-name { color: #dc2626 !important; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
