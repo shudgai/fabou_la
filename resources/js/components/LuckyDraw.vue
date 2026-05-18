@@ -192,7 +192,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 py-1 pb-64 flex flex-col justify-start items-center min-h-[350px]">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col justify-start items-center min-h-[350px]">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
                             <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
@@ -208,14 +208,9 @@
                                 >
                                     <span class="font-black select-none leading-none font-biaokai-locked text-center whitespace-nowrap"
                                         :class="[results.length > 10 ? 'tracking-normal' : 'tracking-wide']"
-                                        :style="{ 
-                                            fontSize: getDynamicFontSize(results.length),
-                                            color: '#dc2626',
-                                            textShadow: '0 1px 4px rgba(220, 38, 38, 0.12)',
-                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                        }"
+                                        :style="{ fontSize: getDynamicFontSize(results.length), fontFamily: '\'DFKai-SB\', \'標楷體\', serif' }"
                                     >
-                                        {{ item.idx + 1 }}.{{ item.name }}
+                                        <span :style="{ color: '#92400e' }">{{ item.idx + 1 }}.</span><span :style="{ color: '#dc2626', textShadow: '0 1px 4px rgba(220,38,38,0.12)' }">{{ item.name }}</span>
                                     </span>
                                 </div>
                             </div>
@@ -469,7 +464,7 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 py-1 pb-64 flex flex-col justify-start items-center min-h-[350px]">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col justify-start items-center min-h-[350px]">
                         <div class="w-full flex flex-col justify-start items-center">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
                             <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
@@ -493,14 +488,9 @@
                                     >
                                         <span class="font-black select-none leading-none font-biaokai-locked text-center whitespace-nowrap"
                                             :class="[results.length > 10 ? 'tracking-normal' : 'tracking-wide']"
-                                            :style="{ 
-                                                fontSize: getDynamicFontSize(results.length),
-                                                color: '#dc2626',
-                                                textShadow: '0 1px 4px rgba(220, 38, 38, 0.12)',
-                                                fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                            }"
+                                            :style="{ fontSize: getDynamicFontSize(results.length), fontFamily: '\'DFKai-SB\', \'標楷體\', serif' }"
                                         >
-                                            {{ item.idx + 1 }}.{{ item.name }}
+                                            <span :style="{ color: '#92400e' }">{{ item.idx + 1 }}.</span><span :style="{ color: '#dc2626', textShadow: '0 1px 4px rgba(220,38,38,0.12)' }">{{ item.name }}</span>
                                         </span>
                                     </div>
                                 </div>
