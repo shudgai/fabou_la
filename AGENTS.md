@@ -557,3 +557,18 @@ APP_DEBUG=false
   git add app/Http/Controllers/TeachingController.php app/Services/TeachingService.php tests/Feature/DataIsolationTest.php
   git commit -m "fix: 修復使用者資料隔離與開示權限問題"
   ```
+
+## Session Notes (2026-05-18)
+
+### LuckyDraw 回合抽籤優化與修復
+
+#### 修復與調整細節
+
+| 項目 | 修改內容 | 目的 |
+|---|---|---|
+| **改橫向** | 移除了多筆結果展示容器中法號的直排樣式 (`writingMode: 'vertical-rl'`) | 讓多個被抽中的法號以現代、直觀的橫排文字形式排列，具備流暢換行 |
+| **不要加數字** | 移除了法號名單上方原本帶有背景的小 index 數字標籤 (`idx + 1`) | 呈現最純粹、無干擾的法號結果列表 |
+| **開始本輪抽籤沒反應** | 在進入步驟三與新回合時，將 `roundParticipants.value` 的初始空值 `[]` 修改為自動拷貝當前所有選定人員 `[...selectedNames.value]` | 解決因初始為空而點擊按鈕無回應的問題，預設全選，使用者仍可點擊取消，大幅提升易用性 |
+| **不要出現螢光（字體跳動/加框）** | 移除了單筆與多筆結果展示的黃色螢光底色背景卡片、框線與陰影，並拿掉了 `animate-bounce` 彈跳動畫 | 讓法號以超大氣 `76px` 標楷體靜態呈現，文字不抖動，大方沉穩 |
+| **要出現抽籤介面** | 保留並精緻化了點擊抽籤時的飛竹搖籤動畫畫面（即動畫螢幕） | 維持系統最頂級、動態且極致豪華的儀式感 |
+| **結果文字水平垂直置中** | 將滾動容器與結果排版全部重構為 `flex flex-col justify-center items-center min-h-[350px]` 居中佈局 | 確保抽籤結果無論是單個或多個法號，在任何螢幕尺寸下皆能 100% 完美水平與垂直絕對居中 |
