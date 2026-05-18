@@ -451,15 +451,19 @@
             </div>
 
             <!-- Header at the absolute top -->
-            <div class="absolute top-[8vh] z-20 text-center animate-slide-up">
+            <div class="absolute top-[4vh] z-20 text-center animate-slide-up">
                 <h2 class="text-[26px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[72vh] mt-[18vh]">
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[72vh] mt-[12vh]">
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
-                    <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
+                    <div :class="[
+                        newlyDrawnGuardians.length >= 6 && newlyDrawnGuardians.length <= 9
+                            ? 'grid grid-cols-2 gap-y-6 gap-x-12 px-4 max-w-xs mx-auto justify-items-center w-full'
+                            : 'flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto'
+                    ]">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
                             class="flex flex-col items-center animate-slide-up"
                             :style="{ animationDelay: (idx * 0.05) + 's' }"
