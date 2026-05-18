@@ -192,27 +192,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[10px] md:pt-[10px]">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[1px] md:pt-[1px]">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
                             <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
-                        <div v-else class="w-full flex flex-col justify-start items-center gap-y-3 px-6 max-w-md mx-auto">
-                            <div v-for="(name, idx) in results" :key="idx" 
-                                class="flex items-center justify-center animate-slide-in w-full"
-                                :style="{ animationDelay: (idx * 0.05) + 's' }"
+                        <div v-else class="w-full flex flex-row flex-nowrap justify-center items-start gap-x-10 md:gap-x-20 px-4 max-w-full">
+                            <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
+                                class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                             >
-                                <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
-                                    :style="{ 
-                                        fontSize: getDynamicFontSize(results.length),
-                                        color: '#dc2626',
-                                        textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
-                                        fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                    }"
+                                <div v-for="item in col" :key="'res'+item.idx" 
+                                    class="flex items-center justify-center animate-slide-in"
+                                    :style="{ animationDelay: (item.idx * 0.03) + 's' }"
                                 >
-                                    {{ idx + 1 }}. {{ name }}
-                                </span>
+                                    <span class="font-black select-none leading-none font-biaokai-locked text-center whitespace-nowrap"
+                                        :class="[results.length > 10 ? 'tracking-normal' : 'tracking-wide']"
+                                        :style="{ 
+                                            fontSize: getDynamicFontSize(results.length),
+                                            color: '#dc2626',
+                                            textShadow: '0 1px 4px rgba(220, 38, 38, 0.12)',
+                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                        }"
+                                    >
+                                        {{ item.idx + 1 }}.{{ item.name }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -464,7 +469,7 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[10px] md:pt-[10px]">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[1px] md:pt-[1px]">
                         <div class="max-w-4xl mx-auto w-full flex flex-col justify-start items-center pt-4">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
                             <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
@@ -476,22 +481,28 @@
                                 </div>
                             </div>
 
-                            <!-- MULTIPLE RESULTS: VERTICAL LIST & INDEXED -->
-                            <div v-else class="w-full flex flex-col justify-start items-center gap-y-3 px-6 max-w-md mx-auto">
-                                <div v-for="(name, idx) in results" :key="'res'+idx" 
-                                    class="flex items-center justify-center animate-slide-in w-full"
-                                    :style="{ animationDelay: (idx * 0.05) + 's' }"
+                            <!-- MULTIPLE RESULTS: 10-COLUMN ROWS & INDEXED -->
+                            <!-- MULTIPLE RESULTS: VERTICAL COLUMNS & INDEXED -->
+                            <div v-else class="w-full flex flex-row flex-nowrap justify-center items-start gap-x-10 md:gap-x-20 px-4 max-w-full">
+                                <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
+                                    class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                                 >
-                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
-                                        :style="{ 
-                                            fontSize: getDynamicFontSize(results.length),
-                                            color: '#dc2626',
-                                            textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
-                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                        }"
+                                    <div v-for="item in col" :key="'res'+item.idx" 
+                                        class="flex items-center justify-center animate-slide-in"
+                                        :style="{ animationDelay: (item.idx * 0.03) + 's' }"
                                     >
-                                        {{ idx + 1 }}. {{ name }}
-                                    </span>
+                                        <span class="font-black select-none leading-none font-biaokai-locked text-center whitespace-nowrap"
+                                            :class="[results.length > 10 ? 'tracking-normal' : 'tracking-wide']"
+                                            :style="{ 
+                                                fontSize: getDynamicFontSize(results.length),
+                                                color: '#dc2626',
+                                                textShadow: '0 1px 4px rgba(220, 38, 38, 0.12)',
+                                                fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                            }"
+                                        >
+                                            {{ item.idx + 1 }}.{{ item.name }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -623,12 +634,12 @@ const emit = defineEmits(['close', 'saved']);
 const getDynamicFontSize = (count) => {
     if (count <= 1) return '120px';
     if (count <= 2) return '90px';
-    if (count <= 4) return '64px';
-    if (count <= 6) return '52px';
-    if (count <= 8) return '46px';
-    if (count <= 12) return '40px';
-    if (count <= 16) return '34px';
-    return '30px';
+    if (count <= 4) return '72px';
+    if (count <= 6) return '60px';
+    if (count <= 8) return '52px';
+    if (count <= 12) return '46px';
+    if (count <= 16) return '40px';
+    return 'clamp(26px, 6.5vw, 44px)';
 };
 
 const users = ref([]);
@@ -638,6 +649,14 @@ const selectedNames = ref([]);
 const fixedParticipants = ref([]);
 const roundParticipants = ref([]);
 const results = ref([]);
+const chunkedResults = computed(() => {
+    const chunks = [];
+    const list = results.value || [];
+    for (let i = 0; i < list.length; i += 10) {
+        chunks.push(list.slice(i, i + 10).map((name, index) => ({ name, idx: i + index })));
+    }
+    return chunks;
+});
 const currentStep = ref(1);
 const selectionFiltered = ref(false);
 const drawCount = ref(1);
