@@ -25,8 +25,7 @@
                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
                                 <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">回合抽籤</span>
-                                <span class="text-[14px] text-indigo-600 font-bold ml-2 mt-1">{{ selectionFiltered ? '2. 已確認在場人員' : '1. 選取人員' }}</span>
-                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ pendingNames.length }} 人</span>
+
                             </div>
                         </div>
                     </div>
@@ -35,9 +34,10 @@
                     <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar pb-[500px] w-full">
                         <!-- Sub control panel -->
                         <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
-                                <input v-model="manualName" @keyup.enter="addManualName" type="text" placeholder="+ 自訂法號" class="bg-transparent border-none border-b border-slate-300 outline-none text-[13px] font-black w-24 text-center px-1">
+                            <div class="flex items-center">
+                                <span class="text-[14px] text-red-600 font-black" style="color: #dc2626 !important;">
+                                    {{ selectionFiltered ? '2. 已確認在場人員' : '1. 選取人員' }}
+                                </span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button v-if="!selectionFiltered" @click="invertSelection" class="text-indigo-600 font-black text-[14px] active:scale-95 transition-all border-none bg-transparent cursor-pointer">反選</button>
@@ -194,7 +194,7 @@
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
                         <div v-if="results.length === 1" class="flex flex-col items-center py-6">
                             <span class="text-[70px] -mb-2 relative z-10">👑</span>
-                            <div class="bg-yellow-400 text-red-600 text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce text-center leading-none" style="font-family: 'DFKai-SB', '標楷體', serif;">
+                            <div class="bg-yellow-400 text-red-600 text-[76px] font-black px-12 py-6 rounded-3xl shadow-xl border-4 border-yellow-500 animate-bounce text-center leading-none" style="font-family: 'DFKai-SB', '標楷體', serif;">
                                 {{ results[0] }}
                             </div>
                         </div>
@@ -251,8 +251,7 @@
                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
                                 <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">抽順序</span>
-                                <span class="text-[14px] text-indigo-600 font-bold ml-2 mt-1">1. 選取固定人員</span>
-                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ fixedParticipants.length }} 人</span>
+
                             </div>
                         </div>
                     </div>
@@ -262,7 +261,8 @@
                         <!-- Sub control panel -->
                         <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
                             <div class="flex items-center gap-2">
-                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
+                                <span class="text-[14px] text-red-600 font-black" style="color: #dc2626 !important;">1. 選取固定人員</span>
+                                <span class="text-[13px] text-slate-400 font-bold ml-2">滑動選取</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button @click="resetAll(true)" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
@@ -321,8 +321,7 @@
                                 <logo-imperial-notebook :height="40" />
                                 <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">抽籤專區</div>
                                 <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">抽順序</span>
-                                <span class="text-[14px] text-emerald-600 font-bold ml-2 mt-1">2. 選取其他抽籤人員</span>
-                                <span class="text-[14px] text-slate-900 font-black ml-auto mr-8">已選 {{ pendingNames.length }} 人</span>
+
                             </div>
                         </div>
                     </div>
@@ -332,7 +331,8 @@
                         <!-- Sub control panel -->
                         <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
                             <div class="flex items-center gap-2">
-                                <span class="text-[13px] text-slate-500 font-bold">滑動選取人員</span>
+                                <span class="text-[14px] text-red-600 font-black" style="color: #dc2626 !important;">2. 選取其他抽籤人員</span>
+                                <span class="text-[13px] text-slate-400 font-bold ml-2">滑動選取</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button @click="pendingNames = []" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
@@ -483,7 +483,7 @@
                                     <span class="text-[70px] filter drop-shadow-lg">👑</span>
                                     <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
                                 </div>
-                                <h3 class="text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #facc15 !important; color: #dc2626 !important; border: 4px solid #eab308 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                                <h3 class="text-[76px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #facc15 !important; color: #dc2626 !important; border: 4px solid #eab308 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
                                 <div class="flex items-center space-x-2 text-indigo-300">
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
                                     <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>

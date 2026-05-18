@@ -518,7 +518,7 @@
                         <div v-for="name in guardianResults" :key="'g3'+name" 
                             class="text-amber-900 font-black select-none tracking-wide font-biaokai-locked"
                             :style="{
-                                fontSize: '26px !important',
+                                fontSize: getGroupMemberFontSize() + ' !important',
                                 textShadow: '0 2px 4px rgba(217, 119, 6, 0.08)'
                             }"
                         >
@@ -630,6 +630,14 @@ const getDynamicFontSize = (count) => {
     if (count <= 4) return '65px';
     if (count <= 9) return '55px';
     return '35px';
+};
+
+const getGroupMemberFontSize = () => {
+    if (!groups.value || groups.value.length === 0) return '40px';
+    const maxLen = Math.max(...groups.value.map(g => g.members.length));
+    if (maxLen === 1) return '50px';
+    if (maxLen <= 4) return '40px';
+    return '30px';
 };
 
 const users = ref([]);
