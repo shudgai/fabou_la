@@ -226,43 +226,59 @@
                                             </div>
                                         </div>
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[90px] md:pt-[30px]">
-                                            <div class="space-y-1 relative group px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
-                                                <input v-model="editData.record_date" type="text" placeholder="年/月/日"
-                                                    class="w-full text-center text-[11.9px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
-                                                <button @click="activePicker = { field: 'record_date' }" class="absolute right-4 bottom-2 text-slate-300 hover:text-indigo-500">
-                                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </button>
+                                            <!-- Collapsible Header for Edit Mode -->
+                                            <div class="flex flex-col group cursor-pointer px-4 pt-4 pb-2" @click.stop="toggleDetails(item.id)">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
+                                                    <!-- Toggle Icon -->
+                                                    <div class="transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(item.id) }">
+                                                        <svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="pt-1">
+                                                    <input v-model="editData.name" type="text" placeholder="輸入名稱"
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none"
+                                                        @click.stop>
+                                                </div>
                                             </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                                <input v-model="editData.name" type="text" placeholder="輸入內容"
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
-                                            </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">用意 (選填)</label>
-                                                <textarea v-model="editData.purpose" rows="2" placeholder="輸入用意..."
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
-                                            </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">功效 (選填)</label>
-                                                <textarea v-model="editData.effect" rows="2" placeholder="輸入功效..."
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
-                                            </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">作法/求寶方式</label>
-                                                <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
-                                            </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容 (選填)</label>
-                                                <textarea v-model="editData.content" rows="2" placeholder="輸入法寶內容..."
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
-                                            </div>
-                                            <div class="space-y-1 px-4">
-                                                <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
-                                                <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
-                                                    class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+
+                                            <!-- Collapsible Details Section for Edit Mode -->
+                                            <div v-if="expandedDetailIds.has(item.id)" class="space-y-4 animate-slide-down border-t border-slate-50 pt-4 pb-2 px-0">
+                                                <div class="space-y-1 relative group px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
+                                                    <input v-model="editData.record_date" type="text" placeholder="年/月/日"
+                                                        class="w-full text-center text-[11.9px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                    <button @click="activePicker = { field: 'record_date' }" class="absolute right-4 bottom-2 text-slate-300 hover:text-indigo-500">
+                                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </div>
+                                                <div class="space-y-1 px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">用意 (選填)</label>
+                                                    <textarea v-model="editData.purpose" rows="2" placeholder="輸入用意..."
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                                </div>
+                                                <div class="space-y-1 px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">功效 (選填)</label>
+                                                    <textarea v-model="editData.effect" rows="2" placeholder="輸入功效..."
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                                </div>
+                                                <div class="space-y-1 px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">作法/求寶方式</label>
+                                                    <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                                </div>
+                                                <div class="space-y-1 px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容 (選填)</label>
+                                                    <textarea v-model="editData.content" rows="2" placeholder="輸入法寶內容..."
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                                </div>
+                                                <div class="space-y-1 px-4">
+                                                    <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
+                                                    <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                </div>
                                             </div>
 
                                             <!-- 承接師兄姐 — Dharma Name Table Layout -->
@@ -1055,6 +1071,12 @@ const getDharmaNameText = (dnr) => {
     const rawName = (dnr.custom_name || '').trim();
     if (!rawName) return '--';
     
+    // Resolve "金巧" or the new name/alias of ID 7 to the current official name of ID 7
+    const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
+    if (goldQiaoOfficial && (rawName === '金巧' || rawName === goldQiaoOfficial.name || (goldQiaoOfficial.alias && goldQiaoOfficial.alias.includes(rawName)))) {
+        return goldQiaoOfficial.name;
+    }
+    
     if (rawName === '金巧') return rawName;
     
     // Priority 2: Resolve alias/old name to official name
@@ -1336,7 +1358,18 @@ const isDharmaSelected = (dn) => {
 const sortRegistries = (arr) => {
     if (!arr) return [];
     const getSortIndex = (dnr) => {
+        // ID: 7 represents 金巧 (or whatever it is modified to)
+        if (dnr.dharma_name_id === 7) {
+            const fengIdx = dharmaNames.value.findIndex(dn => dn.id === 6 || dn.name === '鳳尊');
+            if (fengIdx !== -1) return fengIdx + 0.5;
+        }
         const name = getDharmaNameText(dnr);
+        const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
+        if (name === '金巧' || (goldQiaoOfficial && name === goldQiaoOfficial.name)) {
+            const fengIdx = dharmaNames.value.findIndex(dn => dn.id === 6 || dn.name === '鳳尊');
+            if (fengIdx !== -1) return fengIdx + 0.5;
+        }
+        
         const searchName = name;
         return dharmaNames.value.findIndex(dn => dn.id === dnr.dharma_name_id || dn.name === searchName);
     };
