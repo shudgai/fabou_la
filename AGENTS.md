@@ -248,6 +248,22 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Mobile scroll fix**: 所有步驟的 flex 容器加入 `min-h-0` 確保行動裝置正確計算高度並啟用滾動
 - **回合抽籤**: Step 3/4 內容過長時可正常向下滾動
 
+### LuckyDraw.vue 抽籤結果介面 (2026-05-18 Finalized)
+- **最多 3 欄**: `chunkedResults` computed 依人數動態分欄 — ≤10人→1欄, ≤20人→2欄, 21+人→3欄
+  ```js
+  const cols = n <= 10 ? 1 : n <= 20 ? 2 : 3;
+  const chunkSize = Math.ceil(n / cols);
+  ```
+- **全寬佈局**: 欄位容器 `w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3` — 使用 100vw + justify-between 填滿手機螢幕
+- **直式排列**: 每欄 `flex flex-col justify-start items-center gap-y-4 md:gap-y-6`
+- **上方 padding**: 結果滾動容器 `px-0 pt-[15px] pb-64`（15px 與標題欄的間距）
+- **序號咖啡色 + 法號紅色**: 兩個獨立 `<span>`：
+  - 序號 `color: '#92400e'`（深琥珀棕）
+  - 法號 `color: '#dc2626'`（深紅）+ textShadow
+- **動態字型 (`getDynamicFontSize`)**: 1人→120px, 2人→90px, 3-4人→64px, 5-6人→54px, 7-8人→46px, 9-12人→40px, 13-16人→34px, 17+人→`clamp(22px, 5.5vw, 38px)`
+- **動畫**: `animate-slide-in`，每筆延遲 `idx * 0.03s`
+- **兩個結果畫面均套用**: Step 4 (回合抽籤) 及 Draw Order 最終結果畫面結構完全一致
+
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
 - Step 1: grid of dharma names (4 cols mobile, 5 cols desktop), toggle selection, confirm order
