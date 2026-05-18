@@ -634,12 +634,12 @@ const emit = defineEmits(['close', 'saved']);
 const getDynamicFontSize = (count) => {
     if (count <= 1) return '120px';
     if (count <= 2) return '90px';
-    if (count <= 4) return '72px';
-    if (count <= 6) return '60px';
-    if (count <= 8) return '52px';
-    if (count <= 12) return '46px';
-    if (count <= 16) return '40px';
-    return 'clamp(26px, 6.5vw, 44px)';
+    if (count <= 4) return '64px';
+    if (count <= 6) return '54px';
+    if (count <= 8) return '46px';
+    if (count <= 12) return '40px';
+    if (count <= 16) return '34px';
+    return 'clamp(22px, 5.5vw, 38px)';
 };
 
 const users = ref([]);
