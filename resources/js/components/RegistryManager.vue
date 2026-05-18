@@ -357,7 +357,7 @@
                                     <!-- VIEW MODE: Read-only expanded details -->
                                     <div v-if="expandedIds.has(item.id) && editItemId !== item.id" @click.stop class="md:mt-2 md:pt-4 relative -ml-[40px] -mr-4">
                                         <!-- Header Actions (Inside Expanded) -->
-                                        <div class="absolute right-2 top-8 z-[50] flex flex-col gap-1 items-center">
+                                        <div class="absolute right-2 top-12 z-[50] flex flex-col gap-3 items-center">
                                             <button @click.stop="toggleExpand(item.id)" 
                                                     class="p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
                                                 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
