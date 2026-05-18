@@ -192,18 +192,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-10 md:pt-14">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[10px] md:pt-[10px]">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
                             <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
-                        <div v-else class="w-full flex flex-wrap flex-row justify-center items-center gap-x-12 gap-y-8 px-6 max-w-4xl mx-auto">
+                        <div v-else class="w-full flex flex-col justify-start items-center gap-y-3 px-6 max-w-md mx-auto">
                             <div v-for="(name, idx) in results" :key="idx" 
-                                class="flex flex-col items-center justify-center animate-slide-in"
+                                class="flex items-center justify-center animate-slide-in w-full"
                                 :style="{ animationDelay: (idx * 0.05) + 's' }"
                             >
-                                <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center whitespace-nowrap"
+                                <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
                                     :style="{ 
                                         fontSize: getDynamicFontSize(results.length),
                                         color: '#dc2626',
@@ -464,7 +464,7 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-10 md:pt-14">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[10px] md:pt-[10px]">
                         <div class="max-w-4xl mx-auto w-full flex flex-col justify-start items-center pt-4">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
                             <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
@@ -476,13 +476,13 @@
                                 </div>
                             </div>
 
-                            <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
-                            <div v-else class="w-full flex flex-wrap flex-row justify-center items-center gap-x-12 gap-y-8 px-6">
+                            <!-- MULTIPLE RESULTS: VERTICAL LIST & INDEXED -->
+                            <div v-else class="w-full flex flex-col justify-start items-center gap-y-3 px-6 max-w-md mx-auto">
                                 <div v-for="(name, idx) in results" :key="'res'+idx" 
-                                    class="flex flex-col items-center justify-center animate-slide-in"
+                                    class="flex items-center justify-center animate-slide-in w-full"
                                     :style="{ animationDelay: (idx * 0.05) + 's' }"
                                 >
-                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center whitespace-nowrap"
+                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
                                         :style="{ 
                                             fontSize: getDynamicFontSize(results.length),
                                             color: '#dc2626',
