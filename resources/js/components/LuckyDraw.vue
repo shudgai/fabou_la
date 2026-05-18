@@ -731,6 +731,7 @@ const getPendingStyle = (name) => {
     const t = name.trim();
     if (lotteryMode.value === true) {
         // Mode 1: Round Draw Style
+        const isSelected = pendingNames.value.includes(t);
         if (isSelected) {
             return {
                 backgroundColor: '#2563eb', // Blue for SELECTED
