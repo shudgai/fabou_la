@@ -1073,7 +1073,7 @@ const getDharmaNameText = (dnr) => {
     
     // Resolve "金巧" or the new name/alias of ID 7 to the current official name of ID 7
     const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
-    if (goldQiaoOfficial && (rawName === '金巧' || rawName === goldQiaoOfficial.name || (goldQiaoOfficial.alias && goldQiaoOfficial.alias.includes(rawName)))) {
+    if (goldQiaoOfficial && (rawName === '金巧' || rawName.startsWith('道霞') || rawName === goldQiaoOfficial.name || rawName.startsWith(goldQiaoOfficial.name) || (goldQiaoOfficial.alias && goldQiaoOfficial.alias.includes(rawName)))) {
         return goldQiaoOfficial.name;
     }
     
@@ -1365,7 +1365,7 @@ const sortRegistries = (arr) => {
         }
         const name = getDharmaNameText(dnr);
         const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
-        if (name === '金巧' || (goldQiaoOfficial && name === goldQiaoOfficial.name)) {
+        if (name === '金巧' || name.startsWith('道霞') || (goldQiaoOfficial && (name === goldQiaoOfficial.name || name.startsWith(goldQiaoOfficial.name)))) {
             const fengIdx = dharmaNames.value.findIndex(dn => dn.id === 6 || dn.name === '鳳尊');
             if (fengIdx !== -1) return fengIdx + 0.5;
         }
