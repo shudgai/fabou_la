@@ -70,7 +70,7 @@
                             <!-- Three Dots Menu Button -->
                             <div class="relative">
                                 <button @click.stop="toggleActionMenu(item.id)"
-                                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-red-500 rounded-xl active:scale-90 transition-all">
+                                        class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all">
                                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                 </button>
 
@@ -86,7 +86,7 @@
 
                             <!-- Close Button -->
                             <button @click.stop="focusedId = null; activeActionMenuId = null"
-                                    class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all">
+                                    class="w-10 h-10 flex items-center justify-center text-slate-400 active:scale-90 transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
                         </div>
