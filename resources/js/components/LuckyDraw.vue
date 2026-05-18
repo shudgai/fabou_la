@@ -192,13 +192,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[1px] md:pt-[1px]">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 py-1 pb-64 flex flex-col justify-start items-center min-h-[350px]">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
                             <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
-                        <div v-else class="w-full flex flex-row flex-nowrap justify-center items-start gap-x-10 md:gap-x-20 px-4 max-w-full">
+                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
                             <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
                                 class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                             >
@@ -469,8 +469,8 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-64 flex flex-col justify-start items-center min-h-[350px] pt-[1px] md:pt-[1px]">
-                        <div class="max-w-4xl mx-auto w-full flex flex-col justify-start items-center pt-4">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 py-1 pb-64 flex flex-col justify-start items-center min-h-[350px]">
+                        <div class="w-full flex flex-col justify-start items-center">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
                             <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
                                 <h3 class="font-black text-[120px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
@@ -483,7 +483,7 @@
 
                             <!-- MULTIPLE RESULTS: 10-COLUMN ROWS & INDEXED -->
                             <!-- MULTIPLE RESULTS: VERTICAL COLUMNS & INDEXED -->
-                            <div v-else class="w-full flex flex-row flex-nowrap justify-center items-start gap-x-10 md:gap-x-20 px-4 max-w-full">
+                            <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
                                 <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
                                     class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                                 >
