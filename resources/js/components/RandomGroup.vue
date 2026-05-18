@@ -15,11 +15,18 @@
         <!-- STEP 1: PERSONNEL SELECTION -->
         <div v-show="currentStep === 1" class="flex flex-col w-full h-full bg-white overflow-hidden relative">
             <!-- Navigation Header -->
-            <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
-                <button @click="$emit('close')" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-                <span class="font-black text-[20px] text-slate-800">隨機分組 - 人員選取</span>
+            <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px]">
+                <div class="max-w-4xl mx-auto flex flex-col w-full">
+                    <!-- Row 1: Logo & Title -->
+                    <div class="flex items-center justify-start gap-3 w-full pl-1">
+                        <logo-imperial-notebook :height="40" />
+                        <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                    </div>
+                    <!-- Row 2: Navigation & Subtitle -->
+                    <div class="flex items-center justify-between w-full mt-2">
+                        <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important; margin-left: 14px;">人員選取</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Main scrollable selection grid -->
@@ -107,15 +114,25 @@
         <div v-show="currentStep === 2" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
                 <!-- Navigation Header -->
-                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
-                    <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <div class="flex items-center justify-between w-full">
-                        <span class="font-black text-[20px] text-slate-800">隨機分組 - 關主設定</span>
-                        <div class="flex items-center space-x-1 text-slate-400">
-                            <span class="font-bold" style="font-size: 16px !important;">總計</span>
-                            <span class="font-black text-indigo-600" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
+                <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px]">
+                    <div class="max-w-4xl mx-auto flex flex-col w-full">
+                        <!-- Row 1: Logo & Title -->
+                        <div class="flex items-center justify-start gap-3 w-full pl-1">
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                        </div>
+                        <!-- Row 2: Navigation, Subtitle & Metadata -->
+                        <div class="flex items-center justify-between w-full mt-2">
+                            <div class="flex items-center gap-2">
+                                <button @click="currentStep = 1" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">關主設定</span>
+                            </div>
+                            <div class="flex items-center space-x-1 text-slate-400 shrink-0">
+                                <span class="font-bold" style="font-size: 16px !important;">總計</span>
+                                <span class="font-black text-indigo-600 animate-pulse" style="font-size: 16px !important;">{{ selectedNames.length }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -227,11 +244,24 @@
         <!-- STEP 3: SEEDS (種子組設定) -->
         <div v-show="currentStep === 3" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
-                    <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <span class="font-black text-[20px] text-slate-800">隨機分組 - 種子組設定</span>
+                <!-- Navigation Header -->
+                <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px]">
+                    <div class="max-w-4xl mx-auto flex flex-col w-full">
+                        <!-- Row 1: Logo & Title -->
+                        <div class="flex items-center justify-start gap-3 w-full pl-1">
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                        </div>
+                        <!-- Row 2: Navigation & Subtitle -->
+                        <div class="flex items-center justify-between w-full mt-2">
+                            <div class="flex items-center gap-2">
+                                <button @click="currentStep = 2" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">種子組設定</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
@@ -290,11 +320,24 @@
         <!-- STEP 4: RULES & SIZE (分組規則與人數) -->
         <div v-show="currentStep === 4" class="flex flex-col w-full h-full bg-slate-50/10 overflow-hidden relative">
             <div class="animate-slide-in flex flex-col h-full overflow-hidden">
-                <div class="bg-white border-b border-slate-50 p-2 pl-3 pr-3 md:pr-16 flex items-center sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
-                    <button @click="currentStep = 3" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all mr-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                    </button>
-                    <span class="font-black text-[20px] text-slate-800">隨機分組 - 分組規則</span>
+                <!-- Navigation Header -->
+                <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px]">
+                    <div class="max-w-4xl mx-auto flex flex-col w-full">
+                        <!-- Row 1: Logo & Title -->
+                        <div class="flex items-center justify-start gap-3 w-full pl-1">
+                            <logo-imperial-notebook :height="40" />
+                            <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                        </div>
+                        <!-- Row 2: Navigation & Subtitle -->
+                        <div class="flex items-center justify-between w-full mt-2">
+                            <div class="flex items-center gap-2">
+                                <button @click="currentStep = 3" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">分組規則</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="p-4 flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4 max-w-2xl mx-auto w-full pb-40">
@@ -449,14 +492,24 @@
         </div>
 
         <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
-        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden bg-white" style="background: white !important;">
-            <!-- Header at the absolute top -->
-            <div class="absolute top-[6vh] z-20 text-center animate-slide-up">
-                <h2 class="text-[28px] font-black text-slate-800 tracking-wider">🌟 關主抽選結果 🌟</h2>
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col bg-white" style="background: white !important;">
+            <!-- Navigation Header -->
+            <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px] w-full">
+                <div class="max-w-4xl mx-auto flex flex-col w-full">
+                    <!-- Row 1: Logo & Title -->
+                    <div class="flex items-center justify-start gap-3 w-full pl-1">
+                        <logo-imperial-notebook :height="40" />
+                        <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                    </div>
+                    <!-- Row 2: Subtitle -->
+                    <div class="flex items-center justify-between w-full mt-2">
+                        <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important; margin-left: 14px;">關主隨機抽選結果</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[62vh] my-auto">
+            <div class="flex-1 w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-10 overflow-y-auto custom-scrollbar mx-auto pb-40">
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
                     <div :class="[
@@ -497,12 +550,22 @@
 
         <!-- STEP 5: RESULTS (分組結果) -->
         <div v-show="currentStep === 5" class="flex flex-col w-full h-full bg-white overflow-hidden">
-            <div class="bg-white border-b border-slate-100 p-3 pl-4 pr-4 md:pr-16 flex flex-col sticky top-0 z-10 md:pt-[20px] md:mt-[40px]">
-                <div class="flex items-center w-full">
-                    <button @click="currentStep = 4" class="text-slate-400 hover:text-indigo-600 p-1.5 -ml-1.5 mr-2 flex items-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
-                    <h2 class="whitespace-nowrap font-black" style="color: #0f172a !important; font-size: 26px !important;">隨機分組 - 分組結果</h2>
+            <div class="sticky top-0 bg-white border-b border-slate-100 z-10 px-4 py-3 md:pt-[20px] md:mt-[40px] flex flex-col">
+                <div class="max-w-4xl mx-auto flex flex-col w-full">
+                    <!-- Row 1: Logo & Title -->
+                    <div class="flex items-center justify-center gap-3 w-full">
+                        <logo-imperial-notebook :height="40" />
+                        <div class="app-title leading-tight font-outfit tracking-widest shrink-0" style="color: #0f172a !important; font-size: 30px !important;">隨機分組</div>
+                    </div>
+                    <!-- Row 2: Navigation & Subtitle -->
+                    <div class="flex items-center justify-between w-full mt-2">
+                        <div class="flex items-center gap-2">
+                            <button @click="currentStep = 4" class="p-2 -ml-2 text-slate-400 active:scale-90 transition-all shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <span class="text-slate-500" style="font-size: 23px !important; font-weight: 400 !important;">分組結果</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex items-center justify-center space-x-3 w-full mt-2.5 pb-1 animate-fade-in">
                     <button @click="handleNextRound" class="w-[90px] h-[40px] flex items-center justify-center font-black text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full shadow-sm transition-all active:scale-95 whitespace-nowrap cursor-pointer" style="font-size: 16px !important;">下一輪</button>
