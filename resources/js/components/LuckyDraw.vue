@@ -686,9 +686,6 @@ const isNoneSelected = computed(() => {
 const displayUsers = computed(() => {
     if (!users.value || !Array.isArray(users.value)) return [];
     if (selectionFiltered.value) {
-        if (lotteryMode.value === true) {
-            return users.value.filter(u => u && u.name);
-        }
         return users.value.filter(u => u && u.name && pendingNames.value.includes(u.name.trim()));
     }
     if (!lotteryMode.value && currentStep.value === 2) {
@@ -700,12 +697,23 @@ const displayUsers = computed(() => {
 const togglePending = (name) => {
     const t = name.trim();
     if (lotteryMode.value === true) {
-        // Round Draw selection
-        const idx = pendingNames.value.indexOf(t);
-        if (idx > -1) {
-            pendingNames.value.splice(idx, 1);
+        if (selectionFiltered.value) {
+            // Phase 2 (已確認在場人員): toggle this-round participation
+            // pendingNames (confirmed list) never changes here
+            const idx = roundParticipants.value.indexOf(t);
+            if (idx > -1) {
+                roundParticipants.value.splice(idx, 1);
+            } else {
+                roundParticipants.value.push(t);
+            }
         } else {
-            pendingNames.value.push(t);
+            // Phase 1 (選取人員): toggle confirmed attendee list
+            const idx = pendingNames.value.indexOf(t);
+            if (idx > -1) {
+                pendingNames.value.splice(idx, 1);
+            } else {
+                pendingNames.value.push(t);
+            }
         }
     } else {
         // Draw Order selection
@@ -731,23 +739,47 @@ const getPendingStyle = (name) => {
     const t = name.trim();
     if (lotteryMode.value === true) {
         // Mode 1: Round Draw Style
-        const isSelected = pendingNames.value.includes(t);
-        if (isSelected) {
-            return {
-                backgroundColor: '#2563eb', // Blue for SELECTED
-                color: '#ffffff',
-                borderColor: '#fbbf24',
-                borderWidth: '3px',
-                boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
-                zIndex: '5'
-            };
+        if (selectionFiltered.value) {
+            // Phase 2: color reflects this-round participation (roundParticipants)
+            const inRound = roundParticipants.value.includes(t);
+            if (inRound) {
+                return {
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    borderColor: '#fbbf24',
+                    borderWidth: '3px',
+                    boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+                    zIndex: '5'
+                };
+            } else {
+                return {
+                    backgroundColor: '#e2e8f0',
+                    color: '#64748b',
+                    border: '1px solid #cbd5e1',
+                    textShadow: 'none',
+                    opacity: '0.6'
+                };
+            }
         } else {
-            return {
-                backgroundColor: '#ffffff',
-                color: '#000000',
-                border: '1px solid #d1d5db',
-                textShadow: 'none'
-            };
+            // Phase 1: color reflects confirmed attendance (pendingNames)
+            const isSelected = pendingNames.value.includes(t);
+            if (isSelected) {
+                return {
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    borderColor: '#fbbf24',
+                    borderWidth: '3px',
+                    boxShadow: '0 0 12px rgba(251, 191, 36, 0.5)',
+                    zIndex: '5'
+                };
+            } else {
+                return {
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    border: '1px solid #d1d5db',
+                    textShadow: 'none'
+                };
+            }
         }
     } else {
         // Mode 2: Draw Order Style
@@ -788,14 +820,15 @@ const confirmSelection = () => {
         if (pendingNames.value.length === 0) return;
 
         if (!selectionFiltered.value) {
+            // Enter phase 2: auto-select all confirmed attendees for this round
             selectionFiltered.value = true;
+            roundParticipants.value = [...pendingNames.value];
             safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
             return;
         }
-        // Save/update the shared selection list
-        safeLocalStorage.setItem('shared_dharma_selection', JSON.stringify(pendingNames.value));
-        selectedNames.value = [...pendingNames.value];
-        roundParticipants.value = [...selectedNames.value];
+        // Phase 2 -> Step 3: use current roundParticipants (may have been adjusted)
+        if (roundParticipants.value.length === 0) return;
+        selectedNames.value = [...roundParticipants.value];
         drawCount.value = 1;
         currentStep.value = 3;
     } else {
@@ -1010,8 +1043,8 @@ const saveResults = async () => {
 };
 
 const handleNextRound = () => {
-    pendingNames.value = [];
-    selectedNames.value = [];
+    // Keep pendingNames (confirmed attendees) and selectionFiltered so the list stays visible
+    // Only clear per-round state
     roundParticipants.value = [];
     manualName.value = '';
     results.value = [];
