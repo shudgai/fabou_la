@@ -48,19 +48,28 @@
                             </div>
                         </div>
 
-                        <!-- + Add name row (only when selectionFiltered, i.e. phase 2) -->
-                        <div v-if="selectionFiltered" class="flex items-center gap-2 px-4 py-2 border-b border-slate-100 bg-white">
-                            <input
-                                v-model="manualName"
-                                @keyup.enter="addManualNameToPhase2"
-                                placeholder="新增臨時人員..."
-                                class="flex-1 text-[16px] border-0 border-b-2 border-slate-300 bg-transparent outline-none py-1"
-                            />
-                            <button
-                                @click="addManualNameToPhase2"
-                                class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[22px] font-black shadow active:scale-95 transition-all"
-                                :style="{ opacity: manualName.trim() ? '1' : '0.4' }"
-                            >+</button>
+                        <!-- + Add people picker (phase 2 only) -->
+                        <div v-if="selectionFiltered" class="border-b border-slate-100 bg-white">
+                            <!-- Toggle row -->
+                            <div class="flex items-center justify-between px-4 py-2">
+                                <span class="text-[14px] text-slate-500">新增人員</span>
+                                <button
+                                    @click="showAddPicker = !showAddPicker"
+                                    class="w-9 h-9 rounded-full text-white flex items-center justify-center text-[22px] font-black shadow active:scale-95 transition-all"
+                                    :style="{ background: showAddPicker ? '#6366f1' : '#94a3b8' }"
+                                >{{ showAddPicker ? '×' : '+' }}</button>
+                            </div>
+                            <!-- Picker panel: users NOT in pendingNames -->
+                            <div v-if="showAddPicker" class="px-4 pb-3 animate-fade-in">
+                                <div v-if="nonAttendees.length === 0" class="text-[14px] text-slate-400 text-center py-2">全員已在名單中</div>
+                                <div v-else class="grid grid-cols-4 md:grid-cols-5 gap-2">
+                                    <button v-for="user in nonAttendees" :key="'add-'+user.id"
+                                        @click="addUserToPhase2(user.name)"
+                                        class="flex items-center justify-center font-normal rounded-md border shadow-sm w-full min-h-[45px] active:scale-95 transition-all bg-white border-slate-300 text-slate-700"
+                                        style="font-size: 16px !important;"
+                                    >{{ user.name }}</button>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Title (Only when selectionFiltered is true) -->
@@ -674,6 +683,11 @@ const isDragging = ref(false);
 const hasResult = ref(false);
 const lotteryMode = ref(props.initialMode);
 const manualName = ref('');
+const showAddPicker = ref(false);
+
+const nonAttendees = computed(() => {
+    return users.value.filter(u => !pendingNames.value.includes(u.name));
+});
 const DRAW_DURATION = 3000;
 const currentType = ref('');
 const lotteryDisplayNames = ref([]);
@@ -1081,11 +1095,17 @@ const addManualNameToPhase2 = () => {
     const n = manualName.value.trim();
     // Add to users pool if not present
     if (!users.value.some(u => u.name === n)) users.value.push({ id: Date.now(), name: n });
+    addUserToPhase2(n);
+    manualName.value = '';
+};
+
+// Phase 2 only: add an existing name from picker
+const addUserToPhase2 = (n) => {
     // Add to confirmed attendee list if not present
     if (!pendingNames.value.includes(n)) pendingNames.value.push(n);
     // Add to this round's participants if not present
     if (!roundParticipants.value.includes(n)) roundParticipants.value.push(n);
-    manualName.value = '';
+    showAddPicker.value = false;
 };
 
 const dragSelectionType = ref(null); // 'add' or 'remove'
