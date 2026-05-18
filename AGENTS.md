@@ -263,6 +263,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **動態字型 (`getDynamicFontSize`)**: 1人→120px, 2人→90px, 3-4人→64px, 5-6人→54px, 7-8人→46px, 9-12人→40px, 13-16人→34px, 17+人→`clamp(22px, 5.5vw, 38px)`
 - **動畫**: `animate-slide-in`，每筆延遲 `idx * 0.03s`
 - **兩個結果畫面均套用**: Step 4 (回合抽籤) 及 Draw Order 最終結果畫面結構完全一致
+- **底部按鈕色彩配置**: 改為淺色系底框搭配深色文字（淺綠 `bg-green-200 text-green-900`、淺黃 `bg-yellow-200 text-yellow-900`、淺藍 `bg-blue-200 text-blue-900`）提升辨識度。
 
 ### KaiwenApproval.vue
 - 開文核定表 — two-step flow: select participants → approval table with ✓/× slots
