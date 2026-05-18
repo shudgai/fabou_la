@@ -21,35 +21,54 @@
             @save="handleBatchSave"
             @cancel="addMode = null"
         />
-        <!-- Header (Shared) -->
-        <div class="flex flex-col bg-white sticky top-0 z-[200] w-full border-b border-slate-100" style="padding: 10px 10px 6px 10px;">
-            <!-- Title Row (Centered Logo + Title) -->
-            <div class="flex items-center justify-between w-full relative">
-                <!-- Spacer for layout balance -->
-                <div class="w-10"></div>
-                
-                <div class="cursor-pointer flex items-center justify-center gap-2" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" />
-                    <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1;">
+        <!-- Level 1: Selection Screen (Not Entered) -->
+        <div v-if="!isEntered" class="flex-grow flex flex-col justify-center items-center p-6 bg-white animate-fade-in h-full relative z-[100]">
+            <div class="flex flex-col items-center max-w-sm w-full text-center space-y-8 mt-[-10dvh]">
+                <div class="relative flex flex-col items-center">
+                    <logo-imperial-notebook :height="96" />
+                    <h1 class="mt-4 leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 32px !important; line-height: 1.1; font-weight: 900 !important;">
                         開文專區
                     </h1>
                 </div>
 
-                <div class="w-10"></div>
+                <!-- Centered Stacked Buttons (Tabs) -->
+                <div class="flex flex-col items-center gap-4 w-full pt-4">
+                    <button @click="currentTab = 'weekly'; isEntered = true" 
+                        class="w-full max-w-[280px] h-[58px] bg-[#7c3aed] text-white shadow-xl shadow-purple-100 font-black rounded-2xl text-[19px] transition-all whitespace-nowrap tracking-widest active:scale-95 flex items-center justify-center">
+                        每週開文
+                    </button>
+                    <button @click="currentTab = 'self'; isEntered = true" 
+                        class="w-full max-w-[280px] h-[58px] bg-slate-100 text-slate-600 font-black rounded-2xl text-[19px] transition-all whitespace-nowrap tracking-widest active:scale-95 flex items-center justify-center hover:bg-slate-200">
+                        自行開文
+                    </button>
+                </div>
             </div>
+            
+            <!-- Bottom Return button -->
+            <button @click="$emit('goHome')" class="absolute bottom-8 px-6 h-[48px] bg-slate-50 text-slate-500 rounded-2xl border border-slate-200 text-[16px] font-black tracking-widest active:scale-95 transition-all">
+                返回主選單
+            </button>
+        </div>
 
-            <!-- Centered Stacked Buttons (Tabs) -->
-            <div class="flex flex-col items-center gap-2.5 w-full mt-3 mb-1">
-                <button @click="currentTab = 'weekly'" 
-                    :class="currentTab === 'weekly' ? 'bg-[#7c3aed] !text-white shadow-lg shadow-purple-100 font-black' : 'bg-slate-100 !text-slate-500 font-normal'"
-                    class="w-full max-w-[280px] py-2.5 rounded-2xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
-                    每週開文
+        <!-- Level 2: Header (Entered) -->
+        <div v-else-if="addMode !== 'batch'" class="flex flex-col bg-white sticky top-0 z-[200] w-full border-b border-slate-100" style="padding: 10px 10px 8px 10px;">
+            <!-- Title Row (Centered Logo + Title with Back Button) -->
+            <div class="flex items-center justify-between w-full relative">
+                <!-- Back Button -->
+                <button @click="addMode ? addMode = null : isEntered = false" class="min-w-[100px] h-[40px] bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-[15px] font-black tracking-widest active:scale-95 transition-all">
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    返回
                 </button>
-                <button @click="currentTab = 'self'" 
-                    :class="currentTab === 'self' ? 'bg-[#7c3aed] !text-white shadow-lg shadow-purple-100 font-black' : 'bg-slate-100 !text-slate-500 font-normal'"
-                    class="w-full max-w-[280px] py-2.5 rounded-2xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
-                    自行開文
-                </button>
+                
+                <div class="cursor-pointer flex items-center justify-center gap-2" @click="resetToRoot">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1; font-weight: 900 !important;">
+                        {{ currentTab === 'weekly' ? '每週開文' : '自行開文' }}
+                    </h1>
+                </div>
+
+                <!-- Spacer for layout balance -->
+                <div class="min-w-[100px]"></div>
             </div>
         </div>
 
@@ -73,8 +92,9 @@
             </div>
         </div>
 
-        <!-- LIST VIEW -->
-        <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full bg-white">
+        <!-- LIST VIEW & FORM VIEW (Entered State) -->
+        <template v-if="isEntered">
+            <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full bg-white">
             <!-- Search -->
             <div v-if="showSearch" class="px-1 pb-3 animate-fade-in">
                 <div class="relative group">
@@ -92,6 +112,13 @@
             <!-- Weekly Post View -->
             <div v-if="currentTab === 'weekly'" class="space-y-3 w-full">
                 <!-- Removed top add button -->
+
+                <div v-if="filteredWeeklyPosts.length === 0" class="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                    <div class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center text-purple-300">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    </div>
+                    <p class="text-slate-400 text-[17px] font-bold tracking-widest">目前尚無每週開文紀錄</p>
+                </div>
 
                 <!-- Weekly List -->
                 <div 
@@ -196,8 +223,15 @@
 
             <!-- Self Post View -->
             <div v-if="currentTab === 'self'" class="space-y-3 w-full">
+                <div v-if="filteredSelfPosts.length === 0" class="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                    <div class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center text-purple-300">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    </div>
+                    <p class="text-slate-400 text-[17px] font-bold tracking-widest">目前尚無自行開文紀錄</p>
+                </div>
+
                 <div 
-                    v-for="post in selfPosts" 
+                    v-for="post in filteredSelfPosts" 
                     :key="post.id"
                     :id="`post-${post.id}`"
                     @click="toggleExpand(post.id)"
@@ -442,15 +476,18 @@
                 @close="activeDate = null"
             />
         </div>
+        </template>
 
         <!-- Mobile Navbar with Search -->
         <MobileNavbar 
-            :can-back="false"
+            v-if="isEntered"
+            :can-back="true"
             :can-home="true"
             :show-action="!addMode"
             :action-active="showAddMenu"
             :search-active="showSearch"
             :can-search="!addMode"
+            @back="addMode ? addMode = null : isEntered = false"
             @home="$emit('goHome')"
             @action="showAddMenu = !showAddMenu"
             @search="showSearch = !showSearch"
@@ -520,6 +557,7 @@ const props = defineProps({
     });
 
 const currentTab = ref('weekly'); // 'weekly' or 'self'
+const isEntered = ref(false);
 const weeklyPosts = ref([]);
 const selfPosts = ref([]);
 const masters = ref([]);
