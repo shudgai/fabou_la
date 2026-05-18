@@ -221,7 +221,7 @@
                     <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                         <div class="flex gap-2">
                             <button @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
-                            <button @click="results = []; currentStep = 3" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
+                            <button @click="results = []; manualName = ''; currentStep = 3" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
                             <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
                             <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
                         </div>
@@ -255,8 +255,8 @@
                         <!-- Sub control panel -->
                         <div class="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50/50">
                             <div class="flex items-center gap-2">
-                                <span class="text-[14px] text-red-600 font-black" style="color: #dc2626 !important;">1. 選取固定人員</span>
-                                <span class="text-[13px] text-slate-400 font-bold ml-2">滑動選取</span>
+                                <span class="text-[14px] text-indigo-600 font-black" style="color: #4f46e5 !important;">1. 選取固定人員</span>
+                                <span class="text-[13px] text-slate-400 font-bold ml-2">點選選取</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button @click="resetAll(true)" class="text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none p-1 flex items-center gap-1">
@@ -267,15 +267,9 @@
                         </div>
 
                         <!-- Grid -->
-                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4 mt-2" @mouseleave="stopDrag" @touchmove="handleTouchMove">
+                        <div class="grid grid-cols-4 md:grid-cols-5 gap-2 px-4 mt-2">
                             <button v-for="user in displayUsers" :key="user.id"
-                                @mousedown="startDrag(user.name)"
-                                @mouseenter="onDragEnter(user.name)"
-                                @mouseup="stopDrag"
-                                @dragstart.prevent
-                                @selectstart.prevent
-                                @touchstart="handleTouchStart($event, user.name)"
-                                @touchend="stopDrag"
+                                @click="toggleFixedParticipant(user.name)"
                                 :data-name="user.name"
                                 class="dharma-btn flex items-center justify-center font-black transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                                 :style="{ 
@@ -848,6 +842,7 @@ const executeReset = (silent = false) => {
     fixedParticipants.value = [];
     selectedNames.value = [];
     roundParticipants.value = [];
+    manualName.value = '';
     selectionFiltered.value = false;
     currentStep.value = 1;
     results.value = [];
@@ -1017,6 +1012,7 @@ const handleNextRound = () => {
     pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
     selectedNames.value = [...pendingNames.value];
     roundParticipants.value = [...selectedNames.value];
+    manualName.value = '';
     currentStep.value = 3;
 };
 

@@ -744,6 +744,10 @@ const currentStep = ref(1);
 const handleNextRound = () => {
     groups.value = [];
     guardianResults.value = [];
+    manualName.value = '';
+    guardianQuery.value = '';
+    seedInput.value = '';
+    isGDropdownOpen.value = false;
     currentStep.value = 2; // Return to guardians selection
 };
 
@@ -1216,6 +1220,10 @@ const executeToastAction = () => {
         groups.value = [];
         isDrawing.value = false;
         currentType.value = '';
+        manualName.value = '';
+        guardianQuery.value = '';
+        seedInput.value = '';
+        isGDropdownOpen.value = false;
         currentStep.value = 2;
         persistentToast.value = { msg: '✓ 已將所有人員歸還', type: 'success' };
     }
