@@ -58,8 +58,8 @@
                             />
                             <button
                                 @click="addManualNameToPhase2"
-                                :disabled="!manualName.trim()"
-                                class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[22px] font-black shadow disabled:opacity-40 active:scale-95 transition-all"
+                                class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[22px] font-black shadow active:scale-95 transition-all"
+                                :style="{ opacity: manualName.trim() ? '1' : '0.4' }"
                             >+</button>
                         </div>
 
@@ -1274,7 +1274,10 @@ const initDraw = () => {
                 const hasDraftData = (draft.pendingNames && draft.pendingNames.length > 0) || 
                                      (draft.fixedParticipants && draft.fixedParticipants.length > 0) || 
                                      (draft.selectedNames && draft.selectedNames.length > 0);
-                if (hasDraftData && window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                const confirmMsg = draft.lotteryMode === true
+                    ? `已有在場人員名單（${(draft.pendingNames || []).length} 人），是否要載入？`
+                    : '偵測到您有未儲存的草稿，是否要載入？';
+                if (hasDraftData && window.confirm(confirmMsg)) {
                     currentStep.value = draft.currentStep || 1;
                     pendingNames.value = draft.pendingNames || [];
                     fixedParticipants.value = draft.fixedParticipants || [];
