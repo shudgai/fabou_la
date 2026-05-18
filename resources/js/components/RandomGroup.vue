@@ -514,7 +514,7 @@
                 <div class="w-full py-4 flex justify-center items-center">
                     <div :class="[
                         newlyDrawnGuardians.length >= 4
-                            ? 'grid grid-cols-2 gap-y-8 gap-x-16 px-4 max-w-md mx-auto justify-items-center w-full'
+                            ? (newlyDrawnGuardians.length >= 6 ? 'grid grid-cols-2 gap-y-4 gap-x-12 px-4 max-w-md mx-auto justify-items-center w-full' : 'grid grid-cols-2 gap-y-8 gap-x-16 px-4 max-w-md mx-auto justify-items-center w-full')
                             : 'flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto'
                     ]">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
@@ -690,9 +690,11 @@ const emit = defineEmits(['close']);
 const getDynamicFontSize = (count) => {
     if (count <= 1) return '80px';
     if (count === 2) return '70px';
-    if (count <= 4) return '65px';
-    if (count <= 9) return '55px';
-    return '35px';
+    if (count === 3) return '60px';
+    if (count === 4) return '55px';
+    if (count === 5) return '48px';
+    if (count <= 9) return '42px';
+    return '32px';
 };
 
 const getGroupMemberFontSize = () => {
