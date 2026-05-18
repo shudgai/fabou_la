@@ -1058,12 +1058,13 @@ const saveResults = async () => {
 };
 
 const handleNextRound = () => {
-    // Keep pendingNames (confirmed attendees) and selectionFiltered so the list stays visible
-    // Auto-populate roundParticipants so all buttons appear blue (pre-selected for new round)
+    // Keep pendingNames and selectionFiltered (confirmed attendee list stays)
+    // Restore selectedNames and roundParticipants so step 3 is pre-populated
+    selectedNames.value = [...pendingNames.value];
     roundParticipants.value = [...pendingNames.value];
     manualName.value = '';
     results.value = [];
-    currentStep.value = 1;
+    currentStep.value = 3; // Go directly to draw configuration
 };
 
 const addManualName = () => {
