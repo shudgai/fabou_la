@@ -483,7 +483,7 @@
                                     <span class="text-[70px] filter drop-shadow-lg">👑</span>
                                     <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-2 bg-indigo-500/10 blur-xl rounded-full"></div>
                                 </div>
-                                <h3 class="text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #facc15 !important; color: #dc2626 !important; border: 4px solid #eab308 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                                <h3 class="text-[42px] font-black px-12 py-6 rounded-3xl shadow-xl mb-4 text-center leading-none" style="background-color: #ffffff !important; color: #dc2626 !important; border: 4px solid #ffffff !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
                                 <div class="flex items-center space-x-2 text-indigo-300">
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
                                     <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
