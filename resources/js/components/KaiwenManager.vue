@@ -24,9 +24,9 @@
         <!-- Level 1: Selection Screen (Not Entered) -->
         <div v-if="!isEntered" class="flex-grow flex flex-col justify-center items-center p-6 bg-white animate-fade-in h-full relative z-[100]">
             <div class="flex flex-col items-center max-w-sm w-full text-center space-y-8 mt-[-10dvh]">
-                <div class="relative flex flex-col items-center">
-                    <logo-imperial-notebook :height="96" />
-                    <h1 class="mt-4 leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 32px !important; line-height: 1.1; font-weight: 900 !important;">
+                <div class="relative flex items-center justify-center gap-3">
+                    <logo-imperial-notebook :height="48" />
+                    <h1 class="leading-tight font-outfit tracking-tighter !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important; line-height: 1.1; font-weight: 900 !important;">
                         開文專區
                     </h1>
                 </div>
@@ -52,23 +52,20 @@
 
         <!-- Level 2: Header (Entered) -->
         <div v-else-if="addMode !== 'batch'" class="flex flex-col bg-white sticky top-0 z-[200] w-full border-b border-slate-100" style="padding: 10px 10px 8px 10px;">
-            <!-- Title Row (Centered Logo + Title with Back Button) -->
-            <div class="flex items-center justify-between w-full relative">
+            <!-- Title Row (Left-aligned Logo + Title with Back Button) -->
+            <div class="flex items-center w-full gap-3 relative">
                 <!-- Back Button -->
-                <button @click="addMode ? addMode = null : isEntered = false" class="min-w-[100px] h-[40px] bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-[15px] font-black tracking-widest active:scale-95 transition-all">
+                <button @click="addMode ? addMode = null : isEntered = false" class="min-w-[100px] h-[40px] bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center text-[15px] font-black tracking-widest active:scale-95 transition-all shrink-0">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     返回
                 </button>
                 
-                <div class="cursor-pointer flex items-center justify-center gap-2" @click="resetToRoot">
-                    <logo-imperial-notebook :height="36" />
-                    <h1 class="leading-tight font-outfit tracking-widest !font-black !text-[#dc2626]" style="font-size: 24px !important; line-height: 1.1; font-weight: 900 !important;">
+                <div class="cursor-pointer flex items-center gap-1.5 min-w-0" @click="resetToRoot">
+                    <logo-imperial-notebook :height="28" class="shrink-0" />
+                    <h1 class="leading-tight font-outfit tracking-tighter !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 24px !important; line-height: 1.1; font-weight: 900 !important;">
                         {{ currentTab === 'weekly' ? '每週開文' : '自行開文' }}
                     </h1>
                 </div>
-
-                <!-- Spacer for layout balance -->
-                <div class="min-w-[100px]"></div>
             </div>
         </div>
 
