@@ -460,10 +460,7 @@
 
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
-                    <div :class="[
-                        'grid gap-y-6 gap-x-12 px-4 max-w-xs mx-auto justify-items-center w-full',
-                        newlyDrawnGuardians.length <= 1 ? 'grid-cols-1' : 'grid-cols-2'
-                    ]">
+                    <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
                             class="flex flex-col items-center animate-slide-up"
                             :style="{ animationDelay: (idx * 0.05) + 's' }"
@@ -628,9 +625,9 @@ import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/ios
 const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
-    if (count <= 1) return '70px';
-    if (count <= 4) return '60px';
-    if (count <= 9) return '50px';
+    if (count <= 1) return '80px';
+    if (count <= 4) return '65px';
+    if (count <= 9) return '55px';
     return '35px';
 };
 
