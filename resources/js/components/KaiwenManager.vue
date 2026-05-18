@@ -38,20 +38,18 @@
                 <div class="w-10"></div>
             </div>
 
-            <!-- Centered Segmented Buttons (Tabs) -->
-            <div class="flex justify-center w-full mt-3 mb-1">
-                <div class="bg-slate-100 p-0.5 rounded-2xl flex items-center w-full max-w-[320px]">
-                    <button @click="currentTab = 'weekly'" 
-                        :class="currentTab === 'weekly' ? 'bg-white shadow-sm !text-[#7c3aed] font-black' : '!text-slate-400 font-normal'"
-                        class="flex-1 py-2 rounded-xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
-                        每週開文
-                    </button>
-                    <button @click="currentTab = 'self'" 
-                        :class="currentTab === 'self' ? 'bg-white shadow-sm !text-[#7c3aed] font-black' : '!text-slate-400 font-normal'"
-                        class="flex-1 py-2 rounded-xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
-                        自行開文
-                    </button>
-                </div>
+            <!-- Centered Stacked Buttons (Tabs) -->
+            <div class="flex flex-col items-center gap-2.5 w-full mt-3 mb-1">
+                <button @click="currentTab = 'weekly'" 
+                    :class="currentTab === 'weekly' ? 'bg-[#7c3aed] !text-white shadow-lg shadow-purple-100 font-black' : 'bg-slate-100 !text-slate-500 font-normal'"
+                    class="w-full max-w-[280px] py-2.5 rounded-2xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
+                    每週開文
+                </button>
+                <button @click="currentTab = 'self'" 
+                    :class="currentTab === 'self' ? 'bg-[#7c3aed] !text-white shadow-lg shadow-purple-100 font-black' : 'bg-slate-100 !text-slate-500 font-normal'"
+                    class="w-full max-w-[280px] py-2.5 rounded-2xl text-[17px] font-black transition-all whitespace-nowrap tracking-widest active:scale-95 text-center kaiwen-tab">
+                    自行開文
+                </button>
             </div>
         </div>
 
