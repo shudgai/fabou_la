@@ -442,7 +442,7 @@
         </div>
 
         <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
-        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-start overflow-hidden pt-12 pb-36" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden pb-[calc(7dvh+90px)]" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
             <!-- Decorative Background Glow -->
             <div class="absolute inset-0 pointer-events-none">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/15 rounded-full blur-[120px]"></div>
@@ -451,7 +451,7 @@
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[calc(100vh-220px)]">
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[60vh]">
                 <!-- Sparkle Icons and Header -->
                 <div class="space-y-3">
                     <h2 class="text-[22px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
@@ -459,7 +459,7 @@
                 </div>
 
                 <!-- Names with ENLARGED text -->
-                <div class="w-full py-4 flex justify-center items-center">
+                <div class="w-full py-4 flex justify-center items-center flex-1">
                     <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
                             class="flex flex-col items-center animate-slide-up"
