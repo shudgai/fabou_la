@@ -442,7 +442,7 @@
         </div>
 
         <!-- FULLSCREEN GUARDIAN DRAWN RESULT POPUP: 關主抽選結果 -->
-        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+        <div v-if="showGuardianPopup" class="fixed inset-0 z-[600] flex flex-col items-center justify-start overflow-hidden pt-12 pb-36" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
             <!-- Decorative Background Glow -->
             <div class="absolute inset-0 pointer-events-none">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/15 rounded-full blur-[120px]"></div>
@@ -451,21 +451,19 @@
             </div>
 
             <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10">
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-start text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[calc(100vh-220px)]">
                 <!-- Sparkle Icons and Header -->
                 <div class="space-y-3">
-                    <div class="inline-flex p-4 bg-amber-100/60 rounded-3xl border border-amber-200/50 shadow-inner animate-bounce" style="animation-duration: 3s;">
-                        <svg class="w-12 h-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.246.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.772-.564-.373-1.81.588-1.81h4.906a1 1 0 00.95-.69l1.519-4.674z"/>
-                        </svg>
-                    </div>
                     <h2 class="text-[22px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
                     <p class="text-[13px] font-black text-amber-600/90 uppercase tracking-widest">恭喜以下法號選中為關主</p>
                 </div>
 
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
-                    <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
+                    <div :class="[
+                        'grid gap-y-6 gap-x-12 px-4 max-w-xs mx-auto justify-items-center w-full',
+                        newlyDrawnGuardians.length <= 1 ? 'grid-cols-1' : 'grid-cols-2'
+                    ]">
                         <div v-for="(name, idx) in newlyDrawnGuardians" :key="'newg'+name" 
                             class="flex flex-col items-center animate-slide-up"
                             :style="{ animationDelay: (idx * 0.05) + 's' }"
@@ -484,14 +482,16 @@
                     </div>
                 </div>
 
-                <!-- Confirm/Close Button -->
-                <button
-                    @click="confirmNewlyDrawnGuardians"
-                    class="w-full max-w-xs py-4 rounded-2xl font-black text-[20px] transition-all active:scale-[0.97] bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:shadow-sm border-none cursor-pointer"
-                    style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"
-                >
-                    下一步
-                </button>
+                <!-- Confirm/Close Button in fixed bar directly above navbar -->
+                <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-transparent z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-3 flex justify-center">
+                    <button
+                        @click="confirmNewlyDrawnGuardians"
+                        class="w-full max-w-xs py-4 rounded-2xl font-black text-[20px] transition-all active:scale-[0.97] bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:shadow-sm border-none cursor-pointer"
+                        style="color: #ffffff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.2);"
+                    >
+                        下一步
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -628,14 +628,7 @@ import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/ios
 const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
-    if (count <= 1) return '135px';
-    if (count <= 2) return '110px';
-    if (count <= 4) return '90px';
-    if (count <= 6) return '72px';
-    if (count <= 8) return '58px';
-    if (count <= 12) return '46px';
-    if (count <= 16) return '38px';
-    return '32px';
+    return '58px';
 };
 
 const users = ref([]);
