@@ -468,7 +468,7 @@
                             class="flex flex-col items-center animate-slide-up"
                             :style="{ animationDelay: (idx * 0.05) + 's' }"
                         >
-                            <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
+                            <span class="font-black tracking-wide select-none leading-none font-biaokai-locked whitespace-nowrap"
                                 :style="{ 
                                     fontSize: getDynamicFontSize(newlyDrawnGuardians.length),
                                     color: '#dc2626',
@@ -628,7 +628,11 @@ import { lockBodyScroll, unlockBodyScroll, safeLocalStorage } from '../utils/ios
 const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
-    return '58px';
+    if (count <= 2) return '58px';
+    if (count <= 4) return '48px';
+    if (count <= 8) return '40px';
+    if (count <= 12) return '32px';
+    return '26px';
 };
 
 const users = ref([]);
