@@ -101,16 +101,11 @@ class ImperialGraceController extends Controller
         return DB::transaction(function () use ($request, $nameAliasMap, $user) {
             $cleanName = trim($request->name);
             $grace = ImperialGrace::where('user_id', $user->id)
+                ->where('master_id', $request->master_id)
                 ->get()
                 ->firstWhere('name', $cleanName);
 
-            $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
-            if ($grace && !in_array($cleanName, $allowedDuplicates)) {
-                $masterName = \App\Models\Master::find($grace->master_id)?->name ?? '未求得';
-                throw new \Exception("「{$cleanName}」已存在於【{$masterName}】資料夾中，不可重複載錄。");
-            }
-
-            if (!$grace || in_array($cleanName, $allowedDuplicates)) {
+            if (!$grace) {
                 $grace = ImperialGrace::create([
                     'user_id' => $user->id,
                     'name' => $cleanName,
@@ -248,13 +243,13 @@ class ImperialGraceController extends Controller
 
         if ($request->has('name') && $request->name !== $grace->name) {
             $cleanName = trim($request->name);
-            $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
             $exists = ImperialGrace::where('user_id', $user->id)
+                ->where('master_id', $grace->master_id)
                 ->where('id', '!=', $id)
                 ->get()
                 ->firstWhere('name', $cleanName);
             
-            if ($exists && !in_array($cleanName, $allowedDuplicates)) {
+            if ($exists) {
                 $masterName = \App\Models\Master::find($exists->master_id)?->name ?? '未求得';
                 return response()->json(['error' => 'duplicate', 'message' => "「{$cleanName}」已存在於【{$masterName}】資料夾中，不可重複載錄。"], 422);
             }
@@ -310,15 +305,10 @@ class ImperialGraceController extends Controller
                 $cleanName = trim($item['name'] ?? '');
                 if (!$cleanName) continue;
 
-                $grace = clone $userGraces->firstWhere('name', $cleanName) ?? null;
-                $grace = $userGraces->firstWhere('name', $cleanName);
+                $mId = $item['master_id'] ?? $masterId;
+                $grace = $userGraces->where('master_id', $mId)->firstWhere('name', $cleanName);
 
-                $allowedDuplicates = ['法宗', '真氣', '親收女兒'];
-                if ($grace && !in_array($cleanName, $allowedDuplicates)) {
-                    continue; // Skip duplicates for batch
-                }
-
-                if (!$grace || in_array($cleanName, $allowedDuplicates)) {
+                if (!$grace) {
                     $grace = ImperialGrace::create([
                         'user_id' => $user->id,
                         'master_id' => $item['master_id'] ?? $masterId,
