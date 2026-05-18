@@ -48,6 +48,21 @@
                             </div>
                         </div>
 
+                        <!-- + Add name row (only when selectionFiltered, i.e. phase 2) -->
+                        <div v-if="selectionFiltered" class="flex items-center gap-2 px-4 py-2 border-b border-slate-100 bg-white">
+                            <input
+                                v-model="manualName"
+                                @keyup.enter="addManualNameToPhase2"
+                                placeholder="新增臨時人員..."
+                                class="flex-1 text-[16px] border-0 border-b-2 border-slate-300 bg-transparent outline-none py-1"
+                            />
+                            <button
+                                @click="addManualNameToPhase2"
+                                :disabled="!manualName.trim()"
+                                class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[22px] font-black shadow disabled:opacity-40 active:scale-95 transition-all"
+                            >+</button>
+                        </div>
+
                         <!-- Title (Only when selectionFiltered is true) -->
                         <div v-if="selectionFiltered" class="px-4 pt-4 pb-2 flex items-center justify-between animate-fade-in shrink-0">
                             <span class="text-[17px] font-black text-indigo-700">在場人員名單</span>
@@ -1044,8 +1059,8 @@ const saveResults = async () => {
 
 const handleNextRound = () => {
     // Keep pendingNames (confirmed attendees) and selectionFiltered so the list stays visible
-    // Only clear per-round state
-    roundParticipants.value = [];
+    // Auto-populate roundParticipants so all buttons appear blue (pre-selected for new round)
+    roundParticipants.value = [...pendingNames.value];
     manualName.value = '';
     results.value = [];
     currentStep.value = 1;
@@ -1056,6 +1071,19 @@ const addManualName = () => {
     const n = manualName.value.trim();
     if (!users.value.some(u => u.name === n)) users.value.push({ id: Date.now(), name: n });
     togglePending(n);
+    manualName.value = '';
+};
+
+// Phase 2 only: add a temporary name to both confirmed list and this round
+const addManualNameToPhase2 = () => {
+    if (!manualName.value.trim()) return;
+    const n = manualName.value.trim();
+    // Add to users pool if not present
+    if (!users.value.some(u => u.name === n)) users.value.push({ id: Date.now(), name: n });
+    // Add to confirmed attendee list if not present
+    if (!pendingNames.value.includes(n)) pendingNames.value.push(n);
+    // Add to this round's participants if not present
+    if (!roundParticipants.value.includes(n)) roundParticipants.value.push(n);
     manualName.value = '';
 };
 
