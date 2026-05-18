@@ -513,7 +513,7 @@
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center">
                     <div :class="[
-                        newlyDrawnGuardians.length >= 6 && newlyDrawnGuardians.length <= 9
+                        newlyDrawnGuardians.length >= 4
                             ? 'grid grid-cols-2 gap-y-8 gap-x-16 px-4 max-w-md mx-auto justify-items-center w-full'
                             : 'flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto'
                     ]">
