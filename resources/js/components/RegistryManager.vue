@@ -1217,10 +1217,21 @@ const openEdit = (item) => {
     if (cloned.dharma_name_registries) {
         const splitList = [];
         cloned.dharma_name_registries.forEach(r => {
-            // Ensure custom_name is populated for the input field if missing but ID exists
-            if (!r.custom_name && r.dharma_name_id) {
+            // Ensure custom_name is populated for the input field if missing but ID exists, OR if ID matches 7 (or custom_name is '金巧' / starts with '道霞')
+            if (r.dharma_name_id === 7) {
+                const dn = dharmaNames.value.find(d => d.id === 7);
+                if (dn) {
+                    r.custom_name = dn.name;
+                }
+            } else if (r.dharma_name_id) {
                 const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
                 if (dn) r.custom_name = dn.name;
+            }
+            
+            const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
+            if (goldQiaoOfficial && (r.custom_name === '金巧' || (r.custom_name && r.custom_name.startsWith('道霞')))) {
+                r.custom_name = goldQiaoOfficial.name;
+                r.dharma_name_id = 7;
             }
             const nameText = r.custom_name || '';
             const recognizedRels = ['母', '父', '夫', '嬤', '婆', '公', '先生', '太太', '母親', '父親', '奶奶', '爺爺', '外公', '外婆'];
