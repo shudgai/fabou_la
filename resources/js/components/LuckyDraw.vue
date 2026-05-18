@@ -192,29 +192,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
-                        <div v-if="results.length === 1" class="flex flex-col items-center py-12">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48 flex flex-col justify-center items-center min-h-[350px]">
+                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center">
                             <div class="font-black text-[76px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
                         </div>
-                        <div v-else class="w-full flex justify-center items-center py-6">
-                            <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
-                                <div v-for="(name, idx) in results" :key="idx" 
-                                    class="flex flex-col items-center animate-slide-in"
-                                    :style="{ animationDelay: (idx * 0.05) + 's' }"
+                        <div v-else class="w-full flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 max-w-md mx-auto">
+                            <div v-for="(name, idx) in results" :key="idx" 
+                                class="flex flex-col items-center justify-center animate-slide-in"
+                                :style="{ animationDelay: (idx * 0.05) + 's' }"
+                            >
+                                <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
+                                    :style="{ 
+                                        fontSize: getDynamicFontSize(results.length),
+                                        color: '#dc2626',
+                                        textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
+                                        fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                    }"
                                 >
-                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
-                                        :style="{ 
-                                            fontSize: getDynamicFontSize(results.length),
-                                            color: '#dc2626',
-                                            textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
-                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                        }"
-                                    >
-                                        {{ name }}
-                                    </span>
-                                </div>
+                                    {{ name }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -472,12 +470,12 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48">
-                        <div class="max-w-lg mx-auto space-y-4 pt-2">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-48 flex flex-col justify-center items-center min-h-[350px]">
+                        <div class="max-w-lg mx-auto w-full flex flex-col justify-center items-center">
                             <!-- SINGLE RESULT: CROWN & CENTERED -->
-                            <div v-if="results.length === 1" class="flex flex-col items-center justify-center space-y-4 pt-12">
+                            <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center">
                                 <h3 class="font-black text-[76px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
-                                <div class="flex items-center space-x-2 text-indigo-300">
+                                <div class="flex items-center space-x-2 text-indigo-300 mt-4">
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
                                     <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
                                     <div class="h-[2px] w-8 bg-indigo-100"></div>
@@ -485,23 +483,21 @@
                             </div>
 
                             <!-- MULTIPLE RESULTS: CENTERED & INDEXED -->
-                            <div v-else class="w-full flex justify-center items-center py-6">
-                                <div class="flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
-                                    <div v-for="(name, idx) in results" :key="'res'+idx" 
-                                        class="flex flex-col items-center animate-slide-in"
-                                        :style="{ animationDelay: (idx * 0.05) + 's' }"
+                            <div v-else class="w-full flex flex-wrap flex-row justify-center items-center gap-x-8 gap-y-6 px-4">
+                                <div v-for="(name, idx) in results" :key="'res'+idx" 
+                                    class="flex flex-col items-center justify-center animate-slide-in"
+                                    :style="{ animationDelay: (idx * 0.05) + 's' }"
+                                >
+                                    <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked text-center"
+                                        :style="{ 
+                                            fontSize: getDynamicFontSize(results.length),
+                                            color: '#dc2626',
+                                            textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
+                                            fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
+                                        }"
                                     >
-                                        <span class="font-black tracking-widest select-none leading-tight font-biaokai-locked"
-                                            :style="{ 
-                                                fontSize: getDynamicFontSize(results.length),
-                                                color: '#dc2626',
-                                                textShadow: '0 2px 8px rgba(220, 38, 38, 0.15)',
-                                                fontFamily: '\'DFKai-SB\', \'標楷體\', serif'
-                                            }"
-                                        >
-                                            {{ name }}
-                                        </span>
-                                    </div>
+                                        {{ name }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
