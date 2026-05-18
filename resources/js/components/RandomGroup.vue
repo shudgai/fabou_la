@@ -450,14 +450,13 @@
                 <div class="absolute bottom-[20%] right-[20%] w-48 h-48 bg-amber-500/15 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
             </div>
 
-            <!-- Content Card -->
-            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[60vh]">
-                <!-- Sparkle Icons and Header -->
-                <div class="space-y-3">
-                    <h2 class="text-[22px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
-                    <p class="text-[13px] font-black text-amber-600/90 uppercase tracking-widest">恭喜以下法號選中為關主</p>
-                </div>
+            <!-- Header at the absolute top -->
+            <div class="absolute top-[8vh] z-20 text-center animate-slide-up">
+                <h2 class="text-[26px] font-black text-amber-900 tracking-wider">🌟 關主抽選結果 🌟</h2>
+            </div>
 
+            <!-- Content Card -->
+            <div class="relative w-full max-w-lg px-6 flex flex-col items-center justify-center text-center space-y-8 animate-fade-in z-10 overflow-y-auto custom-scrollbar max-h-[50vh] mt-[10vh]">
                 <!-- Names with ENLARGED text -->
                 <div class="w-full py-4 flex justify-center items-center flex-1">
                     <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 px-4 w-full mx-auto">
@@ -626,6 +625,7 @@ const emit = defineEmits(['close']);
 
 const getDynamicFontSize = (count) => {
     if (count <= 1) return '80px';
+    if (count === 2) return '70px';
     if (count <= 4) return '65px';
     if (count <= 9) return '55px';
     return '35px';
