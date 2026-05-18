@@ -65,12 +65,31 @@
                               focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'p-[10px]'
                          ]">
 
-                        <!-- Close button inside expanded card -->
-                        <button v-if="focusedId === item.id"
-                                @click.stop="focusedId = null"
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all z-10">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        </button>
+                        <!-- Action container inside expanded card -->
+                        <div v-if="focusedId === item.id" class="absolute top-3 right-3 flex items-center gap-2 z-20">
+                            <!-- Three Dots Menu Button -->
+                            <div class="relative">
+                                <button @click.stop="toggleActionMenu(item.id)"
+                                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-red-500 rounded-xl active:scale-90 transition-all">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div v-if="activeActionMenuId === item.id" @click.stop 
+                                     class="absolute right-0 top-full mt-2 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                                    <button @click.stop="startEdit(item)" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">編輯</button>
+                                    <button @click.stop="copyItem(item); activeActionMenuId = null" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                    <button @click.stop="downloadItem(item); activeActionMenuId = null" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                    <button @click.stop="deleteRecord(item.id)" class="w-full p-3.5 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                                </div>
+                            </div>
+
+                            <!-- Close Button -->
+                            <button @click.stop="focusedId = null; activeActionMenuId = null"
+                                    class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            </button>
+                        </div>
 
                         <!-- Content -->
                         <div class="space-y-1">
@@ -470,6 +489,7 @@ const executeDelete = async () => {
         persistentToast.value = { msg: '已成功刪除紀錄', type: 'success' };
         setTimeout(() => { persistentToast.value = null; }, 1500);
         focusedId.value = null;
+        activeActionMenuId.value = null;
         await loadData();
     } catch (e) {
         console.error('Delete failed:', e);
@@ -481,6 +501,7 @@ const executeDelete = async () => {
 
 const toggleExpand = (id) => {
     focusedId.value = focusedId.value === id ? null : id;
+    activeActionMenuId.value = null;
 };
 
 const copyItem = async (item) => {
@@ -542,11 +563,19 @@ watch(showModal, (val) => {
     if (!val) currentStep.value = 1;
 });
 
+const handleDocumentClick = () => {
+    activeActionMenuId.value = null;
+};
+
 onUnmounted(() => {
+    document.removeEventListener('click', handleDocumentClick);
     if (isAnyModalOpen.value) unlockBodyScroll();
 });
 
-onMounted(loadData);
+onMounted(() => {
+    loadData();
+    document.addEventListener('click', handleDocumentClick);
+});
 </script>
 
 <style scoped>

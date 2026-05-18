@@ -38,6 +38,32 @@
                         : 'z-10 py-[25px]'
                 ]">
 
+                <!-- Action container inside expanded card -->
+                <div v-if="expandedRecordId === record.id" class="absolute top-3 right-3 flex items-center gap-2 z-20">
+                    <!-- Three Dots Menu Button -->
+                    <div class="relative">
+                        <button @click.stop="activeDropdownId = activeDropdownId === record.id ? null : record.id"
+                                class="w-10 h-10 flex items-center justify-center bg-slate-100 text-red-500 rounded-xl active:scale-90 transition-all">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div v-if="activeDropdownId === record.id" @click.stop 
+                             class="absolute right-0 top-full mt-2 w-auto min-w-[140px] bg-white rounded-2xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">
+                            <button @click.stop="handleMenuEdit(record); activeDropdownId = null" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">編輯</button>
+                            <button @click.stop="copyAsTextFile(record); activeDropdownId = null" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                            <button @click.stop="downloadFile(record); activeDropdownId = null" class="w-full p-3.5 text-left text-[17px] font-black text-slate-900 hover:bg-slate-50 border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                            <button @click.stop="deleteRecord(record.id); activeDropdownId = null" class="w-full p-3.5 text-left text-[17px] font-black text-red-600 hover:bg-red-50">刪除</button>
+                        </div>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button @click.stop="expandedRecordId = null; activeDropdownId = null"
+                            class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-400 rounded-xl active:scale-90 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                </div>
+
                 <div class="flex items-start justify-between">
                     <div class="flex flex-col min-w-0">
                         <div v-if="record.record_date" :class="[
@@ -215,6 +241,7 @@ const formatDate = (d) => {
 const toggleExpand = (id) => {
     if (expandedRecordId.value === id) expandedRecordId.value = null;
     else expandedRecordId.value = id;
+    activeDropdownId.value = null;
 };
 
 const prepareAdd = () => {
@@ -336,6 +363,7 @@ const executeToastAction = async () => {
         await axios.delete(`/other-records/${deleteConfirmId.value}`);
         persistentToast.value = { msg: '✓ 已刪除紀錄', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+        activeDropdownId.value = null;
         await loadData();
     } catch (e) {
         persistentToast.value = { msg: '✖ 刪除失敗', type: 'error' };
