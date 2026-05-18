@@ -220,10 +220,10 @@
                     <!-- Bottom Button Area (Fixed above navigation) -->
                     <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                         <div class="flex gap-2">
-                            <button @click="handleNextRound" class="flex-1 py-[10px] bg-emerald-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">新回合</button>
-                            <button @click="results = []; manualName = ''; currentStep = 3" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px]" style="color: white !important;">重選</button>
-                            <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">複製</button>
-                            <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px]" style="color: white !important;">儲存</button>
+                            <button @click="handleNextRound" class="flex-1 py-[10px] bg-indigo-100 text-indigo-900 rounded-xl font-black text-[15px]">新回合</button>
+                            <button @click="results = []; manualName = ''; currentStep = 3" class="flex-1 py-[10px] bg-green-200 text-green-900 rounded-xl font-black text-[15px]">重選</button>
+                            <button @click="copyResults" class="flex-1 py-[10px] bg-yellow-200 text-yellow-900 rounded-xl font-black text-[15px]">複製</button>
+                            <button @click="saveResults" class="flex-1 py-[10px] bg-blue-200 text-blue-900 rounded-xl font-black text-[15px]">儲存</button>
                         </div>
                     </div>
                 </div>
@@ -501,9 +501,9 @@
                     <!-- Bottom Button Area -->
                     <div class="fixed md:absolute left-0 right-0 px-4 py-3 bg-white border-t border-slate-50 z-[200] w-full bottom-[calc(7dvh+env(safe-area-inset-bottom))] md:bottom-0">
                         <div class="flex gap-2">
-                            <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-slate-500 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">重選</button>
-                            <button @click="copyResults" class="flex-1 py-[10px] bg-blue-600 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">複製</button>
-                            <button @click="saveResults" class="flex-1 py-[10px] bg-indigo-600 text-white rounded-xl font-black text-[15px] cursor-pointer" style="color: white !important;">儲存</button>
+                            <button @click="results = []; currentStep = 2" class="flex-1 py-[10px] bg-green-200 text-green-900 rounded-xl font-black text-[15px] cursor-pointer">重選</button>
+                            <button @click="copyResults" class="flex-1 py-[10px] bg-yellow-200 text-yellow-900 rounded-xl font-black text-[15px] cursor-pointer">複製</button>
+                            <button @click="saveResults" class="flex-1 py-[10px] bg-blue-200 text-blue-900 rounded-xl font-black text-[15px] cursor-pointer">儲存</button>
                         </div>
                     </div>
                 </div>
