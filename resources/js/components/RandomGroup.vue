@@ -551,11 +551,12 @@
                             <span v-for="member in group.members" :key="member" 
                                 :class="[
                                     'font-black tracking-wide select-none leading-none font-biaokai-locked',
-                                    group.isSeed ? 'text-amber-950' : 'text-slate-900'
+                                    group.isSeed ? 'text-red-800' : 'text-red-600'
                                 ]"
                                 :style="{ 
                                     fontSize: (group.members.length === 1 ? '50px' : (group.members.length <= 4 ? '40px' : '30px')) + ' !important',
-                                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.04)'
+                                    color: '#dc2626',
+                                    textShadow: '0 2px 4px rgba(220, 38, 38, 0.1)'
                                 }"
                             >
                                 {{ member }}
