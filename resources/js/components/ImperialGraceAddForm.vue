@@ -85,7 +85,7 @@
                         <h2 class="text-[17px] font-normal text-black leading-relaxed tracking-tight">請貼入<span class="text-black">多筆載錄內容</span></h2>
                         <div class="w-full mx-auto mt-12 px-2">
                             <div class="bg-slate-50/50 rounded-3xl p-4 border border-slate-100">
-                                <textarea v-model="batchInput" rows="12" placeholder="請將內容貼於此處...&#10;&#10;法寶名稱&#10;用意...&#10;備註..." 
+                                <textarea v-model="batchInput" rows="12" placeholder="請將內容貼於此處...&#10;法寶名稱貼的時候要空一行&#10;&#10;法寶名稱&#10;用意...&#10;備註..." 
                                     class="w-full bg-transparent border-none focus:ring-0 outline-none text-[17px] font-normal text-black custom-scrollbar leading-relaxed text-left placeholder:text-slate-200"></textarea>
                             </div>
                             <p class="text-[12px] font-bold text-slate-300 mt-6 leading-relaxed">※ 每筆資料間「務必」空一行 (雙換行) <br> 以免系統誤判為同一項</p>

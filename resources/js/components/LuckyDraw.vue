@@ -192,8 +192,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col justify-start items-center min-h-[350px]">
-                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col items-center min-h-[350px]"
+                        :class="results.length === 1 ? 'justify-center' : 'justify-start'">
+                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-0">
                             <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
                                 {{ results[0] }}
                             </div>
@@ -464,21 +465,21 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col justify-start items-center min-h-[350px]">
-                        <div class="w-full flex flex-col justify-start items-center">
-                            <!-- SINGLE RESULT: CROWN & CENTERED -->
-                            <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-8">
-                                <h3 class="font-black text-[120px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
-                                <div class="flex items-center space-x-2 text-indigo-300 mt-4">
-                                    <div class="h-[2px] w-8 bg-indigo-100"></div>
-                                    <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
-                                    <div class="h-[2px] w-8 bg-indigo-100"></div>
-                                </div>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col items-center min-h-[350px]"
+                        :class="results.length === 1 ? 'justify-center' : 'justify-start'">
+                        <!-- SINGLE RESULT: CROWN & CENTERED -->
+                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-0">
+                            <h3 class="font-black text-[120px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                            <div class="flex items-center space-x-2 text-indigo-300 mt-4">
+                                <div class="h-[2px] w-8 bg-indigo-100"></div>
+                                <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
+                                <div class="h-[2px] w-8 bg-indigo-100"></div>
                             </div>
+                        </div>
 
-                            <!-- MULTIPLE RESULTS: 10-COLUMN ROWS & INDEXED -->
-                            <!-- MULTIPLE RESULTS: VERTICAL COLUMNS & INDEXED -->
-                            <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
+                        <!-- MULTIPLE RESULTS: 10-COLUMN ROWS & INDEXED -->
+                        <!-- MULTIPLE RESULTS: VERTICAL COLUMNS & INDEXED -->
+                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
                                 <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
                                     class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                                 >
@@ -495,7 +496,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
                     <!-- Bottom Button Area -->
@@ -1022,11 +1022,12 @@ const saveResults = async () => {
 };
 
 const handleNextRound = () => {
-    pendingNames.value = pendingNames.value.filter(n => !results.value.includes(n));
-    selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [...selectedNames.value];
+    pendingNames.value = [];
+    selectedNames.value = [];
+    roundParticipants.value = [];
     manualName.value = '';
-    currentStep.value = 3;
+    results.value = [];
+    currentStep.value = 1;
 };
 
 const addManualName = () => {
@@ -1190,7 +1191,8 @@ watch(() => ({
             roundParticipants: val.round,
             drawCount: val.count,
             manualName: val.manual,
-            lotteryMode: val.mode
+            lotteryMode: val.mode,
+            timestamp: Date.now()
         }));
 
         if (lotteryMode.value === true) {
@@ -1212,7 +1214,11 @@ const initDraw = () => {
     if (draftStr) {
         try {
             const draft = JSON.parse(draftStr);
-            if (draft.lotteryMode === props.initialMode) {
+            const isExpired = draft.timestamp ? (Date.now() - draft.timestamp > 24 * 60 * 60 * 1000) : false;
+
+            if (isExpired) {
+                safeLocalStorage.removeItem(DRAFT_KEY);
+            } else if (draft.lotteryMode === props.initialMode) {
                 const hasDraftData = (draft.pendingNames && draft.pendingNames.length > 0) || 
                                      (draft.fixedParticipants && draft.fixedParticipants.length > 0) || 
                                      (draft.selectedNames && draft.selectedNames.length > 0);

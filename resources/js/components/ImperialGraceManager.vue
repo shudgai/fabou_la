@@ -222,10 +222,10 @@
                                         <span class="text-[15px] font-bold text-slate-400 font-outfit">{{ formatDate(reg.obtained_date || reg.record_date) }}</span>
                                     </div>
                                     <span :class="[
-                                        'px-3 py-0.5 rounded-full tracking-widest select-none whitespace-nowrap shrink-0 border scale-[0.85] origin-right !font-black !text-[16px]',
-                                        reg.status === '已求得' ? 'bg-blue-50 border-blue-200 text-blue-600' : 
-                                        reg.status === '已登記' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 
-                                        'bg-rose-50 border-rose-200 text-rose-600'
+                                        'tracking-widest select-none whitespace-nowrap shrink-0 scale-[0.85] origin-right !font-black !text-[16px]',
+                                        reg.status === '已求得' ? 'px-3 py-0.5 rounded-full border bg-blue-50 border-blue-200 text-blue-600' : 
+                                        reg.status === 'PointRegister' || reg.status === '已登記' ? 'text-emerald-600' : 
+                                        'px-3 py-0.5 rounded-full border bg-rose-50 border-rose-200 text-rose-600'
                                     ]">
                                         {{ reg.status }}
                                     </span>
