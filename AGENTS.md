@@ -206,7 +206,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - 抽籤專區 — lottery/draw system
 - Step 1 label: "滑動游標選取固定人員"; Step 2 label: "滑動游標選取其他抽籤人員"
 - Flow: 抽順序 (step1 → step2 → step3), 回合抽籤 (step1 → step3)
-- 回合抽籤 mode: `roundParticipants` auto-populated with all selected names on step 3 entry and new round
+- 回合抽籤 mode: `roundParticipants` is cleared to `[]` when entering step 3 (whether from Phase 2 or Next Round) so that the clear button lights up by default and the user starts with 0 people selected. If going back to Phase 2, `roundParticipants` is restored from `selectedNames` to preserve selections.
 - step 3 & 4 lotteryMode headers show LogoImperialNotebook + 抽籤專區 + subtitle with logo header bar
 - step 3 subtitle on its own centered row: "回合抽籤 - 點選本輪人員"
 - Modal pattern: parent must NOT use `v-if` — use `:show` prop with inner `v-if="show"` (teleport compat)
@@ -632,3 +632,21 @@ APP_DEBUG=false
 - **最多輸入六字**：單行輸入框設定 `maxlength="6"`，確保加上藏頭字後，整行**最多只能有七個字**。
 - **自動換行（Auto-Advance）**：當使用者在某列輸入達 6 個字時，游標會**自動向下一列的輸入框跳轉聚焦（focus）**，實現流暢的實時自動換行輸入體驗。
 - **退格聚焦（Backspace Focus）**：若在某一列為空時按下退格鍵（Backspace），游標會自動返回上一列，並自動移至該列文字的最尾端，操作極致貼心與自然。
+
+## Session Notes (2026-05-19)
+
+### Lucky Draw & Manager Debugging & Interface Alignments
+
+#### 1. Lucky Draw Round Draw Step 3 Selection Flow
+- **Default Empty Selection**: To match user expectations, entering Step 3 (Round Draw Setup) now defaults `roundParticipants` to `[]` (empty list, 0 people selected). This causes the "清空" (Clear) button to be highlighted in blue by default and all names to be unselected.
+- **Auto-Restore on Back**: When clicking back from Step 3 to Phase 2, the system automatically restores `roundParticipants` to `[...selectedNames]` so the user's checked room attendee list is not lost.
+- **Zero Selection Feedback**: If the user tries to proceed to the lottery when 0 people are selected in Step 3, instead of silently returning, the system displays a clear error warning toast: "請至少選取一位在場人員以進行抽籤".
+- **Restore Draft Self-Healing**: If a user loads an old draft where `roundParticipants` was saved as empty, it automatically heals by copying the `pendingNames` list as a fallback.
+
+#### 2. TeachingManager Scoping Reference Error
+- **Bug**: `wasEditing` was defined inside the `try` block of `performActualSave` but accessed outside of it. This threw an uncaught `ReferenceError: wasEditing is not defined` when reloading the items list after a successful single-item save.
+- **Fix**: Moved `wasEditing` declaration to the top of `performActualSave` to ensure it is function-scoped.
+
+#### 3. OtherManager Concurrency Crash
+- **Bug**: Concurrent `loadData` calls triggered during page mount caused duplicate folder cleanups to throw `AxiosError: 404 (Not Found)` when deleting the same folder ID twice.
+- **Fix**: Wrapped Axios folder deletions and folder post-initializations inside `try...catch` blocks to prevent page load crashes.
