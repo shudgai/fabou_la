@@ -326,18 +326,18 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-[10px] py-1.5 border-r border-slate-50 pl-[5px]">
+                                                                <td class="px-[10px] py-2.5 border-r border-slate-50">
                                                                     <input v-model="dnr.custom_name"
                                                                         list="dharma-names-list"
                                                                         @blur="syncDharmaNameId(dnr)"
-                                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text truncate"
+                                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text truncate py-0"
                                                                         placeholder="輸入法號...">
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[14px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-[20px]"
+                                                                        class="w-full text-left text-[14px] font-normal !text-rose-600 bg-transparent py-2.5 outline-none pl-[24px]"
                                                                         style="font-family: 'PMingLiU', serif;">
                                                                     <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-1 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
                                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -346,7 +346,7 @@
                                                                 <td class="p-0">
                                                                     <input v-model="dnr.remarks"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
+                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2.5 outline-none pl-[5px]">
                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
