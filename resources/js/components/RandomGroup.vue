@@ -664,6 +664,26 @@
         </div>
         </div>
     </div>
+
+        <!-- Mobile Scroll Handle: only shown during drag-select grid steps on mobile -->
+        <div
+            v-if="!isDrawing && currentStep === 1"
+            class="md:hidden fixed right-0 z-[350] flex flex-col items-center justify-center"
+            style="top: 108px; bottom: calc(7dvh + env(safe-area-inset-bottom) + 60px); width: 34px; touch-action: none; background: rgba(241,245,249,0.90); border-radius: 14px 0 0 14px; border: 1px solid #cbd5e1; border-right: none; box-shadow: -3px 0 10px rgba(0,0,0,0.08);"
+            @touchstart.prevent="onScrollHandleTouchStart"
+            @touchmove.prevent="onScrollHandleTouchMove"
+            @touchend.prevent="onScrollHandleTouchEnd"
+        >
+            <!-- Grip icon -->
+            <svg width="14" height="48" viewBox="0 0 14 48" fill="none">
+                <line x1="3" y1="12" x2="11" y2="12" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="20" x2="11" y2="20" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="28" x2="11" y2="28" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="36" x2="11" y2="36" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size: 9px; color: #94a3b8; margin-top: 4px; writing-mode: vertical-rl; letter-spacing: 1px;">滑動</span>
+        </div>
+
         <!-- Mobile Navbar explicitly added per user request to ensure all interfaces have it -->
         <mobile-navbar 
             is-absolute
@@ -837,6 +857,25 @@ const stopDrag = () => {
     scrollInterval = null;
     window.removeEventListener('mouseup', stopDrag);
     window.removeEventListener('mousemove', handleMouseMoveDrag);
+};
+
+// ── Scroll Handle (mobile right-edge strip) ──
+const scrollHandleStartY = ref(0);
+const scrollHandleStartScroll = ref(0);
+
+const onScrollHandleTouchStart = (e) => {
+    scrollHandleStartY.value = e.touches[0].clientY;
+    scrollHandleStartScroll.value = scrollContainer.value?.scrollTop || 0;
+};
+
+const onScrollHandleTouchMove = (e) => {
+    if (!scrollContainer.value) return;
+    const delta = e.touches[0].clientY - scrollHandleStartY.value;
+    scrollContainer.value.scrollTop = scrollHandleStartScroll.value - delta * 2.5;
+};
+
+const onScrollHandleTouchEnd = () => {
+    // nothing needed
 };
 
 const selectionFiltered = ref(false);
