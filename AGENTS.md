@@ -315,8 +315,8 @@ All draft auto-save features follow this pattern (see KaiwenManager.vue line ~71
 | Step | Implementation |
 |---|---|
 | Save | `watch(() => ({...form fields...}), (val) => { if (addMode/visible) safeLocalStorage.setKey(JSON.stringify(val)) }, { deep: true })` |
-| Restore | On add/open, check `safeLocalStorage.getItem(key)`, parse, `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`, restore fields |
-| Clear | On save success and on close/cancel: `safeLocalStorage.removeItem(key)` |
+| Restore | On add/open, check `safeLocalStorage.getItem(key)`, parse, `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`. If confirmed, restore fields. **If cancelled, immediately call `safeLocalStorage.removeItem(key)` to discard draft and prevent future prompts.** |
+| Clear | On save success, modal close/cancel, **or when the user explicitly cancels draft restoration**: `safeLocalStorage.removeItem(key)` |
 
 | Component | Draft Key | Data Saved |
 |---|---|---|
