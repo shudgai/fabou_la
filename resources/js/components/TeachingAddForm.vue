@@ -820,16 +820,21 @@ onMounted(() => {
         if (draft) {
             try {
                 const data = JSON.parse(draft);
-                if (data.form) form.value = { ...form.value, ...data.form };
-                if (data.batchImportContent !== undefined) batchImportContent.value = data.batchImportContent;
-                if (data.batchRecords) batchRecords.value = data.batchRecords;
-                if (data.currentStep) currentStep.value = data.currentStep;
-                if (data.footerRemarks) footerRemarks.value = data.footerRemarks;
-                if (data.masterNameInput) masterNameInput.value = data.masterNameInput;
-                if (data.dharmaSearchQuery) dharmaSearchQuery.value = data.dharmaSearchQuery;
-                
-                // Re-sync master_id if restored
-                if (masterNameInput.value) resolveMasterId();
+                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                    if (data.form) form.value = { ...form.value, ...data.form };
+                    if (data.batchImportContent !== undefined) batchImportContent.value = data.batchImportContent;
+                    if (data.batchRecords) batchRecords.value = data.batchRecords;
+                    if (data.currentStep) currentStep.value = data.currentStep;
+                    if (data.footerRemarks) footerRemarks.value = data.footerRemarks;
+                    if (data.masterNameInput) masterNameInput.value = data.masterNameInput;
+                    if (data.dharmaSearchQuery) dharmaSearchQuery.value = data.dharmaSearchQuery;
+                    
+                    // Re-sync master_id if restored
+                    if (masterNameInput.value) resolveMasterId();
+                } else {
+                    // Discard draft on user rejection to start clean
+                    safeLocalStorage.removeItem(DRAFT_KEY);
+                }
             } catch (e) {
                 console.error('Failed to restore draft', e);
             }

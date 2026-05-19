@@ -605,4 +605,22 @@ APP_DEBUG=false
   - **Solution (backup_db.php)**: Created a fast backup script in the workspace root. Run `php backup_db.php` to export 18 key database tables to individual formatted JSON files inside `database/seeders/data/` (keeps live data perfectly preserved).
   - **Restore Mechanism (DatabaseSeeder.php)**: Integrated automatic backup file detection into the core `DatabaseSeeder`. It automatically checks for `users.json` and `treasures.json` backups; if found, it disables foreign key checks, truncates database tables, and restores custom records with 100% fidelity, avoiding any data loss during database refreshes.
 
+## Session Notes (2026-05-19)
+
+### Teaching Draft & Batch Save Stabilization (重大 Bug 修復)
+
+#### 1. 逐筆新增草稿殘留與靜默還原 Bug 修復
+- **問題**：先前版本在單筆儲存成功時並未清除 `teaching_draft`，且在 `TeachingAddForm.vue` 的 mounted 生命週期中無提示、強制地「靜默載入」舊草稿。導致使用者關閉彈窗再點選「逐筆新增」時，前次儲存的舊資料依然滿滿浮現，給人「資料沒清乾淨」的感受。
+- **修復**：
+  - **儲存成功清除**：在 `TeachingManager.vue` 的 `performActualSave()` 成功區塊中補上 `safeLocalStorage.removeItem('teaching_draft')`。
+  - **還原確認與捨棄**：將 `TeachingAddForm.vue` mounted 區塊修改為**主動提示** `window.confirm('偵測到您有未儲存的草稿，是否要載入？')`。若使用者拒絕，則調用 `removeItem` 立即捨棄並徹底清空草稿，確保能 100% 乾淨開始新紀錄。
+
+#### 2. 多筆新增被前次單筆確認資料覆蓋 Bug 修復
+- **問題**：在「逐筆新增」的預覽階段點選「確認載錄」時，會將資料暫存在 `saveConfirmModal.value.records` 中。但在隨後成功點擊「確認儲存」後，該確認紀錄**未被清除**。當使用者立刻進行「多筆新增（批次匯入）」時，程式會因為 `recordsToSave` 優化判斷中優先使用 `saveConfirmModal.value.records`，導致批次資料直接被剛才逐筆新增的舊資料霸道覆蓋！
+- **修復**：
+  - 在 `showAdd()`（開啟表單）、`performActualSave()`（單筆儲存成功）和 `executeDistributionSave()`（多筆儲存成功）的關鍵節點，皆補上 `saveConfirmModal.value.records = []` 強制清空，徹底消滅鬼影殘留。
+- **修復（Fallback 洩漏）**：
+  - 修改了 `processBatchText` 與 `executeDistributionSave`，在批次新增模式下（`activeEntryTab === 'batch'`），**絕對禁止**向單筆表單的 `form.value.dharma_name_ids` / `form.value.target_remarks` / `form.value.items_footer_remarks` 尋求 Fallback。沒有指定收件人的批次區塊現在會正確保持獨立、空白，完全阻斷資料跨模式交叉污染。
+
+
 

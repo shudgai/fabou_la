@@ -238,7 +238,15 @@
                                                 <div class="flex flex-col w-full">
                                                     <!-- Date -->
                                                     <div class="flex items-center justify-between mb-1">
-                                                        <div class="text-[15px] font-bold text-slate-400">{{ (item.date || '').replace(/-/g, '/') }}</div>
+                                                        <div class="flex items-center gap-2">
+                                                             <div class="text-[15px] font-bold text-slate-400">{{ (item.date || '').replace(/-/g, '/') }}</div>
+                                                             <div class="text-[13px] font-black px-2.5 py-0.5 rounded-full border shadow-sm leading-none shrink-0 animate-fade-in"
+                                                                  :class="(item.master?.name || item.master_name) === '閻王仙師' 
+                                                                      ? 'bg-slate-100 text-slate-700 border-slate-200' 
+                                                                      : 'bg-indigo-50 text-indigo-600 border-indigo-100'">
+                                                                 {{ formatMasterName(item.master?.name || item.master_name) }}
+                                                             </div>
+                                                         </div>
                                                         <button @click.stop="toggleExpand(item.id)" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full active:scale-90 transition-all">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                                         </button>
@@ -3247,9 +3255,9 @@ const processBatchText = () => {
         if (!text || text.length < 5) return;
 
         const record = { 
-            dharma_name_ids: [...(form.value.dharma_name_ids || [])],
-            dharmaSearchQuery: dharmaSearchQuery.value || '',
-            target_remarks: form.value.target_remarks || '',
+            dharma_name_ids: [],
+            dharmaSearchQuery: '',
+            target_remarks: '',
             content: text, // Set content to FULL text
             items: [], 
             master_name: '', 
@@ -3831,8 +3839,10 @@ const performActualSave = async () => {
         }
 
         saveConfirmModal.value.show = false;
+        saveConfirmModal.value.records = []; // Clear confirm records
         addMode.value = false;
         editingId.value = null; 
+        safeLocalStorage.removeItem('teaching_draft');
 
     } catch (e) {
         console.error(e);
@@ -3958,7 +3968,7 @@ const executeDistributionSave = async (mode) => {
             const isDailyFolder = (currentFolder.value?.id == 0 || currentFolder.value?.id === '0');
 
             let finalDharmaIds = [...(record.dharma_name_ids || [])];
-            let finalTargetRemarks = record.target_remarks || form.value.target_remarks || '';
+            let finalTargetRemarks = record.target_remarks || (activeEntryTab.value === 'batch' ? '' : (form.value.target_remarks || ''));
 
             // If no IDs but have a search query (manual type), try to resolve it
             if (finalDharmaIds.length === 0 && record.dharmaSearchQuery) {
@@ -3986,9 +3996,9 @@ const executeDistributionSave = async (mode) => {
                 date: record.date || form.value.date || getTodayStr(),
                 master_id: blockMasterId,
                 content: content,
-                dharma_name_ids: finalDharmaIds.length > 0 ? finalDharmaIds : (form.value.dharma_name_ids || []),
+                dharma_name_ids: finalDharmaIds.length > 0 ? finalDharmaIds : (activeEntryTab.value === 'batch' ? [] : (form.value.dharma_name_ids || [])),
                 target_remarks: finalTargetRemarks,
-                items_footer_remarks: record.items_footer_remarks || form.value.items_footer_remarks || '',
+                items_footer_remarks: record.items_footer_remarks || (activeEntryTab.value === 'batch' ? '' : (form.value.items_footer_remarks || '')),
                 items: items,
                 user_id: props.user?.id || 1,
                 is_daily: (!currentFolder.value || currentFolder.value?.id == 0 || currentFolder.value?.id === '0') ? 1 : 0 
@@ -4030,6 +4040,7 @@ const executeDistributionSave = async (mode) => {
         }
 
         distributionModal.value.show = false;
+        saveConfirmModal.value.records = []; // Clear confirm records
         addMode.value = false;
 
         // Switch folder if we saved to a specific one to ensure visibility
@@ -4078,6 +4089,7 @@ const showAdd = () => {
     masterNameInput.value = '';
     batchImportContent.value = ''; // Reset the collective paste area
     footerRemarksList.value = []; // Reset footer remarks list
+    saveConfirmModal.value.records = []; // Clear stale confirm records
 
     const dailyMaster = masters.value.find(m => m.name === '父皇' || m.name === '父皇仙師');
     const dailyMasterId = dailyMaster?.id || null;

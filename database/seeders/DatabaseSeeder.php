@@ -78,9 +78,31 @@ class DatabaseSeeder extends Seeder
             'other_folders'
         ];
 
+        $clearTables = [
+            'imperial_graces',
+            'registries',
+            'dharma_name_registries',
+            'teachings',
+            'grudges',
+            'military_records',
+            'other_records',
+            'weekly_posts',
+            'self_posts',
+            'other_folders'
+        ];
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         foreach ($tables as $table) {
+            // Check if the table is requested to be empty
+            if (in_array($table, $clearTables)) {
+                if (Schema::hasTable($table)) {
+                    DB::table($table)->truncate();
+                    $this->command->info("  ✓ Cleared table '{$table}' (empty by request).");
+                }
+                continue;
+            }
+
             $jsonPath = $dir . '/' . $table . '.json';
             if (!file_exists($jsonPath) || !Schema::hasTable($table)) {
                 continue;
