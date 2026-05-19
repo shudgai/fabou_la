@@ -23,9 +23,9 @@ class DharmaNameRegistry extends Model
     ];
 
     protected $casts = [
-        'custom_name' => 'encrypted',
-        'remarks' => 'encrypted:json',
-        'related_personnel' => 'encrypted:json',
+        'custom_name' => \App\Casts\TolerantEncrypted::class,
+        'remarks' => \App\Casts\TolerantEncryptedJson::class,
+        'related_personnel' => \App\Casts\TolerantEncryptedJson::class,
     ];
 
     public function registry()

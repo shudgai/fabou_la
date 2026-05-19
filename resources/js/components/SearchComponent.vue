@@ -6,11 +6,12 @@
             </div>
             <input
                 ref="searchInput"
-                v-model="query"
+                v-model.lazy="query"
                 type="text"
                 :placeholder="placeholder"
                 class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm"
-                @input="$emit('update:modelValue', query)"
+                @change="$emit('update:modelValue', query)"
+                @keyup.enter="$event.target.blur()"
             >
             <button v-if="query" @click="clearSearch" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>

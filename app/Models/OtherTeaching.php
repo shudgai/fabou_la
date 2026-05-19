@@ -17,13 +17,13 @@ class OtherTeaching extends Model
     ];
 
     protected $casts = [
-        'items' => 'encrypted:json',
+        'items' => \App\Casts\TolerantEncryptedJson::class,
         'is_daily' => 'boolean',
-        'content' => 'encrypted',
-        'supplement' => 'encrypted',
-        'target_remarks' => 'encrypted',
-        'remarks' => 'encrypted:json',
-        'items_footer_remarks' => 'encrypted',
+        'content' => \App\Casts\TolerantEncrypted::class,
+        'supplement' => \App\Casts\TolerantEncrypted::class,
+        'target_remarks' => \App\Casts\TolerantEncrypted::class,
+        'remarks' => \App\Casts\TolerantEncryptedJson::class,
+        'items_footer_remarks' => \App\Casts\TolerantEncrypted::class,
     ];
 
     public function master()

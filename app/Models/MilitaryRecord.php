@@ -33,11 +33,11 @@ class MilitaryRecord extends Model
     ];
 
     protected $casts = [
-        'user_name' => 'encrypted',
-        'user_remarks' => 'encrypted',
-        'destination' => 'encrypted',
+        'user_name' => \App\Casts\TolerantEncrypted::class,
+        'user_remarks' => \App\Casts\TolerantEncrypted::class,
+        'destination' => \App\Casts\TolerantEncrypted::class,
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',
-        'remarks_text' => 'encrypted',
+        'remarks_text' => \App\Casts\TolerantEncrypted::class,
     ];
 }

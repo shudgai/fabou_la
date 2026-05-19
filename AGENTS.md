@@ -592,3 +592,12 @@ APP_DEBUG=false
 | **Phase 2 臨時人員新增 (Add Picker)** | 新增雙用「新增人員」輸入列：手打文字按 `+` 則加入新名；空白狀態按 `+` 則展開「不在名單中」的法號選人器面板。 | 解決手機端打字不便的問題，點擊兩次即可快速補漏未選取的人員，且 `+` 按鈕永不失效。 |
 | **Phase 2 狀態持久化** | 在已確認名單中點擊法號，改為切換「本輪是否參與 (`roundParticipants`)」，不再修改 `pendingNames`；新回合直接跳回 Step 3 並預選所有人員。 | 徹底解決了回合抽籤時因點擊導致名單遺失，以及新回合需重新點選的不便，實現極高效率連續作業流程。 |
 | **草稿語境提示** | 抽籤草稿載入提示，在回合抽籤模式下改為「已有在場人員名單（X 人），是否要載入？」 | 更精準地提醒使用者該草稿的作用，避免誤覆蓋辛苦選好的人員名單。 |
+
+## Session Notes (2026-05-19)
+
+### Registry Dharma Column Width & Remarks Center Alignments
+- **Registry Dharma Column Grid Optimization**: Adjusted both view and edit mode column widths to guarantee perfect visual display constraints:
+  - **Edit Mode Table**: Changed column widths to `w-[38%]` (法號), `w-[27%]` (日期), `w-[31%]` (備註), `w-[4%]` (刪除) to exactly fit 5 Chinese characters for Dharma names while shifting date/remarks inputs left/forward.
+  - **View Mode Tables**: Changed column widths to `w-[38%]` (法號), `w-[28%]` (日期), `w-[34%]` (備註) across both major category and other categories tables.
+- **Remarks Center Alignment**: Changed remarks `div` container class in View Mode tables from `justify-start` to `justify-center` and target table cells `td` class from `text-left` to `text-center` so that remarks content (and empty indicator `--`) are perfectly centered relative to the headers.
+

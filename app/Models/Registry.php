@@ -14,12 +14,12 @@ class Registry extends Model
     protected $table = 'registries';
 
     protected $casts = [
-        'name'               => 'encrypted',
-        'purpose'            => 'encrypted',
-        'effect'             => 'encrypted',
-        'acquisition_method' => 'encrypted',
-        'content'            => 'encrypted',
-        'remarks'            => 'encrypted',
+        'name'               => \App\Casts\TolerantEncrypted::class,
+        'purpose'            => \App\Casts\TolerantEncrypted::class,
+        'effect'             => \App\Casts\TolerantEncrypted::class,
+        'acquisition_method' => \App\Casts\TolerantEncrypted::class,
+        'content'            => \App\Casts\TolerantEncrypted::class,
+        'remarks'            => \App\Casts\TolerantEncrypted::class,
         'is_multi'           => 'boolean',
     ];
 

@@ -721,6 +721,7 @@ const batchParsedRows = computed(() => {
             const names = normLine.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
             const knownNames = names.filter(n => {
                 const resolved = resolveNewDharmaName(n);
+                if (resolved.startsWith('道霞')) return true;
                 return dharmaNames.value.some(dn => dn.name === resolved || dn.alias === n);
             });
 
@@ -1037,13 +1038,17 @@ const handleSubmit = async () => {
             const names = p.custom_name.split(/[，、, \s\t]+/).map(n => n.trim()).filter(n => n);
             names.forEach(rawName => {
                 const resolvedName = resolveNewDharmaName(rawName);
-                const dnMatch = dharmaNames.value.find(dn => dn.name === resolvedName);
+                let dnMatch = dharmaNames.value.find(dn => dn.name === resolvedName);
+                
+                if (!dnMatch && resolvedName.startsWith('道霞')) {
+                    dnMatch = dharmaNames.value.find(dn => dn.id === 7);
+                }
                 
                 if (dnMatch) {
                     expandedPersonnel.push({
                         ...p,
                         dharma_name_id: dnMatch.id,
-                        custom_name: dnMatch.name
+                        custom_name: resolvedName.startsWith('道霞') ? resolvedName : dnMatch.name
                     });
                 } else {
                     // Strictly DB only names in the name column. 

@@ -26,14 +26,7 @@ class MilitaryRecordController extends Controller
             $query->whereIn('army_type', $allowedArmies);
         }
 
-        if (!empty($request->search)) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
-        }
+        $searchQuery = !empty($request->search) ? mb_strtolower($request->search) : null;
 
         if ($request->has('know_date')) {
             if (empty($request->know_date) || $request->know_date === 'null') {
@@ -45,19 +38,42 @@ class MilitaryRecordController extends Controller
 
         $query->orderBy('know_date', 'desc')->orderBy('id', 'desc');
         
-        // Single query: get per-army quantity sums AND column sums at once
-        $statsQuery = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies);
-        if ($request->has('search') && !empty($request->search)) {
-            $search = trim($request->search);
-            $statsQuery->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
         }
-        $armyStats = $statsQuery->selectRaw('army_type, SUM(quantity) as total_qty, SUM(yan_zun) as yan_zun, SUM(yan_an) as yan_an, SUM(long_sheng) as long_sheng, SUM(long_zhan) as long_zhan, SUM(yan_jue) as yan_jue, SUM(yan_ze) as yan_ze, SUM(yan_di) as yan_di, SUM(yan_yuan) as yan_yuan')
-            ->groupBy('army_type')
-            ->get();
+
+        $statsRecords = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies)->get();
+        if ($searchQuery) {
+            $statsRecords = $statsRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
+        }
+
+        $armyStats = collect();
+        $statsRecords->groupBy('army_type')->each(function($group, $armyType) use (&$armyStats) {
+            $armyStats->push((object)[
+                'army_type' => $armyType,
+                'total_qty' => $group->sum('quantity'),
+                'yan_zun' => $group->sum('yan_zun'),
+                'yan_an' => $group->sum('yan_an'),
+                'long_sheng' => $group->sum('long_sheng'),
+                'long_zhan' => $group->sum('long_zhan'),
+                'yan_jue' => $group->sum('yan_jue'),
+                'yan_ze' => $group->sum('yan_ze'),
+                'yan_di' => $group->sum('yan_di'),
+                'yan_yuan' => $group->sum('yan_yuan'),
+            ]);
+        });
 
         $armyCounts = $armyStats->pluck('total_qty', 'army_type');
         
@@ -66,18 +82,28 @@ class MilitaryRecordController extends Controller
             : null;
 
         $breakdownTotals = [
-            'yan_zun'    => $currentStats ? $currentStats->yan_zun : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_zun ?? 0)), '0'),
-            'yan_an'     => $currentStats ? $currentStats->yan_an : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_an ?? 0)), '0'),
-            'long_sheng' => $currentStats ? $currentStats->long_sheng : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->long_sheng ?? 0)), '0'),
-            'long_zhan'  => $currentStats ? $currentStats->long_zhan : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->long_zhan ?? 0)), '0'),
-            'yan_jue'    => $currentStats ? $currentStats->yan_jue : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_jue ?? 0)), '0'),
-            'yan_ze'     => $currentStats ? $currentStats->yan_ze : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_ze ?? 0)), '0'),
-            'yan_di'     => $currentStats ? $currentStats->yan_di : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_di ?? 0)), '0'),
-            'yan_yuan'   => $currentStats ? $currentStats->yan_yuan : $armyStats->reduce(fn($c, $i) => bcadd($c, (string)($i->yan_yuan ?? 0)), '0'),
+            'yan_zun'    => $currentStats ? $currentStats->yan_zun : $armyStats->sum('yan_zun'),
+            'yan_an'     => $currentStats ? $currentStats->yan_an : $armyStats->sum('yan_an'),
+            'long_sheng' => $currentStats ? $currentStats->long_sheng : $armyStats->sum('long_sheng'),
+            'long_zhan'  => $currentStats ? $currentStats->long_zhan : $armyStats->sum('long_zhan'),
+            'yan_jue'    => $currentStats ? $currentStats->yan_jue : $armyStats->sum('yan_jue'),
+            'yan_ze'     => $currentStats ? $currentStats->yan_ze : $armyStats->sum('yan_ze'),
+            'yan_di'     => $currentStats ? $currentStats->yan_di : $armyStats->sum('yan_di'),
+            'yan_yuan'   => $currentStats ? $currentStats->yan_yuan : $armyStats->sum('yan_yuan'),
         ];
 
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = $request->input('per_page', 10);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allRecords->forPage($page, $perPage)->values(),
+            $allRecords->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
+
         return response()->json([
-            'records'         => $query->paginate($request->input('per_page', 10)),
+            'records'         => $paginated,
             'armyCounts'      => $armyCounts,
             'breakdownTotals' => $breakdownTotals
         ]);
@@ -101,36 +127,64 @@ class MilitaryRecordController extends Controller
             $query->whereIn('army_type', $allowedArmies);
         }
 
-        if (!empty($request->search)) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
+        $searchQuery = !empty($request->search) ? mb_strtolower($request->search) : null;
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
         }
 
-        $dates = $query->select('know_date', DB::raw('count(*) as count'), DB::raw('sum(quantity) as total_qty'))
-            ->groupBy('know_date')
-            ->orderByRaw('know_date IS NULL ASC, know_date DESC')
-            ->paginate($request->input('per_page', 20));
+        $dateGroups = collect();
+        $allRecords->groupBy(function($item) {
+            // Group by formatted date string or 'null'
+            return $item->know_date ? $item->know_date->format('Y-m-d') : 'null';
+        })->each(function($group, $dateStr) use (&$dateGroups) {
+            $dateGroups->push([
+                'know_date' => $dateStr === 'null' ? null : $dateStr,
+                'count' => $group->count(),
+                'total_qty' => $group->sum('quantity')
+            ]);
+        });
 
-        // Get per-army quantity sums for the root view
-        $rootStatsQuery = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies);
-        if (!empty($request->search)) {
-            $search = $request->search;
-            $rootStatsQuery->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
+        // Sort: know_date IS NULL ASC (nulls at end), know_date DESC
+        $dateGroups = $dateGroups->sort(function($a, $b) {
+            if ($a['know_date'] === null && $b['know_date'] !== null) return 1;
+            if ($a['know_date'] !== null && $b['know_date'] === null) return -1;
+            if ($a['know_date'] === $b['know_date']) return 0;
+            return $a['know_date'] < $b['know_date'] ? 1 : -1;
+        })->values();
+
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = $request->input('per_page', 20);
+        $datesPaginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $dateGroups->forPage($page, $perPage)->values(),
+            $dateGroups->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
+
+        $rootStatsQuery = MilitaryRecord::where('user_id', $user->id)->whereIn('army_type', $allowedArmies)->get();
+        if ($searchQuery) {
+            $rootStatsQuery = $rootStatsQuery->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
         }
-        $armyCounts = $rootStatsQuery->selectRaw('army_type, SUM(quantity) as total_qty')
-            ->groupBy('army_type')
-            ->get()
-            ->pluck('total_qty', 'army_type');
 
-        $result = $dates->toArray();
+        $armyCounts = collect();
+        $rootStatsQuery->groupBy('army_type')->each(function($group, $armyType) use (&$armyCounts) {
+            $armyCounts[$armyType] = $group->sum('quantity');
+        });
+
+        $result = $datesPaginator->toArray();
         $result['armyCounts'] = $armyCounts;
 
         return response()->json($result);

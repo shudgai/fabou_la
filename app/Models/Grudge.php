@@ -26,10 +26,10 @@ class Grudge extends Model
     ];
 
     protected $casts = [
-        'user_name' => 'encrypted',
-        'user_remarks' => 'encrypted',
-        'destination' => 'encrypted',
-        'remarks_text' => 'encrypted',
+        'user_name' => \App\Casts\TolerantEncrypted::class,
+        'user_remarks' => \App\Casts\TolerantEncrypted::class,
+        'destination' => \App\Casts\TolerantEncrypted::class,
+        'remarks_text' => \App\Casts\TolerantEncrypted::class,
         'remarks' => 'array',
         'know_date' => 'date:Y-m-d',
         'process_date' => 'date:Y-m-d',

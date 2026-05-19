@@ -14,9 +14,9 @@ class ImperialGrace extends Model
     protected $table = 'imperial_graces';
 
     protected $casts = [
-        'name' => 'encrypted',
-        'purpose' => 'encrypted',
-        'remarks' => 'encrypted',
+        'name' => \App\Casts\TolerantEncrypted::class,
+        'purpose' => \App\Casts\TolerantEncrypted::class,
+        'remarks' => \App\Casts\TolerantEncrypted::class,
         'is_multi' => 'boolean',
     ];
 

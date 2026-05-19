@@ -156,7 +156,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
-                                <input v-model="searchQuery" type="text" placeholder="搜尋項目、用意、法號..." 
+                                <input v-model.lazy="searchQuery" @keyup.enter="$event.target.blur()" type="text" placeholder="搜尋項目、用意、法號..." 
                                     class="block w-full pl-11 pr-12 h-[52px] bg-white border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none">
                                 <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -318,9 +318,9 @@
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
-                                                                <th class="w-[30%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
-                                                                <th class="w-[33%] px-[10px] py-3 text-center font-black text-[10.5px] font-outfit border-r border-slate-100">日期</th>
-                                                                <th class="w-[33%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[38%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
+                                                                <th class="w-[27%] px-[10px] py-3 text-center font-black text-[10.5px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[31%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                                 <th class="w-[4%]"></th>
                                                             </tr>
                                                         </thead>
@@ -337,7 +337,7 @@
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[10.8px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-6"
+                                                                        class="w-full text-center text-[10.8px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-[20px]"
                                                                         style="font-family: 'PMingLiU', serif;">
                                                                     <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-1 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
                                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -508,9 +508,9 @@
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                                                                <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
-                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
-                                                                <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[38%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                                <th class="w-[28%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[34%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -523,8 +523,8 @@
                                                                             {{ formatDisplayDate(dnr.obtained_date) || '--' }}
                                                                         </span>
                                                                     </td>
-                                                                    <td class="px-[10px] py-2.5 text-left">
-                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-start cursor-pointer">
+                                                                    <td class="px-[10px] py-2.5 text-center">
+                                                                        <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
                                                                             <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
                                                                         </div>
                                                                     </td>
@@ -538,9 +538,9 @@
                                                         <table class="w-full border-collapse bg-white table-fixed">
                                                             <thead>
                                                                 <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                                                                    <th class="w-[30%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
-                                                                    <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
-                                                                    <th class="w-[35%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                    <th class="w-[38%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                                    <th class="w-[28%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                    <th class="w-[34%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -553,8 +553,8 @@
                                                                              {{ formatDisplayDate(dnr.obtained_date) || '--' }}
                                                                          </span>
                                                                      </td>
-                                                                     <td class="px-[10px] py-2.5 text-left">
-                                                                         <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-start cursor-pointer">
+                                                                     <td class="px-[10px] py-2.5 text-center">
+                                                                         <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
                                                                              <span class="text-[13px] font-bold text-slate-400 leading-tight">
                                                                                  <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
                                                                                  <span v-html="renderRemarksHtml(dnr.remarks)"></span>
@@ -934,12 +934,7 @@ const form = ref({
 
 const folders = computed(() => {
     if (!Array.isArray(masters.value) || masters.value.length === 0) {
-        return [
-            { id: 1, name: '老祖仙師' },
-            { id: 2, name: '元始仙師' },
-            { id: 3, name: '道祖仙師' },
-            { id: 8, name: '閻王仙師' }
-        ];
+        return []; // Wait for API to load
     }
     return masters.value.map(m => ({
         ...m,
@@ -1062,19 +1057,32 @@ const renderRemarksHtml = (remarks) => {
 };
 
 const getDharmaNameText = (dnr) => {
+    const rawName = (dnr.custom_name || '').trim();
+    if (rawName === '金巧' || rawName.startsWith('道霞')) {
+        return rawName;
+    }
+    
     // Priority 1: Use pre-resolved ID from DB
     if (dnr.dharma_name_id) {
         const dn = dharmaNames.value.find(d => d.id === dnr.dharma_name_id);
-        if (dn) return dn.name;
+        if (dn) {
+            if (dn.id === 7 && rawName) {
+                return rawName;
+            }
+            return dn.name;
+        }
     }
     
-    const rawName = (dnr.custom_name || '').trim();
     if (!rawName) return '--';
     
     // Resolve "金巧" or the new name/alias of ID 7 to the current official name of ID 7
     const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
-    if (goldQiaoOfficial && (rawName === '金巧' || rawName.startsWith('道霞') || rawName === goldQiaoOfficial.name || rawName.startsWith(goldQiaoOfficial.name) || (goldQiaoOfficial.alias && goldQiaoOfficial.alias.includes(rawName)))) {
-        return goldQiaoOfficial.name;
+    if (goldQiaoOfficial && (rawName === '金巧' || rawName === goldQiaoOfficial.name || (goldQiaoOfficial.alias && goldQiaoOfficial.alias.includes(rawName)))) {
+        return rawName || goldQiaoOfficial.name;
+    }
+    
+    if (rawName.startsWith('道霞')) {
+        return rawName;
     }
     
     if (rawName === '金巧') return rawName;
@@ -1221,7 +1229,9 @@ const openEdit = (item) => {
             if (r.dharma_name_id === 7) {
                 const dn = dharmaNames.value.find(d => d.id === 7);
                 if (dn) {
-                    r.custom_name = dn.name;
+                    if (!r.custom_name) {
+                        r.custom_name = dn.name;
+                    }
                 }
             } else if (r.dharma_name_id) {
                 const dn = dharmaNames.value.find(d => d.id === r.dharma_name_id);
@@ -1230,7 +1240,9 @@ const openEdit = (item) => {
             
             const goldQiaoOfficial = dharmaNames.value.find(d => d.id === 7);
             if (goldQiaoOfficial && (r.custom_name === '金巧' || (r.custom_name && r.custom_name.startsWith('道霞')))) {
-                r.custom_name = goldQiaoOfficial.name;
+                if (!r.custom_name.startsWith('道霞')) {
+                    r.custom_name = goldQiaoOfficial.name;
+                }
                 r.dharma_name_id = 7;
             }
             const nameText = r.custom_name || '';

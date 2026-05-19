@@ -21,8 +21,8 @@ class WeeklyPost extends Model
     ];
 
     protected $casts = [
-        'title' => 'encrypted',
-        'original_content' => 'encrypted',
-        'modified_content' => 'encrypted',
+        'title' => \App\Casts\TolerantEncrypted::class,
+        'original_content' => \App\Casts\TolerantEncrypted::class,
+        'modified_content' => \App\Casts\TolerantEncrypted::class,
     ];
 }

@@ -22,8 +22,8 @@ class SelfPost extends Model
     ];
 
     protected $casts = [
-        'original_content' => 'encrypted',
-        'modified_content' => 'encrypted',
+        'original_content' => \App\Casts\TolerantEncrypted::class,
+        'modified_content' => \App\Casts\TolerantEncrypted::class,
     ];
 
     public function master()

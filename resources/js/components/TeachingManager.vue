@@ -144,7 +144,7 @@
                                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                       <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                   </div>
-                                  <input v-model="searchQuery" type="text" placeholder="搜尋內容、法號或法寶..."
+                                  <input v-model.lazy="searchQuery" @keyup.enter="$event.target.blur()" type="text" placeholder="搜尋內容、法號或法寶..."
                                       class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
                                   <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1883,11 +1883,11 @@ const detailModalFilteredDharmaNames = computed(() => {
         .filter(d => !newItemPractitioner.value || (d.name && d.name.includes(newItemPractitioner.value)));
 });
 
-const folders_list = [
-    { id: 1, name: '老祖仙師' }, { id: 2, name: '元始仙師' }, { id: 3, name: '道祖仙師' },
-    { id: 4, name: '靈寶仙師' }, { id: 5, name: '父皇' }, { id: 6, name: '太宰仙師' },
-    { id: 7, name: '太子' }, { id: 8, name: '閻王仙師' }, { id: 0, name: '父皇仙師每日開示' }
-];
+// folders_list: dynamic, built from masters API + daily folder
+const folders_list = computed(() => [
+    ...(masters.value || []).map(m => ({ id: m.id, name: m.name === '父皇仙師' ? '父皇' : m.name })),
+    { id: 0, name: '父皇仙師每日開示' }
+]);
 
 
 
@@ -1898,7 +1898,7 @@ const mastersTotalCount = computed(() => {
 });
 
 const filteredFolders = computed(() => {
-    return folders_list.filter(f => {
+    return folders_list.value.filter(f => {
         if (f.id === 0) return false;
         return true;
     });
@@ -1948,7 +1948,7 @@ const addActions = computed(() => {
             icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
             colorClass: 'bg-orange-50 text-orange-600',
             handler: () => { 
-                currentFolder.value = folders_list.find(f => f.id === 0); 
+                currentFolder.value = folders_list.value.find(f => f.id === 0); 
                 currentCategory.value = 'daily';
                 showAdd(); 
                 activeEntryTab.value = 'batch'; 
@@ -2263,9 +2263,16 @@ const resolveMasterId = () => {
     form.value.master_name = name;
     const m = masters.value.find(x => x.name === name);
     if (m) { form.value.master_id = m.id; return; }
-    const hardcoded = { '老祖仙師': 1, '元始仙師': 2, '道祖仙師': 3, '靈寶仙師': 4, '父皇仙師': 5, '父皇': 5, '太宰仙師': 6, '太子': 7, '閻王仙師': 8 };
+    // Fallback: try to find in masters ref first, then use DB-aware IDs
+    const mByName = masters.value.find(x => x.name === name || (name === '父皇' && x.name === '父皇仙師'));
+    if (mByName) { form.value.master_id = mByName.id; return; }
+    // Legacy fallback (matches current DB IDs after re-seed with firstOrCreate)
+    const allM = masters.value;
+    const hardcoded = allM.length > 0
+        ? Object.fromEntries(allM.map(m => [m.name, m.id]).concat([['父皇仙師', allM.find(m=>m.name==='父皇')?.id]]))
+        : { '老祖仙師': 7, '元始仙師': 8, '道祖仙師': 9, '靈寶仙師': 10, '父皇仙師': 11, '父皇': 11, '太宰仙師': 12, '太子': 13, '閻王仙師': 14 };
     if (hardcoded[name]) { form.value.master_id = hardcoded[name]; return; }
-    const f = folders.value.find(x => x.name === name);
+    const f = folders_list.value.find(x => x.name === name);
     if (f) { form.value.master_id = f.id; return; }
     form.value.master_id = null;
 };
@@ -3798,10 +3805,10 @@ const performActualSave = async () => {
                 if (targetIsDaily) {
                     if (!isCurrentDaily) {
                         currentCategory.value = 'daily';
-                        currentFolder.value = folders_list.find(f => f.id === 0);
+                        currentFolder.value = folders_list.value.find(f => f.id === 0);
                     }
                 } else if (targetMasterId && currentFolder.value?.id != targetMasterId) {
-                    const targetFolder = folders_list.find(f => f.id == targetMasterId);
+                    const targetFolder = folders_list.value.find(f => f.id == targetMasterId);
                     if (targetFolder) {
                         currentCategory.value = 'masters';
                         currentFolder.value = targetFolder;
@@ -4028,7 +4035,7 @@ const executeDistributionSave = async (mode) => {
         // Switch folder if we saved to a specific one to ensure visibility
         if (savedCount > 0 && lastSavedMasterId) {
             if (currentFolder.value?.id != lastSavedMasterId) {
-                const targetFolder = folders_list.find(f => f.id == lastSavedMasterId);
+                const targetFolder = folders_list.value.find(f => f.id == lastSavedMasterId);
                 if (targetFolder) {
                     currentCategory.value = (lastSavedMasterId == 0 ? 'daily' : 'masters');
                     currentFolder.value = targetFolder;

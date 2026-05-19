@@ -905,9 +905,24 @@ const sortedFooterRemarks = computed(() => {
 // --- 3. Methods ---
 function resolveMasterId() {
     const input = (masterNameInput.value || '').trim();
-    const m = props.masters.find(m => m.name === input || m.name === input.replace('仙師', '').trim() || (m.name === '父皇' && (input === '父皇仙師' || input === '父皇')));
+    // Primary: look up from props.masters (dynamic, DB-correct)
+    const m = (props.masters || []).find(m =>
+        m.name === input ||
+        m.name === input.replace('仙師', '').trim() ||
+        (m.name === '父皇' && (input === '父皇仙師' || input === '父皇'))
+    );
     if (m) { form.value.master_id = m.id; return; }
-    const hardcoded = { '老祖仙師': 1, '元始仙師': 2, '道祖仙師': 3, '靈寶仙師': 4, '父皇仙師': 5, '父皇': 5, '太宰仙師': 6, '太子': 7, '閻王仙師': 8 };
+    // Secondary: build dynamic map from props.masters
+    if (props.masters && props.masters.length > 0) {
+        const dynMap = {};
+        props.masters.forEach(mx => {
+            dynMap[mx.name] = mx.id;
+            if (mx.name === '父皇') dynMap['父皇仙師'] = mx.id;
+        });
+        if (dynMap[input]) { form.value.master_id = dynMap[input]; return; }
+    }
+    // Tertiary: static fallback (current DB IDs after re-seed)
+    const hardcoded = { '老祖仙師': 7, '元始仙師': 8, '道祖仙師': 9, '靈寶仙師': 10, '父皇仙師': 11, '父皇': 11, '太宰仙師': 12, '太子': 13, '閻王仙師': 14 };
     if (hardcoded[input]) { form.value.master_id = hardcoded[input]; return; }
     form.value.master_id = null;
 }

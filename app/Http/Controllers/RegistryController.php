@@ -18,20 +18,7 @@ class RegistryController extends Controller
         // Strict isolation: Everyone only sees their own data
         $query->where('user_id', $user->id);
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('effect', 'like', "%{$search}%")
-                  ->orWhereHas('dharmaNameRegistries', function($sq) use ($search) {
-                      $sq->where('custom_name', 'like', "%{$search}%")
-                        ->orWhereHas('dharmaName', function($ssq) use ($search) {
-                            $ssq->where('name', 'like', "%{$search}%")
-                                ->orWhere('alias', 'like', "%{$search}%");
-                        });
-                  });
-            });
-        }
+        $searchQuery = $request->has('search') ? mb_strtolower($request->search) : null;
 
         if ($request->has('category')) {
             $query->where('category', $request->category);
@@ -45,6 +32,20 @@ class RegistryController extends Controller
         $query->orderByRaw('CASE WHEN sort_order = 0 THEN 999999 ELSE sort_order END ASC')
               ->orderBy('id', $direction);
 
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->effect), $searchQuery)) return true;
+                foreach ($r->dharmaNameRegistries as $dnr) {
+                    if (str_contains(mb_strtolower((string)$dnr->custom_name), $searchQuery)) return true;
+                    if ($dnr->dharmaName && (str_contains(mb_strtolower((string)$dnr->dharmaName->name), $searchQuery) || str_contains(mb_strtolower((string)$dnr->dharmaName->alias), $searchQuery))) return true;
+                }
+                return false;
+            })->values();
+        }
+
         // Single query: get per-master AND per-category counts at once
         $allCounts = Registry::where('user_id', $user->id)
             ->selectRaw('master_id, category, count(*) as total')
@@ -54,8 +55,15 @@ class RegistryController extends Controller
         $folderCounts = $allCounts->groupBy('master_id')->map(fn($g) => $g->sum('total'));
         $categoryCounts = $allCounts->groupBy('category')->map(fn($g) => $g->sum('total'));
 
-        // Paginate and inject count metadata into the same response object
-        $paginated = $query->paginate($request->input('per_page', 10));
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = $request->input('per_page', 10);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allRecords->forPage($page, $perPage)->values(),
+            $allRecords->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
         $result = $paginated->toArray();
         $result['folderCounts']   = $folderCounts;
         $result['categoryCounts'] = $categoryCounts;
@@ -192,10 +200,15 @@ class RegistryController extends Controller
                     // 3. 嘗試解析 dharma_name_id
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     if (empty($dharma_name_id) && !empty($custom_name)) {
-                        $matched = DharmaName::where('name', trim($custom_name))->first();
-                        if ($matched) {
-                            $dharma_name_id = $matched->id;
-                            $custom_name    = null;
+                        $cleanCustom = trim($custom_name);
+                        if (str_starts_with($cleanCustom, '道霞')) {
+                            $dharma_name_id = 7;
+                        } else {
+                            $matched = DharmaName::where('name', $cleanCustom)->first();
+                            if ($matched) {
+                                $dharma_name_id = $matched->id;
+                                $custom_name    = null;
+                            }
                         }
                     }
 
@@ -287,10 +300,15 @@ class RegistryController extends Controller
                 foreach ($request->input('dharma_name_registries') as $dn) {
                     $dharma_name_id = $dn['dharma_name_id'] ?? null;
                     if (empty($dharma_name_id) && !empty($dn['custom_name'])) {
-                        $matched = DharmaName::where('name', trim($dn['custom_name']))->first();
-                        if ($matched) {
-                            $dharma_name_id    = $matched->id;
-                            $dn['custom_name'] = null;
+                        $cleanCustom = trim($dn['custom_name']);
+                        if (str_starts_with($cleanCustom, '道霞')) {
+                            $dharma_name_id = 7;
+                        } else {
+                            $matched = DharmaName::where('name', $cleanCustom)->first();
+                            if ($matched) {
+                                $dharma_name_id    = $matched->id;
+                                $dn['custom_name'] = null;
+                            }
                         }
                     }
 
@@ -436,10 +454,15 @@ class RegistryController extends Controller
 
                         $dharma_name_id = $dn['dharma_name_id'] ?? null;
                         if (empty($dharma_name_id) && !empty($custom_name)) {
-                            $matched = DharmaName::where('name', trim($custom_name))->first();
-                            if ($matched) {
-                                $dharma_name_id = $matched->id;
-                                $custom_name    = null;
+                            $cleanCustom = trim($custom_name);
+                            if (str_starts_with($cleanCustom, '道霞')) {
+                                $dharma_name_id = 7;
+                            } else {
+                                $matched = DharmaName::where('name', $cleanCustom)->first();
+                                if ($matched) {
+                                    $dharma_name_id = $matched->id;
+                                    $custom_name    = null;
+                                }
                             }
                         }
 

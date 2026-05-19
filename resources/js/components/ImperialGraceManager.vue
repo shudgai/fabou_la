@@ -188,7 +188,7 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </div>
-                            <input v-model="searchQuery" type="text" placeholder="搜尋..."
+                            <input v-model.lazy="searchQuery" @keyup.enter="$event.target.blur()" type="text" placeholder="搜尋..."
                                 class="block w-full pl-11 pr-12 h-[52px] bg-slate-50 border-2 border-transparent focus:border-indigo-100 focus:bg-white rounded-2xl text-[17px] font-black font-outfit text-slate-800 placeholder-slate-300 transition-all outline-none shadow-sm">
                             <button v-if="searchQuery" @click="searchQuery = ''" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-red-500 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -222,11 +222,9 @@
                                         <span class="text-[15px] font-bold text-slate-400 font-outfit">{{ formatDate(reg.obtained_date || reg.record_date) }}</span>
                                     </div>
                                     <span :class="[
-                                        'tracking-widest select-none whitespace-nowrap shrink-0 scale-[0.85] origin-right !font-black !text-[16px]',
-                                        reg.status === '已求得' ? 'px-3 py-0.5 rounded-full border bg-blue-50 border-blue-200 text-blue-600' : 
-                                        reg.status === 'PointRegister' || reg.status === '已登記' ? 'text-emerald-600' : 
-                                        'px-3 py-0.5 rounded-full border bg-rose-50 border-rose-200 text-rose-600'
-                                    ]">
+                                        'tracking-widest select-none whitespace-nowrap shrink-0 scale-[0.85] origin-right !font-black !text-[16px]'
+                                    ]"
+                                    :style="{ color: reg.status === '已求得' ? '#2563eb' : (reg.status === 'PointRegister' || reg.status === '已登記' ? '#16a34a' : '#dc2626') }">
                                         {{ reg.status }}
                                     </span>
                                 </div>

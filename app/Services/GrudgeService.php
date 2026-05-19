@@ -13,15 +13,6 @@ class GrudgeService
         $query = Grudge::with(['user'])
             ->where('user_id', $user->id);
 
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
-        }
-
         if (isset($filters['know_date'])) {
             if (empty($filters['know_date']) || $filters['know_date'] === 'null') {
                 $query->whereNull('know_date');
@@ -30,13 +21,21 @@ class GrudgeService
             }
         }
 
-        // Calculate global totals - relying on database SUM which returns string for DECIMAL
-        $globalTotalQuantity = $query->sum('quantity') ?: "0";
+        $searchQuery = !empty($filters['search']) ? mb_strtolower($filters['search']) : null;
+        $query->latest();
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
+        }
+
+        $globalTotalQuantity = $allRecords->sum('quantity') ?: "0";
         
-        // Sum JSON fields (Breakdowns) globally
-        // Since it's JSON, we can use JSON_EXTRACT or just fetch and sum in PHP
-        // For performance and precision with our specific logic (legacy fallbacks), PHP is safer for now
-        $allRecords = $query->get(['remarks', 'destination', 'quantity']);
         $globalBreakdowns = $allRecords->reduce(function($acc, $i) {
             $r = is_string($i->remarks) ? json_decode($i->remarks, true) : $i->remarks;
             if (!is_array($r)) $r = [];
@@ -50,18 +49,25 @@ class GrudgeService
             $acc['yan_di'] = bcadd($acc['yan_di'], (string)($r['yan_di'] ?? 0));
             $acc['yan_yuan'] = bcadd($acc['yan_yuan'], (string)($r['yan_yuan'] ?? 0));
             
-            // Legacy fallbacks
             if ($i->destination === '虎甲軍') $acc['yan_jue'] = bcadd($acc['yan_jue'], (string)$i->quantity);
             if ($i->destination === '虎賁軍') $acc['yan_di'] = bcadd($acc['yan_di'], (string)$i->quantity);
             
             return $acc;
         }, ['yan_zun'=>'0','yan_an'=>'0','long_sheng'=>'0','long_zhan'=>'0','yan_jue'=>'0','yan_ze'=>'0','yan_di'=>'0','yan_yuan'=>'0']);
 
-        $results = $query->latest()->paginate(10);
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = 10;
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allRecords->forPage($page, $perPage)->values(),
+            $allRecords->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
         
         return [
-            'paginator' => $results,
-            'global_total_quantity' => $globalTotalQuantity,
+            'paginator' => $paginator,
+            'global_total_quantity' => (string)$globalTotalQuantity,
             'global_breakdowns' => $globalBreakdowns
         ];
     }
@@ -71,19 +77,20 @@ class GrudgeService
         $user = auth()->user();
         $query = Grudge::where('user_id', $user->id);
 
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
-                  ->orWhere('user_remarks', 'like', "%{$search}%")
-                  ->orWhere('remarks_text', 'like', "%{$search}%");
-            });
+        $searchQuery = !empty($filters['search']) ? mb_strtolower($filters['search']) : null;
+        $allRecords = $query->get();
+
+        if ($searchQuery) {
+            $allRecords = $allRecords->filter(function($r) use ($searchQuery) {
+                if (str_contains(mb_strtolower((string)$r->user_name), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->user_remarks), $searchQuery)) return true;
+                if (str_contains(mb_strtolower((string)$r->remarks_text), $searchQuery)) return true;
+                return false;
+            })->values();
         }
 
-        // Calculate global totals for the top-level view
-        $globalTotalQuantity = $query->sum('quantity') ?: "0";
+        $globalTotalQuantity = $allRecords->sum('quantity') ?: "0";
         
-        $allRecords = $query->get(['remarks', 'destination', 'quantity']);
         $globalBreakdowns = $allRecords->reduce(function($acc, $i) {
             $r = is_string($i->remarks) ? json_decode($i->remarks, true) : $i->remarks;
             if (!is_array($r)) $r = [];
@@ -96,14 +103,37 @@ class GrudgeService
             return $acc;
         }, ['yan_zun'=>'0','yan_an'=>'0','long_sheng'=>'0','long_zhan'=>'0','yan_jue'=>'0','yan_ze'=>'0','yan_di'=>'0','yan_yuan'=>'0']);
 
-        $paginator = $query->select('know_date', \Illuminate\Support\Facades\DB::raw('count(*) as count'), \Illuminate\Support\Facades\DB::raw('sum(quantity) as total_qty'))
-            ->groupBy('know_date')
-            ->orderByRaw('know_date IS NULL ASC, know_date DESC')
-            ->paginate($filters['per_page'] ?? 20);
+        $dateGroups = collect();
+        $allRecords->groupBy(function($item) {
+            return $item->know_date ? $item->know_date->format('Y-m-d') : 'null';
+        })->each(function($group, $dateStr) use (&$dateGroups) {
+            $dateGroups->push((object)[
+                'know_date' => $dateStr === 'null' ? null : $dateStr,
+                'count' => $group->count(),
+                'total_qty' => $group->sum('quantity')
+            ]);
+        });
+
+        $dateGroups = $dateGroups->sort(function($a, $b) {
+            if ($a->know_date === null && $b->know_date !== null) return 1;
+            if ($a->know_date !== null && $b->know_date === null) return -1;
+            if ($a->know_date === $b->know_date) return 0;
+            return $a->know_date < $b->know_date ? 1 : -1;
+        })->values();
+
+        $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+        $perPage = $filters['per_page'] ?? 20;
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $dateGroups->forPage($page, $perPage)->values(),
+            $dateGroups->count(),
+            $perPage,
+            $page,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
 
         return [
             'paginator' => $paginator,
-            'global_total_quantity' => $globalTotalQuantity,
+            'global_total_quantity' => (string)$globalTotalQuantity,
             'global_breakdowns' => $globalBreakdowns
         ];
     }

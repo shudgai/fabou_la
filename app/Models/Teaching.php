@@ -18,13 +18,13 @@ class Teaching extends Model
     ];
 
     protected $casts = [
-        'content' => 'encrypted',
+        'content' => \App\Casts\TolerantEncrypted::class,
         'is_content_literal' => 'boolean',
-        'supplement' => 'encrypted',
-        'target_remarks' => 'encrypted',
-        'items' => 'encrypted:json',
-        'remarks' => 'encrypted:json',
-        'items_footer_remarks' => 'encrypted',
+        'supplement' => \App\Casts\TolerantEncrypted::class,
+        'target_remarks' => \App\Casts\TolerantEncrypted::class,
+        'items' => \App\Casts\TolerantEncryptedJson::class,
+        'remarks' => \App\Casts\TolerantEncryptedJson::class,
+        'items_footer_remarks' => \App\Casts\TolerantEncrypted::class,
     ];
 
     public function master()

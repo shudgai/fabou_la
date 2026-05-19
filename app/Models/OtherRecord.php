@@ -16,8 +16,8 @@ class OtherRecord extends Model
     ];
 
     protected $casts = [
-        'title' => 'encrypted',
-        'content' => 'encrypted',
+        'title' => \App\Casts\TolerantEncrypted::class,
+        'content' => \App\Casts\TolerantEncrypted::class,
         'extra_data' => 'array',
         'record_date' => 'date',
     ];
