@@ -869,6 +869,7 @@ const confirmSelection = () => {
             return;
         }
         selectedNames.value = [...roundParticipants.value];
+        roundParticipants.value = []; // Clear for Step 3 select-for-round configuration so clear button is lit by default
         drawCount.value = 1;
         currentStep.value = 3;
     } else {
@@ -889,6 +890,10 @@ const startMode2Draw = () => {
 };
 
 const handleBack = () => {
+    if (lotteryMode.value === true && currentStep.value === 3) {
+        // Restore roundParticipants representation of who is present in the room
+        roundParticipants.value = [...selectedNames.value];
+    }
     if (currentStep.value > 1) currentStep.value--;
     else emit('close');
 };
@@ -1084,9 +1089,9 @@ const saveResults = async () => {
 
 const handleNextRound = () => {
     // Keep pendingNames and selectionFiltered (confirmed attendee list stays)
-    // Restore selectedNames and roundParticipants so step 3 is pre-populated
+    // Restore selectedNames so step 3 is pre-populated
     selectedNames.value = [...pendingNames.value];
-    roundParticipants.value = [...pendingNames.value];
+    roundParticipants.value = []; // Start fresh with clear button lit
     manualName.value = '';
     results.value = [];
     currentStep.value = 3; // Go directly to draw configuration
