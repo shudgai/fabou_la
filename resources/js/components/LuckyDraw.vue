@@ -150,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto p-4 space-y-8">
+                    <div class="flex-1 overflow-y-auto min-h-0 p-4 space-y-8 -webkit-overflow-scrolling-touch" style="-webkit-overflow-scrolling: touch;">
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-[17px] font-black text-slate-800">1. 從基礎名單點選本輪人員</span>
