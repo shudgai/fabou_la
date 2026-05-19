@@ -150,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto min-h-0 p-4 space-y-8 -webkit-overflow-scrolling-touch" style="-webkit-overflow-scrolling: touch;">
+                    <div ref="scrollContainer" class="flex-1 overflow-y-auto min-h-0 p-4 space-y-8 -webkit-overflow-scrolling-touch" style="-webkit-overflow-scrolling: touch;">
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-[17px] font-black text-slate-800">1. 從基礎名單點選本輪人員</span>
@@ -174,7 +174,7 @@
                                     清空
                                 </button>
                             </div>
-                            <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-32">
+                            <div class="grid grid-cols-4 md:grid-cols-5 gap-2 pb-[300px]">
                                 <button v-for="name in selectedNames" :key="'round'+name" @click="toggleRoundParticipant(name)" 
                                     class="dharma-btn flex items-center justify-center font-normal transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[45px]"
                                     :style="{
@@ -625,6 +625,26 @@
             </div>
         </div>
         </div>
+
+        <!-- Mobile Scroll Handle: only shown during drag-select grid steps on mobile -->
+        <div
+            v-if="!isDrawing && ((lotteryMode === true && (currentStep === 1 || currentStep === 2)) || (lotteryMode === false && currentStep === 2))"
+            class="md:hidden fixed right-0 z-[350] flex flex-col items-center justify-center"
+            style="top: 108px; bottom: calc(7dvh + env(safe-area-inset-bottom) + 60px); width: 34px; touch-action: none; background: rgba(241,245,249,0.90); border-radius: 14px 0 0 14px; border: 1px solid #cbd5e1; border-right: none; box-shadow: -3px 0 10px rgba(0,0,0,0.08);"
+            @touchstart.prevent="onScrollHandleTouchStart"
+            @touchmove.prevent="onScrollHandleTouchMove"
+            @touchend.prevent="onScrollHandleTouchEnd"
+        >
+            <!-- Grip icon -->
+            <svg width="14" height="48" viewBox="0 0 14 48" fill="none">
+                <line x1="3" y1="12" x2="11" y2="12" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="20" x2="11" y2="20" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="28" x2="11" y2="28" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="36" x2="11" y2="36" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size: 9px; color: #94a3b8; margin-top: 4px; writing-mode: vertical-rl; letter-spacing: 1px;">滑動</span>
+        </div>
+
         <!-- Mobile Navbar explicitly added per user request to ensure all interfaces have it -->
         <mobile-navbar 
             is-absolute
@@ -1239,6 +1259,25 @@ const stopDrag = () => {
     scrollInterval = null;
     window.removeEventListener('mouseup', stopDrag);
     window.removeEventListener('mousemove', handleMouseMoveDrag);
+};
+
+// ── Scroll Handle (mobile right-edge strip) ──
+const scrollHandleStartY = ref(0);
+const scrollHandleStartScroll = ref(0);
+
+const onScrollHandleTouchStart = (e) => {
+    scrollHandleStartY.value = e.touches[0].clientY;
+    scrollHandleStartScroll.value = scrollContainer.value?.scrollTop || 0;
+};
+
+const onScrollHandleTouchMove = (e) => {
+    if (!scrollContainer.value) return;
+    const delta = e.touches[0].clientY - scrollHandleStartY.value;
+    scrollContainer.value.scrollTop = scrollHandleStartScroll.value - delta * 2.5;
+};
+
+const onScrollHandleTouchEnd = () => {
+    // nothing needed, just consumed the touch event
 };
 
 const handleTouchStart = (e, name) => {
