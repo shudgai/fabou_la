@@ -43,7 +43,7 @@
 
                 <div v-if="currentStep === 1" class="space-y-1">
                     <div class="flex items-center justify-between">
-                        <label class="font-black text-slate-400 uppercase tracking-wider">得知日期</label>
+                        <label class="font-black text-slate-400 uppercase tracking-wider">得知日期{{ props.isCumulative ? ' (選填)' : '' }}</label>
                         <button @click.stop="showDatePicker = true" class="text-slate-300 hover:text-slate-600 transition-colors p-1 active:scale-90">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
@@ -320,7 +320,7 @@ const formatWithCommas = (val) => {
 
 const nextStep = () => {
     if (currentStep.value === 1) {
-        if (!form.value.know_date) {
+        if (!props.isCumulative && !form.value.know_date) {
             alert('請選擇日期');
             return;
         }

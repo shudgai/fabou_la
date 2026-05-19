@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">資料載入中...</div>
@@ -91,7 +91,7 @@
 
         <!-- LIST VIEW & FORM VIEW (Entered State) -->
         <template v-if="isEntered">
-            <div v-if="!addMode" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full bg-white">
+            <div v-if="!addMode" :class="loading ? 'opacity-50 pointer-events-none' : ''" class="flex-1 overflow-y-auto custom-scrollbar px-[15px] py-3 pb-32 relative z-[1] w-full bg-white transition-opacity duration-200">
             <!-- Search -->
             <div v-if="showSearch" class="px-1 pb-3 animate-fade-in">
                 <div class="relative group">
@@ -567,6 +567,7 @@ const weeklyPosts = ref([]);
 const selfPosts = ref([]);
 const masters = ref([]);
 const loading = ref(false);
+const isInitialLoading = ref(true);
 const searchQuery = ref('');
 const showSearch = ref(false);
 
@@ -863,6 +864,7 @@ const loadData = async () => {
         console.error('Failed to load kaiwen', e);
     } finally {
         loading.value = false;
+        isInitialLoading.value = false;
     }
 };
 

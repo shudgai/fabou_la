@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-full flex flex-col relative overflow-clip">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
@@ -81,7 +81,7 @@
         </div>
 
         <!-- Scrollable Content -->
-        <div v-if="!showTotal" @click="clickToCollapse" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full pb-[80px] relative">
+        <div v-if="!showTotal" @click="clickToCollapse" :class="loading && !isInitialLoading ? 'opacity-50 pointer-events-none' : ''" class="flex-1 overflow-y-auto custom-scrollbar min-h-full w-full pb-[80px] relative transition-opacity duration-200">
             <div v-if="isEmptyState" class="text-center py-20 text-slate-400 font-light">目前尚無怨靈載錄資料。</div>
              <div v-else class="flex flex-col flex-1 px-2 pt-0">
                   <!-- Solo View: Focus on a specific record (Solo Mode) -->
@@ -348,6 +348,7 @@ const deleteConfirmId = ref(null);
 const items = ref([]);
 const users = ref([]);
 const loading = ref(true);
+const isInitialLoading = ref(true);
 const editingId = ref(null);
 const focusedId = ref(null);
 const sortDesc = ref(true);
@@ -713,6 +714,7 @@ const loadData = async (page = 1) => {
         dateGroupsData.value = [];
     } finally { 
         loading.value = false; 
+        isInitialLoading.value = false;
     }
 };
 

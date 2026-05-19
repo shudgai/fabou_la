@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-full flex flex-col relative text-slate-900 registry-manager-module">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Main Scrollable Area -->
-        <div ref="scrollContainer" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto bg-white" style="padding-bottom: 150px;">
+        <div ref="scrollContainer" :class="loading ? 'opacity-50 pointer-events-none' : ''" class="flex-1 overflow-y-auto custom-scrollbar !touch-auto bg-white transition-opacity duration-200" style="padding-bottom: 150px;">
             <!-- Category and Master Selection -->
             <div v-if="!currentFolder && !addMode" class="min-h-screen bg-white flex flex-col items-center">
 
@@ -834,6 +834,7 @@ const allTreasures = ref([]);
 const masters = ref([]);
 const dharmaNames = ref([]);
 const loading = ref(false);
+const isInitialLoading = ref(true);
 const persistentToast = ref(null);
 const isSaving = ref(false);
 const dharmaPickerItemId = ref(null);
@@ -999,6 +1000,7 @@ const loadData = async (page = 1) => {
         allTreasures.value = [];
     } finally { 
         loading.value = false; 
+        isInitialLoading.value = false;
     }
 };
 

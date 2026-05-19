@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-full flex flex-col text-slate-900">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
@@ -133,8 +133,8 @@
                 />
 
                 <!-- Main List View -->
-                 <div :class="[!addMode ? 'block' : 'hidden md:block']" 
-                      class="pb-32 flex-1 overflow-y-auto bg-white w-full md:max-w-xl md:mx-auto" 
+                 <div :class="[!addMode ? 'block' : 'hidden md:block', loading ? 'opacity-50 pointer-events-none' : '']" 
+                      class="pb-32 flex-1 overflow-y-auto bg-white w-full md:max-w-xl md:mx-auto transition-opacity duration-200" 
                       @click="focusedId = null; focusedDate = null; activeDropdownId = null">
                      <div v-if="loading && visibleItems.length === 0" class="text-center py-12 text-slate-400 text-[20px] font-bold tracking-widest uppercase">載入紀錄中...</div>
                      <div v-else class="space-y-0 mt-0 min-h-full">
@@ -880,6 +880,7 @@ const pendingMasterId = ref(null);
 const masters = ref([]);
 
 const loading = ref(false);
+const isInitialLoading = ref(true);
 const saving = ref(false);
 const editingId = ref(null);
 const focusedId = ref(null);
@@ -2400,7 +2401,7 @@ const syncRecords = async () => {
                 folderCounts.value = data.folderCounts;
             }
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); } finally { isInitialLoading.value = false; }
 };
 
 const getDharmaNameText = (id) => {

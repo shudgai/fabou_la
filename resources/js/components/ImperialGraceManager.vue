@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white h-full flex flex-col relative text-slate-900 imperial-grace-module overscroll-none">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">資料載入中...</div>
@@ -86,7 +86,7 @@
             </div>
         </div>
         </teleport>
-        <div ref="scrollContainer" class="flex-1 overflow-auto custom-scrollbar overscroll-contain" style="padding-bottom: 120px;">
+        <div ref="scrollContainer" :class="loading ? 'opacity-50 pointer-events-none' : ''" class="flex-1 overflow-auto custom-scrollbar overscroll-contain transition-opacity duration-200" style="padding-bottom: 120px;">
         <!-- Level 0: Main Category Selection -->
         <div v-if="!currentCategory && !currentFolder && !addMode" class="flex-1 flex flex-col items-center pt-8 pb-20 w-full space-y-2.5 bg-white">
             <button 
@@ -459,6 +459,7 @@ const masters = ref([]);
 const activeRelDropdownIdx = ref(null);
 const relationshipOptions = ['母親', '父親', '公公', '婆婆', '爺爺', '奶奶', '外公', '外婆'];
 const loading = ref(false);
+const isInitialLoading = ref(true);
 const isSaving = ref(false);
 const persistentToast = ref(null); 
 const sortDesc = ref(true);
@@ -562,6 +563,7 @@ const loadData = async (page = 1) => {
         allRegistries.value = [];
     } finally { 
         loading.value = false; 
+        isInitialLoading.value = false;
     }
 };
 

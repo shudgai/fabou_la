@@ -1,7 +1,7 @@
 <template>
     <div class="bg-slate-100 md:bg-white h-full flex flex-col relative overflow-clip">
         <!-- Transition Logo Overlay -->
-        <div v-if="loading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+        <div v-if="isInitialLoading" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
                 <logo-imperial-notebook :height="120" spinning />
                 <div class="mt-4 text-[17px] font-black text-slate-400 tracking-widest animate-pulse">載錄載入中...</div>
@@ -91,7 +91,7 @@
         </div>
 
         <!-- MAIN CONTENT AREA -->
-        <div class="flex-1 overflow-hidden relative flex flex-col">
+        <div :class="loading && !isInitialLoading ? 'opacity-50 pointer-events-none' : ''" class="flex-1 overflow-hidden relative flex flex-col transition-opacity duration-200">
             <!-- HOME VIEW -->
             <div v-if="!currentFolder && !addMode && !showSearch && !showFullTotal" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                 <div class="px-6 pb-24 flex flex-col items-center justify-center gap-y-12 mt-[25px] max-w-4xl mx-auto">
@@ -415,6 +415,7 @@ const getBulletColor = (key) => {
 
 const users = ref([]);
 const loading = ref(true);
+const isInitialLoading = ref(true);
 const isSaving = ref(false);
 const editingId = ref(null);
 const focusedId = ref(null);
@@ -915,6 +916,7 @@ const loadData = async (page = 1) => {
     } finally { 
         if (currentRequestId !== requestId) return;
         loading.value = false;
+        isInitialLoading.value = false;
     }
 };
 
