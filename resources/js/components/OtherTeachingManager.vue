@@ -102,7 +102,7 @@
                             <div v-if="item.master || item.target_remarks" class="flex items-center text-[16px] font-black text-indigo-600 space-x-2">
                                 <span v-if="item.master">{{ item.master.name }}</span>
                                 <span v-if="item.master && item.target_remarks" class="text-slate-300 mx-1">/</span>
-                                <span v-if="item.target_remarks" class="text-amber-600">{{ item.target_remarks }}</span>
+                                <span v-if="item.target_remarks" class="text-black">對象:{{ item.target_remarks }}</span>
                             </div>
 
                             <!-- Content Body -->

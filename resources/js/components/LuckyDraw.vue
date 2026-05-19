@@ -228,7 +228,7 @@
                                 {{ results[0] }}
                             </div>
                         </div>
-                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
+                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-center gap-x-[8vw] md:gap-x-12 items-start px-3">
                             <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
                                 class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                             >
@@ -508,7 +508,7 @@
 
                         <!-- MULTIPLE RESULTS: 10-COLUMN ROWS & INDEXED -->
                         <!-- MULTIPLE RESULTS: VERTICAL COLUMNS & INDEXED -->
-                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-between items-start px-3">
+                        <div v-else class="w-[100vw] flex flex-row flex-nowrap justify-center gap-x-[8vw] md:gap-x-12 items-start px-3">
                                 <div v-for="(col, colIdx) in chunkedResults" :key="'col'+colIdx" 
                                     class="flex flex-col justify-start items-center gap-y-4 md:gap-y-6"
                                 >
