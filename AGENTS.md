@@ -169,6 +169,9 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Edit Interface Refinement**: Dharma name selection moved below main Remarks field; uses a 3-column table (法號, 日期, 備註) for both View and Edit modes.
 - **Table Headers**: "法號" header includes an "Add" (新增) button in both modes; Edit mode toggles a grid selector; View mode triggers Edit mode with selector open.
 - **Others Category**: Table columns reordered to [法號, 日期, 親友, 備註] to prioritize dharma name visibility.
+- **Edit Table Columns & Layout**: Column widths adjusted to: **法號 `32%`** (fully displayed, removed `truncate` and optimized padding), **日期 `36%`**, **備註 `26%`**, and **刪除 `6%`**.
+- **Unified Sizing & Typography**: Edit mode date input matches list view exactly: size `14px` (`font-size: 14px !important; color: #ef4444 !important; font-family: 'PMingLiU', serif !important;`).
+- **Remarks Formatting & Wrapping**: The `renderRemarksHtml` format function appends `<br>` after matching dates (e.g. `2024/04/13`) when additional text is present, placing recipient names (e.g. `金巧母親`) on the second row for clean vertical styling.
 
 ### RegistryAddForm.vue
 - Step-based form modal for 法寶登記 (Wizard: 日期 → 仙師 → 法寶名稱 → 用意 → 功效 → 作法 → 法寶內容 → 備註)
