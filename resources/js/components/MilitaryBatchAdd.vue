@@ -54,8 +54,8 @@
                     輸入模式
                 </span>
             </div>
-            <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 text-[14px] font-bold text-white bg-red-50/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-red-100 active:scale-95 transition-all shadow-sm">
-                清空全部
+            <button v-if="batchText" @click="batchText = ''" class="absolute right-8 top-8 z-10 p-2 text-slate-400 hover:text-red-500 active:scale-90 transition-all border-none bg-transparent" title="清空全部">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <textarea 
                 v-model="batchText" 
