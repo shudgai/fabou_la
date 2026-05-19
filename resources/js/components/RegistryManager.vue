@@ -343,11 +343,20 @@
                                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                     </button>
                                                                 </td>
-                                                                <td class="p-0">
-                                                                    <input v-model="dnr.remarks"
-                                                                        placeholder="--"
-                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
-                                                                </td>
+                                                                 <td class="p-0">
+                                                                     <div v-if="activeRemarksEditIdx !== dnrIdx" 
+                                                                          @click="activeRemarksEditIdx = dnrIdx"
+                                                                          class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
+                                                                         <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                     </div>
+                                                                     <input v-else
+                                                                         v-model="dnr.remarks"
+                                                                         v-focus
+                                                                         @blur="activeRemarksEditIdx = null"
+                                                                         @keyup.enter="activeRemarksEditIdx = null"
+                                                                         placeholder="--"
+                                                                         class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
+                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
                                                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -714,6 +723,11 @@ import { writeClipboard, lockBodyScroll, unlockBodyScroll } from '../utils/iosCo
 
 const isDesktop = ref(window.innerWidth >= 768);
 const handleResize = () => { isDesktop.value = window.innerWidth >= 768; };
+
+const activeRemarksEditIdx = ref(null);
+const vFocus = {
+    mounted: (el) => el.focus()
+};
 
 onMounted(() => {
     window.addEventListener('resize', handleResize);
