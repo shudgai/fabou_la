@@ -3740,6 +3740,8 @@ const chooseMasterAndProceed = (useDetected) => {
 const performActualSave = async () => {
     if (saving.value) return;
 
+    const wasEditing = !!editingId.value;
+
     // Always distribution 'keep' mode as per user request to skip intermediate modals
     if (activeEntryTab.value === 'batch' || saveConfirmModal.value.records.length > 1) {
         await executeDistributionSave('distribute');
@@ -3773,7 +3775,6 @@ const performActualSave = async () => {
             is_daily: isDailyContext ? 1 : 0 
         };
 
-        const wasEditing = !!editingId.value;
         const targetMasterId = payload.master_id;
         const targetIsDaily = payload.is_daily;
 

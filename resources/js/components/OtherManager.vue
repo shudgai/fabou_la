@@ -338,40 +338,60 @@ const activeFolder = computed(() => folders.value.find(f => f.id === activeFolde
 const lotteryFolderId = computed(() => folders.value.find(f => f.name === '抽籤紀錄')?.id);
 
 const loadData = async () => {
-    const res = await axios.get('/other-folders');
-    folders.value = res.data;
+    try {
+        const res = await axios.get('/other-folders');
+        folders.value = res.data;
 
-    const kaiwenFolders = folders.value.filter(f => f.name.includes('開文核定'));
-    const randomFolders = folders.value.filter(f => f.name.includes('隨機分組'));
+        const kaiwenFolders = folders.value.filter(f => f.name.includes('開文核定'));
+        const randomFolders = folders.value.filter(f => f.name.includes('隨機分組'));
 
-    let needReload = false;
+        let needReload = false;
 
-    // Remove duplicates if they exist (keep the first one)
-    if (kaiwenFolders.length > 1) {
-        for (let i = 1; i < kaiwenFolders.length; i++) {
-            await axios.delete(`/other-folders/${kaiwenFolders[i].id}`);
+        // Remove duplicates if they exist (keep the first one)
+        if (kaiwenFolders.length > 1) {
+            for (let i = 1; i < kaiwenFolders.length; i++) {
+                try {
+                    await axios.delete(`/other-folders/${kaiwenFolders[i].id}`);
+                } catch (e) {
+                    console.warn('Could not delete duplicate kaiwen folder:', e);
+                }
+            }
+            needReload = true;
         }
-        needReload = true;
-    }
-    if (randomFolders.length > 1) {
-        for (let i = 1; i < randomFolders.length; i++) {
-            await axios.delete(`/other-folders/${randomFolders[i].id}`);
+        if (randomFolders.length > 1) {
+            for (let i = 1; i < randomFolders.length; i++) {
+                try {
+                    await axios.delete(`/other-folders/${randomFolders[i].id}`);
+                } catch (e) {
+                    console.warn('Could not delete duplicate random folder:', e);
+                }
+            }
+            needReload = true;
         }
-        needReload = true;
-    }
 
-    // Auto-initialize if completely missing
-    if (kaiwenFolders.length === 0) {
-        await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
-        needReload = true;
-    }
-    if (randomFolders.length === 0) {
-        await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
-        needReload = true;
-    }
+        // Auto-initialize if completely missing
+        if (kaiwenFolders.length === 0) {
+            try {
+                await axios.post('/other-folders', { name: '開文核定表', color: '#6366f1' });
+                needReload = true;
+            } catch (e) {
+                console.warn('Could not auto-create kaiwen folder:', e);
+            }
+        }
+        if (randomFolders.length === 0) {
+            try {
+                await axios.post('/other-folders', { name: '隨機分組', color: '#10b981' });
+                needReload = true;
+            } catch (e) {
+                console.warn('Could not auto-create random folder:', e);
+            }
+        }
 
-    if (needReload) {
-        return loadData();
+        if (needReload) {
+            return loadData();
+        }
+    } catch (e) {
+        console.error('Failed to load other folders:', e);
     }
 };
 
