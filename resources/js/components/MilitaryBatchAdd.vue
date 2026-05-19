@@ -6,20 +6,28 @@
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-[633px] bg-white md:rounded-[32px] md:shadow-2xl flex flex-col overflow-hidden pb-[0px] md:pb-0">
-            <!-- Header (Matched to Single Add Form) -->
-            <div class="px-[10px] py-[12px] flex items-center bg-white border-b border-slate-50 relative shrink-0">
-                <div class="flex-1 flex items-center gap-2 min-w-0">
+            <!-- Header: Standardized Branding (Logo + Main Title + Sub Title) -->
+            <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
+                <!-- Row 1: Global Title (Left) -->
+                <div class="px-4 py-2 bg-white flex items-center justify-start gap-2 border-b border-transparent">
                     <logo-imperial-notebook :height="36" />
-                    <div class="flex flex-col justify-center min-w-0">
-                        <div class="font-bold leading-none font-outfit uppercase tracking-wider text-slate-900" style="font-size: 25px !important;">軍隊載錄專區 - {{ armyType }}</div>
-                        <div class="font-bold mt-2 truncate font-outfit text-slate-900" style="font-size: 24px !important;">
-                            多筆新增
-                        </div>
-                    </div>
+                    <h1 class="font-outfit !font-normal tracking-widest pt-[2px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 400 !important;">軍隊載錄專區</h1>
                 </div>
-                <button @click="$emit('cancel', false)" class="text-slate-300 hover:text-slate-600 transition-colors p-2 absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <!-- Row 2: Subtitle (Left) + Close Button (Right) -->
+                <div class="px-4 py-2 bg-white border-b border-transparent flex items-center justify-between">
+                    <div class="flex flex-col items-start gap-y-1 flex-1 min-w-0">
+                        <span class="font-outfit font-normal text-slate-900 whitespace-nowrap text-[23px]" style="line-height: 1.1;">
+                            {{ props.armyType || '虎甲軍' }}
+                        </span>
+                        <span class="font-outfit font-normal text-slate-900 whitespace-nowrap text-[23px]" style="line-height: 1.1;">
+                            多筆新增
+                        </span>
+                    </div>
+                    <!-- Close Button moved here -->
+                    <button @click="$emit('cancel', false)" class="text-slate-300 hover:text-slate-600 transition-colors p-2 z-[50]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
 
         <!-- Options Container -->

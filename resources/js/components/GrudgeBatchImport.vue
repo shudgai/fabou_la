@@ -6,17 +6,24 @@
 
         <!-- Form Container -->
         <div class="relative w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden animate-slide-up flex flex-col">
-            <!-- Header -->
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center bg-white sticky top-0 z-10 relative">
-                <div class="flex items-center gap-2">
-                    <logo-imperial-notebook :height="36" class="md:hidden" />
-                    <h5 class="text-[30px] font-black tracking-tight text-slate-900" style="font-size: 30px !important;">
-                        怨靈載錄專區<br>多筆載錄
-                    </h5>
+            <!-- Header: Standardized Branding (Logo + Main Title + Sub Title) -->
+            <div class="px-0 flex flex-col bg-white border-b border-slate-50 relative shrink-0">
+                <!-- Row 1: Global Title (Left) -->
+                <div class="px-4 py-2 bg-white flex items-center justify-start gap-2 border-b border-transparent">
+                    <logo-imperial-notebook :height="36" />
+                    <h1 class="font-outfit !font-normal tracking-widest pt-[2px]" style="color: #dc2626 !important; font-size: 26px !important; font-weight: 400 !important;">怨靈載錄專區</h1>
                 </div>
-                <button @click="$emit('cancel')" class="p-2 text-slate-300 hover:text-slate-600 transition-colors absolute right-4 top-1/2 -translate-y-1/2 z-[50]">
-                    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <!-- Row 2: Subtitle (Left) + Close Button (Right) -->
+                <div class="px-4 py-1.5 bg-white border-b border-transparent flex items-center justify-between">
+                    <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
+                        <span class="font-outfit font-normal text-slate-900 whitespace-nowrap text-[23px]" style="line-height: 1.1;">
+                            多筆載錄
+                        </span>
+                    </div>
+                    <button @click="$emit('cancel')" class="text-slate-300 hover:text-slate-600 transition-colors p-2 z-[50]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
             </div>
 
             <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar bg-white">
