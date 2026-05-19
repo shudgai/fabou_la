@@ -15,7 +15,7 @@
                 </div>
                 <!-- Row 2: Subtitle (Left) + Close Button (Right) -->
                 <div class="px-4 py-2 bg-white border-b border-transparent flex items-center justify-between">
-                    <div class="flex flex-col items-start gap-y-1 flex-1 min-w-0">
+                    <div class="flex items-baseline gap-x-2 flex-1 min-w-0">
                         <span class="font-outfit font-normal text-slate-900 whitespace-nowrap text-[23px]" style="line-height: 1.1;">
                             {{ props.armyType || '虎甲軍' }}
                         </span>
