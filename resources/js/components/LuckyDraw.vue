@@ -1367,9 +1367,7 @@ const initDraw = () => {
                         pendingNames.value = draft.pendingNames || [];
                         fixedParticipants.value = draft.fixedParticipants || [];
                         selectedNames.value = draft.selectedNames || [];
-                        roundParticipants.value = (draft.roundParticipants && draft.roundParticipants.length > 0)
-                            ? draft.roundParticipants
-                            : [...(draft.pendingNames || [])];
+                        roundParticipants.value = draft.roundParticipants || [];
                         drawCount.value = draft.drawCount || 1;
                         manualName.value = draft.manualName || '';
                         lotteryMode.value = props.initialMode;
