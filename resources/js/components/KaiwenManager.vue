@@ -375,24 +375,24 @@
 
                         <div class="space-y-1">
                             <label class="ml-1 !font-black !text-black" style="font-family: 'Noto Sans TC', sans-serif !important;">開文內容</label>
-                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5 overflow-x-auto">
-                                <div v-for="(char, i) in titleChars" :key="i" class="grid grid-cols-7 gap-1 md:gap-0">
-                                    <!-- Acrostic char box (1st cell) -->
-                                    <div class="aspect-square md:w-12 md:h-12 flex items-center justify-center border border-slate-800 bg-slate-50/50 text-center !font-normal !text-[#dc2626]" 
-                                         :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }">
+                            <div v-if="addMode === 'weekly' && !isManualWeekly" class="space-y-1.5">
+                                <div v-for="(char, i) in titleChars" :key="i" class="flex items-center space-x-2 py-0.5" v-show="char">
+                                    <!-- Acrostic char prefix -->
+                                    <div class="w-10 h-10 flex items-center justify-center bg-red-50/70 border-2 border-red-200 text-center font-black text-red-600 rounded-xl leading-none shrink-0" 
+                                         :style="{ fontFamily: 'Noto Sans TC, sans-serif', fontSize: '18px' }">
                                         {{ char }}
                                     </div>
-                                    <!-- 6 input boxes (2nd to 7th cells) -->
+                                    <!-- Single line input (No grids!) -->
                                     <input
-                                        v-for="j in 6" :key="j"
-                                        :id="`weekly-cell-${i}-${j-1}`"
+                                        :id="`weekly-line-${i}`"
                                         type="text"
-                                        maxlength="1"
-                                        :value="(weeklyLines[i] || '')[j-1] || ''"
-                                        @input="onWeeklyCellInput($event, i, j-1)"
-                                        @compositionend="onWeeklyCellCompositionEnd($event, i, j-1)"
-                                        class="aspect-square md:w-12 md:h-12 text-center bg-white outline-none border border-slate-800 focus:bg-purple-50 transition-colors !font-black !text-[#0f172a] min-w-0"
-                                        :style="{ fontFamily: 'Montserrat, Noto Sans TC, sans-serif', fontSize: activeFontSizePx }"
+                                        maxlength="6"
+                                        placeholder="請輸入後續字元 (最多 6 字)"
+                                        v-model="weeklyLines[i]"
+                                        @input="onWeeklyLineInput($event, i)"
+                                        @keydown="handleWeeklyLineKeyDown($event, i)"
+                                        class="flex-1 h-10 px-3 bg-white outline-none border border-slate-300 rounded-xl focus:border-purple-500 focus:bg-purple-50/30 transition-all font-black text-slate-800"
+                                        :style="{ fontFamily: 'Noto Sans TC, sans-serif', fontSize: '16px' }"
                                     >
                                 </div>
                             </div>
@@ -759,7 +759,7 @@ const collapseAll = () => {
 };
 
 // Weekly Acrostic Handling
-const weeklyLines = ref(Array(14).fill(null).map(() => Array(6).fill('')));
+const weeklyLines = ref(Array(14).fill(''));
 
 // Draft auto-save (must be after weeklyLines declaration)
 watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), (newVal) => {
@@ -773,43 +773,32 @@ watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), 
     }
 }, { deep: true });
 
-// Helper: set one character cell in a weeklyLine
-const setWeeklyCell = (row, col, val) => {
-    if (!weeklyLines.value[row]) weeklyLines.value[row] = Array(6).fill('');
-    weeklyLines.value[row][col] = val ? val[val.length - 1] : '';
-};
-
-const focusNextWeeklyCell = (row, col) => {
-    let nextCol = col + 1;
-    let nextRow = row;
-    if (nextCol > 5) {
-        nextCol = 0;
-        nextRow++;
-    }
-    const nextInput = document.getElementById(`weekly-cell-${nextRow}-${nextCol}`);
-    if (nextInput) {
-        nextInput.focus();
-        nextInput.select();
+const onWeeklyLineInput = (e, row) => {
+    const val = e.target.value || '';
+    if (val.length >= 6) {
+        weeklyLines.value[row] = val.substring(0, 6);
+        const nextInput = document.getElementById(`weekly-line-${row + 1}`);
+        if (nextInput) {
+            nextInput.focus();
+        }
+    } else {
+        weeklyLines.value[row] = val;
     }
 };
 
-const onWeeklyCellInput = (e, row, col) => {
-    const val = e.target.value;
-    setWeeklyCell(row, col, val);
-
-    if (val && !e.isComposing) {
-        focusNextWeeklyCell(row, col);
+const handleWeeklyLineKeyDown = (e, row) => {
+    if (e.key === 'Backspace' && !weeklyLines.value[row] && row > 0) {
+        const prevInput = document.getElementById(`weekly-line-${row - 1}`);
+        if (prevInput) {
+            prevInput.focus();
+            setTimeout(() => {
+                const len = prevInput.value.length;
+                prevInput.setSelectionRange(len, len);
+            }, 0);
+        }
     }
 };
 
-const onWeeklyCellCompositionEnd = (e, row, col) => {
-    const val = e.target.value;
-    setWeeklyCell(row, col, val);
-
-    if (val) {
-        focusNextWeeklyCell(row, col);
-    }
-};
 const titleChars = computed(() => {
     const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
     const chars = cleanTitle.split('');
@@ -823,8 +812,8 @@ const titleChars = computed(() => {
 const currentOriginalPreview = computed(() => {
     if (addMode.value === 'weekly' && !isManualWeekly.value) {
         return titleChars.value.map((char, i) => {
-            const lineArr = weeklyLines.value[i] || Array(6).fill('');
-            return (char || '') + lineArr.join('');
+            const lineText = weeklyLines.value[i] || '';
+            return (char || '') + lineText;
         }).join('\n');
     }
     return form.value.original_content;
@@ -903,14 +892,14 @@ const openAddMode = (type) => {
             const draft = JSON.parse(draftStr);
             if (draft.type === type && window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
                 form.value = draft.form;
-                weeklyLines.value = draft.weeklyLines || Array(14).fill(null).map(() => Array(6).fill(''));
+                weeklyLines.value = (draft.weeklyLines ? draft.weeklyLines.map(line => Array.isArray(line) ? line.join('') : (line || '')) : Array(14).fill(''));
                 isManualWeekly.value = draft.isManualWeekly || false;
                 return;
             }
         } catch (e) {}
     }
 
-    weeklyLines.value = Array(14).fill(null).map(() => Array(6).fill(''));
+    weeklyLines.value = Array(14).fill('');
     form.value = {
         date: getTodayStr(),
         status: null,
@@ -944,7 +933,7 @@ const editItem = (post, type) => {
         isManualWeekly.value = !isAcrostic;
 
         if (isAcrostic) {
-            weeklyLines.value = Array(14).fill(null).map((_, i) => {
+            weeklyLines.value = Array(14).fill('').map((_, i) => {
                 const fullLine = lines[i] || '';
                 const char = cleanTitle[i] || '';
                 let content = '';
@@ -953,10 +942,7 @@ const editItem = (post, type) => {
                 } else {
                     content = fullLine;
                 }
-                // Pad to 6 chars
-                const arr = content.split('');
-                while(arr.length < 6) arr.push('');
-                return arr.slice(0, 6);
+                return content.substring(0, 6);
             });
         }
     } else {
@@ -1145,7 +1131,7 @@ const openPostMode = (post, type) => {
     if (type === 'weekly' && post.original_content) {
         const lines = post.original_content.split('\n');
         const cleanTitle = (form.value.title || '').replace(/\s+/g, '');
-        weeklyLines.value = Array(14).fill(null).map((_, i) => {
+        weeklyLines.value = Array(14).fill('').map((_, i) => {
             const fullLine = lines[i] || '';
             const char = cleanTitle[i] || '';
             let content = '';
@@ -1154,9 +1140,7 @@ const openPostMode = (post, type) => {
             } else {
                 content = fullLine;
             }
-            const arr = content.split('');
-            while(arr.length < 6) arr.push('');
-            return arr.slice(0, 6);
+            return content.substring(0, 6);
         });
     }
 };
