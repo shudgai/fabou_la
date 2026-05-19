@@ -318,27 +318,27 @@
                                                     <table class="w-full border-collapse bg-white table-fixed">
                                                         <thead>
                                                             <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
-                                                                <th class="w-[24%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
-                                                                <th class="w-[48%] px-[10px] py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
-                                                                <th class="w-[22%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                                <th class="w-[32%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
+                                                                <th class="w-[36%] px-[10px] py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                                <th class="w-[26%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
                                                                 <th class="w-[6%]"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                                                <td class="px-[10px] py-1.5 border-r border-slate-50 pl-[5px]">
+                                                                <td class="px-1 py-1.5 border-r border-slate-50">
                                                                     <input v-model="dnr.custom_name"
                                                                         list="dharma-names-list"
                                                                         @blur="syncDharmaNameId(dnr)"
-                                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text truncate"
+                                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text"
                                                                         placeholder="輸入法號...">
                                                                 </td>
                                                                 <td class="p-0 border-r border-slate-50 relative group">
                                                                     <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
                                                                         @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
                                                                         placeholder="--"
-                                                                        class="w-full text-center text-[9.8px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-[16px]"
-                                                                        style="font-family: 'PMingLiU', serif;">
+                                                                        class="w-full text-center text-[8.4px] font-normal !text-rose-600 bg-transparent py-2 outline-none pl-[16px]"
+                                                                        style="font-family: 'PMingLiU', serif; font-size: 8.4px !important;">
                                                                     <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-0.5 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
                                                                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                     </button>
@@ -1069,7 +1069,7 @@ const renderRemarksHtml = (remarks, isEditMode = false) => {
     const dateRegex = /(\d{2,4}[\/\.\-／]\s?\d{1,2}\s?[\/\.\-／]\s?\d{1,2})/g;
 
     // Replace and format date content to match YYYY/MM/DD and standard view mode style
-    return text.replace(dateRegex, (match) => {
+    let replaced = text.replace(dateRegex, (match) => {
         const parts = match.split(/[\/\.\-／]/);
         let formatted = match;
         if (parts.length === 3) {
@@ -1080,9 +1080,13 @@ const renderRemarksHtml = (remarks, isEditMode = false) => {
                 formatted = `${y}/${m}/${d}`;
             }
         }
-        const fontSize = isEditMode ? '9.8px' : '14px';
-        return `<span style="color: #ef4444 !important; font-weight: normal !important; font-size: ${fontSize} !important; font-family: 'PMingLiU', serif !important;">${formatted}</span>`;
+        const fontSize = isEditMode ? '11px' : '14px';
+        return `<span style="color: #ef4444 !important; font-weight: normal !important; font-size: ${fontSize} !important; font-family: 'PMingLiU', serif !important;">${formatted}</span><br>`;
     });
+    if (replaced.endsWith('<br>')) {
+        replaced = replaced.slice(0, -4);
+    }
+    return replaced;
 };
 
 const getDharmaNameText = (dnr) => {
