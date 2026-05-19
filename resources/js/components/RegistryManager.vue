@@ -1054,8 +1054,20 @@ const renderRemarksHtml = (remarks) => {
     // Handles / . - and full-width ／
     const dateRegex = /(\d{2,4}[\/\.\-／]\s?\d{1,2}\s?[\/\.\-／]\s?\d{1,2})/g;
 
-    // Use a very specific red style
-    return text.replace(dateRegex, '<span style="color: #ef4444 !important; font-weight: 900 !important; font-family: sans-serif !important;">$1</span>');
+    // Replace and format date content to match YYYY/MM/DD and standard view mode style
+    return text.replace(dateRegex, (match) => {
+        const parts = match.split(/[\/\.\-／]/);
+        let formatted = match;
+        if (parts.length === 3) {
+            let y = parts[0].trim();
+            let m = parts[1].trim().padStart(2, '0');
+            let d = parts[2].trim().padStart(2, '0');
+            if (!isNaN(parseInt(y)) && !isNaN(parseInt(m)) && !isNaN(parseInt(d))) {
+                formatted = `${y}/${m}/${d}`;
+            }
+        }
+        return `<span style="color: #ef4444 !important; font-weight: normal !important; font-size: 14px !important; font-family: 'PMingLiU', serif !important;">${formatted}</span>`;
+    });
 };
 
 const getDharmaNameText = (dnr) => {
