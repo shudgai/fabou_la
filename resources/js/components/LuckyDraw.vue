@@ -601,6 +601,9 @@
                         <div v-else-if="persistentToast.type === 'success'" class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                         </div>
+                        <div v-else-if="persistentToast.type === 'error'" class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
                         <h3 class="text-[20px] font-black text-slate-900 leading-tight whitespace-pre-wrap">{{ persistentToast.msg }}</h3>
                     </div>
 
@@ -612,10 +615,10 @@
                             確認清空
                         </button>
                         <button @click="persistentToast = null" 
-                                :class="persistentToast.type === 'success' ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
+                                :class="(persistentToast.type === 'success' || persistentToast.type === 'error') ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-500'"
                                 class="w-full py-4 rounded-2xl font-black text-[18px] active:scale-95 transition-all shadow-lg"
-                                :style="{ color: (persistentToast.type === 'success' ? 'white !important' : 'inherit') }">
-                            {{ persistentToast.type === 'success' ? '確認' : '取消' }}
+                                :style="{ color: ((persistentToast.type === 'success' || persistentToast.type === 'error') ? 'white !important' : 'inherit') }">
+                            {{ (persistentToast.type === 'success' || persistentToast.type === 'error') ? '確認' : '取消' }}
                         </button>
                     </div>
                 </div>
@@ -861,7 +864,10 @@ const confirmSelection = () => {
             return;
         }
         // Phase 2 -> Step 3: use current roundParticipants (may have been adjusted)
-        if (roundParticipants.value.length === 0) return;
+        if (roundParticipants.value.length === 0) {
+            persistentToast.value = { msg: '請至少選取一位在場人員以進行抽籤', type: 'error' };
+            return;
+        }
         selectedNames.value = [...roundParticipants.value];
         drawCount.value = 1;
         currentStep.value = 3;
@@ -1317,7 +1323,9 @@ const initDraw = () => {
                         pendingNames.value = draft.pendingNames || [];
                         fixedParticipants.value = draft.fixedParticipants || [];
                         selectedNames.value = draft.selectedNames || [];
-                        roundParticipants.value = draft.roundParticipants || [];
+                        roundParticipants.value = (draft.roundParticipants && draft.roundParticipants.length > 0)
+                            ? draft.roundParticipants
+                            : [...(draft.pendingNames || [])];
                         drawCount.value = draft.drawCount || 1;
                         manualName.value = draft.manualName || '';
                         lotteryMode.value = props.initialMode;
