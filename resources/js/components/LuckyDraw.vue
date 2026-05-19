@@ -787,11 +787,11 @@ const getPendingStyle = (name) => {
                 };
             } else {
                 return {
-                    backgroundColor: '#e2e8f0',
-                    color: '#64748b',
+                    backgroundColor: '#ffffff',
+                    color: '#334155',
                     border: '1px solid #cbd5e1',
                     textShadow: 'none',
-                    opacity: '0.6'
+                    opacity: '1'
                 };
             }
         } else {
