@@ -621,6 +621,14 @@ APP_DEBUG=false
   - 在 `showAdd()`（開啟表單）、`performActualSave()`（單筆儲存成功）和 `executeDistributionSave()`（多筆儲存成功）的關鍵節點，皆補上 `saveConfirmModal.value.records = []` 強制清空，徹底消滅鬼影殘留。
 - **修復（Fallback 洩漏）**：
   - 修改了 `processBatchText` 與 `executeDistributionSave`，在批次新增模式下（`activeEntryTab === 'batch'`），**絕對禁止**向單筆表單的 `form.value.dharma_name_ids` / `form.value.target_remarks` / `form.value.items_footer_remarks` 尋求 Fallback。沒有指定收件人的批次區塊現在會正確保持獨立、空白，完全阻斷資料跨模式交叉污染。
+### Kaiwen Weekly Acrostic Grid Modernization (格子移除與七字限制)
 
+#### 1. 移除每週開文格子 (Grids Removed)
+- **變更**：為了提升開文的打字流暢度與行動端人機介面舒適度，我們將原本 14 列 × 6 個（共 84 個）獨立字元輸入框的「格子」設計全部移除。
+- **新 UI**：改為採用每一列「一個單行文字輸入框（`<input>`）」的精緻設計。
 
-
+#### 2. 每行七字與自動換行限制 (7-Char Auto-Advance & Focus Move)
+- **第一個字鎖定顯示**：每列最前方放置一個紅色的圓角徽章（`<div class="bg-red-50/70 text-red-600">`），牢牢顯示並鎖定該列的開文抬頭藏頭字（第一個字）。
+- **最多輸入六字**：單行輸入框設定 `maxlength="6"`，確保加上藏頭字後，整行**最多只能有七個字**。
+- **自動換行（Auto-Advance）**：當使用者在某列輸入達 6 個字時，游標會**自動向下一列的輸入框跳轉聚焦（focus）**，實現流暢的實時自動換行輸入體驗。
+- **退格聚焦（Backspace Focus）**：若在某一列為空時按下退格鍵（Backspace），游標會自動返回上一列，並自動移至該列文字的最尾端，操作極致貼心與自然。
