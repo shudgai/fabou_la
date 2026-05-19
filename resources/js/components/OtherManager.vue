@@ -455,6 +455,8 @@ const prepareAddRecord = () => {
                 newRecord.value = draft;
                 showAddRecord.value = true;
                 return;
+            } else {
+                safeLocalStorage.removeItem('other_manager_record_draft');
             }
         } catch (e) {}
     }

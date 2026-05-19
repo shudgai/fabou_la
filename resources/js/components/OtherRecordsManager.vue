@@ -257,6 +257,8 @@ const prepareAdd = () => {
                 newDate.value = draft.date || new Date().toISOString().split('T')[0];
                 showAddModal.value = true;
                 return;
+            } else {
+                safeLocalStorage.removeItem('other_records_draft');
             }
         } catch (e) {}
     }

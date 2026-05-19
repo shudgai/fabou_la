@@ -1311,17 +1311,22 @@ const initDraw = () => {
                 const confirmMsg = draft.lotteryMode === true
                     ? `已有在場人員名單（${(draft.pendingNames || []).length} 人），是否要載入？`
                     : '偵測到您有未儲存的草稿，是否要載入？';
-                if (hasDraftData && window.confirm(confirmMsg)) {
-                    currentStep.value = draft.currentStep || 1;
-                    pendingNames.value = draft.pendingNames || [];
-                    fixedParticipants.value = draft.fixedParticipants || [];
-                    selectedNames.value = draft.selectedNames || [];
-                    roundParticipants.value = draft.roundParticipants || [];
-                    drawCount.value = draft.drawCount || 1;
-                    manualName.value = draft.manualName || '';
-                    lotteryMode.value = props.initialMode;
-                    selectionFiltered.value = draft.selectionFiltered !== undefined ? draft.selectionFiltered : (draft.currentStep > 1 || draft.pendingNames.length > 0);
-                    return;
+                if (hasDraftData) {
+                    if (window.confirm(confirmMsg)) {
+                        currentStep.value = draft.currentStep || 1;
+                        pendingNames.value = draft.pendingNames || [];
+                        fixedParticipants.value = draft.fixedParticipants || [];
+                        selectedNames.value = draft.selectedNames || [];
+                        roundParticipants.value = draft.roundParticipants || [];
+                        drawCount.value = draft.drawCount || 1;
+                        manualName.value = draft.manualName || '';
+                        lotteryMode.value = props.initialMode;
+                        selectionFiltered.value = draft.selectionFiltered !== undefined ? draft.selectionFiltered : (draft.currentStep > 1 || draft.pendingNames.length > 0);
+                        return;
+                    } else {
+                        safeLocalStorage.removeItem(DRAFT_KEY);
+                        safeLocalStorage.removeItem('shared_dharma_selection');
+                    }
                 }
             }
         } catch (e) {}

@@ -890,11 +890,15 @@ const openAddMode = (type) => {
     if (draftStr) {
         try {
             const draft = JSON.parse(draftStr);
-            if (draft.type === type && window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
-                form.value = draft.form;
-                weeklyLines.value = (draft.weeklyLines ? draft.weeklyLines.map(line => Array.isArray(line) ? line.join('') : (line || '')) : Array(14).fill(''));
-                isManualWeekly.value = draft.isManualWeekly || false;
-                return;
+            if (draft.type === type) {
+                if (window.confirm('偵測到您有未儲存的草稿，是否要載入？')) {
+                    form.value = draft.form;
+                    weeklyLines.value = (draft.weeklyLines ? draft.weeklyLines.map(line => Array.isArray(line) ? line.join('') : (line || '')) : Array(14).fill(''));
+                    isManualWeekly.value = draft.isManualWeekly || false;
+                    return;
+                } else {
+                    safeLocalStorage.removeItem('kaiwen_draft');
+                }
             }
         } catch (e) {}
     }
