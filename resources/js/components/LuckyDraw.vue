@@ -1346,7 +1346,7 @@ const initDraw = () => {
                     selectedNames.value = [...sharedNames];
                     selectionFiltered.value = true;
                     currentStep.value = 1;
-                    roundParticipants.value = [];
+                    roundParticipants.value = [...sharedNames];
                     drawCount.value = 1;
                 }
             } catch (e) {}
