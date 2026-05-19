@@ -74,8 +74,8 @@
                     </div>
                 </div>
 
-                <!-- Step 3 (cumulative: quantity; non-cumulative: army-specific quantity) -->
-                <div v-if="(props.isCumulative && currentStep === 3) || (!props.isCumulative && currentStep === 3)" class="space-y-2">
+                <!-- Step 2 (cumulative) / Step 3 (non-cumulative) (quantity; army-specific quantity) -->
+                <div v-if="(props.isCumulative && currentStep === 2) || (!props.isCumulative && currentStep === 3)" class="space-y-2">
                     <template v-if="props.armyType === '黑曜軍'">
                         <div class="flex gap-2 items-center">
                             <label class="font-bold text-slate-400 uppercase tracking-wider w-12">閻尊</label>
@@ -110,7 +110,7 @@
                     </template>
                 </div>
 
-                <div v-if="(props.isCumulative && currentStep === (hasQuantity ? 4 : 3)) || (!props.isCumulative && currentStep === 4)" class="space-y-1">
+                <div v-if="(props.isCumulative && currentStep === 3) || (!props.isCumulative && currentStep === 4)" class="space-y-1">
                     <label class="font-bold text-slate-400 uppercase tracking-wider">備註文字</label>
                     <textarea v-model="form.remarks_text" rows="3" placeholder="備註文字" class="w-full border-0 border-b-2 border-slate-300 bg-transparent px-2 py-1 outline-none focus:border-slate-900 text-center resize-none leading-relaxed"></textarea>
                 </div>
@@ -331,7 +331,8 @@ const nextStep = () => {
             return;
         }
     }
-    if (currentStep.value === 3) {
+    const isQuantityStep = (props.isCumulative && currentStep.value === 2) || (!props.isCumulative && currentStep.value === 3);
+    if (isQuantityStep) {
         const qty = isValidBigInt(form.value.quantity) ? BigInt(String(form.value.quantity).replace(/,/g, '')) : 0n;
         if (props.armyType === '黑曜軍') {
             const zun = isValidBigInt(form.value.yan_zun) ? BigInt(String(form.value.yan_zun).replace(/,/g, '')) : 0n;
