@@ -2386,7 +2386,7 @@ const syncRecords = async () => {
             axios.get('/api/groups-list'),
             axios.get('/api/masters-list'), 
             axios.get('/api/treasures-list', { params: { type: ['teaching', 'content'] } }),
-            axios.get('/teachings', { params: { per_page: 2000 } })
+            axios.get('/teachings', { params: { per_page: 1 } })
         ]);
         if (dnRes.status === 'fulfilled') dharmaNames.value = dnRes.value.data;
         if (groupRes.status === 'fulfilled') groups.value = groupRes.value.data || [];
