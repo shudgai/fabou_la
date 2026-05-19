@@ -1,0 +1,72 @@
+[
+    {
+        "id": 11,
+        "name": "元續",
+        "email": "shudgai999@gmail.com",
+        "email_verified_at": null,
+        "password": "$2y$10$vE6VghwyZmWYGvO6cnY4l.j0nBjQ8RIWZ06.ak7G1VxLJYmgSqiBW",
+        "role": null,
+        "google_id": null,
+        "remember_token": "qmlmuMxmJDkOJfsDeWLfrH0POe0tkEMc1g1ocYhpNspRppLXtKl47qGg1Q0Q",
+        "created_at": "2026-05-16 22:54:15",
+        "updated_at": "2026-05-16 22:54:15",
+        "group_id": null,
+        "dharma_name_id": null
+    },
+    {
+        "id": 12,
+        "name": "testadmin",
+        "email": "testadmin@example.com",
+        "email_verified_at": null,
+        "password": "$2y$10$e7I7aVyfArLZLfJDDaHDh.3EBCoLQ3TYMf\/lV0qqxlJ0grdlwWDwq",
+        "role": null,
+        "google_id": null,
+        "remember_token": null,
+        "created_at": "2026-05-18 21:35:22",
+        "updated_at": "2026-05-18 21:35:22",
+        "group_id": null,
+        "dharma_name_id": null
+    },
+    {
+        "id": 13,
+        "name": "Admin",
+        "email": "admin_test@gmail.com",
+        "email_verified_at": null,
+        "password": "$2y$10$fngdgsuIlFgAIEcntfQIveWnPP.bFQeL9WLufjxqX2JaS9HmA\/K46",
+        "role": null,
+        "google_id": null,
+        "remember_token": null,
+        "created_at": "2026-05-19 07:38:27",
+        "updated_at": "2026-05-19 07:38:27",
+        "group_id": null,
+        "dharma_name_id": null
+    },
+    {
+        "id": 14,
+        "name": "Tester",
+        "email": "tester123@gmail.com",
+        "email_verified_at": null,
+        "password": "$2y$10$aNXfnNPDp.E4\/y7eP4lK7OckCGATLAeFbt10iqfjUT9tgXSzvBoKG",
+        "role": null,
+        "google_id": null,
+        "remember_token": null,
+        "created_at": "2026-05-19 07:53:49",
+        "updated_at": "2026-05-19 07:53:49",
+        "group_id": null,
+        "dharma_name_id": null
+    },
+    {
+        "id": 15,
+        "name": "shugai",
+        "email": "shugai999@gmail.com",
+        "email_verified_at": null,
+        "password": "$2y$10$8LZFmPx7v7G\/1Up2NKVIO.l9mBTn7Sh1gIAkhKoR0Vl3sqAjcZ4J6",
+        "role": null,
+        "google_id": null,
+        "remember_token": null,
+        "created_at": "2026-05-19 10:13:11",
+        "updated_at": "2026-05-19 10:13:11",
+        "group_id": null,
+        "dharma_name_id": null
+    }
+]

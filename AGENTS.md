@@ -600,4 +600,9 @@ APP_DEBUG=false
   - **Edit Mode Table**: Changed column widths to `w-[38%]` (法號), `w-[27%]` (日期), `w-[31%]` (備註), `w-[4%]` (刪除) to exactly fit 5 Chinese characters for Dharma names while shifting date/remarks inputs left/forward.
   - **View Mode Tables**: Changed column widths to `w-[38%]` (法號), `w-[28%]` (日期), `w-[34%]` (備註) across both major category and other categories tables.
 - **Remarks Center Alignment**: Changed remarks `div` container class in View Mode tables from `justify-start` to `justify-center` and target table cells `td` class from `text-left` to `text-center` so that remarks content (and empty indicator `--`) are perfectly centered relative to the headers.
+- **Database Auto Backup & Restore System**:
+  - **Root Cause of Data Loss**: Custom sub-folders in Imperial Grace and Registries are calculated based on database records of specific Masters. Running `php artisan db:seed` or refreshing databases would wipe all tables and replace them with standard seeder defaults, causing custom sub-folders and records to disappear.
+  - **Solution (backup_db.php)**: Created a fast backup script in the workspace root. Run `php backup_db.php` to export 18 key database tables to individual formatted JSON files inside `database/seeders/data/` (keeps live data perfectly preserved).
+  - **Restore Mechanism (DatabaseSeeder.php)**: Integrated automatic backup file detection into the core `DatabaseSeeder`. It automatically checks for `users.json` and `treasures.json` backups; if found, it disables foreign key checks, truncates database tables, and restores custom records with 100% fidelity, avoiding any data loss during database refreshes.
+
 

@@ -1,0 +1,1352 @@
+[
+    {
+        "id": 1,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清煞法寶",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 2,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清重煞法寶",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 3,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "脫體寶",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 4,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清靈識法寶",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 5,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "七素",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 6,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "昊光",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:21",
+        "updated_at": "2026-05-16 22:59:21"
+    },
+    {
+        "id": 7,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清身後一大劫",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 8,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清身後最近一波重煞",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 9,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "金線",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 10,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "轉亮天地陰陽八卦陣",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 11,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "轉亮體內光線",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 12,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調出深層煞氣然後把它清掉",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 13,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清業根",
+        "category": "清煞法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 14,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "提升玄能",
+        "category": "玄能提升",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 15,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "轉亮體內法寶",
+        "category": "玄能提升",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 16,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "轉亮光線",
+        "category": "玄能提升",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 17,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調靈體",
+        "category": "靈體調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 18,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靜坐調靈體",
+        "category": "靈體調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 19,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "森羅戒",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 20,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靈光寶戒",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 21,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "元光寶戒",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 22,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "龍戒",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 23,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "隨身寶",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 24,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "乾靈線",
+        "category": "隨身法寶",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 25,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "修補五臟六腑",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:22",
+        "updated_at": "2026-05-16 22:59:22"
+    },
+    {
+        "id": 26,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "通血路",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 27,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "舒筋活血",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 28,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調整骨骼",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 29,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "活絡筋骨",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 30,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "處理患處",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 31,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調解體內溫度之法寶",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 32,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "讓新陳代謝較好之皇恩",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 33,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補精氣神",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 34,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補身體不足之元素",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 35,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "極爐之元素",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 36,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "泡澡法寶",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 37,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "法運血脈",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 38,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "無形法運血脈",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 39,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "排廢水法陣",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 40,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "賜降防蚊蟲叮咬之皇恩",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 41,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "專司靈療令",
+        "category": "修補調整",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 42,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清磁場",
+        "category": "磁場",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 43,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調宮中磁場",
+        "category": "磁場",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 44,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "殿氣",
+        "category": "磁場",
+        "options": null,
+        "created_at": "2026-05-16 22:59:23",
+        "updated_at": "2026-05-16 22:59:23"
+    },
+    {
+        "id": 45,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "引殿氣",
+        "category": "磁場",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 46,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清地靈",
+        "category": "磁場",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 47,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "安魂定魄",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 48,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "腦清目明",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 49,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清除腦中煞氣",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 50,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "安定腦波",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 51,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "調腦波",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 52,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "請玉筆清七竅來提升玄能",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 53,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "恭請仙師法寶蓋七竅",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 54,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清七竅",
+        "category": "腦部相關",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 55,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "請極爐照患處",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 56,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "將靈形引至極源玄尊洞",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 57,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "加強版幻元陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 58,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "極靈九星陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 59,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靈光清煞陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 60,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "極靈玄鐘 (加強版)",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 61,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "加強版運血葫",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 62,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "金環鎖扣陣 (加強版)",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 63,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靈形引至金龍太子殿",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 64,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "龍源鎮邪陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:24",
+        "updated_at": "2026-05-16 22:59:24"
+    },
+    {
+        "id": 65,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "森羅七煞陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 66,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "加強版森羅業鐘",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 67,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "加強版森羅集煞陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 68,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "森羅集煞",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 69,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "急催業風",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 70,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "敕王令清煞陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 71,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "法斬重煞",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 72,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "撤除重煞",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 73,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "至高頂級眾法陣",
+        "category": "父皇仙師法陣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 74,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補王氣",
+        "category": "補氣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 75,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補皇氣",
+        "category": "補氣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 76,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補龍氣",
+        "category": "補氣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 77,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "補靈氣",
+        "category": "補氣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 78,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "業績法寶",
+        "category": "事業善緣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 79,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "招財引善緣",
+        "category": "事業善緣",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 80,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 81,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "元丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 82,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靈丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 83,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "極丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 84,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "太玄靈丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:25",
+        "updated_at": "2026-05-16 22:59:25"
+    },
+    {
+        "id": 85,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "道源極丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 86,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "三光金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 87,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "回春金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 88,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "龍罡焰丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 89,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "腦清目明金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 90,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "禦寒金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 91,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "代謝金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 92,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "正中午吃金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 93,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "正中午清靈識金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 94,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "森羅金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 95,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "開文金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 96,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "降血壓金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 97,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "通血路金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 98,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "救命金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 99,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "止血金丹",
+        "category": "金丹",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 100,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 101,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "睡覺符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 102,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "增值睡覺符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 103,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "吸煞符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 104,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "替身符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 105,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "龍令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:26",
+        "updated_at": "2026-05-16 22:59:26"
+    },
+    {
+        "id": 106,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "靈令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 107,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "太令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 108,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "貼紙符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 109,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清怨煞法寶",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 110,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "疏文符令",
+        "category": "符令",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 111,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "令旗",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 112,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "金印",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 113,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "淨塵",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 114,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "令牌",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 115,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "天筆",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 116,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "法筆",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 117,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "玉筆",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 118,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "寶鏡",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 119,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "寶劍",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 120,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "八卦",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:27",
+        "updated_at": "2026-05-16 22:59:27"
+    },
+    {
+        "id": 121,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "油燈",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 122,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "皇令牌",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 123,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "現惡鏡",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 124,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "清靈寶扇",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 125,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "將靈形引至油燈",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 126,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "將靈形引至法寶爐",
+        "category": "殿中法器",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 127,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "由師兄姊執法清煞",
+        "category": "執法",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 128,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "塩寶",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 129,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "香灰",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 130,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "高梁法酒",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 131,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "法酒",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 132,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "龍涎",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 133,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "香環",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 134,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "福祿香環",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    },
+    {
+        "id": 135,
+        "master_id": 0,
+        "type": "teaching",
+        "name": "法器",
+        "category": "其他",
+        "options": null,
+        "created_at": "2026-05-16 22:59:28",
+        "updated_at": "2026-05-16 22:59:28"
+    }
+]
