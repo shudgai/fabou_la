@@ -120,6 +120,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Batch integrity (WYPIWYS) | For batch-pasted records, preserve the FULL original content in the database; do NOT strip headers or item lines. List view should render raw content with `whitespace-pre-wrap` and hide synthetic headers when `isContentLiteral` is true. |
 | Dropdown/Menu state | Use `activeDropdownId` (reactive) to track which item menu/dropdown is open; ensure `activeDropdownId = null` is called on delete/edit/close. |
 | CompactDatalist (Mobile) | Replace native `<datalist>` on mobile with boxed buttons below input; only visible on mobile (`md:hidden`); caps at 15 items for performance. |
+| Central Taiji SVG | Uniformly vertical, symmetrical, and straight (using vertical coordinates `25.5` / `74.5` and bounds `1` / `99`) across all pages, layouts, and components. |
 
 ## Component-Specific Notes
 
