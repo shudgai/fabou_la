@@ -391,6 +391,8 @@
                                         v-model="weeklyLines[i]"
                                         @input="onWeeklyLineInput($event, i)"
                                         @keydown="handleWeeklyLineKeyDown($event, i)"
+                                        @compositionstart="composingRows[i] = true"
+                                        @compositionend="onCompositionEnd($event, i)"
                                         class="flex-1 h-10 px-3 bg-white outline-none border border-slate-300 rounded-xl focus:border-purple-500 focus:bg-purple-50/30 transition-all font-black text-slate-800"
                                         :style="{ fontFamily: 'Noto Sans TC, sans-serif', fontSize: '16px' }"
                                     >
@@ -773,8 +775,18 @@ watch(() => ({ f: form.value, w: weeklyLines.value, m: isManualWeekly.value }), 
     }
 }, { deep: true });
 
+const composingRows = ref({});
+
+const onCompositionEnd = (e, row) => {
+    composingRows.value[row] = false;
+    onWeeklyLineInput(e, row);
+};
+
 const onWeeklyLineInput = (e, row) => {
     const val = e.target.value || '';
+    if (composingRows.value[row]) {
+        return;
+    }
     if (val.length >= 6) {
         weeklyLines.value[row] = val.substring(0, 6);
         const nextInput = document.getElementById(`weekly-line-${row + 1}`);
