@@ -100,7 +100,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 | Folder text (registries) | Yellow `#fbbf24` |
 | Folder grid | `flex flex-col items-center gap-[4px]` (vertical, no borders) |
 | Button layout (Kaiwen) | Title + two tabs on same row: `flex-row items-center gap-3 ml-3` |
-| Batch import title | `<h5>` with `<br>` for multi-line |
+| Batch import title | Standardized two-row header matching single add form |
 | Layout | Use `flex-col` / `items-center` for vertical stacking; `grid-cols-2` only for form footer buttons |
 | SVG folder path | `M4 14C4 11.7909...` (standard folder shape, solid fill) |
 | Vite build warning | Pre-existing CSS `text-[13px]` warning is minor/ignorable |
@@ -198,7 +198,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 
 ### GrudgeBatchImport.vue
 - Batch import UI for 怨靈載錄
-- Header: `<h5>` "怨靈載錄專區<br>多筆載錄"
+- Header: Standardized two-row format matching GrudgeAddForm header (Row 1: Logo + red 怨靈載錄專區; Row 2: 多筆載錄 aligned with close button).
 - Preview toast: `w-full` on flex column to match parent
 - Placeholder: `多筆新增如下列:\n日期(yyyy/mm/dd)\n法號總數`
 
@@ -220,6 +220,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 ### MilitaryAddForm.vue (2026-05-12 rewrite)
 - Step-based form: 日期 → 法號 → 數量 → 備註 → 預覽 (5 steps)
 - Cumulative mode: 日期 → 數量 → 備註 → 預覽 (4 steps)
+- Header Row 2 inline layout: uses horizontal `flex items-baseline gap-x-2` layout placing the army type and operation mode ("逐筆新增" / "原始數量" / "修改內容") inline on the same row.
 - 法號 and 備註對象 are separate fields (matching GrudgeAddForm pattern)
 - CompactDatePicker rendered at root level with `v-if`/`@close`, triggered by calendar icon
 - 3 dot action menu at `top-[48px]` in manager
@@ -227,6 +228,10 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Footer buttons: `absolute bottom-[7dvh]` on mobile (above navbar), `md:relative` on desktop
 - 黑曜軍 labels: 閻尊 / 閻閽
 - 耀紫軍 labels: 龍勝 / 龍戰
+
+### MilitaryBatchAdd.vue
+- Header Row 2 inline layout: uses horizontal `flex items-baseline gap-x-2` layout placing the army type and "多筆新增" inline on the same row to prevent double-line wrapping.
+- Clear Text button: Redesigned from a red text button box ("清空全部") to a clean, borderless top-right SVG cross (X) icon button to save space.
 
 ### GrudgeManager.vue
 - List items: `py-3 px-3` with `border-slate-300` between items
