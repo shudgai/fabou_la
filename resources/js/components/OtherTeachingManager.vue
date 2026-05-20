@@ -55,18 +55,18 @@
             </div>
 
             <!-- Record List -->
-            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full', focusedId ? 'px-0 py-0' : 'px-4 pt-[10px] pb-6']">
-                <div :class="['max-w-4xl mx-auto space-y-4 pb-32', focusedId ? 'space-y-0' : 'space-y-4']">
+            <div :class="['flex-1 overflow-y-auto custom-scrollbar bg-slate-50/20 w-full', (!isDesktop && focusedId) ? 'px-0 py-0' : 'px-4 pt-[10px] pb-6']">
+                <div :class="['max-w-4xl mx-auto space-y-4 pb-32', (!isDesktop && focusedId) ? 'space-y-0' : 'space-y-4']">
                     <div v-for="item in filteredRecords" :key="item.id" 
-                         v-show="focusedId === null || focusedId === item.id"
+                         v-show="isDesktop || focusedId === null || focusedId === item.id"
                          @click="toggleExpand(item.id)"
                          :class="[
                              'bg-white border-b border-slate-300 transition-all duration-300 relative group animate-fade-in cursor-pointer active:bg-slate-50',
-                              focusedId === item.id ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'p-[10px]'
+                              (!isDesktop && focusedId === item.id) ? 'min-h-[80dvh] rounded-none px-[15px] py-4 md:px-[15px]' : 'p-[10px]'
                          ]">
 
                         <!-- Action container inside expanded card -->
-                        <div v-if="focusedId === item.id" class="absolute top-3 right-3 flex items-center gap-2 z-20">
+                        <div v-if="!isDesktop && focusedId === item.id" class="absolute top-3 right-3 flex items-center gap-2 z-20">
                             <!-- Three Dots Menu Button -->
                             <div class="relative">
                                 <button @click.stop="toggleActionMenu(item.id)"
@@ -108,7 +108,7 @@
                             <!-- Content Body -->
                             <div :class="[
                                 'pt-3 text-[17px] font-black text-slate-800 leading-relaxed font-outfit',
-                                focusedId === item.id ? 'whitespace-pre-wrap' : 'line-clamp-1'
+                                (!isDesktop && focusedId === item.id) ? 'whitespace-pre-wrap' : 'line-clamp-1'
                             ]">
                                 {{ item.content }}
                             </div>
@@ -144,6 +144,74 @@
                 @home="$emit('goHome')" 
                 @back="$emit('goHome')" 
                 :can-back="true" />
+
+            <!-- Desktop Item Detail Modal (md+ only, right col-8) -->
+            <teleport to="body">
+                <div v-if="desktopModalItem && isDesktop"
+                     class="hidden md:flex fixed inset-0 z-[3500] items-center justify-center"
+                     style="padding-left: 33.333%; background: rgba(15,23,42,0.45); backdrop-filter: blur(3px);"
+                     @click.self="closeDesktopModal">
+                    <!-- Modal Panel -->
+                    <div class="relative bg-white rounded-[28px] shadow-2xl w-full max-w-[540px] mx-auto flex flex-col overflow-hidden animate-pop-in"
+                         style="max-height: 85dvh;">
+    
+                        <!-- Modal Header -->
+                        <div class="flex flex-col bg-white border-b border-slate-100 shrink-0">
+                            <div class="px-5 py-3 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <logo-imperial-notebook :height="28" />
+                                    <span class="font-outfit font-black text-[#0f172a] tracking-widest" style="font-size: 20px;">其他記錄專區</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <!-- Action Menu -->
+                                    <div class="relative">
+                                        <button @click.stop="activeActionMenuId = activeActionMenuId === desktopModalItem.id ? null : desktopModalItem.id"
+                                                class="p-2 active:scale-90 transition-all text-red-500">
+                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                        </button>
+                                        <div v-if="activeActionMenuId === desktopModalItem.id" @click.stop
+                                             class="absolute right-0 mt-0 w-36 bg-white border border-slate-200 shadow-xl rounded-2xl z-[110] py-1 animate-fade-in overflow-hidden">
+                                            <button @click.stop="startEdit(desktopModalItem); closeDesktopModal()"
+                                                    class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">編輯</button>
+                                            <button @click.stop="copyItem(desktopModalItem); activeActionMenuId = null"
+                                                    class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">複製貼 LINE</button>
+                                            <button @click.stop="downloadItem(desktopModalItem); activeActionMenuId = null"
+                                                    class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">下載檔案</button>
+                                            <button @click.stop="deleteRecord(desktopModalItem.id); closeDesktopModal()"
+                                                    class="w-full text-left px-3 py-2.5 text-[16px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">刪除</button>
+                                        </div>
+                                    </div>
+                                    <!-- Close -->
+                                    <button @click="closeDesktopModal" class="p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Record date & target sub-header -->
+                            <div class="px-5 pb-3 space-y-1">
+                                <div class="text-[14px] font-black text-slate-400 tracking-wider">
+                                    {{ formatDate(desktopModalItem.date) || '無日期' }}
+                                </div>
+                                <div v-if="desktopModalItem.master || desktopModalItem.target_remarks" class="flex items-center text-[16px] font-black text-indigo-600 space-x-2">
+                                    <span v-if="desktopModalItem.master">{{ desktopModalItem.master.name }}</span>
+                                    <span v-if="desktopModalItem.master && desktopModalItem.target_remarks" class="text-slate-300 mx-1">/</span>
+                                    <span v-if="desktopModalItem.target_remarks" class="text-black">對象:{{ desktopModalItem.target_remarks }}</span>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Scrollable Content -->
+                        <div class="flex-1 overflow-y-auto custom-scrollbar px-6 py-5">
+                            <div class="text-[17px] font-black text-slate-800 leading-relaxed font-outfit whitespace-pre-wrap">
+                                {{ desktopModalItem.content }}
+                            </div>
+                            <div v-if="desktopModalItem.remarks" class="mt-4 pt-4 border-t border-slate-100 text-[14px] font-bold text-slate-400">
+                                備註：{{ desktopModalItem.remarks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </teleport>
 
             <!-- Add/Edit Modal (Wizard) -->
             <div v-if="showModal" class="fixed inset-0 z-[1000] flex items-end md:items-center justify-center px-0 bg-slate-900/20 backdrop-blur-sm">
@@ -284,6 +352,16 @@ const showTargetModal = ref(false);
 const masterSearchQuery = ref('');
 const targetSearchQuery = ref('');
 const scrollContainer = ref(null);
+
+// Desktop Modal State
+const isDesktop = ref(window.innerWidth >= 768);
+const handleResize = () => { isDesktop.value = window.innerWidth >= 768; };
+const desktopModalItem = ref(null);
+
+const closeDesktopModal = () => {
+    desktopModalItem.value = null;
+    activeActionMenuId.value = null;
+};
 
 const staticMasters = [
     { name: '老祖仙師' }, { name: '元始仙師' }, { name: '道祖仙師' }, { name: '靈寶仙師' },
@@ -500,6 +578,16 @@ const executeDelete = async () => {
 };
 
 const toggleExpand = (id) => {
+    if (isDesktop.value) {
+        const item = records.value.find(r => r.id === id);
+        if (desktopModalItem.value && desktopModalItem.value.id === id) {
+            desktopModalItem.value = null;
+        } else {
+            desktopModalItem.value = item || null;
+        }
+        activeActionMenuId.value = null;
+        return;
+    }
     focusedId.value = focusedId.value === id ? null : id;
     activeActionMenuId.value = null;
 };
@@ -569,16 +657,27 @@ const handleDocumentClick = () => {
 
 onUnmounted(() => {
     document.removeEventListener('click', handleDocumentClick);
+    window.removeEventListener('resize', handleResize);
     if (isAnyModalOpen.value) unlockBodyScroll();
 });
 
 onMounted(() => {
     loadData();
+    window.addEventListener('resize', handleResize);
     document.addEventListener('click', handleDocumentClick);
 });
 </script>
 
 <style scoped>
+.animate-pop-in {
+    animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .animate-slide-up {
     animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

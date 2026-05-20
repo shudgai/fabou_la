@@ -221,10 +221,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col items-center min-h-[350px]"
-                        :class="results.length === 1 ? 'justify-center' : 'justify-start'">
-                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-0">
-                            <div class="font-black text-[120px] leading-none text-center" style="font-family: 'DFKai-SB', '標楷體', serif; color: #dc2626 !important;">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] flex flex-col items-center min-h-[350px]"
+                        :class="results.length === 1 ? 'justify-center pb-[15vh]' : 'justify-center pb-[120px]'">
+                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center" style="padding-top: 0;">
+                            <div class="font-black leading-none text-center" :style="{ fontFamily: '\'DFKai-SB\', \'標楷體\', serif', color: '#dc2626', fontSize: getDynamicFontSize(1) }">
                                 {{ results[0] }}
                             </div>
                         </div>
@@ -494,11 +494,11 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] pb-64 flex flex-col items-center min-h-[350px]"
-                        :class="results.length === 1 ? 'justify-center' : 'justify-start'">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] flex flex-col items-center min-h-[350px]"
+                        :class="results.length === 1 ? 'justify-center pb-[15vh]' : 'justify-center pb-[120px]'">
                         <!-- SINGLE RESULT: CROWN & CENTERED -->
-                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center pt-0">
-                            <h3 class="font-black text-[120px] text-center leading-none" style="color: #dc2626 !important; font-family: 'DFKai-SB', '標楷體', serif;">{{ results[0] }}</h3>
+                        <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center" style="padding-top: 0;">
+                            <h3 class="font-black text-center leading-none" :style="{ color: '#dc2626', fontFamily: '\'DFKai-SB\', \'標楷體\', serif', fontSize: getDynamicFontSize(1) }">{{ results[0] }}</h3>
                             <div class="flex items-center space-x-2 text-indigo-300 mt-4">
                                 <div class="h-[2px] w-8 bg-indigo-100"></div>
                                 <span class="text-[15px] font-black uppercase tracking-widest">唯一幸運兒</span>
@@ -674,13 +674,15 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved']);
 
 const getDynamicFontSize = (count) => {
-    if (count <= 1) return '120px';
-    if (count <= 2) return '90px';
-    if (count <= 4) return '64px';
-    if (count <= 6) return '54px';
-    if (count <= 8) return '46px';
-    if (count <= 12) return '40px';
-    if (count <= 16) return '34px';
+    const isMobile = window.innerWidth < 768;
+    const scale = isMobile ? 0.9 : 1;
+    if (count <= 1) return `${120 * scale}px`;
+    if (count <= 2) return `${90 * scale}px`;
+    if (count <= 4) return `${64 * scale}px`;
+    if (count <= 6) return `${54 * scale}px`;
+    if (count <= 8) return `${46 * scale}px`;
+    if (count <= 12) return `${40 * scale}px`;
+    if (count <= 16) return `${34 * scale}px`;
     return 'clamp(22px, 5.5vw, 38px)';
 };
 

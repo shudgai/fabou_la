@@ -256,6 +256,8 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Defensive check**: watch callback 中加入 `typeof loadUsers === 'function'` 防禦性檢查
 - **Mobile scroll fix**: 所有步驟的 flex 容器加入 `min-h-0` 確保行動裝置正確計算高度並啟用滾動
 - **回合抽籤**: Step 3/4 內容過長時可正常向下滾動
+- **專屬滑動把手 (Scroll Handle)**: 在網格滑動選取介面 (如: 抽順序的 Step 1/2) 增加位於右側的手動捲動把手，避免選取誤觸；在「點擊」介面 (如: 回合抽籤的 Step 3) 則透過 `v-if="!isDrawing && ..."` 隱藏把手。
+- **草稿狀態還原**: `initDraw` 載入草稿時，`roundParticipants` 直接套用 `draft.roundParticipants || []` (不 fallback 到 pendingNames)，確保在回合抽籤模式下進入 Step 3 時為乾淨狀態，讓「清空」鍵正確亮起。
 
 ### LuckyDraw.vue 抽籤結果介面 (2026-05-18 Finalized)
 - **最多 3 欄**: `chunkedResults` computed 依人數動態分欄 — ≤10人→1欄, ≤20人→2欄, 21+人→3欄
@@ -288,6 +290,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - Group Size configuration located at the bottom of Step 4 for better ergonomic flow
 - Distribute logic uses safe size parameter (`Math.max(1, parseInt(size) || 1)`) to prevent infinite `while` loop freeze if the size input is manually cleared.
 - Results view (Step 5) utilizes standard administrative layout and dynamically fills container height correctly utilizing flex.
+- **專屬滑動把手 (Scroll Handle)**: 在 Step 1 的人員選取介面 (滑動游標選取人員) 中，比照抽籤專區加入了右側手動捲動把手，防止滑動選取時的誤觸問題。
 
 ## Performance & Optimization
 
@@ -659,3 +662,9 @@ APP_DEBUG=false
 #### 3. OtherManager Concurrency Crash
 - **Bug**: Concurrent `loadData` calls triggered during page mount caused duplicate folder cleanups to throw `AxiosError: 404 (Not Found)` when deleting the same folder ID twice.
 - **Fix**: Wrapped Axios folder deletions and folder post-initializations inside `try...catch` blocks to prevent page load crashes.
+
+## Session Notes (2026-05-20)
+
+### UI Result Alignments (LuckyDraw & RandomGroup)
+- **LuckyDraw.vue Result Vertical Alignment**: Changed multi-result container to `justify-center pb-[120px]` and single-result container to `justify-center pb-[15vh]` to ensure the text is perfectly vertically centered (or slightly above center for single) regardless of screen height.
+- **RandomGroup.vue Result Shadow Removal**: Removed text shadow from the newly drawn guardian name popup screen to create a cleaner look matching the other pages.

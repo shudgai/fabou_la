@@ -122,7 +122,7 @@
                                   </div>
                               </div>
                               <!-- Expanded Content -->
-                              <div class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative pb-4">
+                              <div class="mt-3 pt-3 border-t border-slate-100 space-y-3 animate-fade-in relative pb-2">
                                   <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">
                                       <label class="grudge-label uppercase tracking-widest">軍隊細目</label>
                                       <div class="flex items-center space-x-6">
@@ -245,7 +245,7 @@
                                       </div>
 
                                           <!-- Expanded Content (Show Everything when focused) -->
-                                         <div v-if="focusedId === item.id" class="mt-6 pt-6 border-t border-slate-100 space-y-6 animate-fade-in relative">
+                                         <div v-if="focusedId === item.id" class="mt-3 pt-3 border-t border-slate-100 space-y-3 animate-fade-in relative pb-2">
 
                                              <!-- Army Breakdown (if applicable) -->
                                              <div v-if="item.destination === '黑曜軍' || item.destination === '耀紫軍'" class="space-y-2">

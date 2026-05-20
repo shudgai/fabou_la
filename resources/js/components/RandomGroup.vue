@@ -525,8 +525,7 @@
                                 :style="{ 
                                     fontSize: getDynamicFontSize(newlyDrawnGuardians.length),
                                     color: '#dc2626',
-                                    fontWeight: '900',
-                                    textShadow: '0 4px 16px rgba(220, 38, 38, 0.25)'
+                                    fontWeight: '900'
                                 }"
                             >
                                 {{ name }}

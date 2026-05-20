@@ -112,7 +112,7 @@
             <div v-else-if="currentFolder && !addMode" 
                 :class="[
                     'px-0 bg-white transition-all duration-300 w-full md:max-w-xl md:mx-auto',
-                    focusedId ? 'fixed inset-0 z-[100] pt-[90px] overflow-y-auto custom-scrollbar' : ''
+                    focusedId && !isDesktop ? 'fixed inset-0 z-[100] pt-[90px] overflow-y-auto custom-scrollbar' : ''
                 ]"
                 style="">
                 <!-- Desktop Centered Header Section within Col-7 (Updated per user request for 图2 Layout) -->
@@ -645,7 +645,302 @@
             </div>
         </teleport>
 
+        <!-- Desktop Item Detail Modal (md+ only) -->
+        <teleport to="body">
+            <div v-if="desktopModalItem && isDesktop"
+                 class="hidden md:flex fixed inset-0 z-[3500] items-center justify-center"
+                 style="padding-left: 33.333%; background: rgba(15,23,42,0.45); backdrop-filter: blur(3px);"
+                 @click.self="closeDesktopModal">
+                <!-- Modal Panel -->
+                <div class="relative bg-white rounded-[28px] shadow-2xl w-full max-w-[540px] mx-auto flex flex-col overflow-hidden animate-pop-in"
+                     style="max-height: 85dvh;">
 
+                    <!-- Modal Header -->
+                    <div class="flex flex-col bg-white border-b border-slate-100 shrink-0">
+                        <div class="px-5 py-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <logo-imperial-notebook :height="28" />
+                                <span class="font-outfit font-black text-[#dc2626] tracking-widest" style="font-size: 20px;">特殊法寶登記區</span>
+                            </div>
+                            <button @click="closeDesktopModal" class="p-2 text-slate-300 hover:text-slate-600 transition-all active:scale-90">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="px-5 pb-2 flex items-center justify-between">
+                            <span class="font-outfit font-normal text-slate-700" style="font-size: 17px;"
+                                  :style="{ color: desktopModalItem.master_id && getMasterName(desktopModalItem.master_id) === '閻王仙師' ? '#0f172a' : '#dc2626' }">
+                                {{ desktopModalItem.master_id ? getMasterName(desktopModalItem.master_id) : '未設定' }}
+                            </span>
+                            <!-- Action menu -->
+                            <div class="relative">
+                                <button @click.stop="openMenuId = openMenuId === desktopModalItem.id ? null : desktopModalItem.id"
+                                        class="p-2 active:scale-90 transition-all !text-[#dc1428]">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="5" cy="12" r="2" />
+                                        <circle cx="12" cy="12" r="2" />
+                                        <circle cx="19" cy="12" r="2" />
+                                    </svg>
+                                </button>
+                                <div v-if="openMenuId === desktopModalItem.id"
+                                     class="absolute right-0 mt-0 w-28 bg-white border border-slate-200 shadow-xl rounded-2xl z-[110] py-1 animate-fade-in overflow-hidden">
+                                    <button @click.stop="editDesktopModalItem(); openMenuId = null"
+                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">修改</button>
+                                    <button @click.stop="copyAsTextFile(desktopModalItem); openMenuId = null"
+                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">複製</button>
+                                    <button @click.stop="downloadItemData(desktopModalItem); openMenuId = null"
+                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-slate-900 hover:bg-slate-50 flex items-center transition-colors border-b border-slate-50 whitespace-nowrap">下載</button>
+                                    <button @click.stop="deleteConfirmId = desktopModalItem.id; openMenuId = null"
+                                            class="w-full text-left px-3 py-2.5 text-[16px] font-black text-red-600 hover:bg-red-50 flex items-center transition-colors whitespace-nowrap">刪除</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Content -->
+                    <div class="flex-1 overflow-y-auto custom-scrollbar">
+
+                        <!-- EDIT MODE -->
+                        <div v-if="editItemId === desktopModalItem.id && editData" @click.stop class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-4">
+                            <!-- Name + collapsible toggle -->
+                            <div class="flex flex-col group cursor-pointer px-5 pt-2 pb-2" @click.stop="toggleDetails(desktopModalItem.id)">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
+                                    <div class="transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(desktopModalItem.id) }">
+                                        <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="pt-1">
+                                    <input v-model="editData.name" type="text" placeholder="輸入名稱"
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-1 outline-none"
+                                        @click.stop>
+                                </div>
+                            </div>
+                            <!-- Collapsible edit details -->
+                            <div v-if="expandedDetailIds.has(desktopModalItem.id)" class="space-y-4 animate-slide-down border-t border-slate-50 pt-4 pb-2 px-0">
+                                <div class="space-y-1 relative group px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">得知日期</label>
+                                    <input v-model="editData.record_date" type="text" placeholder="年/月/日"
+                                        class="w-full text-center text-[11.9px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                    <button @click="activePicker = { field: 'record_date' }" class="absolute right-5 bottom-2 text-slate-300 hover:text-indigo-500">
+                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                <div class="space-y-1 px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">用意 (選填)</label>
+                                    <textarea v-model="editData.purpose" rows="2" placeholder="輸入用意..."
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="space-y-1 px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">功效 (選填)</label>
+                                    <textarea v-model="editData.effect" rows="2" placeholder="輸入功效..."
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="space-y-1 px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">作法/求寶方式</label>
+                                    <textarea v-model="editData.acquisition_method" rows="2" placeholder="輸入作法..."
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="space-y-1 px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">法寶內容 (選填)</label>
+                                    <textarea v-model="editData.content" rows="2" placeholder="輸入法寶內容..."
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="space-y-1 px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
+                                    <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                </div>
+                            </div>
+                            <!-- Dharma Name Table (Edit) -->
+                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px]">
+                                <div class="flex items-center justify-between px-5">
+                                    <label class="app-title tracking-wider block text-slate-500 font-bold">承接師兄姐</label>
+                                    <button @click.stop="showDharmaSelector = !showDharmaSelector"
+                                        class="flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[13px] font-black active:scale-95 transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        新增
+                                    </button>
+                                </div>
+                                <div v-if="showDharmaSelector" class="animate-fade-in space-y-3 bg-white p-3 rounded-none border-y border-slate-100">
+                                    <div class="relative px-4">
+                                        <input v-model="dharmaEditSearch" type="text" placeholder="搜尋法號..."
+                                            class="w-full text-center text-[15px] font-black border-0 border-b-2 border-white focus:border-indigo-500 bg-transparent py-2 outline-none">
+                                    </div>
+                                    <div class="grid grid-cols-5 gap-1.5 max-h-[160px] overflow-y-auto custom-scrollbar py-1">
+                                        <template v-for="dn in filteredEditDharmaNames" :key="dn.id">
+                                            <button @click.stop="toggleDharmaSelection(dn)"
+                                                :style="{ backgroundColor: isDharmaSelected(dn) ? '#bfdbfe' : '#ffffff', borderColor: isDharmaSelected(dn) ? '#93c5fd' : '#d1d5db', borderWidth: isDharmaSelected(dn) ? '2px' : '1px' }"
+                                                class="flex items-center justify-center font-black text-[14px] transition-all active:scale-95 rounded-md border shadow-sm w-full min-h-[36px]">
+                                                <span class="truncate leading-none">{{ dn.name }}</span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-5 mb-4">
+                                    <table class="w-full border-collapse bg-white table-fixed">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 font-outfit border-b border-slate-200">
+                                                <th class="w-[32%] px-[10px] py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100 pl-[10px]">法號</th>
+                                                <th class="w-[36%] px-[10px] py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                <th class="w-[26%] px-[10px] py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                <th class="w-[6%]"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(dnr, dnrIdx) in editData.dharma_name_registries" :key="dnrIdx" class="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                                <td class="px-1 py-1.5 border-r border-slate-50">
+                                                    <input v-model="dnr.custom_name" list="dharma-names-list" @blur="syncDharmaNameId(dnr)"
+                                                        class="w-full text-[16px] font-black text-slate-900 border-0 bg-transparent outline-none cursor-text"
+                                                        placeholder="輸入法號...">
+                                                </td>
+                                                <td class="p-0 border-r border-slate-50 relative group">
+                                                    <input :value="dnr.obtained_date ? dnr.obtained_date.replace(/-/g, '/') : ''"
+                                                        @input="e => { const v = e.target.value.trim(); dnr.obtained_date = v ? v.replace(/\//g, '-') : ''; }"
+                                                        placeholder="--"
+                                                        class="w-full text-center font-normal bg-transparent py-2 outline-none pl-[16px]"
+                                                        style="font-family: 'PMingLiU', serif !important; font-size: 14px !important; color: #ef4444 !important;">
+                                                    <button @click="activePicker = { field: 'obtained_date', index: dnrIdx }" class="absolute left-0.5 top-1/2 -translate-y-1/2 text-slate-200 hover:text-red-400 group-hover:text-red-300 transition-colors">
+                                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </td>
+                                                <td class="p-0">
+                                                    <div v-if="activeRemarksEditIdx !== dnrIdx" @click="activeRemarksEditIdx = dnrIdx"
+                                                         class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
+                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
+                                                    </div>
+                                                    <input v-else v-model="dnr.remarks" v-focus @blur="activeRemarksEditIdx = null" @keyup.enter="activeRemarksEditIdx = null"
+                                                        placeholder="--"
+                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
+                                                </td>
+                                                <td class="px-1 text-center">
+                                                    <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr v-if="!editData.dharma_name_registries?.length">
+                                                <td colspan="4" class="py-8 text-center text-slate-300 text-[14px] font-black">尚未選擇承接人員</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Save / Cancel -->
+                            <div class="flex gap-2 justify-center pt-4 pb-6 px-5">
+                                <button @click="cancelEdit" class="w-[85px] py-3 bg-slate-100 text-slate-400 rounded-2xl font-black text-[17px] active:scale-95 transition-all">取消</button>
+                                <button @click="saveEdit" :disabled="isSaving" class="flex-1 max-w-[200px] py-3 bg-emerald-600 text-white rounded-2xl font-black text-[17px] active:scale-95 transition-all disabled:bg-slate-300" style="color: white !important;">{{ isSaving ? '儲存中...' : '確認修改' }}</button>
+                            </div>
+                        </div>
+
+                        <!-- VIEW MODE -->
+                        <div v-else class="w-full px-0 mb-4 animate-fade-in pt-2 space-y-2 bg-white">
+                            <!-- Treasure name header -->
+                            <div class="flex flex-col group cursor-pointer px-5 pt-3 pb-2" @click.stop="toggleDetails(desktopModalItem.id)">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
+                                    <div class="transition-transform duration-300" :class="{ 'rotate-180': expandedDetailIds.has(desktopModalItem.id) }">
+                                        <svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="pt-1">
+                                    <span class="font-black text-[16px] text-slate-900 leading-tight">{{ desktopModalItem.name || '-' }}</span>
+                                </div>
+                            </div>
+                            <!-- Collapsible view details -->
+                            <div v-if="expandedDetailIds.has(desktopModalItem.id)" class="space-y-4 animate-slide-down border-t border-slate-50 pt-4 pb-2 px-5">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">得知日期</span>
+                                    <span class="font-normal text-[15.5px] font-outfit text-slate-900 pt-1">{{ formatDisplayDate(desktopModalItem.record_date) || formatDisplayDate(getEarliestDate(desktopModalItem)) || '-' }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">功效</span>
+                                    <span class="font-bold text-[16px] text-[#059669] leading-relaxed pt-1">{{ desktopModalItem.effect || '-' }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">用意</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.purpose || '-' }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">作法/求寶方式</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.acquisition_method || '-' }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.content || '-' }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-[14px] text-slate-400">備註</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.remarks || '-' }}</span>
+                                </div>
+                            </div>
+                            <!-- Dharma Name Table (View) -->
+                            <div class="space-y-3 pt-[10px] border-t border-slate-50 mt-[10px]">
+                                <template v-if="currentCategory === 'major'">
+                                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-5 mb-6">
+                                        <table class="w-full border-collapse bg-white table-fixed">
+                                            <thead>
+                                                <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                                    <th class="w-[38%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                    <th class="w-[28%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                    <th class="w-[34%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dnr in getFilteredSortedRegistries(desktopModalItem)" :key="dnr.id || dnr.dharma_name_id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                    <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">{{ getDharmaNameText(dnr) }}</td>
+                                                    <td class="px-[10px] py-2.5 text-left border-r border-slate-50">
+                                                        <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">{{ formatDisplayDate(dnr.obtained_date) || '--' }}</span>
+                                                    </td>
+                                                    <td class="px-[10px] py-2.5 text-center">
+                                                        <div @click.stop="triggerRemarksEdit(desktopModalItem, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-5 mb-6">
+                                        <table class="w-full border-collapse bg-white table-fixed">
+                                            <thead>
+                                                <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                                    <th class="w-[38%] px-2 py-3 text-left font-black text-[15px] font-outfit border-r border-slate-100">法號</th>
+                                                    <th class="w-[28%] px-2 py-3 text-center font-black text-[15px] font-outfit border-r border-slate-100">日期</th>
+                                                    <th class="w-[34%] px-2 py-3 text-center font-black text-[15px] font-outfit">備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dnr in getFilteredSortedRegistries(desktopModalItem)" :key="dnr.id" class="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                    <td class="px-[10px] py-2.5 font-black text-slate-900 border-r border-slate-50 text-[16px] font-outfit truncate">{{ getDharmaNameText(dnr) }}</td>
+                                                    <td class="px-[10px] py-2.5 text-left border-r border-slate-50">
+                                                        <span class="text-[14px] font-normal font-outfit text-rose-600" style="font-family: 'PMingLiU', serif;">{{ formatDisplayDate(dnr.obtained_date) || '--' }}</span>
+                                                    </td>
+                                                    <td class="px-[10px] py-2.5 text-center">
+                                                        <div @click.stop="triggerRemarksEdit(desktopModalItem, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
+                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
+                                                                <span v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                    </div><!-- /scrollable -->
+                </div><!-- /modal panel -->
+            </div>
+        </teleport>
 
         <!-- Remarks Viewer -->
         <remarks-viewer 
@@ -857,6 +1152,7 @@ const openMenuId = ref(null);
 const expandedIds = ref(new Set());
 const expandedDetailIds = ref(new Set());
 const focusedId = ref(null);
+const desktopModalItem = ref(null);
 const scrollContainer = ref(null);
 const showAddMenu = ref(false);
 const addActions = computed(() => {
@@ -1249,8 +1545,13 @@ const openAdd = (mode = 'single') => {
 };
 
 const openEdit = (item) => {
-    expandedIds.value = new Set([item.id]);
-    focusedId.value = item.id; // Also focus it
+    if (isDesktop.value) {
+        // On desktop: keep modal open, switch to edit mode
+        desktopModalItem.value = item;
+    } else {
+        expandedIds.value = new Set([item.id]);
+        focusedId.value = item.id; // Also focus it
+    }
     editItemId.value = item.id;
     const cloned = JSON.parse(JSON.stringify(item));
     
@@ -1317,6 +1618,12 @@ const openEdit = (item) => {
 const cancelEdit = () => {
     editItemId.value = null;
     editData.value = null;
+    // On desktop: stay in modal view mode
+    if (isDesktop.value && desktopModalItem.value) {
+        // reload latest data for the item
+        const fresh = allTreasures.value.find(t => t.id === desktopModalItem.value.id);
+        if (fresh) desktopModalItem.value = fresh;
+    }
 };
 
 const saveEdit = async () => {
@@ -1364,6 +1671,7 @@ const saveEdit = async () => {
         editData.value = null;
         expandedIds.value.clear();
         focusedId.value = null;
+        desktopModalItem.value = null;
         loadData();
         persistentToast.value = { msg: '✓ 修改成功', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 2000);
@@ -1526,6 +1834,26 @@ const getMasterName = (id) => {
 };
 
 const toggleExpand = (id) => {
+    if (isDesktop.value) {
+        // Desktop: use modal instead of fullscreen
+        const item = allTreasures.value.find(t => t.id === id);
+        if (desktopModalItem.value && desktopModalItem.value.id === id) {
+            // Close modal
+            desktopModalItem.value = null;
+            expandedDetailIds.value.delete(id);
+            openMenuId.value = null;
+            editItemId.value = null;
+            editData.value = null;
+        } else {
+            desktopModalItem.value = item || null;
+            expandedDetailIds.value.delete(id);
+            openMenuId.value = null;
+            editItemId.value = null;
+            editData.value = null;
+        }
+        return;
+    }
+    // Mobile: original fullscreen behaviour
     const nextExpanded = new Set(expandedIds.value);
     if (nextExpanded.has(id)) {
         nextExpanded.delete(id);
@@ -1539,6 +1867,21 @@ const toggleExpand = (id) => {
     expandedIds.value = nextExpanded;
 };
 
+// Desktop: open edit from within the modal
+const editDesktopModalItem = () => {
+    if (!desktopModalItem.value) return;
+    openEdit(desktopModalItem.value);
+};
+
+// Desktop: close detail modal
+const closeDesktopModal = () => {
+    desktopModalItem.value = null;
+    expandedDetailIds.value.clear();
+    openMenuId.value = null;
+    editItemId.value = null;
+    editData.value = null;
+};
+
 const toggleDetails = (id) => {
     if (expandedDetailIds.value.has(id)) {
         expandedDetailIds.value.delete(id);
@@ -1548,6 +1891,10 @@ const toggleDetails = (id) => {
 };
 
 const handleBack = () => {
+    if (desktopModalItem.value && isDesktop.value) {
+        closeDesktopModal();
+        return;
+    }
     if (focusedId.value) {
         focusedId.value = null;
         expandedIds.value.clear();
@@ -2382,5 +2729,13 @@ onUnmounted(() => {
 /* Locked Font Utility for Administrative Consistency */
 .font-biaokai-locked {
     font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important;
+}
+
+.animate-pop-in {
+    animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 </style>

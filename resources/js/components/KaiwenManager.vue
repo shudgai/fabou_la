@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white h-full flex flex-col relative overflow-clip text-slate-900 kaiwen-module">
+    <div class="bg-white h-full flex flex-col relative overflow-hidden text-slate-900 kaiwen-module">
         <!-- Transition Logo Overlay -->
         <div v-if="isInitialLoading" class="fixed inset-0 z-[5000] bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
             <div class="relative flex flex-col items-center">
@@ -125,11 +125,22 @@
                     @click="toggleExpand(post.id)"
                     :class="[
                         expandedIds[post.id] 
-                            ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
+                            ? (isDesktop 
+                                ? 'absolute inset-0 z-[3500] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-6 animate-fade-in' 
+                                : 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 animate-fade-in') 
                             : 'bg-white border-b border-slate-300 py-[25px] px-[12px] cursor-pointer transition-all active:bg-slate-50 relative'
                     ]"
                 >
-                    <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
+                    <div 
+                        :class="[
+                            expandedIds[post.id] 
+                                ? (isDesktop 
+                                    ? 'bg-white rounded-[32px] shadow-2xl w-full max-w-[650px] max-h-[85vh] flex flex-col overflow-hidden relative p-8 animate-scale-in' 
+                                    : 'max-w-3xl mx-auto h-full flex flex-col')
+                                : ''
+                        ]"
+                        @click="expandedIds[post.id] ? $event.stopPropagation() : null"
+                    >
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[15px] tracking-tighter mb-0.5 date-text !text-[#0d0d0d] !font-black" style="font-family: 'Noto Sans TC', sans-serif !important;">{{ post.date || '無日期' }}</span>
@@ -234,11 +245,22 @@
                     @click="toggleExpand(post.id)"
                     :class="[
                         expandedIds[post.id] 
-                            ? 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 md:p-8 animate-fade-in' 
+                            ? (isDesktop 
+                                ? 'absolute inset-0 z-[3500] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-6 animate-fade-in' 
+                                : 'fixed inset-0 z-[150] bg-white overflow-y-auto p-4 animate-fade-in') 
                             : 'bg-white border-b border-slate-300 py-[25px] px-[12px] cursor-pointer transition-all active:bg-slate-50 relative'
                     ]"
                 >
-                    <div :class="{'max-w-3xl mx-auto h-full flex flex-col': expandedIds[post.id]}">
+                    <div 
+                        :class="[
+                            expandedIds[post.id] 
+                                ? (isDesktop 
+                                    ? 'bg-white rounded-[32px] shadow-2xl w-full max-w-[650px] max-h-[85vh] flex flex-col overflow-hidden relative p-8 animate-scale-in' 
+                                    : 'max-w-3xl mx-auto h-full flex flex-col')
+                                : ''
+                        ]"
+                        @click="expandedIds[post.id] ? $event.stopPropagation() : null"
+                    >
                         <div class="flex items-center justify-between mb-1">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[15px] tracking-tighter mb-0.5 date-text !text-[#0d0d0d] !font-black" style="font-family: 'Noto Sans TC', sans-serif !important;">{{ post.date || '無日期' }}</span>
@@ -1329,5 +1351,7 @@ const executeDelete = async () => {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.animate-scale-in { animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 * { -webkit-tap-highlight-color: transparent; }
 </style>
