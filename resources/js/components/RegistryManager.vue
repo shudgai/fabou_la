@@ -276,8 +276,8 @@
                                                 </div>
                                                 <div class="space-y-1 px-4">
                                                     <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
-                                                    <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
-                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                                    <textarea v-model="editData.remarks" placeholder="輸入備註..." rows="2"
+                                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                                 </div>
                                             </div>
 
@@ -311,6 +311,11 @@
                                                             </button>
                                                         </template>
                                                     </div>
+                                                    <div class="flex justify-center pt-1">
+                                                        <button @click.stop="confirmDharmaSelection" class="px-6 py-2 bg-indigo-600 text-white rounded-full text-[14px] font-black active:scale-95 transition-all shadow-md">
+                                                            確認新增
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <!-- Table Layout (Matching View Mode) -->
@@ -343,20 +348,20 @@
                                                                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                     </button>
                                                                 </td>
-                                                                 <td class="p-0">
-                                                                     <div v-if="activeRemarksEditIdx !== dnrIdx" 
-                                                                          @click="activeRemarksEditIdx = dnrIdx"
-                                                                          class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
-                                                                         <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
-                                                                     </div>
-                                                                     <input v-else
-                                                                         v-model="dnr.remarks"
-                                                                         v-focus
-                                                                         @blur="activeRemarksEditIdx = null"
-                                                                         @keyup.enter="activeRemarksEditIdx = null"
-                                                                         placeholder="--"
-                                                                         class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
-                                                                 </td>
+                                                                <td class="p-0">
+                                                                    <div v-if="activeRemarksEditIdx !== dnrIdx" 
+                                                                         @click="activeRemarksEditIdx = dnrIdx"
+                                                                         class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
+                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
+                                                                    </div>
+                                                                    <textarea v-else
+                                                                        v-model="dnr.remarks"
+                                                                        v-focus
+                                                                        @blur="activeRemarksEditIdx = null"
+                                                                        placeholder="--"
+                                                                        rows="2"
+                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px] resize-none"></textarea>
+                                                                </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
                                                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -474,39 +479,35 @@
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[14px] text-slate-400">功效</span>
                                                     <div class="pt-1">
-                                                        <span class="font-bold text-[16px] text-[#059669] leading-relaxed">{{ item.effect || '-' }}</span>
+                                                        <span class="font-bold text-[16px] text-[#059669] leading-relaxed whitespace-pre-wrap">{{ item.effect || '-' }}</span>
                                                     </div>
                                                 </div>
 
-                                                <!-- Purpose Grid -->
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[14px] text-slate-400">用意</span>
                                                     <div class="pt-1">
-                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.purpose || '-' }}</span>
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.purpose || '-' }}</span>
                                                     </div>
                                                 </div>
 
-                                                <!-- Method Grid -->
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[14px] text-slate-400">作法/求寶方式</span>
                                                     <div class="pt-1">
-                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.acquisition_method || '-' }}</span>
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.acquisition_method || '-' }}</span>
                                                     </div>
                                                 </div>
 
-                                                <!-- Content Grid -->
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
                                                     <div class="pt-1">
-                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.content || '-' }}</span>
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.content || '-' }}</span>
                                                     </div>
                                                 </div>
 
-                                                <!-- Remarks Grid -->
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[14px] text-slate-400">備註</span>
                                                     <div class="pt-1">
-                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed">{{ item.remarks || '-' }}</span>
+                                                        <span class="font-normal text-[16px] text-slate-800 leading-relaxed whitespace-pre-wrap">{{ item.remarks || '-' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -534,7 +535,7 @@
                                                                     </td>
                                                                     <td class="px-[10px] py-2.5 text-center">
                                                                         <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks)"></span>
                                                                         </div>
                                                                     </td>
                                                                  </tr>
@@ -564,15 +565,15 @@
                                                                      </td>
                                                                      <td class="px-[10px] py-2.5 text-center">
                                                                          <div @click.stop="triggerRemarksEdit(item, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                                             <span class="text-[13px] font-bold text-slate-400 leading-tight">
-                                                                                 <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
-                                                                                 <span v-html="renderRemarksHtml(dnr.remarks)"></span>
-                                                                             </span>
-                                                                         </div>
-                                                                     </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                                                               <span class="text-[13px] font-bold text-slate-400 leading-tight">
+                                                                                   <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
+                                                                                   <span class="whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                               </span>
+                                                                           </div>
+                                                                              </td>
+                                                                         </tr>
+                                                                 </tbody>
+                                                            </table>
                                                     </div>
                                                 </template>
                                             </div>
@@ -749,8 +750,8 @@
                                 </div>
                                 <div class="space-y-1 px-5">
                                     <label class="app-title tracking-wider block text-slate-500 font-bold">備註 (選填)</label>
-                                    <input v-model="editData.remarks" type="text" placeholder="輸入備註..."
-                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none">
+                                    <textarea v-model="editData.remarks" placeholder="輸入備註..." rows="2"
+                                        class="w-full text-[17px] font-black border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-2 outline-none resize-none"></textarea>
                                 </div>
                             </div>
                             <!-- Dharma Name Table (Edit) -->
@@ -776,6 +777,11 @@
                                                 <span class="truncate leading-none">{{ dn.name }}</span>
                                             </button>
                                         </template>
+                                    </div>
+                                    <div class="flex justify-center pt-1">
+                                        <button @click.stop="confirmDharmaSelection" class="px-6 py-2 bg-indigo-600 text-white rounded-full text-[14px] font-black active:scale-95 transition-all shadow-md">
+                                            確認新增
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-white mx-5 mb-4">
@@ -808,11 +814,11 @@
                                                 <td class="p-0">
                                                     <div v-if="activeRemarksEditIdx !== dnrIdx" @click="activeRemarksEditIdx = dnrIdx"
                                                          class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
-                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
+                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
                                                     </div>
-                                                    <input v-else v-model="dnr.remarks" v-focus @blur="activeRemarksEditIdx = null" @keyup.enter="activeRemarksEditIdx = null"
-                                                        placeholder="--"
-                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px]">
+                                                    <textarea v-else v-model="dnr.remarks" v-focus @blur="activeRemarksEditIdx = null"
+                                                        placeholder="--" rows="2"
+                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px] resize-none"></textarea>
                                                 </td>
                                                 <td class="px-1 text-center">
                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
@@ -858,23 +864,23 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-[14px] text-slate-400">功效</span>
-                                    <span class="font-bold text-[16px] text-[#059669] leading-relaxed pt-1">{{ desktopModalItem.effect || '-' }}</span>
+                                    <span class="font-bold text-[16px] text-[#059669] leading-relaxed pt-1 whitespace-pre-wrap">{{ desktopModalItem.effect || '-' }}</span>
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-[14px] text-slate-400">用意</span>
-                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.purpose || '-' }}</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1 whitespace-pre-wrap">{{ desktopModalItem.purpose || '-' }}</span>
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-[14px] text-slate-400">作法/求寶方式</span>
-                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.acquisition_method || '-' }}</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1 whitespace-pre-wrap">{{ desktopModalItem.acquisition_method || '-' }}</span>
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-[14px] text-slate-400">法寶內容</span>
-                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.content || '-' }}</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1 whitespace-pre-wrap">{{ desktopModalItem.content || '-' }}</span>
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-[14px] text-slate-400">備註</span>
-                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1">{{ desktopModalItem.remarks || '-' }}</span>
+                                    <span class="font-normal text-[16px] text-slate-800 leading-relaxed pt-1 whitespace-pre-wrap">{{ desktopModalItem.remarks || '-' }}</span>
                                 </div>
                             </div>
                             <!-- Dharma Name Table (View) -->
@@ -897,7 +903,7 @@
                                                     </td>
                                                     <td class="px-[10px] py-2.5 text-center">
                                                         <div @click.stop="triggerRemarksEdit(desktopModalItem, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
-                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight" v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                            <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks)"></span>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -925,19 +931,19 @@
                                                         <div @click.stop="triggerRemarksEdit(desktopModalItem, dnr)" class="w-full min-h-[24px] flex items-center justify-center cursor-pointer">
                                                             <span class="text-[13px] font-bold text-slate-400 leading-tight">
                                                                 <span v-if="dnr.related_personnel && dnr.related_personnel.length">{{ translateRelList(dnr.related_personnel) }}：</span>
-                                                                <span v-html="renderRemarksHtml(dnr.remarks)"></span>
+                                                                <span class="whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks)"></span>
                                                             </span>
                                                         </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
+                                                            </td>
+                                                         </tr>
+                                                     </tbody>
+                                                 </table>
+                                             </div>
+                                         </template>
+                             </div>
+                         </div>
 
-                    </div><!-- /scrollable -->
+                     </div><!-- /scrollable -->
                 </div><!-- /modal panel -->
             </div>
         </teleport>
@@ -1786,6 +1792,55 @@ const syncDharmaNameId = (dnr) => {
     }
 };
 
+const autoSaveEdit = async () => {
+    if (!editData.value || isSaving.value) return;
+    isSaving.value = true;
+    try {
+        const data = editData.value;
+        const rawRegistries = (data.dharma_name_registries || []).map(r => ({
+            id: r.id,
+            dharma_name_id: r.dharma_name_id,
+            custom_name: r.custom_name,
+            obtained_date: r.obtained_date,
+            remarks: typeof r.remarks === 'string' ? r.remarks : (Array.isArray(r.remarks) ? r.remarks.join('\n') : ''),
+            related_personnel: Array.isArray(r.related_personnel) ? r.related_personnel : (r.related_personnel ? r.related_personnel.split(/[、, ]+/).filter(x => x) : [])
+        }));
+
+        const registries = [];
+        const seen = new Set();
+        rawRegistries.forEach(r => {
+            const key = r.dharma_name_id ? `id:${r.dharma_name_id}` : `name:${(r.custom_name || '').trim()}`;
+            if (key && !seen.has(key)) {
+                seen.add(key);
+                registries.push(r);
+            }
+        });
+
+        const payload = {
+            id: data.id,
+            master_id: data.master_id,
+            category: data.category,
+            name: data.name,
+            purpose: data.purpose,
+            effect: data.effect,
+            acquisition_method: data.acquisition_method,
+            remarks: data.remarks,
+            record_date: data.record_date,
+            obtained_date: data.obtained_date,
+            status: data.status,
+            dharma_name_registries: registries,
+            _method: 'PATCH'
+        };
+        await axios.post(`/registries/${data.id}`, payload);
+    } catch (e) {
+        console.error(e);
+        const errorMsg = e.response?.data?.error || e.response?.data?.message || '儲存失敗';
+        persistentToast.value = { msg: '✖ ' + errorMsg, type: 'error' };
+    } finally {
+        isSaving.value = false;
+    }
+};
+
 const toggleDharmaSelection = (dn) => {
     const registries = editData.value.dharma_name_registries || [];
     const idx = registries.findIndex(r => r.dharma_name_id === dn.id);
@@ -1796,12 +1851,17 @@ const toggleDharmaSelection = (dn) => {
         registries.push({
             dharma_name_id: dn.id,
             custom_name: dn.name,
-            obtained_date: editData.value.record_date || '',
+            obtained_date: new Date().toISOString().split('T')[0],
             related_personnel: [],
             remarks: ''
         });
         sortRegistries(editData.value.dharma_name_registries);
     }
+};
+
+const confirmDharmaSelection = async () => {
+    showDharmaSelector.value = false;
+    await autoSaveEdit();
 };
 
 const removeDharmaSelection = (idx) => {

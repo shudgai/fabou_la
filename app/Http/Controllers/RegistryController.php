@@ -124,13 +124,22 @@ class RegistryController extends Controller
                     'sort_order'         => $request->sort_order ?? 0,
                 ]);
             } else {
-                $registry->update(array_filter([
-                    'acquisition_method' => $request->acquisition_method,
-                    'content'            => $request->content,
-                    'purpose'            => $request->purpose,
-                    'effect'             => $request->effect,
-                    'remarks'            => $request->remarks,
-                ]));
+                $updates = [];
+                $fieldsToAppend = ['acquisition_method', 'content', 'purpose', 'effect', 'remarks'];
+                foreach ($fieldsToAppend as $field) {
+                    if (!empty($request->$field)) {
+                        if (!empty($registry->$field)) {
+                            if (!str_contains($registry->$field, $request->$field)) {
+                                $updates[$field] = $registry->$field . "\n" . $request->$field;
+                            }
+                        } else {
+                            $updates[$field] = $request->$field;
+                        }
+                    }
+                }
+                if (!empty($updates)) {
+                    $registry->update($updates);
+                }
             }
 
             if ($request->has('dharma_name_registries')) {
@@ -370,13 +379,22 @@ class RegistryController extends Controller
                     $registry = Registry::create($recordData);
                     $userRegistries->push($registry);
                 } else {
-                    $registry->update(array_filter([
-                        'acquisition_method' => $recordData['acquisition_method'] ?? null,
-                        'content'            => $recordData['content'] ?? null,
-                        'purpose'            => $recordData['purpose'] ?? null,
-                        'effect'             => $recordData['effect'] ?? null,
-                        'remarks'            => $recordData['remarks'] ?? null,
-                    ]));
+                    $updates = [];
+                    $fieldsToAppend = ['acquisition_method', 'content', 'purpose', 'effect', 'remarks'];
+                    foreach ($fieldsToAppend as $field) {
+                        if (!empty($recordData[$field])) {
+                            if (!empty($registry->$field)) {
+                                if (!str_contains($registry->$field, $recordData[$field])) {
+                                    $updates[$field] = $registry->$field . "\n" . $recordData[$field];
+                                }
+                            } else {
+                                $updates[$field] = $recordData[$field];
+                            }
+                        }
+                    }
+                    if (!empty($updates)) {
+                        $registry->update($updates);
+                    }
                 }
 
                 if (!empty($recordData['dharma_name_registries'])) {

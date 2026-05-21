@@ -304,6 +304,11 @@ const handleNavigate = (view) => {
 
     if (currentView.value === view) return;
 
+    // Refresh stats when returning home so counts are always current
+    if (view === 'menu') {
+        loadStats();
+    }
+
     isGlobalTransitioning.value = true;
     setTimeout(() => {
         currentView.value = view;

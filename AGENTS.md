@@ -668,3 +668,20 @@ APP_DEBUG=false
 ### UI Result Alignments (LuckyDraw & RandomGroup)
 - **LuckyDraw.vue Result Vertical Alignment**: Changed multi-result container to `justify-center pb-[120px]` and single-result container to `justify-center pb-[15vh]` to ensure the text is perfectly vertically centered (or slightly above center for single) regardless of screen height.
 - **RandomGroup.vue Result Shadow Removal**: Removed text shadow from the newly drawn guardian name popup screen to create a cleaner look matching the other pages.
+
+## Session Notes (2026-05-21)
+
+### RegistryManager.vue — 修復 `<tbody>` 缺少結束標籤 Build Error
+
+#### 問題
+`vite build` 報錯 `Element is missing end tag` 指向 `RegistryManager.vue:556:61` 和 `RegistryManager.vue:924:45`，均為 `<tbody>` 缺少 `</tbody>`。
+
+#### 根因
+`<template v-else>` 區塊中，`</template>` 被錯誤地放在 `</tbody>` 之前，導致 Vue template compiler 認為 `<tbody>` 從未被關閉。
+
+#### 修復 (2 處)
+1. **`RegistryManager.vue:575`**（手機版）：移除多餘的 `</template>`，讓 `</tbody>` 正常關閉。
+2. **`RegistryManager.vue:939`**（桌面版 Modal）：將 `</template>` 改為完整的巢狀關閉序列：`</tbody>` → `</table>` → `</div>` → `</template>`。
+
+#### 教訓
+在 `v-if`/`v-else` 區塊中重複表格結構時，必須確保兩個分支的 HTML 巢狀結構完全對稱。使用編輯器語法高亮或 `npm run build` 及時發現此類 template 結構錯誤。

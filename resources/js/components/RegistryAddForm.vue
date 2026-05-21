@@ -171,18 +171,23 @@
                         </div>
                     </div>
 
-                    <!-- STEP 8: 備註與承接師兄姐 -->
+                    <!-- STEP 8: 備註 -->
                     <div v-else-if="currentStep === 8" :key="'s8'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
                         <div class="text-center space-y-2 mb-6">
-                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">備註及人員</span></h2>
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">備註</span></h2>
                         </div>
 
                         <div class="relative group mb-8">
                             <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
-                            <div @click="openRemarksModal"
-                                class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
-                                <span :class="form.remarks ? 'text-black' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
-                            </div>
+                            <textarea v-model="form.remarks" rows="5" placeholder="輸入備註..."
+                                class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- STEP 9: 承接師兄姐 -->
+                    <div v-else-if="currentStep === 9" :key="'s9'" class="space-y-6 max-w-md mx-auto pt-4 animate-fade-in">
+                        <div class="text-center space-y-2 mb-6">
+                            <h2 class="text-[17px] font-normal text-black">請輸入<span class="text-black">承接人員</span></h2>
                         </div>
 
                         <div class="flex items-center justify-between">
@@ -196,7 +201,7 @@
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 p-1">✕</button>
                             </div>
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
-                                <div class="space-y-1 personnel-name-dropdown">
+                                <div class="col-span-2 space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
                                     <editable-input-chips 
                                         v-model="p.custom_name" 
@@ -204,7 +209,7 @@
                                         :options="dharmaNames.map(dn => dn.name)" 
                                         placeholder="對象" />
                                 </div>
-                                <div class="space-y-1">
+                                <div class="col-span-2 space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
                                     <editable-input-chips 
                                         v-model="p.relationship" 
@@ -284,10 +289,8 @@
                     </div>
                     <div class="relative group">
                         <label class="text-[11px] font-normal text-black uppercase tracking-[0.2em] block mb-2">備註 (選填)</label>
-                        <div @click="openRemarksModal"
-                            class="w-full text-center text-[17px] font-normal border-0 border-b-2 border-slate-100 hover:border-blue-500 bg-transparent py-4 outline-none transition-all cursor-pointer">
-                            <span :class="form.remarks ? 'text-black' : 'text-slate-300'">{{ form.remarks || '輸入備註...' }}</span>
-                        </div>
+                        <textarea v-model="form.remarks" rows="3" placeholder="輸入備註..."
+                            class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-100 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
@@ -301,7 +304,7 @@
                                 <button @click="removePersonnelRow(idx)" class="ml-1 text-slate-300 hover:text-red-500 p-1">✕</button>
                             </div>
                             <div class="grid grid-cols-2 gap-x-2 gap-y-3">
-                                <div class="space-y-1 personnel-name-dropdown">
+                                <div class="col-span-2 space-y-1 personnel-name-dropdown">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">法號</label>
                                     <editable-input-chips 
                                         v-model="p.custom_name" 
@@ -309,7 +312,7 @@
                                         :options="dharmaNames.map(dn => dn.name)" 
                                         placeholder="對象" />
                                 </div>
-                                <div class="space-y-1">
+                                <div class="col-span-2 space-y-1">
                                     <label class="text-[11px] text-red-400 ml-1 font-bold">備註對象</label>
                                     <editable-input-chips 
                                         v-model="p.relationship" 
@@ -392,6 +395,43 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div v-if="batchParsedRows.length > 0" class="rounded-[24px] overflow-hidden bg-white border border-slate-100 animate-fade-in mt-3">
+                            <div class="bg-emerald-50/50 px-4 py-3 border-b border-emerald-100 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span class="text-[15px] font-normal text-black">解析結果 ({{ batchParsedRows.length }} 筆)</span>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto custom-scrollbar">
+                                <table class="w-full text-[12px]">
+                                    <thead class="bg-slate-50/80 sticky top-0">
+                                        <tr>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500 w-[16px]">#</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">日期</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">法寶名稱</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">法號</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">用意</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">功效</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">作法</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">法寶內容</th>
+                                            <th class="px-2 py-2 text-left font-bold text-slate-500">備註</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-50">
+                                        <tr v-for="(row, idx) in batchParsedRows" :key="idx" class="hover:bg-slate-50/50">
+                                            <td class="px-2 py-2 text-slate-300 align-top">{{ idx + 1 }}</td>
+                                            <td class="px-2 py-2 text-slate-700 align-top whitespace-nowrap">{{ row.date || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-900 align-top font-medium">{{ row.name || '--' }}</td>
+                                            <td class="px-2 py-2 text-red-600 align-top">{{ row.recipient_name || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-600 align-top max-w-[80px] truncate">{{ row.purpose || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-600 align-top max-w-[80px] truncate">{{ row.effect || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-600 align-top max-w-[80px] truncate">{{ row.acquisition_method || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-600 align-top max-w-[80px] truncate">{{ row.content || '--' }}</td>
+                                            <td class="px-2 py-2 text-slate-600 align-top max-w-[80px] truncate">{{ row.remarks || '--' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </transition>
 
@@ -454,8 +494,8 @@
                             class="w-full text-[17px] font-normal border-0 border-b-2 border-slate-300 focus:border-blue-500 bg-transparent py-4 outline-none transition-all placeholder:text-slate-200 resize-none leading-relaxed text-black"></textarea>
                     </div>
                     <div class="px-6 py-4 border-t border-slate-100 flex gap-3">
-                        <button @click="showRemarksModal" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">取消</button>
-                        <button @click="confirmRemarks" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all">確認</button>
+                        <button @click="showRemarksModal = false" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-normal text-[17px] active:scale-95 transition-all">取消</button>
+                        <button @click="confirmRemarks" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-normal text-[17px] shadow-lg shadow-blue-100 active:scale-95 transition-all" style="color: white !important;">確認</button>
                     </div>
                 </div>
             </div>
@@ -483,10 +523,10 @@ import EditableInputChips from './EditableInputChips.vue';
 
 const localMode = ref(props.mode || 'single');
 const currentStep = ref(1);
-const totalSteps = 8;
+const totalSteps = 9;
 const batchCurrentStep = ref(1);
 const batchTotalSteps = 2;
-const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '法寶內容', '備註'];
+const stepTitles = ['日期', '仙師', '法寶名稱', '用意', '功效', '作法', '法寶內容', '備註', '承接人員'];
 const currentStepTitle = computed(() => stepTitles[currentStep.value - 1] || '預覽確認');
 const isEditing = computed(() => !!props.initialData?.id);
 
@@ -607,18 +647,73 @@ const batchParsedRows = computed(() => {
             }
         };
 
-        const attrKeywords = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '備註', '得知日期', '登記日期', '求得日期', '日期', '法寶名稱', '承接者', '承接人', '法號', '承接'];
+        const attrKeywords = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '求寶內容', '備註', '得知日期', '登記日期', '求得日期', '日期', '法寶名稱', '承接者', '承接人', '法號', '承接'];
         const prefixesToStrip = /^(允求|賜降|得知|賜予|賜|求得|法寶名稱)\s*[：:]\s*/;
+
+        const applyTempTreasure = (tempTreasure, pendingTreasure) => {
+            const fields = ['purpose', 'effect', 'acquisition_method', 'content', 'remarks'];
+            for (const f of fields) {
+                if (tempTreasure[f]) {
+                    pendingTreasure[f] = pendingTreasure[f] ? pendingTreasure[f] + '\n' + tempTreasure[f] : tempTreasure[f];
+                }
+            }
+        };
+
+        const extractInlineAttributes = (str, treasureObj) => {
+            const keys = ['用意', '功效', '作法', '求寶方式', '求寶', '法寶內容', '求寶內容', '備註'];
+            let firstIdx = -1;
+            let firstKey = null;
+            for (const k of keys) {
+                const idx1 = str.indexOf(k + ':');
+                const idx2 = str.indexOf(k + '：');
+                let minIdx = -1;
+                if (idx1 !== -1 && idx2 !== -1) minIdx = Math.min(idx1, idx2);
+                else if (idx1 !== -1) minIdx = idx1;
+                else if (idx2 !== -1) minIdx = idx2;
+                
+                if (minIdx !== -1 && (firstIdx === -1 || minIdx < firstIdx)) {
+                    firstIdx = minIdx;
+                    firstKey = k;
+                }
+            }
+            if (firstIdx !== -1) {
+                const namePart = str.substring(0, firstIdx).trim();
+                const attrsPart = str.substring(firstIdx);
+                const regexStr = '(' + keys.join('|') + ')\\s*[：:]';
+                const parts = attrsPart.split(new RegExp(regexStr)).filter(p => p !== undefined);
+                for (let i = 1; i < parts.length; i += 2) {
+                    const k = parts[i];
+                    const v = (parts[i+1] || '').trim();
+                    if (k === '用意') treasureObj.purpose = treasureObj.purpose ? treasureObj.purpose + '\n' + v : v;
+                    else if (k === '功效') treasureObj.effect = treasureObj.effect ? treasureObj.effect + '\n' + v : v;
+                    else if (k === '作法' || k === '求寶方式' || k === '求寶') treasureObj.acquisition_method = treasureObj.acquisition_method ? treasureObj.acquisition_method + '\n' + v : v;
+                    else if (k === '法寶內容' || k === '求寶內容') treasureObj.content = treasureObj.content ? treasureObj.content + '\n' + v : v;
+                    else if (k === '備註') treasureObj.remarks = treasureObj.remarks ? treasureObj.remarks + '\n' + v : v;
+                }
+                return namePart;
+            }
+            return str;
+        };
+
+        let activeAttribute = null;
 
         lines.forEach(line => {
             let normLine = line.normalize('NFKC').trim();
-            if (!normLine) return;
+            if (!normLine) {
+                if (activeAttribute && pendingTreasure[activeAttribute]) {
+                    pendingTreasure[activeAttribute] += '\n';
+                }
+                return;
+            }
 
             // 1. Detect Combined Line format: [Date] [Name] 承接者:[Recipients]
             const combinedMatch = normLine.match(/^(\d{2,4}[./-]\d{1,2}[./-]\d{1,2})\s+(.*?)\s+(?:承接者|承接人|法號|承接)[：:](.*)/);
             if (combinedMatch) {
+                activeAttribute = null;
                 const nextDate = parseDateText(combinedMatch[1], currentContextYear);
-                const nextName = combinedMatch[2].trim().replace(prefixesToStrip, '');
+                const rawName = combinedMatch[2].trim().replace(prefixesToStrip, '');
+                const tempTreasure = { purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                const nextName = extractInlineAttributes(rawName, tempTreasure);
                 
                 // If the name or date changed, flush the previous state
                 if (pendingTreasure.name && (pendingTreasure.name !== nextName || currentDateInText !== nextDate)) {
@@ -628,6 +723,8 @@ const batchParsedRows = computed(() => {
                 
                 currentDateInText = nextDate;
                 pendingTreasure.name = nextName;
+                applyTempTreasure(tempTreasure, pendingTreasure);
+                
                 const recs = combinedMatch[3].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                 pendingRecipients.push(...recs);
                 return;
@@ -636,12 +733,16 @@ const batchParsedRows = computed(() => {
             // 2. Detect Name + Recipients format: [Name] 承接者:[Recipients]
             const nameRecsMatch = normLine.match(/^(.*?)\s+(?:承接者|承接人|法號|承接)[：:](.*)/);
             if (nameRecsMatch) {
-                const nextName = nameRecsMatch[1].trim().replace(prefixesToStrip, '');
+                activeAttribute = null;
+                const rawName = nameRecsMatch[1].trim().replace(prefixesToStrip, '');
+                const tempTreasure = { purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                const nextName = extractInlineAttributes(rawName, tempTreasure);
                 if (pendingTreasure.name && pendingTreasure.name !== nextName) {
                     flush();
                     pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
                 }
                 pendingTreasure.name = nextName;
+                applyTempTreasure(tempTreasure, pendingTreasure);
                 const recs = nameRecsMatch[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                 pendingRecipients.push(...recs);
                 return;
@@ -654,22 +755,28 @@ const batchParsedRows = computed(() => {
                 const val = keywordMatch[2].trim();
 
                 if (attrKeywords.includes(key)) {
-                    if (key === '用意') pendingTreasure.purpose = pendingTreasure.purpose ? pendingTreasure.purpose + '\n' + val : val;
-                    else if (key === '功效') pendingTreasure.effect = pendingTreasure.effect ? pendingTreasure.effect + '\n' + val : val;
-                    else if (key === '作法' || key === '求寶方式' || key === '求寶') pendingTreasure.acquisition_method = pendingTreasure.acquisition_method ? pendingTreasure.acquisition_method + '\n' + val : val;
-                    else if (key === '法寶內容') pendingTreasure.content = pendingTreasure.content ? pendingTreasure.content + '\n' + val : val;
-                    else if (key === '備註') pendingTreasure.remarks = pendingTreasure.remarks ? pendingTreasure.remarks + '\n' + val : val;
+                    if (key === '用意') { pendingTreasure.purpose = pendingTreasure.purpose ? pendingTreasure.purpose + '\n' + val : val; activeAttribute = 'purpose'; }
+                    else if (key === '功效') { pendingTreasure.effect = pendingTreasure.effect ? pendingTreasure.effect + '\n' + val : val; activeAttribute = 'effect'; }
+                    else if (key === '作法' || key === '求寶方式' || key === '求寶') { pendingTreasure.acquisition_method = pendingTreasure.acquisition_method ? pendingTreasure.acquisition_method + '\n' + val : val; activeAttribute = 'acquisition_method'; }
+                    else if (key === '法寶內容' || key === '求寶內容') { pendingTreasure.content = pendingTreasure.content ? pendingTreasure.content + '\n' + val : val; activeAttribute = 'content'; }
+                    else if (key === '備註') { pendingTreasure.remarks = pendingTreasure.remarks ? pendingTreasure.remarks + '\n' + val : val; activeAttribute = 'remarks'; }
                     else if (key === '法寶名稱') {
-                        const nextName = val.replace(prefixesToStrip, '');
+                        activeAttribute = null;
+                        const rawName = val.replace(prefixesToStrip, '');
+                        const tempTreasure = { purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                        const nextName = extractInlineAttributes(rawName, tempTreasure);
                         if (pendingTreasure.name && pendingTreasure.name !== nextName) flush();
                         pendingTreasure.name = nextName;
+                        applyTempTreasure(tempTreasure, pendingTreasure);
                     }
                     else if (['得知日期', '登記日期', '求得日期', '日期'].includes(key)) {
+                        activeAttribute = null;
                         const d = parseDateText(val, currentContextYear) || val;
                         if (currentDateInText && currentDateInText !== d) flush();
                         currentDateInText = d;
                     }
                     else if (['承接者', '承接人', '法號', '承接'].includes(key)) {
+                        activeAttribute = null;
                         const recs = val.split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                         pendingRecipients.push(...recs);
                     }
@@ -680,6 +787,7 @@ const batchParsedRows = computed(() => {
             // 4. Detect Master/Year/Date Headers (Standalone)
             const standaloneYearMatch = normLine.match(/^(?:民國)?\s*(\d{2,4})\s*年?$/);
             if (standaloneYearMatch) {
+                activeAttribute = null;
                 flush();
                 let y = parseInt(standaloneYearMatch[1]);
                 if (y < 1000) y += 1911;
@@ -689,6 +797,7 @@ const batchParsedRows = computed(() => {
 
             const masterMatch = props.masters?.find(m => (normLine === m.name || normLine === (m.name === '父皇仙師' ? '父皇' : m.name)) && normLine.length < 15);
             if (masterMatch) {
+                activeAttribute = null;
                 flush();
                 currentMasterId = masterMatch.id;
                 return;
@@ -697,6 +806,7 @@ const batchParsedRows = computed(() => {
             const dateHeader = parseDateText(normLine, currentContextYear);
             const isPureDateStr = normLine.replace(/[\d/.\-年月日時分秒\s]/g, '').length === 0;
             if (dateHeader && isPureDateStr) {
+                activeAttribute = null;
                 if (currentDateInText && currentDateInText !== dateHeader) flush();
                 currentDateInText = dateHeader;
                 return;
@@ -706,10 +816,14 @@ const batchParsedRows = computed(() => {
             if (normLine.includes('\t')) {
                 const parts = normLine.split('\t').map(p => p.trim()).filter(p => p);
                 if (parts.length >= 2) {
+                    activeAttribute = null;
                     flush();
                     const d = parseDateText(parts[0], currentContextYear);
                     if (d) currentDateInText = d;
-                    pendingTreasure.name = parts[1].replace(prefixesToStrip, '');
+                    const rawName = parts[1].replace(prefixesToStrip, '');
+                    const tempTreasure = { purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                    pendingTreasure.name = extractInlineAttributes(rawName, tempTreasure);
+                    applyTempTreasure(tempTreasure, pendingTreasure);
                     if (parts.length >= 3) {
                         pendingRecipients = parts[2].split(/[，、,\s\t]+/).map(n => n.trim()).filter(n => n);
                     }
@@ -726,18 +840,41 @@ const batchParsedRows = computed(() => {
             });
 
             if (knownNames.length > 0 && pendingTreasure.name) {
+                activeAttribute = null;
                 pendingRecipients.push(...names);
                 return;
             }
 
             // 7. Detect a standalone treasure name
-            if (normLine.length < 100 && !normLine.includes('，') && !normLine.includes('、') && !normLine.includes('：') && !normLine.includes(':')) {
-                const nextName = normLine.replace(prefixesToStrip, '');
-                if (pendingTreasure.name && pendingTreasure.name !== nextName) {
-                    flush();
-                    pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+            if (normLine.length < 100 && !normLine.includes('，') && !normLine.includes('、')) {
+                // If it contains a colon, we only consider it a new name if it's NOT an activeAttribute continuation,
+                // OR if it's explicitly formatted as '法寶名稱:'. Wait, Step 3 already handled '法寶名稱:'.
+                // So if it has colons, it might be an inline attribute string like '無極劍 法寶內容:測試'.
+                if (activeAttribute && !normLine.match(/(?:用意|功效|作法|求寶方式|求寶|法寶內容|備註)\s*[：:]/)) {
+                    const textToAppend = line.normalize('NFKC').trimEnd();
+                    if (pendingTreasure[activeAttribute]) {
+                        pendingTreasure[activeAttribute] += (pendingTreasure[activeAttribute].endsWith('\n') ? '' : '\n') + textToAppend;
+                    } else {
+                        pendingTreasure[activeAttribute] = textToAppend;
+                    }
+                } else {
+                    const rawName = normLine.replace(prefixesToStrip, '');
+                    const tempTreasure = { purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                    const nextName = extractInlineAttributes(rawName, tempTreasure);
+                    if (pendingTreasure.name && pendingTreasure.name !== nextName) {
+                        flush();
+                        pendingTreasure = { name: nextName, purpose: '', effect: '', acquisition_method: '', content: '', remarks: '' };
+                    }
+                    pendingTreasure.name = nextName;
+                    applyTempTreasure(tempTreasure, pendingTreasure);
                 }
-                pendingTreasure.name = nextName;
+            } else if (activeAttribute) {
+                const textToAppend = line.normalize('NFKC').trimEnd();
+                if (pendingTreasure[activeAttribute]) {
+                    pendingTreasure[activeAttribute] += (pendingTreasure[activeAttribute].endsWith('\n') ? '' : '\n') + textToAppend;
+                } else {
+                    pendingTreasure[activeAttribute] = textToAppend;
+                }
             }
         });
         
@@ -1185,4 +1322,13 @@ defineExpose({ updatePersonnelRemarks });
 .step-fade-enter-active, .step-fade-leave-active { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
 .step-fade-enter-from { opacity: 0; transform: translateX(30px); }
 .step-fade-leave-to { opacity: 0; transform: translateX(-30px); }
+
+/* 確保新增時所有的輸入框皆照標楷體顯示 */
+textarea, 
+input, 
+.personnel-name-dropdown :deep(input),
+.personnel-name-dropdown :deep(textarea),
+.personnel-date-input {
+    font-family: 'DFKai-SB', '標楷體', serif !important;
+}
 </style>
