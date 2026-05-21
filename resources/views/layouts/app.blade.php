@@ -23,8 +23,7 @@
     <title>皇恩筆記本</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.svg') }}"> <!-- Fallback for older browsers -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
 
 
     <!-- Fonts: minimal set with font-display: swap -->

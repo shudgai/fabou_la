@@ -685,3 +685,12 @@ APP_DEBUG=false
 
 #### 教訓
 在 `v-if`/`v-else` 區塊中重複表格結構時，必須確保兩個分支的 HTML 巢狀結構完全對稱。使用編輯器語法高亮或 `npm run build` 及時發現此類 template 結構錯誤。
+
+## Session Notes (2026-05-22)
+
+### Favicon Production Broken Fix
+- **問題**：在正式環境中 Favicon 破圖無法顯示，但在本地端 `php artisan serve` 正常。
+- **根因**：`resources/views/layouts/app.blade.php` 內配置了 `type="image/png"` 的 Fallback 卻指向 SVG 檔案 (`asset('favicon.svg')`)。部分嚴格的正式環境伺服器與瀏覽器會因為 MIME 類型與檔案實際格式不符，導致快取錯誤或拒絕渲染。
+- **修復**：
+  1. 移除無效且錯誤的 `<link rel="icon" type="image/png" ...>` 舊版 Fallback，現代瀏覽器皆完全支援 SVG。
+  2. 加入版號 Cache Buster：`href="{{ asset('favicon.svg') }}?v=2"`，強迫正式環境的瀏覽器放棄快取的破圖狀態並重新抓取新的 SVG。
