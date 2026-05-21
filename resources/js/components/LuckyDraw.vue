@@ -221,7 +221,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] flex flex-col items-center min-h-[350px]"
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[68px] flex flex-col items-center min-h-[350px]"
                         :class="results.length === 1 ? 'justify-center pb-[15vh]' : 'justify-center pb-[120px]'">
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center" style="padding-top: 0;">
                             <div class="font-black leading-none text-center" :style="{ fontFamily: '\'DFKai-SB\', \'標楷體\', serif', color: '#dc2626', fontSize: getDynamicFontSize(1) }">
@@ -494,7 +494,7 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[15px] flex flex-col items-center min-h-[350px]"
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-0 pt-[68px] flex flex-col items-center min-h-[350px]"
                         :class="results.length === 1 ? 'justify-center pb-[15vh]' : 'justify-center pb-[120px]'">
                         <!-- SINGLE RESULT: CROWN & CENTERED -->
                         <div v-if="results.length === 1" class="w-full flex flex-col items-center justify-center" style="padding-top: 0;">
@@ -674,16 +674,24 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved']);
 
 const getDynamicFontSize = (count) => {
-    const isMobile = window.innerWidth < 768;
-    const scale = isMobile ? 0.9 : 1;
-    if (count <= 1) return `${120 * scale}px`;
-    if (count <= 2) return `${90 * scale}px`;
-    if (count <= 4) return `${64 * scale}px`;
-    if (count <= 6) return `${54 * scale}px`;
-    if (count <= 8) return `${46 * scale}px`;
-    if (count <= 12) return `${40 * scale}px`;
-    if (count <= 16) return `${34 * scale}px`;
-    return 'clamp(22px, 5.5vw, 38px)';
+    // Use viewport-based sizes so names fill the screen
+    if (count <= 1) return 'clamp(80px, 22vw, 200px)';
+    // Multi-column: cols = 1 (≤10), 2 (≤20), 3 (21+)
+    const cols = count <= 10 ? 1 : count <= 20 ? 2 : 3;
+    if (cols === 1) {
+        // Single column — fill most of screen width
+        if (count <= 2)  return 'clamp(60px, 18vw, 160px)';
+        if (count <= 4)  return 'clamp(48px, 14vw, 120px)';
+        if (count <= 6)  return 'clamp(40px, 12vw, 100px)';
+        if (count <= 8)  return 'clamp(34px, 10vw,  86px)';
+        return              'clamp(28px,  8vw,  72px)';
+    }
+    if (cols === 2) {
+        if (count <= 14) return 'clamp(28px, 8vw, 68px)';
+        return              'clamp(22px, 6vw, 54px)';
+    }
+    // 3 columns
+    return 'clamp(18px, 5vw, 44px)';
 };
 
 const users = ref([]);

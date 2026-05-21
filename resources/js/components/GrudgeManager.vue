@@ -24,7 +24,7 @@
                     <button @click="executeDelete" class="flex-1 bg-red-600 !text-white h-[52px] rounded-2xl border border-red-500 text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-red-100">確定刪除</button>
                 </div>
                 <div v-else class="flex justify-end mt-2">
-                    <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100">確定</button>
+                    <button @click="persistentToast = null" class="bg-indigo-600 !text-white px-10 py-3.5 rounded-2xl text-[18px] font-black tracking-widest active:scale-95 transition-all shadow-lg shadow-indigo-100" style="color: white !important;">確定</button>
                 </div>
             </div>
         </div>
