@@ -258,12 +258,12 @@
                                     <div class="absolute right-4 top-[48px] z-[100] flex flex-col items-center gap-0">
                                         <!-- Close Button (X) - Top -->
                                         <button @click="toggleExpand(reg.id)" class="w-10 h-10 flex items-center justify-center text-slate-400 active:scale-90 transition-all">
-                                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
                                         <!-- Three dots menu - Bottom -->
                                         <div class="relative">
                                             <button @click.stop="toggleMenu(reg.id)" class="w-10 h-10 flex items-center justify-center text-red-500 active:scale-90 transition-all">
-                                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                <svg class="h-6 w-6 !text-[#dc2626]" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM18 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                                             </button>
                                             <div v-if="openMenuId === reg.id" @click.stop 
                                                  class="absolute right-0 top-full mt-1 w-auto min-w-[140px] bg-white opacity-100 rounded-xl shadow-2xl border border-slate-100 z-[110] overflow-hidden animate-slide-up">

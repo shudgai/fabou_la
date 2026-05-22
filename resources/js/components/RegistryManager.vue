@@ -227,7 +227,7 @@
                                         </div>
                                         <div class="w-full space-y-4 px-0 mb-4 animate-fade-in pt-[90px] md:pt-[30px]">
                                             <!-- Collapsible Header for Edit Mode -->
-                                            <div class="flex flex-col group cursor-pointer px-4 pt-4 pb-2" @click.stop="toggleDetails(item.id)">
+                                            <div class="flex flex-col group cursor-pointer px-4 pt-[5px] pb-2" @click.stop="toggleDetails(item.id)">
                                                 <div class="flex items-center justify-between">
                                                     <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
                                                     <!-- Toggle Icon -->
@@ -380,7 +380,7 @@
                                         <!-- Header Actions (Inside Expanded) -->
                                         <div class="absolute right-2 top-12 z-[50] flex flex-col gap-3 items-center">
                                             <button @click.stop="toggleExpand(item.id)" 
-                                                    class="p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
+                                                    class="-mt-10 p-2 active:scale-90 transition-all text-slate-400 hover:text-slate-600">
                                                 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
@@ -437,9 +437,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="w-full px-4 mb-4 animate-fade-in pt-4 mt-10 space-y-2 bg-white">
+                                        <div class="w-full px-4 mb-4 animate-fade-in pt-4 mt-5 space-y-2 bg-white">
                                             <!-- Treasure Name Row (Header) -->
-                                            <div class="flex flex-col group cursor-pointer px-4 pt-4 pb-2" @click.stop="toggleDetails(item.id)">
+                                            <div class="flex flex-col group cursor-pointer px-4 pt-[5px] pb-2" @click.stop="toggleDetails(item.id)">
                                                 <div class="flex items-center justify-between">
                                                     <span class="font-bold text-[14px] text-slate-500">法寶名稱</span>
                                                     <!-- Toggle Icon (Moved right) -->

@@ -719,6 +719,20 @@ APP_DEBUG=false
 - **ImperialGraceAddForm.vue 預覽捲動**：
   - 預覽步驟的用意(用意)與備註(備註)區塊加上 `max-h-32 overflow-y-auto custom-scrollbar`，文字過長時可獨立滾動
 - **ImperialGraceAddForm.vue 批次解析強化**：
-  - 支援前綴屬性行：`得知日期:`、`登記日期:`、`用意:`、`備註:`
-  - 屬性行支援續行（多行同一屬性自動累加）
-  - 明確區分 `explicitRecordDate` / `explicitObtainedDate`，不再共用同一個日期
+  - 支援前綴屬性：`得知日期:`、`登記日期:`、`用意:`、`備註:`
+  - 屬性支援換行（非前綴行會自動累加至上一屬性）
+  - 明確區分 `explicitRecordDate` / `explicitObtainedDate`，避免共用同一日期
+
+## Session Notes (2026-05-22)
+### RegistryManager — UI微調
+| 修改 | 位置 | 說明 |
+|------|------|------|
+| 卡片標題 `pt-4` → `pt-[5px]` | Line 230, 442 | 折疊卡片 header 頂部內距從 16px 縮為 5px |
+| 展開 X 按鈕 `-mt-10` | Line 382 | 手機版展開檢視的關閉 X 圖示上移 40px（桌面板 modal 不變） |
+
+### ImperialGraceManager — UI微調
+| 修改 | 位置 | 說明 |
+|------|------|------|
+| 展開清單標題 | 頂部 | 標題改為「重大皇恩專區」，並強制字體大小為 `32px`，與首頁標題大小一致。 |
+| 關閉 (X) 按鈕 | 展開清單 | SVG 從 `w-7 h-7` 縮小為 `w-6 h-6`，粗細從 3 改為 2.5。 |
+| 三個點選單 | 展開清單 | 強制套用 `!text-[#dc2626]` 使圖示呈現紅色。 |
