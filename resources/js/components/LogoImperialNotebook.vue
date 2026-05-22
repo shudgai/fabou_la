@@ -12,7 +12,12 @@
             <!-- Central Taiji -->
             <g transform="translate(70, 70)">
                 <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
-                <path d="M 50 1 A 49 49 0 0 1 50 99 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 50 1 Z" fill="black"/>
+                <mask id="taiji-mask-vue">
+                    <rect x="50" y="-10" width="60" height="120" fill="white"></rect>
+                    <circle cx="50" cy="25.5" r="24.5" fill="black"></circle>
+                    <circle cx="50" cy="74.5" r="24.5" fill="white"></circle>
+                </mask>
+                <circle cx="50" cy="50" r="49" fill="black" mask="url(#taiji-mask-vue)"></circle>
                 <circle cx="50" cy="74.5" r="8" fill="white"/>
                 <circle cx="50" cy="25.5" r="8" fill="black"/>
             </g>
