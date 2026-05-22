@@ -96,7 +96,7 @@
                             @click="currentFolder = folder"
                             class="flex flex-col items-center justify-center active:scale-95 transition-all group relative rounded-none w-[175px] h-[138px] flex-shrink-0 p-0 overflow-visible">
                             <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
-                                <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="書籍圖示"></picture>
+                                <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示"></picture>
                                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 font-biaokai-locked" style="transform: translateY(-20px);">
                                      <div class="font-black tracking-tighter leading-none text-center font-biaokai-locked text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
                                           style="font-size: 11px !important;">父皇仙師開示載錄</div>
@@ -222,7 +222,7 @@
                                 <teleport to="body">
                                     <div v-if="isSessionFocused(item)" class="fixed inset-0 z-[5000] animate-fade-in bg-black/20 md:bg-black/40 pointer-events-auto">
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none p-0 md:p-6">
-                                            <div class="w-full h-full md:max-w-xl md:max-h-[90dvh] bg-white flex flex-col md:rounded-[32px] md:shadow-2xl overflow-y-auto animate-slide-up pointer-events-auto transform-gpu" style="will-change: transform; height: 100dvh; height: 100dvh !important;">
+                                            <div class="w-full h-full md:max-w-xl md:max-h-[90dvh] bg-white flex flex-col md:rounded-[32px] md:shadow-2xl overflow-y-auto animate-slide-up pointer-events-auto transform-gpu" style="height: 100dvh;">
                                             <!-- Global Main Title (Added) -->
                                             <div class="px-[15px] py-[10px] flex items-center bg-white border-b border-slate-300 relative min-h-[52px] shrink-0">
                                                 <div class="flex-1">

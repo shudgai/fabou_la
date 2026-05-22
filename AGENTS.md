@@ -736,3 +736,57 @@ APP_DEBUG=false
 | 展開清單標題 | 頂部 | 標題改為「重大皇恩專區」，並強制字體大小為 `32px`，與首頁標題大小一致。 |
 | 關閉 (X) 按鈕 | 展開清單 | SVG 從 `w-7 h-7` 縮小為 `w-6 h-6`，粗細從 3 改為 2.5。 |
 | 三個點選單 | 展開清單 | 強制套用 `!text-[#dc2626]` 使圖示呈現紅色。 |
+
+## Session Notes (2026-05-22) — iOS Performance Optimization
+
+### Async Component Loading (defineAsyncComponent)
+
+#### 問題
+所有 9 個 manager 元件在 `AdminRootSelector.vue` 中使用靜態 `import`，導致首屏 JS bundle 過大（~310KB），iPhone 初次載入白畫面時間長。
+
+#### 修復
+將 9 個 manager 元件的靜態 import 改為 `defineAsyncComponent` 動態載入：
+
+```js
+// Before
+import TeachingManager from './TeachingManager.vue';
+import RegistryManager from './RegistryManager.vue';
+// ...
+
+// After
+const TeachingManager = defineAsyncComponent(() => import('./TeachingManager.vue'));
+const RegistryManager = defineAsyncComponent(() => import('./RegistryManager.vue'));
+```
+
+#### 效果
+| 指標 | 前 | 後 |
+|------|----|-----|
+| 初始 JS bundle | AdminRootSelector ~310KB (含全部元件) | AdminRootSelector.js **16 KB** |
+| 各元件載入 | 全部一次載入 | 按需載入（點到才下載） |
+| 首屏白畫面 | 長（iphon 低速網路明顯） | 大幅縮短 |
+
+#### 注意
+- `MobileDashboard.vue` 和 `LogoImperialNotebook.vue` 保留靜態 import（一定需要）
+- `AdminDashboard.vue` 也改為動態（管理用，非所有人會進）
+- `KeepAlive` 已存在，切回已載入元件不會重新下載
+
+### Remove `will-change: transform` from hover-only images
+
+#### 問題
+4 處圖片使用了 `will-change: transform` + `transform-gpu` 為 `group-hover:scale-105` 做 GPU 加速。iPhone 無 hover 概念，這些宣告浪費 GPU 記憶體。
+
+#### 修復
+| 檔案 | 行號 | 移除內容 |
+|------|------|----------|
+| `ImperialGraceManager.vue:131` | 書籍圖片 | `transform-gpu` class + `style="will-change: transform;"` |
+| `RegistryManager.vue:58-59` | 主類別圖片 | 同上 |
+| `RegistryManager.vue:82-83` | 子仙師圖片 | 同上 |
+| `TeachingManager.vue:99` | 首頁書籍圖片 | 同上 |
+
+### Fix duplicate `height: 100dvh` declaration
+
+#### 問題
+`TeachingManager.vue:225` 同時存在 `height: 100dvh;` 和 `height: 100dvh !important;`，並用 `will-change: transform`。
+
+#### 修復
+- 合併為 `style="height: 100dvh;"`，保留 `transform-gpu` class 確保 overlay 動畫流暢。 |

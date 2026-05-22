@@ -55,8 +55,7 @@
                             <picture><source srcset="/image/registry_book_yellow_v2.webp" type="image/webp"><img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
-                                 style="will-change: transform;"
+                                 class="w-full h-full object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
                                  alt="書籍圖示"></picture>
                             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-2 pb-2 px-2 font-biaokai-locked" style="transform: translateY(12px);">
                                 <div class="font-black tracking-tight leading-tight text-center font-biaokai-locked text-[34px] text-[#8B0000]">特殊法寶<br>登記專區</div>
@@ -79,8 +78,7 @@
                             <picture><source srcset="/image/registry_book_yellow_v2.webp" type="image/webp"><img src="/image/registry_book_yellow_v2.png" 
                                  fetchpriority="high"
                                  loading="eager"
-                                 class="w-[320px] h-[206px] max-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" 
-                                 style="will-change: transform;"
+                                 class="w-[320px] h-[206px] max-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply" 
                                  alt="書籍圖示"></picture>
 
                              <div class="absolute inset-0 flex flex-col items-center pointer-events-none pt-[52px] font-biaokai" style="font-family: 'DFKai-SB', '標楷體', 'BiauKai', 'Kaiti TC', serif !important; transform: translateY(2px);">

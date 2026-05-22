@@ -153,20 +153,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, defineAsyncComponent } from 'vue';
 import axios from 'axios';
-import TeachingManager from './TeachingManager.vue';
-import GrudgeManager from './GrudgeManager.vue';
-import MilitaryManager from './MilitaryManagerV2.vue';
-import RegistryManager from './RegistryManager.vue';
-import ImperialGraceManager from './ImperialGraceManager.vue';
-import OtherTeachingManager from './OtherTeachingManager.vue';
-import OtherManager from './OtherManager.vue';
-import KaiwenManager from './KaiwenManager.vue';
-import AdminDashboard from './AdminDashboard.vue';
 import MobileDashboard from './MobileDashboard.vue';
-import TrashManager from './TrashManager.vue';
 import LogoImperialNotebook from './LogoImperialNotebook.vue';
+
+const TeachingManager = defineAsyncComponent(() => import('./TeachingManager.vue'));
+const GrudgeManager = defineAsyncComponent(() => import('./GrudgeManager.vue'));
+const MilitaryManager = defineAsyncComponent(() => import('./MilitaryManagerV2.vue'));
+const RegistryManager = defineAsyncComponent(() => import('./RegistryManager.vue'));
+const ImperialGraceManager = defineAsyncComponent(() => import('./ImperialGraceManager.vue'));
+const OtherTeachingManager = defineAsyncComponent(() => import('./OtherTeachingManager.vue'));
+const OtherManager = defineAsyncComponent(() => import('./OtherManager.vue'));
+const KaiwenManager = defineAsyncComponent(() => import('./KaiwenManager.vue'));
+const AdminDashboard = defineAsyncComponent(() => import('./AdminDashboard.vue'));
+const TrashManager = defineAsyncComponent(() => import('./TrashManager.vue'));
 
 const user = ref(null);
 const currentView = ref('menu');

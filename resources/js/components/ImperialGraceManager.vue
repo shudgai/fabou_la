@@ -128,7 +128,7 @@
                         @click="currentFolder = folder"
                         class="flex flex-col items-center justify-center active:scale-95 transition-all p-0 w-[175px] h-[138px] flex-shrink-0 relative group rounded-none overflow-visible">
                     <div class="relative w-[175px] h-[138px] flex items-center justify-center overflow-visible">
-                        <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply transform-gpu" style="will-change: transform;" alt="書籍圖示"></picture>
+                        <picture><source srcset="/image/imperial_grace_book_v5.webp" type="image/webp"><img src="/image/imperial_grace_book_v5.png" fetchpriority="high" loading="eager" class="w-[220px] h-[142px] max-w-none object-contain transition-transform group-hover:scale-105 mix-blend-multiply" alt="書籍圖示"></picture>
                          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-12 text-[#fbbf24] font-biaokai-locked" style="transform: translateY(-22px);">
                               <div class="text-[14px] mb-[2px] tracking-widest font-biaokai-locked text-gold-locked">重大皇恩專區</div>
                               <div class="text-[20px] font-black font-biaokai-locked text-gold-locked stroke-gold-locked">{{ folder.name === '父皇仙師' ? '父皇' : folder.name }}</div>
