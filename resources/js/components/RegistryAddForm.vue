@@ -229,7 +229,7 @@
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
-                                    <div @click="$emit('openRemarksEdit', { idx, remarks: p.remarks })"
+                                    <div @click="$emit('openRemarksEdit', { idx, p })"
                                         class="w-full h-[46px] rounded-xl border border-slate-300 bg-white px-3 py-[10px] text-[15px] text-slate-900 cursor-pointer hover:border-blue-300 flex items-center justify-between">
                                         <span :class="p.remarks ? 'text-slate-900' : 'text-slate-300'" class="truncate flex-1 text-[13px]">{{ p.remarks || '備註...' }}</span>
                                         <svg class="w-4 h-4 text-slate-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -329,7 +329,7 @@
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[11px] text-slate-400 ml-1 font-bold">個人備註</label>
-                                    <div @click="$emit('openRemarksEdit', { idx, remarks: p.remarks })"
+                                    <div @click="$emit('openRemarksEdit', { idx, p })"
                                         class="w-full h-[46px] rounded-xl border border-slate-300 bg-white px-3 py-[10px] text-[15px] text-slate-900 cursor-pointer hover:border-blue-300 flex items-center justify-between">
                                         <span :class="p.remarks ? 'text-slate-900' : 'text-slate-300'" class="truncate flex-1 text-[13px]">{{ p.remarks || '備註...' }}</span>
                                         <svg class="w-4 h-4 text-slate-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>

@@ -174,6 +174,7 @@ Two terminals needed: `php artisan serve` + `npm run dev`.
 - **Unified Sizing & Typography**: Edit mode date input matches list view exactly: size `14px` (`font-size: 14px !important; color: #ef4444 !important; font-family: 'PMingLiU', serif !important;`).
 - **Remarks Formatting & Wrapping**: The `renderRemarksHtml` format function appends `<br>` after matching dates (e.g. `2024/04/13`) when additional text is present, placing recipient names (e.g. `金巧母親`) on the second row for clean vertical styling.
 - **Unified Remarks Editing**: Replaced the small inline `<textarea>` with the `RemarksViewer.vue` modal (`triggerRemarksEdit`) for editing individual participant remarks in both mobile and desktop Edit Modes. The modal supports full multi-line input and properly syncs data back to the `editData` form (including newly added records without an ID) without making premature API calls.
+- **Remarks Save Architecture Fix**: Resolved the issue where saving remarks within `RemarksViewer` failed to update the UI in Add/Edit modes by changing `triggerRemarksEdit` to pass the reactive object reference (`p` or `dnr`) instead of relying on `defineExpose` and component indices. `handleRemarksViewerSave` now directly mutates `activeRemarksTarget.value.remarks`.
 - **RemarksViewer.vue UI**: The "確認並儲存" (Confirm and Save) button text color is forced to white (`!text-white`) to prevent any CSS overriding.
 
 ### RegistryAddForm.vue

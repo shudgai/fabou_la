@@ -56,7 +56,8 @@
                 <div class="flex gap-3 mt-4 pb-0" style="padding-bottom: env(safe-area-inset-bottom);">
                     <button v-if="isActuallyEditing"
                             @click.stop="save"
-                            class="flex-[2] py-4 bg-orange-500 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit shadow-lg shadow-orange-100 border-b-4 border-orange-600">
+                            class="flex-[2] py-4 bg-orange-500 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit shadow-lg shadow-orange-100 border-b-4 border-orange-600"
+                            style="color: white !important;">
                         確認並儲存
                     </button>
                     <button @click.stop="close"

@@ -626,7 +626,7 @@
                     <h3 class="text-[22px] font-black text-center mb-2 font-outfit text-slate-800">確定要刪除嗎？</h3>
                     <p class="text-slate-500 text-center mb-6 font-black font-outfit leading-relaxed">此操作將永久刪除此筆載錄，且無法復原。請確認身分後再執行。</p>
                     <div class="flex flex-col space-y-3">
-                        <button @click="executeDelete" class="w-full py-4 bg-red-600 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
+                        <button @click="executeDelete" class="w-full py-4 bg-red-600 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit" style="color: white !important;">
                             是的，確認刪除
                         </button>
                         <button @click="deleteConfirmId = null" class="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit">
@@ -2483,10 +2483,11 @@ const openRemarks = (dnrOrContent) => {
     showRemarksModal.value = true;
 };
 
-const handleAddFormRemarksEdit = ({ idx, remarks }) => {
+const handleAddFormRemarksEdit = ({ idx, p }) => {
     currentAddFormIdx.value = idx;
     currentDnrId.value = null;
-    activeRemarks.value = remarks || '';
+    activeRemarksTarget.value = p; // Direct reference mutation
+    activeRemarks.value = p.remarks || '';
     showRemarksModal.value = true;
 };
 
@@ -2683,28 +2684,15 @@ const downloadAllData = () => {
 
 
 const handleRemarksViewerSave = async ({ dnrId, content }) => {
-    // 1. 如果在「新增法寶」模式下 (Add Mode)
-    if (currentAddFormIdx.value !== null) {
-        try {
-            if (addFormRef.value && typeof addFormRef.value.updatePersonnelRemarks === 'function') {
-                addFormRef.value.updatePersonnelRemarks(currentAddFormIdx.value, content);
-            }
-        } catch (e) {
-            console.error('AddForm update error:', e);
-        }
-        showRemarksModal.value = false;
-        currentAddFormIdx.value = null;
-        return;
-    }
-
-    // 2. 如果在「修改法寶」模式下 (Edit Mode)，只要把資料寫回編輯對象即可，不馬上發送 API
-    if (editItemId.value !== null || (activeRemarksTarget.value && !dnrId)) {
+    // 1. & 2. 如果在「新增法寶」或「修改法寶」模式下，只要把資料寫回編輯對象即可，不馬上發送 API
+    if (currentAddFormIdx.value !== null || editItemId.value !== null || (activeRemarksTarget.value && !dnrId)) {
         if (activeRemarksTarget.value) {
             activeRemarksTarget.value.remarks = content;
         }
         showRemarksModal.value = false;
         currentDnrId.value = null;
         activeRemarksTarget.value = null;
+        currentAddFormIdx.value = null;
         return;
     }
 

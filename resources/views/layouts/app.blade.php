@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" translate="no" class="notranslate">
 
 <head>
     <!-- 字體大小初始化：讀 localStorage，避免頁面閃爍 -->
@@ -7,14 +7,15 @@
         (function () {
             try {
                 var size = localStorage.getItem('fabou_font_size') || 'font-medium';
-                document.documentElement.className = size;
+                document.documentElement.className = size + ' notranslate';
             } catch (e) {
                 // iOS Private Browsing: localStorage throws SecurityError
-                document.documentElement.className = 'font-medium';
+                document.documentElement.className = 'font-medium notranslate';
             }
         })();
     </script>
     <meta charset="utf-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <!-- CSRF Token -->
