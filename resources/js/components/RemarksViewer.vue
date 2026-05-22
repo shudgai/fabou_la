@@ -1,7 +1,7 @@
 <template>
     <Teleport to="body">
         <div v-if="isOpen"
-             class="fixed inset-0 z-[400] flex items-end md:items-center justify-center p-0 md:p-4"
+             class="fixed inset-0 z-[3500] flex items-end md:items-center justify-center p-0 md:p-4"
              @click.self="close">
             <!-- Backdrop -->
             <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300" 
@@ -14,7 +14,7 @@
 
                 <div class="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-4 md:hidden"></div>
 
-                <!-- Header -->
+                <!-- 導覽列 (Header) -->
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex flex-col">
                         <h3 class="text-[19px] font-black font-outfit text-slate-800">詳細備註內容</h3>
@@ -52,11 +52,11 @@
                     </div>
                 </div>
 
-                <!-- Footer Actions -->
-                <div class="mt-6 flex gap-3 pb-2 md:pb-0" style="padding-bottom: env(safe-area-inset-bottom);">
+                <!-- Footer Actions (最下方) -->
+                <div class="flex gap-3 mt-4 pb-0" style="padding-bottom: env(safe-area-inset-bottom);">
                     <button v-if="isActuallyEditing"
                             @click.stop="save"
-                            class="flex-[2] py-4 bg-orange-500 text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit shadow-lg shadow-orange-100 border-b-4 border-orange-600">
+                            class="flex-[2] py-4 bg-orange-500 !text-white rounded-2xl font-black text-[18px] active:scale-95 transition-all font-outfit shadow-lg shadow-orange-100 border-b-4 border-orange-600">
                         確認並儲存
                     </button>
                     <button @click.stop="close"

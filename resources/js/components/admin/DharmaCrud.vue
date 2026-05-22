@@ -102,7 +102,7 @@ const editMode = ref(false);
 const form = ref({ id: null, name: '', alias: '', order: 100 });
 
 const sortedItems = computed(() => {
-  return [...items.value].sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+  return [...items.value].sort((a, b) => a.order - b.order);
 });
 
 const load = async () => {

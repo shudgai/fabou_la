@@ -349,18 +349,9 @@
                                                                     </button>
                                                                 </td>
                                                                 <td class="p-0">
-                                                                    <div v-if="activeRemarksEditIdx !== dnrIdx" 
-                                                                         @click="activeRemarksEditIdx = dnrIdx"
-                                                                         class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
-                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
+                                                                    <div @click.stop="triggerRemarksEdit(editData, dnr)" class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
+                                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true) || '--'"></span>
                                                                     </div>
-                                                                    <textarea v-else
-                                                                        v-model="dnr.remarks"
-                                                                        v-focus
-                                                                        @blur="activeRemarksEditIdx = null"
-                                                                        placeholder="--"
-                                                                        rows="2"
-                                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px] resize-none"></textarea>
                                                                 </td>
                                                                 <td class="px-1 text-center">
                                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
@@ -812,13 +803,9 @@
                                                     </button>
                                                 </td>
                                                 <td class="p-0">
-                                                    <div v-if="activeRemarksEditIdx !== dnrIdx" @click="activeRemarksEditIdx = dnrIdx"
-                                                         class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
-                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true)"></span>
+                                                    <div @click.stop="triggerRemarksEdit(editData, dnr)" class="w-full min-h-[32px] flex items-center justify-center cursor-pointer py-2">
+                                                        <span class="text-[13px] font-bold text-slate-400 leading-tight whitespace-pre-wrap" v-html="renderRemarksHtml(dnr.remarks, true) || '--'"></span>
                                                     </div>
-                                                    <textarea v-else v-model="dnr.remarks" v-focus @blur="activeRemarksEditIdx = null"
-                                                        placeholder="--" rows="2"
-                                                        class="w-full text-center text-[13px] font-bold text-slate-400 bg-transparent py-2 outline-none pl-[5px] resize-none"></textarea>
                                                 </td>
                                                 <td class="px-1 text-center">
                                                     <button @click.stop="removeDharmaSelection(dnrIdx)" class="text-slate-300 hover:text-red-500 p-1">
@@ -952,8 +939,8 @@
         <remarks-viewer 
             v-model="showRemarksModal"
             :remarks="activeRemarks"
-            :editable="currentAddFormIdx !== null || currentDnrId !== null"
-            :forceEdit="currentAddFormIdx !== null || currentDnrId !== null"
+            :editable="currentAddFormIdx !== null || currentDnrId !== null || !!editItemId"
+            :forceEdit="currentAddFormIdx !== null || currentDnrId !== null || !!editItemId"
             :dnrId="currentDnrId"
             @save="handleRemarksViewerSave"
         />
@@ -1216,6 +1203,7 @@ const deleteConfirmId = ref(null);
 
 const showRemarksModal = ref(false);
 const activeRemarks = ref('');
+const activeRemarksTarget = ref(null);
 const currentDnrId = ref(null);
 const reorderMode = ref(false);
 const paginationMeta = ref(null);
@@ -2100,7 +2088,7 @@ const triggerBatchSave = async (batchData) => {
 
         const nameAliasMap = {
             '金容': '靈果', '金涓': '靈慧', '金梅': '靈妙', '金蘭': '靈智', '金平': '靈平',
-            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金熹': '靈情', '金吉': '靈奇',
+            '金瑞': '龍戰', '金耀': '龍勝', '金旭': '靈心', '金吉': '靈奇',
             '金祥': '靈傾', '金恩': '靈昡', '金鈺': '元續', '金穎': '赤峰',
             '金律': '閻㻇', '金欣': '閻闇', '閰琉': '閻尊', '金剛': '閰帝', '金頓': '閻爵',
             '金虹': '赤覺', '金湘': '紫元', '金雍': '道妙', '金無': '閻澤', '金真': '閻願',
@@ -2485,10 +2473,12 @@ const openRemarks = (dnrOrContent) => {
     if (typeof dnrOrContent === 'string') {
         activeRemarks.value = dnrOrContent;
         currentDnrId.value = null;
+        activeRemarksTarget.value = null;
     } else {
         const r = dnrOrContent.remarks;
         activeRemarks.value = Array.isArray(r) ? r.join('\n') : (r || '');
         currentDnrId.value = dnrOrContent.id;
+        activeRemarksTarget.value = dnrOrContent;
     }
     showRemarksModal.value = true;
 };
@@ -2693,18 +2683,37 @@ const downloadAllData = () => {
 
 
 const handleRemarksViewerSave = async ({ dnrId, content }) => {
+    // 1. 如果在「新增法寶」模式下 (Add Mode)
     if (currentAddFormIdx.value !== null) {
-        if (addFormRef.value) {
-            addFormRef.value.updatePersonnelRemarks(currentAddFormIdx.value, content);
+        try {
+            if (addFormRef.value && typeof addFormRef.value.updatePersonnelRemarks === 'function') {
+                addFormRef.value.updatePersonnelRemarks(currentAddFormIdx.value, content);
+            }
+        } catch (e) {
+            console.error('AddForm update error:', e);
         }
         showRemarksModal.value = false;
         currentAddFormIdx.value = null;
         return;
     }
 
+    // 2. 如果在「修改法寶」模式下 (Edit Mode)，只要把資料寫回編輯對象即可，不馬上發送 API
+    if (editItemId.value !== null || (activeRemarksTarget.value && !dnrId)) {
+        if (activeRemarksTarget.value) {
+            activeRemarksTarget.value.remarks = content;
+        }
+        showRemarksModal.value = false;
+        currentDnrId.value = null;
+        activeRemarksTarget.value = null;
+        return;
+    }
 
+    // 3. 如果在「檢視法寶」模式下 (View Mode)，發送 API 單筆更新
+    if (!dnrId) {
+        showRemarksModal.value = false;
+        return;
+    }
 
-    if (!dnrId) return;
     isSaving.value = true;
     try {
         await axios.patch(`/registries/personnel/${dnrId}/remarks`, {
@@ -2712,13 +2721,19 @@ const handleRemarksViewerSave = async ({ dnrId, content }) => {
         });
         persistentToast.value = { msg: '✓ 備註已儲存', type: 'success' };
         setTimeout(() => { if (persistentToast.value?.type === 'success') persistentToast.value = null; }, 1500);
+        
+        // Update the UI immediately without waiting for loadData to prevent jumping
+        if (activeRemarksTarget.value) {
+            activeRemarksTarget.value.remarks = content;
+        }
         await loadData();
     } catch (e) {
         persistentToast.value = { msg: '✖ 儲存失敗，請重試', type: 'error' };
     } finally {
         isSaving.value = false;
-        showRemarksModal.value = false; // 確保關閉
-        currentDnrId.value = null;     // 重置 ID
+        showRemarksModal.value = false;
+        currentDnrId.value = null;
+        activeRemarksTarget.value = null;
     }
 };
 
