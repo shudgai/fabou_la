@@ -24,7 +24,7 @@
     <title>皇恩筆記本</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('logo_v3.svg') }}?v=3">
     
     <!-- Web App Manifest -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
