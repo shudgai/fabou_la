@@ -75,15 +75,7 @@
 
             <div v-else class="flex-1 h-full overflow-hidden flex flex-col">
                 <KeepAlive>
-                    <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')"></teaching-manager>
-                    <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')"></grudge-manager>
-                    <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')"></imperial-grace-manager>
-                    <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
-                    <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
-                    <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')"></other-teaching-manager>
-                    <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
-                    <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')"></kaiwen-manager>
-                    <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
+                    <component :is="mobileActiveComponent" :user="user" @go-home="handleNavigate('menu')" />
                 </KeepAlive>
             </div>
         </div>
@@ -128,15 +120,7 @@
             <!-- Content Area -->
             <div class="flex-1 h-full overflow-hidden flex flex-col bg-white relative">
                 <KeepAlive>
-                    <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></teaching-manager>
-                    <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></grudge-manager>
-                    <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></imperial-grace-manager>
-                    <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></registry-manager>
-                    <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></military-manager>
-                    <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-teaching-manager>
-                    <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-manager>
-                    <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
-                    <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></trash-manager>
+                    <component :is="desktopActiveComponent" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true" />
                 </KeepAlive>
 
                 <!-- Welcome State (Desktop menu) -->
@@ -203,6 +187,21 @@ const filteredMenuItems = computed(() => {
         return true;
     });
 });
+
+const componentMap = {
+    teaching: TeachingManager,
+    grudge: GrudgeManager,
+    military: MilitaryManager,
+    treasure: RegistryManager,
+    grace: ImperialGraceManager,
+    other_teaching: OtherTeachingManager,
+    other: OtherManager,
+    kaiwen: KaiwenManager,
+    trash: TrashManager,
+};
+
+const mobileActiveComponent = computed(() => componentMap[currentView.value] || null);
+const desktopActiveComponent = computed(() => componentMap[currentView.value] || null);
 
 const loadStats = async () => {
     try {
