@@ -697,3 +697,17 @@ APP_DEBUG=false
 - **修復**：
   1. 移除無效且錯誤的 `<link rel="icon" type="image/png" ...>` 舊版 Fallback，現代瀏覽器皆完全支援 SVG。
   2. 加入版號 Cache Buster：`href="{{ asset('favicon.svg') }}?v=2"`，強迫正式環境的瀏覽器放棄快取的破圖狀態並重新抓取新的 SVG。
+
+### ImperialGraceManager Expanded Overlay Scroll Fix
+- **問題**：皇恩展開覆蓋層中，若有長內容（用意/備註），底部備份資料無法滾動查看，無滾軸。
+- **根因**：外層容器 `overflow-hidden` 搭配內層 `flex-1 overflow-y-auto` 的 flex 佈局，在某些瀏覽器/裝置上 inner scroll 不會正確觸發。flex item 的 `min-height` 計算不一致導致。
+- **修復** (ImperialGraceManager.vue)：
+  - 移除外層 `overflow-hidden` + `flex flex-col` 佈局，改為直接 `overflow-y-auto custom-scrollbar`
+  - 移除 `shrink-0` header，header 與內容一起滾動（與 TeachingManager 相同模式）
+  - 移除內層 `flex-1 overflow-y-auto` 的 scroll container，改為簡單 `div` + `pb-32`
+- **ImperialGraceAddForm.vue 預覽捲動**：
+  - 預覽步驟的用意(用意)與備註(備註)區塊加上 `max-h-32 overflow-y-auto custom-scrollbar`，文字過長時可獨立滾動
+- **ImperialGraceAddForm.vue 批次解析強化**：
+  - 支援前綴屬性行：`得知日期:`、`登記日期:`、`用意:`、`備註:`
+  - 屬性行支援續行（多行同一屬性自動累加）
+  - 明確區分 `explicitRecordDate` / `explicitObtainedDate`，不再共用同一個日期

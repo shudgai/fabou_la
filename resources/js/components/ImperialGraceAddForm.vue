@@ -189,7 +189,16 @@
 
                             <div v-if="form.purpose" class="flex flex-col border-b border-slate-50 pb-4">
                                 <span class="text-[12px] font-normal text-black uppercase tracking-widest mb-1">用意</span>
-                                <p class="text-[17px] font-normal text-black leading-relaxed whitespace-pre-wrap">{{ form.purpose }}</p>
+                                <div class="max-h-32 overflow-y-auto custom-scrollbar">
+                                    <p class="text-[17px] font-normal text-black leading-relaxed whitespace-pre-wrap">{{ form.purpose }}</p>
+                                </div>
+                            </div>
+
+                            <div v-if="form.remarks" class="flex flex-col border-b border-slate-50 pb-4">
+                                <span class="text-[12px] font-normal text-black uppercase tracking-widest mb-1">備註</span>
+                                <div class="max-h-32 overflow-y-auto custom-scrollbar">
+                                    <p class="text-[17px] font-normal text-black leading-relaxed whitespace-pre-wrap">{{ form.remarks }}</p>
+                                </div>
                             </div>
 
                             <div class="flex flex-col">
@@ -365,51 +374,94 @@ const excelRows = computed(() => {
         let rowName = '';
         let rowPurpose = '';
         let rowRemarks = '';
+        let explicitObtainedDate = null;
+        let explicitRecordDate = null;
 
-        // Case 1: First line is a date
-        const dateAtStart = parseDateText(lines[0]);
-        if (dateAtStart) {
-            rowDate = dateAtStart;
-            if (lines.length > 1) {
-                rowName = lines[1];
-                rowPurpose = lines[2] || '';
-                rowRemarks = lines.slice(3).join('\n');
+        let activeAttribute = null;
+        const remainingLines = [];
+        for (const line of lines) {
+            let matched = false;
+            if (line.startsWith('得知日期:') || line.startsWith('得知日期：')) {
+                explicitObtainedDate = parseDateText(line.substring(5).trim());
+                matched = true;
+                activeAttribute = null;
+            } else if (line.startsWith('登記日期:') || line.startsWith('登記日期：')) {
+                explicitRecordDate = parseDateText(line.substring(5).trim());
+                matched = true;
+                activeAttribute = null;
+            } else if (line.startsWith('用意:') || line.startsWith('用意：')) {
+                rowPurpose += (rowPurpose ? '\n' : '') + line.substring(3).trim();
+                matched = true;
+                activeAttribute = 'purpose';
+            } else if (line.startsWith('備註:') || line.startsWith('備註：')) {
+                rowRemarks += (rowRemarks ? '\n' : '') + line.substring(3).trim();
+                matched = true;
+                activeAttribute = 'remarks';
+            } else if (activeAttribute === 'purpose') {
+                rowPurpose += '\n' + line;
+                matched = true;
+            } else if (activeAttribute === 'remarks') {
+                rowRemarks += '\n' + line;
+                matched = true;
+            }
+
+            if (!matched) {
+                remainingLines.push(line);
+                activeAttribute = null;
+            }
+        }
+
+        if (remainingLines.length > 0) {
+            // Case 1: First remaining line is a date
+            const dateAtStart = parseDateText(remainingLines[0]);
+            if (dateAtStart) {
+                rowDate = dateAtStart;
+                if (remainingLines.length > 1) {
+                    rowName = remainingLines[1];
+                    if (!rowPurpose) rowPurpose = remainingLines[2] || '';
+                    if (!rowRemarks) rowRemarks = remainingLines.slice(3).join('\n');
+                } else {
+                    // Single line: might be "Date Name"
+                    const spaceIdx = remainingLines[0].indexOf(' ');
+                    const tabIdx = remainingLines[0].indexOf('\t');
+                    const splitIdx = spaceIdx !== -1 ? spaceIdx : tabIdx;
+                    if (splitIdx !== -1) {
+                        const potentialDate = parseDateText(remainingLines[0].substring(0, splitIdx));
+                        if (potentialDate) {
+                            rowDate = potentialDate;
+                            rowName = remainingLines[0].substring(splitIdx).trim();
+                        } else {
+                            rowName = remainingLines[0];
+                        }
+                    } else {
+                        rowName = remainingLines[0];
+                    }
+                }
             } else {
-                // Single line: might be "Date Name"
-                const spaceIdx = lines[0].indexOf(' ');
-                const tabIdx = lines[0].indexOf('\t');
+                // Case 2: No date at start of block
+                const spaceIdx = remainingLines[0].indexOf(' ');
+                const tabIdx = remainingLines[0].indexOf('\t');
                 const splitIdx = spaceIdx !== -1 ? spaceIdx : tabIdx;
                 if (splitIdx !== -1) {
-                    const potentialDate = parseDateText(lines[0].substring(0, splitIdx));
+                    const potentialDate = parseDateText(remainingLines[0].substring(0, splitIdx));
                     if (potentialDate) {
                         rowDate = potentialDate;
-                        rowName = lines[0].substring(splitIdx).trim();
+                        rowName = remainingLines[0].substring(splitIdx).trim();
                     } else {
-                        rowName = lines[0];
+                        rowName = remainingLines[0];
                     }
                 } else {
-                    rowName = lines[0]; // Just a date line with no name? handled below
+                    rowName = remainingLines[0];
+                }
+                
+                if (remainingLines.length > 1 && !rowPurpose && !rowRemarks) {
+                    rowPurpose = remainingLines[1] || '';
+                    rowRemarks = remainingLines.slice(2).join('\n');
+                } else if (remainingLines.length > 1) {
+                    const leftovers = remainingLines.slice(1).join('\n');
+                    if (leftovers) rowRemarks += (rowRemarks ? '\n' : '') + leftovers;
                 }
             }
-        } else {
-            // Case 2: No date at start of block
-            // Check if first line is "Date Name"
-            const spaceIdx = lines[0].indexOf(' ');
-            const tabIdx = lines[0].indexOf('\t');
-            const splitIdx = spaceIdx !== -1 ? spaceIdx : tabIdx;
-            if (splitIdx !== -1) {
-                const potentialDate = parseDateText(lines[0].substring(0, splitIdx));
-                if (potentialDate) {
-                    rowDate = potentialDate;
-                    rowName = lines[0].substring(splitIdx).trim();
-                } else {
-                    rowName = lines[0];
-                }
-            } else {
-                rowName = lines[0];
-            }
-            rowPurpose = lines[1] || '';
-            rowRemarks = lines.slice(2).join('\n');
         }
 
         if (rowName === parseDateText(rowName) || !rowName) return null;
@@ -418,8 +470,8 @@ const excelRows = computed(() => {
             name: rowName,
             purpose: rowPurpose,
             remarks: rowRemarks,
-            record_date: rowDate,
-            obtained_date: rowDate,
+            record_date: explicitRecordDate || rowDate,
+            obtained_date: explicitObtainedDate || rowDate,
             status: '已登記',
             master_id: form.value.master_id
         };

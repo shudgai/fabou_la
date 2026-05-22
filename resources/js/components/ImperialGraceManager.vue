@@ -241,13 +241,13 @@
                             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="toggleExpand(reg.id)"></div>
                             <!-- Content Panel -->
                             <div class="absolute inset-0 flex items-end md:items-center md:justify-center pointer-events-none">
-                            <div class="w-full h-full md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[40px] md:shadow-2xl flex flex-col animate-slide-up pointer-events-auto overflow-hidden">
+                            <div class="w-full h-full overflow-y-auto custom-scrollbar md:h-auto md:max-h-[90dvh] md:max-w-2xl bg-white md:rounded-[40px] md:shadow-2xl animate-slide-up pointer-events-auto">
                                 <!-- Header -->
-                                <div class="shrink-0 bg-white flex flex-col w-full border-b border-slate-100 relative">
+                                <div class="bg-white flex flex-col w-full border-b border-slate-100 relative">
                                     <div class="px-[15px] py-[10px] flex flex-col items-center w-full">
                                         <div class="flex items-center gap-2">
                                             <logo-imperial-notebook :height="36" class="md:hidden" />
-                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important;">重大皇恩登記簿</h1>
+                                            <h1 class="uppercase tracking-widest font-outfit !font-black !text-[#dc2626] whitespace-nowrap" style="font-size: 32px !important;">重大皇恩專區</h1>
                                         </div>
                                         <div class="mt-1">
                                             <span :class="currentFolder?.name === '閻王仙師' ? '!text-[#0f172a]' : '!text-[#dc2626]'" class="font-outfit whitespace-nowrap !font-medium" style="font-size: 26px !important;">{{ currentFolder?.name }}</span>
@@ -277,55 +277,48 @@
                                             </div>
                                         </div>
                                     </div>
-                                <!-- Scrollable Content -->
-                                <div class="flex-1 overflow-y-auto overscroll-contain px-[15px] pt-2 pb-32 custom-scrollbar">
-                                    <div class="animate-fade-in bg-white space-y-4 relative">
-                                        <!-- Detail Content Grid (Read Only View) -->
-                                        <div class="space-y-4 animate-fade-in">
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div class="space-y-1">
-                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
-                                                    <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
-                                                </div>
-                                                <div class="space-y-1 text-right pr-8">
-                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
-                                                    <div class="app-body text-[17px] font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="space-y-1">
-                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶名稱</label>
-                                                <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
-                                            </div>
-
-                                            <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="space-y-1">
-                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
-                                                <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed">{{ reg.purpose }}</div>
-                                            </div>
-
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div class="space-y-1">
-                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">目前狀態</label>
-                                                    <div class="app-body text-[17px] font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
-                                                        {{ reg.status }}
-                                                    </div>
-                                                </div>
-                                                <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
-                                                    <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">求得日期</label>
-                                                    <div class="app-body text-[15px] font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
-                                                </div>
-                                            </div>
-
-                                            <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
-                                                <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
-                                                <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
-                                            </div>
+                                </div>
+                                <!-- Detail Content (Read Only View) -->
+                                <div class="px-[15px] pt-3 pb-32 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                            <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">{{ reg.status === '已登記' ? '登記日期' : '得知日期' }}</label>
+                                            <div class="text-[15px] font-normal font-outfit !text-[#0d0d0d] !font-normal">{{ formatDate(reg.record_date) }}</div>
+                                        </div>
+                                        <div class="space-y-1 text-right pr-8">
+                                            <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">載錄目標仙師</label>
+                                            <div class="app-body text-[17px] font-bold text-slate-900">{{ getMasterName(reg.master_id) }}</div>
                                         </div>
                                     </div>
-                                </div>
-                                </div><!-- /scrollable content area -->
 
-                                <!-- Action bar removed, using header 3-dots menu instead -->
+                                    <div class="space-y-1">
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶名稱</label>
+                                        <div class="app-body font-black text-[17px] text-slate-900 leading-tight">{{ reg.name }}</div>
+                                    </div>
+
+                                    <div v-if="reg.purpose && reg.purpose !== '-' && reg.purpose !== '無'" class="space-y-1">
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">法寶用意</label>
+                                        <div class="app-body text-[17px] font-normal text-slate-900 leading-relaxed whitespace-pre-wrap">{{ reg.purpose }}</div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                            <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">目前狀態</label>
+                                            <div class="app-body text-[17px] font-black" :style="reg.status === '未求得' ? 'color: #dc2626 !important;' : (reg.status === '已求得' ? 'color: #2563eb !important;' : 'color: #059669 !important;')">
+                                                {{ reg.status }}
+                                            </div>
+                                        </div>
+                                        <div v-if="reg.status !== '已登記'" class="space-y-1 text-right pr-8">
+                                            <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">求得日期</label>
+                                            <div class="app-body text-[15px] font-bold text-slate-900">{{ formatDate(reg.obtained_date) }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="reg.remarks && reg.remarks !== '-' && reg.remarks !== '無'" class="space-y-1 pt-2 border-t border-slate-50">
+                                        <label class="app-title !text-[17px] tracking-wider block text-slate-500 font-bold">詳細內容 / 備註</label>
+                                        <div class="app-body text-[17px] font-bold text-slate-600 leading-relaxed whitespace-pre-wrap">{{ reg.remarks }}</div>
+                                    </div>
+                                </div>
                             </div><!-- /white panel -->
                             </div><!-- /pointer-events-none wrapper -->
                         </div><!-- /overlay root -->
@@ -646,10 +639,10 @@ const formatRegistryForFile = (reg) => {
     out += `得知日期：${reg.record_date || '-'}\n`;
     out += `法寶：${reg.name}\n`;
     if (reg.count && reg.count !== 1 && reg.count !== '1') out += `數據：${reg.count}\n`;
-    if (reg.purpose && reg.purpose !== '-' && reg.purpose !== '無') out += `用意：${reg.purpose}\n`;
+    if (reg.purpose && reg.purpose !== '-' && reg.purpose !== '無') out += `用意：\n${reg.purpose}\n`;
     out += `狀態：${reg.status || '未求得'}\n`;
     if (reg.status !== '已登記') out += `求得日期：${reg.obtained_date || '-'}\n`;
-    if (reg.remarks && reg.remarks !== '-' && reg.remarks !== '無') out += `\n由來與備註：${reg.remarks}\n`;
+    if (reg.remarks && reg.remarks !== '-' && reg.remarks !== '無') out += `\n由來與備註：\n${reg.remarks}\n`;
     return out.trim();
 };
 
