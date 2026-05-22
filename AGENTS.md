@@ -789,4 +789,25 @@ const RegistryManager = defineAsyncComponent(() => import('./RegistryManager.vue
 `TeachingManager.vue:225` 同時存在 `height: 100dvh;` 和 `height: 100dvh !important;`，並用 `will-change: transform`。
 
 #### 修復
-- 合併為 `style="height: 100dvh;"`，保留 `transform-gpu` class 確保 overlay 動畫流暢。 |
+- 合併為 `style="height: 100dvh;"`，保留 `transform-gpu` class 確保 overlay 動畫流暢。
+
+### KeepAlive 單一子元件限制修復
+
+#### 問題
+Vite HMR 報錯：`<KeepAlive> expects exactly one child component`。Vue 3 的 `<KeepAlive>` 不允許直接包多個 `v-if` 元件。
+
+#### 修復 (`AdminRootSelector.vue`)
+```vue
+<!-- Before (錯誤) -->
+<KeepAlive>
+  <teaching-manager v-if="currentView === 'teaching'" .../>
+  <grudge-manager v-if="currentView === 'grudge'" .../>
+  ...
+</KeepAlive>
+
+<!-- After (正確) -->
+<KeepAlive>
+  <component :is="mobileActiveComponent" :user="user" @go-home="handleNavigate('menu')" />
+</KeepAlive>
+```
+搭配 `componentMap` 對照表和 `computed` 動態切換元件。 |
