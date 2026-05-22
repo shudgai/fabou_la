@@ -99,7 +99,7 @@
                             <!-- Central Taiji -->
                             <g transform="translate(70, 70)">
                                 <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
-                                <path d="M 50 1 A 49 49 0 0 1 50 99 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 50 1 Z" fill="black"/>
+                                <path d="M 50 1 a 49 49 0 0 1 0 98 a 24.5 24.5 0 0 1 0 -49 a 24.5 24.5 0 0 0 0 -49" fill="black" stroke="black" stroke-width="0.5"/>
                                 <circle cx="50" cy="74.5" r="8" fill="white"/>
                                 <circle cx="50" cy="25.5" r="8" fill="black"/>
                             </g>
@@ -254,7 +254,7 @@
                                 <!-- Central Taiji -->
                                 <g transform="translate(70, 70)">
                                     <circle cx="50" cy="50" r="49" fill="white" stroke="black" stroke-width="2"/>
-                                    <path d="M 50 1 A 49 49 0 0 1 50 99 A 24.5 24.5 0 0 1 50 50 A 24.5 24.5 0 0 0 50 1 Z" fill="black"/>
+                                    <path d="M 50 1 a 49 49 0 0 1 0 98 a 24.5 24.5 0 0 1 0 -49 a 24.5 24.5 0 0 0 0 -49" fill="black" stroke="black" stroke-width="0.5"/>
                                     <circle cx="50" cy="74.5" r="8" fill="white"/>
                                     <circle cx="50" cy="25.5" r="8" fill="black"/>
                                 </g>
