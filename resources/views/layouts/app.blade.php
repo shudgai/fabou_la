@@ -25,6 +25,9 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
 
     <!-- Fonts: minimal set with font-display: swap -->
