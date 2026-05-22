@@ -698,6 +698,17 @@ APP_DEBUG=false
   1. 移除無效且錯誤的 `<link rel="icon" type="image/png" ...>` 舊版 Fallback，現代瀏覽器皆完全支援 SVG。
   2. 加入版號 Cache Buster：`href="{{ asset('favicon.svg') }}?v=2"`，強迫正式環境的瀏覽器放棄快取的破圖狀態並重新抓取新的 SVG。
 
+### Page Transition Speed Optimization
+
+#### 根因分析
+- **無 KeepAlive**：`AdminRootSelector.vue` 使用 `v-if` 切換各 manager 元件，每次轉頁都 destroy/recreate 元件
+- **浪費的延遲**：`handleNavigate` 的 `isGlobalTransitioning` 加了 300ms+300ms = 600ms 強制延遲（僅為了顯示轉場動畫）
+- **動態載入 + API**：每次進入元件需要下載 JS chunk + mount + 多個 API 請求
+
+#### 修復 (AdminRootSelector.vue)
+1. **加入 `<KeepAlive>`**：包住手機版和桌面板的所有 manager 元件，切走時保持 alive，回來時不重 mount/不重抓資料
+2. **優化轉場延遲**：將 `setTimeout(..., 300)` 改為 `requestAnimationFrame`，轉場動畫在 1-2 frame (~16ms) 內完成
+
 ### ImperialGraceManager Expanded Overlay Scroll Fix
 - **問題**：皇恩展開覆蓋層中，若有長內容（用意/備註），底部備份資料無法滾動查看，無滾軸。
 - **根因**：外層容器 `overflow-hidden` 搭配內層 `flex-1 overflow-y-auto` 的 flex 佈局，在某些瀏覽器/裝置上 inner scroll 不會正確觸發。flex item 的 `min-height` 計算不一致導致。

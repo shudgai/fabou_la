@@ -74,15 +74,17 @@
             <mobile-dashboard v-if="currentView === 'menu'" :user="user" @navigate="handleNavigate" :counts="counts"></mobile-dashboard>
 
             <div v-else class="flex-1 h-full overflow-hidden flex flex-col">
-                <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')"></teaching-manager>
-                <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')"></grudge-manager>
-                <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')"></imperial-grace-manager>
-                <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
-                <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
-                <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')"></other-teaching-manager>
-                <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
-                <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')"></kaiwen-manager>
-                <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
+                <KeepAlive>
+                    <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')"></teaching-manager>
+                    <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')"></grudge-manager>
+                    <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')"></imperial-grace-manager>
+                    <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')"></registry-manager>
+                    <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')"></military-manager>
+                    <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')"></other-teaching-manager>
+                    <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')"></other-manager>
+                    <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')"></kaiwen-manager>
+                    <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')"></trash-manager>
+                </KeepAlive>
             </div>
         </div>
 
@@ -125,15 +127,17 @@
 
             <!-- Content Area -->
             <div class="flex-1 h-full overflow-hidden flex flex-col bg-white relative">
-                <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></teaching-manager>
-                <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></grudge-manager>
-                <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></imperial-grace-manager>
-                <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></registry-manager>
-                <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></military-manager>
-                <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-teaching-manager>
-                <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-manager>
-                <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
-                <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></trash-manager>
+                <KeepAlive>
+                    <teaching-manager v-if="currentView === 'teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></teaching-manager>
+                    <grudge-manager v-if="currentView === 'grudge'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></grudge-manager>
+                    <imperial-grace-manager v-if="currentView === 'grace'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></imperial-grace-manager>
+                    <registry-manager v-if="currentView === 'treasure'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></registry-manager>
+                    <military-manager v-if="currentView === 'military'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></military-manager>
+                    <other-teaching-manager v-if="currentView === 'other_teaching'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-teaching-manager>
+                    <other-manager v-if="currentView === 'other'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></other-manager>
+                    <kaiwen-manager v-if="currentView === 'kaiwen'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></kaiwen-manager>
+                    <trash-manager v-if="currentView === 'trash'" :user="user" @go-home="handleNavigate('menu')" :is-desktop="true"></trash-manager>
+                </KeepAlive>
 
                 <!-- Welcome State (Desktop menu) -->
                 <div v-if="currentView === 'menu'" class="flex-1 flex flex-col items-center justify-center p-12 text-center">
@@ -310,9 +314,9 @@ const handleNavigate = (view) => {
     }
 
     isGlobalTransitioning.value = true;
-    setTimeout(() => {
+    // Use next tick to show overlay before expensive work
+    requestAnimationFrame(() => {
         currentView.value = view;
-        // Optionally update hash as well
         const reverseMap = { 
             'treasure': '#treasure', 'grace': '#grace', 'teaching': '#teaching', 
             'grudge': '#grudge', 'military': '#military', 'other': '#other', 
@@ -321,10 +325,10 @@ const handleNavigate = (view) => {
         };
         window.location.hash = reverseMap[view] || '';
         
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             isGlobalTransitioning.value = false;
-        }, 300);
-    }, 300);
+        });
+    });
 };
 
 onMounted(async () => {
